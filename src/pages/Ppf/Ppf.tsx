@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from './Ppf.module.css';
 
 const staggerContainer = {
@@ -96,6 +96,24 @@ const luxuryData = {
   ]
 };
 
+const finishesCarousel = [
+  { 
+    src: '/assets/images/nzppf_super_brilho.png', 
+    title: 'SUPER BRILHO:', 
+    sub: <><span className={styles.goldAccent}>+32%</span> de Brilho</> 
+  },
+  { 
+    src: '/assets/images/nzppf_matte.png', 
+    title: 'ACABAMENTO MATTE:', 
+    sub: <><span className={styles.goldAccent}>Estilo + Proteção.</span> Toque suave</> 
+  },
+  { 
+    src: '/assets/images/nzppf_black.png', 
+    title: 'BLACK PROFUNDO:', 
+    sub: <><span className={styles.goldAccent}>Luxo</span> Absoluto</> 
+  }
+];
+
 export default function Ppf() {
   const [activeTab, setActiveTab] = useState<'vantagens' | 'caracteristicas' | 'tabela'>('vantagens');
   const [isTableModalOpen, setIsTableModalOpen] = useState(false);
@@ -106,13 +124,23 @@ export default function Ppf() {
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   useEffect(() => {
     // Show offer button after 5 seconds
-    const timer = setTimeout(() => {
+    const offerTimer = setTimeout(() => {
       setShowOfferBtn(true);
     }, 5000);
-    return () => clearTimeout(timer);
+
+    // Carousel interval
+    const slideTimer = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % finishesCarousel.length);
+    }, 4000);
+
+    return () => {
+      clearTimeout(offerTimer);
+      clearInterval(slideTimer);
+    };
   }, []);
 
   const handleOfferSubmit = async (e: React.FormEvent) => {
@@ -281,18 +309,29 @@ export default function Ppf() {
                 </motion.div>
               </div>
 
-              {/* Bottom wide image */}
+              {/* Bottom wide image / Carrossel */}
               <motion.div variants={fadeUpItem} className={`${styles.glassPanel} ${styles.mosaicImageWide}`}>
-                <img src={luxuryData.mosaic[3].src} alt="Brilho" className={styles.panelAsset} />
-                <div className={styles.imageOverlayBottomText}>
-                    <div className={styles.microTextLarge}>
-                      <img src={luxuryData.mosaic[3].icon} alt="Icone" className={`${styles.smallIconInline} ${styles.goldIcon}`} />
-                      <div className={styles.superBrilhoText}>
-                        <strong>{luxuryData.mosaic[3].title}</strong><br/>
-                        {luxuryData.mosaic[3].sub}
-                      </div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={carouselIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+                  >
+                    <img src={finishesCarousel[carouselIndex].src} alt={finishesCarousel[carouselIndex].title} className={styles.panelAsset} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div className={styles.imageOverlayBottomText} style={{ position: 'absolute', bottom: 0, left: 0, width: '100%' }}>
+                        <div className={styles.microTextLarge}>
+                          <img src={luxuryData.mosaic[3].icon} alt="Icone" className={`${styles.smallIconInline} ${styles.goldIcon}`} />
+                          <div className={styles.superBrilhoText}>
+                            <strong>{finishesCarousel[carouselIndex].title}</strong><br/>
+                            {finishesCarousel[carouselIndex].sub}
+                          </div>
+                        </div>
                     </div>
-                </div>
+                  </motion.div>
+                </AnimatePresence>
               </motion.div>
 
             </div>
