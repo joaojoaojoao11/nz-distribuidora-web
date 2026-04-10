@@ -23,6 +23,7 @@ const CertoIcon = "/assets/simbolos/simbolo-certo.svg";
 const EscudoVazioIcon = "/assets/simbolos/simbolo-escudo-vazio.svg";
 const RegeneracaoIcon = "/assets/simbolos/simbolo-regeneracao.svg";
 const RepelenciaIcon = "/assets/simbolos/simbolo-repelencia.svg";
+const PresenteIcon = "/assets/simbolos/simbolo-presente.svg";
 
 const luxuryData = {
   title: 'NZPPF LUXURY GLOSS',
@@ -228,6 +229,7 @@ export default function Ppf() {
                 className={styles.offerBtnWrapper}
               >
                 <button className={styles.offerBtn} onClick={() => setIsOfferModalOpen(true)}>
+                  <img src={PresenteIcon} alt="Presente" className={`${styles.offerBtnIcon} ${styles.goldIcon}`} />
                   REIVINDICAR CUPOM SURPRESA
                 </button>
               </motion.div>
