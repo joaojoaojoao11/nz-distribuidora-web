@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import AnalyticsTracker from './components/AnalyticsTracker';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Home from './pages/Home/Home';
@@ -32,6 +33,7 @@ function App() {
         {/* Public pages */}
         <Route path="*" element={
           <div className="app-layout">
+            <AnalyticsTracker />
             <Navbar />
             <main>
               <Routes>

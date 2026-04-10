@@ -233,9 +233,283 @@
   font-size: 0.85rem;
 }
 
+.navBadge {
+  margin-left: auto;
+  background: var(--accent-red);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 8px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.tableScroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabDescription {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 1.25rem;
+  font-style: italic;
+}
+
+.createBtn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.createBtn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.4); }
+
+.createModal {
+  background: rgba(15, 15, 18, 0.8);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.createModalTitle {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.createError {
+  background: rgba(255, 50, 50, 0.1);
+  border: 1px solid rgba(255, 50, 50, 0.3);
+  color: #ff5555;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.createGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.createField label {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.3rem;
+}
+
+.createField input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.createField input:focus { border-color: rgba(255,255,255,0.3); }
+.createField input::placeholder { color: #555; }
+
+.createActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.createBtnCancel {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #888;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.createBtnCancel:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
+.createBtnConfirm {
+  background: var(--accent-red);
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.createBtnConfirm:hover { background: #ff3333; }
+.createBtnConfirm:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Dashboard Analytics */
+.periodFilters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.periodBtn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #888;
+  padding: 0.45rem 1rem;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.periodBtn:hover { color: #fff; border-color: rgba(255,255,255,0.25); }
+.periodBtnActive {
+  color: #0a0a0c;
+  background: #D4A853;
+  border-color: #D4A853;
+}
+
+.kpiSectionTitle {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.metricIcon {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.chartCard {
+  background: rgba(15, 15, 18, 0.5);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 1.25rem;
+}
+
+.chartTitle {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.chartEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #555;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.heatmapHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.heatmapSelect {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  padding: 0.4rem 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.heatmapSelect option { background: #0a0a0c; color: #fff; }
+
+.heatmapContainer {
+  width: 100%;
+  min-height: 400px;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.heatmapCanvas {
+  width: 100%;
+  height: 400px;
+  display: block;
+}
+
+.heatmapEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: #555;
+  text-align: center;
+}
+.heatmapEmpty span { font-size: 2rem; margin-bottom: 0.75rem; opacity: 0.4; }
+.heatmapEmpty p { font-size: 0.85rem; margin: 0; }
+.heatmapEmptySub { font-size: 0.7rem !important; color: #444; margin-top: 0.4rem !important; }
+
+.loadingBar {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.loadingBarInner {
+  height: 100%;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, #D4A853, transparent);
+  animation: loadSlide 1.2s ease-in-out infinite;
+}
+@keyframes loadSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
 @media (max-width: 768px) {
   .sidebar { width: 60px; }
   .sidebarLogo h2, .sidebarLogo span, .navLink span, .logoutBtn span { display: none; }
   .navLink { justify-content: center; padding: 0.75rem; }
+  .navBadge { display: none; }
   .mainContent { margin-left: 60px; padding: 1rem; }
+  .createGrid { grid-template-columns: 1fr; }
+  .chartsGrid { grid-template-columns: 1fr; }
+  .periodFilters { gap: 0.35rem; }
+  .periodBtn { padding: 0.35rem 0.65rem; font-size: 0.6rem; }
+  .heatmapContainer { min-height: 250px; }
+  .heatmapCanvas { height: 250px; }
+  .heatmapEmpty { height: 250px; }
 }
