@@ -3,10 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './PrimeGloss.module.css';
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
-};
 
 const blurReveal = {
   hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
@@ -18,10 +14,6 @@ const scaleIn = {
   show: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
 };
 
-const slideFromLeft = {
-  hidden: { opacity: 0, x: -60, filter: 'blur(6px)' },
-  show: { opacity: 1, x: 0, filter: 'blur(0px)', transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
-};
 
 const slideFromRight = {
   hidden: { opacity: 0, x: 60, filter: 'blur(6px)' },

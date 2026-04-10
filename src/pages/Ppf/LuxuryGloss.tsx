@@ -3,10 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './LuxuryGloss.module.css';
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
-};
 
 const blurReveal = {
   hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
