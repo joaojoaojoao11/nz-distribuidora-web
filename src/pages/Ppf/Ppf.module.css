@@ -925,6 +925,17 @@
   /* --- PAGE --- */
   .page {
     padding-top: 64px; /* navbar menor no mobile */
+    scroll-snap-type: none; /* Desativa scroll-snap no mobile para permitir rolagem livre */
+    height: auto; /* Remove height fixo que travava a rolagem */
+    overflow-y: visible; /* Permite o scroll do body natural */
+  }
+
+  .hero {
+    scroll-snap-align: unset;
+  }
+
+  .bentoSection {
+    scroll-snap-align: unset;
   }
 
   /* --- HERO --- */
