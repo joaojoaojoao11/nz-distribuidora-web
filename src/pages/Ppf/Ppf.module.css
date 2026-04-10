@@ -908,3 +908,316 @@
   transform: translateY(-2px);
 }
 
+
+/* ==================================================================
+   MOBILE RESPONSIVE — max-width: 768px
+   Nenhuma regra acima é alterada. Tudo aqui é override mobile-only.
+   ================================================================== */
+@media (max-width: 768px) {
+
+  /* --- PAGE --- */
+  .page {
+    padding-top: 64px; /* navbar menor no mobile */
+  }
+
+  /* --- HERO --- */
+  .hero {
+    height: auto;
+    min-height: 100svh;
+    min-height: 100vh; /* fallback */
+    padding-bottom: 4vh;
+  }
+
+  .heroTextContent {
+    max-width: 100%;
+    padding: 0 1.25rem;
+  }
+
+  .pageTitleImage {
+    max-width: 260px;
+    margin-bottom: 1.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .heroSubtitleWarning {
+    font-size: 1rem;
+  }
+
+  .heroBottomShadow {
+    height: 200px;
+  }
+
+  /* --- BENTO SECTION --- */
+  .bentoSection {
+    height: auto;
+    min-height: unset;
+    overflow: visible;
+    padding: 2rem 0 3rem;
+  }
+
+  .bentoHeader {
+    margin-bottom: 1.25rem;
+    padding: 0 1rem;
+  }
+
+  .bentoTitleMassive {
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+  }
+
+  .bentoSubtitle {
+    font-size: 0.8rem;
+  }
+
+  /* --- BENTO GRID --- */
+  .bentoTacticalGrid {
+    gap: 12px;
+    padding: 0 0.75rem;
+  }
+
+  /* --- MOSAIC COLUMN --- */
+  .mosaicColumn {
+    gap: 10px;
+  }
+
+  .mosaicImageGiant {
+    aspect-ratio: 16/10;
+  }
+
+  .mosaicSplitRow {
+    gap: 10px;
+  }
+
+  .mosaicImageSmall {
+    aspect-ratio: 1/1;
+  }
+
+  .mosaicImageWide {
+    aspect-ratio: 2.5/1;
+  }
+
+  /* Overlay text adjustments */
+  .imageOverlayLayers {
+    padding: 1rem;
+  }
+
+  .layerDwg {
+    width: 80px;
+  }
+
+  .layerLabels {
+    gap: 0.75rem;
+  }
+
+  .layerText {
+    font-size: 0.7rem;
+  }
+
+  .layerText strong {
+    font-size: 0.8rem;
+  }
+
+  .tacticalOverlayIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .tacticalOverlayIconSmall {
+    width: 28px;
+    height: 28px;
+  }
+
+  .microTextCenter {
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .microTextCenter strong {
+    font-size: 0.75rem;
+  }
+
+  .superBrilhoText {
+    font-size: 0.75rem;
+  }
+
+  .superBrilhoText strong {
+    font-size: 1.1rem;
+  }
+
+  .smallIconInline {
+    width: 28px;
+    height: 28px;
+  }
+
+  .imageOverlayBottomText {
+    padding: 1rem;
+  }
+
+  .imageOverlayIconRight {
+    padding: 1rem;
+  }
+
+  .imageOverlayIconCenter {
+    padding: 0.75rem;
+  }
+
+  /* --- DATA GRID --- */
+  .dataGrid {
+    gap: 10px;
+  }
+
+  .panelTextIntro {
+    padding: 1.25rem;
+  }
+
+  .panelTitleCenter {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .introParagraphs {
+    font-size: 0.85rem;
+    gap: 0.75rem;
+  }
+
+  .highlightParagraph {
+    font-size: 0.85rem;
+  }
+
+  /* --- TABS --- */
+  .tabNavigation {
+    gap: 1px;
+  }
+
+  .tabBtn {
+    font-size: 0.6rem;
+    padding: 0.85rem 0.25rem;
+    min-height: 44px;
+    letter-spacing: 0.5px;
+  }
+
+  .tabContentArea {
+    padding: 1rem;
+  }
+
+  .dataList {
+    gap: 1rem;
+  }
+
+  .dataList li {
+    font-size: 0.85rem;
+    gap: 0.75rem;
+  }
+
+  .dataListCompact {
+    gap: 0.75rem;
+  }
+
+  /* --- MODAL --- */
+  .modalOverlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modalContent {
+    width: 100%;
+    max-width: 100%;
+    height: 92vh;
+    height: 92dvh;
+    padding: 1.5rem;
+    border-radius: 16px 16px 0 0;
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modalHeader {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+  }
+
+  .modalHeader h2 {
+    font-size: 1.25rem;
+  }
+
+  .modalTabs {
+    gap: 1rem;
+  }
+
+  .modalTabBtn {
+    font-size: 0.75rem;
+    padding: 0.5rem 0;
+    min-height: 44px;
+  }
+
+  .closeBtn {
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Chart/Benchmark */
+  .chartRow {
+    gap: 0.5rem;
+  }
+
+  .chartMeta {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  /* Telemetry Table */
+  .thCol {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .tdCol {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .openModalBtn {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .tableTabPreview {
+    padding: 1.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Small phones (iPhone SE, etc.) */
+@media (max-width: 380px) {
+  .pageTitleImage {
+    max-width: 200px;
+  }
+
+  .bentoTitleMassive {
+    font-size: 1.3rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.82rem;
+  }
+
+  .layerDiagram {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .tabBtn {
+    font-size: 0.55rem;
+  }
+}
