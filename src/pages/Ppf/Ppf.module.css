@@ -978,6 +978,15 @@
     padding: 2rem 0 3rem;
   }
 
+  .bentoContainerWrapper {
+    max-height: none; /* Remove o limite de altura que causava sobreposição com o footer */
+  }
+
+  .bentoBackground {
+    position: absolute;
+    height: 100%;
+  }
+
   .bentoHeader {
     margin-bottom: 1.25rem;
     padding: 0 1rem;
@@ -1121,6 +1130,8 @@
 
   .tabContentArea {
     padding: 1rem;
+    height: auto; /* Remove a altura fixa de 500px no mobile */
+    min-height: unset;
   }
 
   .dataList {
