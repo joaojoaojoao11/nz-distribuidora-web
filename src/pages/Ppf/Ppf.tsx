@@ -217,8 +217,10 @@ export default function Ppf() {
         >
           
           <motion.div variants={fadeUpItem} className={styles.bentoHeader}>
-            <h2 className={styles.bentoTitleMassive}>{luxuryData.title}</h2>
-            <div className={styles.bentoSubtitle}>{luxuryData.subtitle}</div>
+            <div className={styles.bentoTitleGroup}>
+              <h2 className={styles.bentoTitleMassive}>{luxuryData.title}</h2>
+              <div className={styles.bentoSubtitle}>{luxuryData.subtitle}</div>
+            </div>
             {showOfferBtn && (
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }} 
@@ -226,7 +228,7 @@ export default function Ppf() {
                 className={styles.offerBtnWrapper}
               >
                 <button className={styles.offerBtn} onClick={() => setIsOfferModalOpen(true)}>
-                  ENTRE EM CONTATO E RESGATE SEU CUPOM DE DESCONTO SURPRESA
+                  REIVINDICAR CUPOM SURPRESA
                 </button>
               </motion.div>
             )}
