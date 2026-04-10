@@ -986,7 +986,7 @@
   }
 
   .mosaicImageGiant {
-    aspect-ratio: 16/10;
+    aspect-ratio: 3/4; /* Mais alto no mobile para caber todas as camadas de texto */
   }
 
   .mosaicSplitRow {
