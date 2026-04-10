@@ -1,0 +1,201 @@
+.page {
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+.hero {
+  position: relative;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  background: url('https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/ALp79OQRpoF9Baa7/gemini_generated_image_uev71zuev71zuev7-LFjm1DW9Nt7XQujR.png') center/cover no-repeat;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(12,12,12,0.95) 10%, rgba(12,12,12,0.6) 100%);
+}
+
+.heroContainer {
+  position: relative;
+  z-index: 10;
+  max-width: 800px;
+  margin: 0;
+}
+
+.eyebrow {
+  color: var(--accent-red);
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.pageTitleImage {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  margin-bottom: 2rem;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.contentSection {
+  padding: 6rem 0;
+  background-color: var(--bg-tertiary);
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .infoGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cardDark {
+    grid-column: 1 / -1;
+  }
+}
+
+.card, .cardDark {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-smooth);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-strong);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.cardDark {
+  background: var(--bg-primary);
+  border-color: var(--accent-red);
+  position: relative;
+  overflow: hidden;
+}
+
+.cardDark::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 4px;
+  background: var(--accent-red);
+}
+
+.cardHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.cardTitleRed {
+  font-size: 1.75rem;
+  color: var(--accent-red);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.highlightBadge {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid var(--border-light);
+}
+
+.highlightBadgeDark {
+  background: rgba(209, 30, 30, 0.1);
+  color: var(--accent-red);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cardText, .cardTextDark {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.cardText strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.cardTextDark {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.bulletList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin-bottom: 3rem;
+}
+
+.bulletList li {
+  color: var(--text-primary);
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.bulletList li::before {
+  content: '>';
+  position: absolute;
+  left: 0;
+  color: var(--accent-red);
+  font-weight: bold;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: var(--accent-red);
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  align-self: flex-start;
+  transition: all var(--transition-snappy);
+}
+
+.ctaButton:hover {
+  background: var(--accent-red-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(209, 30, 30, 0.4);
+}

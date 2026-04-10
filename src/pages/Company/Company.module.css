@@ -1,0 +1,231 @@
+.page {
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+.hero {
+  position: relative;
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  background: url('https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/ALp79OQRpoF9Baa7/gemini_generated_image_jll5s3jll5s3jll5-d95B760M9Zc387qR.png') center/cover no-repeat;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(12,12,12,1) 5%, rgba(12,12,12,0.8) 100%);
+}
+
+.heroContainer {
+  position: relative;
+  z-index: 10;
+  max-width: 800px;
+  margin: 0;
+}
+
+.eyebrow {
+  color: var(--accent-red);
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.pageTitle {
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* Director Section */
+.directorSection {
+  padding: 6rem 0;
+  background-color: var(--bg-primary);
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+}
+
+@media (min-width: 900px) {
+  .twoCol {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+  }
+}
+
+.sectionTitle {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.textContent p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.founderSignature {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.founderName {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.founderRole {
+  color: var(--accent-red);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.metricsSide {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.metricCard {
+  background: var(--bg-secondary);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  transform: translateX(0);
+  transition: transform var(--transition-smooth);
+}
+
+.metricCard:hover {
+  transform: translateX(-10px);
+  border-color: var(--border-strong);
+}
+
+.metricCardRed {
+  background: var(--accent-red);
+  padding: 2rem;
+  border-radius: 12px;
+  transform: translateX(0);
+  transition: transform var(--transition-smooth);
+  box-shadow: 0 10px 30px rgba(209, 30, 30, 0.2);
+}
+
+.metricCardRed:hover {
+  transform: translateX(-10px);
+  box-shadow: 0 15px 40px rgba(209, 30, 30, 0.4);
+}
+
+.metricBig {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.metricLabel {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.metricBigDark {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.metricLabelDark {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* HQ Section */
+.hqSection {
+  padding: 0 0 6rem 0;
+  background-color: var(--bg-primary);
+}
+
+.hqBox {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  padding: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hqBox::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: radial-gradient(circle at top right, rgba(209, 30, 30, 0.05), transparent 60%);
+  pointer-events: none;
+}
+
+.hqTitle {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.hqDesc {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+  max-width: 600px;
+}
+
+.contactList {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .contactList {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.contactList li {
+  background: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.contactList li strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
