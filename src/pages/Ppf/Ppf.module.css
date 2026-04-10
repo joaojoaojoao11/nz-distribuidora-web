@@ -37,6 +37,14 @@
   opacity: 0.8;
 }
 
+.heroVideoDesktop { display: block; }
+.heroVideoMobile { display: none; }
+
+@media (max-width: 768px) {
+  .heroVideoDesktop { display: none; }
+  .heroVideoMobile { display: block; }
+}
+
 .heroOverlay {
   position: absolute;
   inset: 0;

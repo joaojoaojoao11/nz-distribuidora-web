@@ -24,6 +24,15 @@ const productLines = [
     image: '/assets/images/nzppf_super_brilho.png',
     badge: '190μ',
     available: true
+  },
+  {
+    slug: 'prime-gloss',
+    title: 'NZPPF PRIME GLOSS',
+    subtitle: 'TPU de Alta Qualidade | Proteção Confiável',
+    description: 'TPU 100% virgem de 190 micras com revestimento nano-dúplex. Regeneração térmica, repelência e 10 anos de garantia.',
+    image: '/assets/images/nzppf_prime_hero.png',
+    badge: '190μ',
+    available: true
   }
   // Futuros produtos:
   // { slug: 'luxury-matte', title: 'NZPPF LUXURY MATTE', ... },
@@ -37,8 +46,11 @@ export default function Ppf() {
     <div className={styles.page}>
       {/* HERO */}
       <header className={styles.hero}>
-        <video className={styles.heroVideo} autoPlay muted loop playsInline>
-          <source src="/assets/videos/VIDEO-HERO-NZPPF-novo.mp4" type="video/mp4" />
+        <video className={`${styles.heroVideo} ${styles.heroVideoDesktop}`} autoPlay muted loop playsInline>
+          <source src="/assets/videos/NOVO-VIDEO-HERO-NZPPF-WEB-SITE.mp4" type="video/mp4" />
+        </video>
+        <video className={`${styles.heroVideo} ${styles.heroVideoMobile}`} autoPlay muted loop playsInline>
+          <source src="/assets/videos/HERO-NZPPF-CELULAR.mp4" type="video/mp4" />
         </video>
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroBottomShadow}></div>
