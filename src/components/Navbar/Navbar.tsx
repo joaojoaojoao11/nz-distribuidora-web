@@ -37,9 +37,6 @@ export default function Navbar() {
             <img src="/assets/logos/logo-nz-wrap.svg" alt="Linha NZ WRAP" className={styles.navLogo} />
           </Link>
           <Link to="/sobre" className={`${styles.navLink} ${location.pathname === '/sobre' ? styles.navLinkActive : ''}`} onClick={closeMenu}>A Empresa</Link>
-          <a href="https://wa.me/message/3DBGPIZF4EMWO1" target="_blank" rel="noreferrer" className={styles.cta} onClick={closeMenu}>
-            Contato
-          </a>
         </div>
       </div>
     </nav>
