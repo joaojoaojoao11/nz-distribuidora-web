@@ -1,0 +1,158 @@
+.authPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0c;
+  padding: 2rem;
+  padding-top: 100px;
+}
+
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(15, 15, 18, 0.8);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 2.5rem;
+  backdrop-filter: blur(20px);
+}
+
+.authTitle {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.authSub {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 2rem;
+}
+
+.form { display: flex; flex-direction: column; gap: 1rem; }
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.label {
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: rgba(255,255,255,0.3);
+}
+
+.input::placeholder { color: #555; }
+
+.roleSelector {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.roleBtn {
+  flex: 1;
+  padding: 0.85rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #888;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.roleBtn:hover { border-color: rgba(255,255,255,0.3); color: #fff; }
+
+.roleBtnActive {
+  border-color: var(--accent-red);
+  color: #fff;
+  background: rgba(255, 50, 50, 0.1);
+}
+
+.submitBtn {
+  background: var(--accent-red);
+  color: #fff;
+  border: none;
+  padding: 1rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.submitBtn:hover { background: #ff3333; transform: translateY(-2px); }
+.submitBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.errorMsg {
+  background: rgba(255, 50, 50, 0.1);
+  border: 1px solid rgba(255, 50, 50, 0.3);
+  color: #ff5555;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.successMsg {
+  background: rgba(37, 211, 102, 0.1);
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  color: #25D366;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.successMsg h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+.successMsg p { font-size: 0.85rem; color: #888; }
+
+.linkRow {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.linkRow a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.backToSite {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: #555;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.backToSite:hover { color: #888; }
