@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user, isAdmin } = useAuth();
 
   const closeMenu = () => setIsOpen(false);
 
@@ -37,6 +39,14 @@ export default function Navbar() {
             <img src="/assets/logos/logo-nz-wrap.svg" alt="Linha NZ WRAP" className={styles.navLogo} />
           </Link>
           <Link to="/sobre" className={`${styles.navLink} ${location.pathname === '/sobre' ? styles.navLinkActive : ''}`} onClick={closeMenu}>A Empresa</Link>
+
+          {user ? (
+            <Link to={isAdmin ? '/admin' : '/painel'} className={styles.loginBtn} onClick={closeMenu}>
+              {isAdmin ? '⚙ Admin' : '👤 Minha Conta'}
+            </Link>
+          ) : (
+            <Link to="/login" className={styles.loginBtn} onClick={closeMenu}>Entrar</Link>
+          )}
         </div>
       </div>
     </nav>
