@@ -135,6 +135,30 @@
   scroll-snap-align: start;
 }
 
+.productsSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to top, transparent 0%, #070709 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.productsSection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent 0%, #040405 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
 .productsSectionBackground {
   position: absolute;
   top: 0;
@@ -413,7 +437,6 @@
   position: relative;
   padding: clamp(2.5rem, 6vh, 4rem) 0;
   background-color: #040405;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
   overflow: hidden;
   scroll-snap-align: start;
 }
@@ -425,6 +448,18 @@
   background: url('/assets/images/nzppf_premium_layers_abstract.png') center/cover no-repeat;
   opacity: 0.1;
   mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.comparisonSection::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to top, transparent 0%, #040405 100%);
+  z-index: 1;
   pointer-events: none;
 }
 
