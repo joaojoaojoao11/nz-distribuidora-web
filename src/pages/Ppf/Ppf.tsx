@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import styles from './Ppf.module.css';
@@ -52,7 +53,7 @@ const productLines = [
     subtitle: 'Combinação Híbrida Inteligente | Alta Rentabilidade',
     description: 'O melhor custo-benefício. Híbrido projetado para máxima rentabilidade da base sem retorno por bolhas ou trincas fortes. 3 Anos de Garantia.',
     image: '/assets/images/core_catalog_car.png',
-    thickness: '150μ',
+    thickness: '175μ',
     warranty: '3 ANOS',
     available: true
   }
@@ -61,8 +62,68 @@ const productLines = [
   // { slug: 'luxury-black', title: 'NZPPF LUXURY BLACK', ... },
 ];
 
+const comparisonData = [
+  {
+    id: 'core',
+    name: 'CORE',
+    thickness: '175μ',
+    warranty: '3 Anos',
+    metrics: [
+      { label: 'Brilho', value: 70 },
+      { label: 'Durabilidade', value: 60 },
+      { label: 'Regeneração', value: 50 },
+      { label: 'Repelência', value: 65 },
+      { label: 'Custo-Benefício', value: 100 }
+    ],
+    highlight: 'O melhor custo-benefício para máxima rentabilidade da base. Ideal para alto volume comercial.'
+  },
+  {
+    id: 'flow',
+    name: 'FLOW',
+    thickness: '175μ',
+    warranty: '4 Anos',
+    metrics: [
+      { label: 'Brilho', value: 85 },
+      { label: 'Durabilidade', value: 75 },
+      { label: 'Regeneração', value: 70 },
+      { label: 'Repelência', value: 80 },
+      { label: 'Custo-Benefício', value: 85 }
+    ],
+    highlight: 'A porta de entrada inteligente no mundo do PPF Técnico. Desempenho equilibrado e acessível.'
+  },
+  {
+    id: 'prime',
+    name: 'PRIME',
+    thickness: '190μ',
+    warranty: '10 Anos',
+    metrics: [
+      { label: 'Brilho', value: 92 },
+      { label: 'Durabilidade', value: 90 },
+      { label: 'Regeneração', value: 85 },
+      { label: 'Repelência', value: 90 },
+      { label: 'Custo-Benefício', value: 75 }
+    ],
+    highlight: 'TPU Virgem avançado com proteção confiável inigualável. O padrão de qualidade do mercado.'
+  },
+  {
+    id: 'luxury',
+    name: 'LUXURY',
+    thickness: '190μ',
+    warranty: '12 Anos',
+    metrics: [
+      { label: 'Brilho', value: 100 },
+      { label: 'Durabilidade', value: 100 },
+      { label: 'Regeneração', value: 100 },
+      { label: 'Repelência', value: 95 },
+      { label: 'Custo-Benefício', value: 60 }
+    ],
+    highlight: 'A excelência absoluta. TPU Alifático de base superior com +32% de Brilho. Estética e proteção extremas.'
+  }
+];
+
 export default function Ppf() {
   const navigate = useNavigate();
+  const [activeCompareId, setActiveCompareId] = useState('flow');
 
   return (
     <div className={styles.page}>
@@ -146,6 +207,115 @@ export default function Ppf() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* COMPARISON SECTION */}
+      <section className={styles.comparisonSection}>
+        <motion.div 
+          className={`container ${styles.comparisonContainer}`}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          <motion.div className={styles.productsSectionHeader} variants={fadeUpItem}>
+            <h2 className={styles.productsSectionTitle}>COMPARE AS LINHAS</h2>
+            <p className={styles.productsSectionSub}>Telemetria de Performance e Propriedades Técnicas</p>
+          </motion.div>
+
+          <div className={styles.comparisonMatrix}>
+            <div className={styles.comparisonTabs}>
+              {comparisonData.map(item => (
+                <button 
+                  key={item.id} 
+                  className={`${styles.compareTab} ${activeCompareId === item.id ? styles.activeTab : ''}`}
+                  onClick={() => setActiveCompareId(item.id)}
+                >
+                  {item.name}
+                </button>
+              ))}
+              <button 
+                className={`${styles.compareTab} ${activeCompareId === 'all' ? styles.activeTab : ''}`}
+                onClick={() => setActiveCompareId('all')}
+              >
+                TODAS
+              </button>
+            </div>
+
+            <div className={styles.comparisonContent}>
+              {activeCompareId === 'all' ? (
+                <motion.div 
+                  key="all"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className={styles.allLinesGrid}
+                >
+                  {comparisonData.map(item => (
+                    <div key={item.id} className={styles.allLineCard}>
+                      <div className={styles.allLineCardTitle}>{item.name}</div>
+                      <div className={styles.compareBadges} style={{ marginBottom: '0.5rem' }}>
+                        <span className={styles.compareBadge} style={{ fontSize: '0.65rem', padding: '0.25rem 0.5rem' }}>
+                          <strong>ESP:</strong> {item.thickness}
+                        </span>
+                        <span className={styles.compareBadge} style={{ fontSize: '0.65rem', padding: '0.25rem 0.5rem' }}>
+                          <strong>GAR:</strong> {item.warranty}
+                        </span>
+                      </div>
+                      {item.metrics.map(metric => (
+                        <div key={metric.label} className={styles.allLineMetricRow}>
+                          <div className={styles.allLineMetricLabel}>{metric.label}</div>
+                          <div className={styles.allLineBarBg}>
+                            <motion.div 
+                              className={styles.allLineBarFill}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${metric.value}%` }}
+                              transition={{ duration: 0.6, ease: "easeOut" }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </motion.div>
+              ) : (
+                comparisonData.map(item => item.id === activeCompareId && (
+                  <motion.div 
+                    key={item.id}
+                    className={styles.activeComparePanel}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <p className={styles.compareHighlight}>{item.highlight}</p>
+                    <div className={styles.compareBadges}>
+                      <span className={styles.compareBadge}><strong>ESPESSURA:</strong> {item.thickness}</span>
+                      <span className={styles.compareBadge}><strong>GARANTIA:</strong> {item.warranty}</span>
+                    </div>
+                    
+                    <div className={styles.metricsGrid}>
+                      {item.metrics.map(metric => (
+                        <div key={metric.label} className={styles.metricRow}>
+                          <div className={styles.metricLabel}>{metric.label}</div>
+                          <div className={styles.metricBarBg}>
+                            <motion.div 
+                              className={styles.metricBarFill}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${metric.value}%` }}
+                              transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+                            >
+                              <span className={styles.metricValue}>{metric.value}%</span>
+                            </motion.div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </div>
           </div>
         </motion.div>
       </section>
