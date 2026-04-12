@@ -126,8 +126,8 @@ export default function CoreGloss() {
                 >{char === ' ' ? '\u00A0' : char}</motion.span>
               ))}
             </h1>
-            <p className={styles.heroSub}>
-              {'HÍBRIDO INTELIGENTE | 80% TPU + 20% PVC'.split('').map((char, i) => (
+            <p className={styles.heroSub} style={{ color: coreColor }}>
+              {'HÍBRIDO INTELIGENTE | COMBINAÇÃO ESTRUTURAL AVANÇADA'.split('').map((char, i) => (
                 <motion.span
                   key={i}
                   style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
@@ -141,7 +141,7 @@ export default function CoreGloss() {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={styles.heroActions}>
                 <button className={styles.offerBtn} style={{ background: coreColor, color: '#fff', border: 'none' }} onClick={() => setIsOfferModalOpen(true)}>
                   <img src={PresenteIcon} alt="" className={`${styles.offerBtnIcon}`} style={{ filter: 'brightness(0) invert(1)' }} />
-                  COTAÇÃO ESPECIAL PARA OFICINAS
+                  RESGATAR CUPOM SURPRESA
                 </button>
               </motion.div>
             )}
