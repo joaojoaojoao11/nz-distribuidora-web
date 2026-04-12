@@ -14,11 +14,13 @@ import Register from './pages/Auth/Register';
 import Dashboard from './pages/Admin/Dashboard';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
+import ScrollToTop from './components/ScrollToTop';
 import './App.css';
 
 function App() {
   return (
     <AuthProvider>
+      <ScrollToTop />
       <Routes>
         {/* Admin (without Navbar/Footer) */}
         <Route path="/admin" element={
