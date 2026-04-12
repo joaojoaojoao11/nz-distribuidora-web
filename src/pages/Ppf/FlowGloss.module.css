@@ -32,7 +32,7 @@
   background: 
     linear-gradient(to bottom, #08080a 0%, transparent 20%),
     linear-gradient(135deg, rgba(8,8,10,0.95) 0%, rgba(12,18,22,0.8) 100%),
-    url('/assets/images/flow_hero.png') center/cover no-repeat;
+    url('/assets/images/flow_hero_haval.png') center/cover no-repeat;
   z-index: 0;
 }
 
