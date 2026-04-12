@@ -163,7 +163,7 @@ export default function FlowGloss() {
           <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Tecnologia Balanceada</motion.h2>
           <motion.div className={styles.techGrid} variants={scaleIn}>
             <div className={styles.techImagePanel}>
-              <img src="/assets/images/flow_catalog.png" alt="Rolo Flow PPF TPU" className={styles.techImage} />
+              <img src="/assets/images/flow_layers.png" alt="Camadas da Película Flow TPU" className={styles.techImage} />
               <div className={styles.techImageOverlay}></div>
               <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.accentIcon}`} alt="" />
             </div>
