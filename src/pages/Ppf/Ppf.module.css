@@ -130,7 +130,7 @@
   display: flex;
   align-items: center;
   padding: clamp(2rem, 3vh, 3rem) 0;
-  background-color: #0a0a0c;
+  background-color: #070709;
   scroll-snap-align: start;
 }
 
@@ -140,9 +140,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
-    linear-gradient(to bottom, #0a0a0c 0%, transparent 15%),
-    linear-gradient(135deg, rgba(10,10,12,0.95) 0%, rgba(20,20,24,0.9) 100%);
+  background-image: 
+    linear-gradient(to bottom, #0a0a0c 0%, rgba(10,10,12,0.4) 30%, rgba(10,10,12,0.85) 100%),
+    url('/assets/images/nzppf_premium_layers_abstract.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  opacity: 0.15;
+  mix-blend-mode: screen;
   z-index: 0;
 }
 
@@ -181,7 +186,7 @@
 .productsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 15px;
+  gap: 20px;
 }
 
 @media (min-width: 768px) {
@@ -197,14 +202,15 @@
   height: clamp(200px, 28vh, 260px);
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.04);
   transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .productCard:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(212, 175, 55, 0.3);
   transform: translateY(-4px);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
 }
 
 .productCard:focus-visible {
@@ -219,14 +225,15 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.6;
-  filter: grayscale(20%) contrast(1.1);
-  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0.55;
+  filter: grayscale(25%) contrast(1.15) brightness(0.85);
+  transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .productCard:hover .productCardImage {
-  opacity: 0.8;
-  transform: scale(1.05);
+  opacity: 0.85;
+  filter: grayscale(0%) contrast(1.1) brightness(1);
+  transform: scale(1.08);
 }
 
 .productCardOverlay {
@@ -234,9 +241,10 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.6) 50%,
-    rgba(0, 0, 0, 0.2) 100%
+    rgba(5, 5, 5, 0.98) 0%,
+    rgba(5, 5, 5, 0.85) 30%,
+    rgba(5, 5, 5, 0.3) 70%,
+    rgba(0, 0, 0, 0) 100%
   );
   z-index: 1;
 }
@@ -246,7 +254,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 1rem 1.25rem;
+  padding: 1.5rem;
   z-index: 2;
   display: flex;
   flex-direction: column;
