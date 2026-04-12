@@ -53,17 +53,17 @@ const benchmarkData = [
 ];
 
 const diferenciais = [
-  { icon: RegeneracaoIcon, title: 'Regeneração Ativa', desc: 'Corrige micro riscos leves com ação térmica. Prolonga o aspecto de carro recém polido.', accent: 'Auto-cura leve', image: '/assets/images/nzppf_prime_regeneracao.png' },
-  { icon: RepelenciaIcon, title: 'Superfície Autolimpante', desc: 'Reduz o acúmulo de água e sujeira. Facilita muito a lavagem e manutenção do carro.', accent: 'Hidrofobia', image: '/assets/images/flow_water.png' },
-  { icon: CertoIcon, title: 'Brilho Estável', desc: 'Acabamento limpo, uniforme e profundo, proporcionando bom realce visual à pintura.', accent: 'Reflexo Premium', image: '/assets/images/flow_gloss.png' },
-  { icon: EscudoVazioIcon, title: 'Durabilidade Sólida', desc: 'Proteção contra arranhões, oxidação e chuva ácida que dura até 4 anos sem amarelamento.', accent: 'Garantia de 4 Anos', image: '/assets/images/flow_hero.png' }
+  { icon: RegeneracaoIcon, title: 'Regeneração Ativa', desc: 'Corrige micro riscos leves com ação térmica. Prolonga o aspecto de carro recém polido.', accent: 'Auto-cura leve', image: '/assets/images/flow_heal_haval.png' },
+  { icon: RepelenciaIcon, title: 'Superfície Autolimpante', desc: 'Reduz o acúmulo de água e sujeira. Facilita muito a lavagem e manutenção do carro.', accent: 'Hidrofobia', image: '/assets/images/flow_water_haval.png' },
+  { icon: CertoIcon, title: 'Brilho Estável', desc: 'Acabamento limpo, uniforme e profundo, proporcionando bom realce visual à pintura.', accent: 'Reflexo Premium', image: '/assets/images/flow_gloss_haval.png' },
+  { icon: EscudoVazioIcon, title: 'Durabilidade Sólida', desc: 'Proteção contra arranhões, oxidação e chuva ácida que dura até 4 anos sem amarelamento.', accent: 'Garantia de 4 Anos', image: '/assets/images/flow_hero_haval.png' }
 ];
 
 const finishesData = [
-  { src: '/assets/images/flow_clear_gloss.png', title: 'Clear Gloss', sub: 'Transparente Brilho: Conserva a cor original com espelhamento intenso e reflexo espelhado profundo.', tech: 'TPU 175μ • Base Incolor' },
-  { src: '/assets/images/flow_clear_matte.png', title: 'Clear Matte', sub: 'Transparente Fosco: Transforma o aspecto da pintura original para um acabamento acetinado macio sob a luz.', tech: 'TPU 175μ • Micro Texturizado' },
-  { src: '/assets/images/flow_black_gloss.png', title: 'Black Gloss', sub: 'Opaco Brilho: Efeito Black Piano absoluto. Máximo escurecimento bloqueando a matriz de cor inferior.', tech: 'TPU 175μ • Base Pigmentada' },
-  { src: '/assets/images/flow_black_matte.png', title: 'Black Matte', sub: 'Opaco Fosco: Absorção de luz dramática. Aparência furtiva e agressiva.', tech: 'TPU 175μ • Base Negra Fosca' }
+  { src: '/assets/images/flow_clear_gloss_haval.png', title: 'Clear Gloss', sub: 'Transparente Brilho: Conserva a cor original com espelhamento intenso e reflexo espelhado profundo.', tech: 'TPU 175μ • Base Incolor' },
+  { src: '/assets/images/flow_clear_matte_haval.png', title: 'Clear Matte', sub: 'Transparente Fosco: Transforma o aspecto da pintura original para um acabamento acetinado macio sob a luz.', tech: 'TPU 175μ • Micro Texturizado' },
+  { src: '/assets/images/flow_black_gloss_haval.png', title: 'Black Gloss', sub: 'Opaco Brilho: Efeito Black Piano absoluto. Máximo escurecimento bloqueando a matriz de cor inferior.', tech: 'TPU 175μ • Base Pigmentada' },
+  { src: '/assets/images/flow_black_matte_haval.png', title: 'Black Matte', sub: 'Opaco Fosco: Absorção de luz dramática. Aparência furtiva e agressiva.', tech: 'TPU 175μ • Base Negra Fosca' }
 ];
 
 export default function FlowGloss() {
