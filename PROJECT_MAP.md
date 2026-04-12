@@ -56,7 +56,7 @@ Se precisar editar algo global que repete por todo site, o componente está aqui
 Cada subdiretório em `pages/` representa uma etapa completa injetada no `App.tsx`. Ao criar uma tela nova, faça aqui em uma pasta própria e declare o módulo `TitlePage.module.css` localmente:
 
 * **`/Home` (Homepage)**: Junta os componentes `Hero`, `Showcase`, e `About` numa estrutura única (`/`).
-* **`/Ppf` (Linha PPF)**: Landing page ultra descritiva sobre as polímeros automotivos Premium (Luxury, Prime, Flow).
+* **`/Ppf` (Linha PPF)**: Landing page ultra descritiva sobre as polímeros automotivos Premium (Luxury, Prime, Flow e Core).
 * **`/Wrap` (Linha Wrap)**: Landing page arquitetada para exibir as pilastras logísticas: >250 Cores a pronta entrega, >500 Exclusivas, e a seção rubra de Consultoria.
 * **`/Company` (Sobre Nós)**: O Quartel General. Exibe a carta do fundador João Soares e dados físicos em Barueri.
 

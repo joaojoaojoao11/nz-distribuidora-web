@@ -7,6 +7,7 @@ import Ppf from './pages/Ppf/Ppf';
 import LuxuryGloss from './pages/Ppf/LuxuryGloss';
 import PrimeGloss from './pages/Ppf/PrimeGloss';
 import FlowGloss from './pages/Ppf/FlowGloss';
+import CoreGloss from './pages/Ppf/CoreGloss';
 import Wrap from './pages/Wrap/Wrap';
 import Company from './pages/Company/Company';
 import Login from './pages/Auth/Login';
@@ -45,6 +46,7 @@ function App() {
                 <Route path="/ppf/luxury-gloss" element={<LuxuryGloss />} />
                 <Route path="/ppf/prime-gloss" element={<PrimeGloss />} />
                 <Route path="/ppf/flow-gloss" element={<FlowGloss />} />
+                <Route path="/ppf/core-gloss" element={<CoreGloss />} />
                 <Route path="/wrap" element={<Wrap />} />
                 <Route path="/sobre" element={<Company />} />
               </Routes>

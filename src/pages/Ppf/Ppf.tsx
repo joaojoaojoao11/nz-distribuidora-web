@@ -42,6 +42,15 @@ const productLines = [
     image: '/assets/images/flow_catalog_car.png',
     badge: '175μ',
     available: true
+  },
+  {
+    slug: 'core-gloss',
+    title: 'NZPPF CORE GLOSS',
+    subtitle: '80% TPU + 20% PVC | Híbrido Inteligente',
+    description: 'O melhor custo-benefício. Híbrido projetado para máxima rentabilidade da base sem retorno por bolhas ou trincas fortes. 3 Anos de Garantia.',
+    image: '/assets/images/core_catalog_car.png',
+    badge: '3 ANOS',
+    available: true
   }
   // Futuros produtos:
   // { slug: 'luxury-matte', title: 'NZPPF LUXURY MATTE', ... },
