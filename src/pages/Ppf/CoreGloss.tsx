@@ -326,27 +326,39 @@ export default function CoreGloss() {
                 )}
                 
                 {modalTab === 'benchmark' && (
-                  <div className={styles.tTable}>
-                    <div className={styles.tHead}>
-                      <div className={styles.thCol}>Métrica de Desempenho</div>
-                      <div className={styles.thCol} style={{ color: coreColor }}>NZPPF Core Gloss</div>
-                      <div className={styles.thCol}>Média Mercado (PU/TPH)</div>
+                  <motion.div key="benchmark" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}>
+                    <div className={styles.chartLegend}>
+                      <div className={styles.legendItem}><div className={styles.legendDotNz} style={{ background: coreColor, width: 10, height: 10, borderRadius: '50%', display: 'inline-block', marginRight: 8 }}></div> NZPPF Core Gloss</div>
+                      <div className={styles.legendItem}><div className={styles.legendDotCom} style={{ background: '#888', width: 10, height: 10, borderRadius: '50%', display: 'inline-block', marginRight: 8 }}></div> Média Mercado (PU/TPH)</div>
                     </div>
-                    <div className={styles.tBody}>
-                      {benchmarkData.map((row, i) => (
-                        <div key={i} className={styles.tRow}>
-                          <div className={`${styles.tdCol} ${styles.tdStrong}`}>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                              <span>{row.metric}</span>
-                              <span style={{ fontSize: '0.7rem', color: '#666', fontWeight: 400 }}>{row.desc}</span>
-                            </div>
+                    {benchmarkData.map((item, index) => {
+                      const getLinePath = (data: number[]) => data.map((val, i) => { const x = 40 + i * (720 / 2); const y = 280 - (val / 100) * 200; return `${i === 0 ? 'M' : 'L'} ${x} ${y}`; }).join(' ');
+                      const getAreaPath = (data: number[]) => getLinePath(data) + ` L 760 280 L 40 280 Z`;
+                      return (
+                        <div key={index} className={styles.svgChartContainer} style={{ marginTop: '2rem' }}>
+                          <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
+                            <h4 style={{ color: "#fff", fontSize: "0.95rem", textTransform: "uppercase", marginBottom: "0.3rem", fontFamily: "var(--font-heading)" }}>{item.metric}</h4>
+                            <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem", fontFamily: "monospace" }}>{item.desc}</span>
                           </div>
-                          <div className={styles.tdCol} style={{ color: coreColor, fontWeight: 'bold' }}>{row.nz[0]} / 100</div>
-                          <div className={`${styles.tdCol} ${styles.tdMute}`}>{row.mercado[0]} / 100</div>
+                          <svg viewBox="0 0 800 320" style={{ width: '100%', height: 'auto' }}>
+                            <defs>
+                              <linearGradient id={`gNz-${index}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={coreColor} stopOpacity="0.4" /><stop offset="100%" stopColor={coreColor} stopOpacity="0" /></linearGradient>
+                              <linearGradient id={`gCm-${index}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#888" stopOpacity="0.2" /><stop offset="100%" stopColor="#888" stopOpacity="0" /></linearGradient>
+                              <filter id="glow"><feGaussianBlur stdDeviation="3" result="cb"/><feMerge><feMergeNode in="cb"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                            </defs>
+                            {[0,25,50,75,100].map(y => { const yP = 280-(y/100)*200; return <g key={y}><line x1="40" y1={yP} x2="760" y2={yP} stroke="rgba(255,255,255,0.04)" strokeWidth="1" strokeDasharray={y===0?"none":"4 4"}/><text x="10" y={yP+4} fill="#666" fontSize="12" fontFamily="monospace">{y}%</text></g> })}
+                            {['Ano 1','Ano 2','Ano 3'].map((l,i) => <text key={l} x={40+i*(720/2)} y="310" fill="#888" fontSize="12" fontFamily="var(--font-heading)" textAnchor="middle">{l}</text>)}
+                            <motion.path d={getAreaPath(item.mercado)} fill={`url(#gCm-${index})`} initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.3}}/>
+                            <motion.path d={getLinePath(item.mercado)} fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="3" initial={{pathLength:0}} animate={{pathLength:1}} transition={{duration:1.5,ease:"easeOut"}}/>
+                            <motion.path d={getAreaPath(item.nz)} fill={`url(#gNz-${index})`} initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.5}}/>
+                            <motion.path d={getLinePath(item.nz)} fill="none" stroke={coreColor} strokeWidth="4" filter="url(#glow)" initial={{pathLength:0}} animate={{pathLength:1}} transition={{duration:1.5,ease:"easeOut",delay:0.2}}/>
+                            {item.nz.map((v,i) => { const x=40+i*(720/2); const y=280-(v/100)*200; return <motion.circle key={`n${i}`} cx={x} cy={y} r="5" fill={coreColor} stroke="#111" strokeWidth="2" initial={{scale:0}} animate={{scale:1}} transition={{delay:1.2+i*0.1}}/> })}
+                            {item.mercado.map((v,i) => { const x=40+i*(720/2); const y=280-(v/100)*200; return <motion.circle key={`c${i}`} cx={x} cy={y} r="4" fill="#888" initial={{scale:0}} animate={{scale:1}} transition={{delay:1+i*0.1}}/> })}
+                          </svg>
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                      )
+                    })}
+                  </motion.div>
                 )}
               </div>
             </motion.div>
