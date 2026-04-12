@@ -21,7 +21,7 @@ const productLines = [
     title: 'NZPPF LUXURY GLOSS',
     subtitle: 'TPU de Última Geração | +32% Mais Brilho',
     description: 'TPU Alifático de 190 micras com Nano-Revestimento japonês. Regeneração térmica, autolimpeza e 12 anos de garantia.',
-    image: '/assets/images/nzppf_super_brilho.png',
+    image: '/assets/images/luxury_lambo.png',
     thickness: '190μ',
     warranty: '12 ANOS',
     available: true
@@ -41,7 +41,7 @@ const productLines = [
     title: 'NZPPF FLOW GLOSS',
     subtitle: 'TPU de Base Técnica | Desempenho Confiável',
     description: 'Material de tecnologia real, acabamento impecável e valor acessível. TPU técnico com revestimento hidrofóbico e 4 anos de garantia.',
-    image: '/assets/images/flow_catalog_car.png',
+    image: '/assets/images/flow_haval.png',
     thickness: '175μ',
     warranty: '4 ANOS',
     available: true
