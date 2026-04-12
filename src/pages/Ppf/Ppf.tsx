@@ -33,6 +33,15 @@ const productLines = [
     image: '/assets/images/nzppf_prime_hero.png',
     badge: '190μ',
     available: true
+  },
+  {
+    slug: 'flow-gloss',
+    title: 'NZPPF FLOW GLOSS',
+    subtitle: 'TPU de Base Técnica | Desempenho Confiável',
+    description: 'Material de tecnologia real, acabamento impecável e valor acessível. TPU técnico com revestimento hidrofóbico e 4 anos de garantia.',
+    image: '/assets/images/flow_catalog.png',
+    badge: '175μ',
+    available: true
   }
   // Futuros produtos:
   // { slug: 'luxury-matte', title: 'NZPPF LUXURY MATTE', ... },
