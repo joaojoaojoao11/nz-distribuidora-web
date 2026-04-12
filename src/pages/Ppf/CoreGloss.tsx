@@ -264,32 +264,30 @@ export default function CoreGloss() {
           <motion.div className={styles.specsCard} variants={scaleIn} style={{ borderTop: `1px solid ${coreColor}` }}>
             <div className={styles.specsCardText}>
               <h2 className={styles.sectionTitle}>Ficha Técnica Híbrida</h2>
-              <p className={styles.specsDesc}>A matemática não falha: analise nossa tabela de componentes e o benchmark prático do fluxo da sua oficina.</p>
-              <div className={styles.specsActions}>
-                <button className={styles.btnSecondary} onClick={() => { setIsTableModalOpen(true); setModalTab('specs'); }}>
-                  <img src={CamadaIcon} className={styles.btnIcon} style={{ filter: 'brightness(0) invert(1)' }} alt="" />
-                  Tabela Estrutural
-                </button>
-                <button className={styles.btnSecondary} onClick={() => { setIsTableModalOpen(true); setModalTab('benchmark'); }}>
-                  <img src={CertoIcon} className={styles.btnIcon} style={{ filter: 'brightness(0) invert(1)' }} alt="" />
-                  Benchmark de Testes
-                </button>
+              <p className={styles.specsDesc} style={{ marginBottom: '1.5rem' }}>A matemática não falha: consulte todos os dados estruturais e compare a performance contra o PU TPH de base do mercado atual.</p>
+              
+              {/* Added to maintain the visual you wanted without relying on external non-existent classes */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem', borderLeft: `2px solid ${coreColor}`, paddingLeft: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  <span style={{ color: '#888' }}>MATERIAL CORE</span> <span style={{ color: coreColor, fontWeight: 'bold' }}>TPU + PVC (80/20)</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  <span style={{ color: '#888' }}>TOP COATING</span> <span style={{ color: coreColor, fontWeight: 'bold' }}>CRUZADO (CROSS-LINK)</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                  <span style={{ color: '#888' }}>ESPESSURA FÍSICA</span> <span style={{ color: coreColor, fontWeight: 'bold' }}>150+ MICRAS</span>
+                </div>
               </div>
+
             </div>
-            <div className={styles.specsCardVisual}>
-              <div className={styles.specsVisualHolo} style={{ background: 'linear-gradient(45deg, transparent 40%, rgba(74, 124, 89, 0.3) 50%, transparent 60%)' }}></div>
-              <div className={styles.specsDataBlock}>
-                <span className={styles.specsDataLabel}>MATERIAL CORE</span>
-                <span className={styles.specsDataValue} style={{ color: coreColor }}>TPU + PVC (80/20)</span>
-              </div>
-              <div className={styles.specsDataBlock}>
-                <span className={styles.specsDataLabel}>TOP COATING</span>
-                <span className={styles.specsDataValue} style={{ color: coreColor }}>CRUZADO (CROSS-LINK)</span>
-              </div>
-              <div className={styles.specsDataBlock}>
-                <span className={styles.specsDataLabel}>ESPESSURA FÍSICA</span>
-                <span className={styles.specsDataValue} style={{ color: coreColor }}>150+ MICRAS</span>
-              </div>
+            <div className={styles.specsCardActions}>
+              <button className={styles.specsBtn} style={{ background: coreColor }} onClick={() => { setModalTab('specs'); setIsTableModalOpen(true); }}>
+                <img src={CamadaIcon} className={styles.specsBtnIcon} style={{ filter: 'brightness(0) invert(1)' }} alt="" />
+                ANÁLISE ESTRUTURAL
+              </button>
+              <button className={styles.specsBtnOutline} onClick={() => { setModalTab('benchmark'); setIsTableModalOpen(true); }}>
+                BENCHMARK DE PERFORMANCE
+              </button>
             </div>
           </motion.div>
         </motion.div>
@@ -308,7 +306,7 @@ export default function CoreGloss() {
         </motion.div>
       </section>
 
-      {/* MODAL FICHA TÉCNICA (Mesmo sistema do Flow/Prime, esteticamente adaptado inline no botão ativo se preciso) */}
+      {/* MODAL FICHA TÉCNICA */}
       <AnimatePresence>
         {isTableModalOpen && (
           <motion.div 
@@ -321,58 +319,57 @@ export default function CoreGloss() {
               initial={{ y: 50, opacity: 0, scale: 0.95 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0, scale: 0.95 }} transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={e => e.stopPropagation()}
             >
-              <button className={styles.modalClose} onClick={() => setIsTableModalOpen(false)}>×</button>
+              <button className={styles.closeBtn} onClick={() => setIsTableModalOpen(false)}>FECHAR ✕</button>
               
               <div className={styles.modalHeader}>
-                <h3 className={styles.modalTitle}>Inteligência Arquitetural — NZPPF Core</h3>
+                <h3 className={styles.modalTitle}>INTELIGÊNCIA ARQUITETURAL — CORE</h3>
                 <div className={styles.modalTabs}>
-                  <button className={`${styles.modalTabBtn} ${modalTab === 'specs' ? styles.modalTabBtnActive : ''}`} style={modalTab === 'specs' ? { color: coreColor, borderBottomColor: coreColor } : {}} onClick={() => setModalTab('specs')}>Estrutura Molecular</button>
-                  <button className={`${styles.modalTabBtn} ${modalTab === 'benchmark' ? styles.modalTabBtnActive : ''}`} style={modalTab === 'benchmark' ? { color: coreColor, borderBottomColor: coreColor } : {}} onClick={() => setModalTab('benchmark')}>Desempenho Aplicado</button>
+                  <button className={`${styles.modalTabBtn} ${modalTab === 'specs' ? styles.modalTabActive : ''}`} style={modalTab === 'specs' ? { color: coreColor, borderBottomColor: coreColor } : {}} onClick={() => setModalTab('specs')}>Análise Técnica</button>
+                  <button className={`${styles.modalTabBtn} ${modalTab === 'benchmark' ? styles.modalTabActive : ''}`} style={modalTab === 'benchmark' ? { color: coreColor, borderBottomColor: coreColor } : {}} onClick={() => setModalTab('benchmark')}>Benchmark</button>
                 </div>
               </div>
 
               <div className={styles.modalBody}>
                 {modalTab === 'specs' && (
-                  <div className={styles.specsTableGrid}>
-                    {tabelaTecnica.map((row, i) => (
-                      <div key={i} className={styles.specsTableRow}>
-                        <div className={styles.specsRowIconWrap}><img src={row.icon} className={styles.specsRowIcon} style={{ filter: 'brightness(0) saturate(100%) invert(64%) sepia(31%) saturate(543%) hue-rotate(85deg) brightness(88%) contrast(93%)' }} alt="" /></div>
-                        <div className={styles.specsRowData}>
-                          <span className={styles.specsInfo}>{row.info}</span>
-                          <span className={styles.specsValue}>{row.spec}</span>
-                          <span className={styles.specsDetail}>{row.detalhe}</span>
+                  <div className={styles.tTable}>
+                    <div className={styles.tHead}>
+                      <div className={styles.thCol}>Parâmetro Estrutural</div>
+                      <div className={styles.thCol}>Especificação (Híbrida)</div>
+                      <div className={styles.thCol}>Impacto na Operação</div>
+                    </div>
+                    <div className={styles.tBody}>
+                      {tabelaTecnica.map((row, i) => (
+                        <div key={i} className={styles.tRow}>
+                          <div className={`${styles.tdCol} ${styles.tdStrong}`}>
+                            <img src={row.icon} className={styles.modalIcon} style={{ filter: 'brightness(0) saturate(100%) invert(64%) sepia(31%) saturate(543%) hue-rotate(85deg) brightness(88%) contrast(93%)' }} alt="" />
+                            {row.info}
+                          </div>
+                          <div className={styles.tdCol}>{row.spec}</div>
+                          <div className={`${styles.tdCol} ${styles.tdMute}`}>{row.detalhe}</div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
                 
                 {modalTab === 'benchmark' && (
-                  <div className={styles.benchmarkWrapper}>
-                    <p className={styles.benchmarkIntro}>Comparativo de viabilidade técnica em testes agressivos contra materiais PU tradicionais de mesma faixa de preço.</p>
-                    <div className={styles.benchmarkGraficos}>
-                      {benchmarkData.map((b, i) => (
-                        <div key={i} className={styles.benchItem}>
-                          <div className={styles.benchHeader}>
-                            <span className={styles.benchMetric}>{b.metric}</span>
-                            <span className={styles.benchDesc}>{b.desc}</span>
-                          </div>
-                          <div className={styles.benchBars}>
-                            <div className={styles.benchBarRow}>
-                              <span className={styles.benchLabel} style={{ color: coreColor }}>NZPPF CORE GLOSS</span>
-                              <div className={styles.benchTrack}>
-                                <div className={styles.benchFill} style={{ width: `${b.nz[0]}%`, background: coreColor }}></div>
-                              </div>
-                              <span className={styles.benchScore}>{b.nz[0]}/100</span>
-                            </div>
-                            <div className={styles.benchBarRow}>
-                              <span className={styles.benchLabel}>Média Mercado (PU TPH)</span>
-                              <div className={styles.benchTrack}>
-                                <div className={styles.benchFill} style={{ width: `${b.mercado[0]}%`, background: '#333' }}></div>
-                              </div>
-                              <span className={styles.benchScore}>{b.mercado[0]}/100</span>
+                  <div className={styles.tTable}>
+                    <div className={styles.tHead}>
+                      <div className={styles.thCol}>Métrica de Desempenho</div>
+                      <div className={styles.thCol} style={{ color: coreColor }}>NZPPF Core Gloss</div>
+                      <div className={styles.thCol}>Média Mercado (PU/TPH)</div>
+                    </div>
+                    <div className={styles.tBody}>
+                      {benchmarkData.map((row, i) => (
+                        <div key={i} className={styles.tRow}>
+                          <div className={`${styles.tdCol} ${styles.tdStrong}`}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                              <span>{row.metric}</span>
+                              <span style={{ fontSize: '0.7rem', color: '#666', fontWeight: 400 }}>{row.desc}</span>
                             </div>
                           </div>
+                          <div className={styles.tdCol} style={{ color: coreColor, fontWeight: 'bold' }}>{row.nz[0]} / 100</div>
+                          <div className={`${styles.tdCol} ${styles.tdMute}`}>{row.mercado[0]} / 100</div>
                         </div>
                       ))}
                     </div>
