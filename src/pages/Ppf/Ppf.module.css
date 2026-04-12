@@ -262,10 +262,15 @@
   gap: 0.3rem;
 }
 
+.productCardBadgesContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
 .productCardBadge {
   display: inline-flex;
   align-items: center;
-  align-self: flex-start;
   background: rgba(212, 175, 55, 0.15);
   border: 1px solid rgba(212, 175, 55, 0.4);
   color: #D4AF37;
@@ -274,7 +279,6 @@
   font-weight: 700;
   padding: 0.15rem 0.5rem;
   letter-spacing: 1px;
-  margin-bottom: 0.2rem;
 }
 
 .productCardTitle {

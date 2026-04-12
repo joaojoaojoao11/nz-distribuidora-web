@@ -22,7 +22,8 @@ const productLines = [
     subtitle: 'TPU de Última Geração | +32% Mais Brilho',
     description: 'TPU Alifático de 190 micras com Nano-Revestimento japonês. Regeneração térmica, autolimpeza e 12 anos de garantia.',
     image: '/assets/images/nzppf_super_brilho.png',
-    badge: '190μ',
+    thickness: '190μ',
+    warranty: '12 ANOS',
     available: true
   },
   {
@@ -31,7 +32,8 @@ const productLines = [
     subtitle: 'TPU de Alta Qualidade | Proteção Confiável',
     description: 'TPU 100% virgem de 190 micras com revestimento nano-dúplex. Regeneração térmica, repelência e 10 anos de garantia.',
     image: '/assets/images/nzppf_prime_hero.png',
-    badge: '190μ',
+    thickness: '190μ',
+    warranty: '10 ANOS',
     available: true
   },
   {
@@ -40,7 +42,8 @@ const productLines = [
     subtitle: 'TPU de Base Técnica | Desempenho Confiável',
     description: 'Material de tecnologia real, acabamento impecável e valor acessível. TPU técnico com revestimento hidrofóbico e 4 anos de garantia.',
     image: '/assets/images/flow_catalog_car.png',
-    badge: '175μ',
+    thickness: '175μ',
+    warranty: '4 ANOS',
     available: true
   },
   {
@@ -49,7 +52,8 @@ const productLines = [
     subtitle: 'Combinação Híbrida Inteligente | Alta Rentabilidade',
     description: 'O melhor custo-benefício. Híbrido projetado para máxima rentabilidade da base sem retorno por bolhas ou trincas fortes. 3 Anos de Garantia.',
     image: '/assets/images/core_catalog_car.png',
-    badge: '3 ANOS',
+    thickness: '150μ',
+    warranty: '3 ANOS',
     available: true
   }
   // Futuros produtos:
@@ -128,9 +132,11 @@ export default function Ppf() {
                 <img src={product.image} alt={product.title} className={styles.productCardImage} />
                 <div className={styles.productCardOverlay}></div>
                 <div className={styles.productCardContent}>
-                  {product.badge && (
-                    <span className={styles.productCardBadge}>{product.badge}</span>
-                  )}
+                  <div className={styles.productCardBadgesContainer}>
+                    {product.thickness && <span className={styles.productCardBadge}>{product.thickness}</span>}
+                    {product.warranty && <span className={styles.productCardBadge}>{product.warranty}</span>}
+                  </div>
+
                   <h3 className={styles.productCardTitle}>{product.title}</h3>
                   <p className={styles.productCardSubtitle}>{product.subtitle}</p>
                   <p className={styles.productCardDescription}>{product.description}</p>
