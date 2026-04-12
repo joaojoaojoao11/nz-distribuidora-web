@@ -39,7 +39,7 @@ const productLines = [
     title: 'NZPPF FLOW GLOSS',
     subtitle: 'TPU de Base Técnica | Desempenho Confiável',
     description: 'Material de tecnologia real, acabamento impecável e valor acessível. TPU técnico com revestimento hidrofóbico e 4 anos de garantia.',
-    image: '/assets/images/flow_catalog.png',
+    image: '/assets/images/flow_catalog_car.png',
     badge: '175μ',
     available: true
   }
