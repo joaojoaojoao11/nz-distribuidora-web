@@ -60,10 +60,14 @@ const diferenciais = [
 ];
 
 const finishesData = [
-  { src: '/assets/images/flow_finishes.png', title: 'VERSÕES DISPONÍVEIS', sub: 'Clear Matte, Clear Gloss, Black Gloss e Black Matte' }
+  { src: '/assets/images/flow_clear_gloss.png', title: 'Clear Gloss', sub: 'Transparente Brilho: Conserva a cor original com espelhamento intenso e reflexo espelhado profundo.', tech: 'TPU 175μ • Base Incolor' },
+  { src: '/assets/images/flow_clear_matte.png', title: 'Clear Matte', sub: 'Transparente Fosco: Transforma o aspecto da pintura original para um acabamento acetinado macio sob a luz.', tech: 'TPU 175μ • Micro Texturizado' },
+  { src: '/assets/images/flow_black_gloss.png', title: 'Black Gloss', sub: 'Opaco Brilho: Efeito Black Piano absoluto. Máximo escurecimento bloqueando a matriz de cor inferior.', tech: 'TPU 175μ • Base Pigmentada' },
+  { src: '/assets/images/flow_black_matte.png', title: 'Black Matte', sub: 'Opaco Fosco: Absorção de luz dramática. Aparência furtiva e agressiva.', tech: 'TPU 175μ • Base Negra Fosca' }
 ];
 
 export default function FlowGloss() {
+  const [currentFinish, setCurrentFinish] = useState(0);
   const [isTableModalOpen, setIsTableModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState<'specs' | 'benchmark'>('specs');
   const [showOfferBtn, setShowOfferBtn] = useState(false);
@@ -217,22 +221,31 @@ export default function FlowGloss() {
             <div className={styles.finishesImageArea}>
               <AnimatePresence mode="wait">
                 <motion.img
-                  key={0}
-                  src={finishesData[0].src}
-                  alt={finishesData[0].title}
+                  key={currentFinish}
+                  src={finishesData[currentFinish].src}
+                  alt={finishesData[currentFinish].title}
                   className={styles.finishesImage}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.6 }}
+                  initial={{ opacity: 0, filter: 'blur(10px)', scale: 1.05 }}
+                  animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }}
+                  exit={{ opacity: 0, filter: 'blur(10px)', scale: 0.95 }}
+                  transition={{ duration: 0.5 }}
                 />
               </AnimatePresence>
             </div>
             <div className={styles.finishesTabs}>
-              <button className={`${styles.finishTab} ${styles.finishTabActive}`}>
-                <span className={styles.finishTabTitle}>Versatilidade</span>
-                <span className={styles.finishTabSub}>A Linha FLOW está disponível nas versões Clear Gloss (Transparente Brilho), Clear Matte (Transparente Fosco), Black Gloss (Opaco Brilho) e Black Matte (Opaco Fosco).</span>
-              </button>
+              {finishesData.map((item, index) => (
+                <button 
+                  key={index} 
+                  className={`${styles.finishTab} ${currentFinish === index ? styles.finishTabActive : ''}`}
+                  onClick={() => setCurrentFinish(index)}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                    <span className={styles.finishTabTitle}>{item.title}</span>
+                    {currentFinish === index && <span style={{ fontSize: '0.7rem', color: '#0daebd', fontFamily: 'monospace', letterSpacing: '1px' }}>{item.tech}</span>}
+                  </div>
+                  <span className={styles.finishTabSub}>{item.sub}</span>
+                </button>
+              ))}
             </div>
           </motion.div>
         </motion.div>
