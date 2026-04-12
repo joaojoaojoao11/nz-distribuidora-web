@@ -9,17 +9,6 @@ const generateSessionId = (): string => {
   return id;
 };
 
-const getFingerprint = (): string => {
-  const nav = navigator;
-  const raw = `${nav.userAgent}|${screen.width}x${screen.height}|${nav.language}|${new Date().getTimezoneOffset()}`;
-  let hash = 0;
-  for (let i = 0; i < raw.length; i++) {
-    hash = ((hash << 5) - hash) + raw.charCodeAt(i);
-    hash |= 0;
-  }
-  return `fp_${Math.abs(hash).toString(36)}`;
-};
-
 let lastClickTime = 0;
 let geoCache: { country?: string; city?: string; latitude?: number; longitude?: number } | null = null;
 
