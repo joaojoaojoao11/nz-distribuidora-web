@@ -55,7 +55,7 @@ const benchmarkData = [
 const diferenciais = [
   { icon: RegeneracaoIcon, title: 'Regeneração Ativa', desc: 'Corrige micro riscos leves com ação térmica. Prolonga o aspecto de carro recém polido.', accent: 'Auto-cura leve', image: '/assets/images/nzppf_prime_regeneracao.png' },
   { icon: RepelenciaIcon, title: 'Superfície Autolimpante', desc: 'Reduz o acúmulo de água e sujeira. Facilita muito a lavagem e manutenção do carro.', accent: 'Hidrofobia', image: '/assets/images/flow_water.png' },
-  { icon: CertoIcon, title: 'Brilho Estável', desc: 'Acabamento limpo, uniforme e profundo, proporcionando bom realce visual à pintura.', accent: 'Reflexo Premium', image: '/assets/images/nzppf_prime_brilho.png' },
+  { icon: CertoIcon, title: 'Brilho Estável', desc: 'Acabamento limpo, uniforme e profundo, proporcionando bom realce visual à pintura.', accent: 'Reflexo Premium', image: '/assets/images/flow_gloss.png' },
   { icon: EscudoVazioIcon, title: 'Durabilidade Sólida', desc: 'Proteção contra arranhões, oxidação e chuva ácida que dura até 4 anos sem amarelamento.', accent: 'Garantia de 4 Anos', image: '/assets/images/flow_hero.png' }
 ];
 
