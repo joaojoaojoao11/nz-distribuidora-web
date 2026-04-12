@@ -7,13 +7,23 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 }
+    transition: { staggerChildren: 0.2, delayChildren: 0.1 }
   }
 };
 
 const fadeUpItem = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
+  hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
+  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
+};
+
+const scaleReveal = {
+  hidden: { opacity: 0, scale: 0.92, y: 20, filter: 'blur(6px)' },
+  show: { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
+};
+
+const cardStagger = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.15 } }
 };
 
 const productLines = [
@@ -141,9 +151,9 @@ export default function Ppf() {
           <motion.div 
             className={styles.heroTextContent}
             initial="hidden"
-            animate="show"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
             variants={staggerContainer}
-            viewport={{ once: true }}
           >
             <motion.img 
               src="/assets/logos/logo-nz-ppf.svg" 
@@ -179,12 +189,19 @@ export default function Ppf() {
             <p className={styles.productsSectionSub}>Selecione uma linha para explorar em detalhes</p>
           </motion.div>
 
-          <div className={styles.productsGrid}>
+          <motion.div 
+            className={styles.productsGrid}
+            variants={cardStagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+          >
             {productLines.map((product) => (
               <motion.div
                 key={product.slug}
-                variants={fadeUpItem}
+                variants={scaleReveal}
                 className={styles.productCard}
+                whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
                 onClick={() => product.available && navigate(`/ppf/${product.slug}`)}
                 role="button"
                 tabIndex={0}
@@ -207,7 +224,7 @@ export default function Ppf() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
       </section>
 
@@ -318,6 +335,7 @@ export default function Ppf() {
             </div>
           </div>
         </motion.div>
+        <div className={styles.comparisonBottomShadow}></div>
       </section>
     </div>
   );
