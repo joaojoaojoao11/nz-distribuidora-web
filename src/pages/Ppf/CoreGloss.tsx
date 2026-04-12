@@ -263,22 +263,8 @@ export default function CoreGloss() {
         <motion.div className="container" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={stagger}>
           <motion.div className={styles.specsCard} variants={scaleIn} style={{ borderTop: `1px solid ${coreColor}` }}>
             <div className={styles.specsCardText}>
-              <h2 className={styles.sectionTitle}>Ficha Técnica Híbrida</h2>
-              <p className={styles.specsDesc} style={{ marginBottom: '1.5rem' }}>A matemática não falha: consulte todos os dados estruturais e compare a performance contra o PU TPH de base do mercado atual.</p>
-              
-              {/* Added to maintain the visual you wanted without relying on external non-existent classes */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem', borderLeft: `2px solid ${coreColor}`, paddingLeft: '1rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#888' }}>MATERIAL CORE</span> <span style={{ color: coreColor, fontWeight: 'bold' }}>TPU + PVC (80/20)</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#888' }}>TOP COATING</span> <span style={{ color: coreColor, fontWeight: 'bold' }}>CRUZADO (CROSS-LINK)</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#888' }}>ESPESSURA FÍSICA</span> <span style={{ color: coreColor, fontWeight: 'bold' }}>150+ MICRAS</span>
-                </div>
-              </div>
-
+              <h2 className={styles.sectionTitle}>Ficha Técnica</h2>
+              <p className={styles.specsDesc}>A matemática não falha: consulte todos os dados estruturais e compare a performance contra o PU TPH de base do mercado atual.</p>
             </div>
             <div className={styles.specsCardActions}>
               <button className={styles.specsBtn} style={{ background: coreColor }} onClick={() => { setModalTab('specs'); setIsTableModalOpen(true); }}>
@@ -289,19 +275,6 @@ export default function CoreGloss() {
                 BENCHMARK DE PERFORMANCE
               </button>
             </div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* FINAL CTA */}
-      <section className={styles.finalCtaSection}>
-        <motion.div className="container" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.5 }} variants={stagger}>
-          <motion.h2 className={styles.finalCtaTitle} variants={blurReveal}>Domine as Vendas de Entrada na sua Região.</motion.h2>
-          <motion.p className={styles.finalCtaSub} variants={blurReveal}>Esmague custos de material inferior e blinde seu ticket com o Híbrido Inteligente NZPPF.</motion.p>
-          <motion.div variants={scaleIn}>
-            <a href="https://wa.me/551199999999" target="_blank" rel="noopener noreferrer" className={styles.btnPrimary} style={{ background: coreColor, border: 'none' }}>
-              RESERVAR ESTOQUE AGORA
-            </a>
           </motion.div>
         </motion.div>
       </section>
