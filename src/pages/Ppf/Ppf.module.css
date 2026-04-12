@@ -129,7 +129,7 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: clamp(3rem, 6vh, 5rem) 0;
+  padding: clamp(2rem, 3vh, 3rem) 0;
   background-color: #0a0a0c;
   scroll-snap-align: start;
 }
@@ -153,7 +153,7 @@
 
 .productsSectionHeader {
   text-align: left;
-  margin-bottom: clamp(2rem, 4vh, 3rem);
+  margin-bottom: clamp(1.5rem, 2vh, 2rem);
 }
 
 .productsSectionTitle {
@@ -164,7 +164,7 @@
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: -0.05em;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .productsSectionSub {
@@ -179,7 +179,7 @@
 .productsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 15px;
 }
 
 @media (min-width: 768px) {
@@ -192,7 +192,7 @@
 /* --- PRODUCT CARD --- */
 .productCard {
   position: relative;
-  height: clamp(350px, 50vh, 500px);
+  height: clamp(250px, 32vh, 320px);
   overflow: hidden;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.06);
