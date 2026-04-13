@@ -52,8 +52,7 @@ export const SH_COLORS_ASSETS: Record<string, Partial<SHColorData>> = {
   'pearl-white': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-14-380x300-4795911c.jpg' },
   'pearl-metal-white': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-19-380x300-4f768134.jpg' },
   'black-ceramic': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-13-380x300-53be72e7.jpg' }, /* Redirecionado para glossy-black */
-  'glossy-black': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-13-380x300-53be72e7.jpg', gallery: { suv: '/assets/images/sh/glossy_black_morning.png', sedan: '/assets/images/sh/glossy_black_afternoon.png', supercar: '/assets/images/sh/glossy_black_sunset.png', night: '/assets/images/sh/glossy_black_night.png' } },
-  'deep-blue-gloss-metallic': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-30-380x300-340c350a.jpg' } /* Redirecionado para space-blue */
+  'glossy-black': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-13-380x300-53be72e7.jpg', gallery: { suv: '/assets/images/sh/glossy_black_morning.png', sedan: '/assets/images/sh/glossy_black_afternoon.png', supercar: '/assets/images/sh/glossy_black_sunset.png', night: '/assets/images/sh/glossy_black_night.png' } }
 };
 
 interface DbProduct {
@@ -64,6 +63,7 @@ interface DbProduct {
   finish_type: string;
   technical_description: string;
   is_active: boolean;
+  sku?: string;
 }
 
 export default function ShWrappingColors() {
