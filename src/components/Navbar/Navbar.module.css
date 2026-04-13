@@ -54,12 +54,12 @@
 }
 
 .navLogoEmpresa {
-  height: 45px;
+  height: 80px;
   width: auto;
   object-fit: contain;
-  margin-top: 8px;
+  margin: -20px 0;
   transition: transform var(--transition-smooth), filter var(--transition-smooth);
-  filter: brightness(0.75);
+  filter: brightness(0.8) contrast(1.2);
 }
 
 .navLink:hover .navLogo {

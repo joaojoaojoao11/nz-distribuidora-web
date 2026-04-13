@@ -65,7 +65,6 @@ export default function Hero() {
         muted
         playsInline
         preload="auto"
-        poster="/assets/images/wrap_hero.png"
       >
         <source src="/assets/videos/hero-home.mp4" type="video/mp4" />
       </video>

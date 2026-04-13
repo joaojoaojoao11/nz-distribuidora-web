@@ -272,6 +272,16 @@
   text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
 }
 
+.productCardBrandLogo {
+  height: 75px;
+  max-width: 280px;
+  width: auto;
+  object-fit: contain;
+  object-position: left;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .productCardTitle {
   font-family: var(--font-heading);
   font-size: clamp(1.2rem, 2.5vw, 1.6rem);

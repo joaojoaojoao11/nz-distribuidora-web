@@ -12,46 +12,48 @@ export interface SHColorData {
   image: string;
   description: string;
   gallery?: {
-    suv: string;
-    sedan: string;
-    supercar: string;
+    suv?: string;
+    sedan?: string;
+    supercar?: string;
+    night?: string;
   };
 }
 
 export const SH_COLORS_ASSETS: Record<string, Partial<SHColorData>> = {
-  'pearl-metal-space-grey': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-01.jpg', gallery: { suv: '/assets/images/sh/pm_sg_suv_v2.png', sedan: '/assets/images/sh/pm_sg_sedan_v2.png', supercar: '/assets/images/sh/pm_sg_supercar_v2.png' } },
-  'fantastic-purple': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-02.jpg', gallery: { suv: '/assets/images/sh/fp_suv_v2.png', sedan: '/assets/images/sh/fp_sedan_v2.png', supercar: '/assets/images/sh/fp_supercar_v2.png' } },
-  'amg-grey': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-03.jpg', gallery: { suv: '/assets/images/sh/ag_suv_v2.png', sedan: '/assets/images/sh/ag_sedan_v2.png', supercar: '/assets/images/sh/ag_supercar_v2.png' } },
-  'mercury-silver': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-04.jpg', gallery: { suv: '/assets/images/sh/ms_suv_v2.png', sedan: '/assets/images/sh/ms_sedan_v2.png', supercar: '/assets/images/sh/ms_supercar_v2.png' } },
-  'pearl-metal-black': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-05.jpg' },
-  'soulmoving-red': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-06.jpg' },
-  'candy-purple-gloss-aluminium': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-07.jpg' },
-  'matt-dark-purple': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-08.jpg' },
-  'sao-paulo-yellow': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-09.jpg' },
-  'fantastic-green-grey': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-10.jpg' },
-  'crystal-glacial-blue': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-11.jpg' },
-  'crystal-yellow': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-12.jpg' },
-  'space-blue-gloss-aluminium': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-13.jpg' },
-  'deep-blue-gloss-metallic': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-14.jpg' },
-  'blue-charm-green': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-15.jpg' },
-  'pearl-metal-tiffany': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-20.jpg' },
-  'crystal-white': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-17.jpg' },
-  'crystal-silver': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-18.jpg' },
-  'paprika-orange': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-19.jpg' },
-  'bentley-pink': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-21.jpg' },
-  'combat-green': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-22.jpg' },
-  'khaki-green': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-23.jpg' },
-  'crystal-champagne-gold': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-24.jpg' },
-  'crystal-mamba-green': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-25.jpg' },
-  'pearl-metal-sakura-pink': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-26.jpg' },
-  'liquid-metal-somato-blue': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-27.jpg' },
-  'glossy-nado-ash': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-28.jpg' },
-  'amg-mountain-grey': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-29.jpg' },
-  'ruby-red': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-30.jpg' },
-  'pearl-white': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-31.jpg' },
-  'pearl-metal-white': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-32.jpg' },
-  'black-ceramic': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-33.jpg' },
-  'glossy-black': { image: 'https://www.signhouse.com.br/storage/produtos/wrapping/sw-34.jpg' }
+  'pearl-metal-space-grey': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-01-380x300-317c406e.jpg', gallery: { suv: '/assets/images/sh/pm_sg_suv_v2.png', sedan: '/assets/images/sh/pm_sg_sedan_v2.png', supercar: '/assets/images/sh/pm_sg_supercar_v2.png' } },
+  'fantastic-purple': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-02-380x300-a6d457b5.jpg', gallery: { suv: '/assets/images/sh/fantastic_purple_morning.png', sedan: '/assets/images/sh/fantastic_purple_afternoon.png', supercar: '/assets/images/sh/fantastic_purple_sunset.png', night: '/assets/images/sh/fantastic_purple_night.png' } },
+  'amg-grey': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-03-380x300-2bb35afc.jpg', gallery: { suv: '/assets/images/sh/ag_suv_v2.png', sedan: '/assets/images/sh/ag_sedan_v2.png', supercar: '/assets/images/sh/ag_supercar_v2.png' } },
+  'mercury-silver': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-04-380x300-3f98b907.jpg', gallery: { suv: '/assets/images/sh/mercury_silver_morning.png', sedan: '/assets/images/sh/mercury_silver_afternoon.png', supercar: '/assets/images/sh/mercury_silver_sunset.png', night: '/assets/images/sh/mercury_silver_night.png' } },
+  'pearl-metal-black': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-05-380x300-b2ffb44e.jpg', gallery: { suv: '/assets/images/sh/pearl_metal_black_morning.png', sedan: '/assets/images/sh/pearl_metal_black_afternoon.png', supercar: '/assets/images/sh/pearl_metal_black_sunset.png', night: '/assets/images/sh/pearl_metal_black_night.png' } },
+  'soulmoving-red': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-06-380x300-2557a395.jpg' },
+  'candy-purple-gloss-aluminium': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-07-380x300-a830aedc.jpg', gallery: { suv: '/assets/images/sh/candy_purple_morning.png', sedan: '/assets/images/sh/candy_purple_afternoon.png', supercar: '/assets/images/sh/candy_purple_sunset.png', night: '/assets/images/sh/candy_purple_night.png' } },
+  'matt-dark-purple': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-23-380x300-dba90aca.jpg', gallery: { suv: '/assets/images/sh/matt_dark_purple_morning.png', sedan: '/assets/images/sh/matt_dark_purple_afternoon.png', supercar: '/assets/images/sh/matt_dark_purple_sunset.png', night: '/assets/images/sh/matt_dark_purple_night.png' } },
+  'bentley-pink': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-08-380x300-ba1ca466.jpg', gallery: { suv: '/assets/images/sh/bentley_pink_morning.png', sedan: '/assets/images/sh/bentley_pink_afternoon.png', supercar: '/assets/images/sh/bentley_pink_sunset.png', night: '/assets/images/sh/bentley_pink_night.png' } },
+  'sao-paulo-yellow': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-09-380x300-377ba92f.jpg' },
+  'fantastic-green-grey': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-10-380x300-c416653c.jpg', gallery: { suv: '/assets/images/sh/fantastic_green_grey_morning.png', sedan: '/assets/images/sh/fantastic_green_grey_afternoon.png', supercar: '/assets/images/sh/fantastic_green_grey_sunset.png', night: '/assets/images/sh/fantastic_green_grey_night.png' } },
+  'crystal-glacial-blue': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-11-380x300-49716875.jpg', gallery: { suv: '/assets/images/sh/crystal_glacial_blue_morning.png', sedan: '/assets/images/sh/crystal_glacial_blue_afternoon.png', supercar: '/assets/images/sh/crystal_glacial_blue_sunset.png', night: '/assets/images/sh/crystal_glacial_blue_night.png' } },
+  'crystal-yellow': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-21-380x300-c1661058.jpg', gallery: { suv: '/assets/images/sh/crystal_yellow_morning.png', sedan: '/assets/images/sh/crystal_yellow_afternoon.png', supercar: '/assets/images/sh/crystal_yellow_sunset.png', night: '/assets/images/sh/crystal_yellow_night.png' } },
+  'crystal-white': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-12-380x300-ded97fae.jpg', gallery: { suv: '/assets/images/sh/crystal_white_morning.png', sedan: '/assets/images/sh/crystal_white_afternoon.png', supercar: '/assets/images/sh/crystal_white_sunset.png', night: '/assets/images/sh/crystal_white_night.png' } },
+  'space-blue-gloss-aluminium': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-30-380x300-340c350a.jpg' },
+  'deep-blue-gloss-metallic': { /* Sem foto ativa neste catálogo rasgado */ },
+  'blue-charm-green': { image: 'https://www.signhouse.com.br/storage/images/cache/blue-charm-green-380x300-2b439023.jpg', gallery: { suv: '/assets/images/sh/blue_charm_green_morning.png', sedan: '/assets/images/sh/blue_charm_green_afternoon.png', supercar: '/assets/images/sh/blue_charm_green_sunset.png', night: '/assets/images/sh/blue_charm_green_night.png' } },
+  'pearl-metal-tiffany': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-24-380x300-cf82e931.jpg' },
+  'crystal-silver': { image: 'https://www.signhouse.com.br/storage/images/cache/crystal-silver-380x300-2d0a2fde.jpg', gallery: { suv: '/assets/images/sh/crystal_silver_morning.png', sedan: '/assets/images/sh/crystal_silver_afternoon.png', supercar: '/assets/images/sh/crystal_silver_sunset.png', night: '/assets/images/sh/crystal_silver_night.png' } },
+  'paprika-orange': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-17-380x300-d03d86c7.jpg', gallery: { suv: '/assets/images/sh/paprika_orange_gloss_metallic_morning.png', sedan: '/assets/images/sh/paprika_orange_gloss_metallic_afternoon.png', supercar: '/assets/images/sh/paprika_orange_gloss_metallic_sunset.png', night: '/assets/images/sh/paprika_orange_gloss_metallic_night.png' } },
+  'combat-green': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-16-380x300-5d5a8b8e.jpg', gallery: { suv: '/assets/images/sh/combat_green_morning.png', sedan: '/assets/images/sh/combat_green_afternoon.png', supercar: '/assets/images/sh/combat_green_sunset.png', night: '/assets/images/sh/combat_green_night.png' } },
+  'khaki-green': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-28-380x300-4a06f450.jpg', gallery: { suv: '/assets/images/sh/khaki_green_morning.png', sedan: '/assets/images/sh/khaki_green_afternoon.png', supercar: '/assets/images/sh/khaki_green_sunset.png', night: '/assets/images/sh/khaki_green_night.png' } },
+  'crystal-champagne-gold': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-20-380x300-4c011d11.jpg', gallery: { suv: '/assets/images/sh/crystal_champagne_gold_morning.png', sedan: '/assets/images/sh/crystal_champagne_gold_afternoon.png', supercar: '/assets/images/sh/crystal_champagne_gold_sunset.png', night: '/assets/images/sh/crystal_champagne_gold_night.png' } },
+  'crystal-mamba-green': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-27-380x300-582afeea.jpg', gallery: { suv: '/assets/images/sh/crystal_mamba_green_morning.png', sedan: '/assets/images/sh/crystal_mamba_green_afternoon.png', supercar: '/assets/images/sh/crystal_mamba_green_sunset.png', night: '/assets/images/sh/crystal_mamba_green_night.png' } },
+  'pearl-metal-sakura-pink': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-29-380x300-c761f919.jpg', gallery: { suv: '/assets/images/sh/pearl_metal_sakura_pink_morning.png', sedan: '/assets/images/sh/pearl_metal_sakura_pink_afternoon.png', supercar: '/assets/images/sh/pearl_metal_sakura_pink_morning.png', night: '/assets/images/sh/pearl_metal_sakura_pink_afternoon.png' } },
+  'liquid-metal-somato-blue': { image: 'https://www.signhouse.com.br/storage/images/cache/liquid-metal-somato-blue-380x300-deead0e2.png', gallery: { suv: '/assets/images/sh/liquid_metal_somato_blue_morning.png', sedan: '/assets/images/sh/liquid_metal_somato_blue_afternoon.png', supercar: '/assets/images/sh/liquid_metal_somato_blue_sunset.png', night: '/assets/images/sh/liquid_metal_somato_blue_night.png' } },
+  'glossy-nado-ash': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-26-380x300-d54df3a3.jpg', gallery: { suv: '/assets/images/sh/glossy_nando_ash_morning.png', sedan: '/assets/images/sh/glossy_nando_ash_afternoon.png', supercar: '/assets/images/sh/glossy_nando_ash_sunset.png', night: '/assets/images/sh/glossy_nando_ash_night.png' } },
+  'amg-mountain-grey': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-03-380x300-2bb35afc.jpg', gallery: { suv: '/assets/images/sh/ag_suv_v2.png', sedan: '/assets/images/sh/ag_sedan_v2.png', supercar: '/assets/images/sh/ag_supercar_v2.png' } },
+  'ruby-red': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-06-380x300-2557a395.jpg' }, /* Redirecionado para soulmoving-red */
+  'pearl-white': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-14-380x300-4795911c.jpg' },
+  'pearl-metal-white': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-19-380x300-4f768134.jpg' },
+  'black-ceramic': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-13-380x300-53be72e7.jpg' }, /* Redirecionado para glossy-black */
+  'glossy-black': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-13-380x300-53be72e7.jpg', gallery: { suv: '/assets/images/sh/glossy_black_morning.png', sedan: '/assets/images/sh/glossy_black_afternoon.png', supercar: '/assets/images/sh/glossy_black_sunset.png', night: '/assets/images/sh/glossy_black_night.png' } },
+  'deep-blue-gloss-metallic': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-30-380x300-340c350a.jpg' } /* Redirecionado para space-blue */
 };
 
 interface DbProduct {
@@ -95,7 +97,12 @@ export default function ShWrappingColors() {
       const assets = SH_COLORS_ASSETS[data.slug];
       let imgList: string[] = [];
       if (assets?.gallery) {
-        imgList = [assets.gallery.suv, assets.gallery.sedan, assets.gallery.supercar];
+        imgList = [
+          assets.gallery.suv, 
+          assets.gallery.sedan, 
+          assets.gallery.supercar,
+          assets.gallery.night
+        ].filter(Boolean) as string[];
       } else if (assets?.image) {
         imgList = [assets.image];
       } else {
@@ -169,12 +176,17 @@ export default function ShWrappingColors() {
           </div>
 
           <div className={styles.buyPanel}>
-            <div className={styles.badges}>
+            <div className={styles.badges} style={{ marginBottom: '1rem' }}>
               <span className={styles.badge} style={{ borderColor: productData.hex_code }}>{productData.finish_type}</span>
               <span className={styles.badge}>EM ESTOQUE</span>
               <span className={styles.badge}>+ VENDIDOS</span>
             </div>
 
+            <div style={{ marginBottom: '8px' }}>
+              <span style={{ backgroundColor: '#222', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontSize: '0.9rem', fontFamily: '"JetBrains Mono", monospace', fontWeight: 600 }}>
+                SKU: {productData.sku || 'N/D'}
+              </span>
+            </div>
             <h1 className={styles.productTitle}>{productData.name}</h1>
             <p className={styles.productFinish}>SH Wrapping Colors | Cola Antibolhas | 165µ</p>
 

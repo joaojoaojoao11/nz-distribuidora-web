@@ -30,6 +30,7 @@ const productLines = [
     subtitle: 'PVC Alto Brilho | Linha Proprietária NZ',
     description: 'Adesivo PVC de alta performance com acabamento ultra glossy. Curadoria exclusiva de cores, suporte direto NZ e performance garantida.',
     image: '/assets/images/wrap_nzwrap_card.png',
+    cardLogo: '/assets/logos/logo-nz-wrap.svg',
     badge1: 'ALTO BRILHO',
     badge2: 'EXCLUSIVO NZ',
     available: true
@@ -40,6 +41,7 @@ const productLines = [
     subtitle: 'PVC Multidirecional | VINIL DE ALTA PERFORMANCE',
     description: 'Linha de adesivos automotivos com cola anti-bolhas, acabamentos Gloss, Matte, Color Shift e Metallic. Referência no Brasil em variedade.',
     image: '/assets/images/wrap_sh_card.png',
+    cardLogo: '/assets/logos/logo-sh-colors.svg',
     badge1: '180μ',
     badge2: '3 ANOS',
     available: true
@@ -50,6 +52,7 @@ const productLines = [
     subtitle: 'Intermediário Versátil | 77+ Cores',
     description: 'O vinil intermediário mais popular do mundo. Ideal para recortes, sinalização automotiva e detalhes de alta precisão com durabilidade de 6 anos.',
     image: '/assets/images/wrap_651_card.png',
+    cardLogo: '/assets/logos/logo-orafol.svg',
     badge1: '63μ',
     badge2: '6 ANOS',
     available: true
@@ -60,6 +63,7 @@ const productLines = [
     subtitle: 'Wrapping Film | O 651 Evoluído para Envelopamento',
     description: 'A evolução do lendário 651 para aplicações de envelopamento completo. Mesma qualidade ORAFOL agora com largura de 1,52m e tecnologia RapidAir® anti-bolhas.',
     image: '/assets/images/wrap_670ra_card.png',
+    cardLogo: '/assets/logos/logo-orafol.svg',
     badge1: '70μ',
     badge2: '1,52m',
     available: true
@@ -73,6 +77,8 @@ const comparisonData = [
     highlight: 'Linha própria NZ com PVC alto brilho de alta performance e curadoria exclusiva de cores.',
     thickness: 'PVC Premium',
     warranty: 'Premium',
+    warrantyLabel: 'GARANTIA',
+    warrantyLabelShort: 'GAR',
     metrics: [
       { label: 'Brilho & Acabamento', value: 95 },
       { label: 'Conformabilidade', value: 88 },
@@ -87,6 +93,8 @@ const comparisonData = [
     highlight: 'Maior variedade de cores do Brasil com cola anti-bolhas e acabamentos especiais.',
     thickness: '180μ',
     warranty: '3 Anos',
+    warrantyLabel: 'DURABILIDADE',
+    warrantyLabelShort: 'DUR',
     metrics: [
       { label: 'Brilho & Acabamento', value: 88 },
       { label: 'Conformabilidade', value: 85 },
@@ -101,6 +109,8 @@ const comparisonData = [
     highlight: 'O intermediário mais popular do mundo. Ideal para recortes, sinalização e detalhes de alta precisão.',
     thickness: '63μ',
     warranty: '6 Anos',
+    warrantyLabel: 'DURABILIDADE',
+    warrantyLabelShort: 'DUR',
     metrics: [
       { label: 'Brilho & Acabamento', value: 82 },
       { label: 'Conformabilidade', value: 70 },
@@ -115,6 +125,8 @@ const comparisonData = [
     highlight: 'A evolução do 651 para wrapping: mesma qualidade, agora com largura profissional de 1,52m e sistema RapidAir® para instalações sem bolhas.',
     thickness: '70μ',
     warranty: '5 Anos',
+    warrantyLabel: 'DURABILIDADE',
+    warrantyLabelShort: 'DUR',
     metrics: [
       { label: 'Brilho & Acabamento', value: 84 },
       { label: 'Conformabilidade', value: 82 },
@@ -203,6 +215,9 @@ export default function Wrap() {
                     <span className={styles.productCardBadge}>{product.badge1}</span>
                     <span className={styles.productCardBadge}>{product.badge2}</span>
                   </div>
+                  {product.cardLogo && (
+                    <img src={product.cardLogo} alt={`${product.title} Logo`} className={styles.productCardBrandLogo} />
+                  )}
                   <h3 className={styles.productCardTitle}>{product.title}</h3>
                   <p className={styles.productCardSubtitle}>{product.subtitle}</p>
                   <p className={styles.productCardDescription}>{product.description}</p>
@@ -266,7 +281,7 @@ export default function Wrap() {
                           <strong>ESP:</strong> {item.thickness}
                         </span>
                         <span className={styles.compareBadge} style={{ fontSize: '0.65rem', padding: '0.25rem 0.5rem' }}>
-                          <strong>GAR:</strong> {item.warranty}
+                          <strong>{item.warrantyLabelShort}:</strong> {item.warranty}
                         </span>
                       </div>
                       {item.metrics.map(metric => (
@@ -297,7 +312,7 @@ export default function Wrap() {
                     <p className={styles.compareHighlight}>{item.highlight}</p>
                     <div className={styles.compareBadges}>
                       <span className={styles.compareBadge}><strong>ESPESSURA:</strong> {item.thickness}</span>
-                      <span className={styles.compareBadge}><strong>GARANTIA:</strong> {item.warranty}</span>
+                      <span className={styles.compareBadge}><strong>{item.warrantyLabel}:</strong> {item.warranty}</span>
                     </div>
 
                     <div className={styles.metricsGrid}>

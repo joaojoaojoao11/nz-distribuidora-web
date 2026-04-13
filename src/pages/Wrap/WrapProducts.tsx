@@ -267,7 +267,7 @@ function ShColorsGrid() {
     const fetchColors = async () => {
       const { data } = await supabase
         .from('web_catalog_products')
-        .select('slug, name, hex_code, finish_type')
+        .select('slug, name, hex_code, finish_type, sku')
         .eq('brand', 'SH Wrapping')
         .eq('is_active', true)
         .order('name');
@@ -279,7 +279,7 @@ function ShColorsGrid() {
   return (
     <section className="container" style={{ padding: '6rem 0' }}>
       <div style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>O Maior Catálogo do Brasil</h2>
+        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>Catálogo de Cores</h2>
         <p style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem' }}>
           Selecione uma cor para ver aplicações reais em veículos
         </p>
@@ -321,13 +321,14 @@ function ShColorsGrid() {
                   <img 
                     src={imageUrl} 
                     alt={color.name} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    onError={(e) => { e.currentTarget.src = '/assets/images/wrap_sh_card.png'; }}
                   />
                 </div>
                 <div style={{ padding: '0.75rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                     <span style={{ color: '#fff', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace', fontSize: '0.85rem' }}>
-                      {color.finish_type}
+                      {color.sku || 'S/N'}
                     </span>
                   </div>
                   <div style={{ color: '#aaa', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>

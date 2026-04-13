@@ -1,7 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://ipehorttsrvjynnhyzhu.supabase.co';
-export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwZWhvcnR0c3J2anlubmh5emh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2MDYwNTMsImV4cCI6MjA4MjE4MjA1M30.m6GW1AckPRGVP8wagfc9t4hzjvMOlHoEIskS36eKwDU';
+export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? '';
+export const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error(
+    '[NZ] Variáveis de ambiente do Supabase não configuradas.\n' +
+    'Verifique VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env ou no painel da Vercel.'
+  );
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-

@@ -1,15 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './Auth.module.css';
 
 export default function Login() {
-  const { signIn, profile } = useAuth();
+  const { signIn, profile, user } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [waitingProfile, setWaitingProfile] = useState(false);
+
+  // Reage à mudança de profile após o login (resolve o bug de closure stale)
+  useEffect(() => {
+    if (waitingProfile && user && profile) {
+      if (profile.role === 'admin') navigate('/admin');
+      else navigate('/painel');
+      setLoading(false);
+      setWaitingProfile(false);
+    }
+  }, [waitingProfile, user, profile, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,17 +29,20 @@ export default function Login() {
 
     const { error: err } = await signIn(email, password);
     if (err) {
-      setError(err === 'Invalid login credentials' ? 'Email ou senha incorretos.' : err);
+      // Traduz mensagens comuns de erro
+      if (err === 'Invalid login credentials') {
+        setError('Email ou senha incorretos.');
+      } else if (err.includes('Failed to fetch') || err.includes('NetworkError')) {
+        setError('Erro de conexão. Verifique sua internet ou tente novamente.');
+      } else {
+        setError(err);
+      }
       setLoading(false);
       return;
     }
 
-    // Wait for profile to load
-    setTimeout(() => {
-      if (profile?.role === 'admin') navigate('/admin');
-      else navigate('/painel');
-      setLoading(false);
-    }, 500);
+    // Marca para aguardar o profile carregar via useEffect
+    setWaitingProfile(true);
   };
 
   return (

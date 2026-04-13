@@ -39,7 +39,7 @@ export default function Navbar() {
             <img src="/assets/logos/logo-nz-wrap.svg" alt="Linha NZ WRAP" className={styles.navLogo} />
           </Link>
           <Link to="/sobre" className={`${styles.navLink} ${location.pathname === '/sobre' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
-            <img src="/assets/logos/logo-nz-completo-branco.svg" alt="A Empresa" className={styles.navLogoEmpresa} />
+            <img src="/assets/logos/logo-simbolo-branco.svg" alt="A Empresa" className={styles.navLogoEmpresa} />
           </Link>
 
           {user ? (
