@@ -2,12 +2,34 @@
   padding: 5rem 0;
   background: var(--bg-primary);
   overflow: hidden;
+  position: relative;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/assets/images/core_hero.png') center/cover no-repeat;
+  opacity: 0.06;
+  z-index: 0;
+}
+
+.section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at center, transparent 25%, rgba(5,5,5,0.95) 75%),
+    linear-gradient(to bottom, rgba(5,5,5,0.9) 0%, transparent 20%, transparent 80%, rgba(5,5,5,0.9) 100%);
+  z-index: 0;
 }
 
 .container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 5%;
+  position: relative;
+  z-index: 1;
 }
 
 .eyebrow {
@@ -28,6 +50,8 @@
   mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
   margin-bottom: 3rem;
+  position: relative;
+  z-index: 1;
 }
 
 .marqueeTrack {
