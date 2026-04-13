@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Phone, EnvelopeSimple, MapPin, Instagram, Youtube, WhatsappLogo } from '@phosphor-icons/react';
+import { Phone, EnvelopeSimple, MapPin, InstagramLogo, YoutubeLogo, WhatsappLogo } from '@phosphor-icons/react';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -17,10 +17,10 @@ export default function Footer() {
             </p>
             <div className={styles.socialLinks}>
               <a href="https://instagram.com/nzdistribuidora" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="Instagram">
-                <Instagram weight="regular" />
+                <InstagramLogo weight="regular" />
               </a>
               <a href="https://youtube.com/nzdistribuidora" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="YouTube">
-                <Youtube weight="regular" />
+                <YoutubeLogo weight="regular" />
               </a>
               <a href="https://wa.me/message/3DBGPIZF4EMWO1" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="WhatsApp">
                 <WhatsappLogo weight="regular" />
