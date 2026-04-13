@@ -1,62 +1,69 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import styles from './Showcase.module.css';
 
-const lines = [
-  {
-    id: 'ppf',
-    title: 'NZ PPF',
-    subtitle: 'Linha de Proteção de Pintura',
-    description: 'A barreira definitiva contra riscos, pedras e desgaste diário. Alta performance com acabamento invisível.',
-    image: '/assets/logos/logo-nz-ppf.svg',
-    isLogo: true,
-    link: '/ppf'
-  },
-  {
-    id: 'wrap',
-    title: 'NZ WRAP',
-    subtitle: 'Materiais para Envelopamento',
-    description: 'Cores profundas, texturas ultrarrealistas e aplicação premium. Para projetos que demandam perfeição.',
-    image: '/assets/logos/logo-nz-wrap.svg',
-    isLogo: true,
-    link: '/wrap'
-  }
-];
+const blurReveal = {
+  hidden: { opacity: 0, y: 25, filter: 'blur(8px)' },
+  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } }
+};
+
+const stagger = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 0.1 } }
+};
 
 export default function Showcase() {
   return (
-    <section id="linhas" className={`section ${styles.showcaseSection}`}>
-      <div className="container">
-        <div className={styles.header}>
-          <h2 className={styles.sectionTitle}>
-            O que podemos <span className="highlight-text">te oferecer</span>
-          </h2>
-          <p className={styles.sectionSubtitle}>
-            Soluções completas e certificadas para lojistas e aplicadores.
-          </p>
-        </div>
+    <section id="linhas" className={styles.section}>
+      <motion.div
+        className={styles.header}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.5 }}
+        variants={stagger}
+      >
+        <motion.span className={styles.eyebrow} variants={blurReveal}>NOSSAS VERTICAIS</motion.span>
+        <motion.h2 className={styles.title} variants={blurReveal}>
+          Duas linhas. <span className={styles.gold}>Uma missão.</span>
+        </motion.h2>
+      </motion.div>
 
-        <div className={styles.grid}>
-          {lines.map((line) => (
-            <Link key={line.id} to={line.link} className={styles.card}>
-              <div className={styles.imageWrapper}>
-                <img 
-                  src={line.image} 
-                  alt={line.title} 
-                  className={`${styles.image} ${line.isLogo ? styles.imageLogo : ''}`} 
-                />
-                {!line.isLogo && <div className={styles.overlay}></div>}
-              </div>
-              <div className={styles.content}>
-                <span className={styles.eyebrow}>{line.subtitle}</span>
-                <h3 className={styles.cardTitle}>{line.title}</h3>
-                <p className={styles.cardDesc}>{line.description}</p>
-                <div className={styles.actionBtn}>
-                  Saiba mais
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+      <div className={styles.splitGrid}>
+        <Link to="/ppf" className={styles.splitCard}>
+          <div className={styles.splitImageWrapper}>
+            <img src="/assets/images/wrap_nzwrap_hero.png" alt="NZ PPF" className={styles.splitImage} />
+            <div className={styles.splitOverlay} />
+          </div>
+          <div className={styles.splitContent}>
+            <img src="/assets/logos/logo-nz-ppf.svg" alt="NZ PPF" className={styles.splitLogo} />
+            <span className={styles.splitSub}>PROTEÇÃO DE PINTURA PREMIUM</span>
+            <p className={styles.splitDesc}>
+              A barreira definitiva contra riscos, pedras e desgaste diário. Acabamento invisível com performance de fábrica.
+            </p>
+            <span className={styles.splitCta}>
+              EXPLORAR
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </Link>
+
+        <Link to="/wrap" className={styles.splitCard}>
+          <div className={styles.splitImageWrapper}>
+            <img src="/assets/images/wrap_hero.png" alt="NZ WRAP" className={styles.splitImage} />
+            <div className={styles.splitOverlay} />
+          </div>
+          <div className={styles.splitContent}>
+            <img src="/assets/logos/logo-nz-wrap.svg" alt="NZ WRAP" className={styles.splitLogo} />
+            <span className={styles.splitSub}>ENVELOPAMENTO AUTOMOTIVO</span>
+            <p className={styles.splitDesc}>
+              Cores profundas, texturas ultrarrealistas e aplicação premium. Para projetos que demandam perfeição.
+            </p>
+            <span className={styles.splitCta}>
+              EXPLORAR
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </span>
+          </div>
+        </Link>
       </div>
     </section>
   );

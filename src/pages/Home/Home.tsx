@@ -1,13 +1,19 @@
 import Hero from '../../components/Hero/Hero';
 import Showcase from '../../components/Showcase/Showcase';
-import About from '../../components/About/About';
+import Metrics from '../../components/Metrics/Metrics';
+import Differentials from '../../components/Differentials/Differentials';
+import TrustBar from '../../components/TrustBar/TrustBar';
+import CtaFinal from '../../components/CtaFinal/CtaFinal';
 
 export default function Home() {
   return (
     <>
       <Hero />
       <Showcase />
-      <About />
+      <Metrics />
+      <Differentials />
+      <TrustBar />
+      <CtaFinal />
     </>
   );
 }
