@@ -45,7 +45,7 @@
 }
 
 .navLogo {
-  height: 65px;
+  height: 80px;
   width: auto;
   margin: -20px 0;
   object-fit: contain;
@@ -53,9 +53,23 @@
   filter: brightness(0.8) contrast(1.2);
 }
 
+.navLogoEmpresa {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+  margin-top: 8px;
+  transition: transform var(--transition-smooth), filter var(--transition-smooth);
+  filter: brightness(0.75);
+}
+
 .navLink:hover .navLogo {
   transform: scale(1.05);
   filter: brightness(1) contrast(1.2);
+}
+
+.navLink:hover .navLogoEmpresa {
+  transform: scale(1.05);
+  filter: brightness(1);
 }
 
 .navLink:hover {
@@ -197,6 +211,11 @@
   .navLogo {
     height: 80px;
     margin: 0.25rem 0;
+  }
+
+  .navLogoEmpresa {
+    height: 55px;
+    margin: 0.5rem 0;
   }
 
   .cta {

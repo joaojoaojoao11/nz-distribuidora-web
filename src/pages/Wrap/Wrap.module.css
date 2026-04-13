@@ -1,201 +1,662 @@
+/* ============================================================
+   NZWRAP — Página Catálogo (Hero + Cards de Produto)
+   ============================================================ */
+
 .page {
   min-height: 100vh;
-  padding-top: 80px;
 }
 
+/* --- HERO --- */
 .hero {
   position: relative;
-  min-height: 50vh;
+  min-height: 100vh;
+  height: auto;
   display: flex;
-  align-items: center;
-  background: url('https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1920,fit=crop/ALp79OQRpoF9Baa7/gemini_generated_image_uev71zuev71zuev7-LFjm1DW9Nt7XQujR.png') center/cover no-repeat;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 6vh 0;
+  background-color: #070709;
+  overflow: hidden;
+}
+
+.heroImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.6;
 }
 
 .heroOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(12,12,12,0.95) 10%, rgba(12,12,12,0.6) 100%);
+  z-index: 1;
+  background: radial-gradient(circle at center, rgba(7,7,9,0.4) 0%, rgba(7,7,9,0.85) 100%);
+}
+
+.heroBottomShadow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 350px;
+  background: linear-gradient(to bottom, rgba(7,7,9,0) 0%, rgba(7,7,9,0.9) 70%, #070709 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.blackSpacer {
+  width: 100%;
+  height: 0;
+  background-color: #070709;
 }
 
 .heroContainer {
   position: relative;
   z-index: 10;
-  max-width: 800px;
-  margin: 0;
+  width: 100%;
 }
 
-.eyebrow {
-  color: var(--accent-red);
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-  display: block;
+.heroTextContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 30vh;
 }
 
 .pageTitleImage {
   display: block;
   width: 100%;
-  max-width: 700px;
+  max-width: 650px;
   height: auto;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 4px 30px rgba(0,0,0,0.8));
 }
 
 .heroSubtitle {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   color: var(--text-secondary);
   font-weight: 300;
   line-height: 1.6;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.8);
 }
 
-.contentSection {
-  padding: 6rem 0;
-  background-color: var(--bg-tertiary);
+.heroSubtitleWarning {
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: 500;
+  line-height: 1.6;
+  text-shadow: 0 4px 20px rgba(0,0,0,1);
 }
 
-.infoGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+
+/* --- PRODUCTS SECTION --- */
+.productsSection {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: clamp(5rem, 8vh, 7rem) 0 clamp(2rem, 3vh, 3rem);
+  background-color: #070709;
 }
 
-@media (min-width: 900px) {
-  .infoGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .cardDark {
-    grid-column: 1 / -1;
-  }
+.productsSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to top, transparent 0%, #070709 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 
-.card, .cardDark {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  padding: 3rem;
+.productsSection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent 0%, #040405 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.productsSectionBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/assets/images/wrap_hero.png') center/cover no-repeat;
+  opacity: 0.08;
+  mix-blend-mode: screen;
+  z-index: 0;
+}
+
+.productsContainer {
+  position: relative;
+  z-index: 10;
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.productsSectionHeader {
+  text-align: left;
+  margin-bottom: clamp(1.5rem, 2vh, 2rem);
+}
+
+.productsSectionTitle {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-family: var(--font-heading);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+}
+
+.productsSectionSub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.productsGrid {
   display: flex;
   flex-direction: column;
-  transition: all var(--transition-smooth);
+  gap: 24px;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  border-color: var(--border-strong);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-}
 
-.cardDark {
-  background: var(--bg-primary);
-  border-color: var(--accent-red);
+/* --- PRODUCT CARD --- */
+.productCard {
   position: relative;
+  min-height: clamp(260px, 30vh, 320px);
+  overflow: hidden;
+  cursor: pointer;
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.productCard:hover {
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow:
+    0 30px 60px -15px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(212, 175, 55, 0.08),
+    inset 0 1px 0 rgba(212, 175, 55, 0.1);
+}
+
+.productCard:focus-visible {
+  outline: 2px solid var(--accent-red);
+  outline-offset: 2px;
+}
+
+.productCardImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+  filter: grayscale(25%) contrast(1.15) brightness(0.85);
+  transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.productCard:hover .productCardImage {
+  opacity: 0.85;
+  filter: grayscale(0%) contrast(1.1) brightness(1);
+  transform: scale(1.08);
+}
+
+.productCardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(5, 5, 5, 0.98) 0%,
+    rgba(5, 5, 5, 0.85) 30%,
+    rgba(5, 5, 5, 0.3) 70%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  z-index: 1;
+}
+
+.productCardContent {
+  position: relative;
+  padding: 2rem;
+  padding-top: 6rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.productCardBadgesContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.productCardBadge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #D4AF37;
+  font-family: monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 1px;
+  backdrop-filter: blur(4px);
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.productCardTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.productCardSubtitle {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #D4AF37;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.productCardDescription {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 0.2rem;
+}
+
+.productCardCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 1rem;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.productCard:hover .productCardCta {
+  opacity: 1;
+  color: var(--accent-red);
+}
+
+.ctaArrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.productCard:hover .ctaArrow {
+  transform: translateX(6px);
+}
+
+
+/* ==================================================================
+   MOBILE RESPONSIVE
+   ================================================================== */
+@media (max-width: 768px) {
+  .hero {
+    height: auto;
+    min-height: 100svh;
+    min-height: 100vh;
+    padding-bottom: 4vh;
+    align-items: flex-end;
+  }
+
+  .heroTextContent {
+    padding-top: 40vh;
+    max-width: 100%;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .productsSection {
+    min-height: unset;
+    padding: 4rem 0 3rem;
+  }
+
+  .pageTitleImage {
+    max-width: 260px;
+    margin-bottom: 1.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .heroSubtitleWarning {
+    font-size: 1rem;
+  }
+
+  .heroBottomShadow {
+    height: 200px;
+  }
+
+  .productCard {
+    height: 300px;
+  }
+
+  .productsSectionHeader {
+    text-align: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .pageTitleImage {
+    max-width: 200px;
+  }
+
+  .heroSubtitle {
+    font-size: 0.82rem;
+  }
+}
+
+/* ============================================================
+   SEÇÃO COMPARATIVO DE PERFORMANCE
+   ============================================================ */
+
+.comparisonSection {
+  position: relative;
+  padding: clamp(2.5rem, 6vh, 4rem) 0 clamp(14rem, 20vh, 18rem);
+  background-color: #040405;
   overflow: hidden;
 }
 
-.cardDark::before {
+.comparisonSection::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 4px;
-  background: var(--accent-red);
+  inset: 0;
+  background: url('/assets/images/wrap_hero.png') center/cover no-repeat;
+  opacity: 0.08;
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 
-.cardHeader {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
-}
-
-.cardTitle {
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.cardTitleRed {
-  font-size: 1.75rem;
-  color: var(--accent-red);
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-.highlightBadge {
-  background: var(--bg-primary);
-  color: var(--text-secondary);
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border: 1px solid var(--border-light);
-}
-
-.highlightBadgeDark {
-  background: rgba(209, 30, 30, 0.1);
-  color: var(--accent-red);
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.cardText, .cardTextDark {
-  color: var(--text-secondary);
-  line-height: 1.7;
-  font-size: 1rem;
-}
-
-.cardText strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.cardTextDark {
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
-}
-
-.bulletList {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-  list-style: none;
-  margin-bottom: 3rem;
-}
-
-.bulletList li {
-  color: var(--text-primary);
-  position: relative;
-  padding-left: 1.5rem;
-  font-size: 0.95rem;
-}
-
-.bulletList li::before {
-  content: '>';
+.comparisonSection::after {
+  content: '';
   position: absolute;
+  top: 0;
   left: 0;
-  color: var(--accent-red);
-  font-weight: bold;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to top, transparent 0%, #040405 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 
-.ctaButton {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background: var(--accent-red);
+.comparisonBottomShadow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent 0%, #000 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.comparisonContainer {
+  position: relative;
+  z-index: 2;
+  max-width: 860px;
+}
+
+.comparisonMatrix {
+  margin-top: 1.5rem;
+  background: rgba(10, 10, 13, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.comparisonTabs {
+  display: flex;
+  background: #08080a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.compareTab {
+  flex: 1;
+  padding: 0.85rem 0.35rem;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: clamp(0.55rem, 1.2vw, 0.8rem);
+  font-weight: 800;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.compareTab:hover {
   color: #fff;
-  border-radius: 6px;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.compareTab.activeTab {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom-color: #D4AF37;
+}
+
+.comparisonContent {
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.activeComparePanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.compareHighlight {
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+  color: #fff;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  border-left: 3px solid #D4AF37;
+  padding-left: 1rem;
+}
+
+.compareBadges {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.compareBadge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.compareBadge strong {
+  color: #D4AF37;
+  margin-right: 0.5rem;
+}
+
+.metricsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.metricRow {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (max-width: 639px) {
+  .metricRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+.metricLabel {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.metricBarBg {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: visible;
+  position: relative;
+}
+
+.metricBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #8c7323 0%, #D4AF37 100%);
+  border-radius: 4px;
+  position: relative;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.35);
+}
+
+.metricValue {
+  position: absolute;
+  right: -5px;
+  top: -22px;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(212, 175, 55, 0.15);
+  padding: 0.1rem 0.35rem;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  transform: translateX(50%);
+}
+
+/* --- ABA TODAS: Grid lado a lado --- */
+.allLinesGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 1024px) {
+  .allLinesGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .allLinesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .allLinesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.allLineCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.allLineCardTitle {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #fff;
   text-transform: uppercase;
   letter-spacing: 1px;
-  align-self: flex-start;
-  transition: all var(--transition-snappy);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #D4AF37;
 }
 
-.ctaButton:hover {
-  background: var(--accent-red-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(209, 30, 30, 0.4);
+.allLineMetricRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.allLineMetricLabel {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.allLineBarBg {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.allLineBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #8c7323 0%, #D4AF37 100%);
+  border-radius: 3px;
 }

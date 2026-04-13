@@ -9,6 +9,9 @@ import PrimeGloss from './pages/Ppf/PrimeGloss';
 import FlowGloss from './pages/Ppf/FlowGloss';
 import CoreGloss from './pages/Ppf/CoreGloss';
 import Wrap from './pages/Wrap/Wrap';
+import { NzwrapPremium, ShColors, Oracal970, Oracal651, Oracal670 } from './pages/Wrap/WrapProducts';
+import Oracal670ColorPage from './pages/Wrap/Oracal670Colors';
+import ShWrappingColors from './pages/Wrap/ShWrappingColors';
 import Company from './pages/Company/Company';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -48,6 +51,13 @@ function App() {
                 <Route path="/ppf/flow-gloss" element={<FlowGloss />} />
                 <Route path="/ppf/core-gloss" element={<CoreGloss />} />
                 <Route path="/wrap" element={<Wrap />} />
+                <Route path="/wrap/nzwrap-premium" element={<NzwrapPremium />} />
+                <Route path="/wrap/sh-colors" element={<ShColors />} />
+                <Route path="/wrap/sh-colors/:colorCode" element={<ShWrappingColors />} />
+                <Route path="/wrap/oracal-970ra" element={<Oracal970 />} />
+                <Route path="/wrap/oracal-651" element={<Oracal651 />} />
+                <Route path="/wrap/oracal-670ra" element={<Oracal670 />} />
+                <Route path="/wrap/oracal-670ra/:colorCode" element={<Oracal670ColorPage />} />
                 <Route path="/sobre" element={<Company />} />
               </Routes>
             </main>

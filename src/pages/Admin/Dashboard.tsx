@@ -8,6 +8,7 @@ import {
 } from 'recharts';
 import WorldMap from '../../components/WorldMap';
 import styles from './Admin.module.css';
+import AdminProducts from './AdminProducts';
 
 interface Lead { id: string; name: string; email: string; phone: string; source: string; status: string; created_at: string; }
 interface UserProfile {
@@ -20,7 +21,7 @@ interface UserProfile {
   address_zip?: string | null; created_at: string;
 }
 
-type TabType = 'dashboard' | 'leads' | 'users' | 'clients';
+type TabType = 'dashboard' | 'produtos' | 'leads' | 'users' | 'clients';
 type PeriodType = 'today' | '7d' | 'month' | 'quarter' | 'semester' | 'year';
 
 const PERIOD_LABELS: Record<PeriodType, string> = {
@@ -357,6 +358,7 @@ export default function Dashboard() {
 
   const tabLabels: Record<TabType, string> = {
     dashboard: 'Dashboard',
+    produtos: 'Produtos (E-commerce)',
     leads: 'Leads & Contatos',
     users: 'Usuários do Sistema',
     clients: 'Clientes & Revendedores'
@@ -387,6 +389,9 @@ export default function Dashboard() {
           <button className={`${styles.navLink} ${activeTab === 'clients' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('clients')}>
             <span>🛒</span> <span>Clientes</span>
             {pendingUsers.length > 0 && <span className={styles.navBadge}>{pendingUsers.length}</span>}
+          </button>
+          <button className={`${styles.navLink} ${activeTab === 'produtos' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('produtos')}>
+            <span>🏷️</span> <span>Produtos</span>
           </button>
           <button className={`${styles.navLink} ${activeTab === 'users' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('users')}>
             <span>🔐</span> <span>Usuários</span>
@@ -818,6 +823,9 @@ export default function Dashboard() {
             </table>
           </div>
         )}
+
+        {/* ===== PRODUTOS ===== */}
+        {activeTab === 'produtos' && <AdminProducts />}
       </main>
     </div>
   );

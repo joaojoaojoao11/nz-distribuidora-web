@@ -314,20 +314,29 @@
   margin-bottom: 0.3rem;
 }
 
-.createField input {
+.createField input,
+.createField select,
+.createField textarea {
   width: 100%;
-  background: rgba(255,255,255,0.04);
+  background: rgba(15,15,18,0.8);
   border: 1px solid rgba(255,255,255,0.1);
   color: #fff;
-  padding: 0.65rem 0.75rem;
+  padding: 0.85rem 1rem;
   font-size: 0.85rem;
   font-family: var(--font-body);
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
   box-sizing: border-box;
+  border-radius: 4px;
 }
-.createField input:focus { border-color: rgba(255,255,255,0.3); }
-.createField input::placeholder { color: #555; }
+.createField input:focus,
+.createField select:focus,
+.createField textarea:focus { 
+  border-color: rgba(255,68,68,0.5); 
+  box-shadow: 0 4px 12px rgba(255,68,68,0.1);
+}
+.createField input::placeholder,
+.createField textarea::placeholder { color: #555; }
 
 .createActions {
   display: flex;
@@ -497,6 +506,40 @@
 @keyframes loadSlide {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(400%); }
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: #0f0f12;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal::-webkit-scrollbar {
+  width: 6px;
+}
+.modal::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
 }
 
 @media (max-width: 768px) {
