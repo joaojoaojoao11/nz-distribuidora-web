@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Phone, EnvelopeSimple, MapPin, InstagramLogo, YoutubeLogo, WhatsappLogo } from '@phosphor-icons/react';
+import { Phone, EnvelopeSimple, MapPin, InstagramLogo, WhatsappLogo } from '@phosphor-icons/react';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -16,11 +16,8 @@ export default function Footer() {
               Elevando o padrão do envelopamento e proteção automotiva no Brasil com materiais premium de alta performance.
             </p>
             <div className={styles.socialLinks}>
-              <a href="https://instagram.com/nzdistribuidora" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="Instagram">
+              <a href="https://www.instagram.com/nzgroup.br?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="Instagram">
                 <InstagramLogo weight="regular" />
-              </a>
-              <a href="https://youtube.com/nzdistribuidora" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="YouTube">
-                <YoutubeLogo weight="regular" />
               </a>
               <a href="https://wa.me/message/3DBGPIZF4EMWO1" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="WhatsApp">
                 <WhatsappLogo weight="regular" />
