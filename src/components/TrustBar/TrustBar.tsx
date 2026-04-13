@@ -1,12 +1,12 @@
 import styles from './TrustBar.module.css';
 
 const partners = [
-  { name: 'ORACAL', logo: '/assets/logos/logo-nz-wrap.svg' },
-  { name: 'SH Wrapping', logo: '/assets/logos/logo-nz-ppf.svg' },
+  { name: 'ORAFOL', logo: '/assets/logos/logo-oracal.png' },
+  { name: 'SH Wrapping', logo: '/assets/logos/logo-sh.png' },
   { name: 'NZ PPF', logo: '/assets/logos/logo-nz-ppf.svg' },
   { name: 'NZ WRAP', logo: '/assets/logos/logo-nz-wrap.svg' },
-  { name: 'ORACAL', logo: '/assets/logos/logo-nz-wrap.svg' },
-  { name: 'SH Wrapping', logo: '/assets/logos/logo-nz-ppf.svg' },
+  { name: 'ORAFOL', logo: '/assets/logos/logo-oracal.png' },
+  { name: 'SH Wrapping', logo: '/assets/logos/logo-sh.png' },
 ];
 
 export default function TrustBar() {
