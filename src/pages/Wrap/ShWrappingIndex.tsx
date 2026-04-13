@@ -20,7 +20,7 @@ export default function ShWrappingIndex() {
   useEffect(() => {
     const fetchColors = async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data, error: _error } = await supabase
         .from('web_catalog_products')
         .select('*')
         .eq('brand', 'SH Wrapping')

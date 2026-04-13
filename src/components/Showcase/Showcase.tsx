@@ -4,7 +4,7 @@ import styles from './Showcase.module.css';
 
 const blurReveal = {
   hidden: { opacity: 0, y: 25, filter: 'blur(8px)' },
-  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } }
+  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 1, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }
 };
 
 const stagger = {

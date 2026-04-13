@@ -71,7 +71,7 @@ export default function Oracal670ColorPage() {
       setLoading(true);
       const slug = `670ra-${upCode.toLowerCase()}`;
       
-      const { data, error } = await supabase
+      const { data, error: _error } = await supabase
         .from('web_catalog_products')
         .select('*')
         .eq('slug', slug)

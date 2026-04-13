@@ -202,7 +202,7 @@ export default function AdminProducts() {
                         }} />
                         <div>
                            <strong style={{ display: 'block', fontSize: '0.9rem', color: '#fff' }}>{p.name}</strong>
-                           <span style={{ fontSize: '0.75rem', color: p.hex_code, fontFamily: 'monospace', opacity: 0.9 }}>{p.sku || p.slug}</span>
+                           <span style={{ fontSize: '0.75rem', color: (p.hex_code ?? undefined) as string | undefined, fontFamily: 'monospace', opacity: 0.9 }}>{p.sku || p.slug}</span>
                         </div>
                       </div>
                     </td>
