@@ -49,7 +49,7 @@ export const SH_COLORS_ASSETS: Record<string, Partial<SHColorData>> = {
   'glossy-nado-ash': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-26-380x300-d54df3a3.jpg', gallery: { suv: '/assets/images/sh/glossy_nando_ash_morning.png', sedan: '/assets/images/sh/glossy_nando_ash_afternoon.png', supercar: '/assets/images/sh/glossy_nando_ash_sunset.png', night: '/assets/images/sh/glossy_nando_ash_night.png' } },
   'amg-mountain-grey': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-03-380x300-2bb35afc.jpg', gallery: { suv: '/assets/images/sh/ag_suv_v2.png', sedan: '/assets/images/sh/ag_sedan_v2.png', supercar: '/assets/images/sh/ag_supercar_v2.png' } },
 
-  'pearl-white': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-14-380x300-4795911c.jpg' },
+  'pearl-white': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-14-380x300-4795911c.jpg', gallery: { suv: '/assets/images/sh/pearl_white_suv.jpeg', sedan: '/assets/images/sh/pearl_white_sedan.jpeg', supercar: '/assets/images/sh/pearl_white_supercar.jpeg' } },
   'pearl-metal-white': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-19-380x300-4f768134.jpg', gallery: { suv: '/assets/images/sh/pearl_metal_white_suv.jpeg', sedan: '/assets/images/sh/pearl_metal_white_sedan.jpeg', supercar: '/assets/images/sh/pearl_metal_white_supercar.jpeg' } },
 
   'glossy-black': { image: 'https://www.signhouse.com.br/storage/images/cache/sw-13-380x300-53be72e7.jpg', gallery: { suv: '/assets/images/sh/glossy_black_morning.png', sedan: '/assets/images/sh/glossy_black_afternoon.png', supercar: '/assets/images/sh/glossy_black_sunset.png', night: '/assets/images/sh/glossy_black_night.png' } }
