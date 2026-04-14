@@ -190,6 +190,7 @@ export default function ShWrappingColors() {
             <h1 className={styles.productTitle}>{productData.name}</h1>
             <p className={styles.productFinish}>SH Wrapping Colors | Cola Antibolhas | 165µ</p>
 
+
             <div className={styles.productArticle}>
               <p className={styles.productDescription}>
                 Projetado para superar expectativas, o envelopamento Automotivo <strong>{productData.name}</strong> eleva a estética do seu veículo a um padrão de exposição internacional. Trazendo um requinte visual inigualável, a tonalidade <strong>{productData.finish_type ? String(productData.finish_type).toLowerCase() : ''}</strong> reage à luz transformando as curvas e vincos da lataria.

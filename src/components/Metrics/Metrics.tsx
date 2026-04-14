@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import styles from './Metrics.module.css';
 
 interface MetricItem {
@@ -45,16 +45,7 @@ function AnimatedCounter({ value, prefix, suffix, inView }: { value: number; pre
 
 export default function Metrics() {
   const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.3 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
+  const inView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
     <section className={styles.section} ref={ref}>
