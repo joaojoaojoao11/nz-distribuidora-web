@@ -10,7 +10,7 @@ const STATES = [
   'PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'
 ];
 
-const SERVICES = ['PPF', 'Envelopamento', 'Insulfilm', 'Outro'];
+const SERVICES = ['PPF', 'Envelopamento'];
 
 function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
@@ -291,12 +291,12 @@ export default function FindInstaller() {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className={styles.stepsTitle}>Como Funciona</h2>
+        <h2 className={styles.stepsTitle}>Sua Proteção em 3 Passos Simples</h2>
         <div className={styles.stepsGrid}>
           {[
-            { num: '1', title: 'Solicite', text: 'Preencha o formulário em 30 segundos. Sem compromisso, sem complicação.' },
-            { num: '2', title: 'Especialista NZ', text: 'Um profissional NZ entra em contato em até 2h úteis pelo WhatsApp para entender suas necessidades.' },
-            { num: '3', title: 'Instalação Garantida', text: 'Conectamos você ao aplicador certificado ideal, com a melhor negociação e garantia total NZ.' },
+            { num: '01', title: 'Solicite em 30 Segundos', text: 'Preencha seus dados agora. Sem compromisso, sem burocracia. Mais de 2.000 proprietários já solicitaram este mês.', accent: 'Gratuito e sem compromisso' },
+            { num: '02', title: 'Especialista NZ Dedicado', text: 'Em até 2h úteis, um profissional exclusivo da NZ entra em contato pelo WhatsApp para entender cada detalhe do seu veículo e suas necessidades.', accent: 'Atendimento humano e personalizado' },
+            { num: '03', title: 'Instalação com Garantia Total', text: 'Selecionamos o aplicador certificado ideal na sua região, negociamos a melhor condição e garantimos o resultado. Se algo sair do esperado, a NZ resolve.', accent: 'Garantia NZ sobre todo o processo' },
           ].map((step, i) => (
             <motion.div
               key={step.num}
@@ -309,6 +309,7 @@ export default function FindInstaller() {
               <div className={styles.stepNumber}>{step.num}</div>
               <h3 className={styles.stepTitle}>{step.title}</h3>
               <p className={styles.stepText}>{step.text}</p>
+              <span className={styles.stepAccent}>{step.accent}</span>
             </motion.div>
           ))}
         </div>
@@ -318,9 +319,9 @@ export default function FindInstaller() {
       <section className={styles.trustSection}>
         <div className={styles.trustGrid}>
           {[
-            { icon: '🛡️', title: 'Garantia NZ sobre a instalação', text: 'A NZ assume a responsabilidade. Se algo sair errado, nós resolvemos.' },
-            { icon: '💰', title: 'Melhor negociação garantida', text: 'Nosso especialista negocia diretamente com o aplicador para garantir o melhor custo-benefício.' },
-            { icon: '🧑‍🔧', title: 'Suporte do início ao fim', text: 'Do primeiro contato à entrega do veículo, um especialista NZ acompanha cada etapa.' },
+            { icon: '🛡️', title: 'Risco Zero para Você', text: 'A NZ assume total responsabilidade sobre a instalação. Qualquer imprevisto é problema nosso, não seu. Sua tranquilidade é inegociável.' },
+            { icon: '💎', title: 'Negociação Exclusiva NZ', text: 'Nosso time negocia condições especiais que você não consegue sozinho. Acesso a preços de rede com a qualidade de um atendimento VIP.' },
+            { icon: '⚡', title: 'Do Contato à Entrega', text: 'Um especialista NZ acompanha cada etapa — da análise do veículo à entrega final. Você não precisa se preocupar com nada.' },
           ].map((item, i) => (
             <motion.div
               key={i}

@@ -386,67 +386,89 @@
 .stepsSection {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 4rem 2rem;
+  padding: 5rem 2rem;
   position: relative;
   z-index: 2;
+  border-top: 1px solid rgba(255,255,255,0.04);
 }
 
 .stepsTitle {
   text-align: center;
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin: 0 0 3rem;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 900;
+  margin: 0 0 3.5rem;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
 }
 
 .stepsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .stepCard {
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 2rem;
-  text-align: center;
-  transition: all 0.3s;
+  border-left: 3px solid rgba(212,175,55,0.3);
+  border-radius: 0;
+  padding: 2.5rem 2rem;
+  text-align: left;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  flex-direction: column;
 }
 
 .stepCard:hover {
-  border-color: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.12);
+  border-left-color: #D4AF37;
   transform: translateY(-4px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  background: rgba(255,255,255,0.03);
 }
 
 .stepNumber {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  border: none;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 2rem;
+  font-weight: 900;
+  color: rgba(212,175,55,0.25);
   margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
 }
 
 .stepTitle {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 800;
   margin: 0 0 0.75rem;
   letter-spacing: -0.02em;
+  text-transform: uppercase;
 }
 
 .stepText {
   font-size: 0.9rem;
   color: #888;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
+  flex: 1;
+}
+
+.stepAccent {
+  display: inline-block;
+  margin-top: 1.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #D4AF37;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
 }
 
 /* ══════ TRUST BAR ══════ */
