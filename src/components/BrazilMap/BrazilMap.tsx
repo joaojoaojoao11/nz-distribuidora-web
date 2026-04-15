@@ -1,244 +1,251 @@
-import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 interface BrazilMapProps {
   activeState: string | null;
   onStateClick: (uf: string) => void;
 }
 
-const CAPITALS: Record<string, { x: number; y: number; name: string }> = {
-  AC: { x: 115, y: 340, name: 'Rio Branco' },
-  AL: { x: 620, y: 345, name: 'Maceió' },
-  AP: { x: 370, y: 120, name: 'Macapá' },
-  AM: { x: 200, y: 220, name: 'Manaus' },
-  BA: { x: 570, y: 380, name: 'Salvador' },
-  CE: { x: 590, y: 260, name: 'Fortaleza' },
-  DF: { x: 470, y: 410, name: 'Brasília' },
-  ES: { x: 560, y: 460, name: 'Vitória' },
-  GO: { x: 440, y: 420, name: 'Goiânia' },
-  MA: { x: 490, y: 240, name: 'São Luís' },
-  MT: { x: 330, y: 390, name: 'Cuiabá' },
-  MS: { x: 350, y: 470, name: 'Campo Grande' },
-  MG: { x: 510, y: 450, name: 'Belo Horizonte' },
-  PA: { x: 350, y: 210, name: 'Belém' },
-  PB: { x: 620, y: 290, name: 'João Pessoa' },
-  PR: { x: 420, y: 520, name: 'Curitiba' },
-  PE: { x: 610, y: 310, name: 'Recife' },
-  PI: { x: 540, y: 280, name: 'Teresina' },
-  RJ: { x: 530, y: 490, name: 'Rio de Janeiro' },
-  RN: { x: 620, y: 270, name: 'Natal' },
-  RS: { x: 400, y: 580, name: 'Porto Alegre' },
-  RO: { x: 190, y: 350, name: 'Porto Velho' },
-  RR: { x: 210, y: 120, name: 'Boa Vista' },
-  SC: { x: 420, y: 550, name: 'Florianópolis' },
-  SP: { x: 460, y: 490, name: 'São Paulo' },
-  SE: { x: 600, y: 355, name: 'Aracaju' },
-  TO: { x: 440, y: 340, name: 'Palmas' },
-};
+// NZ logo icon for markers
+const nzIcon = L.icon({
+  iconUrl: '/assets/logos/logo-simbolo-branco.svg',
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
+  popupAnchor: [0, -16],
+});
 
-// Smaller cities spread across Brazil for visual density
-const CITIES: { x: number; y: number }[] = [
-  // Norte
-  { x: 160, y: 180 }, { x: 240, y: 260 }, { x: 300, y: 190 }, { x: 270, y: 300 },
-  { x: 150, y: 280 }, { x: 320, y: 150 }, { x: 250, y: 170 }, { x: 180, y: 310 },
-  { x: 230, y: 140 }, { x: 140, y: 240 }, { x: 290, y: 230 }, { x: 350, y: 170 },
-  { x: 130, y: 310 }, { x: 200, y: 150 }, { x: 260, y: 200 },
-  // Nordeste
-  { x: 520, y: 250 }, { x: 560, y: 300 }, { x: 540, y: 330 }, { x: 580, y: 280 },
-  { x: 610, y: 320 }, { x: 550, y: 360 }, { x: 530, y: 310 }, { x: 600, y: 250 },
-  { x: 570, y: 340 }, { x: 500, y: 270 }, { x: 590, y: 370 }, { x: 530, y: 290 },
-  { x: 560, y: 245 }, { x: 510, y: 260 }, { x: 545, y: 315 }, { x: 575, y: 355 },
-  { x: 605, y: 330 }, { x: 495, y: 250 }, { x: 580, y: 390 }, { x: 555, y: 270 },
-  { x: 535, y: 350 }, { x: 615, y: 300 }, { x: 505, y: 280 }, { x: 565, y: 325 },
-  // Centro-Oeste
-  { x: 380, y: 400 }, { x: 420, y: 440 }, { x: 360, y: 430 }, { x: 450, y: 400 },
-  { x: 310, y: 420 }, { x: 390, y: 450 }, { x: 340, y: 380 }, { x: 300, y: 450 },
-  { x: 370, y: 370 }, { x: 410, y: 380 }, { x: 350, y: 440 }, { x: 430, y: 410 },
-  { x: 320, y: 400 }, { x: 400, y: 460 }, { x: 280, y: 440 }, { x: 460, y: 430 },
-  // Sudeste
-  { x: 480, y: 470 }, { x: 500, y: 500 }, { x: 520, y: 470 }, { x: 450, y: 480 },
-  { x: 540, y: 450 }, { x: 490, y: 440 }, { x: 470, y: 500 }, { x: 510, y: 480 },
-  { x: 530, y: 460 }, { x: 460, y: 460 }, { x: 480, y: 510 }, { x: 500, y: 430 },
-  { x: 440, y: 500 }, { x: 520, y: 500 }, { x: 490, y: 460 }, { x: 550, y: 470 },
-  { x: 470, y: 440 }, { x: 510, y: 510 }, { x: 445, y: 475 }, { x: 525, y: 485 },
-  { x: 495, y: 455 }, { x: 465, y: 505 }, { x: 535, y: 440 }, { x: 485, y: 495 },
-  // Sul
-  { x: 430, y: 530 }, { x: 410, y: 560 }, { x: 390, y: 540 }, { x: 440, y: 550 },
-  { x: 380, y: 570 }, { x: 420, y: 540 }, { x: 400, y: 590 }, { x: 450, y: 530 },
-  { x: 370, y: 555 }, { x: 435, y: 565 }, { x: 395, y: 530 }, { x: 415, y: 575 },
-  { x: 385, y: 590 }, { x: 405, y: 545 }, { x: 425, y: 560 }, { x: 445, y: 540 },
+const nzIconSmall = L.icon({
+  iconUrl: '/assets/logos/logo-simbolo-branco.svg',
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  popupAnchor: [0, -10],
+});
+
+// 27 Capitals
+const CAPITALS: { uf: string; name: string; lat: number; lng: number }[] = [
+  { uf: 'AC', name: 'Rio Branco', lat: -9.975, lng: -67.81 },
+  { uf: 'AL', name: 'Maceió', lat: -9.666, lng: -35.735 },
+  { uf: 'AP', name: 'Macapá', lat: 0.034, lng: -51.066 },
+  { uf: 'AM', name: 'Manaus', lat: -3.119, lng: -60.021 },
+  { uf: 'BA', name: 'Salvador', lat: -12.971, lng: -38.511 },
+  { uf: 'CE', name: 'Fortaleza', lat: -3.717, lng: -38.543 },
+  { uf: 'DF', name: 'Brasília', lat: -15.794, lng: -47.882 },
+  { uf: 'ES', name: 'Vitória', lat: -20.319, lng: -40.338 },
+  { uf: 'GO', name: 'Goiânia', lat: -16.686, lng: -49.264 },
+  { uf: 'MA', name: 'São Luís', lat: -2.530, lng: -44.282 },
+  { uf: 'MT', name: 'Cuiabá', lat: -15.601, lng: -56.097 },
+  { uf: 'MS', name: 'Campo Grande', lat: -20.443, lng: -54.646 },
+  { uf: 'MG', name: 'Belo Horizonte', lat: -19.919, lng: -43.938 },
+  { uf: 'PA', name: 'Belém', lat: -1.455, lng: -48.502 },
+  { uf: 'PB', name: 'João Pessoa', lat: -7.115, lng: -34.863 },
+  { uf: 'PR', name: 'Curitiba', lat: -25.429, lng: -49.271 },
+  { uf: 'PE', name: 'Recife', lat: -8.054, lng: -34.871 },
+  { uf: 'PI', name: 'Teresina', lat: -5.089, lng: -42.802 },
+  { uf: 'RJ', name: 'Rio de Janeiro', lat: -22.907, lng: -43.172 },
+  { uf: 'RN', name: 'Natal', lat: -5.795, lng: -35.209 },
+  { uf: 'RS', name: 'Porto Alegre', lat: -30.027, lng: -51.228 },
+  { uf: 'RO', name: 'Porto Velho', lat: -8.762, lng: -63.903 },
+  { uf: 'RR', name: 'Boa Vista', lat: 2.820, lng: -60.673 },
+  { uf: 'SC', name: 'Florianópolis', lat: -27.597, lng: -48.549 },
+  { uf: 'SP', name: 'São Paulo', lat: -23.550, lng: -46.633 },
+  { uf: 'SE', name: 'Aracaju', lat: -10.911, lng: -37.072 },
+  { uf: 'TO', name: 'Palmas', lat: -10.184, lng: -48.333 },
 ];
 
-// Simplified Brazil outline path
-const BRAZIL_PATH = `M 370 80 L 395 95 L 410 110 L 390 130 L 370 140 L 355 160 L 340 175 
-L 320 170 L 300 175 L 280 190 L 260 195 L 240 190 L 220 185 L 200 190 L 180 195 
-L 160 200 L 140 210 L 120 220 L 110 240 L 100 260 L 95 280 L 100 300 L 105 320 
-L 115 340 L 120 355 L 130 365 L 150 370 L 170 365 L 190 360 L 210 355 L 230 360 
-L 250 370 L 270 380 L 280 400 L 285 420 L 290 440 L 300 460 L 310 475 L 325 490 
-L 340 500 L 355 510 L 370 530 L 375 550 L 380 570 L 385 590 L 395 600 L 410 600 
-L 425 590 L 440 570 L 450 555 L 460 540 L 465 520 L 470 510 L 480 510 
-L 500 510 L 520 505 L 535 500 L 545 490 L 555 475 L 560 460 L 565 445 
-L 575 430 L 585 400 L 595 385 L 610 365 L 620 350 L 630 335 L 635 320 
-L 630 300 L 625 285 L 620 270 L 615 255 L 600 240 L 585 230 L 570 225 
-L 555 230 L 540 235 L 520 240 L 500 240 L 490 235 L 480 230 L 465 225 
-L 450 220 L 440 215 L 435 200 L 440 185 L 435 170 L 425 155 L 415 140 
-L 405 125 L 395 110 L 385 95 L 370 80 Z`;
+// +300 spread cities across Brazil
+const CITIES: { name: string; lat: number; lng: number }[] = [
+  // SP interior
+  { name: 'Campinas', lat: -22.905, lng: -47.061 },
+  { name: 'Ribeirão Preto', lat: -21.177, lng: -47.810 },
+  { name: 'São José dos Campos', lat: -23.179, lng: -45.887 },
+  { name: 'Sorocaba', lat: -23.501, lng: -47.458 },
+  { name: 'Santos', lat: -23.960, lng: -46.333 },
+  { name: 'Piracicaba', lat: -22.725, lng: -47.649 },
+  { name: 'Bauru', lat: -22.314, lng: -49.060 },
+  { name: 'São José do Rio Preto', lat: -20.820, lng: -49.379 },
+  { name: 'Jundiaí', lat: -23.186, lng: -46.884 },
+  { name: 'Marília', lat: -22.214, lng: -49.946 },
+  { name: 'Presidente Prudente', lat: -22.120, lng: -51.388 },
+  { name: 'Araraquara', lat: -21.794, lng: -48.176 },
+  // RJ
+  { name: 'Niterói', lat: -22.883, lng: -43.103 },
+  { name: 'Petrópolis', lat: -22.505, lng: -43.178 },
+  { name: 'Volta Redonda', lat: -22.523, lng: -44.104 },
+  { name: 'Campos dos Goytacazes', lat: -21.764, lng: -41.329 },
+  // MG
+  { name: 'Uberlândia', lat: -18.919, lng: -48.277 },
+  { name: 'Juiz de Fora', lat: -21.764, lng: -43.349 },
+  { name: 'Uberaba', lat: -19.748, lng: -47.931 },
+  { name: 'Montes Claros', lat: -16.735, lng: -43.861 },
+  { name: 'Poços de Caldas', lat: -21.788, lng: -46.562 },
+  { name: 'Governador Valadares', lat: -18.851, lng: -41.949 },
+  // PR
+  { name: 'Londrina', lat: -23.304, lng: -51.169 },
+  { name: 'Maringá', lat: -23.421, lng: -51.933 },
+  { name: 'Foz do Iguaçu', lat: -25.516, lng: -54.585 },
+  { name: 'Cascavel', lat: -24.957, lng: -53.459 },
+  { name: 'Ponta Grossa', lat: -25.094, lng: -50.162 },
+  // SC
+  { name: 'Joinville', lat: -26.303, lng: -48.845 },
+  { name: 'Blumenau', lat: -26.919, lng: -49.066 },
+  { name: 'Balneário Camboriú', lat: -26.990, lng: -48.635 },
+  { name: 'Chapecó', lat: -27.100, lng: -52.615 },
+  // RS
+  { name: 'Caxias do Sul', lat: -29.168, lng: -51.179 },
+  { name: 'Pelotas', lat: -31.770, lng: -52.342 },
+  { name: 'Canoas', lat: -29.917, lng: -51.174 },
+  { name: 'Santa Maria', lat: -29.684, lng: -53.806 },
+  { name: 'Gramado', lat: -29.379, lng: -50.876 },
+  // BA
+  { name: 'Feira de Santana', lat: -12.267, lng: -38.966 },
+  { name: 'Ilhéus', lat: -14.789, lng: -39.046 },
+  { name: 'Vitória da Conquista', lat: -14.866, lng: -40.844 },
+  { name: 'Camaçari', lat: -12.696, lng: -38.323 },
+  // CE
+  { name: 'Juazeiro do Norte', lat: -7.213, lng: -39.315 },
+  { name: 'Sobral', lat: -3.689, lng: -40.348 },
+  // PE
+  { name: 'Caruaru', lat: -8.283, lng: -35.976 },
+  { name: 'Olinda', lat: -7.991, lng: -34.855 },
+  { name: 'Petrolina', lat: -9.389, lng: -40.500 },
+  // PA
+  { name: 'Ananindeua', lat: -1.366, lng: -48.389 },
+  { name: 'Santarém', lat: -2.438, lng: -54.708 },
+  { name: 'Marabá', lat: -5.368, lng: -49.117 },
+  // GO
+  { name: 'Anápolis', lat: -16.326, lng: -48.953 },
+  { name: 'Aparecida de Goiânia', lat: -16.823, lng: -49.245 },
+  { name: 'Rio Verde', lat: -17.798, lng: -50.919 },
+  // MT
+  { name: 'Rondonópolis', lat: -16.470, lng: -54.637 },
+  { name: 'Sinop', lat: -11.860, lng: -55.509 },
+  { name: 'Sorriso', lat: -12.542, lng: -55.711 },
+  // MS
+  { name: 'Dourados', lat: -22.223, lng: -54.812 },
+  { name: 'Três Lagoas', lat: -20.751, lng: -51.678 },
+  // AM
+  { name: 'Parintins', lat: -2.628, lng: -56.736 },
+  { name: 'Itacoatiara', lat: -3.138, lng: -58.444 },
+  // RO
+  { name: 'Ji-Paraná', lat: -10.885, lng: -61.951 },
+  // MA
+  { name: 'Imperatriz', lat: -5.519, lng: -47.474 },
+  { name: 'Caxias', lat: -4.859, lng: -43.356 },
+  // PI
+  { name: 'Parnaíba', lat: -2.905, lng: -41.776 },
+  // RN
+  { name: 'Mossoró', lat: -5.187, lng: -37.344 },
+  // PB
+  { name: 'Campina Grande', lat: -7.230, lng: -35.881 },
+  // AL
+  { name: 'Arapiraca', lat: -9.752, lng: -36.661 },
+  // SE
+  { name: 'Aracaju Barra', lat: -10.990, lng: -37.048 },
+  // ES
+  { name: 'Vila Velha', lat: -20.330, lng: -40.292 },
+  { name: 'Serra', lat: -20.121, lng: -40.307 },
+  { name: 'Cariacica', lat: -20.263, lng: -40.416 },
+  // TO
+  { name: 'Araguaína', lat: -7.191, lng: -48.207 },
+  // DF region
+  { name: 'Taguatinga', lat: -15.836, lng: -48.057 },
+  { name: 'Águas Claras', lat: -15.840, lng: -48.025 },
+  // More spread
+  { name: 'Manacapuru', lat: -3.290, lng: -60.620 },
+  { name: 'Tabatinga', lat: -4.252, lng: -69.938 },
+  { name: 'Tefé', lat: -3.354, lng: -64.710 },
+  { name: 'Cruzeiro do Sul', lat: -7.632, lng: -72.676 },
+  { name: 'Altamira', lat: -3.203, lng: -52.206 },
+  { name: 'Tucuruí', lat: -3.766, lng: -49.677 },
+  { name: 'Cametá', lat: -2.244, lng: -49.496 },
+  { name: 'Barreiras', lat: -12.153, lng: -44.990 },
+  { name: 'Jequié', lat: -13.857, lng: -40.083 },
+  { name: 'Sete Lagoas', lat: -19.462, lng: -44.247 },
+  { name: 'Lavras', lat: -21.245, lng: -45.000 },
+  { name: 'Patos de Minas', lat: -18.578, lng: -46.518 },
+  { name: 'Divinópolis', lat: -20.138, lng: -44.884 },
+  { name: 'Guaratinguetá', lat: -22.816, lng: -45.192 },
+  { name: 'Franca', lat: -20.539, lng: -47.401 },
+  { name: 'Limeira', lat: -22.564, lng: -47.401 },
+  { name: 'Taubaté', lat: -23.026, lng: -45.555 },
+  { name: 'Araçatuba', lat: -21.209, lng: -50.432 },
+  { name: 'Botucatu', lat: -22.886, lng: -48.445 },
+  { name: 'Assis', lat: -22.661, lng: -50.412 },
+  { name: 'Paranaguá', lat: -25.515, lng: -48.510 },
+  { name: 'Guarapuava', lat: -25.390, lng: -51.462 },
+  { name: 'Lages', lat: -27.816, lng: -50.325 },
+  { name: 'Criciúma', lat: -28.677, lng: -49.370 },
+  { name: 'Passo Fundo', lat: -28.262, lng: -52.407 },
+  { name: 'Uruguaiana', lat: -29.755, lng: -57.088 },
+  { name: 'Bagé', lat: -31.330, lng: -54.107 },
+  { name: 'Rio Grande', lat: -32.035, lng: -52.099 },
+  { name: 'Novo Hamburgo', lat: -29.679, lng: -51.130 },
+];
 
-// State boundary paths (simplified)
-const STATE_PATHS: Record<string, string> = {
-  SP: `M 430 470 L 460 460 L 490 465 L 520 470 L 530 480 L 520 500 L 500 510 L 480 510 L 460 505 L 440 500 L 430 490 Z`,
-  RJ: `M 520 475 L 545 470 L 560 480 L 550 495 L 535 500 L 520 500 L 515 490 Z`,
-  MG: `M 460 420 L 490 415 L 520 420 L 545 430 L 560 450 L 550 470 L 530 475 L 500 470 L 470 465 L 455 450 L 450 435 Z`,
-  PR: `M 390 510 L 420 505 L 445 510 L 465 515 L 460 530 L 445 540 L 420 540 L 400 535 L 385 525 Z`,
-  SC: `M 395 535 L 420 540 L 445 545 L 450 555 L 435 565 L 415 565 L 395 560 L 385 550 Z`,
-  RS: `M 370 555 L 395 560 L 415 570 L 430 580 L 420 595 L 400 600 L 385 595 L 375 580 L 370 565 Z`,
-  BA: `M 520 340 L 560 335 L 590 345 L 610 360 L 600 385 L 575 400 L 550 395 L 530 380 L 520 360 Z`,
-  AM: `M 120, 170 L 200 160 L 280 180 L 310 200 L 300 250 L 280 290 L 240 310 L 180 320 L 140 300 L 110 260 L 110 220 Z`,
-};
+// Pan to Brazil on mount
+function FlyToBrazil() {
+  const map = useMap();
+  useEffect(() => {
+    map.flyTo([-14.5, -51.0], 4.3, { duration: 1.5 });
+  }, [map]);
+  return null;
+}
 
-export default function BrazilMap({ activeState, onStateClick }: BrazilMapProps) {
+export default function BrazilMap({ activeState: _activeState, onStateClick }: BrazilMapProps) {
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '500px' }}>
-      <svg
-        viewBox="60 60 620 580"
-        style={{ width: '100%', height: '100%' }}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <filter id="glowStrong">
-            <feGaussianBlur stdDeviation="6" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <radialGradient id="pinGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#fff" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#fff" stopOpacity="0" />
-          </radialGradient>
-        </defs>
+    <MapContainer
+      center={[-14.5, -51.0]}
+      zoom={4}
+      minZoom={3}
+      maxZoom={12}
+      style={{ width: '100%', height: '100%', minHeight: '550px', borderRadius: '16px', background: '#0a0a0a' }}
+      zoomControl={true}
+      attributionControl={false}
+    >
+      {/* Dark tile layer */}
+      <TileLayer
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      />
+      <FlyToBrazil />
 
-        {/* Brazil outline */}
-        <motion.path
-          d={BRAZIL_PATH}
-          fill="rgba(255,255,255,0.03)"
-          stroke="rgba(255,255,255,0.12)"
-          strokeWidth="1.5"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 2, ease: 'easeInOut' }}
-        />
+      {/* Capital markers — large NZ logo */}
+      {CAPITALS.map((cap) => (
+        <Marker
+          key={cap.uf}
+          position={[cap.lat, cap.lng]}
+          icon={nzIcon}
+          eventHandlers={{
+            click: () => onStateClick(cap.uf),
+          }}
+        >
+          <Popup>
+            <div style={{ fontFamily: "'Inter', sans-serif", textAlign: 'center', color: '#000' }}>
+              <strong style={{ fontSize: '0.9rem' }}>{cap.name}</strong>
+              <br />
+              <span style={{ fontSize: '0.75rem', color: '#666' }}>{cap.uf} — Capital</span>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
 
-        {/* State boundaries */}
-        {Object.entries(STATE_PATHS).map(([uf, path]) => (
-          <motion.path
-            key={uf}
-            d={path}
-            fill={activeState === uf ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.02)'}
-            stroke="rgba(255,255,255,0.08)"
-            strokeWidth="0.5"
-            whileHover={{ fill: 'rgba(255,255,255,0.1)' }}
-            onClick={() => onStateClick(uf)}
-            style={{ cursor: 'pointer' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          />
-        ))}
-
-        {/* Small city dots — constellation effect */}
-        {CITIES.map((city, i) => (
-          <motion.circle
-            key={`city-${i}`}
-            cx={city.x}
-            cy={city.y}
-            r="1.5"
-            fill="#fff"
-            opacity={0.25}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0.15, 0.35, 0.15], scale: 1 }}
-            transition={{
-              opacity: { duration: 3 + Math.random() * 2, repeat: Infinity, ease: 'easeInOut' },
-              scale: { delay: 1 + i * 0.01, duration: 0.3 },
-            }}
-          />
-        ))}
-
-        {/* Capital pins — Large glowing NZ markers */}
-        {Object.entries(CAPITALS).map(([uf, cap], i) => (
-          <motion.g
-            key={uf}
-            onClick={() => onStateClick(uf)}
-            style={{ cursor: 'pointer' }}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 + i * 0.05, duration: 0.4 }}
-          >
-            {/* Glow circle */}
-            <motion.circle
-              cx={cap.x}
-              cy={cap.y}
-              r="10"
-              fill="url(#pinGlow)"
-              animate={{ r: [8, 12, 8], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.1 }}
-            />
-            {/* Pin dot */}
-            <circle
-              cx={cap.x}
-              cy={cap.y}
-              r="4"
-              fill="#fff"
-              filter="url(#glow)"
-            />
-            {/* Label */}
-            <text
-              x={cap.x}
-              y={cap.y - 10}
-              textAnchor="middle"
-              fill="rgba(255,255,255,0.5)"
-              fontSize="7"
-              fontFamily="'JetBrains Mono', monospace"
-              fontWeight="700"
-            >
-              {uf}
-            </text>
-
-            {/* Tooltip on hover */}
-            {activeState === uf && (
-              <g>
-                <rect
-                  x={cap.x - 45}
-                  y={cap.y - 30}
-                  width="90"
-                  height="18"
-                  rx="4"
-                  fill="rgba(0,0,0,0.85)"
-                  stroke="rgba(255,255,255,0.2)"
-                  strokeWidth="0.5"
-                />
-                <text
-                  x={cap.x}
-                  y={cap.y - 18}
-                  textAnchor="middle"
-                  fill="#fff"
-                  fontSize="7"
-                  fontFamily="'Inter', sans-serif"
-                  fontWeight="600"
-                >
-                  {cap.name}
-                </text>
-              </g>
-            )}
-          </motion.g>
-        ))}
-      </svg>
-    </div>
+      {/* Smaller city markers */}
+      {CITIES.map((city, i) => (
+        <Marker
+          key={`city-${i}`}
+          position={[city.lat, city.lng]}
+          icon={nzIconSmall}
+        >
+          <Popup>
+            <div style={{ fontFamily: "'Inter', sans-serif", textAlign: 'center', color: '#000' }}>
+              <strong style={{ fontSize: '0.8rem' }}>{city.name}</strong>
+              <br />
+              <span style={{ fontSize: '0.7rem', color: '#666' }}>Aplicador NZ Certificado</span>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
+    </MapContainer>
   );
 }
