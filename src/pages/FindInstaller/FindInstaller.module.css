@@ -24,7 +24,7 @@
 /* ══════ HERO ══════ */
 .hero {
   text-align: center;
-  padding: clamp(5rem, 12vh, 9rem) 2rem clamp(3rem, 6vh, 5rem);
+  padding: clamp(6rem, 14vh, 10rem) 2rem clamp(3rem, 6vh, 5rem);
   position: relative;
   z-index: 2;
   overflow: hidden;
@@ -33,13 +33,22 @@
 .hero::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120%;
-  height: 100%;
-  background: radial-gradient(ellipse at center, rgba(212,175,55,0.06) 0%, transparent 65%);
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(10,10,12,0.85) 0%, rgba(10,10,12,0.6) 40%, rgba(10,10,12,0.92) 100%),
+    url('/assets/images/hero-luxury-car.jpg') center/cover no-repeat;
+  filter: saturate(0.3) contrast(1.1);
   pointer-events: none;
+  z-index: -1;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center top, rgba(212,175,55,0.06) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .heroTag {

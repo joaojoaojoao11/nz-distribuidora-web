@@ -98,14 +98,6 @@ export default function FindInstaller() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <motion.div
-          className={styles.heroTag}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          Rede Nacional de Aplicadores Certificados
-        </motion.div>
 
         <h1 className={styles.heroTitle}>
           {'NÃO PROCURE.'.split('').map((char, i) => (
