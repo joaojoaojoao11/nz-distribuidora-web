@@ -94,20 +94,56 @@ export default function FindInstaller() {
       {/* ══════ HERO ══════ */}
       <motion.section
         className={styles.hero}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
       >
-        <div className={styles.heroTag}>Rede Nacional de Aplicadores Certificados</div>
-        <h1 className={styles.heroTitle}>
-          <span>NÃO PROCURE.</span><br />
-          <span>NÓS ENCONTRAMOS PARA VOCÊ.</span>
-        </h1>
-        <p className={styles.heroSubtitle}>
-          Um especialista em PPF e envelopamento da própria NZ vai cuidar de cada detalhe — do aplicador ideal à melhor negociação — com total responsabilidade nossa.
-        </p>
+        <motion.div
+          className={styles.heroTag}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          Rede Nacional de Aplicadores Certificados
+        </motion.div>
 
-        <div className={styles.counters}>
+        <h1 className={styles.heroTitle}>
+          {'NÃO PROCURE.'.split('').map((char, i) => (
+            <motion.span
+              key={`a-${i}`}
+              style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
+              initial={{ opacity: 0, filter: 'blur(12px)', scale: 0.3, y: Math.random() * 40 - 20 }}
+              animate={{ opacity: 1, filter: 'blur(0px)', scale: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 + i * 0.04, ease: [0.22, 1, 0.36, 1] }}
+            >{char === ' ' ? '\u00A0' : char}</motion.span>
+          ))}
+          <br />
+          {'NÓS ENCONTRAMOS PARA VOCÊ.'.split('').map((char, i) => (
+            <motion.span
+              key={`b-${i}`}
+              style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
+              initial={{ opacity: 0, filter: 'blur(12px)', scale: 0.3, y: Math.random() * 40 - 20 }}
+              animate={{ opacity: 1, filter: 'blur(0px)', scale: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.8 + i * 0.03, ease: [0.22, 1, 0.36, 1] }}
+            >{char === ' ' ? '\u00A0' : char}</motion.span>
+          ))}
+        </h1>
+
+        <motion.p
+          className={styles.heroSubtitle}
+          initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          transition={{ delay: 1.6, duration: 0.8 }}
+        >
+          Seu veículo merece o melhor. Um <strong>especialista em proteção automotiva da própria NZ</strong> vai cuidar de cada detalhe — da escolha do aplicador certificado ideal à <strong>melhor negociação</strong> — com total responsabilidade e garantia nossa.
+        </motion.p>
+
+        <motion.div
+          className={styles.counters}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 2.0, duration: 0.6 }}
+        >
           <div className={styles.counterItem}>
             <span className={styles.counterValue}><AnimatedCounter target={27} /></span>
             <span className={styles.counterLabel}>Capitais</span>
@@ -120,7 +156,7 @@ export default function FindInstaller() {
             <span className={styles.counterValue}>+<AnimatedCounter target={500} /></span>
             <span className={styles.counterLabel}>Aplicadores</span>
           </div>
-        </div>
+        </motion.div>
       </motion.section>
 
       {/* ══════ GRID: FORM + MAP ══════ */}

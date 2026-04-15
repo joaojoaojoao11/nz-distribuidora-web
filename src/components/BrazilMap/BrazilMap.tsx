@@ -8,19 +8,47 @@ interface BrazilMapProps {
   onStateClick: (uf: string) => void;
 }
 
-// NZ logo icon for markers
-const nzIcon = L.icon({
-  iconUrl: '/assets/logos/logo-simbolo-branco.svg',
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
-  popupAnchor: [0, -16],
+// NZ logo icon for capitals — Large 3D effect
+const nzIcon = L.divIcon({
+  className: 'nz-marker-capital',
+  html: `<div style="
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 4px 12px rgba(212,175,55,0.5)) drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+    animation: nzPulse 3s ease-in-out infinite;
+    transform: perspective(200px) rotateX(10deg);
+    transition: transform 0.3s, filter 0.3s;
+  ">
+    <img src='/assets/logos/logo-simbolo-branco.svg' style='width:44px;height:44px;' />
+  </div>
+  <style>
+    @keyframes nzPulse { 0%,100%{transform:perspective(200px) rotateX(10deg) scale(1)} 50%{transform:perspective(200px) rotateX(10deg) scale(1.12)} }
+    .nz-marker-capital:hover div { transform: perspective(200px) rotateX(0deg) scale(1.25) !important; filter: drop-shadow(0 6px 20px rgba(212,175,55,0.7)) drop-shadow(0 2px 6px rgba(0,0,0,0.9)) !important; }
+  </style>`,
+  iconSize: [44, 44],
+  iconAnchor: [22, 22],
+  popupAnchor: [0, -24],
 });
 
-const nzIconSmall = L.icon({
-  iconUrl: '/assets/logos/logo-simbolo-branco.svg',
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
-  popupAnchor: [0, -10],
+// NZ logo icon for cities — smaller with subtle 3D
+const nzIconSmall = L.divIcon({
+  className: 'nz-marker-city',
+  html: `<div style="
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 2px 6px rgba(255,255,255,0.3)) drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+    transform: perspective(150px) rotateX(8deg);
+    opacity: 0.75;
+    transition: transform 0.3s, opacity 0.3s, filter 0.3s;
+  ">
+    <img src='/assets/logos/logo-simbolo-branco.svg' style='width:24px;height:24px;' />
+  </div>
+  <style>
+    .nz-marker-city:hover div { opacity: 1 !important; transform: perspective(150px) rotateX(0deg) scale(1.3) !important; filter: drop-shadow(0 4px 12px rgba(212,175,55,0.5)) !important; }
+  </style>`,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+  popupAnchor: [0, -14],
 });
 
 // 27 Capitals
