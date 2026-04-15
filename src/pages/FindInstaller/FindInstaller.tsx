@@ -13,6 +13,13 @@ const EscudoComBracoIcon = '/assets/simbolos/simbolo-escudo-com-braco.svg';
 
 const SERVICES = ['PPF', 'Envelopamento'];
 
+declare global {
+  interface Window {
+    initGoogleMaps: () => void;
+    google: any;
+  }
+}
+
 // Framer variants
 const blurReveal = {
   hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
@@ -67,6 +74,7 @@ export default function FindInstaller() {
   const [success, setSuccess] = useState(false);
   const [submittedName, setSubmittedName] = useState('');
   const [formStep, setFormStep] = useState(1);
+  const [googleLoaded, setGoogleLoaded] = useState(false);
 
   // Form state
   const [fullName, setFullName] = useState('');
@@ -80,6 +88,85 @@ export default function FindInstaller() {
     setFormStep(1);
     setIsFormOpen(true);
   };
+
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    console.log("[DEBUG MAPS] 1. API Key no Vite:", apiKey ? "ACHOU!" : "NAO ACHOU :(");
+    if (!apiKey) return;
+    
+    if (window.google?.maps?.places) {
+      console.log("[DEBUG MAPS] 2. Google Maps já carregado na janela.");
+      setGoogleLoaded(true);
+      return;
+    }
+
+    if (!document.querySelector('#google-maps-script')) {
+      console.log("[DEBUG MAPS] 3. Injetando Script Tag no HEAD do HTML...");
+      window.initGoogleMaps = () => {
+         console.log("[DEBUG MAPS] 4. Script carregou com Sucesso (Callback disparado)!");
+         setGoogleLoaded(true);
+      };
+      const script = document.createElement('script');
+      script.id = 'google-maps-script';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (formStep === 2 && googleLoaded) {
+      let autocomplete: any;
+      let listener: any;
+      let retryCount = 0;
+
+      const initAutocomplete = () => {
+        const input = document.getElementById('locationInput') as HTMLInputElement;
+        if (!input) {
+          if (retryCount < 10) {
+            retryCount++;
+            setTimeout(initAutocomplete, 100);
+          } else {
+             console.log("[DEBUG MAPS] 5. Erro fatal: O campo de input nunca apareceu no DOM!");
+          }
+          return;
+        }
+
+        console.log("[DEBUG MAPS] 5. Input Capturado! Anexando Autocomplete do Google...", input);
+
+        // Evita duplicação se recarregar
+        if (autocomplete) return;
+
+        try {
+          autocomplete = new window.google.maps.places.Autocomplete(input, {
+             componentRestrictions: { country: 'br' }
+          });
+          console.log("[DEBUG MAPS] 6. Autocomplete Anexado sem erros na sintaxe JS!");
+          
+          listener = autocomplete.addListener('place_changed', () => {
+            const place = autocomplete.getPlace();
+            console.log("[DEBUG MAPS] 7. Local capturado do dropdown:", place);
+            if (place && place.formatted_address) {
+              setLocation(place.formatted_address);
+            } else if (place && place.name) {
+              setLocation(place.name);
+            }
+          });
+        } catch (e) {
+          console.error("[DEBUG MAPS] 6. FALHA INESPERADA ao Tentar rodar new Autocomplete:", e);
+        }
+      };
+
+      initAutocomplete();
+
+      return () => {
+        if (window.google?.maps?.event && listener) {
+          window.google.maps.event.removeListener(listener);
+        }
+      };
+    }
+  }, [formStep, googleLoaded]);
 
   const formatPhone = (value: string) => {
     const digits = value.replace(/\D/g, '').slice(0, 11);
@@ -482,9 +569,10 @@ export default function FindInstaller() {
                       <div className={styles.formGroup}>
                         <label className={styles.formLabel}>Localização</label>
                         <input
+                          id="locationInput"
                           type="text"
                           className={styles.formInput}
-                          placeholder="CEP, Cidade ou Cidade - UF (ex: São Paulo - SP)"
+                          placeholder="CEP, Cidade ou Endereço Completo"
                           value={location}
                           onChange={(e) => setLocation(e.target.value)}
                           autoFocus

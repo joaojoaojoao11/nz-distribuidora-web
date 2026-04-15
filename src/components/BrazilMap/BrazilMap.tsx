@@ -231,6 +231,7 @@ export default function BrazilMap({ activeState: _activeState, onStateClick }: B
       style={{ width: '100%', height: '100%', minHeight: '550px', borderRadius: '16px', background: '#0a0a0a' }}
       zoomControl={true}
       attributionControl={false}
+      scrollWheelZoom={false}
     >
       {/* Dark tile layer */}
       <TileLayer

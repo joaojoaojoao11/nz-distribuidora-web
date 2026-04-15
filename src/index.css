@@ -95,3 +95,39 @@ button {
 .animate-fade-up {
   animation: fadeUp 0.8s var(--transition-smooth) forwards;
 }
+
+/* Google Maps Autocomplete Overrides */
+.pac-container {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  font-family: var(--font-body) !important;
+  margin-top: 5px;
+  z-index: 99999 !important;
+}
+
+.pac-item {
+  padding: 10px 16px !important;
+  border-top: 1px solid var(--border-light) !important;
+  cursor: pointer !important;
+  color: var(--text-secondary) !important;
+}
+
+.pac-item:hover, .pac-item-selected {
+  background-color: var(--border-light) !important;
+}
+
+.pac-item-query {
+  color: var(--text-primary) !important;
+  font-weight: 500 !important;
+}
+
+/* Ocultar a logo gigante do Google na lista, deixando aspecto minimalista */
+.pac-logo::after {
+  display: none !important;
+}
+
+.pac-icon {
+  filter: invert(1) opacity(0.5);
+}
