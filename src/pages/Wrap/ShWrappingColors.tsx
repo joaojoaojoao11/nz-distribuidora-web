@@ -75,6 +75,22 @@ export default function ShWrappingColors() {
   const [activeImage, setActiveImage] = useState<string>('');
   const [images, setImages] = useState<string[]>([]);
   const [isTechSheetOpen, setIsTechSheetOpen] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+
+  const openLightbox = (idx: number) => {
+    setLightboxIndex(idx);
+    setLightboxOpen(true);
+  };
+
+  const lightboxPrev = () => {
+    setLightboxIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const lightboxNext = () => {
+    setLightboxIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -147,7 +163,7 @@ export default function ShWrappingColors() {
 
         <div className={styles.productContainer}>
           <div className={styles.gallerySection}>
-            <div className={styles.mainImageWrapper}>
+            <div className={styles.mainImageWrapper} onClick={() => openLightbox(images.indexOf(activeImage))} style={{ cursor: 'zoom-in' }}>
               <AnimatePresence mode="wait">
                 <motion.img 
                   key={activeImage || 'default'}
@@ -341,6 +357,67 @@ export default function ShWrappingColors() {
                   </button>
                 </div>
               </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Lightbox Fullscreen Gallery */}
+        <AnimatePresence>
+          {lightboxOpen && (
+            <motion.div
+              className={styles.lightboxOverlay}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setLightboxOpen(false)}
+              onTouchStart={(e) => setTouchStart(e.touches[0].clientX)}
+              onTouchEnd={(e) => {
+                if (touchStart === null) return;
+                const diff = touchStart - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 60) {
+                  diff > 0 ? lightboxNext() : lightboxPrev();
+                }
+                setTouchStart(null);
+              }}
+            >
+              {/* Close Button */}
+              <button className={styles.lightboxClose} onClick={() => setLightboxOpen(false)}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+              </button>
+
+              {/* Previous Arrow */}
+              <button
+                className={`${styles.lightboxArrow} ${styles.lightboxArrowLeft}`}
+                onClick={(e) => { e.stopPropagation(); lightboxPrev(); }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+
+              {/* Image */}
+              <motion.img
+                key={lightboxIndex}
+                src={images[lightboxIndex]}
+                alt={`${productData.name} - ${lightboxIndex + 1}`}
+                className={styles.lightboxImage}
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              {/* Next Arrow */}
+              <button
+                className={`${styles.lightboxArrow} ${styles.lightboxArrowRight}`}
+                onClick={(e) => { e.stopPropagation(); lightboxNext(); }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+
+              {/* Counter */}
+              <div className={styles.lightboxCounter}>
+                {lightboxIndex + 1} / {images.length}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
