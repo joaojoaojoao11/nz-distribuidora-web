@@ -17,6 +17,8 @@ import Company from './pages/Company/Company';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Dashboard from './pages/Admin/Dashboard';
+import WarrantyRegistration from './pages/Warranty/WarrantyRegistration';
+import WarrantyValidator from './pages/Warranty/WarrantyValidator';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
@@ -61,6 +63,8 @@ function App() {
                 <Route path="/wrap/oracal-670ra/:colorCode" element={<Oracal670ColorPage />} />
                 <Route path="/sobre" element={<Company />} />
                 <Route path="/encontre-aplicador" element={<FindInstaller />} />
+                <Route path="/registro-garantia" element={<WarrantyRegistration />} />
+                <Route path="/validar-garantia" element={<WarrantyValidator />} />
               </Routes>
             </main>
             <Footer />

@@ -1,0 +1,213 @@
+.container {
+  min-height: 100vh;
+  width: 100%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 30px 30px, 30px 30px;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem 1rem;
+}
+
+.content {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.logoWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  height: 48px;
+  object-fit: contain;
+}
+
+.card {
+  background: rgba(15, 15, 17, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2.5rem;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.validBorder {
+  border-left: 4px solid #10B981;
+}
+
+.invalidBorder {
+  border-left: 4px solid #EF4444;
+}
+
+.pendingBorder {
+  border-left: 4px solid #D4AF37;
+}
+
+/* Status Header */
+.statusHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.statusIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statusIcon.valid {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+}
+
+.statusIcon.invalid {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+}
+
+.statusIcon.pending {
+  background: rgba(212, 175, 55, 0.1);
+  color: #D4AF37;
+}
+
+.statusTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.statusTitle.valid { color: #10B981; }
+.statusTitle.invalid { color: #EF4444; }
+.statusTitle.pending { color: #D4AF37; }
+
+.statusDesc {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+/* Data Grid */
+.dataGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dataRow {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 1.25rem;
+}
+
+.dataLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  font-weight: 600;
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.dataValue {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.dataValue strong {
+  color: #D4AF37;
+  font-weight: 700;
+}
+
+.hashDisplay {
+  background: rgba(0, 0, 0, 0.5);
+  font-family: 'JetBrains Mono', monospace;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  margin-top: 2rem;
+  word-break: break-all;
+}
+
+.actionButton {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 1.25rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.actionButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Loading States */
+.scannerRing {
+  width: 80px;
+  height: 80px;
+  border: 4px solid rgba(212, 175, 55, 0.1);
+  border-top-color: #D4AF37;
+  border-radius: 50%;
+  animation: scan 1.5s linear infinite;
+  margin-bottom: 2rem;
+}
+
+@keyframes scan {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 1.5rem;
+  }
+  
+  .dataRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .dataLabel {
+    width: 100%;
+  }
+}

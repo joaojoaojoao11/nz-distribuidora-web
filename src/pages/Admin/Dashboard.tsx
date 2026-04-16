@@ -9,6 +9,7 @@ import {
 import WorldMap from '../../components/WorldMap';
 import styles from './Admin.module.css';
 import AdminProducts from './AdminProducts';
+import AdminWarranties from './AdminWarranties';
 
 interface Lead { id: string; name: string; email: string; phone: string; source: string; status: string; created_at: string; }
 interface UserProfile {
@@ -21,7 +22,7 @@ interface UserProfile {
   address_zip?: string | null; created_at: string;
 }
 
-type TabType = 'dashboard' | 'produtos' | 'leads' | 'users' | 'clients';
+type TabType = 'dashboard' | 'produtos' | 'leads' | 'users' | 'clients' | 'garantias';
 type PeriodType = 'today' | '7d' | 'month' | 'quarter' | 'semester' | 'year';
 
 const PERIOD_LABELS: Record<PeriodType, string> = {
@@ -361,7 +362,8 @@ export default function Dashboard() {
     produtos: 'Produtos (E-commerce)',
     leads: 'Leads & Contatos',
     users: 'Usuários do Sistema',
-    clients: 'Clientes & Revendedores'
+    clients: 'Clientes & Revendedores',
+    garantias: 'Garantias Oficiais'
   };
 
   const customTooltipStyle = {
@@ -392,6 +394,9 @@ export default function Dashboard() {
           </button>
           <button className={`${styles.navLink} ${activeTab === 'produtos' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('produtos')}>
             <span>🏷️</span> <span>Produtos</span>
+          </button>
+          <button className={`${styles.navLink} ${activeTab === 'garantias' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('garantias')}>
+            <span>🛡️</span> <span>Garantias</span>
           </button>
           <button className={`${styles.navLink} ${activeTab === 'users' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('users')}>
             <span>🔐</span> <span>Usuários</span>
@@ -826,6 +831,9 @@ export default function Dashboard() {
 
         {/* ===== PRODUTOS ===== */}
         {activeTab === 'produtos' && <AdminProducts />}
+
+        {/* ===== GARANTIAS ===== */}
+        {activeTab === 'garantias' && <AdminWarranties />}
       </main>
     </div>
   );
