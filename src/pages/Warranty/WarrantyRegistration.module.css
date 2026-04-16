@@ -109,6 +109,18 @@
   z-index: 2;
 }
 
+@media (max-width: 768px) {
+  .stepCard {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stepCard {
+    padding: 1.25rem 1rem;
+  }
+}
+
 /* Form Groups */
 .formGrid {
   display: grid;
@@ -204,6 +216,13 @@
   gap: 1.5rem;
 }
 
+@media (max-width: 500px) {
+  .bentoGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 .bentoCard {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -267,6 +286,12 @@
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   margin-bottom: 2rem;
+}
+
+@media (max-width: 500px) {
+  .serviceTypeGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .serviceBtn {
@@ -454,12 +479,20 @@
   }
 }
 
+@media (max-width: 480px) {
+  .blueprintDataGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .blueprintSecurity {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border: 1px solid rgba(255, 255, 255, 0.12);
   padding: 1.5rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .authBadge {
