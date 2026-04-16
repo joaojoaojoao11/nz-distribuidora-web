@@ -276,8 +276,8 @@ export default function NzwrapColorPage() {
         {/* Bento Grid Specifications Exclusivo */}
         <section style={{ maxWidth: '1400px', margin: 'clamp(2rem, 5vw, 4rem) auto 0 auto', padding: '0 5%' }}>
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            display: 'flex',
+            flexWrap: 'wrap',
             gap: 'clamp(1rem, 2vw, 1.5rem)',
           }}>
             
@@ -293,7 +293,7 @@ export default function NzwrapColorPage() {
                  backgroundColor: 'rgba(15, 15, 18, 0.5)',
                  backdropFilter: 'blur(20px)',
                  WebkitBackdropFilter: 'blur(20px)',
-                 gridColumn: '1 / -1',
+                 flexBasis: '100%',
                  display: 'flex',
                  alignItems: 'center',
                  justifyContent: 'space-between',
@@ -343,7 +343,8 @@ export default function NzwrapColorPage() {
                  backdropFilter: 'blur(10px)',
                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.02)',
                  display: 'flex',
-                 flexDirection: 'column'
+                 flexDirection: 'column',
+                 flex: '1 1 300px'
                }}
             >
               <h4 style={{ fontSize: '0.8rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', fontWeight: 600 }}>Tensão de Torque / Dobra</h4>
@@ -364,7 +365,8 @@ export default function NzwrapColorPage() {
                  backdropFilter: 'blur(10px)',
                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.02)',
                  display: 'flex',
-                 flexDirection: 'column'
+                 flexDirection: 'column',
+                 flex: '1 1 300px'
                }}
             >
               <h4 style={{ fontSize: '0.8rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem', fontWeight: 600 }}>Sustentação do Efeito Viso</h4>
@@ -385,7 +387,8 @@ export default function NzwrapColorPage() {
                  backdropFilter: 'blur(10px)',
                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.02)',
                  display: 'flex',
-                 flexDirection: 'column'
+                 flexDirection: 'column',
+                 flex: '1 1 300px'
                }}
             >
               <h4 style={{ fontSize: '0.8rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.5rem', fontWeight: 600 }}>Parâmetros da Engenharia</h4>
@@ -406,6 +409,76 @@ export default function NzwrapColorPage() {
             </motion.div>
 
           </div>
+        </section>
+
+        {/* Ficha Técnica Detalhada */}
+        <section style={{ maxWidth: '1400px', margin: '5rem auto 4rem auto', padding: '0 5%' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{ 
+              borderTop: '1px solid rgba(255,255,255,0.1)', 
+              paddingTop: '4rem',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '4rem'
+            }}
+          >
+            {/* Título & Descrição Tech */}
+            <div style={{ flex: '1 1 300px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div style={{ width: '40px', height: '1px', background: '#D4AF37' }}></div>
+                <h4 style={{ color: '#D4AF37', fontSize: '0.85rem', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0, fontWeight: 700 }}>Inteligência Estrutural</h4>
+              </div>
+              <h2 style={{ 
+                fontFamily: '"Playfair Display", serif', 
+                fontSize: 'clamp(2.5rem, 4vw, 3.5rem)', 
+                color: '#fff', 
+                marginBottom: '1.5rem',
+                fontWeight: 800,
+                lineHeight: 1.1,
+                letterSpacing: '-0.02em'
+              }}>Ficha<br/>Técnica.</h2>
+              <p style={{ color: '#a1a1aa', lineHeight: 1.7, fontSize: '1.05rem', margin: 0 }}>
+                A Coleção Premium NZWRAP foi desenvolvida sob rigorosos testes de laboratório para atender estúdios de estética automotiva high-end. 
+                Com durabilidade estendida e canais de ar estrategicamente desenhados, oferecemos uma experiência de aplicação fluida e um acabamento com aspecto duradouro de pintura original.
+              </p>
+            </div>
+
+            {/* Tabela de Especificações */}
+            <div style={{ flex: '2 1 500px', display: 'flex', flexDirection: 'column', gap: '1px', background: 'rgba(255,255,255,0.05)' }}>
+              {[
+                { label: 'Coleção', value: 'Premium Series' },
+                { label: 'Material da Película', value: 'PVC Híbrido Polimérico Calandrado' },
+                { label: 'Espessura do Filme', value: '140 mícrons (± 10)' },
+                { label: 'Tubete Interno', value: '3 polegadas' },
+                { label: 'Tipo de Adesivo', value: 'Acrílico Suspenso Solvente (Repositionable)' },
+                { label: 'Tecnologia do Liner', value: 'Air-Free Density (PET Laminated)' },
+                { label: 'Aplicação', value: 'Seca (Air Release Diamond)' },
+                { label: 'Poder de Conformação', value: 'Curvas com graus complexos e moderados' },
+                { label: 'Temperatura Ideal', value: '+18°C a +25°C (Recomendado na estufa / ambiente climatizado)' },
+                { label: 'Garantia Padrão', value: '3 a 5 Anos (Vertical)' }
+              ].map((spec, i) => (
+                <div key={i} style={{ 
+                  display: 'flex', 
+                  flexWrap: 'wrap', 
+                  justifyContent: 'space-between', 
+                  backgroundColor: '#0a0a0c', 
+                  padding: '1.25rem',
+                  gap: '1rem',
+                  transition: 'background-color 0.2s',
+                  cursor: 'default'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#0a0a0c'}
+                >
+                  <span style={{ color: '#888', fontSize: '0.95rem', fontWeight: 500 }}>{spec.label}</span>
+                  <span style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 600, textAlign: 'right' }}>{spec.value}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </section>
       </div>
     </div>
