@@ -12,6 +12,7 @@ import Wrap from './pages/Wrap/Wrap';
 import { NzwrapPremium, ShColors, Oracal970, Oracal651, Oracal670 } from './pages/Wrap/WrapProducts';
 import Oracal670ColorPage from './pages/Wrap/Oracal670Colors';
 import ShWrappingColors from './pages/Wrap/ShWrappingColors';
+import NzwrapColorPage from './pages/Wrap/NzwrapColorPage';
 import FindInstaller from './pages/FindInstaller/FindInstaller';
 import Company from './pages/Company/Company';
 import Login from './pages/Auth/Login';
@@ -56,6 +57,7 @@ function App() {
                 <Route path="/ppf/core-gloss" element={<CoreGloss />} />
                 <Route path="/wrap" element={<Wrap />} />
                 <Route path="/wrap/nzwrap-premium" element={<NzwrapPremium />} />
+                <Route path="/wrap/nzwrap-premium/:sku" element={<NzwrapColorPage />} />
                 <Route path="/wrap/sh-colors" element={<ShColors />} />
                 <Route path="/wrap/sh-colors/:colorCode" element={<ShWrappingColors />} />
                 <Route path="/wrap/oracal-970ra" element={<Oracal970 />} />

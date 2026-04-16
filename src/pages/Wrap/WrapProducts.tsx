@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
 import styles from './WrapProduct.module.css';
 
 const blurReveal = {
@@ -224,35 +225,283 @@ function WrapProductPage({ data, children }: { data: WrapProductData, children?:
   );
 }
 
+/* ======================== NZWRAP PREMIUM STORYTELLING & GRID ======================== */
+function NzwrapPremiumContent() {
+  return (
+    <>
+      <div style={{ position: 'relative', backgroundColor: '#0a0a0c', padding: '8rem 0', width: '100%', borderTop: '1px solid rgba(255,255,255,0.03)', overflow: 'hidden' }}>
+        
+        {/* Immersive Car Background */}
+        <div style={{
+           position: 'absolute',
+           inset: 0,
+           zIndex: 0,
+           opacity: 0.4
+        }}>
+          <motion.img 
+             initial={{ opacity: 0, scale: 1.05 }}
+             animate={{ opacity: 1, scale: 1 }}
+             transition={{ duration: 1.5 }}
+             src="/assets/images/bg_nzwrap_premium.jpg"
+             onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2560&auto=format&fit=crop'; }}
+             alt="Dark Wrap Car"
+             style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'grayscale(30%)' }}
+          />
+          <div style={{
+             position: 'absolute',
+             inset: 0,
+             background: 'linear-gradient(to bottom, #0a0a0c 0%, rgba(10,10,12,0.5) 50%, #0a0a0c 100%)'
+          }} />
+          <div style={{
+             position: 'absolute',
+             inset: 0,
+             background: 'radial-gradient(circle at center, transparent 0%, #0a0a0c 100%)'
+          }} />
+        </div>
+
+        <section className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ marginBottom: '5rem', maxWidth: '900px', margin: '0 auto 5rem auto', textAlign: 'center', padding: '0 5%' }}>
+            <span style={{ 
+              display: 'inline-block',
+              color: '#d4af37', 
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              marginBottom: '1.5rem',
+              fontFamily: '"Geist Mono", "JetBrains Mono", monospace',
+              textShadow: '0 2px 10px rgba(0,0,0,0.8)'
+            }}>ENGENHARIA PROPRIETÁRIA</span>
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              style={{ 
+                fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
+                fontWeight: 800, 
+                letterSpacing: '-0.04em', 
+                fontFamily: '"Playfair Display", "Lyon Text", serif',
+                color: '#fff',
+                lineHeight: 1.1,
+                marginBottom: '2rem',
+                textShadow: '0 4px 20px rgba(0,0,0,0.8)'
+              }}
+            >
+              40% Mais Resistente.<br/>Construído para o Extremo.
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)', color: '#d4d4d8', lineHeight: 1.6, maxWidth: '700px', margin: '0 auto', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}
+            >
+              A tecnologia híbrida garante elasticidade monumental sem perda de cor ou esbranquiçamento nas bordas. Uma malha microscópica com <strong style={{color: '#fff'}}>Laminação Especial</strong> que aniquila o envelhecimento prematuro, gerando o autêntico efeito Mirror-Gloss.
+            </motion.p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '1px',
+            backgroundColor: 'rgba(255,255,255,0.05)',
+            border: '1px solid rgba(255,255,255,0.05)',
+            borderRadius: '4px',
+            overflow: 'hidden',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+          }}>
+            <motion.div 
+               initial={{ opacity: 0 }}
+               whileInView={{ opacity: 1 }}
+               viewport={{ once: true }}
+               style={{
+                 padding: 'clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem)',
+                 backgroundColor: 'rgba(15, 15, 18, 0.7)',
+                 backdropFilter: 'blur(10px)',
+                 display: 'flex',
+                 flexDirection: 'column',
+                 justifyContent: 'center'
+               }}
+            >
+              <span style={{ 
+                display: 'inline-block',
+                color: '#fff', 
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                marginBottom: '1.5rem',
+                border: '1px solid rgba(255,255,255,0.1)',
+                padding: '4px 10px',
+                borderRadius: '2px',
+                alignSelf: 'flex-start'
+              }}>Sistema Híbrido</span>
+              <h3 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontFamily: '"Playfair Display", serif', fontWeight: 800, color: '#fff', marginBottom: '1rem', lineHeight: 1.2 }}>Laminação Isolante</h3>
+              <p style={{ color: '#a1a1aa', lineHeight: 1.6, fontSize: 'clamp(0.95rem, 1.5vw, 1.05rem)', margin: 0 }}>O brilho espelhado que as marcas genéricas não alcançam. A injeção extra de verniz estrutural preserva a base de cor mesmo nas dobras mais agressivas.</p>
+            </motion.div>
+
+            <motion.div 
+               initial={{ opacity: 0 }}
+               whileInView={{ opacity: 1 }}
+               viewport={{ once: true }}
+               transition={{ delay: 0.1 }}
+               style={{
+                 padding: 'clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem)',
+                 backgroundColor: 'rgba(15, 15, 18, 0.7)',
+                 backdropFilter: 'blur(10px)',
+                 display: 'flex',
+                 flexDirection: 'column',
+                 justifyContent: 'center'
+               }}
+            >
+              <span style={{ 
+                display: 'inline-block',
+                color: '#fff', 
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                marginBottom: '1.5rem',
+                border: '1px solid rgba(255,255,255,0.1)',
+                padding: '4px 10px',
+                borderRadius: '2px',
+                alignSelf: 'flex-start'
+              }}>Imunidade Total</span>
+              <h3 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontFamily: '"Playfair Display", serif', fontWeight: 800, color: '#fff', marginBottom: '1rem', lineHeight: 1.2 }}>3 Anos de Garantia</h3>
+              <p style={{ color: '#a1a1aa', lineHeight: 1.6, fontSize: 'clamp(0.95rem, 1.5vw, 1.05rem)', margin: 0 }}>Enquanto o mercado abandona seu projeto no primeiro verão, nós assinamos o termo de confiança contra deformação térmica e radiação UV.</p>
+            </motion.div>
+          </div>
+        </section>
+      </div>
+
+      <section className="container" style={{ padding: 'clamp(4rem, 8vw, 8rem) 5%' }}>
+        <div style={{ marginBottom: '4rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', fontFamily: '"Playfair Display", serif', fontWeight: 800, margin: '0 0 0.5rem 0', letterSpacing: '-0.02em', color: '#fff' }}>The Collection</h2>
+            <p style={{ color: '#a1a1aa', fontFamily: '"Geist Sans", sans-serif', fontSize: 'clamp(1rem, 2vw, 1.1rem)', margin: 0 }}>
+              Navegue pelo portfólio premium. 30 tons selecionados.
+            </p>
+          </div>
+          <div style={{ fontFamily: '"Geist Mono", monospace', fontSize: '0.85rem', color: '#888' }}>[ 01 — 30 ]</div>
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: '4rem 2rem',
+        }}>
+          {NZWRAP_COLORS.map((color, idx) => (
+            <motion.div
+              key={color.sku}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: (idx % 3) * 0.1 }}
+            >
+              <Link 
+                to={`/wrap/nzwrap-premium/${color.sku.toLowerCase()}`}
+                style={{ textDecoration: 'none', display: 'block' }}
+              >
+                <div style={{ position: 'relative', borderRadius: '4px', overflow: 'hidden', backgroundColor: '#1A1A1A' }}>
+                  <div style={{ 
+                    aspectRatio: '4/5', 
+                    width: '100%', 
+                    overflow: 'hidden' 
+                  }}>
+                    <img 
+                      src={color.thumbnail} 
+                      alt={color.name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)', transformOrigin: 'center' }}
+                      onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.05)' }}
+                      onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
+                      onError={(e) => { e.currentTarget.src = '/assets/images/wrap_sh_card.png'; }}
+                    />
+                  </div>
+                  
+                  <div style={{
+                     position: 'absolute',
+                     top: '1rem',
+                     right: '1rem',
+                     backgroundColor: 'rgba(0,0,0,0.5)',
+                     backdropFilter: 'blur(8px)',
+                     WebkitBackdropFilter: 'blur(8px)',
+                     color: '#fff',
+                     padding: '4px 8px',
+                     fontSize: '0.65rem',
+                     fontWeight: 600,
+                     textTransform: 'uppercase',
+                     letterSpacing: '0.05em',
+                     borderRadius: '4px',
+                     fontFamily: '"Geist Sans", sans-serif',
+                     border: '1px solid rgba(255,255,255,0.1)'
+                  }}>
+                    {color.finish}
+                  </div>
+                </div>
+
+                <div style={{ paddingTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <span style={{ 
+                    fontFamily: '"Geist Mono", "JetBrains Mono", monospace', 
+                    fontSize: '0.75rem', 
+                    color: '#888',
+                  }}>
+                    {color.sku}
+                  </span>
+                  <h3 style={{ 
+                    fontFamily: '"Geist Sans", "Helvetica Neue", sans-serif', 
+                    fontSize: '1.1rem', 
+                    fontWeight: 600, 
+                    color: '#fff', 
+                    margin: 0,
+                    letterSpacing: '-0.01em',
+                    transition: 'color 0.2s ease'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = '#d4af37'}
+                  onMouseOut={(e) => e.currentTarget.style.color = '#fff'}
+                  >
+                    {color.name.replace('NZWRAP ', '')}
+                  </h3>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
+
 /* ======================== NZWRAP PREMIUM ======================== */
 export function NzwrapPremium() {
   return <WrapProductPage data={{
     title: 'NZWRAP PREMIUM',
     subtitle: 'PVC Alto Brilho | Linha Proprietária NZ',
-    heroDescription: 'Adesivo PVC de alta performance com acabamento ultra glossy, desenvolvido exclusivamente para a NZ Distribuidora. Curadoria de cores exclusivas e performance de aplicação impecável.',
-    heroWarning: 'Performance comprovada em mais de 500 lojas parceiras em todo o Brasil.',
+    heroDescription: 'Adesivo PVC de alta performance com laminação estrutural exclusiva NZ Distribuidora. 40% mais resistente a esbranquiçamento em dobras extremas. O autêntico efeito espelhado para alta performance automotiva.',
+    heroWarning: 'A ÚNICA MARCA NO BRASIL COM 3 ANOS DE GARANTIA DIRETA DE FÁBRICA.',
     heroImage: '/assets/images/wrap_nzwrap_hero.png',
     specs: [
-      { icon: CamadaIcon, info: 'Material', spec: 'PVC Premium Alto Brilho', detalhe: 'Vinil de alta performance com acabamento mirror-like.' },
-      { icon: EscudoVazioIcon, info: 'Acabamento', spec: 'Ultra Gloss', detalhe: 'Brilho superior com reflexo profundo e uniforme.' },
-      { icon: CamadaIcon, info: 'Largura', spec: '1,52m', detalhe: 'Padrão profissional para cobertura completa.' },
-      { icon: RepelenciaIcon, info: 'Adesivo', spec: 'Permanente Reposicionável', detalhe: 'Cola anti-bolhas para aplicação limpa.' },
-      { icon: CertoIcon, info: 'Curadoria', spec: 'Cores Exclusivas NZ', detalhe: 'Seleção própria de cores premium.' },
-      { icon: RegeneracaoIcon, info: 'Suporte', spec: 'Direto NZ Group', detalhe: 'Suporte técnico e consultoria inclusos.' }
+      { icon: CamadaIcon, info: 'Material', spec: 'PVC Premium Laminação Híbrida', detalhe: '40% maior resistência torcional.' },
+      { icon: EscudoVazioIcon, info: 'Acabamento', spec: 'Ultra Gloss / Deep Pearl', detalhe: 'Brilho superior indestrutível com reflexo de vitrificação.' },
+      { icon: CamadaIcon, info: 'Largura', spec: '1,52m', detalhe: 'Padrão esportivo para capôs e tetos sem emendas.' },
+      { icon: RepelenciaIcon, info: 'Adesivo', spec: 'Permanente Air-Free Reposicionável', detalhe: 'Aplicação cirúrgica, 100% de saída de ar.' },
+      { icon: CertoIcon, info: 'Curadoria', spec: 'Cores Exclusivas NZ', detalhe: 'Cores que assinam seu trabalho como grife automotiva.' },
+      { icon: RegeneracaoIcon, info: 'Garantia', spec: '3 Anos Absolut', detalhe: 'Paz de espírito blindada contra o tempo.' }
     ],
     diferenciais: [
-      { icon: CertoIcon, title: 'Acabamento Perfeito', desc: 'Superfície ultra glossy com reflexo profundo e uniforme que rivaliza com pinturas de fábrica.', accent: 'Mirror-Like', image: '/assets/images/wrap_nzwrap_card.png' },
-      { icon: RepelenciaIcon, title: 'Aplicação Limpa', desc: 'Cola anti-bolhas reposicionável que facilita a aplicação e garante acabamento impecável.', accent: 'Anti-Bolhas', image: '/assets/images/wrap_nzwrap_hero.png' },
-      { icon: EscudoVazioIcon, title: 'Curadoria Exclusiva', desc: 'Cores selecionadas pela equipe NZ, alinhadas com as tendências do mercado automotivo.', accent: 'Exclusividade NZ', image: '/assets/images/wrap_sh_card.png' },
-      { icon: PresenteIcon, title: 'Suporte Dedicado', desc: 'Consultoria técnica gratuita para lojistas e aplicadores. Treinamento e suporte direto da NZ.', accent: 'Consultoria', image: '/assets/images/wrap_970ra_card.png' }
+      { icon: CertoIcon, title: 'Laminação Especial Isolante', desc: 'Camada de proteção que evita o enfraquecimento e esbranquiçamento da cor nas pontas complexas dos para-choques, preservando a tensão original da fábrica.', accent: '+40% Força', image: '/assets/images/wrap_nzwrap_card.png' },
+      { icon: RepelenciaIcon, title: 'Garantia Singular', desc: 'Enquanto grande parte do mercado se isenta de durabilidade, assumimos a cor do projeto em contrato com 3 Anos de imunidade termal comprovada.', accent: '3 Anos Intocáveis', image: '/assets/images/wrap_nzwrap_hero.png' },
+      { icon: EscudoVazioIcon, title: 'Curadoria Automotiva', desc: 'Estudo preciso das texturas das grandes montadoras convertidas em películas. Sua oficina transforma qualquer modelo com fidelidade visual incomparável.', accent: 'Pinta Premium', image: '/assets/images/wrap_sh_card.png' },
+      { icon: PresenteIcon, title: 'Suporte Direto', desc: 'Assessoria de alta patente para parceiros aplicadores. Fale direto com a engenharia da NZ em todos os processos complexos.', accent: 'Respaldo Garantido', image: '/assets/images/wrap_970ra_card.png' }
     ],
     benchmarks: [
-      { metric: 'Brilho & Acabamento', desc: 'Nível de reflexão da superfície', nz: [95, 92, 88], mercado: [90, 82, 74] },
-      { metric: 'Estabilidade Dimensional', desc: 'Resistência a deformações', nz: [92, 88, 83], mercado: [88, 78, 70] },
-      { metric: 'Facilidade de Aplicação', desc: 'Performance do adesivo', nz: [93, 90, 87], mercado: [85, 78, 72] },
-      { metric: 'Resistência UV', desc: 'Proteção contra amarelamento', nz: [88, 83, 77], mercado: [82, 72, 63] }
+      { metric: 'Resistência nas Dobras', desc: 'Tensão sem perda de cor (esbranquiçamento)', nz: [99, 97, 95], mercado: [85, 78, 70] },
+      { metric: 'Brilho & Profundidade', desc: 'Nível de reflexão / vitrificação (Mirror-Gloss)', nz: [98, 96, 94], mercado: [90, 82, 74] },
+      { metric: 'Cobertura de Garantia', desc: 'Índice de segurança documentada a longo prazo', nz: [100, 100, 100], mercado: [60, 20, 0] },
+      { metric: 'Vida Útil UV', desc: 'Preservação química exposta ao clima tropical', nz: [94, 91, 88], mercado: [82, 72, 63] }
     ]
-  }} />;
+  }}>
+    <NzwrapPremiumContent />
+  </WrapProductPage>;
 }
 
 /* ======================== SH WRAPPING COLORS ======================== */
@@ -442,7 +691,7 @@ export function Oracal651() {
 
 // Helper component for the colors grid
 function Oracal670ColorGrid() {
-  const [colors, setColors] = useState<{code: string, hex: string, finish: string, namePT: string}[]>([]);
+  const [colors, setColors] = useState<{slug: string, code: string, hex: string, finish: string, namePT: string}[]>([]);
 
   useEffect(() => {
     const fetchColors = async () => {
@@ -455,9 +704,10 @@ function Oracal670ColorGrid() {
       
       if (data) {
         setColors(data.map(d => ({
-          code: d.slug.split('-').pop()?.toUpperCase() || d.slug,
+          slug: d.slug,
+          code: d.sku ? d.sku.replace('670RA-', '') : d.name,
           hex: d.hex_code,
-          finish: d.finish_type === 'Gloss' ? 'Gloss' : 'Matte',
+          finish: d.finish_type === 'Brilhante' || d.finish_type === 'Gloss' ? 'Gloss' : 'Matte',
           namePT: d.name
         })));
       }
@@ -474,8 +724,8 @@ function Oracal670ColorGrid() {
     }}>
       {colors.map(color => (
         <Link 
-          key={color.code}
-          to={`/wrap/oracal-670ra/${color.code.toLowerCase()}`}
+          key={color.slug}
+          to={`/wrap/oracal-670ra/${color.slug}`}
           style={{ textDecoration: 'none' }}
         >
           <div style={{

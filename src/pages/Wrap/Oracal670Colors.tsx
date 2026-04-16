@@ -62,30 +62,33 @@ export default function Oracal670ColorPage() {
 
   const [colorData, setColorData] = useState<DbProduct | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // Validate color and normalize to uppercase
-  const upCode = colorCode?.toUpperCase() || '';
+  const [upCode, setUpCode] = useState<string>('');
 
   useEffect(() => {
     const fetchColor = async () => {
       setLoading(true);
-      const slug = `670ra-${upCode.toLowerCase()}`;
+      if (!colorCode) return;
       
       const { data, error: _error } = await supabase
         .from('web_catalog_products')
         .select('*')
-        .eq('slug', slug)
+        .eq('slug', colorCode)
         .eq('is_active', true)
         .single();
         
       if (data) {
         setColorData(data);
+        if (data.sku) {
+          setUpCode(data.sku.replace('670RA-', '').toUpperCase());
+        } else {
+          setUpCode(data.name.split(' ')[0].toUpperCase());
+        }
       }
       setLoading(false);
     };
     
     fetchColor();
-  }, [upCode]);
+  }, [colorCode]);
 
   if (loading) {
     return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#050505', color: '#fff' }}>Carregando produto...</div>;
@@ -129,19 +132,19 @@ export default function Oracal670ColorPage() {
               ORACAL 670RA
             </span>
             <span className={`${styles.badge} ${isLightColor ? styles.badgeDark : styles.badgeLight}`}>
-              {colorData.finish_type} Finish
+              {colorData.finish_type}
             </span>
           </div>
 
           <h1 className={styles.title}>
             <span className={styles.colorCode}>{upCode}</span>
-            <span className={styles.colorName}>{colorData.name.split(' ')[0]}</span>
+            <span className={styles.colorName}>{colorData.name.replace(upCode, '').trim()}</span>
           </h1>
           
-          <h2 className={styles.subtitle}>{colorData.name}</h2>
+          <h2 className={styles.subtitle}>{colorData.technical_name || colorData.name}</h2>
           
           <p className={styles.description}>
-            {colorData.technical_description}
+            {colorData.technical_description || 'O lendário 651 agora foi otimizado para instalações de wrapping.'}
           </p>
           
           <div className={`${styles.techSpecs} ${isLightColor ? styles.techDark : ''}`}>

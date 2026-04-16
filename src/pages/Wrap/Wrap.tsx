@@ -31,8 +31,9 @@ const productLines = [
     description: 'Adesivo PVC de alta performance com acabamento ultra glossy. Curadoria exclusiva de cores, suporte direto NZ e performance garantida.',
     image: '/assets/images/wrap_nzwrap_card.png',
     cardLogo: '/assets/logos/logo-nz-wrap.svg',
-    badge1: 'ALTO BRILHO',
-    badge2: 'EXCLUSIVO NZ',
+    badge1: 'CATÁLOGO DIGITAL',
+    badge2: '3 ANOS',
+    badge3: 'EXCLUSIVO NZ',
     available: true
   },
   {
@@ -42,8 +43,9 @@ const productLines = [
     description: 'Linha de adesivos automotivos com cola anti-bolhas, acabamentos Gloss, Matte, Color Shift e Metallic. Referência no Brasil em variedade.',
     image: '/assets/images/wrap_sh_card.png',
     cardLogo: '/assets/logos/logo-sh-colors.svg',
-    badge1: '180μ',
-    badge2: '3 ANOS',
+    badge1: 'CATÁLOGO DIGITAL',
+    badge2: '180μ',
+    badge3: '',
     available: true
   },
   {
@@ -55,6 +57,7 @@ const productLines = [
     cardLogo: '/assets/logos/logo-orafol.svg',
     badge1: '63μ',
     badge2: '6 ANOS',
+    badge3: '',
     available: true
   },
   {
@@ -66,6 +69,7 @@ const productLines = [
     cardLogo: '/assets/logos/logo-orafol.svg',
     badge1: '70μ',
     badge2: '1,52m',
+    badge3: '',
     available: true
   }
 ];
@@ -212,8 +216,9 @@ export default function Wrap() {
                 <div className={styles.productCardOverlay}></div>
                 <div className={styles.productCardContent}>
                   <div className={styles.productCardBadgesContainer}>
-                    <span className={styles.productCardBadge}>{product.badge1}</span>
-                    <span className={styles.productCardBadge}>{product.badge2}</span>
+                    {product.badge1 && <span className={styles.productCardBadge}>{product.badge1}</span>}
+                    {product.badge2 && <span className={styles.productCardBadge}>{product.badge2}</span>}
+                    {product.badge3 && <span className={styles.productCardBadge}>{product.badge3}</span>}
                   </div>
                   {product.cardLogo && (
                     <img src={product.cardLogo} alt={`${product.title} Logo`} className={styles.productCardBrandLogo} />
