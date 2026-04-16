@@ -14,7 +14,7 @@ interface BlogPost {
   category_id?: string;
   published_at: string;
   author: string;
-  categories?: { name: string };
+  categories?: any;
 }
 
 const containerVariants = {

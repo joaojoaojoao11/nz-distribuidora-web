@@ -17,7 +17,7 @@ interface BlogPostDetail {
   cover_image_url: string;
   published_at: string;
   author: string;
-  categories: { name: string } | null;
+  categories: any;
 }
 
 export default function BlogPost() {
