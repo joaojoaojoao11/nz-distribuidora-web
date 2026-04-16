@@ -21,8 +21,8 @@ export const NZWRAP_COLORS: NzwrapColorData[] = [
     name: 'NZWRAP STUTTGART SPORT GREY',
     finish: 'Gloss',
     hex: '#5c5f63',
-    images: ['/assets/images/sh/ag_suv_v2.png', '/assets/images/sh/ag_sedan_v2.png', '/assets/images/sh/ag_supercar_v2.png'],
-    thumbnail: '/assets/images/sh/ag_suv_v2.png'
+    images: ['/assets/images/nzwrap/stuttgart_sport_grey.png', '/assets/images/sh/ag_sedan_v2.png', '/assets/images/sh/ag_supercar_v2.png'],
+    thumbnail: '/assets/images/nzwrap/stuttgart_sport_grey.png'
   },
   {
     sku: 'NZW203',
