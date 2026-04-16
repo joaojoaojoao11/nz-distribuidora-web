@@ -23,6 +23,7 @@ interface WarrantyFormData {
   cliente_cpf: string;
   cliente_nome_completo: string;
   cliente_email: string;
+  cliente_telefone: string;
   solicita_envio_fisico: boolean;
   cliente_cep: string;
   cliente_endereco: string;
@@ -70,11 +71,11 @@ function generateAuthCode(dateStr: string, placa: string): string {
   const dateParts = dateStr.split('-');
   const dateFormatted = dateParts.length === 3 ? `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}` : dateStr;
   const hash = Math.random().toString(36).substring(2, 7).toUpperCase();
-  return `NZ-${dateFormatted.replace(/\//g,'')}-${cleanPlaca}-${hash}`;
+  return `NZ-${dateFormatted.replace(/\//g, '')}-${cleanPlaca}-${hash}`;
 }
 
 const AVAILABLE_AREAS = [
-  "Capô", "Teto", "Para-choque Dianteiro", "Para-choque Traseiro", 
+  "Capô", "Teto", "Para-choque Dianteiro", "Para-choque Traseiro",
   "Laterais", "Portas", "Para-lamas", "Retrovisores", "Faróis", "Interno"
 ];
 
@@ -102,7 +103,7 @@ const WarrantyRegistration = () => {
           .select('name, garantia_anos, durabilidade_anos')
           .eq('brand', 'NZPPF')
           .eq('is_active', true);
-          
+
         if (data && data.length > 0) {
           setPpfProducts(data);
         } else {
@@ -129,7 +130,7 @@ const WarrantyRegistration = () => {
   const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let cep = e.target.value.replace(/\D/g, '');
     setFormData(prev => ({ ...prev, cliente_cep: cep }));
-    
+
     if (cep.length === 8) {
       try {
         const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
@@ -264,9 +265,9 @@ const WarrantyRegistration = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        
+
         {step < 4 && (
-          <motion.div 
+          <motion.div
             className={styles.header}
             variants={stagger}
             initial="hidden"
@@ -286,7 +287,7 @@ const WarrantyRegistration = () => {
         {errorMsg && (
           <div style={{ backgroundColor: 'rgba(230, 25, 25, 0.1)', border: '1px solid #E61919', color: '#E61919', padding: '1rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <AlertCircle size={20} />
-            <span style={{fontFamily: 'monospace', fontSize: '0.85rem'}}>{errorMsg}</span>
+            <span style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>{errorMsg}</span>
           </div>
         )}
 
@@ -321,7 +322,7 @@ const WarrantyRegistration = () => {
                   <label className={styles.label}>Telefone do Proprietário</label>
                   <input className={styles.input} type="text" name="cliente_telefone" value={formData.cliente_telefone} onChange={handleChange} placeholder="(11) 99999-9999" />
                 </div>
-                
+
                 <div className={styles.formGroup} style={{ gridColumn: 'span 2', marginTop: '1rem' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontFamily: 'Space Grotesk', color: '#fff' }}>
                     <input type="checkbox" name="solicita_envio_fisico" checked={formData.solicita_envio_fisico} onChange={handleChange} style={{ accentColor: '#D4AF37', width: '1.2rem', height: '1.2rem' }} />
@@ -341,9 +342,9 @@ const WarrantyRegistration = () => {
                     </div>
                     <div className={styles.formGroup}>
                       <label className={styles.label}>Número e Complemento</label>
-                      <div style={{display: 'flex', gap: '0.5rem'}}>
-                        <input className={styles.input} type="text" name="cliente_numero" value={formData.cliente_numero} onChange={handleChange} placeholder="123" style={{width: '30%'}} />
-                        <input className={styles.input} type="text" name="cliente_complemento" value={formData.cliente_complemento} onChange={handleChange} placeholder="Apto 4" style={{width: '70%'}} />
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input className={styles.input} type="text" name="cliente_numero" value={formData.cliente_numero} onChange={handleChange} placeholder="123" style={{ width: '30%' }} />
+                        <input className={styles.input} type="text" name="cliente_complemento" value={formData.cliente_complemento} onChange={handleChange} placeholder="Apto 4" style={{ width: '70%' }} />
                       </div>
                     </div>
                     <div className={styles.formGroup}>
@@ -352,7 +353,7 @@ const WarrantyRegistration = () => {
                     </div>
                   </div>
                 )}
-                
+
                 <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
                   <label className={styles.label}>Cidade</label>
                   <input className={styles.input} type="text" name="cliente_cidade" value={formData.cliente_cidade} onChange={handleChange} />
@@ -380,8 +381,8 @@ const WarrantyRegistration = () => {
                 </div>
               </div>
               <div className={styles.footerNav}>
-                <button className={styles.btnPrimary} style={{marginLeft: 'auto'}} onClick={handleNext}>
-                  AVANÇAR <ChevronRight size={16} style={{display:'inline', verticalAlign:'middle'}}/>
+                <button className={styles.btnPrimary} style={{ marginLeft: 'auto' }} onClick={handleNext}>
+                  AVANÇAR <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
                 </button>
               </div>
             </motion.div>
@@ -397,18 +398,18 @@ const WarrantyRegistration = () => {
               className={styles.stepCard}
             >
               <div className={styles.bentoGrid}>
-                <div 
+                <div
                   className={`${styles.bentoCard} ${formData.linha_escolhida === 'PPF' ? styles.bentoCardActive : ''}`}
-                  onClick={() => setFormData({...formData, linha_escolhida: 'PPF', produto_nome: ''})}
+                  onClick={() => setFormData({ ...formData, linha_escolhida: 'PPF', produto_nome: '' })}
                 >
                   <div className={styles.bentoTitle} style={{ marginBottom: '1.5rem' }}>
                     <img src="/assets/simbolos/LOGO-NZPPF-BRANCO.svg" alt="NZ-PPF" style={{ height: '110px', opacity: formData.linha_escolhida === 'PPF' ? 1 : 0.6, transition: 'all 0.3s ease', filter: formData.linha_escolhida === 'PPF' ? 'brightness(0) invert(0)' : 'none' }} />
                   </div>
                   <div className={styles.bentoServiceText}>PPF</div>
                 </div>
-                <div 
+                <div
                   className={`${styles.bentoCard} ${formData.linha_escolhida === 'NZWrap' ? styles.bentoCardActive : ''}`}
-                  onClick={() => setFormData({...formData, linha_escolhida: 'NZWrap', produto_nome: ''})}
+                  onClick={() => setFormData({ ...formData, linha_escolhida: 'NZWrap', produto_nome: '' })}
                 >
                   <div className={styles.bentoTitle} style={{ marginBottom: '1.5rem' }}>
                     <img src="/assets/simbolos/LOGO-NZWRAP-BRANCO.svg" alt="NZWrap" style={{ height: '110px', opacity: formData.linha_escolhida === 'NZWrap' ? 1 : 0.6, transition: 'all 0.3s ease', filter: formData.linha_escolhida === 'NZWrap' ? 'brightness(0) invert(0)' : 'none' }} />
@@ -418,13 +419,13 @@ const WarrantyRegistration = () => {
               </div>
 
               {formData.linha_escolhida && (
-                <div className={styles.formGroup} style={{marginTop: '2rem'}}>
+                <div className={styles.formGroup} style={{ marginTop: '2rem' }}>
                   <label className={styles.label}>Linha do Produto / Material Utilizado ({formData.linha_escolhida})</label>
                   {formData.linha_escolhida === 'PPF' ? (
-                    <select 
-                      className={styles.inputSelect} 
-                      name="produto_nome" 
-                      value={formData.produto_nome} 
+                    <select
+                      className={styles.inputSelect}
+                      name="produto_nome"
+                      value={formData.produto_nome}
                       onChange={handleChange}
                     >
                       <option value="">Selecione a Linha Oficial...</option>
@@ -433,13 +434,13 @@ const WarrantyRegistration = () => {
                       ))}
                     </select>
                   ) : (
-                    <input 
-                      className={styles.input} 
-                      type="text" 
-                      name="produto_nome" 
-                      value={formData.produto_nome} 
-                      onChange={handleChange} 
-                      placeholder="Ex: Preto Brilho, Nardo Grey, Fibra de Carbono..." 
+                    <input
+                      className={styles.input}
+                      type="text"
+                      name="produto_nome"
+                      value={formData.produto_nome}
+                      onChange={handleChange}
+                      placeholder="Ex: Preto Brilho, Nardo Grey, Fibra de Carbono..."
                     />
                   )}
                 </div>
@@ -448,7 +449,7 @@ const WarrantyRegistration = () => {
               <div className={styles.footerNav}>
                 <button className={styles.btnSecondary} onClick={() => setStep(1)}>VOLTAR</button>
                 <button className={styles.btnPrimary} disabled={!formData.linha_escolhida || !formData.produto_nome.trim()} onClick={handleNext}>
-                  AVANÇAR <ChevronRight size={16} style={{display:'inline', verticalAlign:'middle'}}/>
+                  AVANÇAR <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
                 </button>
               </div>
             </motion.div>
@@ -464,30 +465,30 @@ const WarrantyRegistration = () => {
               className={styles.stepCard}
             >
               <div className={styles.serviceTypeGrid}>
-                <button 
+                <button
                   className={`${styles.serviceBtn} ${formData.tipo_servico === 'Total/Full' ? styles.serviceBtnActive : ''}`}
-                  onClick={() => setFormData({...formData, tipo_servico: 'Total/Full', areas_protegidas: []})}
+                  onClick={() => setFormData({ ...formData, tipo_servico: 'Total/Full', areas_protegidas: [] })}
                 >
-                  <Shield size={24} style={{marginBottom: '0.5rem'}}/>
-                  <br/>
+                  <Shield size={24} style={{ marginBottom: '0.5rem' }} />
+                  <br />
                   Total / Full
                 </button>
-                <button 
+                <button
                   className={`${styles.serviceBtn} ${formData.tipo_servico === 'Parcial' ? styles.serviceBtnActive : ''}`}
-                  onClick={() => setFormData({...formData, tipo_servico: 'Parcial'})}
+                  onClick={() => setFormData({ ...formData, tipo_servico: 'Parcial' })}
                 >
-                  [+]<br/>
+                  [+]<br />
                   Parcial Frontal / Kit
                 </button>
               </div>
 
               {formData.tipo_servico === 'Parcial' && (
-                <div style={{marginTop: '2rem'}}>
+                <div style={{ marginTop: '2rem' }}>
                   <label className={styles.label}>Selecione as áreas protegidas:</label>
                   <div className={styles.chipsContainer}>
                     {AVAILABLE_AREAS.map(area => (
-                      <div 
-                        key={area} 
+                      <div
+                        key={area}
                         className={`${styles.chip} ${formData.areas_protegidas.includes(area) ? styles.chipActive : ''}`}
                         onClick={() => handleAreaToggle(area)}
                       >
@@ -515,21 +516,21 @@ const WarrantyRegistration = () => {
               animate="visible"
               exit="exit"
             >
-              <div style={{textAlign: 'center', marginBottom: '2rem'}}>
-                <CheckCircle2 size={48} color="#D4AF37" style={{marginBottom: '1rem', display: 'inline-block'}}/>
-                <h2 style={{fontFamily: 'Space Grotesk', textTransform: 'uppercase', letterSpacing: '-0.02em', fontSize: '2rem'}}>
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <CheckCircle2 size={48} color="#D4AF37" style={{ marginBottom: '1rem', display: 'inline-block' }} />
+                <h2 style={{ fontFamily: 'Space Grotesk', textTransform: 'uppercase', letterSpacing: '-0.02em', fontSize: '2rem' }}>
                   REGISTRO FINALIZADO
                 </h2>
-                <p style={{fontFamily: 'monospace', color: 'rgba(255,255,255,0.6)'}}>
+                <p style={{ fontFamily: 'monospace', color: 'rgba(255,255,255,0.6)' }}>
                   Os dados foram auditados e inseridos no ecossistema oficial.
                 </p>
               </div>
 
               <div className={styles.blueprintDoc}>
                 <div className={styles.blueprintHeader}>
-                  <h3 className={styles.blueprintHero}>CERTIFICADO DE<br/>GARANTIA</h3>
+                  <h3 className={styles.blueprintHero}>CERTIFICADO DE<br />GARANTIA</h3>
                   <div className={styles.blueprintTerminal}>
-                    LOG: {new Date().toISOString()}<br/>
+                    LOG: {new Date().toISOString()}<br />
                     ID: {authCode}
                   </div>
                 </div>
@@ -558,9 +559,9 @@ const WarrantyRegistration = () => {
                     <div className={styles.authBadge}>
                       <Shield size={14} /> STATUS: {ppfProducts.find(p => p.name === formData.produto_nome)?.garantia_anos || (formData.linha_escolhida === 'NZWrap' ? 3 : 0)} ANOS [VERIFIED]
                     </div>
-                    <div style={{fontFamily: 'monospace', fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)'}}>
-                      {'>>>'} HASH DE AUTENTICAÇÃO:<br/>
-                      <strong style={{color: '#fff', fontSize: '1.2rem'}}>{authCode}</strong>
+                    <div style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>
+                      {'>>>'} HASH DE AUTENTICAÇÃO:<br />
+                      <strong style={{ color: '#fff', fontSize: '1.2rem' }}>{authCode}</strong>
                     </div>
                   </div>
                   <div className={styles.qrContainer}>
@@ -568,14 +569,14 @@ const WarrantyRegistration = () => {
                     <div className={`${styles.qrCrosshair} ${styles.tr}`}></div>
                     <div className={`${styles.qrCrosshair} ${styles.bl}`}></div>
                     <div className={`${styles.qrCrosshair} ${styles.br}`}></div>
-                    <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000'}}>
-                      <QrCode size={64}/>
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000' }}>
+                      <QrCode size={64} />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className={styles.footerNav} style={{marginTop: '2rem'}}>
+              <div className={styles.footerNav} style={{ marginTop: '2rem' }}>
                 <button className={styles.btnSecondary} onClick={() => window.print()}>
                   [ IMPRIMIR COMPROVANTE ]
                 </button>
@@ -586,7 +587,7 @@ const WarrantyRegistration = () => {
         </AnimatePresence>
 
         {/* SECURITY HIGHLIGHT SECTION (ANTI-FRAUDE) */}
-        <motion.div 
+        <motion.div
           className={styles.securitySection}
           initial="hidden"
           whileInView="visible"
@@ -609,7 +610,7 @@ const WarrantyRegistration = () => {
         </motion.div>
 
         {/* GUIDELINES & MAINTENANCE SECTION */}
-        <motion.div 
+        <motion.div
           className={styles.careSection}
           initial="hidden"
           whileInView="visible"
@@ -682,7 +683,7 @@ const WarrantyRegistration = () => {
 
           </div>
         </motion.div>
-        
+
       </div>
     </div>
   );
