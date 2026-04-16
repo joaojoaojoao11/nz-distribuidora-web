@@ -91,18 +91,36 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
       doc.text(value, x, y + 7);
     };
 
-    drawLabelValue('CLIENTE (CPF / CNPJ)', warranty.cliente_cpf, 20, 65);
-    drawLabelValue('PLACA / CHASSI', warranty.veiculo_placa_chassi.toUpperCase(), 110, 65);
-    drawLabelValue('VEÍCULO (MODELO)', warranty.veiculo_modelo.toUpperCase(), 180, 65);
-
-    drawLabelValue('PRODUTO / LINHA', (warranty.produto_nome || warranty.linha_escolhida).toUpperCase(), 20, 90);
+    // ROW 1: PROPRIETÁRIO (DESTAQUE MÁXIMO)
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(130, 130, 130);
+    doc.text('PROPRIETÁRIO DO VEÍCULO', 20, 65);
     
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(212, 175, 55); // Destaque Ouro NZ
+    doc.text(warranty.cliente_nome_completo ? warranty.cliente_nome_completo.toUpperCase() : 'NÃO INFORMADO', 20, 73);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(200, 200, 200);
+    doc.text(`DOCUMENTO REGISTRADO: ${warranty.cliente_cpf}`, 20, 79);
+
+    // ROW 2: INFO VEÍCULO E PRODUTO
+    drawLabelValue('VEÍCULO (MODELO)', warranty.veiculo_modelo.toUpperCase(), 20, 95);
+    drawLabelValue('PLACA / CHASSI', warranty.veiculo_placa_chassi.toUpperCase(), 110, 95);
+    drawLabelValue('PRODUTO / LINHA', (warranty.produto_nome || warranty.linha_escolhida).toUpperCase(), 180, 95);
+    
+    // ROW 3: INSTALADOR E SERVICO
+    drawLabelValue('ESTÚDIO APLICADOR OFICIAL', warranty.aplicador_nome.toUpperCase(), 20, 115);
+    drawLabelValue('DATA DE APLICAÇÃO', new Date(warranty.data_aplicacao).toLocaleDateString('pt-BR'), 180, 115);
+
     let servicoText = warranty.tipo_servico.toUpperCase();
     if (warranty.tipo_servico.toUpperCase() === 'PARCIAL' && warranty.areas_protegidas && warranty.areas_protegidas.length > 0) {
       servicoText += ` (${warranty.areas_protegidas.join(', ')})`.toUpperCase();
     }
     
-    // Auto-adjust font size for very long partial areas
     let servicoFontSize = 14;
     if (servicoText.length > 30) servicoFontSize = 10;
     if (servicoText.length > 50) servicoFontSize = 8;
@@ -110,21 +128,15 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
-    doc.text('TIPO DE SERVIÇO', 110, 90);
+    doc.text('TIPO DE SERVIÇO / COBERTURA', 110, 115);
     doc.setFontSize(servicoFontSize);
     doc.setTextColor(255, 255, 255);
-    // Use doc.splitTextToSize to handle multiple lines if it gets huge, but let's just shrink font for now or wrap.
     const splitServico = doc.splitTextToSize(servicoText, 65);
-    doc.text(splitServico, 110, 97);
-
-    drawLabelValue('DATA DE APLICAÇÃO', new Date(warranty.data_aplicacao).toLocaleDateString('pt-BR'), 180, 90);
-
-    drawLabelValue('APLICADOR OFICIAL / ESTÚDIO', warranty.aplicador_nome.toUpperCase(), 20, 115);
+    doc.text(splitServico, 110, 122);
 
     // Dynamic Warranty Terms Text
     let termsTitle = 'TERMOS DE COBERTURA OFICIAL';
     
-    // Fallbacks just in case the data is old or missing
     const garAnos = warranty.garantia_anos || 0;
     const durAnos = warranty.durabilidade_anos || 0;
     
@@ -139,24 +151,11 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(212, 175, 55);
-    doc.text(termsTitle, 20, 137);
+    doc.text(termsTitle, 20, 142);
     
-    // Owner
-    const marginLeft = 20;
-    const yPos = 125;
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(255, 255, 255);
-    doc.text(`PROPRIETÁRIO: ${warranty.cliente_nome_completo ? warranty.cliente_nome_completo.toUpperCase() : 'NÃO INFORMADO'}`, marginLeft, yPos + 18);
-    
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(150, 150, 150);
-    doc.text(`CPF: ${warranty.cliente_cpf}`, marginLeft, yPos + 23);
-
     doc.setFontSize(10);
     doc.setTextColor(180, 180, 180);
-    doc.text(termsText, 20, 143, { maxWidth: 250, lineHeightFactor: 1.5 });
+    doc.text(termsText, 20, 148, { maxWidth: 250, lineHeightFactor: 1.5 });
 
     // Auth box
     doc.setFillColor(25, 25, 28);
