@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import SEO from '../../components/SEO/SEO';
 import styles from './Ppf.module.css';
 
 const staggerContainer = {
@@ -135,8 +136,23 @@ export default function Ppf() {
   const navigate = useNavigate();
   const [activeCompareId, setActiveCompareId] = useState('flow');
 
+  const schema = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Catálogo de Envelopamento PPF Premium - NZPPF",
+    "description": "Descubra as linhas de PPF automotivo da NZ Distribuidora. Tecnologias Luxury Gloss, Prime, Flow e Core com alta durabilidade, regeneração térmica (self-healing) e repelência.",
+    "url": "https://agencianz.com/ppf"
+  });
+
   return (
     <div className={styles.page}>
+      <SEO 
+        title="Envelopamento PPF Premium | Catálogo Completo"
+        description="As melhores linhas de Envelopamento PPF do Brasil. Proteção veicular com regeneração térmica, hidrofobia e até 12 anos de garantia."
+        keywords="ppf automotivo, envelopamento ppf, ppf transparente, película ppf, nzppf, self-healing, proteção de pintura"
+        canonicalUrl="/ppf"
+        schema={schema}
+      />
       {/* HERO */}
       <header className={styles.hero}>
         <video className={`${styles.heroVideo} ${styles.heroVideoDesktop}`} autoPlay muted loop playsInline>

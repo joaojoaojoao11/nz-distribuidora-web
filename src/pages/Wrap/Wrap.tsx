@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO/SEO';
 import styles from './Wrap.module.css';
 
 const staggerContainer = {
@@ -145,8 +146,23 @@ export default function Wrap() {
   const navigate = useNavigate();
   const [activeCompareId, setActiveCompareId] = useState<string>('nzwrap');
 
+  const schema = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Catálogo de Adesivos Automotivos e Vinil Premium - NZ Distribuidora",
+    "description": "Veja nossa linha de Vinil Automotivo: NZWrap Premium, Oracal 651, Oracal 670RA e SH Colors. Alta performance para envelopamento.",
+    "url": "https://agencianz.com/wrap"
+  });
+
   return (
     <div className={styles.page}>
+      <SEO 
+        title="Adesivo Automotivo Premium | Catálogo de Envelopamento"
+        description="Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal e NZWrap com centenas de cores."
+        keywords="adesivo automotivo, vinil automotivo, oracal 651, oracal 670ra, nzwrap, sh colors, envelopamento"
+        canonicalUrl="/wrap"
+        schema={schema}
+      />
       {/* HERO */}
       <header className={styles.hero}>
         <img src="/assets/images/wrap_hero.png" alt="" className={styles.heroImage} />

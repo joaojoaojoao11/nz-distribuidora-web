@@ -16,6 +16,8 @@ import ShWrappingColors from './pages/Wrap/ShWrappingColors';
 import NzwrapColorPage from './pages/Wrap/NzwrapColorPage';
 import FindInstaller from './pages/FindInstaller/FindInstaller';
 import Company from './pages/Company/Company';
+import BlogList from './pages/Blog/BlogList';
+import BlogPost from './pages/Blog/BlogPost';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Dashboard from './pages/Admin/Dashboard';
@@ -68,6 +70,8 @@ function App() {
                 <Route path="/wrap/oracal-670ra/:colorCode" element={<Oracal670ColorPage />} />
                 <Route path="/sobre" element={<Company />} />
                 <Route path="/encontre-aplicador" element={<FindInstaller />} />
+                <Route path="/blog" element={<BlogList />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/registro-garantia" element={<WarrantyRegistration />} />
                 <Route path="/validar-garantia" element={<WarrantyValidator />} />
               </Routes>

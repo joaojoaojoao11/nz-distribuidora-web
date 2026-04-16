@@ -11,6 +11,8 @@ import styles from './Admin.module.css';
 import AdminProducts from './AdminProducts';
 import AdminWarranties from './AdminWarranties';
 import AdminSettings from './AdminSettings';
+import AdminBlog from './AdminBlog';
+import AdminAIBlog from './AdminAIBlog';
 
 interface Lead { id: string; name: string; email: string; phone: string; source: string; status: string; created_at: string; }
 interface UserProfile {
@@ -23,7 +25,7 @@ interface UserProfile {
   address_zip?: string | null; created_at: string;
 }
 
-type TabType = 'dashboard' | 'produtos' | 'leads' | 'users' | 'clients' | 'garantias' | 'settings';
+type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'users' | 'clients' | 'garantias' | 'settings';
 type PeriodType = 'today' | '7d' | 'month' | 'quarter' | 'semester' | 'year';
 
 const PERIOD_LABELS: Record<PeriodType, string> = {
@@ -369,6 +371,8 @@ export default function Dashboard() {
   const tabLabels: Record<TabType, string> = {
     dashboard: 'Dashboard',
     produtos: 'Produtos (E-commerce)',
+    blog: 'Blog & Conteúdos',
+    'blog-ai': 'Motor IA (SEO Autônomo)',
     leads: 'Leads & Contatos',
     users: 'Usuários do Sistema',
     clients: 'Clientes & Revendedores',
@@ -404,6 +408,12 @@ export default function Dashboard() {
           </button>
           <button className={`${styles.navLink} ${activeTab === 'produtos' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('produtos')}>
             <span>🏷️</span> <span>Produtos</span>
+          </button>
+          <button className={`${styles.navLink} ${activeTab === 'blog' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('blog')}>
+            <span>✍️</span> <span>Blog</span>
+          </button>
+          <button className={`${styles.navLink} ${activeTab === 'blog-ai' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('blog-ai')}>
+            <span>🧠</span> <span>Motor SEO IA</span>
           </button>
           <button className={`${styles.navLink} ${activeTab === 'garantias' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('garantias')}>
             <span>🛡️</span> <span>Garantias</span>
@@ -845,6 +855,12 @@ export default function Dashboard() {
 
         {/* ===== PRODUTOS ===== */}
         {activeTab === 'produtos' && <AdminProducts />}
+
+        {/* ===== BLOG ===== */}
+        {activeTab === 'blog' && <AdminBlog />}
+
+        {/* ===== BLOG AI MOTOR ===== */}
+        {activeTab === 'blog-ai' && <AdminAIBlog />}
 
         {/* ===== GARANTIAS ===== */}
         {activeTab === 'garantias' && <AdminWarranties onUpdate={loadData} />}
