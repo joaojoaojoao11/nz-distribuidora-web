@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
+import emailjs from '@emailjs/browser';
 import styles from './Admin.module.css';
 
 interface Warranty {
@@ -12,6 +13,11 @@ interface Warranty {
   cliente_telefone?: string;
   cliente_cidade?: string;
   cliente_estado?: string;
+  cliente_cep?: string;
+  cliente_endereco?: string;
+  cliente_numero?: string;
+  cliente_complemento?: string;
+  cliente_bairro?: string;
   veiculo_placa_chassi: string;
   veiculo_modelo: string;
   aplicador_nome: string;
@@ -257,18 +263,29 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
       
       // Envio de email para o cliente com o link via EmailJS
       if (updatedWarranty.cliente_email) {
-        // Exemplo: Disparo EmailJS chamando api da nuvem
-        /*
-        import emailjs from '@emailjs/browser';
-        emailjs.send("SERVICE_ID", "TEMPLATE_ID", {
+        const templateParams = {
           nome_cliente: updatedWarranty.cliente_nome_completo,
           link_pdf: publicURLData.publicUrl,
           to_email: updatedWarranty.cliente_email,
+          veiculo: updatedWarranty.veiculo_modelo,
           placa: updatedWarranty.veiculo_placa_chassi,
           produto: updatedWarranty.produto_nome || updatedWarranty.linha_escolhida,
-        }, "PUBLIC_KEY").catch(err => console.error("Emailjs failed", err));
-        */
-        console.log("Email dispatch logic stub via EmailJS ready to be plugged to user's env");
+        };
+
+        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || "SERVICE_ID_AQUI";
+        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "TEMPLATE_ID_AQUI";
+        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "PUBLIC_KEY_AQUI";
+
+        emailjs.send(serviceId, templateId, templateParams, publicKey)
+          .then(() => {
+            console.log("Email dispatch logic SUCCESS via EmailJS");
+          })
+          .catch(err => {
+            console.error("Emailjs failed", err);
+            if (serviceId === "SERVICE_ID_AQUI") {
+              alert("Certificado Gerado, PDF no cofre e link do DB atualizado com SUCESSO! No entanto, o envio de E-MAIL falhou porque as suas chaves do EmailJS (.env) ainda não foram inseridas no sistema.");
+            }
+          });
       }
     }
 
@@ -279,6 +296,71 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
 
   const handleDownloadPDF = async (warrantyItem: Warranty) => {
     await generateCertificatePDF(warrantyItem);
+  };
+
+  const handleGenerateShippingLabel = (warranty: Warranty) => {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4' 
+    });
+
+    // Outer Box for cutting (100x150 mm Thermal Label Ratio)
+    doc.setLineWidth(0.5);
+    doc.rect(5, 5, 100, 150);
+
+    // Header - Remetente
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text('REMETENTE (SENDER)', 10, 15);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('NZ DISTRIBUIDORA DE ADESIVOS LTDA', 10, 21);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text('RUA FELIX ALVINO DA SILVA - 65', 10, 26);
+    doc.text('VILA DO CONDE - BARUERI - SP', 10, 31);
+    doc.text('CEP: 06445-140', 10, 36);
+
+    doc.line(5, 42, 105, 42); // Line separator
+
+    // Body - Destinatario
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text('DESTINATÁRIO (RECEIVER)', 10, 48);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    const nomeDest = doc.splitTextToSize(warranty.cliente_nome_completo?.toUpperCase() || 'N/A', 90);
+    doc.text(nomeDest, 10, 56);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    let startY = 56 + (nomeDest.length * 6);
+    
+    const enderecoFormatado = `${warranty.cliente_endereco || ''}, ${warranty.cliente_numero || ''} ${warranty.cliente_complemento ? '- ' + warranty.cliente_complemento : ''}`;
+    const endArr = doc.splitTextToSize(enderecoFormatado.toUpperCase(), 90);
+    doc.text(endArr, 10, startY);
+    startY += (endArr.length * 5);
+
+    doc.text(`BAIRRO: ${warranty.cliente_bairro?.toUpperCase() || 'N/A'}`, 10, startY);
+    startY += 6;
+    doc.text(`${warranty.cliente_cidade?.toUpperCase()} - ${warranty.cliente_estado?.toUpperCase()}`, 10, startY);
+    startY += 6;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text(`CEP: ${warranty.cliente_cep || 'N/A'}`, 10, startY + 4);
+
+    if (warranty.cliente_telefone) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text(`TEL: ${warranty.cliente_telefone}`, 10, startY + 14);
+    }
+
+    doc.save(`Etiqueta_Envio_NZ_${warranty.codigo_autenticacao}.pdf`);
   };
 
   const handleDeleteCertificate = async (id: string) => {
@@ -341,6 +423,12 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
                        🗺️ {w.cliente_cidade || ''}{w.cliente_cidade && w.cliente_estado ? ' - ' : ''}{w.cliente_estado || ''}
                       </div>
                     )}
+                    
+                    {w.cliente_cep && (
+                      <div style={{fontSize: '0.75rem', color: '#D4AF37', marginTop: '8px', fontWeight: 'bold', padding: '2px 6px', background: 'rgba(212, 175, 55, 0.1)', display: 'inline-block', borderRadius: '4px'}}>
+                        ⛟ REQUER ENVIO FÍSICO
+                      </div>
+                    )}
                   </td>
                   <td>
                     <div>{w.veiculo_modelo.toUpperCase()}</div>
@@ -378,6 +466,16 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
                           onClick={() => handleDownloadPDF(w)}
                         >
                           ⬇ BAIXAR
+                        </button>
+                      )}
+                      
+                      {w.cliente_cep && (
+                        <button 
+                          className={`${styles.actionBtn}`} 
+                          style={{ backgroundColor: '#000', border: '1px solid #D4AF37', color: '#D4AF37', fontWeight: 'bold' }}
+                          onClick={() => handleGenerateShippingLabel(w)}
+                        >
+                          📦 ETIQUETA
                         </button>
                       )}
                       

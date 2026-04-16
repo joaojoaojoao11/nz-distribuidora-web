@@ -10,6 +10,7 @@ import WorldMap from '../../components/WorldMap';
 import styles from './Admin.module.css';
 import AdminProducts from './AdminProducts';
 import AdminWarranties from './AdminWarranties';
+import AdminSettings from './AdminSettings';
 
 interface Lead { id: string; name: string; email: string; phone: string; source: string; status: string; created_at: string; }
 interface UserProfile {
@@ -22,7 +23,7 @@ interface UserProfile {
   address_zip?: string | null; created_at: string;
 }
 
-type TabType = 'dashboard' | 'produtos' | 'leads' | 'users' | 'clients' | 'garantias';
+type TabType = 'dashboard' | 'produtos' | 'leads' | 'users' | 'clients' | 'garantias' | 'settings';
 type PeriodType = 'today' | '7d' | 'month' | 'quarter' | 'semester' | 'year';
 
 const PERIOD_LABELS: Record<PeriodType, string> = {
@@ -371,7 +372,8 @@ export default function Dashboard() {
     leads: 'Leads & Contatos',
     users: 'Usuários do Sistema',
     clients: 'Clientes & Revendedores',
-    garantias: 'Garantias Oficiais'
+    garantias: 'Garantias Oficiais',
+    settings: 'Configurações Globais'
   };
 
   const customTooltipStyle = {
@@ -409,6 +411,9 @@ export default function Dashboard() {
           </button>
           <button className={`${styles.navLink} ${activeTab === 'users' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('users')}>
             <span>🔐</span> <span>Usuários</span>
+          </button>
+          <button className={`${styles.navLink} ${activeTab === 'settings' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('settings')}>
+            <span>⛭</span> <span>Configurações</span>
           </button>
           <Link to="/" className={styles.navLink}>
             <span>🌐</span> <span>Ver Site</span>
@@ -843,6 +848,9 @@ export default function Dashboard() {
 
         {/* ===== GARANTIAS ===== */}
         {activeTab === 'garantias' && <AdminWarranties onUpdate={loadData} />}
+
+        {/* ===== CONFIGURAÇÕES ===== */}
+        {activeTab === 'settings' && <AdminSettings />}
       </main>
     </div>
   );
