@@ -7,6 +7,8 @@ import styles from './Admin.module.css';
 interface Warranty {
   id: string;
   cliente_cpf: string;
+  cliente_nome_completo: string;
+  cliente_email: string;
   veiculo_placa_chassi: string;
   veiculo_modelo: string;
   aplicador_nome: string;
@@ -137,6 +139,19 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
     doc.setTextColor(212, 175, 55);
     doc.text(termsTitle, 20, 137);
     
+    // Owner
+    const marginLeft = 20;
+    const yPos = 125;
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(255, 255, 255);
+    doc.text(`PROPRIETÁRIO: ${warranty.cliente_nome_completo ? warranty.cliente_nome_completo.toUpperCase() : 'NÃO INFORMADO'}`, marginLeft, yPos + 18);
+    
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(150, 150, 150);
+    doc.text(`CPF: ${warranty.cliente_cpf}`, marginLeft, yPos + 23);
+
     doc.setFontSize(10);
     doc.setTextColor(180, 180, 180);
     doc.text(termsText, 20, 143, { maxWidth: 250, lineHeightFactor: 1.5 });
@@ -202,6 +217,7 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
     }
 
     doc.save(`Certificado_NZ_${warranty.codigo_autenticacao}.pdf`);
+    return doc.output('blob');
   };
 
   const handleGenerateCertificate = async (warrantyItem: Warranty) => {
@@ -216,10 +232,44 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
       return;
     }
 
-    // Gerar e baixar PDF (atualiza a data localmente para envio no pdf tbm se preciso)
+    // Gerar e baixar PDF na máquina do Admin
     const updatedWarranty = {...warrantyItem, certificado_gerado: true, data_geracao: generatedDate};
-    await generateCertificatePDF(updatedWarranty);
+    const pdfBlob = await generateCertificatePDF(updatedWarranty);
     
+    // Upload the Blob to the 'warranties' bucket
+    const fileName = `apólice_${updatedWarranty.codigo_autenticacao}.pdf`;
+    const { error: uploadError } = await supabase
+      .storage
+      .from('warranties')
+      .upload(fileName, pdfBlob, {
+        contentType: 'application/pdf',
+        upsert: true
+      });
+
+    if (uploadError) {
+      console.error('Erro no upload pro Storage:', uploadError);
+    } else {
+      // Registrar a public URL no BD
+      const { data: publicURLData } = supabase.storage.from('warranties').getPublicUrl(fileName);
+      await supabase.from('garantias_nz').update({ pdf_url: publicURLData.publicUrl }).eq('id', updatedWarranty.id);
+      
+      // Envio de email para o cliente com o link via EmailJS
+      if (updatedWarranty.cliente_email) {
+        // Exemplo: Disparo EmailJS chamando api da nuvem
+        /*
+        import emailjs from '@emailjs/browser';
+        emailjs.send("SERVICE_ID", "TEMPLATE_ID", {
+          nome_cliente: updatedWarranty.cliente_nome_completo,
+          link_pdf: publicURLData.publicUrl,
+          to_email: updatedWarranty.cliente_email,
+          placa: updatedWarranty.veiculo_placa_chassi,
+          produto: updatedWarranty.produto_nome || updatedWarranty.linha_escolhida,
+        }, "PUBLIC_KEY").catch(err => console.error("Emailjs failed", err));
+        */
+        console.log("Email dispatch logic stub via EmailJS ready to be plugged to user's env");
+      }
+    }
+
     // Atualiza a tabela
     loadWarranties();
     if (onUpdate) onUpdate();
@@ -248,8 +298,6 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
     if (onUpdate) onUpdate();
   };
 
-  const formatDate = (d: string) => new Date(d).toLocaleDateString('pt-BR');
-
   return (
     <div className={styles.tableSection}>
       <p className={styles.tabDescription}>
@@ -263,27 +311,31 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Data</th>
-                <th>Cliente (CPF)</th>
+                <th>Cliente</th>
                 <th>Veículo</th>
-                <th>Placa</th>
-                <th>Aplicador</th>
-                <th>Código (Hash)</th>
-                <th>Emissão (PDF)</th>
+                <th>Linha & Produto</th>
+                <th>Instalador</th>
+                <th>Validade</th>
                 <th>Status</th>
                 <th>Ações</th>
-                <th>Gerenciar</th>
               </tr>
             </thead>
             <tbody>
               {warranties.map(w => (
                 <tr key={w.id}>
-                  <td>{formatDate(w.data_aplicacao)}</td>
-                  <td>{w.cliente_cpf}</td>
-                  <td>{w.veiculo_modelo}</td>
-                  <td>{w.veiculo_placa_chassi}</td>
-                  <td>{w.aplicador_nome}</td>
-                  <td style={{ fontFamily: 'monospace', color: '#D4AF37' }}>{w.codigo_autenticacao}</td>
+                  <td>
+                    <div style={{fontWeight: 'bold'}}>{w.cliente_nome_completo || 'N/A'}</div>
+                    <div style={{fontSize: '0.8rem', color: '#888'}}>{w.cliente_cpf}</div>
+                  </td>
+                  <td>
+                    <div>{w.veiculo_modelo.toUpperCase()}</div>
+                    <div style={{fontSize: '0.8rem', color: '#888'}}>{w.veiculo_placa_chassi.toUpperCase()}</div>
+                  </td>
+                  <td>
+                    <div>{w.produto_nome.toUpperCase()}</div>
+                    <div style={{fontSize: '0.8rem', color: '#D4AF37'}}>{w.tipo_servico === 'Total/Full' ? 'FULL' : 'PARCIAL'}</div>
+                  </td>
+                  <td>{w.aplicador_nome.toUpperCase()}</td>
                   <td style={{ color: w.data_geracao ? '#fff' : 'rgba(255,255,255,0.3)' }}>
                     {w.data_geracao ? new Date(w.data_geracao).toLocaleString('pt-BR') : '-'}
                   </td>
@@ -295,32 +347,33 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
                     )}
                   </td>
                   <td>
-                    {!w.certificado_gerado ? (
+                    <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
+                      {!w.certificado_gerado ? (
+                        <button 
+                          className={`${styles.actionBtn}`} 
+                          style={{ backgroundColor: '#D4AF37', color: '#000', fontWeight: 'bold' }}
+                          onClick={() => handleGenerateCertificate(w)}
+                        >
+                          ⚡ GERAR
+                        </button>
+                      ) : (
+                        <button 
+                          className={`${styles.actionBtn}`} 
+                          style={{ backgroundColor: '#2ba84a', color: '#fff', fontWeight: 'bold' }}
+                          onClick={() => handleDownloadPDF(w)}
+                        >
+                          ⬇ BAIXAR
+                        </button>
+                      )}
+                      
                       <button 
                         className={`${styles.actionBtn}`} 
-                        style={{ backgroundColor: '#D4AF37', color: '#000', fontWeight: 'bold' }}
-                        onClick={() => handleGenerateCertificate(w)}
+                        style={{ backgroundColor: '#9e1a1a', color: '#fff', fontWeight: 'bold' }}
+                        onClick={() => handleDeleteCertificate(w.id)}
                       >
-                        ⚡ GERAR CERTIFICADO
+                        ✖ EXCLUIR
                       </button>
-                    ) : (
-                      <button 
-                        className={`${styles.actionBtn}`} 
-                        style={{ backgroundColor: '#2ba84a', color: '#fff', fontWeight: 'bold' }}
-                        onClick={() => handleDownloadPDF(w)}
-                      >
-                        ⬇ BAIXAR CERTIFICADO
-                      </button>
-                    )}
-                  </td>
-                  <td>
-                    <button 
-                      className={`${styles.actionBtn}`} 
-                      style={{ backgroundColor: '#9e1a1a', color: '#fff', fontWeight: 'bold' }}
-                      onClick={() => handleDeleteCertificate(w.id)}
-                    >
-                      ✖ EXCLUIR
-                    </button>
+                    </div>
                   </td>
                 </tr>
               ))}

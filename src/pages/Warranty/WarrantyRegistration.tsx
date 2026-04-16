@@ -21,6 +21,16 @@ const stagger = {
 
 interface WarrantyFormData {
   cliente_cpf: string;
+  cliente_nome_completo: string;
+  cliente_email: string;
+  solicita_envio_fisico: boolean;
+  cliente_cep: string;
+  cliente_endereco: string;
+  cliente_numero: string;
+  cliente_complemento: string;
+  cliente_bairro: string;
+  cliente_cidade: string;
+  cliente_estado: string;
   veiculo_placa_chassi: string;
   veiculo_modelo: string;
   aplicador_nome: string;
@@ -33,6 +43,16 @@ interface WarrantyFormData {
 
 const INITIAL_FORM: WarrantyFormData = {
   cliente_cpf: '',
+  cliente_nome_completo: '',
+  cliente_email: '',
+  solicita_envio_fisico: false,
+  cliente_cep: '',
+  cliente_endereco: '',
+  cliente_numero: '',
+  cliente_complemento: '',
+  cliente_bairro: '',
+  cliente_cidade: '',
+  cliente_estado: '',
   veiculo_placa_chassi: '',
   veiculo_modelo: '',
   aplicador_nome: '',
@@ -97,7 +117,35 @@ const WarrantyRegistration = () => {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, type } = e.target as HTMLInputElement;
+    if (type === 'checkbox') {
+      setFormData(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let cep = e.target.value.replace(/\D/g, '');
+    setFormData(prev => ({ ...prev, cliente_cep: cep }));
+    
+    if (cep.length === 8) {
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await res.json();
+        if (!data.erro) {
+          setFormData(prev => ({
+            ...prev,
+            cliente_endereco: data.logradouro,
+            cliente_bairro: data.bairro,
+            cliente_cidade: data.localidade,
+            cliente_estado: data.uf
+          }));
+        }
+      } catch (err) {
+        console.error('Erro ao buscar CEP:', err);
+      }
+    }
   };
 
   const handleAreaToggle = (area: string) => {
@@ -145,7 +193,16 @@ const WarrantyRegistration = () => {
       const durabilidadeAnos = productObj ? productObj.durabilidade_anos : (formData.linha_escolhida === 'NZWrap' ? 3 : 0);
 
       const payload = {
-        cliente_cpf: formData.cliente_cpf.replace(/\D/g, ''), // Keep only numbers
+        cliente_cpf: formData.cliente_cpf,
+        cliente_nome_completo: formData.cliente_nome_completo,
+        cliente_email: formData.cliente_email,
+        cliente_cep: formData.solicita_envio_fisico ? formData.cliente_cep : null,
+        cliente_endereco: formData.solicita_envio_fisico ? formData.cliente_endereco : null,
+        cliente_numero: formData.solicita_envio_fisico ? formData.cliente_numero : null,
+        cliente_complemento: formData.solicita_envio_fisico ? formData.cliente_complemento : null,
+        cliente_bairro: formData.solicita_envio_fisico ? formData.cliente_bairro : null,
+        cliente_cidade: formData.solicita_envio_fisico ? formData.cliente_cidade : null,
+        cliente_estado: formData.solicita_envio_fisico ? formData.cliente_estado : null,
         veiculo_placa_chassi: formData.veiculo_placa_chassi,
         veiculo_modelo: formData.veiculo_modelo,
         aplicador_nome: formData.aplicador_nome,
@@ -246,11 +303,59 @@ const WarrantyRegistration = () => {
                   <label className={styles.label}>CPF do Cliente</label>
                   <input className={styles.input} type="text" name="cliente_cpf" value={formData.cliente_cpf} onChange={handleChange} placeholder="000.000.000-00" />
                 </div>
-                <div className={styles.formGroup}>
+                <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                  <label className={styles.label}>Nome Completo do Títular</label>
+                  <input className={styles.input} type="text" name="cliente_nome_completo" value={formData.cliente_nome_completo} onChange={handleChange} placeholder="João da Silva" />
+                </div>
+                <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                  <label className={styles.label}>Email do Títular</label>
+                  <input className={styles.input} type="email" name="cliente_email" value={formData.cliente_email} onChange={handleChange} placeholder="joao@email.com" />
+                </div>
+                
+                <div className={styles.formGroup} style={{ gridColumn: 'span 2', marginTop: '1rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontFamily: 'Space Grotesk', color: '#fff' }}>
+                    <input type="checkbox" name="solicita_envio_fisico" checked={formData.solicita_envio_fisico} onChange={handleChange} style={{ accentColor: '#D4AF37', width: '1.2rem', height: '1.2rem' }} />
+                    ⛟ Solicitar cópia impressa via Correios (Preencher Endereço Físico)
+                  </label>
+                </div>
+
+                {formData.solicita_envio_fisico && (
+                  <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', padding: '1rem', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '8px' }}>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>CEP</label>
+                      <input className={styles.input} type="text" name="cliente_cep" value={formData.cliente_cep} onChange={handleCepChange} placeholder="00000-000" maxLength={9} />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Endereço (Rua/Av)</label>
+                      <input className={styles.input} type="text" name="cliente_endereco" value={formData.cliente_endereco} onChange={handleChange} />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Número e Complemento</label>
+                      <div style={{display: 'flex', gap: '0.5rem'}}>
+                        <input className={styles.input} type="text" name="cliente_numero" value={formData.cliente_numero} onChange={handleChange} placeholder="123" style={{width: '30%'}} />
+                        <input className={styles.input} type="text" name="cliente_complemento" value={formData.cliente_complemento} onChange={handleChange} placeholder="Apto 4" style={{width: '70%'}} />
+                      </div>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Bairro</label>
+                      <input className={styles.input} type="text" name="cliente_bairro" value={formData.cliente_bairro} onChange={handleChange} />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Cidade</label>
+                      <input className={styles.input} type="text" name="cliente_cidade" value={formData.cliente_cidade} onChange={handleChange} />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>Estado (UF)</label>
+                      <input className={styles.input} type="text" name="cliente_estado" value={formData.cliente_estado} onChange={handleChange} placeholder="SP" maxLength={2} />
+                    </div>
+                  </div>
+                )}
+
+                <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
                   <label className={styles.label}>Instalador Oficial / Loja</label>
                   <input className={styles.input} type="text" name="aplicador_nome" value={formData.aplicador_nome} onChange={handleChange} placeholder="Nome do Credenciado" />
                 </div>
-                <div className={styles.formGroup}>
+                <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
                   <label className={styles.label}>Placa ou Chassi</label>
                   <input className={styles.input} type="text" name="veiculo_placa_chassi" value={formData.veiculo_placa_chassi} onChange={handleChange} placeholder="ABC-1234" />
                 </div>
