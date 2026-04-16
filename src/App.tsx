@@ -22,6 +22,7 @@ import WarrantyValidator from './pages/Warranty/WarrantyValidator';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
+import FloatingWhatsApp from './components/FloatingWhatsApp/FloatingWhatsApp';
 import './App.css';
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
                 <Route path="/validar-garantia" element={<WarrantyValidator />} />
               </Routes>
             </main>
+            <FloatingWhatsApp />
             <Footer />
           </div>
         } />

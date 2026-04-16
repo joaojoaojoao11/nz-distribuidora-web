@@ -1,0 +1,122 @@
+.container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.menu {
+  margin-bottom: 1rem;
+  background: rgba(15, 15, 18, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  width: 280px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform-origin: bottom right;
+}
+
+.menuHeader {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.menuTitle {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: 0.02em;
+}
+
+.menuSubtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.4;
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.contactBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.contactBtn:hover {
+  background: rgba(37, 211, 102, 0.1);
+  color: #25D366;
+}
+
+.contactIcon {
+  color: #25D366;
+}
+
+.mainBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #25D366;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 10;
+}
+
+.mainBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+}
+
+.mainBtnOpen {
+  background-color: #1a1a1a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mainBtnOpen:hover {
+  background-color: #2a2a2a;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+}
+
+@media (max-width: 768px) {
+  .container {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+  
+  .mainBtn {
+    width: 54px;
+    height: 54px;
+  }
+}
