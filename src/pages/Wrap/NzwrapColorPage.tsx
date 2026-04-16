@@ -65,32 +65,43 @@ export default function NzwrapColorPage() {
 
       <div style={{ position: 'relative', zIndex: 10 }}>
         {/* Navbar space / Breadcrumb */}
-        <nav style={{ padding: '2.5rem 5%', display: 'flex', alignItems: 'center' }}>
-          <Link 
-            to="/wrap/nzwrap-premium"
-            style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '0.75rem', 
-              color: '#888', 
-              textDecoration: 'none',
-              fontSize: '0.75rem',
-              fontFamily: 'var(--font-heading, "Geist Sans", sans-serif)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              transition: 'color 0.2s',
-              fontWeight: 600
+        <nav style={{ padding: '2.5rem 5% 1rem 5%', maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center' }}>
+          <button 
+            onClick={() => navigate('/wrap')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'transparent',
+              border: 'none',
+              color: '#888',
+              cursor: 'pointer',
+              fontFamily: '"Geist Mono", "JetBrains Mono", monospace',
+              fontSize: '0.85rem',
+              padding: 0,
+              transition: 'color 0.2s'
             }}
-            onMouseOver={(e) => e.currentTarget.style.color = '#fff'}
-            onMouseOut={(e) => e.currentTarget.style.color = '#888'}
+            onMouseOver={(e) => {
+              e.currentTarget.style.color = '#fff';
+              (e.currentTarget.firstChild as HTMLElement).style.transform = 'translateX(-4px)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.color = '#888';
+              (e.currentTarget.firstChild as HTMLElement).style.transform = 'translateX(0)';
+            }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            Voltar ao Catálogo // Coleção Premium
-          </Link>
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              style={{ transition: 'transform 0.2s' }}
+            >
+              <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
+            </svg>
+            <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>Voltar ao Catálogo NZWRAP</span>
+          </button>
         </nav>
 
         {/* Hero Imersivo */}
-        <section style={{ padding: '2rem 5% 4rem 5%', position: 'relative' }}>
+        <section style={{ padding: '1rem 5% 4rem 5%', position: 'relative' }}>
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
