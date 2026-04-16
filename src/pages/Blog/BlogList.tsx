@@ -11,7 +11,7 @@ interface BlogPost {
   title: string;
   meta_description: string;
   cover_image_url: string;
-  category_id: string;
+  category_id?: string;
   published_at: string;
   author: string;
   categories?: { name: string };
