@@ -63,17 +63,34 @@ const WarrantyRegistration = () => {
   const [loading, setLoading] = useState(false);
   const [authCode, setAuthCode] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  const defaultPPF = [
+    { name: 'NZPPF LUXURY', garantia_anos: 12, durabilidade_anos: 15 },
+    { name: 'NZPPF PRIME', garantia_anos: 10, durabilidade_anos: 12 },
+    { name: 'NZPPF FLOW', garantia_anos: 5, durabilidade_anos: 7 },
+    { name: 'NZPPF CORE', garantia_anos: 3, durabilidade_anos: 5 }
+  ];
+
   const [ppfProducts, setPpfProducts] = useState<any[]>([]);
 
   React.useEffect(() => {
     async function fetchProducts() {
-      const { data } = await supabase
-        .from('web_catalog_products')
-        .select('name, garantia_anos, durabilidade_anos')
-        .eq('brand', 'NZPPF')
-        .eq('is_active', true);
-      if (data) {
-        setPpfProducts(data);
+      try {
+        const { data, error } = await supabase
+          .from('web_catalog_products')
+          .select('name, garantia_anos, durabilidade_anos')
+          .eq('brand', 'NZPPF')
+          .eq('is_active', true);
+          
+        if (data && data.length > 0) {
+          setPpfProducts(data);
+        } else {
+          console.error("DB List empty or blocked:", error);
+          setPpfProducts(defaultPPF);
+        }
+      } catch (err) {
+        console.error("Fetch exc:", err);
+        setPpfProducts(defaultPPF);
       }
     }
     fetchProducts();
