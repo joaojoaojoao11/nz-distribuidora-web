@@ -165,6 +165,29 @@ const WarrantyRegistration = () => {
         throw new Error(error.message);
       }
 
+      // Enviar notificação por e-mail silenciosamente
+      try {
+        fetch('https://formsubmit.co/ajax/joaovitor@nzdistribuidora.com.br', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: 'Nova Garantia Registrada',
+            Veiculo: formData.veiculo_modelo,
+            Placa_Chassi: formData.veiculo_placa_chassi,
+            Cliente_CPF: formData.cliente_cpf,
+            Instalador: formData.aplicador_nome,
+            Produto: formData.produto_nome || formData.linha_escolhida,
+            Servico: formData.tipo_servico,
+            Codigo_Hash: code,
+          })
+        });
+      } catch (e) {
+        console.error('Erro na notificação', e);
+      }
+
       setStep(4); // Certificate generated success
     } catch (err: any) {
       setErrorMsg(err.message || 'Erro ao registrar garantia. Tente novamente.');

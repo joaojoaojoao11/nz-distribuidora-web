@@ -23,7 +23,7 @@ interface Warranty {
   created_at: string;
 }
 
-export default function AdminWarranties() {
+export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void }) {
   const [warranties, setWarranties] = useState<Warranty[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -222,6 +222,7 @@ export default function AdminWarranties() {
     
     // Atualiza a tabela
     loadWarranties();
+    if (onUpdate) onUpdate();
   };
 
   const handleDownloadPDF = async (warrantyItem: Warranty) => {
@@ -244,6 +245,7 @@ export default function AdminWarranties() {
     
     // Atualiza a tabela
     loadWarranties();
+    if (onUpdate) onUpdate();
   };
 
   const formatDate = (d: string) => new Date(d).toLocaleDateString('pt-BR');

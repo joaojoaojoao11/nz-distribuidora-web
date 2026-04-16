@@ -60,6 +60,7 @@ export default function Dashboard() {
   const [newUser, setNewUser] = useState({ name: '', email: '', password: '', phone: '' });
   const [createError, setCreateError] = useState('');
   const [creating, setCreating] = useState(false);
+  const [pendingWarrantiesCount, setPendingWarrantiesCount] = useState(0);
 
   // Dashboard analytics state
   const [period, setPeriod] = useState<PeriodType>('month');
@@ -92,6 +93,13 @@ export default function Dashboard() {
     if (leadsData) setLeads(leadsData);
     const { data: usersData } = await supabase.from('user_profiles').select('*').order('created_at', { ascending: false });
     if (usersData) setUsers(usersData);
+    
+    // Load pending warranties count
+    const { count: wCount } = await supabase
+      .from('garantias_nz')
+      .select('*', { count: 'exact', head: true })
+      .eq('certificado_gerado', false);
+    setPendingWarrantiesCount(wCount || 0);
   };
 
   const loadAnalytics = useCallback(async () => {
@@ -397,6 +405,7 @@ export default function Dashboard() {
           </button>
           <button className={`${styles.navLink} ${activeTab === 'garantias' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('garantias')}>
             <span>🛡️</span> <span>Garantias</span>
+            {pendingWarrantiesCount > 0 && <span className={styles.navBadge} style={{backgroundColor: '#ff4444'}}>{pendingWarrantiesCount}</span>}
           </button>
           <button className={`${styles.navLink} ${activeTab === 'users' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('users')}>
             <span>🔐</span> <span>Usuários</span>
@@ -833,7 +842,7 @@ export default function Dashboard() {
         {activeTab === 'produtos' && <AdminProducts />}
 
         {/* ===== GARANTIAS ===== */}
-        {activeTab === 'garantias' && <AdminWarranties />}
+        {activeTab === 'garantias' && <AdminWarranties onUpdate={loadData} />}
       </main>
     </div>
   );
