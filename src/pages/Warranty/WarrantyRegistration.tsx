@@ -306,7 +306,7 @@ const WarrantyRegistration = () => {
                   <label className={styles.label}>CPF do Cliente</label>
                   <input className={styles.input} type="text" name="cliente_cpf" value={formData.cliente_cpf} onChange={handleChange} placeholder="000.000.000-00" />
                 </div>
-                <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
                   <label className={styles.label}>Nome Completo do Títular</label>
                   <input className={styles.input} type="text" name="cliente_nome_completo" value={formData.cliente_nome_completo} onChange={handleChange} placeholder="João da Silva" />
                 </div>
@@ -323,7 +323,7 @@ const WarrantyRegistration = () => {
                   <input className={styles.input} type="text" name="cliente_telefone" value={formData.cliente_telefone} onChange={handleChange} placeholder="(11) 99999-9999" />
                 </div>
 
-                <div className={styles.formGroup} style={{ gridColumn: 'span 2', marginTop: '1rem' }}>
+                <div className={styles.formGroup} style={{ gridColumn: '1 / -1', marginTop: '1rem' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontFamily: 'Space Grotesk', color: '#fff' }}>
                     <input type="checkbox" name="solicita_envio_fisico" checked={formData.solicita_envio_fisico} onChange={handleChange} style={{ accentColor: '#D4AF37', width: '1.2rem', height: '1.2rem' }} />
                     ⛟ Solicitar cópia impressa via Correios (Preencher Endereço Físico)
@@ -331,7 +331,7 @@ const WarrantyRegistration = () => {
                 </div>
 
                 {formData.solicita_envio_fisico && (
-                  <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', padding: '1rem', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '8px' }}>
+                  <div className={styles.formGrid} style={{ gridColumn: '1 / -1', gap: '1.5rem', padding: '1rem', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: '8px' }}>
                     <div className={styles.formGroup}>
                       <label className={styles.label}>CEP</label>
                       <input className={styles.input} type="text" name="cliente_cep" value={formData.cliente_cep} onChange={handleCepChange} placeholder="00000-000" maxLength={9} />
@@ -342,9 +342,9 @@ const WarrantyRegistration = () => {
                     </div>
                     <div className={styles.formGroup}>
                       <label className={styles.label}>Número e Complemento</label>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <input className={styles.input} type="text" name="cliente_numero" value={formData.cliente_numero} onChange={handleChange} placeholder="123" style={{ width: '30%' }} />
-                        <input className={styles.input} type="text" name="cliente_complemento" value={formData.cliente_complemento} onChange={handleChange} placeholder="Apto 4" style={{ width: '70%' }} />
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '0.5rem' }}>
+                        <input className={styles.input} type="text" name="cliente_numero" value={formData.cliente_numero} onChange={handleChange} placeholder="123" />
+                        <input className={styles.input} type="text" name="cliente_complemento" value={formData.cliente_complemento} onChange={handleChange} placeholder="Apto 4" />
                       </div>
                     </div>
                     <div className={styles.formGroup}>

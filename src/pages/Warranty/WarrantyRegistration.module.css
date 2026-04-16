@@ -116,7 +116,7 @@
   gap: 1.5rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .formGrid {
     grid-template-columns: 1fr;
   }
