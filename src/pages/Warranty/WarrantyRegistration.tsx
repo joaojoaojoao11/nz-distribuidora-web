@@ -45,6 +45,7 @@ const INITIAL_FORM: WarrantyFormData = {
   cliente_cpf: '',
   cliente_nome_completo: '',
   cliente_email: '',
+  cliente_telefone: '',
   solicita_envio_fisico: false,
   cliente_cep: '',
   cliente_endereco: '',
@@ -196,6 +197,7 @@ const WarrantyRegistration = () => {
         cliente_cpf: formData.cliente_cpf,
         cliente_nome_completo: formData.cliente_nome_completo,
         cliente_email: formData.cliente_email,
+        cliente_telefone: formData.cliente_telefone,
         cliente_cep: formData.solicita_envio_fisico ? formData.cliente_cep : null,
         cliente_endereco: formData.solicita_envio_fisico ? formData.cliente_endereco : null,
         cliente_numero: formData.solicita_envio_fisico ? formData.cliente_numero : null,
@@ -307,9 +309,17 @@ const WarrantyRegistration = () => {
                   <label className={styles.label}>Nome Completo do Títular</label>
                   <input className={styles.input} type="text" name="cliente_nome_completo" value={formData.cliente_nome_completo} onChange={handleChange} placeholder="João da Silva" />
                 </div>
-                <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
-                  <label className={styles.label}>Email do Títular</label>
-                  <input className={styles.input} type="email" name="cliente_email" value={formData.cliente_email} onChange={handleChange} placeholder="joao@email.com" />
+                <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
+                  <label className={styles.label}>E-mail do Proprietário</label>
+                  <input className={styles.input} type="email" name="cliente_email" value={formData.cliente_email} onChange={handleChange} placeholder="seuemail@exemplo.com" />
+                  <span style={{ fontSize: '0.75rem', color: '#888' }}>
+                    Opcional. Usado para o proprietário baixar a apólice digital.
+                  </span>
+                </div>
+
+                <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
+                  <label className={styles.label}>Telefone do Proprietário</label>
+                  <input className={styles.input} type="text" name="cliente_telefone" value={formData.cliente_telefone} onChange={handleChange} placeholder="(11) 99999-9999" />
                 </div>
                 
                 <div className={styles.formGroup} style={{ gridColumn: 'span 2', marginTop: '1rem' }}>
