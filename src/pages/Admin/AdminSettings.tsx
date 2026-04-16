@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
 import styles from './Admin.module.css';
 
 interface SettingsData {
@@ -18,16 +19,36 @@ export default function AdminSettings() {
   const [saved, setSaved] = useState(false);
   
   const [formData, setFormData] = useState<SettingsData>({
-    razao_social: 'NZ DISTRIBUIDORA DE ADESIVOS LTDA',
+    razao_social: '',
     cnpj: '',
     telefone: '',
-    endereco: 'RUA FELIX ALVINO DA SILVA',
-    numero: '65',
-    bairro: 'VILA DO CONDE',
-    cidade: 'BARUERI',
-    estado: 'SP',
-    cep: '06445-140'
+    endereco: '',
+    numero: '',
+    bairro: '',
+    cidade: '',
+    estado: '',
+    cep: ''
   });
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const { data } = await supabase.from('configuracoes_nz').select('*').eq('id', 1).single();
+      if (data) {
+        setFormData({
+          razao_social: data.razao_social || '',
+          cnpj: data.cnpj || '',
+          telefone: data.telefone || '',
+          endereco: data.endereco || '',
+          numero: data.numero || '',
+          bairro: data.bairro || '',
+          cidade: data.cidade || '',
+          estado: data.estado || '',
+          cep: data.cep || ''
+        });
+      }
+    };
+    loadSettings();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,11 +57,15 @@ export default function AdminSettings() {
 
   const handleSave = async () => {
     setLoading(true);
-    // Simular salvamento em DB
-    setTimeout(() => {
-      setLoading(false);
+    const { error } = await supabase.from('configuracoes_nz').upsert({ id: 1, ...formData });
+    setLoading(false);
+    
+    if (!error) {
       setSaved(true);
-    }, 800);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      alert("Erro ao salvar: " + error.message);
+    }
   };
 
   return (
