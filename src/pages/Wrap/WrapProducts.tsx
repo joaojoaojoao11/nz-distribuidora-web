@@ -656,24 +656,101 @@ export function Oracal970() {
   }} />;
 }
 
+// Helper component for the Oracal 651 colors grid
+function Oracal651ColorGrid() {
+  const [colors, setColors] = useState<{slug: string, code: string, hex: string, finish: string, namePT: string}[]>([]);
+
+  useEffect(() => {
+    const fetchColors = async () => {
+      const { data } = await supabase
+        .from('web_catalog_products')
+        .select('*')
+        .eq('brand', 'Oracal 651')
+        .eq('is_active', true)
+        .order('sku');
+      
+      if (data) {
+        setColors(data.map(d => ({
+          slug: d.slug,
+          code: d.sku ? d.sku.toUpperCase() : d.name,
+          hex: d.hex_code,
+          finish: d.finish_type === 'Brilhante' || d.finish_type === 'Gloss' ? 'Gloss' : 'Matte',
+          namePT: d.name
+        })));
+      }
+    };
+    fetchColors();
+  }, []);
+
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+      gap: '1rem',
+      padding: '1rem'
+    }}>
+      {colors.map(color => (
+        <Link 
+          key={color.slug}
+          to={`/wrap/oracal-651/${color.slug}`}
+          style={{ textDecoration: 'none' }}
+        >
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: '#111',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            transition: 'transform 0.2s',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+            cursor: 'pointer'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+          onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            <div style={{ 
+              height: '100px', 
+              backgroundColor: color.hex,
+              borderBottom: '1px solid #222'
+            }}></div>
+            <div style={{ padding: '0.75rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span style={{ color: '#fff', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace', fontSize: '0.85rem' }}>
+                  {color.code}
+                </span>
+                <span style={{ color: '#38bdf8', fontSize: '0.7rem', textTransform: 'uppercase' }}>
+                  {color.finish}
+                </span>
+              </div>
+              <div style={{ color: '#aaa', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {color.namePT}
+              </div>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 /* ======================== ORACAL 651 ======================== */
 export function Oracal651() {
   return <WrapProductPage data={{
     title: 'ORACAL 651',
     subtitle: 'Intermediate Cal | O Vinil Mais Popular do Mundo',
-    heroDescription: 'Com mais de 77 cores vibrantes e alto brilho, o Oracal 651 é a referência mundial para sinalização automotiva, recortes de precisão e detalhamentos. Durabilidade de até 6 anos.',
+    heroDescription: 'Com 62+ cores vibrantes e alto brilho, o Oracal 651 é a referência mundial para sinalização automotiva, recortes de precisão e detalhamentos. Durabilidade de até 6 anos.',
     heroWarning: 'O padrão da indústria para comunicação visual automotiva.',
     heroImage: '/assets/images/wrap_651_hero.png',
     specs: [
       { icon: CamadaIcon, info: 'Espessura', spec: '2.5 mil (63μ)', detalhe: 'Filme fino ideal para corte e aplicação.' },
       { icon: EscudoVazioIcon, info: 'Material', spec: 'PVC Calandrado', detalhe: 'Vinil intermediário de alta qualidade.' },
-      { icon: CamadaIcon, info: 'Cores', spec: '77+ Cores', detalhe: 'Gloss, Matte e Metallic disponíveis.' },
+      { icon: CamadaIcon, info: 'Cores', spec: '62 Cores Gloss', detalhe: 'Paleta vibrante e diversificada.' },
       { icon: RepelenciaIcon, info: 'Adesivo', spec: 'Clear Permanente', detalhe: 'Adesivo transparente base solvente.' },
       { icon: CertoIcon, info: 'Uso', spec: 'Recortes & Sinalização', detalhe: 'Perfeito para letras, logos e detalhes.' },
       { icon: RegeneracaoIcon, info: 'Durabilidade', spec: 'Até 6 Anos', detalhe: 'Excelente longevidade para uso externo.' }
     ],
     diferenciais: [
-      { icon: CertoIcon, title: '77+ Cores', desc: 'Uma das maiores paletas de cores do mercado, incluindo acabamentos metálicos e translúcidos.', accent: 'Paleta Completa', image: '/assets/images/wrap_651_card.png' },
+      { icon: CertoIcon, title: '62+ Cores', desc: 'Uma das maiores paletas de cores do mercado em alto brilho, incluindo a exclusiva linha de sinalização.', accent: 'Paleta Completa', image: '/assets/images/wrap_651_card.png' },
       { icon: RepelenciaIcon, title: 'Corte Preciso', desc: 'Formulação otimizada para plotters de corte. Weeding fácil e bordas perfeitas em letras e formas.', accent: 'Alta Precisão', image: '/assets/images/wrap_651_hero.png' },
       { icon: EscudoVazioIcon, title: '6 Anos Outdoor', desc: 'Cores mantêm brilho e intensidade por até 6 anos em exposição direta ao sol e intempéries.', accent: 'Resistência UV', image: '/assets/images/wrap_nzwrap_card.png' },
       { icon: PresenteIcon, title: 'Versatilidade', desc: 'Do detalhamento automotivo à sinalização comercial. O 651 atende demandas de alta precisão.', accent: 'Multiuso', image: '/assets/images/wrap_970ra_card.png' }
@@ -684,7 +761,49 @@ export function Oracal651() {
       { metric: 'Custo-Benefício', desc: 'Relação qualidade/preço', nz: [97, 96, 95], mercado: [80, 78, 75] },
       { metric: 'Versatilidade', desc: 'Amplitude de aplicações', nz: [95, 93, 91], mercado: [82, 78, 74] }
     ]
-  }} />;
+  }}>
+    <section className="container" style={{ padding: '6rem 0' }}>
+      <div style={{ marginBottom: '3rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'flex-start' }}>
+        <div>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>Catálogo Oficial de Cores 651</h2>
+          <p style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem' }}>
+            Selecione a cor para consultar os parâmetros e ficha técnica ou baixe a certificação original
+          </p>
+        </div>
+        
+        <a 
+            href="/assets/docs/oracal-651-tds.pdf"
+            download="ORACAL-651-Datasheet.pdf"
+            style={{
+              backgroundColor: 'transparent',
+              color: '#38bdf8',
+              border: '1px solid #38bdf8',
+              padding: '0.75rem 1.5rem',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              textDecoration: 'none'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(56, 189, 248, 0.1)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            BAIXAR DATASHEET COMPLETO 651
+          </a>
+      </div>
+      <Oracal651ColorGrid />
+    </section>
+  </WrapProductPage>;
 }
 
 

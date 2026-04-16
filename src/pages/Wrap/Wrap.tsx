@@ -49,18 +49,6 @@ const productLines = [
     available: true
   },
   {
-    slug: 'oracal-651',
-    title: 'ORACAL 651',
-    subtitle: 'Intermediário Versátil | 77+ Cores',
-    description: 'O vinil intermediário mais popular do mundo. Ideal para recortes, sinalização automotiva e detalhes de alta precisão com durabilidade de 6 anos.',
-    image: '/assets/images/wrap_651_card.png',
-    cardLogo: '/assets/logos/logo-orafol.svg',
-    badge1: '63μ',
-    badge2: '6 ANOS',
-    badge3: '',
-    available: true
-  },
-  {
     slug: 'oracal-670ra',
     title: 'ORACAL 670RA',
     subtitle: 'Wrapping Film | O 651 Evoluído para Envelopamento',
@@ -69,6 +57,18 @@ const productLines = [
     cardLogo: '/assets/logos/logo-orafol.svg',
     badge1: '70μ',
     badge2: '1,52m',
+    badge3: '',
+    available: true
+  },
+  {
+    slug: 'oracal-651',
+    title: 'ORACAL 651',
+    subtitle: 'Intermediário Versátil | 77+ Cores',
+    description: 'O vinil intermediário mais popular do mundo. Ideal para recortes, sinalização automotiva e detalhes de alta precisão com durabilidade de 6 anos.',
+    image: '/assets/images/wrap_651_card.png',
+    cardLogo: '/assets/logos/logo-orafol.svg',
+    badge1: '63μ',
+    badge2: '6 ANOS',
     badge3: '',
     available: true
   }

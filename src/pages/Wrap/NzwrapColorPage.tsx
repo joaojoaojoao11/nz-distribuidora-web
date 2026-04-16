@@ -65,7 +65,7 @@ export default function NzwrapColorPage() {
 
       <div style={{ position: 'relative', zIndex: 10 }}>
         {/* Navbar space / Breadcrumb */}
-        <nav style={{ padding: '2.5rem 5% 1rem 5%', maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center' }}>
+        <nav style={{ padding: '8rem 5% 1rem 5%', maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center' }}>
           <button 
             onClick={() => navigate('/wrap')}
             style={{

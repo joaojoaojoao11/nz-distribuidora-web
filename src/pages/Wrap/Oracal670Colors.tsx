@@ -112,7 +112,8 @@ export default function Oracal670ColorPage() {
         className={styles.hero} 
         style={{ 
           backgroundColor: colorData.hex_code,
-          color: isLightColor ? '#111' : '#FFF'
+          color: isLightColor ? '#111' : '#FFF',
+          paddingTop: '8rem'
         }}
       >
         <button 

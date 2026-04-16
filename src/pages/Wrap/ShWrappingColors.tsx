@@ -151,7 +151,7 @@ export default function ShWrappingColors() {
         />
         <div className={styles.pageVignette} />
 
-        <nav className={styles.topNav}>
+        <nav className={styles.topNav} style={{ paddingTop: '8rem' }}>
           <button 
             onClick={() => navigate('/wrap/sh-colors')}
             className={styles.backButton}
