@@ -2,5 +2,11 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/ai-writer",
+      "schedule": "0 * * * *"
+    }
   ]
 }
