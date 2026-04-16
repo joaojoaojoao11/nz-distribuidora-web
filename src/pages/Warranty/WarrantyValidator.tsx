@@ -74,7 +74,7 @@ export default function WarrantyValidator() {
       <div className={styles.content}>
         
         <div className={styles.logoWrapper}>
-          <img src="https://ioioiycmyctllqgntrct.supabase.co/storage/v1/object/public/system-assets/NZ-BRANCO.png" alt="NZ Distribuidora" className={styles.logo} />
+          <img src="/assets/logos/logo-nz-group-base.svg" alt="NZ Distribuidora" className={styles.logo} style={{ height: '50px', filter: 'brightness(0) invert(1)' }} />
         </div>
 
         <div className={`${styles.card} ${getCardStyle()}`}>
