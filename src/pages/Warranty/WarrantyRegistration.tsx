@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import styles from './WarrantyRegistration.module.css';
-import { CheckCircle2, Shield, AlertCircle, ChevronRight, QrCode, CalendarClock, Droplets, Droplet, Leaf } from 'lucide-react';
+import { CheckCircle2, Shield, AlertCircle, ChevronRight, QrCode, CalendarClock, Droplets, Leaf } from 'lucide-react';
 
-const blurReveal = {
+const blurReveal: any = {
   hidden: { opacity: 0, y: 20, filter: 'blur(10px)' },
-  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } }
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 1.2 } }
 };
 
-const slideFromRight = {
+const slideFromRight: any = {
   hidden: { opacity: 0, x: 40, filter: 'blur(6px)' },
-  visible: { opacity: 1, x: 0, filter: 'blur(0px)', transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } }
+  visible: { opacity: 1, x: 0, filter: 'blur(0px)', transition: { duration: 1 } }
 };
 
 const stagger = {

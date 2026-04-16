@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { ShieldCheck, ShieldAlert, BadgeInfo, Building2, Calendar, FileText, ChevronLeft } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, Building2, Calendar, ChevronLeft } from 'lucide-react';
 import styles from './WarrantyValidator.module.css';
 
 interface ValidatorWarrantyData {
@@ -14,6 +14,7 @@ interface ValidatorWarrantyData {
   produto_nome: string;
   linha_escolhida: string;
   tipo_servico: string;
+  codigo_autenticacao: string;
   areas_protegidas: string[];
   garantia_anos: number;
   durabilidade_anos: number;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
@@ -179,7 +179,7 @@ export default function AdminWarranties() {
 
       const img = new Image();
       img.crossOrigin = 'Anonymous';
-      await new Promise<void>((resolve, reject) => {
+      await new Promise<void>((resolve) => {
         img.onload = () => {
           const canvas = document.createElement('canvas');
           canvas.width = 1080;
@@ -194,7 +194,7 @@ export default function AdminWarranties() {
           }
           resolve();
         };
-        img.onerror = resolve; // resolve silently to not break download
+        img.onerror = () => resolve(); // resolve silently to not break download
         img.src = logoUrl;
       });
     } catch(e) {
