@@ -49,6 +49,8 @@ interface DbProduct {
   id: string;
   slug: string;
   name: string;
+  sku?: string;
+  technical_name?: string;
   hex_code: string;
   finish_type: string;
   technical_description: string;
