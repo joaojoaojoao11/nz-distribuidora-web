@@ -201,8 +201,8 @@ const WarrantyRegistration = () => {
         cliente_numero: formData.solicita_envio_fisico ? formData.cliente_numero : null,
         cliente_complemento: formData.solicita_envio_fisico ? formData.cliente_complemento : null,
         cliente_bairro: formData.solicita_envio_fisico ? formData.cliente_bairro : null,
-        cliente_cidade: formData.solicita_envio_fisico ? formData.cliente_cidade : null,
-        cliente_estado: formData.solicita_envio_fisico ? formData.cliente_estado : null,
+        cliente_cidade: formData.cliente_cidade,
+        cliente_estado: formData.cliente_estado,
         veiculo_placa_chassi: formData.veiculo_placa_chassi,
         veiculo_modelo: formData.veiculo_modelo,
         aplicador_nome: formData.aplicador_nome,
@@ -340,16 +340,17 @@ const WarrantyRegistration = () => {
                       <label className={styles.label}>Bairro</label>
                       <input className={styles.input} type="text" name="cliente_bairro" value={formData.cliente_bairro} onChange={handleChange} />
                     </div>
-                    <div className={styles.formGroup}>
-                      <label className={styles.label}>Cidade</label>
-                      <input className={styles.input} type="text" name="cliente_cidade" value={formData.cliente_cidade} onChange={handleChange} />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label className={styles.label}>Estado (UF)</label>
-                      <input className={styles.input} type="text" name="cliente_estado" value={formData.cliente_estado} onChange={handleChange} placeholder="SP" maxLength={2} />
-                    </div>
                   </div>
                 )}
+                
+                <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
+                  <label className={styles.label}>Cidade</label>
+                  <input className={styles.input} type="text" name="cliente_cidade" value={formData.cliente_cidade} onChange={handleChange} />
+                </div>
+                <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
+                  <label className={styles.label}>Estado (UF)</label>
+                  <input className={styles.input} type="text" name="cliente_estado" value={formData.cliente_estado} onChange={handleChange} placeholder="SP" maxLength={2} />
+                </div>
 
                 <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
                   <label className={styles.label}>Instalador Oficial / Loja</label>

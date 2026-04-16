@@ -9,6 +9,8 @@ interface Warranty {
   cliente_cpf: string;
   cliente_nome_completo: string;
   cliente_email: string;
+  cliente_cidade?: string;
+  cliente_estado?: string;
   veiculo_placa_chassi: string;
   veiculo_modelo: string;
   aplicador_nome: string;
@@ -325,7 +327,12 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
                 <tr key={w.id}>
                   <td>
                     <div style={{fontWeight: 'bold'}}>{w.cliente_nome_completo || 'N/A'}</div>
-                    <div style={{fontSize: '0.8rem', color: '#888'}}>{w.cliente_cpf}</div>
+                    <div style={{fontSize: '0.8rem', color: '#888'}}>CPF: {w.cliente_cpf}</div>
+                    {(w.cliente_cidade || w.cliente_estado) && (
+                      <div style={{fontSize: '0.75rem', color: '#4a90e2', marginTop: '2px', textTransform: 'uppercase'}}>
+                       🗺️ {w.cliente_cidade || ''}{w.cliente_cidade && w.cliente_estado ? ' - ' : ''}{w.cliente_estado || ''}
+                      </div>
+                    )}
                   </td>
                   <td>
                     <div>{w.veiculo_modelo.toUpperCase()}</div>
