@@ -474,9 +474,119 @@
   font-weight: 300;
 }
 
+.mapCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  margin-bottom: 1rem;
+  transition: border-color 0.35s ease, transform 0.35s ease;
+}
+
+.mapCard:hover {
+  border-color: rgba(212, 175, 55, 0.28);
+}
+
+.mapFrameWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+.mapFrame {
+  border: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: grayscale(0.35) brightness(0.82) contrast(1.08);
+  transition: filter 0.6s ease;
+}
+
+.mapCard:hover .mapFrame {
+  filter: grayscale(0) brightness(1) contrast(1);
+}
+
+.mapOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(5,5,7,0.0) 60%, rgba(5,5,7,0.35) 100%);
+}
+
+.mapInfo {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.mapAddress {
+  color: rgba(255,255,255,0.88);
+  font-size: 1rem;
+  line-height: 1.55;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.mapActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.3rem;
+}
+
+.mapBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.1rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.82);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.mapBtn:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: rgba(212, 175, 55, 0.38);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.mapBtnPrimary {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.32);
+  color: #D4AF37;
+}
+
+.mapBtnPrimary:hover {
+  background: rgba(212, 175, 55, 0.18);
+  color: #fff;
+}
+
+.mapBtnSuccess {
+  background: rgba(60, 200, 120, 0.1);
+  border-color: rgba(60, 200, 120, 0.38);
+  color: #6ee0a0;
+}
+
+.mapBtnSuccess:hover {
+  background: rgba(60, 200, 120, 0.15);
+  color: #fff;
+  border-color: rgba(60, 200, 120, 0.5);
+}
+
 .contactGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
@@ -559,6 +669,19 @@
 
   .contactGrid {
     grid-template-columns: 1fr;
+  }
+
+  .mapFrameWrap {
+    aspect-ratio: 4 / 3;
+  }
+
+  .mapActions {
+    flex-direction: column;
+  }
+
+  .mapBtn {
+    justify-content: center;
+    width: 100%;
   }
 }
 

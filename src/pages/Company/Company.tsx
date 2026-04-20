@@ -1,6 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Copy, Check, NavigationArrow } from '@phosphor-icons/react';
 import styles from './Company.module.css';
+
+const ADDRESS = 'R. Brasilândia, 366 - Chácaras Marco, Barueri - SP, 06419-060';
+const NZ_COORDS = { lat: -23.4804547, lng: -46.8865522 };
+const GOOGLE_MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ADDRESS)}`;
+const WAZE_URL = `https://waze.com/ul?q=${encodeURIComponent(ADDRESS)}&navigate=yes`;
+
+const DARK_MAP_STYLE = [
+  { elementType: 'geometry', stylers: [{ color: '#141416' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#8b8b8b' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#141416' }] },
+  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#D4AF37' }] },
+  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2a2a2c' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#3a3a3c' }] },
+  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9a9a9a' }] },
+  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0a0a0c' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#4a4a4c' }] }
+];
+
+function loadGoogleMapsScript(apiKey: string): Promise<void> {
+  const w = window as any;
+  if (w.google?.maps) return Promise.resolve();
+
+  const existing = document.getElementById('google-maps-script') as HTMLScriptElement | null;
+  if (existing) {
+    return new Promise((resolve) => {
+      const check = () => (w.google?.maps ? resolve() : setTimeout(check, 80));
+      check();
+    });
+  }
+
+  return new Promise((resolve) => {
+    const prev = w.initGoogleMaps;
+    w.initGoogleMaps = () => {
+      if (typeof prev === 'function') prev();
+      resolve();
+    };
+    const script = document.createElement('script');
+    script.id = 'google-maps-script';
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  });
+}
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -64,6 +111,50 @@ const originTabs = [
 
 export default function Company() {
   const [activeTab, setActiveTab] = useState('nzgroup');
+  const [copied, setCopied] = useState(false);
+  const mapRef = useRef<HTMLDivElement | null>(null);
+
+  const handleCopyAddress = async () => {
+    try {
+      await navigator.clipboard.writeText(ADDRESS);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    } catch {
+      /* clipboard indisponível */
+    }
+  };
+
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) return;
+    let mounted = true;
+
+    loadGoogleMapsScript(apiKey).then(() => {
+      if (!mounted || !mapRef.current) return;
+      const g = (window as any).google;
+      if (!g?.maps) return;
+
+      const map = new g.maps.Map(mapRef.current, {
+        center: NZ_COORDS,
+        zoom: 17,
+        disableDefaultUI: true,
+        zoomControl: true,
+        gestureHandling: 'cooperative',
+        styles: DARK_MAP_STYLE
+      });
+
+      new g.maps.Marker({
+        position: NZ_COORDS,
+        map,
+        title: 'NZ Group — Barueri/SP'
+      });
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const currentTab = originTabs.find(t => t.id === activeTab)!;
 
   return (
@@ -204,9 +295,48 @@ export default function Company() {
               Nossa estrutura de operações comerciais, logística extrema e distribuição para todo o Brasil.
             </motion.p>
 
+            <motion.div className={styles.mapCard} variants={scaleIn}>
+              <div className={styles.mapFrameWrap}>
+                <div ref={mapRef} className={styles.mapFrame} aria-label="Mapa interativo da sede NZ Group" />
+                <div className={styles.mapOverlay} />
+              </div>
+              <div className={styles.mapInfo}>
+                <span className={styles.contactLabel}>Endereço</span>
+                <p className={styles.mapAddress}>{ADDRESS}</p>
+                <div className={styles.mapActions}>
+                  <button
+                    type="button"
+                    className={`${styles.mapBtn} ${copied ? styles.mapBtnSuccess : ''}`}
+                    onClick={handleCopyAddress}
+                    aria-label="Copiar endereço"
+                  >
+                    {copied ? <Check weight="bold" size={14} /> : <Copy weight="regular" size={14} />}
+                    {copied ? 'Copiado' : 'Copiar endereço'}
+                  </button>
+                  <a
+                    href={GOOGLE_MAPS_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${styles.mapBtn} ${styles.mapBtnPrimary}`}
+                  >
+                    <NavigationArrow weight="fill" size={14} />
+                    Google Maps
+                  </a>
+                  <a
+                    href={WAZE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.mapBtn}
+                  >
+                    <NavigationArrow weight="fill" size={14} />
+                    Waze
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+
             <motion.div className={styles.contactGrid} variants={stagger}>
               {[
-                { label: 'Endereço', value: 'Rua Felix Alvino da Silva, 65 - Vila do Conde - Barueri/SP' },
                 { label: 'WhatsApp', value: '+55 11 91890-7565' },
                 { label: 'E-mail', value: 'joaovitor@nzdistribuidora.com.br' },
                 { label: 'Operação', value: 'Segunda a Sexta, das 08h às 18h' }
