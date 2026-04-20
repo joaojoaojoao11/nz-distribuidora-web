@@ -165,7 +165,7 @@ export default function Wrap() {
       />
       {/* HERO */}
       <header className={styles.hero}>
-        <img src="/assets/images/wrap_hero.png" alt="" className={styles.heroImage} />
+        <img src="/assets/images/wrap_hero.png?v=2" alt="" className={styles.heroImage} />
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroBottomShadow}></div>
         <div className={`container ${styles.heroContainer}`}>
