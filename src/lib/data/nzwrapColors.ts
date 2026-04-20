@@ -13,8 +13,8 @@ export const NZWRAP_COLORS: NzwrapColorData[] = [
     name: 'NZWRAP FERRARI METALLIC RED',
     finish: 'Sólido/Metálico Brilhante',
     hex: '#ab071c',
-    images: ['/assets/images/sh/soulmoving_red_suv.jpeg', '/assets/images/sh/soulmoving_red_sedan.jpeg'],
-    thumbnail: '/assets/images/sh/soulmoving_red_suv.jpeg'
+    images: ['/assets/images/nzwrap/ferrari_metallic_red_morning.png', '/assets/images/nzwrap/ferrari_metallic_red_afternoon.png', '/assets/images/nzwrap/ferrari_metallic_red_sunset.png', '/assets/images/nzwrap/ferrari_metallic_red_night.png'],
+    thumbnail: '/assets/images/nzwrap/ferrari_metallic_red_afternoon.png'
   },
   {
     sku: 'NZW202',
@@ -85,8 +85,8 @@ export const NZWRAP_COLORS: NzwrapColorData[] = [
     name: 'NZWRAP VIPER GREEN',
     finish: 'Metálico Brilhante',
     hex: '#00ff00',
-    images: ['/assets/images/sh/crystal_mamba_green_morning.png', '/assets/images/sh/crystal_mamba_green_afternoon.png', '/assets/images/sh/crystal_mamba_green_sunset.png', '/assets/images/sh/crystal_mamba_green_night.png'],
-    thumbnail: '/assets/images/sh/crystal_mamba_green_morning.png'
+    images: ['/assets/images/nzwrap/viper_green_morning.png', '/assets/images/nzwrap/viper_green_afternoon.png', '/assets/images/nzwrap/viper_green_sunset.png', '/assets/images/nzwrap/viper_green_night.png'],
+    thumbnail: '/assets/images/nzwrap/viper_green_afternoon.png'
   },
   {
     sku: 'NZW211',
@@ -101,8 +101,8 @@ export const NZWRAP_COLORS: NzwrapColorData[] = [
     name: 'NZWRAP DIAMOND WHITE',
     finish: 'Metálico Brilhante',
     hex: '#ffffff',
-    images: ['/assets/images/sh/crystal_white_morning.png', '/assets/images/sh/crystal_white_afternoon.png', '/assets/images/sh/crystal_white_sunset.png', '/assets/images/sh/crystal_white_night.png'],
-    thumbnail: '/assets/images/sh/crystal_white_morning.png'
+    images: ['/assets/images/nzwrap/diamond_white_morning.png', '/assets/images/nzwrap/diamond_white_afternoon.png', '/assets/images/nzwrap/diamond_white_sunset.png', '/assets/images/nzwrap/diamond_white_night.png'],
+    thumbnail: '/assets/images/nzwrap/diamond_white_afternoon.png'
   },
   {
     sku: 'NZW213',
@@ -133,8 +133,8 @@ export const NZWRAP_COLORS: NzwrapColorData[] = [
     name: 'NZWRAP PIANO BLACK GLOSS',
     finish: 'Sólido Brilhante',
     hex: '#000000',
-    images: ['/assets/images/sh/glossy_black_morning.png', '/assets/images/sh/glossy_black_afternoon.png', '/assets/images/sh/glossy_black_sunset.png', '/assets/images/sh/glossy_black_night.png'],
-    thumbnail: '/assets/images/sh/glossy_black_morning.png'
+    images: ['/assets/images/nzwrap/piano_black_gloss_morning.png', '/assets/images/nzwrap/piano_black_gloss_afternoon.png', '/assets/images/nzwrap/piano_black_gloss_sunset.png', '/assets/images/nzwrap/piano_black_gloss_night.png'],
+    thumbnail: '/assets/images/nzwrap/piano_black_gloss_afternoon.png'
   },
   {
     sku: 'NZW217',

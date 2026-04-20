@@ -178,10 +178,10 @@ export default function Ppf() {
               variants={fadeUpItem} 
             />
             <motion.p className={styles.heroSubtitle} variants={fadeUpItem}>
-              Criada por profissionais que vivem o mercado na prática, a NZ PPF nasceu para oferecer performance real, com materiais testados diariamente em carros, lojas e ambientes de uso intenso. Cada produto é desenvolvido para atender tanto a rotina pesada das lojas quanto o padrão de exigência dos aplicadores mais criteriosos do Brasil.
-            </motion.p>
-            <motion.p className={styles.heroSubtitleWarning} variants={fadeUpItem}>
-              Aqui, não existe promessa vazia — existe tecnologia, consistência e resultado.
+              A maioria dos PPFs são desenvolvidos em laboratório, por quem nunca instalou um metro de filme sequer.<br /><br />
+              A NZ PPF nasceu dentro da operação. No calor de 40 graus, na curva que exige precisão milimétrica, no carro que o cliente volta para buscar no dia seguinte.<br /><br />
+              Cada produto passa primeiro pela bancada — testado por aplicadores experientes, em veículos reais, sob condições reais — antes de chegar até você.<br /><br />
+              Por isso, quando você abre o rolo, o material responde exatamente como deveria.
             </motion.p>
           </motion.div>
         </div>
