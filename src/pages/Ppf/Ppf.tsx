@@ -67,6 +67,26 @@ const productLines = [
     thickness: '175μ',
     warranty: '3 ANOS',
     available: true
+  },
+  {
+    slug: 'headlight',
+    title: 'NZ PPF HEADLIGHT',
+    subtitle: 'Estética e Proteção para Faróis | 3 Tonalidades',
+    description: 'TPU com estabilização UV em 3 tonalidades exclusivas. Personaliza o farol sem comprometer a luminosidade nem a segurança. 10 anos de garantia.',
+    image: '/assets/images/nzppf_headlight_light_black.png',
+    thickness: '—',
+    warranty: '10 ANOS',
+    available: true
+  },
+  {
+    slug: 'windshield',
+    title: 'NZ PPF WINDSHIELD',
+    subtitle: 'TPU 190μ para Parabrisa | Absorção de Impacto',
+    description: 'Película externa de 190 micras em TPU de alta performance. Absorve pedras e detritos, preserva o vidro original e mantém compatibilidade total com sensores/ADAS. 2 anos de garantia.',
+    image: '/assets/images/nzppf_windshield_hero.png',
+    thickness: '190μ',
+    warranty: '2 ANOS',
+    available: true
   }
   // Futuros produtos:
   // { slug: 'luxury-matte', title: 'NZPPF LUXURY MATTE', ... },

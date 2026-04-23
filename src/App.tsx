@@ -8,6 +8,8 @@ import LuxuryGloss from './pages/Ppf/LuxuryGloss';
 import PrimeGloss from './pages/Ppf/PrimeGloss';
 import FlowGloss from './pages/Ppf/FlowGloss';
 import CoreGloss from './pages/Ppf/CoreGloss';
+import Headlight from './pages/Ppf/Headlight';
+import Windshield from './pages/Ppf/Windshield';
 import Wrap from './pages/Wrap/Wrap';
 import { NzwrapPremium, ShColors, Oracal970, Oracal651, Oracal670 } from './pages/Wrap/WrapProducts';
 import Oracal670ColorPage from './pages/Wrap/Oracal670Colors';
@@ -58,6 +60,8 @@ function App() {
                 <Route path="/ppf/prime-gloss" element={<PrimeGloss />} />
                 <Route path="/ppf/flow-gloss" element={<FlowGloss />} />
                 <Route path="/ppf/core-gloss" element={<CoreGloss />} />
+                <Route path="/ppf/headlight" element={<Headlight />} />
+                <Route path="/ppf/windshield" element={<Windshield />} />
                 <Route path="/wrap" element={<Wrap />} />
                 <Route path="/wrap/nzwrap-premium" element={<NzwrapPremium />} />
                 <Route path="/wrap/nzwrap-premium/:sku" element={<NzwrapColorPage />} />

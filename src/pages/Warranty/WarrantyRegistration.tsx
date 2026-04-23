@@ -76,7 +76,7 @@ function generateAuthCode(dateStr: string, placa: string): string {
 
 const AVAILABLE_AREAS = [
   "Capô", "Teto", "Para-choque Dianteiro", "Para-choque Traseiro",
-  "Laterais", "Portas", "Para-lamas", "Retrovisores", "Faróis", "Interno"
+  "Laterais", "Portas", "Para-lamas", "Retrovisores", "Faróis", "Parabrisa", "Interno"
 ];
 
 const WarrantyRegistration = () => {
@@ -90,7 +90,9 @@ const WarrantyRegistration = () => {
     { name: 'NZPPF LUXURY', garantia_anos: 12, durabilidade_anos: 15 },
     { name: 'NZPPF PRIME', garantia_anos: 10, durabilidade_anos: 12 },
     { name: 'NZPPF FLOW', garantia_anos: 5, durabilidade_anos: 7 },
-    { name: 'NZPPF CORE', garantia_anos: 3, durabilidade_anos: 5 }
+    { name: 'NZPPF CORE', garantia_anos: 3, durabilidade_anos: 5 },
+    { name: 'NZPPF HEADLIGHT', garantia_anos: 10, durabilidade_anos: 12 },
+    { name: 'NZPPF WINDSHIELD', garantia_anos: 2, durabilidade_anos: 3 }
   ];
 
   const [ppfProducts, setPpfProducts] = useState<any[]>([]);
