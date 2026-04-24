@@ -1,0 +1,286 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1100px;
+}
+
+.heroCard {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(15,15,18,0.95) 60%),
+    radial-gradient(circle at top right, rgba(212,175,55,0.18) 0%, transparent 60%);
+  border: 1px solid rgba(212,175,55,0.25);
+  padding: 2.5rem 2.5rem 2.25rem 2.5rem;
+  overflow: hidden;
+}
+
+.heroCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #D4AF37 0%, transparent 80%);
+}
+
+.eyebrow {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #c8c8cc;
+  max-width: 700px;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(212,175,55,0.18);
+}
+
+.metaItem .metaLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(245,245,247,0.5);
+  margin-bottom: 0.35rem;
+}
+
+.metaItem .metaValue {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.metaItem .metaValue strong {
+  color: #D4AF37;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.generateBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.1rem 2.2rem;
+  background: #D4AF37;
+  color: #050505;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 24px rgba(212,175,55,0.25);
+}
+
+.generateBtn:hover:not(:disabled) {
+  background: #e8c34a;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(212,175,55,0.35);
+}
+
+.generateBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnIcon {
+  font-size: 1.1rem;
+}
+
+.hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(245,245,247,0.5);
+  letter-spacing: 1px;
+}
+
+.summary {
+  background: rgba(15,15,18,0.6);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 2rem;
+}
+
+.summaryTitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+}
+
+.sectionList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 2rem;
+}
+
+.sectionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: #c8c8cc;
+}
+
+.sectionRow .num {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: #D4AF37;
+  letter-spacing: 2px;
+  margin-right: 0.85rem;
+  min-width: 30px;
+}
+
+.notice {
+  background: rgba(74, 144, 217, 0.08);
+  border-left: 3px solid #4A90D9;
+  padding: 1rem 1.25rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #a1a1a6;
+  line-height: 1.55;
+}
+
+.notice strong {
+  color: #fff;
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: 'Outfit', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.7rem;
+  color: #4A90D9;
+}
+
+/* ─── Overlay loading ─── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5,5,5,0.92);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(12px);
+}
+
+.overlayCard {
+  width: 480px;
+  max-width: 90vw;
+  background: linear-gradient(135deg, #0e0e10 0%, #050505 100%);
+  border: 1px solid rgba(212,175,55,0.4);
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.overlayLabel {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #D4AF37;
+  margin-bottom: 0.5rem;
+}
+
+.overlayDesc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: #c8c8cc;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.progressBar {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0.85rem;
+}
+
+.progressFill {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  background: linear-gradient(90deg, rgba(212,175,55,0.4) 0%, #D4AF37 100%);
+  transition: width 0.3s ease;
+}
+
+.progressMeta {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(245,245,247,0.55);
+}
+
+.progressMeta span:last-child { color: #D4AF37; font-weight: 600; }
+
+.successBox {
+  background: rgba(72, 187, 120, 0.08);
+  border-left: 3px solid #48bb78;
+  padding: 1rem 1.25rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: #c8c8cc;
+}
+
+.successBox strong { color: #48bb78; display: block; margin-bottom: 0.2rem; }
+
+.errorBox {
+  background: rgba(255, 68, 68, 0.08);
+  border-left: 3px solid #ff4444;
+  padding: 1rem 1.25rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: #c8c8cc;
+}
+
+.errorBox strong { color: #ff4444; display: block; margin-bottom: 0.2rem; }

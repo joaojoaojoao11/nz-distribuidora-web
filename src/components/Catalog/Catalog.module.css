@@ -1,0 +1,1199 @@
+/* ============================================================
+   NZPPF Catalog — Print-Ready @ 300 DPI
+   Page: 150mm × 200mm = 1772 × 2362 px
+   Safe area: 142px (≈ 12mm) inset
+   Typography:
+     Display/Headlines  → Outfit (geometric sans)
+     Body / Editorial   → Cormorant Garamond (luxury serif)
+     UI / Captions      → Inter (functional sans)
+   ============================================================ */
+
+.documentRoot {
+  position: fixed;
+  left: -99999px;
+  top: 0;
+  pointer-events: none;
+  z-index: -1;
+  font-family: 'Inter', sans-serif;
+  color: #f5f5f7;
+  -webkit-font-smoothing: antialiased;
+  /* Disable kerning/ligatures globally — html2canvas has unreliable
+     support for OpenType features and tends to collapse word spacing.
+     optimizeSpeed uses simple glyph positioning that matches canvas output. */
+  font-kerning: none;
+  font-variant-ligatures: none;
+  text-rendering: optimizeSpeed;
+  font-feature-settings: "kern" 0, "liga" 0;
+  /* Defesa adicional contra colapso visual: garante buffer mínimo entre
+     palavras e letras regardless of how html2canvas interprets space chars. */
+  word-spacing: 0.08em;
+  letter-spacing: 0.012em;
+}
+
+/* ─────────── PAGE FRAME + NEW BACKGROUND ─────────── */
+/* Interior pages (2–13) usam a imagem backgroud.png full-bleed com overlay
+   sutil escuro por cima, garantindo contraste AAA em todo texto branco.
+   Capa (página 1) e contracapa (página 14) sobrescrevem via inline style. */
+.page {
+  position: relative;
+  width: 1772px;
+  height: 2362px;
+  background-color: #060606;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.28) 60%, rgba(0,0,0,0.45) 100%),
+    url('/backgroud.png');
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  overflow: hidden;
+  color: #f5f5f7;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sobrescreve o background para capa/contracapa via className adicional */
+.pageNoBg {
+  background-image: none !important;
+  background-color: #060606;
+}
+
+.page * {
+  box-sizing: border-box;
+}
+
+.safeArea {
+  position: absolute;
+  inset: 142px 142px 142px 142px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─────────── PAGE FOOTER ─────────── */
+.footer {
+  position: absolute;
+  bottom: 60px;
+  left: 142px;
+  right: 142px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  letter-spacing: 5px;
+  color: rgba(245, 245, 247, 0.4);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.footer .pageNum {
+  color: #D4AF37;
+  font-weight: 600;
+  letter-spacing: 7px;
+}
+
+/* ─────────── DIVIDERS ─────────── */
+.goldDivider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #D4AF37 50%, transparent 100%);
+  margin: 50px 0;
+  width: 100%;
+}
+
+.goldLine {
+  height: 2px;
+  background: #D4AF37;
+  width: 110px;
+}
+
+/* ─────────── BADGES ─────────── */
+.goldBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 18px 34px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  color: #D4AF37;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+
+.darkBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(245, 245, 247, 0.85);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+/* ─────────── TYPOGRAPHY (looser tracking, generous leading) ─────────── */
+/* Word-spacing is bumped on every UPPERCASE display style because
+   html2canvas tends to collapse whitespace between Outfit glyphs at
+   large sizes — without it, "MELHOR MATÉRIA" can render as
+   "MELHORMATÉRIA" in the PDF. */
+
+.eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: 9px;
+  word-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 36px;
+}
+
+.h1 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 170px;
+  line-height: 1.0;
+  letter-spacing: -1px;
+  word-spacing: 0.14em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.h2 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 130px;
+  line-height: 1.02;
+  letter-spacing: -0.5px;
+  word-spacing: 0.14em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.h3 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 80px;
+  line-height: 1.08;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  word-spacing: 0.14em;
+}
+
+.h4 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 56px;
+  line-height: 1.18;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  word-spacing: 0.14em;
+}
+
+.subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 38px;
+  line-height: 1.4;
+  color: #D4AF37;
+  margin-top: 28px;
+}
+
+.bodyLg {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.55;
+  color: #e8e8ec;
+}
+
+.body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.6;
+  color: #d8d8dc;
+}
+
+.bodySm {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.5;
+  color: #b8b8bc;
+}
+
+.captionMono {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: rgba(245, 245, 247, 0.5);
+}
+
+/* ─────────── COVER PAGE ─────────── */
+.coverHero {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.coverOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.05) 35%, rgba(5,5,5,0.45) 60%, rgba(5,5,5,0.96) 100%),
+    radial-gradient(ellipse at 50% 75%, rgba(212,175,55,0.14) 0%, transparent 60%);
+}
+
+.coverContent {
+  position: absolute;
+  inset: 142px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.coverTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.coverLogo {
+  height: 360px;
+  width: auto;
+  filter: drop-shadow(0 6px 30px rgba(0,0,0,0.55));
+}
+
+.coverEdition {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 28px;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  text-align: right;
+  line-height: 1.4;
+}
+
+.coverHeadline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 184px;
+  line-height: 1.0;
+  letter-spacing: -1px;
+  word-spacing: 0.12em;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.6);
+}
+
+.coverFooterLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid rgba(212, 175, 55, 0.4);
+  padding-top: 32px;
+}
+
+.coverYear {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 46px;
+  line-height: 1;
+  color: #D4AF37;
+  letter-spacing: 3px;
+  text-align: right;
+}
+
+/* ─────────── MANIFEST PAGE ─────────── */
+.manifestPage {
+  /* Carbon stays from .page; add a subtle radial overlay for depth */
+}
+
+.manifestContent {
+  position: relative;
+  z-index: 2;
+  padding: 240px 200px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.manifestTitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 160px;
+  line-height: 1.0;
+  letter-spacing: -0.5px;
+  word-spacing: 0.14em;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 90px;
+}
+
+.manifestTitle span {
+  color: #D4AF37;
+}
+
+.manifestText {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.6;
+  color: #ececef;
+  max-width: 1280px;
+}
+
+.manifestText p {
+  margin-bottom: 28px;
+}
+
+.manifestText p:last-child { margin-bottom: 0; }
+
+.manifestText em {
+  color: #D4AF37;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.manifestSignature {
+  margin-top: 90px;
+  font-family: 'Inter', sans-serif;
+  font-size: 30px;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  font-weight: 500;
+}
+
+/* ─────────── LINES OVERVIEW PAGE ─────────── */
+.linesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 35px;
+  flex: 1;
+  margin-top: 60px;
+}
+
+.lineCard {
+  position: relative;
+  background: #0d0d0e;
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.lineCardImg {
+  height: 55%;
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(0.15) contrast(1.05);
+  position: relative;
+}
+
+.lineCardImg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(13,13,14,0.95) 100%);
+}
+
+.lineCardBody {
+  flex: 1;
+  padding: 36px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.lineCardTitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 52px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  word-spacing: 0.12em;
+  line-height: 1.05;
+}
+
+.lineCardSub {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  color: #b8b8bc;
+  line-height: 1.45;
+  margin-top: 16px;
+}
+
+.lineCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.lineCardWarranty {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: 3px;
+  color: #D4AF37;
+}
+
+.lineCardThickness {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  color: rgba(245, 245, 247, 0.5);
+  text-transform: uppercase;
+}
+
+/* ─────────── PRODUCT DETAIL PAGE ─────────── */
+.productPage {
+  position: relative;
+}
+
+.productHero {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.productHero.left { left: 0; }
+.productHero.right { right: 0; }
+
+.productHero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.productHero.left::after {
+  background: linear-gradient(90deg, rgba(5,5,5,0.3) 0%, rgba(5,5,5,0.05) 55%, rgba(6,6,6,0.95) 100%);
+}
+
+.productHero.right::after {
+  background: linear-gradient(270deg, rgba(5,5,5,0.3) 0%, rgba(5,5,5,0.05) 55%, rgba(6,6,6,0.95) 100%);
+}
+
+.productSide {
+  position: absolute;
+  top: 120px;
+  bottom: 120px;
+  width: 50%;
+  padding: 0 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  z-index: 3;
+}
+
+.productSide.left { left: 0; padding-left: 142px; }
+.productSide.right { right: 0; padding-right: 142px; }
+
+.productEyebrow {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: 8px;
+  word-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+/* Título do produto em 2-3 linhas explícitas (sem risco de wrap). */
+.productTitle {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 22px;
+}
+
+.productTitleBrand {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  letter-spacing: 8px;
+  word-spacing: 0.2em;
+  color: #ffffff;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 14px;
+  white-space: nowrap;
+}
+
+.productTitleLine {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 104px;
+  line-height: 0.98;
+  letter-spacing: 0;
+  word-spacing: 0.1em;
+  color: #ffffff;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.productTitleLine + .productTitleLine {
+  margin-top: 2px;
+}
+
+.productSubtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  margin-bottom: 28px;
+}
+
+.productSectionTitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1.15;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  word-spacing: 0.15em;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(212,175,55,0.3);
+  max-width: 100%;
+}
+
+.productBody {
+  margin-bottom: 30px;
+}
+
+.productBody p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.6;
+  color: #e0e0e3;
+  margin-bottom: 16px;
+}
+
+.productBody p:last-child { margin-bottom: 0; }
+
+.productBody p strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.productSpecs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.specChip {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 16px 22px;
+}
+
+.specChip .label {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(245,245,247,0.55);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.specChip .value {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+/* ── Arquitetura do Filme (2×2 grid, premium editorial) ── */
+.productArchitectureTitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(212,175,55,0.28);
+}
+
+.productArchitecture {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+  margin-top: 4px;
+}
+
+.archItem {
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.archItem .archNum {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: #D4AF37;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.archItem .archBody {
+  flex: 1;
+}
+
+.archItem .archTitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  word-spacing: 0.1em;
+  margin-bottom: 5px;
+  line-height: 1.15;
+}
+
+.archItem .archDesc {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.45;
+  color: #b8b8bc;
+}
+
+/* Watermark vertical removido — implementação anterior sobrepunha conteúdo.
+   Não reinstalar sem posicionar FORA do productSide (lateral externa da
+   página, oposta ao texto, com opacity 0.05–0.08). */
+
+.productThicknessTag {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 240px;
+  line-height: 0.85;
+  letter-spacing: -8px;
+  color: rgba(255,255,255,0.05);
+  text-transform: uppercase;
+}
+
+.productQrBlock {
+  position: absolute;
+  bottom: 200px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  z-index: 4;
+  background: rgba(5,5,5,0.88);
+  border: 1px solid rgba(212,175,55,0.5);
+  padding: 22px 26px;
+  backdrop-filter: blur(4px);
+}
+
+.productQrBlock.left { left: 142px; }
+.productQrBlock.right { right: 142px; flex-direction: row-reverse; }
+
+.productQrBlock .qrImg {
+  width: 160px;
+  height: 160px;
+  background: #fff;
+  padding: 8px;
+  flex-shrink: 0;
+}
+
+.productQrBlock .qrImg img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.productQrBlock .qrCaption .qrLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(245,245,247,0.55);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.productQrBlock .qrCaption .qrUrl {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  color: #D4AF37;
+  letter-spacing: 1px;
+}
+
+/* ─────────── BENCHMARK PAGE ─────────── */
+.benchmarkGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  margin-top: 70px;
+}
+
+.benchmarkCard {
+  background: rgba(10,10,11,0.85);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 44px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.benchmarkHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.benchmarkName {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 80px;
+  letter-spacing: 0.5px;
+  word-spacing: 0.12em;
+  line-height: 1;
+}
+
+.benchmarkSpec {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(245,245,247,0.55);
+  text-align: right;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.benchmarkSpec strong {
+  display: block;
+  color: #D4AF37;
+  font-weight: 600;
+  margin-top: 4px;
+  font-size: 26px;
+}
+
+.metricRow {
+  margin-bottom: 20px;
+}
+
+.metricRow .metricLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  letter-spacing: 1.5px;
+  color: #d2d2d6;
+  font-weight: 500;
+}
+
+.metricRow .metricValue {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  color: #ffffff;
+}
+
+.metricBar {
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.metricBar .metricFill {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  background: linear-gradient(90deg, rgba(212,175,55,0.6) 0%, currentColor 100%);
+}
+
+.benchmarkHighlight {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.55;
+  color: #b8b8bc;
+}
+
+/* ─────────── EXCLUSIVE DIFFERENTIALS PAGE ─────────── */
+.exclusiveGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 36px;
+  margin-top: 70px;
+  flex: 1;
+}
+
+.exclusiveCard {
+  background: linear-gradient(135deg, rgba(14,14,16,0.85) 0%, rgba(6,6,6,0.85) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  padding: 54px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.exclusiveCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 90px;
+  background: #D4AF37;
+}
+
+.exclusiveCardIcon {
+  width: 100px;
+  height: 100px;
+  filter: brightness(0) saturate(100%) invert(75%) sepia(54%) saturate(459%) hue-rotate(2deg) brightness(91%) contrast(89%);
+  margin-bottom: 30px;
+}
+
+.exclusiveCardTitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 50px;
+  line-height: 1.1;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  word-spacing: 0.14em;
+  margin-bottom: 26px;
+}
+
+.exclusiveCardDesc {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.6;
+  color: #d2d2d6;
+}
+
+/* ─────────── GUARANTEE / CERTIFICATE PAGE ─────────── */
+.certBlock {
+  margin-top: 60px;
+  background: linear-gradient(180deg, rgba(13,13,15,0.85) 0%, rgba(6,6,6,0.85) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  padding: 70px 70px 60px 70px;
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.certBlock::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  pointer-events: none;
+}
+
+.certHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.certHead .seal {
+  width: 130px;
+  height: 130px;
+  border: 2px solid #D4AF37;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D4AF37;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 26px;
+  text-align: center;
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+
+.certTitle {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 58px;
+  letter-spacing: 1px;
+  word-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 1.08;
+  max-width: 1100px;
+}
+
+.certSubtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-top: 14px;
+  font-weight: 500;
+}
+
+.certFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px 50px;
+  margin-bottom: 40px;
+}
+
+.certField .fieldLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: rgba(245,245,247,0.55);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.certField .fieldValue {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  color: #ffffff;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(212,175,55,0.3);
+  padding-bottom: 14px;
+}
+
+.certFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: auto;
+  padding-top: 40px;
+  border-top: 1px solid rgba(212,175,55,0.25);
+}
+
+.certCode {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(245,245,247,0.55);
+  font-weight: 500;
+}
+
+.certCode strong {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 34px;
+  color: #D4AF37;
+  letter-spacing: 5px;
+  margin-top: 10px;
+}
+
+.certQr {
+  width: 160px;
+  height: 160px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.certQr img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ─────────── CLOSING / DIFERENCIAIS PAGE ─────────── */
+.closingPage { /* uses .page carbon background */ }
+
+.closingContent {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.closingBlocks {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  margin-top: 50px;
+}
+
+.closingBlock {
+  border-left: 3px solid #D4AF37;
+  padding-left: 44px;
+}
+
+.closingBlock h4 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 46px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  word-spacing: 0.14em;
+  color: #ffffff;
+  margin-bottom: 18px;
+}
+
+.closingBlock p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.6;
+  color: #d2d2d6;
+}
+
+.closingQuote {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 38px;
+  line-height: 1.45;
+  letter-spacing: 0.5px;
+  color: #D4AF37;
+  margin-top: 50px;
+  padding: 44px 56px;
+  border-top: 1px solid rgba(212,175,55,0.3);
+  border-bottom: 1px solid rgba(212,175,55,0.3);
+  text-align: center;
+}
+
+/* ─────────── BACK COVER ─────────── */
+.backCoverContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  padding: 50px 0;
+}
+
+.backCoverLogo {
+  height: 420px;
+  width: auto;
+  margin: 0 auto 30px auto;
+  display: block;
+  filter: drop-shadow(0 6px 30px rgba(0,0,0,0.55));
+}
+
+.backCoverTagline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 100px;
+  line-height: 1.08;
+  letter-spacing: 0.5px;
+  word-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 24px;
+  max-width: 1300px;
+}
+
+.backCoverEyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  letter-spacing: 9px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 50px;
+  font-weight: 500;
+}
+
+.backCoverQr {
+  width: 320px;
+  height: 320px;
+  background: #ffffff;
+  padding: 24px;
+  margin: 20px 0;
+}
+
+.backCoverQr img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.backCoverContact {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
+}
+
+.backCoverContact .url {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 64px;
+  color: #D4AF37;
+  letter-spacing: 3px;
+}
+
+/* ─────────── HEADER COMMON ─────────── */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 36px;
+}
+
+.pageSection {
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  letter-spacing: 7px;
+  word-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  font-weight: 500;
+}
