@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-import { generateBlogCoverImage } from './_lib/aiImage';
+import { generateBlogCoverImage } from './_lib/aiImage.js';
 
 // POST /api/generate-blog-image
 // Body: { prompt: string }

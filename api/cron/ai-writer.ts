@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { generateBlogCoverImage } from '../_lib/aiImage';
-import { buildSiteContext } from '../_lib/siteContext';
+import { generateBlogCoverImage } from '../_lib/aiImage.js';
+import { buildSiteContext } from '../_lib/siteContext.js';
 
 // Motor SEO IA da NZ Distribuidora.
 // Rodado pelo cron Vercel (ver vercel.json) E por disparo manual vindo da UI
