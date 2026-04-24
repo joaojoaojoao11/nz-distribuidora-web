@@ -3,10 +3,15 @@
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
+  "functions": {
+    "api/cron/ai-writer.ts": {
+      "maxDuration": 60
+    }
+  },
   "crons": [
     {
       "path": "/api/cron/ai-writer",
-      "schedule": "0 0 * * *"
+      "schedule": "0 9 * * *"
     }
   ]
 }

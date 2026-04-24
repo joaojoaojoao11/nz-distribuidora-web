@@ -33,6 +33,7 @@ export default function AdminAIBlog() {
   const [loading, setLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<AICampaign | null>(null);
+  const [firingCampaignId, setFiringCampaignId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<Partial<AICampaign>>({
     theme: '',
@@ -89,6 +90,48 @@ export default function AdminAIBlog() {
     fetchData();
   };
 
+  const handleFireNow = async (campaign: AICampaign) => {
+    if (!window.confirm(`Disparar o Motor AGORA para a campanha "${campaign.theme}"?\n\nIsto vai gerar 1 post e publicar imediatamente no blog.`)) {
+      return;
+    }
+    setFiringCampaignId(campaign.id);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        alert('Sessão expirada. Faça login novamente.');
+        return;
+      }
+      const response = await fetch('/api/cron/ai-writer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ force: true, campaignId: campaign.id }),
+      });
+      const json = await response.json();
+      if (!response.ok) {
+        alert(`Motor falhou: ${json.error || response.status}`);
+        return;
+      }
+      const run = json.runs?.[0];
+      if (!run) {
+        alert('Motor rodou mas não reportou execução. Veja logs Vercel.');
+        return;
+      }
+      if (run.status === 'posted') {
+        alert(`Post publicado!\n\nTítulo: ${run.title}\nImagem: ${run.imageMode === 'generated' ? 'gerada pela IA' : 'fallback Unsplash'}`);
+      } else {
+        alert(`Motor rodou mas não publicou. Status: ${run.status}. Motivo: ${run.reason || '-'}`);
+      }
+      fetchData();
+    } catch (err) {
+      alert(`Erro: ${err instanceof Error ? err.message : 'desconhecido'}`);
+    } finally {
+      setFiringCampaignId(null);
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.theme) {
@@ -130,21 +173,21 @@ export default function AdminAIBlog() {
         <form onSubmit={handleSave} className={styles.adminFormGrid}>
           <div className={styles.adminFormGroup}>
             <label className={styles.adminLabel}>Tema Geral / Cluster Orgânico</label>
-            <input 
-              className={styles.adminInput} 
-              value={formData.theme} 
-              onChange={e => setFormData({ ...formData, theme: e.target.value })} 
+            <input
+              className={styles.adminInput}
+              value={formData.theme}
+              onChange={e => setFormData({ ...formData, theme: e.target.value })}
               placeholder="Ex: Diferença entre película PPF e vitrificador..."
-              required 
+              required
             />
           </div>
 
           <div className={styles.adminFormRow3}>
             <div className={styles.adminFormGroup}>
               <label className={styles.adminLabel}>Categoria de Destino</label>
-              <select 
-                className={styles.adminSelect} 
-                value={formData.target_category_id || ''} 
+              <select
+                className={styles.adminSelect}
+                value={formData.target_category_id || ''}
                 onChange={e => setFormData({ ...formData, target_category_id: e.target.value })}
               >
                 <option value="">Sem Categoria</option>
@@ -153,9 +196,9 @@ export default function AdminAIBlog() {
             </div>
             <div className={styles.adminFormGroup}>
               <label className={styles.adminLabel}>Frequência de Postagem</label>
-              <select 
-                className={styles.adminSelect} 
-                value={formData.frequency_hours} 
+              <select
+                className={styles.adminSelect}
+                value={formData.frequency_hours}
                 onChange={e => setFormData({ ...formData, frequency_hours: Number(e.target.value) })}
               >
                 <option value={12}>2x ao dia (12h)</option>
@@ -166,24 +209,24 @@ export default function AdminAIBlog() {
             </div>
             <div className={styles.adminFormGroup}>
               <label className={styles.adminLabel}>Status Inicial</label>
-              <select 
-                className={styles.adminSelect} 
-                value={formData.is_active ? 'active' : 'paused'} 
+              <select
+                className={styles.adminSelect}
+                value={formData.is_active ? 'active' : 'paused'}
                 onChange={e => setFormData({ ...formData, is_active: e.target.value === 'active' })}
               >
-                <option value="active">🟢 Motor Ligado</option>
-                <option value="paused">⏸️ Pausado</option>
+                <option value="active">Motor Ligado</option>
+                <option value="paused">Pausado</option>
               </select>
             </div>
           </div>
 
           <div className={styles.adminFormGroup}>
             <label className={styles.adminLabel}>Instruções Customizadas (System Prompt Especial)</label>
-            <textarea 
-              className={styles.adminTextarea} 
+            <textarea
+              className={styles.adminTextarea}
               style={{ minHeight: '120px' }}
-              value={formData.instructions || ''} 
-              onChange={e => setFormData({ ...formData, instructions: e.target.value })} 
+              value={formData.instructions || ''}
+              onChange={e => setFormData({ ...formData, instructions: e.target.value })}
               placeholder="Aqui você dita a regra pro Gemini: 'Seja divertido', 'Sempre termine pedindo para falar com nosso contato...', 'Direcione o conteúdo para instaladores mais experientes...'"
             />
           </div>
@@ -222,26 +265,34 @@ export default function AdminAIBlog() {
               {campaigns.map(camp => (
                 <tr key={camp.id}>
                   <td>
-                    <button 
+                    <button
                       onClick={() => handleToggleActive(camp)}
-                      style={{ 
+                      style={{
                         background: 'none', border: 'none', cursor: 'pointer',
                         fontSize: '1.2rem', padding: '0.2rem'
                       }}
                       title="Clique para alternar o Motor"
                     >
-                      {camp.is_active ? '🟢 ALIVE' : '⏸️ PAUSED'}
+                      {camp.is_active ? 'ALIVE' : 'PAUSED'}
                     </button>
                   </td>
                   <td style={{ fontWeight: 600 }}>{camp.theme}</td>
                   <td>a cada {camp.frequency_hours}h</td>
                   <td>
-                    {camp.next_run_at 
-                       ? new Date(camp.next_run_at).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})
-                       : 'Aguardando'
+                    {camp.next_run_at
+                      ? new Date(camp.next_run_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+                      : 'Aguardando'
                     }
                   </td>
                   <td>
+                    <button
+                      className={styles.actionBtn}
+                      onClick={() => handleFireNow(camp)}
+                      disabled={firingCampaignId === camp.id}
+                      title="Gera 1 post agora, ignorando o cronograma"
+                    >
+                      {firingCampaignId === camp.id ? 'Disparando...' : 'Disparar Agora'}
+                    </button>
                     <button className={`${styles.actionBtn} ${styles.actionBtnApprove}`} onClick={() => handleEdit(camp)}>Ajustar Motor</button>
                     <button className={`${styles.actionBtn} ${styles.actionBtnDeny}`} onClick={() => handleDelete(camp.id)}>Excluir</button>
                   </td>
