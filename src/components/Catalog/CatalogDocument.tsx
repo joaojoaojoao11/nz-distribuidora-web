@@ -4,43 +4,89 @@ import CoverPage from './pages/CoverPage';
 import ManifestPage from './pages/ManifestPage';
 import LinesOverviewPage from './pages/LinesOverviewPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import FinishesPage from './pages/FinishesPage';
 import BenchmarkPage from './pages/BenchmarkPage';
 import DifferentiatorsPage from './pages/DifferentiatorsPage';
 import GuaranteePage from './pages/GuaranteePage';
 import ClosingPage from './pages/ClosingPage';
 import BackCoverPage from './pages/BackCoverPage';
-import { productLines } from './data/catalogData';
+import CEOLetterPage from './pages/CEOLetterPage';
+import { productLines, totalPagesFor, type CatalogMode } from './data/catalogData';
 
 interface CatalogDocumentProps {
   qrDataUrl: string;
   productQrs: Record<string, string>;
+  mode?: CatalogMode;
 }
 
-const CatalogDocument = forwardRef<HTMLDivElement, CatalogDocumentProps>(({ qrDataUrl, productQrs }, ref) => {
-  return (
-    <div ref={ref} className={styles.documentRoot}>
-      <CoverPage />
-      <ManifestPage />
-      <LinesOverviewPage />
+const CatalogDocument = forwardRef<HTMLDivElement, CatalogDocumentProps>(
+  ({ qrDataUrl, productQrs, mode = 'standard' }, ref) => {
+    const complete = mode === 'complete';
+    const totalPages = totalPagesFor(mode);
 
-      {productLines.map((product, idx) => (
-        <ProductDetailPage
-          key={product.slug}
-          pageNumber={4 + idx}
-          product={product}
-          imageSide={idx % 2 === 0 ? 'left' : 'right'}
-          qrDataUrl={productQrs[product.slug] || ''}
-        />
-      ))}
+    // Numeração dinâmica: cada página consome um slot sequencial
+    let p = 0;
+    const nextPage = () => ++p;
 
-      <BenchmarkPage />
-      <DifferentiatorsPage />
-      <GuaranteePage qrDataUrl={qrDataUrl} />
-      <ClosingPage />
-      <BackCoverPage qrDataUrl={qrDataUrl} />
-    </div>
-  );
-});
+    const coverN = nextPage();
+    const manifestN = nextPage();
+    const linesN = nextPage();
+
+    // Páginas de produto (+ acabamentos entre cada linha no modo completo)
+    const productBlocks = productLines.map((product, idx) => {
+      const techN = nextPage();
+      const hasFinishes = complete && !!product.finishes?.items?.length;
+      const finishN = hasFinishes ? nextPage() : null;
+
+      return (
+        <div key={product.slug} style={{ display: 'contents' }}>
+          <ProductDetailPage
+            pageNumber={techN}
+            totalPages={totalPages}
+            product={product}
+            imageSide={idx % 2 === 0 ? 'left' : 'right'}
+            qrDataUrl={productQrs[product.slug] || ''}
+          />
+          {hasFinishes && finishN !== null && (
+            <FinishesPage
+              pageNumber={finishN}
+              totalPages={totalPages}
+              lineIndex={idx + 1}
+              product={product}
+            />
+          )}
+        </div>
+      );
+    });
+
+    const benchmarkN = nextPage();
+    const diffN = nextPage();
+    const guaranteeN = nextPage();
+    const closingN = nextPage();
+    const backN = nextPage();
+    // Carta do CEO — fechamento interior pós-contracapa.
+    // Conta como página final do catálogo em ambos os modos
+    // (TOTAL_PAGES = 15 / TOTAL_PAGES_COMPLETE = 20).
+    const ceoLetterN = nextPage();
+
+    return (
+      <div ref={ref} className={styles.documentRoot}>
+        <CoverPage pageNumber={coverN} totalPages={totalPages} />
+        <ManifestPage pageNumber={manifestN} totalPages={totalPages} />
+        <LinesOverviewPage pageNumber={linesN} totalPages={totalPages} />
+
+        {productBlocks}
+
+        <BenchmarkPage pageNumber={benchmarkN} totalPages={totalPages} />
+        <DifferentiatorsPage pageNumber={diffN} totalPages={totalPages} />
+        <GuaranteePage pageNumber={guaranteeN} totalPages={totalPages} qrDataUrl={qrDataUrl} />
+        <ClosingPage pageNumber={closingN} totalPages={totalPages} />
+        <BackCoverPage pageNumber={backN} totalPages={totalPages} qrDataUrl={qrDataUrl} />
+        <CEOLetterPage pageNumber={ceoLetterN} totalPages={totalPages} />
+      </div>
+    );
+  }
+);
 
 CatalogDocument.displayName = 'CatalogDocument';
 

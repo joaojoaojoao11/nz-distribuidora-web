@@ -3,10 +3,15 @@ import styles from '../Catalog.module.css';
 import { benchmarkLines } from '../data/catalogData';
 import { safeSpacing, sanitizeCatalogText } from '../textHelpers';
 
-export default function BenchmarkPage() {
+interface BenchmarkPageProps {
+  pageNumber?: number;
+  totalPages?: number;
+}
+
+export default function BenchmarkPage({ pageNumber = 10, totalPages }: BenchmarkPageProps = {}) {
   return (
-    <CatalogPage pageNumber={10}>
-      <div className={styles.safeArea}>
+    <CatalogPage pageNumber={pageNumber} totalPages={totalPages} hideBrand>
+      <div className={styles.safeArea} style={{ paddingBottom: 40 }}>
         <div className={styles.pageHeader}>
           <div>
             <div className={styles.pageSection}>10  ·  COMPARATIVO</div>

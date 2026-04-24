@@ -7,13 +7,27 @@ interface CatalogPageProps {
   children: ReactNode;
   bare?: boolean;
   hideFooter?: boolean;
+  /** Omite a metade esquerda do footer (brand + url), mantém o número da página */
+  hideBrand?: boolean;
   /** Quando true, remove o background.png (usar em capa/contracapa que têm imagem própria) */
   noBg?: boolean;
+  /** Total de páginas do catálogo (varia com o modo: 14 padrão, 19 completo) */
+  totalPages?: number;
   className?: string;
   style?: React.CSSProperties;
 }
 
-export default function CatalogPage({ pageNumber, children, bare = false, hideFooter = false, noBg = false, className = '', style }: CatalogPageProps) {
+export default function CatalogPage({
+  pageNumber,
+  children,
+  bare = false,
+  hideFooter = false,
+  hideBrand = false,
+  noBg = false,
+  totalPages = TOTAL_PAGES,
+  className = '',
+  style
+}: CatalogPageProps) {
   return (
     <div
       className={`${styles.page} ${noBg ? styles.pageNoBg : ''} ${className}`}
@@ -24,9 +38,9 @@ export default function CatalogPage({ pageNumber, children, bare = false, hideFo
 
       {!hideFooter && !bare && (
         <div className={styles.footer}>
-          <span>{catalogMeta.brand}  •  {catalogMeta.url}</span>
+          <span>{hideBrand ? '' : `${catalogMeta.brand}  •  ${catalogMeta.url}`}</span>
           <span className={styles.pageNum}>
-            {String(pageNumber).padStart(2, '0')} / {String(TOTAL_PAGES).padStart(2, '0')}
+            {String(pageNumber).padStart(2, '0')} / {String(totalPages).padStart(2, '0')}
           </span>
         </div>
       )}

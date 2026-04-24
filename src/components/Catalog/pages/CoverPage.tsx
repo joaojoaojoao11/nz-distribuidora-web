@@ -2,9 +2,14 @@ import CatalogPage from '../CatalogPage';
 import styles from '../Catalog.module.css';
 import { catalogMeta } from '../data/catalogData';
 
-export default function CoverPage() {
+interface CoverPageProps {
+  pageNumber?: number;
+  totalPages?: number;
+}
+
+export default function CoverPage({ pageNumber = 1, totalPages }: CoverPageProps = {}) {
   return (
-    <CatalogPage pageNumber={1} hideFooter noBg>
+    <CatalogPage pageNumber={pageNumber} totalPages={totalPages} hideFooter noBg>
       <div
         className={styles.coverHero}
         style={{ backgroundImage: "url('/assets/images/luxury_lambo.png')" }}

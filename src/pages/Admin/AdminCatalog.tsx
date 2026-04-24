@@ -1,11 +1,19 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import QRCode from 'qrcode';
 import CatalogDocument from '../../components/Catalog/CatalogDocument';
 import { generateCatalogPdf, type ProgressInfo } from '../../components/Catalog/generateCatalogPdf';
-import { TOTAL_PAGES, catalogMeta, productLines, productUrl } from '../../components/Catalog/data/catalogData';
+import {
+  TOTAL_PAGES,
+  TOTAL_PAGES_COMPLETE,
+  catalogMeta,
+  productLines,
+  productUrl,
+  totalPagesFor,
+  type CatalogMode
+} from '../../components/Catalog/data/catalogData';
 import styles from './AdminCatalog.module.css';
 
-const sectionList = [
+const standardSections = [
   { num: '01', label: 'Capa Editorial' },
   { num: '02', label: 'Manifesto NZPPF' },
   { num: '03', label: 'Visão Geral das 6 Linhas' },
@@ -22,7 +30,30 @@ const sectionList = [
   { num: '14', label: 'Contra-capa · QR' }
 ];
 
+const completeSections = [
+  { num: '01', label: 'Capa Editorial' },
+  { num: '02', label: 'Manifesto NZPPF' },
+  { num: '03', label: 'Visão Geral das 6 Linhas' },
+  { num: '04', label: 'NZPPF Luxury Gloss' },
+  { num: '05', label: 'Acabamentos Luxury' },
+  { num: '06', label: 'NZPPF Prime Gloss' },
+  { num: '07', label: 'Acabamentos Prime' },
+  { num: '08', label: 'NZPPF Flow Gloss' },
+  { num: '09', label: 'Acabamentos Flow' },
+  { num: '10', label: 'NZPPF Core Gloss' },
+  { num: '11', label: 'Acabamentos Core' },
+  { num: '12', label: 'NZPPF Headlight' },
+  { num: '13', label: 'Tonalidades Headlight' },
+  { num: '14', label: 'NZPPF Windshield' },
+  { num: '15', label: 'Comparativo de Performance' },
+  { num: '16', label: 'Diferenciais Exclusivos' },
+  { num: '17', label: 'Garantia · Certificado' },
+  { num: '18', label: 'Posicionamento de Marca' },
+  { num: '19', label: 'Contra-capa · QR' }
+];
+
 export default function AdminCatalog() {
+  const [mode, setMode] = useState<CatalogMode>('standard');
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState<ProgressInfo | null>(null);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
@@ -30,10 +61,16 @@ export default function AdminCatalog() {
   const [productQrs, setProductQrs] = useState<Record<string, string>>({});
   const docRef = useRef<HTMLDivElement>(null);
 
+  const totalPages = totalPagesFor(mode);
+  const sectionList = useMemo(
+    () => (mode === 'complete' ? completeSections : standardSections),
+    [mode]
+  );
+
   const handleGenerate = async () => {
     setGenerating(true);
     setFeedback(null);
-    setProgress({ current: 0, total: TOTAL_PAGES, label: 'Gerando QR codes…' });
+    setProgress({ current: 0, total: totalPages, label: 'Gerando QR codes…' });
 
     try {
       const qrOpts = {
@@ -63,7 +100,7 @@ export default function AdminCatalog() {
 
       setFeedback({
         type: 'success',
-        msg: 'PDF gerado com sucesso. Verifique sua pasta de Downloads.'
+        msg: `PDF de ${totalPages} páginas gerado com sucesso. Verifique sua pasta de Downloads.`
       });
     } catch (err) {
       console.error(err);
@@ -104,12 +141,52 @@ export default function AdminCatalog() {
           </div>
           <div className={styles.metaItem}>
             <div className={styles.metaLabel}>Páginas</div>
-            <div className={styles.metaValue}>{TOTAL_PAGES} <strong>pgs</strong></div>
+            <div className={styles.metaValue}>{totalPages} <strong>pgs</strong></div>
           </div>
           <div className={styles.metaItem}>
             <div className={styles.metaLabel}>Saída</div>
             <div className={styles.metaValue}>PDF · <strong>JPEG 94</strong></div>
           </div>
+        </div>
+      </div>
+
+      {/* Seletor de modo — Padrão (14) vs Completo (19) */}
+      <div className={styles.modeSelector}>
+        <div className={styles.modeSelectorLabel}>MODO DE GERAÇÃO</div>
+        <div className={styles.modeOptions}>
+          <label className={`${styles.modeOption} ${mode === 'standard' ? styles.modeOptionActive : ''}`}>
+            <input
+              type="radio"
+              name="catalog-mode"
+              value="standard"
+              checked={mode === 'standard'}
+              onChange={() => setMode('standard')}
+              disabled={generating}
+            />
+            <div className={styles.modeOptionTitle}>CATÁLOGO PADRÃO</div>
+            <div className={styles.modeOptionMeta}>{TOTAL_PAGES} páginas · Técnico essencial</div>
+            <div className={styles.modeOptionDesc}>
+              Apresentação direta das 6 linhas NZPPF com ficha técnica, arquitetura do filme
+              e comparativo de performance.
+            </div>
+          </label>
+
+          <label className={`${styles.modeOption} ${mode === 'complete' ? styles.modeOptionActive : ''}`}>
+            <input
+              type="radio"
+              name="catalog-mode"
+              value="complete"
+              checked={mode === 'complete'}
+              onChange={() => setMode('complete')}
+              disabled={generating}
+            />
+            <div className={styles.modeOptionTitle}>COMPLETO COM ACABAMENTOS</div>
+            <div className={styles.modeOptionMeta}>{TOTAL_PAGES_COMPLETE} páginas · Venda emocional</div>
+            <div className={styles.modeOptionDesc}>
+              Inclui página de acabamentos após cada linha (Luxury, Prime, Flow, Core, Headlight)
+              com imagens e copy persuasiva por tonalidade.
+            </div>
+          </label>
         </div>
       </div>
 
@@ -120,10 +197,10 @@ export default function AdminCatalog() {
           disabled={generating}
         >
           <span className={styles.btnIcon}>{generating ? '⌛' : '📕'}</span>
-          {generating ? 'Gerando catálogo…' : 'Gerar catálogo PDF'}
+          {generating ? 'Gerando catálogo…' : `Gerar catálogo PDF (${totalPages} pgs)`}
         </button>
         <span className={styles.hint}>
-          Tempo estimado: 15–30 segundos · Tamanho final ~12–25 MB
+          Tempo estimado: {mode === 'complete' ? '25–45' : '15–30'} segundos · Tamanho final ~{mode === 'complete' ? '18–35' : '12–25'} MB
         </span>
       </div>
 
@@ -135,7 +212,7 @@ export default function AdminCatalog() {
       )}
 
       <div className={styles.summary}>
-        <div className={styles.summaryTitle}>SEÇÕES INCLUÍDAS · 14 PÁGINAS</div>
+        <div className={styles.summaryTitle}>SEÇÕES INCLUÍDAS · {totalPages} PÁGINAS</div>
         <div className={styles.sectionList}>
           {sectionList.map((s) => (
             <div key={s.num} className={styles.sectionRow}>
@@ -153,7 +230,7 @@ export default function AdminCatalog() {
       </div>
 
       {/* Documento off-screen renderizado para captura */}
-      <CatalogDocument ref={docRef} qrDataUrl={qrDataUrl} productQrs={productQrs} />
+      <CatalogDocument ref={docRef} qrDataUrl={qrDataUrl} productQrs={productQrs} mode={mode} />
 
       {generating && progress && (
         <div className={styles.overlay}>

@@ -4,11 +4,26 @@ import { catalogMeta } from '../data/catalogData';
 
 interface BackCoverPageProps {
   qrDataUrl: string;
+  pageNumber?: number;
+  totalPages?: number;
 }
 
-export default function BackCoverPage({ qrDataUrl }: BackCoverPageProps) {
+/**
+ * Contracapa.
+ * Redesign:
+ *   • Badge dourada "ATÉ 12 ANOS DE GARANTIA" reforça o ativo principal.
+ *   • Bloco unificado de CTA (label + QR + URL) substitui os 3 elementos
+ *     soltos no meio da página.
+ *   • Footer com hierarquia: NZGROUP em destaque + edição menor.
+ *   • Divider dourado curto após o logo cria ritmo visual.
+ */
+export default function BackCoverPage({
+  qrDataUrl,
+  pageNumber = 14,
+  totalPages,
+}: BackCoverPageProps) {
   return (
-    <CatalogPage pageNumber={14} hideFooter noBg>
+    <CatalogPage pageNumber={pageNumber} totalPages={totalPages} hideFooter noBg>
       <div className={styles.safeArea}>
         <div className={styles.backCoverContent}>
           <div>
@@ -17,6 +32,7 @@ export default function BackCoverPage({ qrDataUrl }: BackCoverPageProps) {
               alt="NZPPF"
               className={styles.backCoverLogo}
             />
+            <div className={styles.backCoverDivider} aria-hidden />
             <div className={styles.backCoverEyebrow}>VISITE O SITE OFICIAL</div>
             <div className={styles.backCoverTagline}>
               SUA OBRA-PRIMA<br />
@@ -25,23 +41,26 @@ export default function BackCoverPage({ qrDataUrl }: BackCoverPageProps) {
             </div>
           </div>
 
-          <div className={styles.backCoverQr}>
-            {qrDataUrl ? <img src={qrDataUrl} alt="QR Code" /> : null}
+          <div className={styles.backCoverWarranty}>
+            ATÉ 12 ANOS DE GARANTIA
           </div>
 
-          <div className={styles.backCoverContact}>
-            <div className={styles.url}>{catalogMeta.url}</div>
-            <div style={{
-              marginTop: 24,
-              paddingTop: 24,
-              borderTop: '1px solid rgba(212,175,55,0.25)',
-              fontFamily: 'Inter',
-              fontSize: 24,
-              letterSpacing: 5,
-              textTransform: 'uppercase',
-              color: 'rgba(245,245,247,0.4)'
-            }}>
-              {catalogMeta.company}  ·  CATÁLOGO NZPPF 2026
+          <div className={styles.backCoverCtaBlock}>
+            <div className={styles.backCoverCtaLabel}>
+              ESCANEIE PARA EXPLORAR
+            </div>
+            <div className={styles.backCoverCtaQr}>
+              {qrDataUrl ? <img src={qrDataUrl} alt="QR Code" /> : null}
+            </div>
+            <div className={styles.backCoverCtaUrl}>{catalogMeta.url}</div>
+          </div>
+
+          <div className={styles.backCoverFootV2}>
+            <div className={styles.backCoverFootCompany}>
+              {catalogMeta.company}
+            </div>
+            <div className={styles.backCoverFootEdition}>
+              CATÁLOGO NZPPF · EDIÇÃO 2026
             </div>
           </div>
         </div>

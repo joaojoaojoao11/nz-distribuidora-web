@@ -4,6 +4,8 @@ import { safeSpacing, sanitizeCatalogText } from '../textHelpers';
 
 interface GuaranteePageProps {
   qrDataUrl: string;
+  pageNumber?: number;
+  totalPages?: number;
 }
 
 const certFields = [
@@ -15,9 +17,9 @@ const certFields = [
   { label: 'DATA DE APLICAÇÃO',     value: '00 / 00 / 0000' }
 ];
 
-export default function GuaranteePage({ qrDataUrl }: GuaranteePageProps) {
+export default function GuaranteePage({ qrDataUrl, pageNumber = 12, totalPages }: GuaranteePageProps) {
   return (
-    <CatalogPage pageNumber={12}>
+    <CatalogPage pageNumber={pageNumber} totalPages={totalPages}>
       <div className={styles.safeArea}>
         <div className={styles.pageHeader}>
           <div>

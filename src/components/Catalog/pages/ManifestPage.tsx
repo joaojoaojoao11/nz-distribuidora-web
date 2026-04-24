@@ -9,9 +9,14 @@ const paragraphs = [
   'Cada rolo é validado em veículos reais, em condições reais, antes de encostar no seu carro. Sem atalhos. Sem suposições.'
 ];
 
-export default function ManifestPage() {
+interface ManifestPageProps {
+  pageNumber?: number;
+  totalPages?: number;
+}
+
+export default function ManifestPage({ pageNumber = 2, totalPages }: ManifestPageProps = {}) {
   return (
-    <CatalogPage pageNumber={2} className={styles.manifestPage}>
+    <CatalogPage pageNumber={pageNumber} totalPages={totalPages} className={styles.manifestPage}>
       <div className={styles.manifestContent}>
         <div className={styles.eyebrow}>MANIFESTO  ·  NZPPF</div>
 

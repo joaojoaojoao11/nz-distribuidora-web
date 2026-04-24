@@ -5,6 +5,7 @@ import { sanitizeCatalogText } from '../textHelpers';
 
 interface ProductDetailPageProps {
   pageNumber: number;
+  totalPages?: number;
   product: ProductLine;
   imageSide: 'left' | 'right';
   qrDataUrl: string;
@@ -32,6 +33,7 @@ function splitTitle(raw: string): { brand: string; lines: string[] } {
 
 export default function ProductDetailPage({
   pageNumber,
+  totalPages,
   product,
   imageSide,
   qrDataUrl
@@ -41,7 +43,7 @@ export default function ProductDetailPage({
   const { brand, lines: displayLines } = splitTitle(product.title);
 
   return (
-    <CatalogPage pageNumber={pageNumber}>
+    <CatalogPage pageNumber={pageNumber} totalPages={totalPages}>
       {/* Background giant thickness watermark — mantido, fica no canto da imagem */}
       <div
         className={styles.productThicknessTag}

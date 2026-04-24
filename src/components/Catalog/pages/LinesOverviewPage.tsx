@@ -3,9 +3,14 @@ import styles from '../Catalog.module.css';
 import { productLines } from '../data/catalogData';
 import { safeSpacing, sanitizeCatalogText } from '../textHelpers';
 
-export default function LinesOverviewPage() {
+interface LinesOverviewPageProps {
+  pageNumber?: number;
+  totalPages?: number;
+}
+
+export default function LinesOverviewPage({ pageNumber = 3, totalPages }: LinesOverviewPageProps = {}) {
   return (
-    <CatalogPage pageNumber={3}>
+    <CatalogPage pageNumber={pageNumber} totalPages={totalPages}>
       <div className={styles.safeArea}>
         <div className={styles.pageHeader}>
           <div>

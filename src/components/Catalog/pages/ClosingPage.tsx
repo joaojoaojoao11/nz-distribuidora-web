@@ -5,50 +5,83 @@ import { sanitizeCatalogText } from '../textHelpers';
 const closingBlocks = [
   {
     title: 'O QUE NOS SEPARA',
-    body: 'Domínio sobre a camada química do material. Sabemos como uma resina específica se comporta combinada com um adesivo específico e com um coating específico — e como essa expertise em compounds garante a entrega prometida.'
+    body: 'Domínio sobre a camada química do material. Sabemos como uma resina específica se comporta combinada com um adesivo específico e com um coating específico — e como essa expertise em compounds garante a entrega prometida.',
   },
   {
     title: 'NOSSO COMPROMISSO',
-    body: 'Cada cliente protegido é um carro com PPF que faz parte da realização de um sonho. E nós nos tornamos esse compromisso parte do nosso também — não negociamos integridade técnica para vencer no preço.'
+    body: 'Cada cliente protegido é um carro com PPF que faz parte da realização de um sonho. E nós nos tornamos esse compromisso parte do nosso também — não negociamos integridade técnica para vencer no preço.',
   },
   {
     title: 'NOSSAS MATÉRIAS-PRIMAS',
-    body: 'Confiáveis e robustas. Sem mistura de "quase isso" com "quase aquilo" — só compounds rastreáveis, com ficha técnica e respaldo de fabricante.'
+    body: 'Confiáveis e robustas. Sem mistura de "quase isso" com "quase aquilo" — só compounds rastreáveis, com ficha técnica e respaldo de fabricante.',
   },
   {
     title: 'ATENDIMENTO 360°',
-    body: 'Nosso compromisso não termina na venda. Você encontra um aplicador qualificado próximo, tira dúvidas sobre o produto e recebe suporte oficial sempre que precisar.'
-  }
+    body: 'Nosso compromisso não termina na venda. Você encontra um aplicador qualificado próximo, tira dúvidas sobre o produto e recebe suporte oficial sempre que precisar.',
+  },
 ];
 
-export default function ClosingPage() {
+interface ClosingPageProps {
+  pageNumber?: number;
+  totalPages?: number;
+}
+
+/**
+ * Página "Nossos Diferenciais" (posicionamento de marca).
+ * Redesign:
+ *   • Quote de abertura agora aparece NO TOPO como manifesto
+ *     (substitui o uso decorativo do rodapé).
+ *   • Os 4 blocos viram grid 2×2 com numerais 01–04 dourados gigantes
+ *     como elemento gráfico — quebra a monotonia da lista vertical e
+ *     diferencia visualmente da página "Diferenciais Exclusivos".
+ */
+export default function ClosingPage({
+  pageNumber = 13,
+  totalPages,
+}: ClosingPageProps = {}) {
   return (
-    <CatalogPage pageNumber={13} className={styles.closingPage}>
+    <CatalogPage
+      pageNumber={pageNumber}
+      totalPages={totalPages}
+      className={styles.closingPage}
+    >
       <div className={styles.safeArea}>
         <div className={styles.pageHeader}>
           <div>
             <div className={styles.pageSection}>13  ·  POSICIONAMENTO</div>
             <div className={styles.h2} style={{ marginTop: 16 }}>
               NOSSOS<br />
-              <span style={{ color: '#D4AF37' }}>DIFERENCIAIS.</span>
+              <span style={{ color: '#D4AF37' }}>DIFERENCIAIS</span>
             </div>
           </div>
           <div className={styles.darkBadge}>POR QUE NZPPF</div>
         </div>
 
         <div className={styles.closingContent}>
-          <div className={styles.closingBlocks}>
-            {closingBlocks.map((b, i) => (
-              <div key={i} className={styles.closingBlock}>
-                <h4>{sanitizeCatalogText(b.title)}</h4>
-                <p>{sanitizeCatalogText(b.body)}</p>
-              </div>
-            ))}
+          <div className={styles.closingQuoteTop}>
+            <span className={styles.closingQuoteMark} aria-hidden>
+              “
+            </span>
+            Nossos diferenciais vão além de entregar um produto de qualidade —
+            isso é obrigação.
+            <span className={styles.closingQuoteAuthor}>— NZ Group</span>
           </div>
 
-          <div className={styles.closingQuote}>
-            “Nossos diferenciais vão além de entregar um produto<br />
-            de qualidade — isso é obrigação.”
+          <div className={styles.closingGridV2}>
+            {closingBlocks.map((b, i) => {
+              const numStr = String(i + 1).padStart(2, '0');
+              return (
+                <div key={i} className={styles.closingBlockV2}>
+                  <div className={styles.closingBlockNum} aria-hidden>
+                    {numStr}
+                  </div>
+                  <div className={styles.closingBlockBody}>
+                    <h4>{sanitizeCatalogText(b.title)}</h4>
+                    <p>{sanitizeCatalogText(b.body)}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
