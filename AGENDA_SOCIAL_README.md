@@ -6,11 +6,15 @@ Módulo simples de kanban para gerenciar posts das três contas (@nzppf, @nzgrou
 
 | Arquivo | O que é |
 |--------|---------|
-| `social_posts.sql` | SQL inicial — cria tabela, RLS, trigger de updated_at |
+| `social_posts.sql` | SQL inicial — cria tabela `social_posts`, RLS, trigger de updated_at |
 | `social_posts_v2.sql` | Migration v2 — adiciona coluna `checklist` (jsonb) |
-| `src/pages/Admin/AdminAgendaSocial.tsx` | Componente principal (kanban + calendário + modal de criar/editar com checklist) |
-| `src/pages/Admin/AdminAgendaSocialCalendar.tsx` | Vista calendário mensal (extraído por tamanho) |
+| `social_posts_v3.sql` | Migration v3 — cria `agenda_objectives`, `agenda_tasks`, `calendar_feeds` |
+| `src/pages/Admin/AdminAgendaSocial.tsx` | Componente principal (kanban + toggle de view + modal de criar/editar com checklist + bulk import) |
+| `src/pages/Admin/AdminAgendaSocialCalendar.tsx` | Vista calendário mensal (com overlay de eventos externos) |
+| `src/pages/Admin/AdminAgendaSocialPlan.tsx` | Vista Plano (zonas Mês / Semana / Hoje, objetivos e tarefas) |
 | `src/pages/Admin/AdminAgendaSocialIdeaGenerator.tsx` | Motor de ideias (banco interno + UI de geração) |
+| `src/pages/Admin/AdminAgendaSocialFeeds.ts` | Tipos + parser iCal mínimo + hook `useCalendarFeeds` |
+| `src/pages/Admin/AdminAgendaSocialFeedManager.tsx` | Modal pra cadastrar URLs `.ics` públicas |
 | `src/pages/Admin/AdminAgendaSocial.module.css` | Estilos no padrão do admin (dark, accent-red) |
 | `src/pages/Admin/Dashboard.tsx` | 4 edições mínimas: import, type union, sidebar button, render condicional |
 
@@ -22,14 +26,17 @@ Nenhum arquivo existente foi reescrito do zero — só edições pontuais no Das
 
 Abre o painel do projeto NZ no Supabase → **SQL Editor** → **New Query**.
 
-**Primeira instalação:**
-1. Cola o conteúdo de `social_posts.sql` → **Run**.
-2. Em seguida, cola o `social_posts_v2.sql` → **Run** (adiciona coluna `checklist`).
+**Primeira instalação (3 SQLs em ordem):**
+1. Cola `social_posts.sql` → **Run** (cria tabela + RLS + trigger).
+2. Nova query → cola `social_posts_v2.sql` → **Run** (adiciona coluna `checklist`).
+3. Nova query → cola `social_posts_v3.sql` → **Run** (cria `agenda_objectives`, `agenda_tasks`, `calendar_feeds` para o módulo Plano e overlay externo).
 
-**Atualização de instalação existente** (já tinha o `social_posts.sql` rodando antes):
-- Roda só o `social_posts_v2.sql`. É idempotente (`add column if not exists`).
+**Atualização de instalação existente:**
+- Já tinha v1 e v2 → roda só `social_posts_v3.sql`.
+- Já tinha v1 → roda v2 e v3.
+- Tudo idempotente (`if not exists`).
 
-Tudo cria a tabela com RLS para admins e o trigger de `updated_at`. Roda em ~1s.
+Cada SQL cria as tabelas com RLS para admins e seus triggers. Roda em ~1s cada.
 
 Se quiser começar com cards de exemplo, descomente o bloco `-- insert into ...` no fim do `social_posts.sql` antes de rodar.
 
@@ -185,6 +192,94 @@ Se algum desses virar dor real depois de 30 dias de uso, dá para evoluir increm
 7. **Editar templates da checklist** sem mexer no código — tabela `checklist_templates` no Supabase com fallback pro hardcoded.
 
 Me chama quando quiser priorizar uma dessas.
+
+## Plano (Objetivos & Tarefas)
+
+Toggle de view tem 3 botões: **📋 Kanban / 📅 Calendário / 🎯 Plano**.
+
+A vista Plano não substitui o Kanban — ela fornece a camada de **planejamento** que o Kanban (focado em estado de produção dos posts) não cobre. Tem 3 zonas verticais:
+
+### Zona 1 — Mês
+
+Cards horizontais com **objetivos mensais** do mês corrente. Cada card mostra título, descrição truncada, status (✓ ou ○), contador de tarefas vinculadas (`5 tarefas · 3 concluídas`) e barra de progresso fina.
+
+- `+ Objetivo do mês` cria objetivo com `target_date` = primeiro dia do mês ativo.
+- Click no número de status alterna `open` ↔ `done`.
+- Click no título abre modal de edição.
+- Navegação ← Hoje → no header da zona muda o mês visualizado.
+
+### Zona 2 — Semana
+
+Cabeçalho mostra a semana ativa (segunda → domingo). Acima do grid, **objetivos semanais** aparecem como chips dourados clicáveis.
+
+Grid 7 colunas (Seg → Dom). Cada coluna tem:
+- Header com o dia (`Seg 28`).
+- Tarefas com `due_date` naquele dia (priority colorido + título truncado).
+- Posts agendados naquele dia (badge da conta + título).
+- Eventos de feeds externos `.ics` enabled (chips translúcidos com cor do feed).
+
+A coluna do dia atual ganha borda accent-red.
+
+### Zona 3 — Hoje
+
+Card destacado em fundo vinho. Lista de **tarefas com `due_date = hoje`**, ordenadas por prioridade (Alta → Baixa) e depois por status (em andamento → pendente → concluída).
+
+Cada linha tem:
+- Checkbox que alterna `pending` ↔ `done`.
+- Título editável (click para abrir modal).
+- Tag de prioridade colorida.
+- Link sutil pro objetivo se tiver `objective_id`.
+- Link sutil pro post se tiver `social_post_id`.
+
+`+ Tarefa de hoje` cria tarefa pré-preenchida com prazo = hoje.
+
+### Conexões
+
+- **Objetivo ↔ Tarefa:** Tarefa pode ter `objective_id`. Card de objetivo no mês conta tarefas vinculadas. TaskModal tem dropdown de objetivos abertos.
+- **Post ↔ Tarefa:** No card do post (Kanban), botão `+T` cria tarefa pré-preenchida com `social_post_id` e `due_date = scheduled_for`. **Não muda** o status do post quando a tarefa é concluída — são dois ciclos independentes.
+- **Filtro por conta** continua valendo na zona Semana (posts mostrados são os filtrados).
+
+### Ciclo de uso recomendado
+
+1. **Início do mês:** define 2-4 objetivos mensais.
+2. **Domingo (~19h):** define 1-3 objetivos semanais e cria as tarefas da semana (vincula a objetivos quando fizer sentido).
+3. **Diariamente:** abre a Zona 3 logo cedo, marca o que vai fazer hoje, conclui ao longo do dia.
+
+## Agendas externas (overlay iCal)
+
+Botão `🔗` no header do **Calendário** abre o **FeedManager**. Permite cadastrar URLs `.ics` públicas do Google Calendar (ou de qualquer fonte iCal compatível) e exibir esses eventos como chips read-only sobre o Calendário e a zona Semana do Plano.
+
+### Como pegar a URL .ics no Google Calendar
+
+```
+calendar.google.com → ⚙ Settings (engrenagem) → Settings for my calendars
+  → escolha a agenda → role até "Integrate calendar"
+  → copie "Secret address in iCal format" (privada, recomendada)
+  ou "Public address in iCal format" (apenas se a agenda for pública)
+```
+
+Cole no FeedManager: label (ex: "Pessoal", "NZ Group"), URL, cor para os chips. Toggle on/off para esconder sem apagar.
+
+### Limitações conscientes do parser iCal
+
+O parser é caseiro e mínimo (sem libs externas). Cobre:
+- `BEGIN:VEVENT` / `END:VEVENT` boundaries.
+- `SUMMARY` (com unescape de `\,`, `\;`, `\\`, `\n`).
+- `DTSTART` em formatos `;VALUE=DATE:YYYYMMDD` (all-day) e `:YYYYMMDDTHHMMSS[Z]` (com hora — hora ignorada na visualização).
+- Line folding RFC 5545 (linhas continuadas com espaço/tab).
+
+**Não cobre** (limitações documentadas):
+- `RRULE` (recorrência) — eventos recorrentes aparecem só na primeira ocorrência (DTSTART original).
+- `RECURRENCE-ID`, `EXDATE`, `EXRULE` — overrides de instâncias recorrentes ignorados.
+- Timezone real (`TZID`, `VTIMEZONE`) — só extrai data, hora descartada.
+- `CATEGORIES`, `LOCATION`, `DESCRIPTION` — não exibidos (apenas SUMMARY).
+- Validação semântica (eventos com DTSTART > DTEND, etc).
+
+Read-only por design: a Agenda NZ não escreve em calendários externos.
+
+### CORS
+
+O endpoint `.ics` é fetched no client. Google Calendar serve com CORS aberto na URL `secret address`. Se algum feed bloquear (CORS ou auth), aparece warning ⚠ no FeedManager pra esse feed.
 
 ## Trabalhando com o Cowork
 

@@ -3,6 +3,9 @@ import { supabase } from '../../lib/supabase';
 import styles from './AdminAgendaSocial.module.css';
 import IdeaGeneratorModal from './AdminAgendaSocialIdeaGenerator';
 import CalendarView from './AdminAgendaSocialCalendar';
+import PlanView, { type AgendaTask } from './AdminAgendaSocialPlan';
+import FeedManagerModal from './AdminAgendaSocialFeedManager';
+import { useCalendarFeeds } from './AdminAgendaSocialFeeds';
 
 // =====================================================================
 // Tipos
@@ -150,8 +153,18 @@ export default function AdminAgendaSocial() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filterAccount, setFilterAccount] = useState<Account | 'all'>('all');
-  const [view, setView] = useState<'kanban' | 'calendar'>('kanban');
+  const [view, setView] = useState<'kanban' | 'calendar' | 'plan'>('kanban');
   const [calendarMonth, setCalendarMonth] = useState<Date>(() => startOfMonth(new Date()));
+
+  // Feeds externos (iCal overlay) — compartilhados entre Calendar e Plan
+  const calendarFeeds = useCalendarFeeds();
+
+  // Modal de gerenciar feeds (aberto a partir do botão 🔗 no Calendar header)
+  const [feedManagerOpen, setFeedManagerOpen] = useState(false);
+
+  // Task pré-preenchida vinda do botão "+ tarefa" no card do post (kanban)
+  // Quando setada, força view 'plan' que abre o TaskModal automaticamente.
+  const [pendingTask, setPendingTask] = useState<Partial<AgendaTask> | null>(null);
 
   // Modal de criar/editar
   const [editing, setEditing] = useState<Partial<SocialPost> | null>(null);
@@ -303,6 +316,13 @@ export default function AdminAgendaSocial() {
             >
               📅 Calendário
             </button>
+            <button
+              type="button"
+              className={`${styles.viewBtn} ${view === 'plan' ? styles.viewBtnActive : ''}`}
+              onClick={() => setView('plan')}
+            >
+              🎯 Plano
+            </button>
           </div>
           <button className={styles.secondaryBtn} onClick={() => setIdeasOpen(true)}>
             💡 Gerar ideias
@@ -377,6 +397,17 @@ export default function AdminAgendaSocial() {
                     onRetreat={() => moveStatus(post, 'prev')}
                     onEdit={() => setEditing(post)}
                     onDelete={() => deletePost(post)}
+                    onCreateTask={() => {
+                      setPendingTask({
+                        title: `Tarefa: ${post.title}`,
+                        description: '',
+                        due_date: post.scheduled_for,
+                        status: 'pending',
+                        priority: 2,
+                        social_post_id: post.id,
+                      });
+                      setView('plan');
+                    }}
                   />
                 ))}
               </div>
@@ -390,12 +421,25 @@ export default function AdminAgendaSocial() {
         <CalendarView
           month={calendarMonth}
           postsByDate={postsByDate}
+          externalEvents={calendarFeeds.events}
           todayKey={todayKey}
           onPrevMonth={() => setCalendarMonth((m) => new Date(m.getFullYear(), m.getMonth() - 1, 1))}
           onNextMonth={() => setCalendarMonth((m) => new Date(m.getFullYear(), m.getMonth() + 1, 1))}
           onToday={() => setCalendarMonth(startOfMonth(new Date()))}
           onChipClick={(p) => setEditing(p)}
           onEmptyClick={(dateStr) => setEditing({ ...emptyPost(), scheduled_for: dateStr })}
+          onOpenFeedManager={() => setFeedManagerOpen(true)}
+        />
+      )}
+
+      {/* Plano */}
+      {!loading && !error && view === 'plan' && (
+        <PlanView
+          posts={filtered}
+          externalEvents={calendarFeeds.events}
+          pendingTask={pendingTask}
+          onPendingTaskConsumed={() => setPendingTask(null)}
+          onPostEdit={(p) => setEditing(p)}
         />
       )}
 
@@ -426,6 +470,16 @@ export default function AdminAgendaSocial() {
           onImported={loadPosts}
         />
       )}
+
+      {/* Modal de gerenciamento de feeds externos (Calendário) */}
+      {feedManagerOpen && (
+        <FeedManagerModal
+          feeds={calendarFeeds.feeds}
+          errors={calendarFeeds.errors}
+          onClose={() => setFeedManagerOpen(false)}
+          onChange={calendarFeeds.reload}
+        />
+      )}
     </div>
   );
 }
@@ -439,9 +493,10 @@ interface CardProps {
   onRetreat: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onCreateTask: () => void;
 }
 
-function PostCard({ post, onAdvance, onRetreat, onEdit, onDelete }: CardProps) {
+function PostCard({ post, onAdvance, onRetreat, onEdit, onDelete, onCreateTask }: CardProps) {
   const acct = accountMeta(post.account);
   const canAdvance = nextStatus(post.status) !== null;
   const canRetreat = prevStatus(post.status) !== null;
@@ -491,6 +546,7 @@ function PostCard({ post, onAdvance, onRetreat, onEdit, onDelete }: CardProps) {
           ←
         </button>
         <button className={styles.iconBtn} onClick={onEdit} title="Editar">✎</button>
+        <button className={styles.iconBtn} onClick={onCreateTask} title="Criar tarefa vinculada">+T</button>
         <button className={styles.iconBtnDanger} onClick={onDelete} title="Apagar">×</button>
         <button
           className={styles.iconBtn}

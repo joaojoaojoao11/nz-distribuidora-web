@@ -1,16 +1,19 @@
 import { useMemo } from 'react';
 import styles from './AdminAgendaSocial.module.css';
 import { accountMeta, dateKey, type SocialPost } from './AdminAgendaSocial';
+import type { ExternalEvent } from './AdminAgendaSocialFeeds';
 
 interface CalendarProps {
   month: Date;
   postsByDate: Map<string, SocialPost[]>;
+  externalEvents: Map<string, ExternalEvent[]>;
   todayKey: string;
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onToday: () => void;
   onChipClick: (p: SocialPost) => void;
   onEmptyClick: (dateStr: string) => void;
+  onOpenFeedManager: () => void;
 }
 
 /**
@@ -47,7 +50,7 @@ function getCalendarCells(monthDate: Date): { date: Date; inMonth: boolean }[] {
 const WEEKDAY_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
 export default function CalendarView({
-  month, postsByDate, todayKey, onPrevMonth, onNextMonth, onToday, onChipClick, onEmptyClick,
+  month, postsByDate, externalEvents, todayKey, onPrevMonth, onNextMonth, onToday, onChipClick, onEmptyClick, onOpenFeedManager,
 }: CalendarProps) {
   const cells = useMemo(() => getCalendarCells(month), [month]);
   const monthLabelRaw = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(month);
@@ -61,6 +64,7 @@ export default function CalendarView({
           <button type="button" className={styles.calendarNavBtn} onClick={onPrevMonth} title="Mês anterior">←</button>
           <button type="button" className={styles.calendarNavBtn} onClick={onToday}>Hoje</button>
           <button type="button" className={styles.calendarNavBtn} onClick={onNextMonth} title="Próximo mês">→</button>
+          <button type="button" className={styles.calendarNavBtn} onClick={onOpenFeedManager} title="Agendas externas">🔗</button>
         </div>
       </div>
       <div className={styles.calendarWeekdays}>
@@ -104,6 +108,23 @@ export default function CalendarView({
                     </button>
                   );
                 })}
+                {(externalEvents.get(key) || []).map((e, i) => (
+                  <div
+                    key={`${e.feedId}-${i}`}
+                    className={`${styles.calendarChip} ${styles.calendarChipExternal}`}
+                    style={{ borderLeftColor: e.feedColor }}
+                    title={`${e.feedLabel}: ${e.title}`}
+                    onClick={(ev) => ev.stopPropagation()}
+                  >
+                    <span
+                      className={styles.calendarChipBadge}
+                      style={{ background: e.feedColor }}
+                    >
+                      {e.feedLabel.slice(0, 3).toUpperCase()}
+                    </span>
+                    <span className={styles.calendarChipTitle}>{e.title}</span>
+                  </div>
+                ))}
               </div>
             </div>
           );

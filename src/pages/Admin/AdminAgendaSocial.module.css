@@ -1002,3 +1002,440 @@
   left: 0.3rem;
   color: rgba(255, 136, 136, 0.7);
 }
+
+/* =====================================================================
+   Calendar — chip de evento externo (overlay iCal)
+   ===================================================================== */
+.calendarChipExternal {
+  cursor: default;
+  opacity: 0.7;
+  font-size: 0.65rem;
+  background: rgba(20, 20, 22, 0.7);
+}
+
+.calendarChipExternal:hover {
+  opacity: 0.9;
+  background: rgba(28, 28, 32, 0.9);
+}
+
+/* =====================================================================
+   Plano — zonas (Mês / Semana / Hoje)
+   ===================================================================== */
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.planZone {
+  background: rgba(15, 15, 18, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.planZoneHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.planZoneTitle {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #fff;
+}
+
+/* ───── Zona 1: cards horizontais de objetivo do mês ───── */
+.planObjectives {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.planObjectiveCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 0.85rem;
+  background: rgba(28, 28, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.15s;
+}
+
+.planObjectiveCard:hover { border-color: rgba(255, 255, 255, 0.18); }
+
+.planObjectiveCardDone {
+  opacity: 0.55;
+}
+
+.planObjectiveTop {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.planObjectiveStatus {
+  width: 22px;
+  height: 22px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--accent-red);
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.planObjectiveStatus:hover {
+  border-color: var(--accent-red);
+}
+
+.planObjectiveTitle {
+  flex: 1;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+.planObjectiveCardDone .planObjectiveTitle {
+  text-decoration: line-through;
+}
+
+.planObjectiveDesc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.planObjectiveStats {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.planAddCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 1rem;
+  min-height: 100px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.planAddCard:hover {
+  color: #fff;
+  border-color: var(--accent-red);
+}
+
+/* ───── Zona 2: linha de objetivos semanais + grid 7 colunas ───── */
+.planWeeklyObjectivesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.planWeeklyObjective {
+  background: rgba(212, 175, 55, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: #f0c757;
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.planWeeklyObjective:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.planWeeklyObjectiveDone {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.planWeekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+}
+
+@media (max-width: 900px) {
+  .planWeekGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .planWeekGrid { grid-template-columns: 1fr; }
+}
+
+.planWeekCol {
+  background: rgba(20, 20, 24, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  min-height: 140px;
+}
+
+.planWeekColToday {
+  border-color: var(--accent-red);
+}
+
+.planWeekColHeader {
+  padding: 0.4rem 0.6rem;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.planWeekColBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.4rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.planWeekTask, .planWeekPost, .planWeekExternal {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.4rem;
+  background: rgba(28, 28, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left-width: 3px;
+  border-left-color: rgba(255, 255, 255, 0.2);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  text-align: left;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+  overflow: hidden;
+  transition: background 0.15s;
+}
+
+.planWeekTask {
+  border-left-color: var(--accent-red);
+}
+
+.planWeekTask:hover, .planWeekPost:hover {
+  background: rgba(40, 40, 44, 0.95);
+}
+
+.planWeekTaskDone {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.planWeekExternal {
+  cursor: default;
+  opacity: 0.7;
+  font-size: 0.65rem;
+}
+
+.planTaskPriority {
+  font-size: 0.55rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.planTaskPriority[data-priority='1'] { color: #ff6b6b; }
+.planTaskPriority[data-priority='2'] { color: #f0c757; }
+.planTaskPriority[data-priority='3'] { color: var(--text-muted); }
+
+.planTaskTitle {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ───── Zona 3: lista de hoje ───── */
+.planTodayZone {
+  background: rgba(20, 12, 12, 0.6);
+  border-color: rgba(209, 30, 30, 0.25);
+}
+
+.planTodayList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.planTaskRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  background: rgba(28, 28, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.15s;
+}
+
+.planTaskRow:hover {
+  background: rgba(40, 40, 44, 0.95);
+}
+
+.planTaskRowDone {
+  opacity: 0.55;
+}
+
+.planTaskRowDone .planTaskRowTitle {
+  text-decoration: line-through;
+}
+
+.planTaskMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.planTaskRowTitle {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+.planTaskMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.planTaskPriorityTag {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.planTaskPriorityTag[data-priority='1'] { border-color: #ff6b6b; color: #ff6b6b; }
+.planTaskPriorityTag[data-priority='2'] { border-color: #f0c757; color: #f0c757; }
+.planTaskPriorityTag[data-priority='3'] { border-color: rgba(255,255,255,0.15); color: var(--text-muted); }
+
+.planTaskLink {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* =====================================================================
+   FeedManager (URLs .ics externas)
+   ===================================================================== */
+.feedList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.feedRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.7rem;
+  background: rgba(28, 28, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.feedColorDot {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.feedInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.feedLabel {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.3px;
+  color: #fff;
+}
+
+.feedUrl {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.feedError {
+  font-size: 0.7rem;
+  color: #ff8888;
+}
+
+.feedToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.feedAddTitle {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+.feedColorInput {
+  height: 38px;
+  padding: 0.2rem;
+  cursor: pointer;
+}
