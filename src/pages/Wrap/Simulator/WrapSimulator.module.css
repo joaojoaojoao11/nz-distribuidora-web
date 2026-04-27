@@ -1,0 +1,479 @@
+.page {
+  min-height: 100dvh;
+  background: #0a0a0c;
+  color: #f2f2f2;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+.canvasRoot {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+}
+
+/* ============ TOP HUD ============ */
+.hudTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(180deg, rgba(10, 10, 12, 0.85) 0%, rgba(10, 10, 12, 0) 100%);
+  pointer-events: none;
+}
+
+.hudTop > * {
+  pointer-events: auto;
+}
+
+.backLink {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.backLink:hover {
+  color: #d4af37;
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.hudActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hudToggle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  padding: 0.5rem 0.85rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s;
+}
+
+.hudToggle:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+}
+
+.hudToggleActive {
+  border-color: #d4af37;
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.hudAIButton {
+  border-color: #d4af37;
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.12);
+}
+.hudAIButton:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.22);
+}
+.hudAIButton:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+/* ============ COLOR HUD (Forzavista-style) ============ */
+.colorHud {
+  position: absolute;
+  top: 5.5rem;
+  left: 1.5rem;
+  z-index: 8;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.35));
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  min-width: 220px;
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+.colorHudSku {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: #d4af37;
+  margin-bottom: 0.25rem;
+}
+
+.colorHudName {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 0.35rem;
+}
+
+.colorHudFinish {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+}
+
+/* ============ CAMERA BAR ============ */
+.cameraBar {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+}
+
+.cameraPills {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.8);
+}
+
+.cameraPill {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cameraPill:hover {
+  color: #d4af37;
+}
+
+.cameraPillActive {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+}
+
+/* ============ SIDE PANEL (floating overlay) ============ */
+.panel {
+  position: absolute;
+  top: 5.5rem;
+  right: 1.5rem;
+  bottom: 5.5rem;
+  z-index: 9;
+  width: 360px;
+  background: linear-gradient(180deg, rgba(15, 15, 18, 0.85) 0%, rgba(10, 10, 12, 0.88) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.75rem 1.25rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  backdrop-filter: blur(22px);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+}
+
+/* Scrollbar */
+.panel::-webkit-scrollbar {
+  width: 6px;
+}
+.panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.pickerGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pickerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.pickerLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.activeColorName {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #d4af37;
+  letter-spacing: 0.05em;
+  text-align: right;
+}
+
+.activeFinish {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: -0.25rem;
+}
+
+/* Car buttons */
+.carButtons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.carButton {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.85rem 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.carButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.carButtonActive {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #d4af37;
+  color: #d4af37;
+}
+
+/* Color grid */
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.4rem;
+}
+
+.colorSwatch {
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.colorSwatch:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.colorSwatchActive {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3),
+              0 0 12px rgba(212, 175, 55, 0.3);
+}
+
+/* Scene buttons */
+.sceneButtons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.sceneButton {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.85rem 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.sceneButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+.sceneButtonActive {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #d4af37;
+  color: #d4af37;
+}
+
+.sceneDescription {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0.25rem 0 0;
+  font-style: italic;
+}
+
+/* ============ AI OVERLAY ============ */
+.aiOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aiImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.aiControls {
+  position: absolute;
+  bottom: 5.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+  z-index: 11;
+}
+
+.aiButton {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.aiButton:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #d4af37;
+}
+
+/* AI status badge (bottom-left) */
+.aiBadge {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aiDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  display: inline-block;
+}
+
+.aiDotActive {
+  background: #d4af37;
+  box-shadow: 0 0 12px #d4af37;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.aiError {
+  color: #ff6b6b;
+}
+
+/* ============ MOBILE ============ */
+@media (max-width: 900px) {
+  .panel {
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 55dvh;
+    border-radius: 12px 12px 0 0;
+    padding: 1.25rem 1rem;
+    gap: 1.25rem;
+  }
+  .colorGrid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+  .colorHud {
+    top: 4.5rem;
+    left: 0.75rem;
+    padding: 0.75rem 1rem;
+    min-width: 0;
+    max-width: calc(100% - 1.5rem);
+  }
+  .colorHudName {
+    font-size: 1rem;
+  }
+  .cameraBar {
+    display: none;
+  }
+  .hudTop {
+    padding: 0.75rem 0.75rem;
+  }
+  .brand {
+    display: none;
+  }
+}

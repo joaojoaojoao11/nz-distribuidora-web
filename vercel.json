@@ -1,7 +1,7 @@
 {
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/|src/|@vite/|@react-refresh|@id/|@fs/|assets/|node_modules/).*)", "destination": "/index.html" }
   ],
   "functions": {
     "api/cron/ai-writer.ts": {
