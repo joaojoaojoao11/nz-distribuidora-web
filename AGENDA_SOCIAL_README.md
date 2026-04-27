@@ -9,9 +9,10 @@ Módulo simples de kanban para gerenciar posts das três contas (@nzppf, @nzgrou
 | `social_posts.sql` | SQL inicial — cria tabela `social_posts`, RLS, trigger de updated_at |
 | `social_posts_v2.sql` | Migration v2 — adiciona coluna `checklist` (jsonb) |
 | `social_posts_v3.sql` | Migration v3 — cria `agenda_objectives`, `agenda_tasks`, `calendar_feeds` |
-| `src/pages/Admin/AdminAgendaSocial.tsx` | Componente principal (kanban + toggle de view + modal de criar/editar com checklist + bulk import) |
+| `src/pages/Admin/AdminAgendaSocial.tsx` | Componente principal (kanban + toggle de view + modais de criar/editar/importar/exportar) |
 | `src/pages/Admin/AdminAgendaSocialCalendar.tsx` | Vista calendário mensal (com overlay de eventos externos) |
 | `src/pages/Admin/AdminAgendaSocialPlan.tsx` | Vista Plano (zonas Mês / Semana / Hoje, objetivos e tarefas) |
+| `src/pages/Admin/AdminAgendaSocialProtocol.ts` | Protocolo Cowork — `parseBatch`, `executeBatch`, `buildExport` (lógica pura) |
 | `src/pages/Admin/AdminAgendaSocialIdeaGenerator.tsx` | Motor de ideias (banco interno + UI de geração) |
 | `src/pages/Admin/AdminAgendaSocialFeeds.ts` | Tipos + parser iCal mínimo + hook `useCalendarFeeds` |
 | `src/pages/Admin/AdminAgendaSocialFeedManager.tsx` | Modal pra cadastrar URLs `.ics` públicas |
@@ -82,56 +83,183 @@ Abaixo de "Notas internas". Lista de itens marcáveis com barra de progresso fin
 
 A checklist é persistida com o card. No kanban, todo card que tem checklist mostra `🗸 X/Y` + barra fina logo abaixo da meta.
 
-### Importar em lote (canal de colaboração com o Cowork)
+### Protocolo Cowork: Importar, Comandar, Exportar
 
-Botão `📥 Importar em lote` na header. Abre modal com toggle **JSON** (preferido) ou **TSV** (backup pra digitar/colar de planilha).
+Dois botões na header da Agenda Social:
 
-Cole o conteúdo. A pre-visualização atualiza em tempo real, mostrando quantos posts foram detectados e quais linhas foram ignoradas (com motivo). Clicar em **Importar X posts** cria os cards no kanban com `status = 'backlog'` e checklist auto-populada conforme o `format`.
+- **📥 Importar / Comandar** — entrada. Aceita JSON polimórfico em 4 formatos × 4 ações × 3 tabelas.
+- **📤 Exportar** — saída. Gera snapshot estruturado pro Cowork digerir e voltar com o próximo passo.
 
-**Quando usar:**
-- Acabou de conversar com o Cowork (assistente desktop) que sugeriu N posts pra semana → cola o JSON.
-- Tem uma planilha externa com posts a importar → exporta como TSV → cola.
+Juntos formam um **protocolo de comandos** que transforma a Agenda numa mesa de operação compartilhada entre o João e o assistente Cowork. Sem OAuth, sem API exposta — toda mudança passa por um copy/paste consciente do João.
 
-**Formato JSON (recomendado):**
+#### Tabelas suportadas
+
+| Alias curto | Tabela real |
+|---|---|
+| `posts` | `social_posts` |
+| `tasks` | `agenda_tasks` |
+| `objectives` | `agenda_objectives` |
+
+#### 4 formatos de payload (entrada)
+
+**(A) Array legado de posts** — compatibilidade com importação antiga. Detecta automaticamente quando nenhum item tem `action` ou `kind`. Todos viram `create` em `social_posts`.
 
 ```json
 [
-  {
-    "account": "nzppf",
-    "title": "RAM cromada @adesivotech",
-    "format": "Reel",
-    "pillar": "Showcase Luxury",
-    "scheduled_for": "2026-04-29",
-    "caption": "Brilho que vira presença...",
-    "notes": "Cortar do bruto."
-  },
-  {
-    "account": "nzgroup",
-    "title": "Cor da semana: Stuttgart Sport Grey",
-    "format": "Carrossel",
-    "pillar": "Catálogo NZ Wrap"
-  }
+  { "account": "nzppf", "title": "RAM cromada @adesivotech",
+    "format": "Reel", "scheduled_for": "2026-04-29" },
+  { "account": "nzgroup", "title": "Cor da semana: Stuttgart Sport Grey",
+    "format": "Carrossel", "pillar": "Catálogo NZ Wrap" }
 ]
 ```
 
-**Formato TSV (header obrigatório, qualquer ordem das colunas):**
+**(B) Objeto agrupado** — agrupa por tabela. Útil quando o Cowork quer separar visualmente o que é post / tarefa / objetivo.
+
+```json
+{
+  "posts":      [ { "account": "nzppf", "title": "..." } ],
+  "tasks":      [ { "title": "Visitar @adesivotech", "due_date": "2026-04-29" } ],
+  "objectives": [ { "scope": "weekly", "title": "Fechar 3 lojas",
+                    "target_date": "2026-05-03" } ]
+}
+```
+
+**(C) Array de comandos** — explícito. Cada item é uma operação completa.
+
+```json
+[
+  { "action": "create", "table": "social_posts",
+    "data": { "account": "nzppf", "title": "..." } },
+  { "action": "update", "table": "social_posts", "id": "uuid",
+    "patch": { "scheduled_for": "2026-05-03" } },
+  { "action": "delete", "table": "agenda_tasks",
+    "ids": ["uuid1", "uuid2"] },
+  { "action": "advance_status", "table": "social_posts",
+    "ids": ["uuid"] }
+]
+```
+
+**(D) Misto** — array onde cada item ou é um comando OU traz `kind: "post" | "task" | "objective"` que vira `create` na tabela apropriada.
+
+```json
+[
+  { "kind": "post",      "account": "nzppf", "title": "RAM dourada" },
+  { "kind": "task",      "title": "Editar reel sexta",
+                          "due_date": "2026-05-01", "priority": 1 },
+  { "action": "advance_status", "table": "social_posts",
+    "ids": ["uuid-existente"] }
+]
+```
+
+#### 4 ações suportadas
+
+- **`create`** — cria registro. Exige `data` com os campos obrigatórios da tabela.
+  - `social_posts`: `account` + `title` obrigatórios. Status default `backlog`. Checklist auto-populada por `format` se não vier.
+  - `agenda_tasks`: `title` obrigatório. `priority` default 2 (1=alta, 2=média, 3=baixa).
+  - `agenda_objectives`: `scope` (`monthly` | `weekly`) + `title` + `target_date` obrigatórios.
+
+- **`update`** — exige `id` + `patch` (objeto parcial). Campos `id`, `created_at`, `created_by` são silenciosamente ignorados se vierem no patch.
+
+- **`delete`** — exige `ids: string[]`. Apaga em batch via `.in('id', ids)`. Confirmação obrigatória se total > 5.
+
+- **`advance_status`** — só pra `social_posts`. Move pro próximo status (`backlog → em_producao → pronto → agendado → postado`). Posts já em `postado` são ignorados silenciosamente. Operação em batch — agrupa por novo status.
+
+#### Validação tolerante
+
+Erros não bloqueiam: o sistema executa as operações válidas e lista as ignoradas com motivo. Pré-visualização agrupada por tipo e ação:
 
 ```
-account	title	format	pillar	scheduled_for
-nzppf	RAM cromada @adesivotech	Reel	Showcase Luxury	2026-04-29
-nzgroup	Cor da semana	Carrossel	Catálogo NZ Wrap	
+Modo: array de comandos
+✓ Detectado:
+  · 3 posts (create)
+  · 1 posts (update)
+  · 2 posts (advance_status)
+  · 4 tarefas (create)
+⚠ 1 ignorado:
+  · Item 5: action "destroy" desconhecida (use create, update, delete, advance_status)
 ```
 
-**Regras de validação:**
-- `account` obrigatório (`nzppf` | `nzgroup` | `joaowrap`).
-- `title` obrigatório, não vazio.
-- `format` opcional, mas se vier deve ser um de `Foto / Carrossel / Reel / Story` (case-insensitive).
-- `scheduled_for` opcional, formato `YYYY-MM-DD` se presente.
-- `status` ignorado se vier — sempre forçado pra `backlog` na importação.
-- `pillar`, `caption`, `notes`, `asset_url` opcionais.
-- `checklist` opcional. Se vier bem-formada (`[{ "label": str, "done": bool }, ...]`) é usada; senão deriva do `format`.
+Toast de execução quebra por tabela e ação:
 
-**Validação tolerante:** linhas inválidas viram a lista de "ignorados" com motivo, e o resto importa normalmente. Não é tudo-ou-nada.
+```
+Execução do protocolo Cowork:
+· posts: 3 criados, 1 atualizados, 2 avançados
+· tarefas: 4 criados
+```
+
+#### TSV legado
+
+O toggle **TSV (legado)** continua funcionando, mas só pra formato (A) — array simples de posts. É auto-detectado se você colar um header com tabs + coluna `account`. Use JSON pra qualquer coisa além de posts.
+
+#### Exportar
+
+Botão **📤 Exportar** abre modal com 3 filtros:
+
+- **Escopo de data**: `Todos` | `Esta semana` (Seg-Dom) | `Este mês` | `Próximos 30 dias` | `Datas personalizadas`.
+- **Tabelas**: 4 checkboxes (`posts` / `tasks` / `objectives` / `external_events`) — todos marcados por padrão.
+- **Conta** (só afeta posts): `Todas` | `@nzppf` | `@nzgroup.br` | `@joaowrap`.
+
+A pré-visualização JSON atualiza em tempo real. Botão **📋 Copiar pro clipboard** usa `navigator.clipboard.writeText`. Em ambientes onde clipboard não está disponível (HTTPS quirks), o botão **Selecionar tudo** faz `select()` no textarea pra copiar manualmente com Ctrl+C.
+
+**Estrutura do JSON exportado:**
+
+```json
+{
+  "exported_at": "2026-04-27T19:00:00.000Z",
+  "scope": "this_week",
+  "range": { "start": "2026-04-27", "end": "2026-05-03" },
+  "filters": {
+    "accounts": "all",
+    "tables": { "posts": true, "tasks": true, "objectives": true, "external_events": true }
+  },
+  "summary": {
+    "posts":      { "total": 7, "by_status": { "backlog": 2, "agendado": 5 },
+                    "by_account": { "nzppf": 3, "nzgroup": 2, "joaowrap": 2 } },
+    "tasks":      { "total": 4, "by_status": { "pending": 3, "done": 1 } },
+    "objectives": { "monthly": 1, "weekly": 1, "open": 2, "done": 0 },
+    "external_events": { "total": 5 }
+  },
+  "posts":           [ /* arrays completos sem created_by */ ],
+  "tasks":           [ /* idem */ ],
+  "objectives":      [ /* idem */ ],
+  "external_events": [ { "feed_label": "Agenda João",
+                         "title": "Reunião lojista X",
+                         "date": "2026-04-30",
+                         "all_day": true } ]
+}
+```
+
+Regras:
+
+- **IDs incluídos** em todos os arrays — Cowork precisa pra mandar comandos `update` / `delete` / `advance_status` no próximo round.
+- **`created_by` omitido** (privacidade).
+- **`external_events`** é uma agregação dos feeds `.ics` enabled (read-only). Vem do hook `useCalendarFeeds` já carregado pelo módulo.
+- **`summary`** é calculado client-side a partir dos arrays filtrados.
+
+#### Round-trip de exemplo
+
+```
+1. João: "Cowork, planeja a próxima semana baseada nos lojistas
+          que vou visitar terça e quinta."
+2. Cowork: gera JSON com 5 posts + 4 tasks + 1 objetivo semanal
+          (formato D: misto).
+3. João abre Agenda → 📥 Importar / Comandar → cola → confere
+          a pré-visualização → clica Executar.
+4. Agenda mostra os cards no Backlog e tarefas na zona Hoje/Semana.
+5. João trabalha durante a semana — marca tarefas como done,
+          move posts no kanban com as setas, agenda no Meta.
+6. Domingo 19h: João abre 📤 Exportar (escopo "Esta semana"),
+          clica Copiar pro clipboard.
+7. Cola no chat do Cowork.
+8. Cowork analisa: "Você cumpriu 6/7 — o post 'Reel da RAM'
+          ficou em pronto, não foi agendado. Sugiro mover pra
+          terça que vem. Manda esse comando:
+          { action: 'update', table: 'social_posts',
+            id: '<uuid>', patch: { scheduled_for: '2026-05-12' } }"
+9. João cola, executa, segue.
+```
+
+Esse é o ciclo: **Cowork sugere → João executa → Agenda registra → João exporta → Cowork analisa**. Sem credenciais compartilhadas, sem API pública, sem ferramenta a mais entre os dois.
 
 ### Motor de ideias
 
@@ -287,16 +415,11 @@ Se algum feed continuar dando erro (URL inválida, token revogado, host fora da 
 
 ## Trabalhando com o Cowork
 
-O **Cowork** é o assistente que roda no desktop do João, em paralelo a esta interface. Ele ajuda com bastidor, planejamento, redação de legendas, sugestões de pauta. Não tem acesso direto ao Supabase — o canal entre Cowork e a Agenda é o **JSON** que ele entrega no chat.
+O **Cowork** é o assistente que roda no desktop do João, em paralelo a esta interface. Ele ajuda com bastidor, planejamento, redação de legendas, sugestões de pauta. Não tem acesso direto ao Supabase — o canal entre Cowork e a Agenda é o **JSON** que ele entrega no chat e o JSON estruturado que o João copia de volta.
 
-**Fluxo recomendado:**
+A documentação completa do protocolo bidirecional (4 formatos × 4 ações × 3 tabelas + filtros de export + round-trip) está acima em **"Protocolo Cowork: Importar, Comandar, Exportar"**.
 
-1. João conversa com o Cowork: "me dá 7 posts pra essa semana baseados nas visitas em Curitiba e no lançamento da Headlight Dark Black".
-2. Cowork responde com bloco JSON pronto pra colar (formato documentado acima em "Importar em lote").
-3. João abre `/admin` → **Agenda Social** → `📥 Importar em lote` → cola → confere a pré-visualização → confirma.
-4. Cards aparecem no Backlog, com checklist preenchida pelo `format`. João edita o que quiser direto na interface.
-
-**Por que esse desenho:** Cowork não toca DB. Toda criação passa pela mão do João (via paste + click). Isso mantém auditoria simples (todo card tem `created_by = user`), evita risco de credencial vazada e mantém a Agenda como fonte única de verdade.
+**Por que esse desenho:** Cowork não toca DB. Toda criação/edição passa pela mão do João (via paste + click). Isso mantém auditoria simples (todo card tem `created_by = user`), evita risco de credencial vazada e mantém a Agenda como fonte única de verdade.
 
 ---
 

@@ -3,9 +3,21 @@ import { supabase } from '../../lib/supabase';
 import styles from './AdminAgendaSocial.module.css';
 import IdeaGeneratorModal from './AdminAgendaSocialIdeaGenerator';
 import CalendarView from './AdminAgendaSocialCalendar';
-import PlanView, { type AgendaTask } from './AdminAgendaSocialPlan';
+import PlanView, { type AgendaObjective, type AgendaTask } from './AdminAgendaSocialPlan';
 import FeedManagerModal from './AdminAgendaSocialFeedManager';
-import { useCalendarFeeds } from './AdminAgendaSocialFeeds';
+import { useCalendarFeeds, type ExternalEvent } from './AdminAgendaSocialFeeds';
+import {
+  buildExport,
+  executeBatch,
+  parseBatch,
+  resolveRange,
+  summarizeOps,
+  type ExecResult,
+  type ExportFilters,
+  type ExportScope,
+  type OpSummary,
+  type ParseResult,
+} from './AdminAgendaSocialProtocol';
 
 // =====================================================================
 // Tipos
@@ -173,8 +185,10 @@ export default function AdminAgendaSocial() {
   // Modal de gerar ideias
   const [ideasOpen, setIdeasOpen] = useState(false);
 
-  // Modal de importação em lote
+  // Modal de importação em lote (protocolo Cowork — entrada)
   const [importOpen, setImportOpen] = useState(false);
+  // Modal de exportação (protocolo Cowork — saída)
+  const [exportOpen, setExportOpen] = useState(false);
 
   const loadPosts = useCallback(async () => {
     setLoading(true);
@@ -328,7 +342,10 @@ export default function AdminAgendaSocial() {
             💡 Gerar ideias
           </button>
           <button className={styles.secondaryBtn} onClick={() => setImportOpen(true)}>
-            📥 Importar em lote
+            📥 Importar / Comandar
+          </button>
+          <button className={styles.secondaryBtn} onClick={() => setExportOpen(true)}>
+            📤 Exportar
           </button>
           <button className={styles.primaryBtn} onClick={() => setEditing(emptyPost())}>
             + Novo post
@@ -463,11 +480,20 @@ export default function AdminAgendaSocial() {
         />
       )}
 
-      {/* Modal de importação em lote */}
+      {/* Modal de importação em lote (Protocolo Cowork — entrada) */}
       {importOpen && (
-        <BulkImportModal
+        <ProtocolImportModal
           onClose={() => setImportOpen(false)}
-          onImported={loadPosts}
+          onExecuted={loadPosts}
+        />
+      )}
+
+      {/* Modal de exportação (Protocolo Cowork — saída) */}
+      {exportOpen && (
+        <ProtocolExportModal
+          posts={posts}
+          externalEvents={calendarFeeds.events}
+          onClose={() => setExportOpen(false)}
         />
       )}
 
@@ -831,236 +857,117 @@ function ChecklistRow({ item, onToggle, onLabelChange, onRemove }: ChecklistRowP
 }
 
 // =====================================================================
-// Importação em lote (JSON / TSV) — canal de colaboração com o Cowork
+// Protocolo Cowork — Importar / Comandar (modal de entrada)
 // =====================================================================
+//
+// O modal aceita 4 formatos JSON: array legado de posts, objeto agrupado
+// (posts/tasks/objectives), array de comandos, ou misto. A lógica pura de
+// parsing/dispatch vive em AdminAgendaSocialProtocol.ts. TSV foi mantido
+// por compatibilidade só pra formato legado.
+//
+// Validação tolerante: erros não bloqueiam — executa válidos, lista
+// ignorados com motivo. Confirmação extra antes de delete > 5.
+
 type ImportFormat = 'json' | 'tsv';
 
-interface BulkPost {
-  account: Account;
-  title: string;
-  pillar: string | null;
-  caption: string | null;
-  format: string | null;
-  asset_url: string | null;
-  scheduled_for: string | null;
-  notes: string | null;
-  checklist: ChecklistItem[];
-}
-
-interface BulkParseResult {
-  valid: BulkPost[];
-  errors: string[];
-}
-
-const VALID_ACCOUNTS: Account[] = ['nzppf', 'nzgroup', 'joaowrap'];
-const VALID_FORMATS_LIST = ['Foto', 'Carrossel', 'Reel', 'Story'];
-const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-
-function pickString(raw: Record<string, unknown>, key: string): string | null {
-  const v = raw[key];
-  if (typeof v !== 'string') return null;
-  const trimmed = v.trim();
-  return trimmed === '' ? null : trimmed;
-}
-
-function normalizeFormat(
-  f: unknown
-): { ok: true; value: string | null } | { ok: false; reason: string } {
-  if (f === undefined || f === null) return { ok: true, value: null };
-  if (typeof f !== 'string') return { ok: false, reason: 'format precisa ser string' };
-  const trimmed = f.trim();
-  if (trimmed === '') return { ok: true, value: null };
-  const match = VALID_FORMATS_LIST.find((v) => v.toLowerCase() === trimmed.toLowerCase());
-  if (!match) {
-    return { ok: false, reason: `format "${trimmed}" inválido (use Foto, Carrossel, Reel ou Story)` };
-  }
-  return { ok: true, value: match };
-}
-
-function validateRow(
-  raw: Record<string, unknown>,
-  label: string
-): { ok: true; post: BulkPost } | { ok: false; error: string } {
-  const accountRaw = raw.account;
-  if (typeof accountRaw !== 'string' || accountRaw.trim() === '') {
-    return { ok: false, error: `${label}: account obrigatório` };
-  }
-  const accountTrim = accountRaw.trim() as Account;
-  if (!VALID_ACCOUNTS.includes(accountTrim)) {
-    return { ok: false, error: `${label}: account "${accountRaw}" inválido (use nzppf, nzgroup ou joaowrap)` };
-  }
-
-  const titleRaw = raw.title;
-  if (typeof titleRaw !== 'string' || titleRaw.trim() === '') {
-    return { ok: false, error: `${label}: title vazio` };
-  }
-
-  const formatResult = normalizeFormat(raw.format);
-  if (!formatResult.ok) return { ok: false, error: `${label}: ${formatResult.reason}` };
-  const format = formatResult.value;
-
-  let scheduled: string | null = null;
-  if (raw.scheduled_for !== undefined && raw.scheduled_for !== null && String(raw.scheduled_for).trim() !== '') {
-    const s = String(raw.scheduled_for).trim();
-    if (!ISO_DATE_RE.test(s)) {
-      return { ok: false, error: `${label}: scheduled_for "${s}" não é YYYY-MM-DD` };
-    }
-    scheduled = s;
-  }
-
-  // Checklist: aceita override do payload se vier bem-formada; senão deriva do format.
-  let checklist: ChecklistItem[] = templateChecklist(format);
-  if (Array.isArray(raw.checklist)) {
-    const cleaned: ChecklistItem[] = [];
-    for (const it of raw.checklist) {
-      if (
-        it && typeof it === 'object' &&
-        typeof (it as { label?: unknown }).label === 'string' &&
-        typeof (it as { done?: unknown }).done === 'boolean'
-      ) {
-        cleaned.push({
-          label: (it as { label: string }).label,
-          done: (it as { done: boolean }).done,
-        });
-      }
-    }
-    if (cleaned.length > 0) checklist = cleaned;
-  }
-
-  return {
-    ok: true,
-    post: {
-      account: accountTrim,
-      title: titleRaw.trim(),
-      pillar: pickString(raw, 'pillar'),
-      caption: pickString(raw, 'caption'),
-      format,
-      asset_url: pickString(raw, 'asset_url'),
-      scheduled_for: scheduled,
-      notes: pickString(raw, 'notes'),
-      checklist,
-    },
-  };
-}
-
-function parseJsonBulk(text: string): BulkParseResult {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : 'JSON inválido';
-    return { valid: [], errors: [`JSON inválido: ${msg}`] };
-  }
-  if (!Array.isArray(parsed)) {
-    return { valid: [], errors: ['Esperado um array JSON `[ {...}, {...} ]`'] };
-  }
-  const valid: BulkPost[] = [];
-  const errors: string[] = [];
-  parsed.forEach((raw, idx) => {
-    if (!raw || typeof raw !== 'object') {
-      errors.push(`Item ${idx + 1}: não é um objeto`);
-      return;
-    }
-    const result = validateRow(raw as Record<string, unknown>, `Item ${idx + 1}`);
-    if (result.ok) valid.push(result.post);
-    else errors.push(result.error);
-  });
-  return { valid, errors };
-}
-
-function parseTsvBulk(text: string): BulkParseResult {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '');
-  if (lines.length === 0) return { valid: [], errors: [] };
-  if (lines.length < 2) {
-    return { valid: [], errors: ['TSV precisa de header + ao menos uma linha de dados'] };
-  }
-  const headers = lines[0].split('\t').map((h) => h.trim().toLowerCase());
-  const valid: BulkPost[] = [];
-  const errors: string[] = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split('\t');
-    const raw: Record<string, unknown> = {};
-    headers.forEach((h, j) => {
-      raw[h] = cols[j] ?? '';
-    });
-    const result = validateRow(raw, `Linha ${i + 1}`);
-    if (result.ok) valid.push(result.post);
-    else errors.push(result.error);
-  }
-  return { valid, errors };
-}
-
-/**
- * Parser puro de input em lote — separa lógica de UI pra facilitar
- * inspeção mental e testes. Exportado pra reuso eventual.
- */
-export function parseBulkInput(text: string, format: ImportFormat): BulkParseResult {
-  if (!text.trim()) return { valid: [], errors: [] };
-  return format === 'json' ? parseJsonBulk(text) : parseTsvBulk(text);
-}
-
 const JSON_PLACEHOLDER = `[
-  {
-    "account": "nzppf",
-    "title": "RAM cromada @adesivotech",
-    "format": "Reel",
-    "pillar": "Showcase Luxury",
-    "scheduled_for": "2026-04-29",
-    "caption": "Brilho que vira presença...",
-    "notes": "Cortar do bruto."
-  },
-  {
-    "account": "nzgroup",
-    "title": "Cor da semana: Stuttgart Sport Grey",
-    "format": "Carrossel",
-    "pillar": "Catálogo NZ Wrap"
-  }
+  { "action": "create", "table": "social_posts",
+    "data": { "account": "nzppf", "title": "RAM cromada @adesivotech",
+              "format": "Reel", "scheduled_for": "2026-04-29" } },
+  { "action": "create", "table": "agenda_tasks",
+    "data": { "title": "Visitar @adesivotech", "due_date": "2026-04-29",
+              "priority": 1 } },
+  { "action": "advance_status", "table": "social_posts",
+    "ids": ["uuid-do-post"] }
 ]`;
 
 const TSV_PLACEHOLDER = `account\ttitle\tformat\tpillar\tscheduled_for
 nzppf\tRAM cromada @adesivotech\tReel\tShowcase Luxury\t2026-04-29
 nzgroup\tCor da semana: Stuttgart\tCarrossel\tCatálogo NZ Wrap\t`;
 
-interface BulkImportProps {
-  onClose: () => void;
-  onImported: () => void;
+/** Detecção tolerante de TSV antigo: header tem "account" e há tabs. */
+function looksLikeTsv(text: string): boolean {
+  const first = text.split(/\r?\n/, 1)[0] || '';
+  return first.includes('\t') && /\baccount\b/i.test(first);
 }
 
-function BulkImportModal({ onClose, onImported }: BulkImportProps) {
+/**
+ * Pra TSV (formato legado, só posts): converte pra JSON array de objetos
+ * e dispara o parser unificado. Mantém a UX antiga viva sem duplicar lógica.
+ */
+function tsvToLegacyArray(text: string): { array: Record<string, unknown>[]; errors: string[] } {
+  const errors: string[] = [];
+  const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '');
+  if (lines.length < 2) {
+    errors.push('TSV precisa de header + ao menos uma linha de dados');
+    return { array: [], errors };
+  }
+  const headers = lines[0].split('\t').map((h) => h.trim().toLowerCase());
+  const out: Record<string, unknown>[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split('\t');
+    const row: Record<string, unknown> = {};
+    headers.forEach((h, j) => { row[h] = cols[j] ?? ''; });
+    out.push(row);
+  }
+  return { array: out, errors };
+}
+
+interface ProtocolImportProps {
+  onClose: () => void;
+  onExecuted: () => void;
+}
+
+function ProtocolImportModal({ onClose, onExecuted }: ProtocolImportProps) {
   const [format, setFormat] = useState<ImportFormat>('json');
   const [text, setText] = useState('');
-  const [creating, setCreating] = useState(false);
+  const [executing, setExecuting] = useState(false);
 
-  const result = useMemo(() => parseBulkInput(text, format), [text, format]);
-
-  async function handleImport() {
-    if (result.valid.length === 0) return;
-    setCreating(true);
-    const user = (await supabase.auth.getUser()).data.user;
-    const payload = result.valid.map((p) => ({
-      account: p.account,
-      pillar: p.pillar,
-      title: p.title,
-      caption: p.caption,
-      format: p.format,
-      asset_url: p.asset_url,
-      scheduled_for: p.scheduled_for,
-      notes: p.notes,
-      status: 'backlog' as const,
-      checklist: p.checklist,
-      created_by: user?.id || null,
-    }));
-    const { error } = await supabase.from('social_posts').insert(payload);
-    if (error) {
-      alert('Erro ao importar: ' + error.message);
-      setCreating(false);
-      return;
+  // Parsing reativo. TSV converte pro caminho JSON antes de chamar parseBatch.
+  const parseRes: ParseResult = useMemo(() => {
+    if (!text.trim()) return { ops: [], errors: [], detectedMode: 'empty' };
+    if (format === 'tsv') {
+      const { array, errors } = tsvToLegacyArray(text);
+      if (errors.length) return { ops: [], errors, detectedMode: 'unknown' };
+      return parseBatch(JSON.stringify(array));
     }
-    alert(`${result.valid.length} ${result.valid.length === 1 ? 'post importado' : 'posts importados'} no Backlog.`);
-    setCreating(false);
-    onImported();
+    return parseBatch(text);
+  }, [text, format]);
+
+  const summary: OpSummary = useMemo(() => summarizeOps(parseRes.ops), [parseRes.ops]);
+
+  // Conta total de IDs marcados pra delete (usado pra confirm > 5).
+  const deleteIdCount = useMemo(
+    () => parseRes.ops.reduce((n, op) => (op.kind === 'delete' ? n + op.ids.length : n), 0),
+    [parseRes.ops]
+  );
+
+  async function handleExecute() {
+    if (parseRes.ops.length === 0) return;
+    if (deleteIdCount > 5) {
+      const ok = confirm(`Você está prestes a apagar ${deleteIdCount} registros. Continuar?`);
+      if (!ok) return;
+    }
+    setExecuting(true);
+    const result: ExecResult = await executeBatch(parseRes.ops);
+    setExecuting(false);
+
+    const lines: string[] = ['Execução do protocolo Cowork:'];
+    pushExecLine(lines, 'posts', result.social_posts);
+    pushExecLine(lines, 'tarefas', result.agenda_tasks);
+    pushExecLine(lines, 'objetivos', result.agenda_objectives);
+    if (result.errors.length > 0) {
+      lines.push('');
+      lines.push('Erros:');
+      for (const e of result.errors) lines.push('· ' + e);
+    }
+    alert(lines.join('\n'));
+
+    onExecuted();
     onClose();
   }
+
+  const totalOps = parseRes.ops.length;
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -1069,12 +976,13 @@ function BulkImportModal({ onClose, onImported }: BulkImportProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <header className={styles.modalHeader}>
-          <h2>📥 Importar posts em lote</h2>
+          <h2>📥 Protocolo Cowork — Importar / Comandar</h2>
           <button className={styles.closeBtn} onClick={onClose}>×</button>
         </header>
         <div className={styles.modalBody}>
           <p className={styles.importSubtitle}>
-            Cole o JSON ou TSV abaixo. O Cowork pode te entregar nesse formato.
+            Cole o JSON entregue pelo Cowork. Suporta 4 formatos: array legado de
+            posts, objeto agrupado, array de comandos, ou misto.
           </p>
 
           <div className={styles.viewToggle}>
@@ -1088,58 +996,360 @@ function BulkImportModal({ onClose, onImported }: BulkImportProps) {
             <button
               type="button"
               className={`${styles.viewBtn} ${format === 'tsv' ? styles.viewBtnActive : ''}`}
-              onClick={() => setFormat('tsv')}
+              onClick={() => {
+                setFormat('tsv');
+              }}
+              title="TSV só suporta posts simples (formato legado)"
             >
-              TSV
+              TSV (legado)
             </button>
           </div>
 
           <textarea
             className={`${styles.formTextarea} ${styles.importTextarea}`}
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value;
+              setText(v);
+              // Auto-detecta TSV pra evitar usuário esquecer de trocar o toggle.
+              if (format === 'json' && looksLikeTsv(v)) setFormat('tsv');
+            }}
             placeholder={format === 'json' ? JSON_PLACEHOLDER : TSV_PLACEHOLDER}
             rows={14}
             spellCheck={false}
           />
 
           {text.trim() !== '' && (
-            <div className={styles.importPreview}>
-              {result.valid.length > 0 && (
-                <div className={styles.importPreviewSuccess}>
-                  ✓ {result.valid.length} {result.valid.length === 1 ? 'post válido detectado' : 'posts válidos detectados'}
-                </div>
-              )}
-              {result.errors.length > 0 && (
-                <>
-                  <div className={styles.importPreviewSummary}>
-                    ⚠ {result.errors.length} {result.errors.length === 1 ? 'ignorado' : 'ignorados'}:
-                  </div>
-                  <ul className={styles.importPreviewErrors}>
-                    {result.errors.map((e, i) => (
-                      <li key={i} className={styles.importPreviewError}>{e}</li>
-                    ))}
-                  </ul>
-                </>
-              )}
-              {result.valid.length === 0 && result.errors.length === 0 && (
-                <div className={styles.importPreviewSummary}>Nenhum post detectado ainda.</div>
-              )}
-            </div>
+            <ProtocolPreview
+              parseRes={parseRes}
+              summary={summary}
+            />
           )}
         </div>
         <footer className={styles.modalFooter}>
-          <button className={styles.secondaryBtn} onClick={onClose} disabled={creating}>
+          <button className={styles.secondaryBtn} onClick={onClose} disabled={executing}>
             Cancelar
           </button>
           <button
             className={styles.primaryBtn}
-            onClick={handleImport}
-            disabled={creating || result.valid.length === 0}
+            onClick={handleExecute}
+            disabled={executing || totalOps === 0}
           >
-            {creating
-              ? 'Importando…'
-              : `Importar ${result.valid.length} ${result.valid.length === 1 ? 'post' : 'posts'}`}
+            {executing
+              ? 'Executando…'
+              : totalOps === 0 ? 'Nada pra executar' : `Executar (${totalOps} ${totalOps === 1 ? 'operação' : 'operações'})`}
+          </button>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function pushExecLine(
+  lines: string[],
+  label: string,
+  c: { created: number; updated: number; deleted: number; advanced: number }
+) {
+  const parts: string[] = [];
+  if (c.created) parts.push(`${c.created} criados`);
+  if (c.updated) parts.push(`${c.updated} atualizados`);
+  if (c.deleted) parts.push(`${c.deleted} apagados`);
+  if (c.advanced) parts.push(`${c.advanced} avançados`);
+  if (parts.length === 0) return;
+  lines.push(`· ${label}: ${parts.join(', ')}`);
+}
+
+function ProtocolPreview({ parseRes, summary }: { parseRes: ParseResult; summary: OpSummary }) {
+  const { ops, errors, detectedMode } = parseRes;
+  const modeLabels: Record<typeof detectedMode, string> = {
+    empty: '—',
+    legacy_posts: 'array legado de posts (compatibilidade)',
+    grouped: 'objeto agrupado (posts/tasks/objectives)',
+    commands: 'array de comandos',
+    mixed: 'misto (kind + comandos)',
+    unknown: 'formato não reconhecido',
+  };
+
+  const groupChips: { label: string; count: number }[] = [];
+  if (summary.posts.create) groupChips.push({ label: `${summary.posts.create} posts (create)`, count: summary.posts.create });
+  if (summary.posts.update) groupChips.push({ label: `${summary.posts.update} posts (update)`, count: summary.posts.update });
+  if (summary.posts.delete) groupChips.push({ label: `${summary.posts.delete} posts (delete)`, count: summary.posts.delete });
+  if (summary.posts.advance) groupChips.push({ label: `${summary.posts.advance} posts (advance_status)`, count: summary.posts.advance });
+  if (summary.tasks.create) groupChips.push({ label: `${summary.tasks.create} tarefas (create)`, count: summary.tasks.create });
+  if (summary.tasks.update) groupChips.push({ label: `${summary.tasks.update} tarefas (update)`, count: summary.tasks.update });
+  if (summary.tasks.delete) groupChips.push({ label: `${summary.tasks.delete} tarefas (delete)`, count: summary.tasks.delete });
+  if (summary.objectives.create) groupChips.push({ label: `${summary.objectives.create} objetivos (create)`, count: summary.objectives.create });
+  if (summary.objectives.update) groupChips.push({ label: `${summary.objectives.update} objetivos (update)`, count: summary.objectives.update });
+  if (summary.objectives.delete) groupChips.push({ label: `${summary.objectives.delete} objetivos (delete)`, count: summary.objectives.delete });
+
+  return (
+    <div className={styles.importPreview}>
+      <div className={styles.importPreviewSummary}>
+        Modo: {modeLabels[detectedMode]}
+      </div>
+      {ops.length > 0 && (
+        <>
+          <div className={styles.importPreviewSuccess}>
+            ✓ Detectado:
+          </div>
+          <ul className={styles.protocolGroupList}>
+            {groupChips.map((g, i) => (
+              <li key={i} className={styles.protocolGroupChip}>{g.label}</li>
+            ))}
+          </ul>
+        </>
+      )}
+      {errors.length > 0 && (
+        <>
+          <div className={styles.importPreviewSummary}>
+            ⚠ {errors.length} {errors.length === 1 ? 'ignorado' : 'ignorados'}:
+          </div>
+          <ul className={styles.importPreviewErrors}>
+            {errors.map((e, i) => (
+              <li key={i} className={styles.importPreviewError}>{e}</li>
+            ))}
+          </ul>
+        </>
+      )}
+      {ops.length === 0 && errors.length === 0 && (
+        <div className={styles.importPreviewSummary}>Nenhuma operação detectada ainda.</div>
+      )}
+    </div>
+  );
+}
+
+// =====================================================================
+// Protocolo Cowork — Exportar (modal de saída)
+// =====================================================================
+//
+// Carrega tasks + objectives sob demanda (RLS já aplica), agrega com posts
+// (já em estado pelo parent) + external_events (do hook calendarFeeds), e
+// monta o JSON serializável pro Cowork. Export é stateless do lado do server
+// — toda transformação acontece em buildExport (módulo Protocol).
+
+const SCOPE_LABELS: { value: ExportScope; label: string }[] = [
+  { value: 'all',          label: 'Todos' },
+  { value: 'this_week',    label: 'Esta semana' },
+  { value: 'this_month',   label: 'Este mês' },
+  { value: 'next_30_days', label: 'Próximos 30 dias' },
+  { value: 'custom',       label: 'Datas personalizadas' },
+];
+
+interface ProtocolExportProps {
+  posts: SocialPost[];
+  externalEvents: Map<string, ExternalEvent[]>;
+  onClose: () => void;
+}
+
+function ProtocolExportModal({ posts, externalEvents, onClose }: ProtocolExportProps) {
+  const [filters, setFilters] = useState<ExportFilters>({
+    scope: 'this_week',
+    customStart: null,
+    customEnd: null,
+    accounts: 'all',
+    tables: { posts: true, tasks: true, objectives: true, external_events: true },
+  });
+
+  const [tasks, setTasks] = useState<AgendaTask[]>([]);
+  const [objectives, setObjectives] = useState<AgendaObjective[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [copyState, setCopyState] = useState<'idle' | 'ok' | 'err'>('idle');
+
+  // Carrega tasks + objectives ao abrir o modal — tabelas ainda podem não
+  // estar populadas no estado do Plan (usuário pode nunca ter visitado).
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      setLoading(true);
+      setLoadError(null);
+      const [taskR, objR] = await Promise.all([
+        supabase.from('agenda_tasks').select('*'),
+        supabase.from('agenda_objectives').select('*'),
+      ]);
+      if (!alive) return;
+      if (taskR.error) {
+        setLoadError(`tarefas: ${taskR.error.message}`);
+      }
+      if (objR.error) {
+        setLoadError((prev) => (prev ? `${prev}; objetivos: ${objR.error!.message}` : `objetivos: ${objR.error.message}`));
+      }
+      setTasks((taskR.data || []) as AgendaTask[]);
+      setObjectives((objR.data || []) as AgendaObjective[]);
+      setLoading(false);
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  const payload = useMemo(
+    () => buildExport(filters, { posts, tasks, objectives, externalEvents }),
+    [filters, posts, tasks, objectives, externalEvents]
+  );
+
+  const json = useMemo(() => JSON.stringify(payload, null, 2), [payload]);
+
+  const range = useMemo(() => resolveRange(filters), [filters]);
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(json);
+      setCopyState('ok');
+      setTimeout(() => setCopyState('idle'), 2000);
+    } catch {
+      setCopyState('err');
+    }
+  }
+
+  function selectAll() {
+    const ta = document.getElementById('protocolExportArea') as HTMLTextAreaElement | null;
+    if (ta) {
+      ta.focus();
+      ta.select();
+    }
+  }
+
+  return (
+    <div className={styles.modalOverlay} onClick={onClose}>
+      <div
+        className={`${styles.modal} ${styles.modalWide}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className={styles.modalHeader}>
+          <h2>📤 Protocolo Cowork — Exportar</h2>
+          <button className={styles.closeBtn} onClick={onClose}>×</button>
+        </header>
+        <div className={styles.modalBody}>
+          <p className={styles.importSubtitle}>
+            Snapshot do estado atual pra colar no chat do Cowork. Inclui resumo agregado +
+            arrays completos. <code>created_by</code> é omitido (privacidade).
+          </p>
+
+          {loadError && (
+            <div className={styles.errorBox}>
+              Falha ao carregar dados pro export — {loadError}
+            </div>
+          )}
+
+          {/* Filtro: escopo */}
+          <div className={styles.exportFilterRow}>
+            <span className={styles.exportFilterLabel}>Escopo</span>
+            <div className={styles.exportFilterChips}>
+              {SCOPE_LABELS.map((s) => (
+                <button
+                  key={s.value}
+                  type="button"
+                  className={`${styles.exportFilterChip} ${filters.scope === s.value ? styles.exportFilterChipActive : ''}`}
+                  onClick={() => setFilters((f) => ({ ...f, scope: s.value }))}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {filters.scope === 'custom' && (
+            <div className={styles.formRow}>
+              <label className={styles.formLabel}>
+                Início
+                <input
+                  type="date"
+                  className={styles.formInput}
+                  value={filters.customStart || ''}
+                  onChange={(e) => setFilters((f) => ({ ...f, customStart: e.target.value || null }))}
+                />
+              </label>
+              <label className={styles.formLabel}>
+                Fim
+                <input
+                  type="date"
+                  className={styles.formInput}
+                  value={filters.customEnd || ''}
+                  onChange={(e) => setFilters((f) => ({ ...f, customEnd: e.target.value || null }))}
+                />
+              </label>
+            </div>
+          )}
+
+          <div className={styles.exportRangeHint}>
+            Range resolvido: {range.start ?? '∞'} → {range.end ?? '∞'}
+          </div>
+
+          {/* Filtro: tabelas */}
+          <div className={styles.exportFilterRow}>
+            <span className={styles.exportFilterLabel}>Tabelas</span>
+            <div className={styles.exportFilterChips}>
+              {(['posts', 'tasks', 'objectives', 'external_events'] as const).map((t) => (
+                <label key={t} className={styles.exportFilterCheckbox}>
+                  <input
+                    type="checkbox"
+                    checked={filters.tables[t]}
+                    onChange={(e) =>
+                      setFilters((f) => ({
+                        ...f,
+                        tables: { ...f.tables, [t]: e.target.checked },
+                      }))
+                    }
+                  />
+                  {t}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Filtro: conta */}
+          <div className={styles.exportFilterRow}>
+            <span className={styles.exportFilterLabel}>Conta (posts)</span>
+            <div className={styles.exportFilterChips}>
+              {([
+                { id: 'all',     label: 'Todas' },
+                { id: 'nzppf',    label: '@nzppf' },
+                { id: 'nzgroup',  label: '@nzgroup.br' },
+                { id: 'joaowrap', label: '@joaowrap' },
+              ] as const).map((a) => (
+                <button
+                  key={a.id}
+                  type="button"
+                  className={`${styles.exportFilterChip} ${filters.accounts === a.id ? styles.exportFilterChipActive : ''}`}
+                  onClick={() => setFilters((f) => ({ ...f, accounts: a.id as ExportFilters['accounts'] }))}
+                >
+                  {a.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Resumo */}
+          <div className={styles.exportSummary}>
+            <span>posts: <strong>{payload.summary.posts.total}</strong></span>
+            <span>tarefas: <strong>{payload.summary.tasks.total}</strong></span>
+            <span>objetivos: <strong>{payload.summary.objectives.monthly + payload.summary.objectives.weekly}</strong></span>
+            <span>eventos externos: <strong>{payload.summary.external_events.total}</strong></span>
+          </div>
+
+          {/* Pré-visualização JSON */}
+          <textarea
+            id="protocolExportArea"
+            className={`${styles.formTextarea} ${styles.importTextarea} ${styles.exportPreview}`}
+            value={loading ? 'Carregando tarefas e objetivos…' : json}
+            readOnly
+            rows={12}
+            spellCheck={false}
+          />
+        </div>
+        <footer className={styles.modalFooter}>
+          <button type="button" className={styles.linkBtn} onClick={selectAll}>
+            Selecionar tudo
+          </button>
+          <span style={{ flex: 1 }} />
+          <button className={styles.secondaryBtn} onClick={onClose}>Fechar</button>
+          <button
+            className={styles.primaryBtn}
+            onClick={handleCopy}
+            disabled={loading}
+          >
+            {copyState === 'ok' && '✓ Copiado'}
+            {copyState === 'err' && '⚠ Falha — use Selecionar tudo'}
+            {copyState === 'idle' && '📋 Copiar pro clipboard'}
           </button>
         </footer>
       </div>
