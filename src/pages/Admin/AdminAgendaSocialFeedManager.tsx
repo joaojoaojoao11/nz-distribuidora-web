@@ -38,9 +38,15 @@ export default function FeedManagerModal({
     }
     setTest({ kind: 'testing' });
     try {
-      const r = await fetch(trimmedUrl);
+      // Mesmo proxy server-side do hook (/api/agenda/fetch-ical)
+      const proxied = `/api/agenda/fetch-ical?url=${encodeURIComponent(trimmedUrl)}`;
+      const r = await fetch(proxied);
       if (!r.ok) {
-        setTest({ kind: 'error', message: `O servidor respondeu HTTP ${r.status}. Verifica se a URL está correta.` });
+        const body = await r.json().catch(() => ({} as { error?: string }));
+        setTest({
+          kind: 'error',
+          message: body.error || `O proxy respondeu HTTP ${r.status}. Verifica se a URL está correta e se o host é Google/Outlook/iCloud.`,
+        });
         return;
       }
       const txt = await r.text();
@@ -62,7 +68,7 @@ export default function FeedManagerModal({
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
       setTest({
         kind: 'error',
-        message: `Não consegui buscar essa URL: ${msg}. Pode ser CORS (URL só funciona dentro do Google) ou URL incorreta.`,
+        message: `Não consegui buscar essa URL: ${msg}.`,
       });
     }
   }

@@ -277,9 +277,13 @@ O parser é caseiro e mínimo (sem libs externas). Cobre:
 
 Read-only por design: a Agenda NZ não escreve em calendários externos.
 
-### CORS
+### Proxy server-side (CORS)
 
-O endpoint `.ics` é fetched no client. Google Calendar serve com CORS aberto na URL `secret address`. Se algum feed bloquear (CORS ou auth), aparece warning ⚠ no FeedManager pra esse feed.
+URLs `.ics` do Google Calendar (e Outlook, iCloud) **não** servem CORS aberto pra browsers — o navegador bloqueia o fetch direto. Por isso temos uma serverless function em `api/agenda/fetch-ical.ts` que faz proxy: cliente chama `/api/agenda/fetch-ical?url=<encoded>`, o servidor fetcha o `.ics` e devolve o conteúdo.
+
+Validação anti-SSRF: o proxy só aceita URLs de hosts conhecidos de iCal (Google, Outlook, iCloud). Tentativa de fetch para outros hosts retorna 400.
+
+Se algum feed continuar dando erro (URL inválida, token revogado, host fora da whitelist), aparece warning ⚠ no FeedManager pra esse feed específico.
 
 ## Trabalhando com o Cowork
 

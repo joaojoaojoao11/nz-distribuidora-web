@@ -143,9 +143,13 @@ export function useCalendarFeeds(): CalendarFeedsState {
     await Promise.all(
       enabledFeeds.map(async (feed) => {
         try {
-          const r = await fetch(feed.ics_url);
+          // Browser não consegue fetchar .ics direto do Google Calendar (sem CORS),
+          // então passamos via /api/agenda/fetch-ical (proxy server-side).
+          const proxied = `/api/agenda/fetch-ical?url=${encodeURIComponent(feed.ics_url)}`;
+          const r = await fetch(proxied);
           if (!r.ok) {
-            newErrors[feed.id] = `HTTP ${r.status}`;
+            const body = await r.json().catch(() => ({} as { error?: string }));
+            newErrors[feed.id] = body.error || `HTTP ${r.status}`;
             return;
           }
           const txt = await r.text();
