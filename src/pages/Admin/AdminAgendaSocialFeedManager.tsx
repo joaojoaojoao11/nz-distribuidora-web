@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import styles from './AdminAgendaSocial.module.css';
-import { parseICal, type CalendarFeed } from './AdminAgendaSocialFeeds';
+import { parseICal, type CalendarFeed, type ExternalEvent } from './AdminAgendaSocialFeeds';
 
 interface FeedManagerProps {
   feeds: CalendarFeed[];
+  /** Mesmo Map<dateKey, ExternalEvent[]> do hook — usado para contar eventos por feed. */
+  events: Map<string, ExternalEvent[]>;
   errors: Record<string, string>;
   onClose: () => void;
   onChange: () => Promise<void>;
@@ -19,9 +21,43 @@ type TestResult =
 const URL_PLACEHOLDER =
   'https://calendar.google.com/calendar/ical/seu-email%40gmail.com/private-XXXX/basic.ics';
 
+/** Formata 'YYYY-MM-DD' como 'mmm/yyyy' em pt-BR. */
+function formatRangeDate(yyyymmdd: string): string {
+  const [y, m] = yyyymmdd.split('-');
+  const d = new Date(Number(y), Number(m) - 1, 1);
+  const raw = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: 'numeric' }).format(d);
+  return raw.replace(/\.$/, '');
+}
+
 export default function FeedManagerModal({
-  feeds, errors, onClose, onChange,
+  feeds, events, errors, onClose, onChange,
 }: FeedManagerProps) {
+  // Contagem de eventos por feed (derivada do Map<dateKey, ExternalEvent[]>)
+  const countByFeed = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const arr of events.values()) {
+      for (const e of arr) {
+        counts[e.feedId] = (counts[e.feedId] || 0) + 1;
+      }
+    }
+    return counts;
+  }, [events]);
+
+  const minMaxByFeed = useMemo(() => {
+    const range: Record<string, { min: string; max: string }> = {};
+    for (const arr of events.values()) {
+      for (const e of arr) {
+        const cur = range[e.feedId];
+        if (!cur) {
+          range[e.feedId] = { min: e.date, max: e.date };
+        } else {
+          if (e.date < cur.min) cur.min = e.date;
+          if (e.date > cur.max) cur.max = e.date;
+        }
+      }
+    }
+    return range;
+  }, [events]);
   const [label, setLabel] = useState('');
   const [icsUrl, setIcsUrl] = useState('');
   const [color, setColor] = useState('#7e8c9b');
@@ -200,34 +236,56 @@ export default function FeedManagerModal({
             <>
               <h3 className={styles.feedAddTitle}>Feeds cadastrados</h3>
               <div className={styles.feedList}>
-                {feeds.map((f) => (
-                  <div key={f.id} className={styles.feedRow}>
-                    <span className={styles.feedColorDot} style={{ background: f.color }} />
-                    <div className={styles.feedInfo}>
-                      <div className={styles.feedLabel}>{f.label}</div>
-                      <div className={styles.feedUrl} title={f.ics_url}>{f.ics_url}</div>
-                      {errors[f.id] && (
-                        <div className={styles.feedError}>⚠ {errors[f.id]}</div>
-                      )}
+                {feeds.map((f) => {
+                  const count = countByFeed[f.id] || 0;
+                  const range = minMaxByFeed[f.id];
+                  const hasError = !!errors[f.id];
+                  return (
+                    <div key={f.id} className={styles.feedRow}>
+                      <span className={styles.feedColorDot} style={{ background: f.color }} />
+                      <div className={styles.feedInfo}>
+                        <div className={styles.feedLabel}>{f.label}</div>
+                        <div className={styles.feedUrl} title={f.ics_url}>{f.ics_url}</div>
+                        {hasError ? (
+                          <div className={styles.feedError}>⚠ {errors[f.id]}</div>
+                        ) : f.enabled ? (
+                          count > 0 ? (
+                            <div className={styles.feedStatusOk}>
+                              ✓ {count} {count === 1 ? 'evento carregado' : 'eventos carregados'}
+                              {range && (
+                                <span className={styles.feedRange}>
+                                  {' '}· de {formatRangeDate(range.min)} até {formatRangeDate(range.max)}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <div className={styles.feedStatusEmpty}>
+                              Carregado, mas nenhum evento encontrado.
+                            </div>
+                          )
+                        ) : (
+                          <div className={styles.feedStatusOff}>Desabilitado</div>
+                        )}
+                      </div>
+                      <label className={styles.feedToggle}>
+                        <input
+                          type="checkbox"
+                          checked={f.enabled}
+                          onChange={() => toggleEnabled(f)}
+                        />
+                        <span>{f.enabled ? 'on' : 'off'}</span>
+                      </label>
+                      <button
+                        type="button"
+                        className={styles.iconBtnDanger}
+                        onClick={() => removeFeed(f)}
+                        title="Remover"
+                      >
+                        ×
+                      </button>
                     </div>
-                    <label className={styles.feedToggle}>
-                      <input
-                        type="checkbox"
-                        checked={f.enabled}
-                        onChange={() => toggleEnabled(f)}
-                      />
-                      <span>{f.enabled ? 'on' : 'off'}</span>
-                    </label>
-                    <button
-                      type="button"
-                      className={styles.iconBtnDanger}
-                      onClick={() => removeFeed(f)}
-                      title="Remover"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           )}

@@ -475,6 +475,7 @@ export default function AdminAgendaSocial() {
       {feedManagerOpen && (
         <FeedManagerModal
           feeds={calendarFeeds.feeds}
+          events={calendarFeeds.events}
           errors={calendarFeeds.errors}
           onClose={() => setFeedManagerOpen(false)}
           onChange={calendarFeeds.reload}

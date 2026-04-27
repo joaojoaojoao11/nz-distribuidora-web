@@ -1413,6 +1413,26 @@
   color: #ff8888;
 }
 
+.feedStatusOk {
+  font-size: 0.7rem;
+  color: #6dd58c;
+}
+
+.feedRange {
+  color: var(--text-muted);
+}
+
+.feedStatusEmpty {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.feedStatusOff {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
 .feedToggle {
   display: inline-flex;
   align-items: center;
