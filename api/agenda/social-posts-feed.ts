@@ -218,11 +218,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const body = buildICal((data || []) as Post[]);
 
-  // Usar res.end() em vez de res.status().send() — o wrapper .send() do
-  // @vercel/node força Content-Type 'application/json' mesmo quando já
-  // setamos manualmente. Google Calendar precisa de 'text/calendar'.
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
+  // Usar res.writeHead() (Node http nativo) em vez de .status().send().
+  // O wrapper @vercel/node força 'application/json' em .send(string), e
+  // setHeader+end também caiu nessa armadilha em produção. writeHead
+  // escreve status+headers atomicamente, sem wrapper interferir.
+  // Google Calendar precisa de 'text/calendar' senão ignora o feed.
+  res.writeHead(200, {
+    'Content-Type': 'text/calendar; charset=utf-8',
+    'Cache-Control': 'public, max-age=300, s-maxage=300',
+  });
   res.end(body);
 }
