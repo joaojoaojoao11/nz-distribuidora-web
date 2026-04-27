@@ -218,7 +218,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const body = buildICal((data || []) as Post[]);
 
+  // Usar res.end() em vez de res.status().send() — o wrapper .send() do
+  // @vercel/node força Content-Type 'application/json' mesmo quando já
+  // setamos manualmente. Google Calendar precisa de 'text/calendar'.
+  res.statusCode = 200;
   res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300');
-  res.status(200).send(body);
+  res.end(body);
 }
