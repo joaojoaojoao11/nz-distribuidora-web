@@ -1,0 +1,364 @@
+/* ─── Document root (off-screen pra captura html2canvas) ─── */
+
+.documentRoot {
+  position: fixed;
+  left: -99999px;
+  top: 0;
+  pointer-events: none;
+  z-index: -1;
+  font-family: 'Inter', sans-serif;
+  font-kerning: none;
+  font-variant-ligatures: none;
+  word-spacing: 0.08em;
+  letter-spacing: 0.012em;
+  color: #fff;
+}
+
+.surface {
+  position: relative;
+  background: #060606;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.formatFeed   { padding: 70px; }
+.formatStory  { padding: 90px 70px; }
+
+.bgImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.55);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 35%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.92) 100%),
+    radial-gradient(ellipse at 50% 80%, rgba(212,175,55,0.10) 0%, transparent 60%);
+}
+
+/* Layouts com texto/elemento central GRANDE precisam de overlay mais forte
+   pra garantir contraste em fotos com áreas claras. */
+.surface[data-layout='centered-quote'] .overlay,
+.surface[data-layout='full-bleed-headline'] .overlay,
+.surface[data-layout='stat-driven'] .overlay {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.75) 100%),
+    radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.35) 0%, transparent 70%);
+}
+
+/* split-photo desenha seu próprio painel sólido — overlay padrão atrapalha
+   o painel da metade de baixo. Reduz overlay quase a zero (e some bgImage). */
+.surface[data-layout='split-photo'] .overlay {
+  background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.30) 100%);
+}
+.surface[data-layout='split-photo'] .bgImage { display: none; }
+
+/* hero-bottom-cta e announce-badge mantêm overlay padrão (já funciona bem). */
+
+.layoutSlot {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Tokens reutilizáveis pelos layouts ─── */
+
+.wordmark {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 38px;
+  letter-spacing: 8px;
+  color: #D4AF37;
+  text-transform: uppercase;
+}
+
+.formatStory .wordmark { font-size: 44px; }
+
+.lineBadge {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  border: 2px solid;
+  padding: 12px 24px;
+  display: inline-block;
+}
+
+.formatStory .lineBadge { font-size: 26px; padding: 14px 28px; }
+
+.url {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 4px;
+  color: #D4AF37;
+  text-transform: lowercase;
+}
+
+.formatStory .url { font-size: 26px; }
+
+/* ─────────────────────────────────────────────────────────── */
+/* Layout 1: HeroBottomCta                                     */
+/* ─────────────────────────────────────────────────────────── */
+
+.hbcTop, .hbcBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.hbcBottom { align-items: flex-end; gap: 30px; }
+.hbcCenter { display: flex; flex-direction: column; gap: 20px; flex: 1; justify-content: center; }
+.hbcEyebrow {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; font-size: 22px; letter-spacing: 6px;
+  text-transform: uppercase;
+}
+.hbcHeadline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 110px; line-height: 0.95;
+  letter-spacing: -1px; text-transform: uppercase;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.7);
+  white-space: pre-line;
+}
+.formatStory .hbcHeadline { font-size: 140px; }
+.hbcSubline {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400; font-size: 32px; line-height: 1.35;
+  color: #d8d8dc; max-width: 850px;
+}
+.hbcCta {
+  display: inline-flex; align-items: center; gap: 18px;
+  border: 2px solid; padding: 22px 36px; background: rgba(0,0,0,0.4);
+}
+.hbcCtaArrow {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 38px; line-height: 1;
+}
+.hbcCtaText {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 26px; letter-spacing: 4px;
+  text-transform: uppercase; color: #fff;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* Layout 2: CenteredQuote                                     */
+/* ─────────────────────────────────────────────────────────── */
+
+.cqTop, .cqBottom { display: flex; justify-content: center; }
+.cqCenter {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; flex: 1; text-align: center;
+  gap: 30px; padding: 0 40px;
+}
+.cqMark {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900; font-size: 280px; line-height: 0.5;
+}
+.cqHeadline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 96px; line-height: 1.05;
+  letter-spacing: -0.5px; text-transform: uppercase;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.7);
+  white-space: pre-line; max-width: 95%;
+}
+.formatStory .cqHeadline { font-size: 120px; }
+.cqAttribution {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600; font-size: 26px; letter-spacing: 6px;
+  text-transform: uppercase; margin-top: 20px;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* Layout 3: SplitPhoto                                        */
+/* ─────────────────────────────────────────────────────────── */
+
+.spWrap {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  flex: 1;
+  gap: 0;
+  margin: -70px;
+  isolation: isolate;
+}
+.formatFeed .spWrap { grid-template-rows: 1fr 1fr; margin: -70px; }
+.formatStory .spWrap { grid-template-rows: 1fr 1.2fr; margin: -90px -70px; }
+.spPhoto { background-size: cover; background-position: center; }
+.spContent {
+  background: rgba(6,6,6,0.95);
+  padding: 70px;
+  display: flex; flex-direction: column;
+  justify-content: center; gap: 24px;
+}
+.spHeadline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 88px; line-height: 1.0;
+  letter-spacing: -0.5px; text-transform: uppercase;
+  white-space: pre-line;
+}
+.formatStory .spHeadline { font-size: 110px; }
+.spSubline {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400; font-size: 28px; line-height: 1.4;
+  color: #d8d8dc;
+}
+.spCta {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 26px; letter-spacing: 4px;
+  text-transform: uppercase; margin-top: 12px;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* Layout 4: FullBleedHeadline                                 */
+/* ─────────────────────────────────────────────────────────── */
+
+.fbTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.fbCenter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fbHeadline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900; font-size: 180px; line-height: 0.9;
+  letter-spacing: -3px; text-transform: uppercase;
+  text-align: center;
+  text-shadow: 0 6px 40px rgba(0,0,0,0.8);
+  white-space: pre-line;
+}
+.formatStory .fbHeadline { font-size: 240px; }
+.fbBottom { display: flex; justify-content: center; }
+
+/* ─────────────────────────────────────────────────────────── */
+/* Layout 5: StatDriven                                        */
+/* ─────────────────────────────────────────────────────────── */
+
+.sdTop, .sdBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.sdBottom { align-items: flex-end; }
+.sdCenter {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px; text-align: center;
+}
+.sdStat {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900; font-size: 280px; line-height: 0.85;
+  letter-spacing: -6px;
+  text-shadow: 0 8px 40px rgba(0,0,0,0.7);
+}
+.formatStory .sdStat { font-size: 380px; }
+.sdLabel {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700; font-size: 38px; letter-spacing: 8px;
+  text-transform: uppercase; color: #fff;
+}
+.formatStory .sdLabel { font-size: 48px; }
+.sdSubline {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400; font-size: 26px; line-height: 1.4;
+  color: #d8d8dc; max-width: 800px; margin-top: 16px;
+}
+.sdCta {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 22px; letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* Layout 6: AnnounceBadge                                     */
+/* ─────────────────────────────────────────────────────────── */
+
+.abTop { display: flex; justify-content: center; }
+.abCenter {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; gap: 24px;
+}
+.abBadge {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900; font-size: 32px; letter-spacing: 6px;
+  text-transform: uppercase; color: #1a1208;
+  padding: 16px 36px;
+  box-shadow: 0 8px 32px rgba(212,175,55,0.4);
+}
+.formatStory .abBadge { font-size: 40px; padding: 20px 44px; }
+.abHeadline {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 100px; line-height: 1.0;
+  letter-spacing: -0.5px; text-transform: uppercase;
+  white-space: pre-line;
+}
+.formatStory .abHeadline { font-size: 130px; }
+.abSubline {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400; font-size: 28px; line-height: 1.4;
+  color: #d8d8dc; max-width: 800px;
+}
+.abBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.abCta {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800; font-size: 24px; letter-spacing: 3px;
+  text-transform: uppercase;
+  border: 2px solid; padding: 18px 28px;
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* CONTRASTE: garante legibilidade do accent (dourado/cores    */
+/* de linha) sobre fundos claros das fotos de produto.         */
+/* Aplicar em qualquer elemento que use color do motor.accent. */
+/* ─────────────────────────────────────────────────────────── */
+
+.surface .wordmark,
+.surface .lineBadge,
+.surface .url,
+.surface .hbcEyebrow,
+.surface .hbcCtaArrow,
+.surface .cqMark,
+.surface .cqAttribution,
+.surface .spCta,
+.surface .sdStat,
+.surface .sdCta,
+.surface .abCta {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* Badge dourado sólido (announce-badge) — reforça com box-shadow
+   duplo (preto + dourado) e sombra de texto sutil pro texto preto. */
+.surface .abBadge {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 8px 32px rgba(212, 175, 55, 0.4);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Headlines grandes: sombra mais larga pra "respirar" sobre qualquer fundo. */
+.surface .hbcHeadline,
+.surface .cqHeadline,
+.surface .spHeadline,
+.surface .fbHeadline,
+.surface .abHeadline,
+.surface .sdLabel,
+.surface .hbcSubline,
+.surface .cqMark {
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.75);
+}

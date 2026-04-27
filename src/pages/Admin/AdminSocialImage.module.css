@@ -1,0 +1,334 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1400px;
+}
+
+.heroCard {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(15,15,18,0.95) 60%),
+    radial-gradient(circle at top right, rgba(212,175,55,0.18) 0%, transparent 60%);
+  border: 1px solid rgba(212,175,55,0.25);
+  padding: 2rem 2.5rem;
+  overflow: hidden;
+}
+
+.heroCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #D4AF37 0%, transparent 80%);
+}
+
+.eyebrow {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 0.6rem;
+}
+
+.title {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 2rem;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.3px;
+}
+
+.subtitle {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #c8c8cc;
+  max-width: 700px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 2rem;
+}
+
+.controls, .previewSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: rgba(20,20,24,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 1.75rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin: 0.5rem 0 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+}
+
+.sectionTitle:first-child {
+  margin-top: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.label {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #b8b8bc;
+}
+
+.input {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.9rem;
+  background: rgba(10,10,12,0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #e5e5e9;
+  padding: 0.7rem 0.9rem;
+  resize: vertical;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #D4AF37;
+}
+
+.chipGroup {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #b8b8bc;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.chip:hover {
+  border-color: rgba(212,175,55,0.5);
+  color: #D4AF37;
+}
+
+.chipActive {
+  background: #D4AF37;
+  border-color: #D4AF37;
+  color: #1a1208;
+}
+
+.chipActive:hover {
+  color: #1a1208;
+  border-color: #D4AF37;
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.primaryButton {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: #D4AF37;
+  color: #1a1208;
+  border: none;
+  padding: 0.85rem 1.4rem;
+  cursor: pointer;
+  flex: 1;
+  min-width: 200px;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  background: transparent;
+  color: #D4AF37;
+  border: 1px solid rgba(212,175,55,0.45);
+  padding: 0.85rem 1.2rem;
+  cursor: pointer;
+}
+
+.secondaryButton:hover {
+  background: rgba(212,175,55,0.1);
+}
+
+.previewFrame {
+  display: flex;
+  justify-content: center;
+  background: rgba(10,10,12,0.6);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 1.5rem;
+  min-height: 400px;
+}
+
+/* SocialImageDocument fica off-screen (documentRoot fixo). Pra preview visível,
+   renderizamos uma SEGUNDA instância dentro de .previewVisible (com transform:scale)
+   e sobrescrevemos as regras do documentRoot. Width/height vem inline porque
+   variam por format (feed 1080×1080 vs story 1080×1920). */
+.previewScale {
+  position: relative;
+  overflow: hidden;
+}
+
+.previewVisible {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+.previewVisible > div {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  pointer-events: auto !important;
+  z-index: auto !important;
+}
+
+.captionBox {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  background: rgba(10,10,12,0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #e5e5e9;
+  padding: 1rem 1.2rem;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* ─── AI Background controls ─── */
+.aiStatusPill {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.6rem;
+  padding: 0.15rem 0.55rem;
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.06);
+  color: #888;
+  border: 1px solid rgba(255,255,255,0.1);
+  vertical-align: middle;
+}
+
+.aiStatusPill[data-active='true'] {
+  background: linear-gradient(135deg, #D4AF37 0%, #f0c757 100%);
+  color: #1a1208;
+  border-color: transparent;
+}
+
+.fieldHint {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: #888;
+  margin-top: 0.15rem;
+}
+
+.autoPromptBox {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #c8c8cc;
+  background: rgba(212,175,55,0.05);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-left: 2px solid #D4AF37;
+  padding: 0.85rem 1rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  user-select: text;
+}
+
+.aiActions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.linkButton {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: transparent;
+  color: #888;
+  border: none;
+  padding: 0.5rem 0.25rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255,255,255,0.2);
+  text-underline-offset: 3px;
+}
+
+.linkButton:hover:not(:disabled) {
+  color: #c8c8cc;
+}
+
+.linkButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.aiError {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  background: rgba(231,76,60,0.1);
+  border: 1px solid rgba(231,76,60,0.4);
+  color: #ff8b80;
+  padding: 0.75rem 1rem;
+}

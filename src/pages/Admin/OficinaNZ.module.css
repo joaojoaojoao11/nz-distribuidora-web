@@ -1,0 +1,342 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 1100px;
+}
+
+.header {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(15,15,18,0.95) 60%),
+    radial-gradient(circle at top right, rgba(212,175,55,0.22) 0%, transparent 60%);
+  border: 1px solid rgba(212,175,55,0.3);
+  padding: 2.5rem;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #D4AF37 0%, transparent 80%);
+}
+
+.eyebrow {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 2.4rem;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 0.7rem;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #c8c8cc;
+  max-width: 720px;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(20,20,24,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 2rem;
+}
+
+.fieldLabel {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #D4AF37;
+}
+
+.promptInput {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  background: rgba(10,10,12,0.85);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #e5e5e9;
+  padding: 1rem 1.2rem;
+  resize: vertical;
+}
+
+.promptInput:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.submitButton {
+  align-self: flex-start;
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: #D4AF37;
+  color: #1a1208;
+  border: none;
+  padding: 0.85rem 1.6rem;
+  cursor: pointer;
+}
+
+.submitButton:disabled {
+  background: rgba(212,175,55,0.25);
+  color: rgba(26,18,8,0.6);
+  cursor: not-allowed;
+}
+
+.roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.roadmapTitle {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+}
+
+.roadmapGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.roadmapItem {
+  background: rgba(20,20,24,0.6);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.roadmapStep {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 2.2rem;
+  color: #D4AF37;
+  line-height: 1;
+}
+
+.roadmapItem h3 {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.roadmapItem p {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #b8b8bc;
+  margin: 0;
+}
+
+/* ─── Examples chips ─── */
+
+.examples {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.examplesLabel {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.examplesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.exampleChip {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.75rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #c8c8cc;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  text-align: left;
+  max-width: 320px;
+  transition: all 160ms ease;
+}
+
+.exampleChip:hover:not(:disabled) {
+  border-color: rgba(212,175,55,0.5);
+  color: #D4AF37;
+}
+
+.exampleChip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Error box ─── */
+
+.errorBox {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  background: rgba(231, 76, 60, 0.1);
+  border-left: 3px solid #E74C3C;
+  color: #f0d2d2;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.errorActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.errorActions button {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: transparent;
+  color: #f0d2d2;
+  border: 1px solid rgba(231, 76, 60, 0.5);
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+}
+
+.errorActions button:hover {
+  background: rgba(231, 76, 60, 0.15);
+}
+
+/* ─── Preview section ─── */
+
+.previewSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: rgba(20,20,24,0.85);
+  border: 1px solid rgba(212,175,55,0.3);
+  padding: 2rem;
+}
+
+.previewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+}
+
+.previewEyebrow {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 0.5rem;
+}
+
+.previewTitle {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.3px;
+}
+
+.previewDescription {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #c8c8cc;
+  margin: 0;
+  max-width: 700px;
+}
+
+.previewActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.primaryButton {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: #D4AF37;
+  color: #1a1208;
+  border: none;
+  padding: 0.85rem 1.4rem;
+  cursor: pointer;
+}
+
+.secondaryButton {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  background: transparent;
+  color: #D4AF37;
+  border: 1px solid rgba(212,175,55,0.45);
+  padding: 0.85rem 1.2rem;
+  cursor: pointer;
+}
+
+.secondaryButton:hover {
+  background: rgba(212,175,55,0.1);
+}
+
+.previewFrame {
+  /* AdminSocialImage já tem seu próprio layout — só envelopa */
+  margin: -1rem;
+}

@@ -13,7 +13,7 @@ import AdminWarranties from './AdminWarranties';
 import AdminSettings from './AdminSettings';
 import AdminBlog from './AdminBlog';
 import AdminAIBlog from './AdminAIBlog';
-import AdminCatalog from './AdminCatalog';
+import AdminAgenciaNZ from './AdminAgenciaNZ';
 
 interface Lead { id: string; name: string; email: string; phone: string; source: string; status: string; created_at: string; }
 interface UserProfile {
@@ -26,7 +26,7 @@ interface UserProfile {
   address_zip?: string | null; created_at: string;
 }
 
-type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'users' | 'clients' | 'garantias' | 'catalogo' | 'settings';
+type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'users' | 'clients' | 'garantias' | 'agencia' | 'settings';
 type PeriodType = 'today' | '7d' | 'month' | 'quarter' | 'semester' | 'year';
 
 const PERIOD_LABELS: Record<PeriodType, string> = {
@@ -378,7 +378,7 @@ export default function Dashboard() {
     users: 'Usuários do Sistema',
     clients: 'Clientes & Revendedores',
     garantias: 'Garantias Oficiais',
-    catalogo: 'Gerar Catálogo Físico',
+    agencia: 'Agência NZ',
     settings: 'Configurações Globais'
   };
 
@@ -421,9 +421,9 @@ export default function Dashboard() {
             <span>🛡️</span> <span>Garantias</span>
             {pendingWarrantiesCount > 0 && <span className={styles.navBadge} style={{backgroundColor: '#ff4444'}}>{pendingWarrantiesCount}</span>}
           </button>
-          {/* Aba provisória — gerador de catálogo físico NZPPF */}
-          <button className={`${styles.navLink} ${activeTab === 'catalogo' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('catalogo')}>
-            <span>📕</span> <span>Catálogo Físico</span>
+          {/* Hub de geração de materiais de marketing baseados no site */}
+          <button className={`${styles.navLink} ${activeTab === 'agencia' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('agencia')}>
+            <span>🎨</span> <span>Agência NZ</span>
           </button>
           <button className={`${styles.navLink} ${activeTab === 'users' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('users')}>
             <span>🔐</span> <span>Usuários</span>
@@ -871,8 +871,8 @@ export default function Dashboard() {
         {/* ===== GARANTIAS ===== */}
         {activeTab === 'garantias' && <AdminWarranties onUpdate={loadData} />}
 
-        {/* ===== CATÁLOGO FÍSICO (provisório) ===== */}
-        {activeTab === 'catalogo' && <AdminCatalog />}
+        {/* ===== AGÊNCIA NZ (hub de materiais de marketing) ===== */}
+        {activeTab === 'agencia' && <AdminAgenciaNZ />}
 
         {/* ===== CONFIGURAÇÕES ===== */}
         {activeTab === 'settings' && <AdminSettings />}
