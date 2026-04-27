@@ -1439,3 +1439,127 @@
   padding: 0.2rem;
   cursor: pointer;
 }
+
+/* ───── FeedManager · guia passo-a-passo ───── */
+.feedHelpToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(212, 175, 55, 0.06);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: #f0c757;
+  padding: 0.5rem 0.85rem;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.15s;
+}
+
+.feedHelpToggle:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.feedHelpToggleIcon {
+  font-size: 0.8rem;
+}
+
+.feedHelpSteps {
+  list-style: none;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  background: rgba(212, 175, 55, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.feedHelpSteps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.feedHelpStepNum {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0c757;
+  color: #1a1208;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.75rem;
+  margin-top: 0.05rem;
+}
+
+.feedHelpSteps code {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.78rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.1rem 0.35rem;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.feedHelpSteps a {
+  color: #f0c757;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.feedHelpSteps a:hover {
+  color: #fff;
+}
+
+.feedHelpWarning {
+  margin-top: 0.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  color: #ff8888;
+}
+
+.feedHelpWarning .feedHelpStepNum {
+  background: rgba(255, 136, 136, 0.2);
+  color: #ff8888;
+}
+
+/* ───── FeedManager · resultado de teste ───── */
+.feedTestOk {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  background: rgba(80, 220, 120, 0.08);
+  border: 1px solid rgba(80, 220, 120, 0.3);
+  color: #6dd58c;
+  padding: 0.65rem 0.85rem;
+}
+
+.feedTestSample {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.feedTestErr {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  background: rgba(231, 76, 60, 0.08);
+  border: 1px solid rgba(231, 76, 60, 0.35);
+  color: #ff8888;
+  padding: 0.65rem 0.85rem;
+}
+
+.feedTestPending {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.5rem 0;
+  font-style: italic;
+}
