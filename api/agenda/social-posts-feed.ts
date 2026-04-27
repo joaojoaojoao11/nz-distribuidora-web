@@ -223,9 +223,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // setHeader+end também caiu nessa armadilha em produção. writeHead
   // escreve status+headers atomicamente, sem wrapper interferir.
   // Google Calendar precisa de 'text/calendar' senão ignora o feed.
+  // Buffer evita o Vercel/runtime tratar string como JSON candidate.
+  // writeHead garante status+headers atômicos antes do end().
+  const buf = Buffer.from(body, 'utf-8');
   res.writeHead(200, {
     'Content-Type': 'text/calendar; charset=utf-8',
     'Cache-Control': 'public, max-age=300, s-maxage=300',
+    'Content-Length': String(buf.length),
   });
-  res.end(body);
+  res.end(buf);
 }
