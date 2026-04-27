@@ -2,11 +2,11 @@ import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 
 export default function HeroBottomCta({ data }: { data: SocialImageData }) {
-  const { product, copy, accent } = data;
+  const { product, copy, accent, brandName } = data;
   return (
     <>
       <div className={styles.hbcTop}>
-        <div className={styles.wordmark}>NZPPF</div>
+        <div className={styles.wordmark}>{brandName}</div>
         <div className={styles.lineBadge} style={{ borderColor: accent, color: accent }}>
           {product.shortName}
         </div>

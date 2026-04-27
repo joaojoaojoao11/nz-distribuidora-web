@@ -26,16 +26,22 @@ export const TONE_MOOD: Record<SocialTone, string> = {
     'dynamic high-contrast lighting with vibrant accent colors, bold composition, energetic spotlights',
 };
 
-/** Defaults globais por layout+tone — usado quando o motor não tem override. */
+/**
+ * Defaults globais por layout+tone. `{shortName}` interpola o nome curto
+ * do produto/cor; `{brand}` interpola a marca (NZPPF, ORACAL 651, etc).
+ *
+ * Templates pensados em PPF — quando o motor é Oracal o usuário pode
+ * sobrescrever via Headline/Subline/CTA, e a marca já vem dinâmica.
+ */
 export const DEFAULT_COPY: Record<string, SocialCopyTemplate> = {
   // hero-bottom-cta
   'hero-bottom-cta-tecnico':       { headline: 'TPU ALIFÁTICO 190μ.\n12 ANOS DE GARANTIA.', subline: 'Engenharia premium com top-coat nano-japonês.', cta: 'Ficha técnica' },
   'hero-bottom-cta-aspiracional':  { headline: 'O BRILHO\nQUE VIRA PRESENÇA.', subline: '{shortName} — proteção que devolve tudo o que o sol oferece.', cta: 'Ver linha' },
   'hero-bottom-cta-promocional':   { headline: '{shortName}\nDISPONÍVEL AGORA.', subline: 'Fale com seu aplicador autorizado.', cta: 'Onde comprar' },
   // centered-quote
-  'centered-quote-aspiracional':   { headline: 'Proteção feita\npara o mundo real.', subline: 'NZPPF · MANIFESTO', cta: 'Conheça' },
-  'centered-quote-tecnico':        { headline: 'O que está\nentre o sol\ne o seu carro.', subline: 'NZPPF · {shortName}', cta: 'Detalhes' },
-  'centered-quote-promocional':    { headline: 'Garantia que\nvive na rua.', subline: 'NZPPF · 12 ANOS', cta: 'Aproveitar' },
+  'centered-quote-aspiracional':   { headline: 'Proteção feita\npara o mundo real.', subline: '{brand} · MANIFESTO', cta: 'Conheça' },
+  'centered-quote-tecnico':        { headline: 'O que está\nentre o sol\ne o seu carro.', subline: '{brand} · {shortName}', cta: 'Detalhes' },
+  'centered-quote-promocional':    { headline: 'Garantia que\nvive na rua.', subline: '{brand} · 12 ANOS', cta: 'Aproveitar' },
   // full-bleed-headline
   'full-bleed-headline-aspiracional': { headline: 'PRESENÇA.', subline: '', cta: 'Conheça {shortName}' },
   'full-bleed-headline-tecnico':      { headline: '190μ.', subline: '', cta: 'Especificações' },
@@ -46,20 +52,22 @@ export const DEFAULT_COPY: Record<string, SocialCopyTemplate> = {
   'stat-driven-promocional':       { headline: '', subline: 'Promoção válida durante todo o mês.', cta: 'Aproveitar', stat: '50%', statLabel: 'OFF NESTA SEMANA' },
   // announce-badge
   'announce-badge-promocional':    { headline: '{shortName}\nESTÁ AQUI.', subline: 'Lançamento oficial. Estoque limitado pra primeiros parceiros.', cta: 'Reservar', badge: 'NOVO LANÇAMENTO' },
-  'announce-badge-aspiracional':   { headline: 'CHEGOU\n{shortName}.', subline: 'A nova referência em proteção automotiva premium.', cta: 'Ver primeiro', badge: 'EDIÇÃO 2026' },
-  'announce-badge-tecnico':        { headline: 'NOVA LINHA\n{shortName}.', subline: 'Disponível para aplicação a partir desta semana em toda a rede.', cta: 'Encontre aplicador', badge: 'AGORA NA REDE' },
+  'announce-badge-aspiracional':   { headline: 'CHEGOU\n{shortName}.', subline: 'A nova referência {brand} para o seu projeto.', cta: 'Ver primeiro', badge: 'EDIÇÃO 2026' },
+  'announce-badge-tecnico':        { headline: 'NOVA LINHA\n{shortName}.', subline: 'Disponível a partir desta semana em toda a rede {brand}.', cta: 'Encontre aplicador', badge: 'AGORA NA REDE' },
   // split-photo
   'split-photo-tecnico':           { headline: 'TPU 190μ.', subline: 'Engenharia premium com top-coat nano-japonês.', cta: 'Detalhes técnicos' },
   'split-photo-aspiracional':      { headline: '{shortName}.', subline: 'Proteção que devolve tudo o que o sol oferece.', cta: 'Ver linha' },
   'split-photo-promocional':       { headline: 'CHEGOU.', subline: 'Disponível em toda a rede autorizada.', cta: 'Onde comprar' },
 };
 
-export function applyShortName(
+export function applyVariables(
   template: SocialCopyTemplate,
-  shortName: string
+  vars: { shortName: string; brand: string }
 ): SocialCopyTemplate {
   const sub = (s: string | undefined): string =>
-    s ? s.replace(/\{shortName\}/g, shortName) : '';
+    s
+      ? s.replace(/\{shortName\}/g, vars.shortName).replace(/\{brand\}/g, vars.brand)
+      : '';
   return {
     headline: sub(template.headline),
     subline: sub(template.subline),
@@ -74,27 +82,45 @@ export function suggestCopy(
   shortName: string,
   layout: SocialLayout,
   tone: SocialTone,
+  brand: string,
   override?: SocialImageMotorConfig['copyTemplates']
 ): SocialCopyTemplate {
   const key = `${layout}-${tone}`;
-  if (override?.[key]) return applyShortName(override[key]!, shortName);
-  if (DEFAULT_COPY[key]) return applyShortName(DEFAULT_COPY[key], shortName);
-  return applyShortName(
+  const vars = { shortName, brand };
+  if (override?.[key]) return applyVariables(override[key]!, vars);
+  if (DEFAULT_COPY[key]) return applyVariables(DEFAULT_COPY[key], vars);
+  return applyVariables(
     DEFAULT_COPY[`hero-bottom-cta-${tone}`] || DEFAULT_COPY['hero-bottom-cta-aspiracional'],
-    shortName
+    vars
   );
 }
 
-export function suggestHashtags(shortName: string, override?: string[]): string[] {
+/**
+ * Hashtags base por marca. NZPPF usa hashtags PPF; Oracal usa hashtags
+ * focadas em vinil adesivo / envelopamento.
+ */
+const BRAND_HASHTAG_KIT: Record<string, string[]> = {
+  NZPPF: ['#NZPPF', '#PaintProtection', '#PPF', '#NZGroup', '#ProtecaoAutomotiva'],
+  'ORACAL 651': ['#Oracal651', '#VinilAdesivo', '#Sinalizacao', '#Plotagem', '#NZWrap', '#NZGroup'],
+  'ORACAL 670RA': ['#Oracal670', '#Oracal670RA', '#Envelopamento', '#WrapPro', '#NZWrap', '#NZGroup'],
+};
+
+export function suggestHashtags(
+  shortName: string,
+  brand: string,
+  override?: string[]
+): string[] {
   const linha = `#${shortName.replace(/\s+/g, '')}`;
   if (override?.length) return [linha, ...override];
-  return [linha, '#NZPPF', '#PaintProtection', '#PPF', '#NZGroup', '#ProtecaoAutomotiva'];
+  const kit = BRAND_HASHTAG_KIT[brand] || BRAND_HASHTAG_KIT.NZPPF;
+  return [linha, ...kit];
 }
 
 export function buildBackgroundPrompt(
   product: { shortName: string; subtitle: string; accent: string },
   layout: SocialLayout,
-  tone: SocialTone
+  tone: SocialTone,
+  brand: string
 ): string {
   const layoutComp =
     layout === 'split-photo'
@@ -109,5 +135,13 @@ export function buildBackgroundPrompt(
       ? 'dramatic composition with negative space at the top for a badge and below for a headline'
       : 'cinematic composition with negative space in the center for overlay text';
 
-  return `Premium luxury vehicle scene inspired by NZPPF ${product.shortName} paint protection film. ${TONE_MOOD[tone]}. Subtle ${product.accent} accent lighting highlights. ${layoutComp}.`;
+  // Contexto visual diferente por marca: PPF é cena de carro premium;
+  // Oracal é cena com aplicação/superfície de vinil adesivo.
+  const subjectByBrand: Record<string, string> = {
+    NZPPF: `Premium luxury vehicle scene inspired by NZPPF ${product.shortName} paint protection film`,
+    'ORACAL 651': `Professional sign-making scene featuring Oracal 651 vinyl in ${product.shortName} color, applied on premium surfaces or signage`,
+    'ORACAL 670RA': `Automotive wrap installation scene featuring Oracal 670RA wrap film in ${product.shortName} color, applied on a luxury vehicle`,
+  };
+  const subject = subjectByBrand[brand] || subjectByBrand.NZPPF;
+  return `${subject}. ${TONE_MOOD[tone]}. Subtle ${product.accent} accent lighting highlights. ${layoutComp}.`;
 }

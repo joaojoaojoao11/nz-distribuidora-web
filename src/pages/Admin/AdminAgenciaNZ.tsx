@@ -5,8 +5,20 @@ import AdminSocialCarousel from './AdminSocialCarousel';
 import OficinaNZ from './OficinaNZ';
 import styles from './AdminAgenciaNZ.module.css';
 import { useMotors } from '../../components/Agencia/motorsRegistry';
-import { CATEGORY_LABELS, type MotorSpec } from '../../components/Agencia/motorTypes';
+import {
+  CATEGORY_LABELS,
+  type MotorSpec,
+  type MotorFamily,
+} from '../../components/Agencia/motorTypes';
 import { productLines } from '../../components/Catalog/data/catalogData';
+
+const FAMILY_LABELS: Record<MotorFamily, string> = {
+  'nzppf': 'NZPPF',
+  'oracal-651': 'NZWRAP · Oracal 651',
+  'oracal-670': 'NZWRAP · Oracal 670',
+};
+
+const FAMILY_ORDER: MotorFamily[] = ['nzppf', 'oracal-651', 'oracal-670'];
 
 /**
  * Hub central da Agência NZ.
@@ -48,7 +60,21 @@ export default function AdminAgenciaNZ() {
     (m) => m.metadata.status === 'live' && m.metadata.source === 'builtin'
   );
   const userMotors = motors.filter((m) => m.metadata.source === 'user');
-  const soonMotors = motors.filter((m) => m.metadata.status === 'soon');
+
+  // Agrupa built-ins por família (NZPPF, Oracal 651, Oracal 670).
+  // Motores sem `family` declarada caem em 'nzppf' por compatibilidade.
+  const builtinByFamily = new Map<MotorFamily, MotorSpec[]>();
+  for (const motor of liveBuiltinMotors) {
+    const family = (motor.metadata.family || 'nzppf') as MotorFamily;
+    const arr = builtinByFamily.get(family) || [];
+    arr.push(motor);
+    builtinByFamily.set(family, arr);
+  }
+  const builtinFamilyGroups = FAMILY_ORDER.map((family) => ({
+    family,
+    label: FAMILY_LABELS[family],
+    motors: builtinByFamily.get(family) || [],
+  })).filter((g) => g.motors.length > 0);
 
   // Agrupa user motors por linha de produto (via config.defaultProductSlug em social-image).
   // Motores sem linha vão pra "Sem linha específica".
@@ -103,14 +129,28 @@ export default function AdminAgenciaNZ() {
       </header>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Built-in da Agência</h2>
-        <div className={styles.cardGrid}>
-          {liveBuiltinMotors.map((motor) => (
-            <MotorCard
-              key={motor.metadata.id}
-              motor={motor}
-              onOpen={() => setActiveView(motor.metadata.id)}
-            />
+        <h2 className={styles.sectionTitle}>Motores integrados</h2>
+        <div className={styles.familyGroupsWrap}>
+          {builtinFamilyGroups.map((group) => (
+            <div key={group.family} className={styles.familyGroup}>
+              <div className={styles.familyHeader}>
+                <span className={styles.familyBar} />
+                <span className={styles.familyName}>{group.label}</span>
+                <span className={styles.familyCount}>
+                  {group.motors.length}{' '}
+                  {group.motors.length === 1 ? 'motor' : 'motores'}
+                </span>
+              </div>
+              <div className={styles.cardGrid}>
+                {group.motors.map((motor) => (
+                  <MotorCard
+                    key={motor.metadata.id}
+                    motor={motor}
+                    onOpen={() => setActiveView(motor.metadata.id)}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </section>
@@ -142,16 +182,6 @@ export default function AdminAgenciaNZ() {
         </section>
       )}
 
-      {soonMotors.length > 0 && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Em breve</h2>
-          <div className={styles.cardGrid}>
-            {soonMotors.map((motor) => (
-              <MotorCard key={motor.metadata.id} motor={motor} disabled />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

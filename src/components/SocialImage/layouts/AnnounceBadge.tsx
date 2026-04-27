@@ -2,12 +2,12 @@ import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 
 export default function AnnounceBadge({ data }: { data: SocialImageData }) {
-  const { product, copy, accent } = data;
+  const { product, copy, accent, brandName } = data;
   const badge = copy.badge || 'NOVO';
   return (
     <>
       <div className={styles.abTop}>
-        <div className={styles.wordmark}>NZPPF</div>
+        <div className={styles.wordmark}>{brandName}</div>
       </div>
       <div className={styles.abCenter}>
         <div className={styles.abBadge} style={{ background: accent }}>{badge}</div>

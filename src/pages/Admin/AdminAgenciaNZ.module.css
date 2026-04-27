@@ -336,6 +336,53 @@
   vertical-align: middle;
 }
 
+/* ─── Family groups (subdivisão por família NZPPF / Oracal 651 / 670) ─── */
+.familyGroupsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.familyGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.familyHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.5rem 0;
+}
+
+.familyBar {
+  display: inline-block;
+  width: 28px;
+  height: 3px;
+  background: #D4AF37;
+  flex-shrink: 0;
+}
+
+.familyName {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.familyCount {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #888;
+  margin-left: auto;
+}
+
 /* ─── Line groups (subdivisão por linha de produto dentro de "Criados por você") ─── */
 .lineGroupsWrap {
   display: flex;

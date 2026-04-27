@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo, useEffect } from 'react';
 import styles from './AdminSocialImage.module.css';
 import SocialImageDocument from '../../components/SocialImage/SocialImageDocument';
 import { generateSocialPng } from '../../components/SocialImage/generateSocialPng';
@@ -8,9 +8,14 @@ import {
   type SocialFormat,
   type SocialLayout,
   type SocialImageData,
+  type SocialProduct,
 } from '../../components/SocialImage/socialImageTypes';
-import { productLines } from '../../components/Catalog/data/catalogData';
 import { generateBackgroundFromPrompt } from '../../components/Agencia/oficinaApi';
+import {
+  loadProductCatalog,
+  CATALOG_LABELS,
+  BRAND_NAME_BY_CATALOG,
+} from '../../components/Agencia/productSources';
 import {
   TONE_LABELS,
   suggestCopy,
@@ -19,6 +24,7 @@ import {
 } from '../../components/SocialImage/socialCopyDefaults';
 import type {
   MotorSpec,
+  ProductCatalog,
   SocialTone,
 } from '../../components/Agencia/motorTypes';
 
@@ -30,12 +36,17 @@ export default function AdminSocialImage({ motor }: AdminSocialImageProps = {}) 
   const config = motor?.config.type === 'social-image' ? motor.config : undefined;
   const docRef = useRef<HTMLDivElement>(null);
 
+  const productCatalog: ProductCatalog = config?.productCatalog || 'ppf';
+  const productLabel = CATALOG_LABELS[productCatalog];
+  const brandName = BRAND_NAME_BY_CATALOG[productCatalog];
+
   const initialFormat: SocialFormat = config?.defaultFormat || 'feed-1x1';
   const initialLayout: SocialLayout = config?.defaultLayout || 'hero-bottom-cta';
-  const initialProductSlug = config?.defaultProductSlug || productLines[0].slug;
   const initialTone: SocialTone = config?.defaultTone || 'aspiracional';
 
-  const [productSlug, setProductSlug] = useState(initialProductSlug);
+  const [products, setProducts] = useState<SocialProduct[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+  const [productSlug, setProductSlug] = useState<string>(config?.defaultProductSlug || '');
   const [format, setFormat] = useState<SocialFormat>(initialFormat);
   const [layout, setLayout] = useState<SocialLayout>(initialLayout);
   const [tone, setTone] = useState<SocialTone>(initialTone);
@@ -50,17 +61,42 @@ export default function AdminSocialImage({ motor }: AdminSocialImageProps = {}) 
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiError, setAiError] = useState('');
 
-  const product = productLines.find((p) => p.slug === productSlug) || productLines[0];
+  // Carrega catálogo de produtos (sync pra PPF, async via Supabase pra Oracal)
+  useEffect(() => {
+    let cancelled = false;
+    setProductsLoading(true);
+    loadProductCatalog(productCatalog).then((list) => {
+      if (cancelled) return;
+      setProducts(list);
+      setProductSlug((current) => {
+        if (list.find((p) => p.slug === current)) return current;
+        return list[0]?.slug || '';
+      });
+      setProductsLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [productCatalog]);
+
+  const product: SocialProduct = products.find((p) => p.slug === productSlug) || products[0] || {
+    slug: '',
+    title: '—',
+    shortName: '—',
+    subtitle: '—',
+    image: '',
+    accent: '#D4AF37',
+  };
   const accent = config?.accent || product.accent || '#D4AF37';
 
   const suggested = useMemo(
-    () => suggestCopy(product.shortName, layout, tone, config?.copyTemplates),
-    [product, layout, tone, config]
+    () => suggestCopy(product.shortName, layout, tone, brandName, config?.copyTemplates),
+    [product, layout, tone, brandName, config]
   );
 
   const autoAiPrompt = useMemo(
-    () => buildBackgroundPrompt(product, layout, tone),
-    [product, layout, tone]
+    () => buildBackgroundPrompt(product, layout, tone, brandName),
+    [product, layout, tone, brandName]
   );
   const effectiveAiPrompt = aiExtraInstructions.trim()
     ? `${autoAiPrompt} Additional direction from user: ${aiExtraInstructions.trim()}.`
@@ -72,6 +108,7 @@ export default function AdminSocialImage({ motor }: AdminSocialImageProps = {}) 
     layout,
     tone,
     accent,
+    brandName,
     aiBackground,
     copy: {
       ...suggested,
@@ -100,8 +137,8 @@ export default function AdminSocialImage({ motor }: AdminSocialImageProps = {}) 
   }
 
   const hashtags = useMemo(
-    () => suggestHashtags(product.shortName, config?.hashtags),
-    [product, config]
+    () => suggestHashtags(product.shortName, brandName, config?.hashtags),
+    [product, brandName, config]
   );
   const fullCaption = `${data.copy.headline.replace(/\n/g, ' ')}\n\n${data.copy.subline}\n\n${hashtags.join(' ')}`;
 
@@ -183,14 +220,18 @@ export default function AdminSocialImage({ motor }: AdminSocialImageProps = {}) 
           <h2 className={styles.sectionTitle}>Conteúdo</h2>
 
           <div className={styles.field}>
-            <label className={styles.label}>Linha</label>
+            <label className={styles.label}>{productLabel}</label>
             <select
               className={styles.input}
               value={productSlug}
               onChange={(e) => setProductSlug(e.target.value)}
-              disabled={isLocked('productSlug')}
+              disabled={isLocked('productSlug') || productsLoading || products.length === 0}
             >
-              {productLines.map((p) => (
+              {productsLoading && <option value="">Carregando…</option>}
+              {!productsLoading && products.length === 0 && (
+                <option value="">Nenhum produto encontrado</option>
+              )}
+              {products.map((p) => (
                 <option key={p.slug} value={p.slug}>{p.title}</option>
               ))}
             </select>

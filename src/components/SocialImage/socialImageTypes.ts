@@ -4,18 +4,37 @@ import type {
   SocialTone,
   SocialCopyTemplate,
 } from '../Agencia/motorTypes';
-import type { ProductLine } from '../Catalog/data/catalogData';
 
 export type { SocialFormat, SocialLayout, SocialTone, SocialCopyTemplate };
 
+/**
+ * Subconjunto mínimo do ProductLine que os motores sociais consomem.
+ * Usado para que dados vindos de fontes diferentes (catalogData PPF
+ * hardcoded, Supabase Oracal 651/670, NZWRAP) possam alimentar o mesmo
+ * renderer sem exigir os campos PPF-only (architecture, finishes, etc.).
+ */
+export interface SocialProduct {
+  slug: string;
+  title: string;
+  shortName: string;
+  subtitle: string;
+  image: string;
+  accent: string;
+}
+
 export interface SocialImageData {
-  product: ProductLine;
+  product: SocialProduct;
   format: SocialFormat;
   layout: SocialLayout;
   tone: SocialTone;
   copy: SocialCopyTemplate;
   /** Cor accent — vem do motor.accent ou product.accent. */
   accent: string;
+  /**
+   * Wordmark da marca exibido no topo dos layouts (NZPPF, ORACAL 651, etc).
+   * Derivado da família do motor pelo renderer.
+   */
+  brandName: string;
   /** Sobrepõe a foto fixa do produto. Data URL (base64) ou URL pública. */
   aiBackground?: string;
 }

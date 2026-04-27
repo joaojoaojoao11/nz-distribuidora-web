@@ -2,13 +2,13 @@ import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 
 export default function StatDriven({ data }: { data: SocialImageData }) {
-  const { product, copy, accent } = data;
+  const { product, copy, accent, brandName } = data;
   const stat = copy.stat || '12 ANOS';
   const statLabel = copy.statLabel || 'DE GARANTIA REAL';
   return (
     <>
       <div className={styles.sdTop}>
-        <div className={styles.wordmark}>NZPPF</div>
+        <div className={styles.wordmark}>{brandName}</div>
         <div className={styles.lineBadge} style={{ borderColor: accent, color: accent }}>{product.shortName}</div>
       </div>
       <div className={styles.sdCenter}>

@@ -8,16 +8,25 @@ import {
   type SocialFormat,
   type SocialLayout,
   type SocialImageData,
+  type SocialProduct,
 } from '../../components/SocialImage/socialImageTypes';
-import { productLines } from '../../components/Catalog/data/catalogData';
 import { generateBackgroundFromPrompt } from '../../components/Agencia/oficinaApi';
+import {
+  loadProductCatalog,
+  CATALOG_LABELS,
+  BRAND_NAME_BY_CATALOG,
+} from '../../components/Agencia/productSources';
 import {
   TONE_LABELS,
   suggestCopy,
   suggestHashtags,
   buildBackgroundPrompt,
 } from '../../components/SocialImage/socialCopyDefaults';
-import type { MotorSpec, SocialTone } from '../../components/Agencia/motorTypes';
+import type {
+  MotorSpec,
+  ProductCatalog,
+  SocialTone,
+} from '../../components/Agencia/motorTypes';
 
 const MIN_SLIDES = 3;
 const MAX_SLIDES = 10;
@@ -67,15 +76,20 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   const config = motor?.config.type === 'social-carousel' ? motor.config : undefined;
   const docRef = useRef<HTMLDivElement>(null);
 
+  const productCatalog: ProductCatalog = config?.productCatalog || 'ppf';
+  const productLabel = CATALOG_LABELS[productCatalog];
+  const brandName = BRAND_NAME_BY_CATALOG[productCatalog];
+
   const initialFormat: SocialFormat = config?.defaultFormat || 'feed-1x1';
-  const initialProductSlug = config?.defaultProductSlug || productLines[0].slug;
   const initialTone: SocialTone = config?.defaultTone || 'aspiracional';
   const initialCount = Math.min(
     Math.max(config?.defaultSlidesCount || 5, MIN_SLIDES),
     MAX_SLIDES
   );
 
-  const [productSlug, setProductSlug] = useState(initialProductSlug);
+  const [products, setProducts] = useState<SocialProduct[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+  const [productSlug, setProductSlug] = useState<string>(config?.defaultProductSlug || '');
   const [format, setFormat] = useState<SocialFormat>(initialFormat);
   const [tone, setTone] = useState<SocialTone>(initialTone);
   const [slidesCount, setSlidesCount] = useState(initialCount);
@@ -91,7 +105,32 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   const [aiGenerating, setAiGenerating] = useState(false);
   const [aiError, setAiError] = useState('');
 
-  const product = productLines.find((p) => p.slug === productSlug) || productLines[0];
+  // Carrega catálogo de produtos (sync pra PPF, async via Supabase pra Oracal)
+  useEffect(() => {
+    let cancelled = false;
+    setProductsLoading(true);
+    loadProductCatalog(productCatalog).then((list) => {
+      if (cancelled) return;
+      setProducts(list);
+      setProductSlug((current) => {
+        if (list.find((p) => p.slug === current)) return current;
+        return list[0]?.slug || '';
+      });
+      setProductsLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [productCatalog]);
+
+  const product: SocialProduct = products.find((p) => p.slug === productSlug) || products[0] || {
+    slug: '',
+    title: '—',
+    shortName: '—',
+    subtitle: '—',
+    image: '',
+    accent: '#D4AF37',
+  };
   const accent = config?.accent || product.accent || '#D4AF37';
 
   // Reconcilia slides quando a quantidade muda — preserva edições nos slides existentes
@@ -120,13 +159,13 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   const activeSlide = slides[activeIdx] || slides[0];
 
   const activeSuggested = useMemo(
-    () => suggestCopy(product.shortName, activeSlide.layout, tone),
+    () => suggestCopy(product.shortName, activeSlide.layout, tone, brandName),
     [product, activeSlide.layout, tone]
   );
 
   // Prompt automático usa o layout da capa (slide 0) para definir a estética dominante
   const autoAiPrompt = useMemo(
-    () => buildBackgroundPrompt(product, slides[0]?.layout || 'announce-badge', tone),
+    () => buildBackgroundPrompt(product, slides[0]?.layout || 'announce-badge', tone, brandName),
     [product, slides, tone]
   );
   const effectiveAiPrompt = aiExtraInstructions.trim()
@@ -134,13 +173,14 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
     : autoAiPrompt;
 
   function buildSlideData(slide: CarouselSlide): SocialImageData {
-    const suggested = suggestCopy(product.shortName, slide.layout, tone);
+    const suggested = suggestCopy(product.shortName, slide.layout, tone, brandName);
     return {
       product,
       format,
       layout: slide.layout,
       tone,
       accent,
+      brandName,
       aiBackground,
       copy: {
         ...suggested,
@@ -154,8 +194,8 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   const activeData = buildSlideData(activeSlide);
 
   const hashtags = useMemo(
-    () => suggestHashtags(product.shortName, config?.hashtags),
-    [product, config]
+    () => suggestHashtags(product.shortName, brandName, config?.hashtags),
+    [product, brandName, config]
   );
   const firstHeadline =
     slides[0] && buildSlideData(slides[0]).copy.headline.replace(/\n/g, ' ');
@@ -281,14 +321,18 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
           <h2 className={styles.sectionTitle}>Conteúdo (global)</h2>
 
           <div className={styles.field}>
-            <label className={styles.label}>Linha</label>
+            <label className={styles.label}>{productLabel}</label>
             <select
               className={styles.input}
               value={productSlug}
               onChange={(e) => setProductSlug(e.target.value)}
-              disabled={isLocked('productSlug') || exporting}
+              disabled={isLocked('productSlug') || exporting || productsLoading || products.length === 0}
             >
-              {productLines.map((p) => (
+              {productsLoading && <option value="">Carregando…</option>}
+              {!productsLoading && products.length === 0 && (
+                <option value="">Nenhum produto encontrado</option>
+              )}
+              {products.map((p) => (
                 <option key={p.slug} value={p.slug}>{p.title}</option>
               ))}
             </select>

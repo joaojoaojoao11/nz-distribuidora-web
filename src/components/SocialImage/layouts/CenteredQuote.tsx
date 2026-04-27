@@ -2,11 +2,11 @@ import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 
 export default function CenteredQuote({ data }: { data: SocialImageData }) {
-  const { copy, accent } = data;
+  const { copy, accent, brandName } = data;
   return (
     <>
       <div className={styles.cqTop}>
-        <div className={styles.wordmark}>NZPPF</div>
+        <div className={styles.wordmark}>{brandName}</div>
       </div>
       <div className={styles.cqCenter}>
         <div className={styles.cqMark} style={{ color: accent }}>"</div>
