@@ -97,6 +97,20 @@
   box-sizing: border-box;
 }
 
+/* ETAPA 5 — image-rendering defensivo. Suaviza o upscaling das
+   imagens 1024×1024 que são usadas em áreas grandes (heros e capa).
+   Auditoria em scripts/audit-catalog-images.mjs aponta as imagens
+   abaixo de 300 DPI no tamanho impresso. Substituição definitiva
+   exige re-exportar os assets fonte em ≥2048px (ver BRIEFING/ETAPA 10).
+   `auto` deixa o navegador escolher (geralmente bilinear smooth) — é
+   o que queremos pra fotos. NÃO usar pixelated/crisp-edges aqui. */
+.page img,
+.page [class*='Hero'],
+.page [class*='Image'] {
+  image-rendering: auto;
+  -ms-interpolation-mode: bicubic;
+}
+
 .safeArea {
   position: absolute;
   /* 154px do edge da page (1819×2551) = 13mm = 10mm do trim (148×210)
