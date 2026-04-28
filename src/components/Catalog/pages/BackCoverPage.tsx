@@ -49,7 +49,11 @@ export default function BackCoverPage({
             <div className={styles.backCoverCtaLabel}>
               ESCANEIE PARA EXPLORAR
             </div>
-            <div className={styles.backCoverCtaQr}>
+            {/* data-page-link-url: hyperlink ativo no PDF DIGITAL (ETAPA 9.2). */}
+            <div
+              className={styles.backCoverCtaQr}
+              data-page-link-url={catalogMeta.baseUrl}
+            >
               {qrDataUrl ? <img src={qrDataUrl} alt="QR Code" /> : null}
             </div>
             <div className={styles.backCoverCtaUrl}>{catalogMeta.url}</div>

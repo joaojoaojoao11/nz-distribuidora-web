@@ -9,6 +9,23 @@ export interface ProgressInfo {
 
 type ProgressFn = (info: ProgressInfo) => void;
 
+/**
+ * Modo de saída do PDF (ETAPA 9 do checklist gráfico):
+ *   'print'   — versão para gráfica: A5 + sangria 3mm + crop marks +
+ *               registration marks. JPEG quality 0.94. Sem hyperlinks.
+ *   'digital' — versão para envio digital: A5 trim only (148×210mm),
+ *               sangria descartada, sem marks, JPEG 0.85 (arquivo
+ *               menor), hyperlinks ativos sobre QR codes.
+ *   'proof'   — versão para prova/aprovação: como 'print' + legenda
+ *               técnica visível na sangria do topo (NÃO PARA PRODUÇÃO).
+ */
+export type CatalogOutputMode = 'print' | 'digital' | 'proof';
+
+export interface GenerateCatalogOptions {
+  outputMode?: CatalogOutputMode;
+  onProgress?: ProgressFn;
+}
+
 // ─────────────────────────────────────────────────────────────────────
 // PRINT GEOMETRY — A5 + sangria 3mm (ETAPA 1 do checklist gráfico)
 // ─────────────────────────────────────────────────────────────────────
@@ -97,6 +114,61 @@ function drawRegistrationMarks(pdf: jsPDF): void {
 }
 
 /**
+ * Legenda técnica visível para a versão PROOF (ETAPA 9.3).
+ * Texto em vermelho, fonte 6pt, posicionado dentro da sangria do
+ * topo — quando a peça for cortada, esta linha some, então não
+ * polui a peça final mas é claramente visível na prova.
+ */
+function drawProofLegend(pdf: jsPDF): void {
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(6);
+  pdf.setTextColor(180, 30, 30);
+  const text = 'PROOF · NZPPF Catálogo 2026 · A5 trim 148×210 + sangria 3mm · NÃO PARA PRODUÇÃO';
+  pdf.text(text, PAGE_WIDTH_MM / 2, 1.8, { align: 'center' });
+  // restaura cor de texto preta para outros usos
+  pdf.setTextColor(0, 0, 0);
+}
+
+/**
+ * Coleta todos os elementos da página marcados com `data-page-link-url`
+ * e calcula a posição em mm relativa ao trim (148×210mm). Usado pelo
+ * modo DIGITAL para criar hyperlinks ativos sobre os QR codes.
+ *
+ * Retorna coordenadas em mm já no sistema do trim (sem bleed).
+ * Se a página tem altura/largura inesperada, retorna lista vazia.
+ */
+function collectPageLinks(page: HTMLElement): Array<{
+  x: number; y: number; w: number; h: number; url: string;
+}> {
+  const pageRect = page.getBoundingClientRect();
+  // px → mm (PAGE_WIDTH_MM / canvas largura em px)
+  const pxToMm = PAGE_WIDTH_MM / pageRect.width;
+  const links: Array<{ x: number; y: number; w: number; h: number; url: string }> = [];
+
+  page.querySelectorAll<HTMLElement>('[data-page-link-url]').forEach((el) => {
+    const url = el.dataset.pageLinkUrl;
+    if (!url) return;
+    const r = el.getBoundingClientRect();
+    // Posição relativa à página, em mm
+    const xPageMm = (r.left - pageRect.left) * pxToMm;
+    const yPageMm = (r.top - pageRect.top) * pxToMm;
+    const wMm = r.width * pxToMm;
+    const hMm = r.height * pxToMm;
+    // Converte de coords da PAGE (com bleed) para coords do TRIM
+    // (subtrai BLEED_MM em ambos os eixos)
+    links.push({
+      x: xPageMm - BLEED_MM,
+      y: yPageMm - BLEED_MM,
+      w: wMm,
+      h: hMm,
+      url
+    });
+  });
+
+  return links;
+}
+
+/**
  * Pré-carrega todas as imagens referenciadas em `<img src>` e em
  * background-image CSS dentro do documento. Usa `img.decode()` para
  * garantir que o pixel data está na GPU antes do html2canvas tentar
@@ -148,8 +220,11 @@ async function preloadImages(root: HTMLElement): Promise<void> {
 
 export async function generateCatalogPdf(
   root: HTMLElement,
-  onProgress?: ProgressFn
+  options: GenerateCatalogOptions = {}
 ): Promise<void> {
+  const { outputMode = 'print', onProgress } = options;
+  const isDigital = outputMode === 'digital';
+
   if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
     await (document as any).fonts.ready;
   }
@@ -163,10 +238,20 @@ export async function generateCatalogPdf(
 
   const total = pages.length;
 
+  // Geometria do PDF varia por modo:
+  //  print/proof: media 154×216mm (trim + bleed) — gráfica corta no trim
+  //  digital:     trim only 148×210mm — sem bleed, sem marks
+  const pdfWidthMm = isDigital ? TRIM_WIDTH_MM : PAGE_WIDTH_MM;
+  const pdfHeightMm = isDigital ? TRIM_HEIGHT_MM : PAGE_HEIGHT_MM;
+
+  // Compressão JPEG: print/proof preservam qualidade gráfica (0.94),
+  // digital aceita compressão maior pra arquivo menor (0.85).
+  const jpegQuality = isDigital ? 0.85 : 0.94;
+
   const pdf = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
-    format: [PAGE_WIDTH_MM, PAGE_HEIGHT_MM],
+    format: [pdfWidthMm, pdfHeightMm],
     compress: true
   });
 
@@ -196,35 +281,50 @@ export async function generateCatalogPdf(
         windowHeight: CANVAS_HEIGHT_PX
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.94);
+      const imgData = canvas.toDataURL('image/jpeg', jpegQuality);
 
       if (i > 0) {
-        pdf.addPage([PAGE_WIDTH_MM, PAGE_HEIGHT_MM], 'portrait');
+        pdf.addPage([pdfWidthMm, pdfHeightMm], 'portrait');
       }
 
-      // Imagem cobre toda a página (incluindo a sangria).
-      pdf.addImage(imgData, 'JPEG', 0, 0, PAGE_WIDTH_MM, PAGE_HEIGHT_MM, `p${pageNum}`, 'FAST');
+      if (isDigital) {
+        // Posiciona a imagem com offset NEGATIVO de bleed em ambos os
+        // eixos. A imagem (154×216mm) extrapola a página (148×210mm)
+        // em 3mm pra cada lado — o conteúdo da sangria fica fora dos
+        // limites da página, efetivamente cortado no trim.
+        pdf.addImage(imgData, 'JPEG', -BLEED_MM, -BLEED_MM, PAGE_WIDTH_MM, PAGE_HEIGHT_MM, `p${pageNum}`, 'FAST');
 
-      // Marcas de corte e de registro desenhadas POR CIMA da imagem,
-      // dentro da área de sangria (3mm). Em backgrounds escuros podem
-      // ficar discretas — funcionalmente cumprem o papel quando a
-      // gráfica usa a geometria do PDF para imposição. A versão PROOF
-      // (ETAPA 9) terá legenda visível das marcas.
-      drawTrimMarks(pdf);
-      drawRegistrationMarks(pdf);
+        // Hyperlinks ativos sobre QRs marcados com data-page-link-url.
+        // A função collectPageLinks já converte para coords TRIM.
+        const links = collectPageLinks(page);
+        for (const link of links) {
+          pdf.link(link.x, link.y, link.w, link.h, { url: link.url });
+        }
+      } else {
+        // print / proof: imagem cobre toda a página (com sangria).
+        pdf.addImage(imgData, 'JPEG', 0, 0, PAGE_WIDTH_MM, PAGE_HEIGHT_MM, `p${pageNum}`, 'FAST');
+
+        // Marcas de corte + registro dentro da sangria.
+        drawTrimMarks(pdf);
+        drawRegistrationMarks(pdf);
+
+        if (outputMode === 'proof') {
+          drawProofLegend(pdf);
+        }
+      }
     } catch (err) {
       console.error(`Falha ao renderizar página ${pageNum}:`, err);
       failedPages.push(Number(pageNum));
 
       if (i > 0) {
-        pdf.addPage([PAGE_WIDTH_MM, PAGE_HEIGHT_MM], 'portrait');
+        pdf.addPage([pdfWidthMm, pdfHeightMm], 'portrait');
       }
       pdf.setFillColor(5, 5, 5);
-      pdf.rect(0, 0, PAGE_WIDTH_MM, PAGE_HEIGHT_MM, 'F');
+      pdf.rect(0, 0, pdfWidthMm, pdfHeightMm, 'F');
       pdf.setTextColor(120, 120, 120);
       pdf.setFont('helvetica', 'normal');
       pdf.setFontSize(8);
-      pdf.text(`(página ${pageNum} indisponível)`, PAGE_WIDTH_MM / 2, PAGE_HEIGHT_MM / 2, { align: 'center' });
+      pdf.text(`(página ${pageNum} indisponível)`, pdfWidthMm / 2, pdfHeightMm / 2, { align: 'center' });
     }
 
     await new Promise((r) => setTimeout(r, 30));
@@ -232,7 +332,12 @@ export async function generateCatalogPdf(
 
   onProgress?.({ current: total, total, label: 'Salvando PDF…' });
 
-  pdf.save(`NZPPF_Catalogo_2026.pdf`);
+  // Filename varia por modo (ETAPA 9.1/9.2/9.3):
+  //   print   → NZPPF_Catalogo_2026_A5_PRINT.pdf
+  //   digital → NZPPF_Catalogo_2026_A5_DIGITAL.pdf
+  //   proof   → NZPPF_Catalogo_2026_A5_PROOF.pdf
+  const suffix = outputMode.toUpperCase();
+  pdf.save(`NZPPF_Catalogo_2026_A5_${suffix}.pdf`);
 
   if (failedPages.length > 0) {
     console.warn(

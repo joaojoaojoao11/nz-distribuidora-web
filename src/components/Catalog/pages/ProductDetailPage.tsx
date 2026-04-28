@@ -62,8 +62,13 @@ export default function ProductDetailPage({
         style={{ backgroundImage: `url('${product.image}')` }}
       />
 
-      {/* QR Code para a página oficial do produto */}
-      <div className={`${styles.productQrBlock} ${styles[imageSide]}`}>
+      {/* QR Code para a página oficial do produto.
+          data-page-link-url: lido por generateCatalogPdf no modo DIGITAL
+          para criar um hyperlink clicável sobre o QR (ETAPA 9.2). */}
+      <div
+        className={`${styles.productQrBlock} ${styles[imageSide]}`}
+        data-page-link-url={`${catalogMeta.baseUrl}${catalogMeta.ppfPath}/${product.slug}`}
+      >
         <div className={styles.qrImg}>
           {qrDataUrl ? <img src={qrDataUrl} alt={`QR ${product.shortName}`} /> : null}
         </div>

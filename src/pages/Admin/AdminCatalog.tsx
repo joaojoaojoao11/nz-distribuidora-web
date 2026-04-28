@@ -1,7 +1,11 @@
 import { useState, useRef, useMemo } from 'react';
 import QRCode from 'qrcode';
 import CatalogDocument from '../../components/Catalog/CatalogDocument';
-import { generateCatalogPdf, type ProgressInfo } from '../../components/Catalog/generateCatalogPdf';
+import {
+  generateCatalogPdf,
+  type ProgressInfo,
+  type CatalogOutputMode
+} from '../../components/Catalog/generateCatalogPdf';
 import {
   TOTAL_PAGES,
   TOTAL_PAGES_COMPLETE,
@@ -67,7 +71,7 @@ export default function AdminCatalog() {
     [mode]
   );
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (outputMode: CatalogOutputMode = 'print') => {
     setGenerating(true);
     setFeedback(null);
     setProgress({ current: 0, total: totalPages, label: 'Gerando QR codes…' });
@@ -113,11 +117,18 @@ export default function AdminCatalog() {
         throw new Error('Documento não montado.');
       }
 
-      await generateCatalogPdf(docRef.current, (info) => setProgress(info));
+      await generateCatalogPdf(docRef.current, {
+        outputMode,
+        onProgress: (info) => setProgress(info)
+      });
 
+      const modeLabel =
+        outputMode === 'print'   ? 'PRINT (gráfica)'
+      : outputMode === 'digital' ? 'DIGITAL (envio)'
+      :                            'PROOF (prova)';
       setFeedback({
         type: 'success',
-        msg: `PDF de ${totalPages} páginas gerado com sucesso. Verifique sua pasta de Downloads.`
+        msg: `PDF ${modeLabel} de ${totalPages} páginas gerado. Verifique sua pasta de Downloads.`
       });
     } catch (err) {
       console.error(err);
@@ -142,15 +153,19 @@ export default function AdminCatalog() {
           CATÁLOGO FÍSICO NZPPF
         </h2>
         <p className={styles.subtitle}>
-          Produza um PDF de alta resolução pronto para impressão profissional, no formato
-          15 × 20 cm, contendo as 6 linhas NZPPF com o mesmo padrão visual do site.
-          Ideal para envio à gráfica ou apresentação a clientes.
+          Produza um PDF A5 (148 × 210 mm) de alta resolução pronto para impressão
+          profissional, com sangria de 3 mm e marcas de corte. Três versões disponíveis:
+          PRINT (gráfica), DIGITAL (envio) e PROOF (aprovação).
         </p>
 
         <div className={styles.metaGrid}>
           <div className={styles.metaItem}>
             <div className={styles.metaLabel}>Formato</div>
-            <div className={styles.metaValue}>150 × 200 <strong>mm</strong></div>
+            <div className={styles.metaValue}>A5 · 148 × 210 <strong>mm</strong></div>
+          </div>
+          <div className={styles.metaItem}>
+            <div className={styles.metaLabel}>Sangria</div>
+            <div className={styles.metaValue}>3 <strong>mm</strong></div>
           </div>
           <div className={styles.metaItem}>
             <div className={styles.metaLabel}>Resolução</div>
@@ -159,10 +174,6 @@ export default function AdminCatalog() {
           <div className={styles.metaItem}>
             <div className={styles.metaLabel}>Páginas</div>
             <div className={styles.metaValue}>{totalPages} <strong>pgs</strong></div>
-          </div>
-          <div className={styles.metaItem}>
-            <div className={styles.metaLabel}>Saída</div>
-            <div className={styles.metaValue}>PDF · <strong>JPEG 94</strong></div>
           </div>
         </div>
       </div>
@@ -210,14 +221,36 @@ export default function AdminCatalog() {
       <div className={styles.actions}>
         <button
           className={styles.generateBtn}
-          onClick={handleGenerate}
+          onClick={() => handleGenerate('print')}
           disabled={generating}
+          title="A5 + sangria 3mm + crop marks. Para enviar à gráfica."
         >
-          <span className={styles.btnIcon}>{generating ? '⌛' : '📕'}</span>
-          {generating ? 'Gerando catálogo…' : `Gerar catálogo PDF (${totalPages} pgs)`}
+          <span className={styles.btnIcon}>{generating ? '⌛' : '🖨️'}</span>
+          {generating ? 'Gerando…' : `Gerar PRINT (${totalPages}p)`}
         </button>
+        <button
+          className={styles.generateBtn}
+          onClick={() => handleGenerate('digital')}
+          disabled={generating}
+          title="A5 trim only, sem sangria/marcas, hyperlinks ativos. Para envio digital."
+        >
+          <span className={styles.btnIcon}>{generating ? '⌛' : '📱'}</span>
+          {generating ? 'Gerando…' : `Gerar DIGITAL (${totalPages}p)`}
+        </button>
+        <button
+          className={styles.generateBtn}
+          onClick={() => handleGenerate('proof')}
+          disabled={generating}
+          title="Como PRINT mas com legenda 'NÃO PARA PRODUÇÃO'. Para aprovação."
+        >
+          <span className={styles.btnIcon}>{generating ? '⌛' : '🔍'}</span>
+          {generating ? 'Gerando…' : `Gerar PROOF (${totalPages}p)`}
+        </button>
+      </div>
+      <div className={styles.actions}>
         <span className={styles.hint}>
-          Tempo estimado: {mode === 'complete' ? '25–45' : '15–30'} segundos · Tamanho final ~{mode === 'complete' ? '18–35' : '12–25'} MB
+          Tempo estimado: {mode === 'complete' ? '25–45' : '15–30'} segundos por versão.
+          PRINT/PROOF ~{mode === 'complete' ? '18–35' : '12–25'} MB · DIGITAL ~30% menor.
         </span>
       </div>
 
@@ -254,8 +287,8 @@ export default function AdminCatalog() {
           <div className={styles.overlayCard}>
             <div className={styles.overlayLabel}>Gerando catálogo NZPPF</div>
             <div className={styles.overlayDesc}>
-              Renderizando cada página em 1772 × 2362 px (300 DPI) e compondo o PDF.
-              Por favor, aguarde — não feche esta aba.
+              Renderizando cada página em 1819 × 2551 px (A5 + sangria 3 mm @ 300 DPI)
+              e compondo o PDF. Por favor, aguarde — não feche esta aba.
             </div>
             <div className={styles.progressBar}>
               <div className={styles.progressFill} style={{ width: `${pct}%` }} />
