@@ -57,7 +57,30 @@
      palavras e letras regardless of how html2canvas interprets space chars. */
   word-spacing: 0.08em;
   letter-spacing: 0.012em;
+
+  /* ETAPA 7.3 — Widows e orphans (linhas órfãs no fim/início de parágrafo
+     quando o texto flui para outra coluna/página). No pipeline atual
+     (html2canvas) cada página é renderizada isoladamente e o texto não
+     flui entre páginas, então estas propriedades não têm efeito visível.
+     Mantemos a declaração como contrato para a FASE 2 (Puppeteer +
+     CSS Paged Media), onde elas vão ser honradas pela engine de print. */
+  widows: 2;
+  orphans: 2;
 }
+
+/* ETAPA 7.4 — text-align: justify SÓ em colunas com largura ≥ 60mm.
+   Hoje nenhuma classe usa justify (todas as classes de body herdam
+   o padrão `left`). Se um parágrafo justify for adicionado no futuro,
+   verificar antes que a coluna onde está cabe pelo menos 60mm impressos
+   — abaixo disso a justificação cria rivers (rios) tipográficos
+   visíveis. Colunas atuais que poderiam usar justify sem problema:
+     - .manifestText (max-width 1280px ≈ 108mm)
+     - intro paragraphs com max-width 1100px (≈ 93mm)
+     - .productBody p dentro de .productSide (≈ 50% page = 74mm)
+   Colunas que NÃO devem usar justify (são estreitas):
+     - .archItem .archDesc (cards 2×2 ≈ 30mm cada)
+     - .finishesGrid2 .finishDesc (4-card grid ≈ 50mm)
+     - .closingBlockBody (split em 2 colunas ≈ 55mm) */
 
 /* ─────────── PAGE FRAME + NEW BACKGROUND ─────────── */
 /* Interior pages (2–13) usam a imagem backgroud.png full-bleed com overlay
@@ -274,6 +297,10 @@
   font-size: 46px;
   line-height: 1.5;
   color: #f0f0f3;
+  /* ETAPA 7.2: hifenização automática pt-BR em parágrafos longos.
+     Requer lang="pt-BR" no ancestral (definido em CatalogDocument.tsx). */
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .bodySm {
@@ -282,6 +309,8 @@
   font-size: 46px;
   line-height: 1.45;
   color: #f0f0f3;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .captionMono {
@@ -655,6 +684,8 @@
   line-height: 1.45;
   color: #ffffff;
   margin-bottom: 16px;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .productBody p:last-child { margin-bottom: 0; }
@@ -926,6 +957,8 @@
   font-size: 32px;
   line-height: 1.35;
   color: #f0f0f3;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 /* ─────────── EXCLUSIVE DIFFERENTIALS PAGE ─────────── */
@@ -1201,6 +1234,10 @@
   line-height: 1.4;
   color: #f0f0f3;
   flex: 1;
+  /* hyphens: auto OK aqui — coluna ≥ 50mm e textos editoriais
+     (sem termos técnicos compostos críticos). */
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .finishesGrid2 .finishDesc {
@@ -1608,6 +1645,8 @@
   position: relative;
   z-index: 2;
   flex: 1;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1696,6 +1735,8 @@
   font-size: 36px;
   line-height: 1.4;
   color: #f0f0f3;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 /* REDESIGN — CONTRACAPA (pag 19) */
@@ -1854,6 +1895,8 @@
   color: #f0f0f3;
   margin: 0;
   letter-spacing: 0.2px;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
 .ceoLetterSignatureBlock {

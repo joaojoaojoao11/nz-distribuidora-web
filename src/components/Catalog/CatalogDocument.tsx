@@ -70,7 +70,11 @@ const CatalogDocument = forwardRef<HTMLDivElement, CatalogDocumentProps>(
     const ceoLetterN = nextPage();
 
     return (
-      <div ref={ref} className={styles.documentRoot}>
+      // lang="pt-BR" ativa o dicionário de hifenização do Chromium
+      // para os parágrafos com `hyphens: auto` (ETAPA 7.2).
+      // Sem isso o navegador aplica regras de hifenização do idioma
+      // padrão do sistema, que pode quebrar palavras pt-BR de forma errada.
+      <div ref={ref} className={styles.documentRoot} lang="pt-BR">
         <CoverPage pageNumber={coverN} totalPages={totalPages} />
         <ManifestPage pageNumber={manifestN} totalPages={totalPages} />
         <LinesOverviewPage pageNumber={linesN} totalPages={totalPages} />
