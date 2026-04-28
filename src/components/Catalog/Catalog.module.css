@@ -38,9 +38,17 @@
   font-family: 'Inter', sans-serif;
   color: #f5f5f7;
   -webkit-font-smoothing: antialiased;
-  /* Disable kerning/ligatures globally — html2canvas has unreliable
-     support for OpenType features and tends to collapse word spacing.
-     optimizeSpeed uses simple glyph positioning that matches canvas output. */
+  /* ETAPA 3.7 — kerning + ligaduras INTENCIONALMENTE DESLIGADOS no
+     Caminho C (html2canvas + jsPDF). Razões:
+       - html2canvas tem suporte instável a OpenType features e tende
+         a colapsar word-spacing entre glyphs grandes do Outfit, ex:
+         "MELHOR MATÉRIA" virou "MELHORMATÉRIA" em testes.
+       - text-rendering: optimizeSpeed usa posicionamento simples que
+         bate com a saída do canvas — ativar features OT causa drift
+         entre o rendering on-screen e o JPEG final.
+     Na FASE 2 (Puppeteer + Chromium nativo) estes valores devem ser
+     TROCADOS para "kern" 1, "liga" 1 e font-kerning: normal — o
+     Chromium em modo print honra OpenType nativamente. */
   font-kerning: none;
   font-variant-ligatures: none;
   text-rendering: optimizeSpeed;
@@ -110,7 +118,7 @@
   justify-content: space-between;
   align-items: center;
   font-family: 'Inter', sans-serif;
-  font-size: 28px;
+  font-size: 30px;
   letter-spacing: 5px;
   color: rgba(245, 245, 247, 0.7);
   text-transform: uppercase;
@@ -246,7 +254,9 @@
 
 .body {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  /* weight 500 (medium) compensa dot gain em offset sobre fundo preto.
+     ETAPA 3.5: corpos de texto sobem +1 nível no fundo escuro. */
+  font-weight: 500;
   font-size: 46px;
   line-height: 1.5;
   color: #f0f0f3;
@@ -254,7 +264,7 @@
 
 .bodySm {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 46px;
   line-height: 1.45;
   color: #f0f0f3;
@@ -470,7 +480,7 @@
 
 .lineCardSub {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 38px;
   color: #f0f0f3;
   line-height: 1.4;
@@ -553,7 +563,7 @@
 .productEyebrow {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: 24px;
+  font-size: 28px;
   letter-spacing: 8px;
   word-spacing: 0.15em;
   text-transform: uppercase;
@@ -599,7 +609,7 @@
 .productSubtitle {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: 30px;
+  font-size: 32px;
   line-height: 1.35;
   letter-spacing: 0.5px;
   margin-bottom: 22px;
@@ -626,7 +636,7 @@
 
 .productBody p {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 44px;
   line-height: 1.45;
   color: #ffffff;
@@ -655,7 +665,7 @@
 
 .specChip .label {
   font-family: 'Inter', sans-serif;
-  font-size: 26px;
+  font-size: 30px;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: rgba(245,245,247,0.85);
@@ -666,7 +676,7 @@
 .specChip .value {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 32px;
+  font-size: 34px;
   color: #ffffff;
   letter-spacing: 0.5px;
 }
@@ -716,7 +726,7 @@
 .archItem .archTitle {
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
-  font-size: 28px;
+  font-size: 30px;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -731,7 +741,7 @@
 
 .archItem .archDesc {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 36px;
   line-height: 1.35;
   color: #f0f0f3;
@@ -839,7 +849,7 @@
 
 .benchmarkSpec {
   font-family: 'Inter', sans-serif;
-  font-size: 20px;
+  font-size: 28px;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: rgba(245,245,247,0.85);
@@ -853,20 +863,20 @@
   color: #D4AF37;
   font-weight: 600;
   margin-top: 2px;
-  font-size: 22px;
+  font-size: 30px;
 }
 
 .metricRow {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .metricRow .metricLabel {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-family: 'Inter', sans-serif;
-  font-size: 24px;
+  font-size: 30px;
   letter-spacing: 1.2px;
   color: #f0f0f3;
   font-weight: 500;
@@ -875,7 +885,7 @@
 .metricRow .metricValue {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 32px;
   color: #ffffff;
 }
 
@@ -894,12 +904,12 @@
 }
 
 .benchmarkHighlight {
-  margin-top: 12px;
-  padding-top: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255,255,255,0.05);
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 26px;
+  font-weight: 500;
+  font-size: 32px;
   line-height: 1.35;
   color: #f0f0f3;
 }
@@ -956,8 +966,8 @@
 
 .exclusiveCardLine {
   font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 28px;
+  font-weight: 600;
+  font-size: 30px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: #E8C264;
@@ -978,7 +988,7 @@
 /* ─────────── FINISHES PAGE (modo Completo) ─────────── */
 .finishesTagline {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 38px;
   line-height: 1.45;
   color: #f0f0f3;
@@ -1079,7 +1089,7 @@
 }
 
 .finishesGridHero .finishCard:not(.finishHero) .finishAnchor {
-  font-size: 26px;
+  font-size: 30px;
   margin-bottom: 12px;
 }
 
@@ -1172,7 +1182,7 @@
 
 .finishDesc {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 40px;
   line-height: 1.4;
   color: #f0f0f3;
@@ -1240,7 +1250,7 @@
   color: #D4AF37;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 26px;
+  font-size: 28px;
   text-align: center;
   letter-spacing: 1px;
   line-height: 1.1;
@@ -1260,7 +1270,7 @@
 
 .certSubtitle {
   font-family: 'Inter', sans-serif;
-  font-size: 26px;
+  font-size: 30px;
   letter-spacing: 6px;
   text-transform: uppercase;
   color: #D4AF37;
@@ -1563,7 +1573,7 @@
   max-width: 100%;
   font-family: 'Inter', sans-serif;
   font-weight: 700;
-  font-size: 26px;
+  font-size: 30px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: #1a1208;
@@ -1577,7 +1587,7 @@
 
 .exclusiveCardDescV2 {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 40px;
   line-height: 1.4;
   color: #f0f0f3;
@@ -1668,7 +1678,7 @@
 
 .closingBlockBody p {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 36px;
   line-height: 1.4;
   color: #f0f0f3;
@@ -1772,8 +1782,8 @@
 
 .backCoverFootEdition {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 28px;
+  font-weight: 500;
+  font-size: 30px;
   letter-spacing: 5px;
   text-transform: uppercase;
   color: rgba(245, 245, 247, 0.75);
@@ -1823,7 +1833,7 @@
 
 .ceoLetterParagraph {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-style: italic;
   font-size: 44px;
   line-height: 1.5;
@@ -1877,8 +1887,8 @@
 
 .ceoLetterSignatureMeta {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 28px;
+  font-weight: 500;
+  font-size: 30px;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: rgba(245, 245, 247, 0.75);
@@ -1962,8 +1972,8 @@
 
 .ceoLetterBrandEdition {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 28px;
+  font-weight: 500;
+  font-size: 30px;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: rgba(245, 245, 247, 0.75);
