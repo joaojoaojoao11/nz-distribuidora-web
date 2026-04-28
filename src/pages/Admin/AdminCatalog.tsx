@@ -73,7 +73,24 @@ export default function AdminCatalog() {
     setProgress({ current: 0, total: totalPages, label: 'Gerando QR codes…' });
 
     try {
+      // QR codes para impressão A5 (ETAPA 6 do checklist gráfico):
+      //   errorCorrectionLevel: 'H' = 30% de recuperação. Default da
+      //     biblioteca é 'M' (15%). Em catálogo impresso, manuseado,
+      //     dobrado ou riscado, EC H sobrevive a falhas de impressão
+      //     que destruiriam um QR EC M. Trade-off: ~30% mais módulos
+      //     por mesma URL, padrão visual mais denso.
+      //   margin: 1 = 1 módulo de quiet zone NO PNG. Os 4mm de quiet
+      //     zone que a ISO/IEC 18004 recomenda são entregues via CSS
+      //     padding 48px nos containers (.qrImg, .certQr, .backCoverQr,
+      //     .backCoverCtaQr — ver ETAPA 2). Combinado dá ~5mm.
+      //   width: 600 = oversampling. PNG 600px renderizado nos
+      //     containers 144-316px no catálogo dá nitidez extra na
+      //     rasterização do html2canvas.
+      //   color dark #050505 (não puro #000) reduz halo no anti-alias
+      //     ao redor dos módulos no JPEG do PDF; contraste sobre
+      //     fundo #ffffff continua ~19:1 (WCAG AAA).
       const qrOpts = {
+        errorCorrectionLevel: 'H',
         margin: 1,
         width: 600,
         color: { dark: '#050505', light: '#ffffff' }
