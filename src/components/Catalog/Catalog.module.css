@@ -80,9 +80,9 @@
   justify-content: space-between;
   align-items: center;
   font-family: 'Inter', sans-serif;
-  font-size: 26px;
+  font-size: 28px;
   letter-spacing: 5px;
-  color: rgba(245, 245, 247, 0.4);
+  color: rgba(245, 245, 247, 0.7);
   text-transform: uppercase;
   font-weight: 500;
 }
@@ -209,34 +209,34 @@
 .bodyLg {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 34px;
-  line-height: 1.55;
-  color: #e8e8ec;
+  font-size: 50px;
+  line-height: 1.5;
+  color: #f5f5f7;
 }
 
 .body {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 30px;
-  line-height: 1.6;
-  color: #d8d8dc;
+  font-size: 46px;
+  line-height: 1.5;
+  color: #f0f0f3;
 }
 
 .bodySm {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 24px;
-  line-height: 1.5;
-  color: #b8b8bc;
+  font-size: 46px;
+  line-height: 1.45;
+  color: #f0f0f3;
 }
 
 .captionMono {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: 24px;
+  font-size: 34px;
   letter-spacing: 6px;
   text-transform: uppercase;
-  color: rgba(245, 245, 247, 0.5);
+  color: rgba(245, 245, 247, 0.85);
 }
 
 /* ─────────── COVER PAGE ─────────── */
@@ -353,9 +353,9 @@
 .manifestText {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 36px;
-  line-height: 1.6;
-  color: #ececef;
+  font-size: 50px;
+  line-height: 1.5;
+  color: #ffffff;
   max-width: 1280px;
   hyphens: none;
   word-break: normal;
@@ -440,10 +440,10 @@
 .lineCardSub {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 22px;
-  color: #b8b8bc;
-  line-height: 1.45;
-  margin-top: 16px;
+  font-size: 38px;
+  color: #f0f0f3;
+  line-height: 1.4;
+  margin-top: 18px;
 }
 
 .lineCardFooter {
@@ -465,9 +465,9 @@
 
 .lineCardThickness {
   font-family: 'Inter', sans-serif;
-  font-size: 22px;
+  font-size: 30px;
   letter-spacing: 4px;
-  color: rgba(245, 245, 247, 0.5);
+  color: rgba(245, 245, 247, 0.85);
   text-transform: uppercase;
 }
 
@@ -566,37 +566,37 @@
 .productSubtitle {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: 28px;
-  line-height: 1.4;
+  font-size: 30px;
+  line-height: 1.35;
   letter-spacing: 0.5px;
-  margin-bottom: 28px;
+  margin-bottom: 22px;
 }
 
 .productSectionTitle {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 40px;
+  font-size: 38px;
   line-height: 1.15;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   word-spacing: 0.15em;
-  margin-bottom: 22px;
-  padding-bottom: 18px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
   border-bottom: 1px solid rgba(212,175,55,0.3);
   max-width: 100%;
 }
 
 .productBody {
-  margin-bottom: 30px;
+  margin-bottom: 18px;
 }
 
 .productBody p {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 24px;
-  line-height: 1.6;
-  color: #e0e0e3;
+  font-size: 44px;
+  line-height: 1.45;
+  color: #ffffff;
   margin-bottom: 16px;
 }
 
@@ -611,29 +611,29 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
-  margin-bottom: 26px;
+  margin-bottom: 22px;
 }
 
 .specChip {
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
-  padding: 16px 22px;
+  padding: 16px 20px;
 }
 
 .specChip .label {
   font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  letter-spacing: 4px;
+  font-size: 26px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(245,245,247,0.55);
-  margin-bottom: 6px;
+  color: rgba(245,245,247,0.85);
+  margin-bottom: 8px;
   font-weight: 500;
 }
 
 .specChip .value {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 30px;
+  font-size: 32px;
   color: #ffffff;
   letter-spacing: 0.5px;
 }
@@ -642,7 +642,7 @@
 .productArchitectureTitle {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 30px;
   letter-spacing: 5px;
   text-transform: uppercase;
   color: #D4AF37;
@@ -654,14 +654,14 @@
 .productArchitecture {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px 24px;
+  gap: 16px 20px;
   margin-top: 4px;
 }
 
 .archItem {
   display: flex;
   gap: 14px;
-  padding: 14px 16px;
+  padding: 18px 20px;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
 }
@@ -669,7 +669,7 @@
 .archItem .archNum {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 26px;
+  font-size: 30px;
   color: #D4AF37;
   letter-spacing: 0.5px;
   line-height: 1;
@@ -683,13 +683,13 @@
 .archItem .archTitle {
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
-  font-size: 19px;
+  font-size: 28px;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   word-spacing: 0.08em;
-  margin-bottom: 6px;
-  line-height: 1.2;
+  margin-bottom: 8px;
+  line-height: 1.18;
   /* Impede quebra dentro de palavras compostas (NANO-JAPONÊS, 190μ etc) */
   hyphens: none;
   word-break: keep-all;
@@ -699,9 +699,9 @@
 .archItem .archDesc {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 18px;
-  line-height: 1.45;
-  color: #b8b8bc;
+  font-size: 36px;
+  line-height: 1.35;
+  color: #f0f0f3;
 }
 
 /* Watermark vertical removido — implementação anterior sobrepunha conteúdo.
@@ -750,11 +750,11 @@
 
 .productQrBlock .qrCaption .qrLabel {
   font-family: 'Inter', sans-serif;
-  font-size: 20px;
+  font-size: 30px;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: rgba(245,245,247,0.55);
-  margin-bottom: 8px;
+  color: rgba(245,245,247,0.85);
+  margin-bottom: 10px;
   font-weight: 500;
 }
 
@@ -770,14 +770,14 @@
 .benchmarkGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 36px;
-  margin-top: 70px;
+  gap: 22px;
+  margin-top: 36px;
 }
 
 .benchmarkCard {
   background: rgba(10,10,11,0.85);
   border: 1px solid rgba(255,255,255,0.06);
-  padding: 44px 40px;
+  padding: 24px 26px;
   display: flex;
   flex-direction: column;
 }
@@ -786,15 +786,15 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 30px;
-  padding-bottom: 24px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .benchmarkName {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 80px;
+  font-size: 52px;
   letter-spacing: 0.5px;
   word-spacing: 0.12em;
   line-height: 1;
@@ -802,12 +802,12 @@
 
 .benchmarkSpec {
   font-family: 'Inter', sans-serif;
-  font-size: 22px;
-  letter-spacing: 4px;
+  font-size: 20px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: rgba(245,245,247,0.55);
+  color: rgba(245,245,247,0.85);
   text-align: right;
-  line-height: 1.4;
+  line-height: 1.35;
   font-weight: 500;
 }
 
@@ -815,30 +815,30 @@
   display: block;
   color: #D4AF37;
   font-weight: 600;
-  margin-top: 4px;
-  font-size: 26px;
+  margin-top: 2px;
+  font-size: 22px;
 }
 
 .metricRow {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .metricRow .metricLabel {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   font-family: 'Inter', sans-serif;
-  font-size: 26px;
-  letter-spacing: 1.5px;
-  color: #d2d2d6;
+  font-size: 24px;
+  letter-spacing: 1.2px;
+  color: #f0f0f3;
   font-weight: 500;
 }
 
 .metricRow .metricValue {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 28px;
+  font-size: 24px;
   color: #ffffff;
 }
 
@@ -857,14 +857,14 @@
 }
 
 .benchmarkHighlight {
-  margin-top: 26px;
-  padding-top: 22px;
+  margin-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid rgba(255,255,255,0.05);
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 22px;
-  line-height: 1.55;
-  color: #b8b8bc;
+  font-size: 26px;
+  line-height: 1.35;
+  color: #f0f0f3;
 }
 
 /* ─────────── EXCLUSIVE DIFFERENTIALS PAGE ─────────── */
@@ -872,8 +872,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 36px;
-  margin-top: 70px;
+  gap: 22px;
+  margin-top: 36px;
   flex: 1;
 }
 
@@ -920,11 +920,11 @@
 .exclusiveCardLine {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 28px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: #D4A840;
-  line-height: 1.4;
+  color: #E8C264;
+  line-height: 1.35;
   margin-bottom: 22px;
   padding-bottom: 14px;
   border-bottom: 1px solid rgba(212,168,64,0.2);
@@ -933,20 +933,20 @@
 .exclusiveCardDesc {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 26px;
-  line-height: 1.6;
-  color: #d2d2d6;
+  font-size: 40px;
+  line-height: 1.5;
+  color: #f0f0f3;
 }
 
 /* ─────────── FINISHES PAGE (modo Completo) ─────────── */
 .finishesTagline {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 28px;
-  line-height: 1.5;
-  color: #d2d2d6;
-  margin-top: 14px;
-  margin-bottom: 50px;
+  font-size: 38px;
+  line-height: 1.45;
+  color: #f0f0f3;
+  margin-top: 16px;
+  margin-bottom: 44px;
   max-width: 1200px;
   letter-spacing: 0.3px;
 }
@@ -1013,14 +1013,14 @@
 }
 
 .finishesGridHero .finishHero .finishAnchor {
-  font-size: 26px;
+  font-size: 36px;
   line-height: 1.3;
   margin-bottom: 22px;
 }
 
 .finishesGridHero .finishHero .finishDesc {
-  font-size: 22px;
-  line-height: 1.5;
+  font-size: 42px;
+  line-height: 1.4;
 }
 
 .finishesGridHero .finishHero .finishBody {
@@ -1042,13 +1042,13 @@
 }
 
 .finishesGridHero .finishCard:not(.finishHero) .finishAnchor {
-  font-size: 18px;
+  font-size: 26px;
   margin-bottom: 12px;
 }
 
 .finishesGridHero .finishCard:not(.finishHero) .finishDesc {
-  font-size: 17px;
-  line-height: 1.45;
+  font-size: 32px;
+  line-height: 1.35;
 }
 
 .finishesGridHero .finishCard:not(.finishHero) .finishBody {
@@ -1126,9 +1126,9 @@
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   font-style: italic;
-  font-size: 22px;
-  line-height: 1.35;
-  color: #D4A840;
+  font-size: 32px;
+  line-height: 1.3;
+  color: #E8C264;
   margin-bottom: 18px;
   letter-spacing: 0.3px;
 }
@@ -1136,14 +1136,15 @@
 .finishDesc {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 20px;
-  line-height: 1.55;
-  color: #c4c4c8;
+  font-size: 40px;
+  line-height: 1.4;
+  color: #f0f0f3;
   flex: 1;
 }
 
 .finishesGrid2 .finishDesc {
-  font-size: 20px;
+  font-size: 36px;
+  line-height: 1.35;
 }
 
 .finishSwatch {
@@ -1239,11 +1240,11 @@
 
 .certField .fieldLabel {
   font-family: 'Inter', sans-serif;
-  font-size: 22px;
+  font-size: 32px;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: rgba(245,245,247,0.55);
-  margin-bottom: 12px;
+  color: rgba(245,245,247,0.85);
+  margin-bottom: 14px;
   font-weight: 500;
 }
 
@@ -1268,10 +1269,10 @@
 
 .certCode {
   font-family: 'Inter', sans-serif;
-  font-size: 22px;
+  font-size: 30px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(245,245,247,0.55);
+  color: rgba(245,245,247,0.85);
   font-weight: 500;
 }
 
@@ -1456,7 +1457,7 @@
 .exclusiveCardV2 {
   background: linear-gradient(135deg, rgba(20,20,24,0.92) 0%, rgba(8,8,10,0.92) 100%);
   border: 1px solid rgba(212, 175, 55, 0.22);
-  padding: 44px 42px;
+  padding: 40px 42px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1481,7 +1482,7 @@
   right: -10px;
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 280px;
+  font-size: 260px;
   line-height: 1;
   color: rgba(212, 175, 55, 0.07);
   letter-spacing: -8px;
@@ -1490,13 +1491,13 @@
 }
 
 .exclusiveCardIconV2 {
-  width: 110px;
-  height: 110px;
+  width: 96px;
+  height: 96px;
   filter:
     brightness(0) saturate(100%) invert(75%) sepia(54%) saturate(459%)
     hue-rotate(2deg) brightness(91%) contrast(89%)
     drop-shadow(0 0 18px rgba(212, 175, 55, 0.35));
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   position: relative;
   z-index: 2;
 }
@@ -1504,13 +1505,13 @@
 .exclusiveCardTitleV2 {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  font-size: 52px;
+  font-size: 48px;
   line-height: 1.05;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   word-spacing: 0.14em;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   position: relative;
   z-index: 2;
 }
@@ -1519,15 +1520,16 @@
 .exclusiveCardChip {
   display: inline-block;
   align-self: flex-start;
+  max-width: 100%;
   font-family: 'Inter', sans-serif;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 26px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: #1a1208;
   background: #D4AF37;
-  padding: 10px 16px;
-  margin-bottom: 26px;
+  padding: 10px 18px;
+  margin-bottom: 24px;
   position: relative;
   z-index: 2;
   line-height: 1.2;
@@ -1536,9 +1538,9 @@
 .exclusiveCardDescV2 {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 30px;
-  line-height: 1.55;
-  color: #e8e8ec;
+  font-size: 40px;
+  line-height: 1.4;
+  color: #f0f0f3;
   position: relative;
   z-index: 2;
   flex: 1;
@@ -1578,11 +1580,11 @@
 
 .closingQuoteTop .closingQuoteAuthor {
   display: block;
-  margin-top: 18px;
+  margin-top: 20px;
   font-style: normal;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: 22px;
+  font-size: 30px;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: #D4AF37;
@@ -1592,7 +1594,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 44px 56px;
-  flex: 1;
+  align-content: start;
 }
 
 .closingBlockV2 {
@@ -1615,7 +1617,7 @@
 .closingBlockBody h4 {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 32px;
+  font-size: 38px;
   line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -1627,9 +1629,9 @@
 .closingBlockBody p {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 22px;
-  line-height: 1.55;
-  color: #d2d2d6;
+  font-size: 36px;
+  line-height: 1.4;
+  color: #f0f0f3;
 }
 
 /* REDESIGN — CONTRACAPA (pag 19) */
@@ -1680,7 +1682,7 @@
 .backCoverCtaLabel {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 30px;
   letter-spacing: 5px;
   text-transform: uppercase;
   color: #D4AF37;
@@ -1730,10 +1732,10 @@
 .backCoverFootEdition {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 28px;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: rgba(245, 245, 247, 0.45);
+  color: rgba(245, 245, 247, 0.75);
 }
 
 /* CARTA DO CEO (pag 20) */
@@ -1782,9 +1784,9 @@
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-style: italic;
-  font-size: 30px;
-  line-height: 1.65;
-  color: #e8e8ec;
+  font-size: 44px;
+  line-height: 1.5;
+  color: #f0f0f3;
   margin: 0;
   letter-spacing: 0.2px;
 }
@@ -1825,21 +1827,21 @@
 .ceoLetterSignatureRole {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 30px;
   letter-spacing: 5px;
   text-transform: uppercase;
   color: #D4AF37;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .ceoLetterSignatureMeta {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 28px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(245, 245, 247, 0.45);
-  margin-top: 14px;
+  color: rgba(245, 245, 247, 0.75);
+  margin-top: 16px;
 }
 
 /* CEO LETTER — HEADER EDITORIAL (verso da capa, sem numeracao) */
@@ -1910,19 +1912,19 @@
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   font-style: italic;
-  font-size: 22px;
+  font-size: 30px;
   letter-spacing: 5px;
   text-transform: uppercase;
   color: #D4AF37;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .ceoLetterBrandEdition {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 28px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(245, 245, 247, 0.45);
-  margin-top: 18px;
+  color: rgba(245, 245, 247, 0.75);
+  margin-top: 20px;
 }

@@ -12,9 +12,9 @@ const pullQuote =
   'É como a película do celular — só que protege o seu carro inteiro.';
 
 const letterParagraphs: string[] = [
-  'O NZPPF nasceu de uma recusa: a de vender quase isso como se fosse aquilo. Película que pudéssemos defender em qualquer pista — do showroom de luxo à rodovia federal.',
-  'Este catálogo é essa recusa transformada em método. Cada linha aqui — do Core ao Luxury, da película Headlight ao Windshield — passou pelo mesmo crivo: resiste à pergunta de um cliente exigente? Cobre o que promete? Vale a pena defender quando ninguém está olhando?',
-  'As garantias que assinamos não vivem no papel. Vivem na rua, no carro do cliente, no teste do tempo. Obrigado por chegar até aqui — agora começa a parte mais importante: transformar essa promessa em proteção real, no seu carro, em cada quilômetro à frente.',
+  'O NZPPF nasceu de uma recusa: a de vender quase isso como se fosse aquilo. Película que pudéssemos defender em qualquer pista — do showroom à rodovia.',
+  'Este catálogo é essa recusa transformada em método. Cada linha aqui passou pelo mesmo crivo: resiste à pergunta de um cliente exigente? Cobre o que promete?',
+  'As garantias que assinamos não vivem no papel. Vivem na rua, no carro do cliente, no teste do tempo. Obrigado por chegar até aqui.',
 ];
 
 /**
@@ -107,7 +107,7 @@ export default function CEOLetterPage({
             <div style={{
               fontFamily: 'Inter, sans-serif',
               fontWeight: 500,
-              fontSize: 22,
+              fontSize: 32,
               letterSpacing: 5,
               textTransform: 'uppercase',
               color: '#D4AF37',
@@ -118,11 +118,11 @@ export default function CEOLetterPage({
             <div style={{
               fontFamily: 'Inter, sans-serif',
               fontWeight: 400,
-              fontSize: 16,
+              fontSize: 28,
               letterSpacing: 4,
               textTransform: 'uppercase',
-              color: 'rgba(245,245,247,0.45)',
-              marginTop: 18
+              color: 'rgba(245,245,247,0.75)',
+              marginTop: 20
             }}>
               EDIÇÃO MMXXVI {' '} · {' '} {catalogMeta.url}
             </div>

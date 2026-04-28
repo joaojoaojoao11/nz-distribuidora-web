@@ -5,19 +5,19 @@ import { sanitizeCatalogText } from '../textHelpers';
 const closingBlocks = [
   {
     title: 'O QUE NOS SEPARA',
-    body: 'Domínio sobre a camada química do material. Sabemos como uma resina específica se comporta combinada com um adesivo específico e com um coating específico — e como essa expertise em compounds garante a entrega prometida.',
+    body: 'Domínio sobre a química do material. Resina, adesivo e coating combinados para garantir a entrega prometida.',
   },
   {
     title: 'NOSSO COMPROMISSO',
-    body: 'Cada cliente protegido é um carro com PPF que faz parte da realização de um sonho. E nós nos tornamos esse compromisso parte do nosso também — não negociamos integridade técnica para vencer no preço.',
+    body: 'Cada cliente protegido é parte da realização de um sonho. Não negociamos integridade técnica para vencer no preço.',
   },
   {
     title: 'NOSSAS MATÉRIAS-PRIMAS',
-    body: 'Confiáveis e robustas. Sem mistura de "quase isso" com "quase aquilo" — só compounds rastreáveis, com ficha técnica e respaldo de fabricante.',
+    body: 'Confiáveis e robustas. Sem mistura de "quase isso" com "quase aquilo" — só compounds rastreáveis com ficha técnica.',
   },
   {
     title: 'ATENDIMENTO 360°',
-    body: 'Nosso compromisso não termina na venda. Você encontra um aplicador qualificado próximo, tira dúvidas sobre o produto e recebe suporte oficial sempre que precisar.',
+    body: 'Nosso compromisso não termina na venda. Aplicador qualificado próximo, suporte oficial sempre que precisar.',
   },
 ];
 

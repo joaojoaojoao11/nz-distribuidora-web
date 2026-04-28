@@ -5,8 +5,8 @@ import { safeSpacing } from '../textHelpers';
 
 const paragraphs = [
   'A maioria dos PPFs nasce em laboratório, longe da realidade de quem protege um carro de verdade.',
-  'A NZ PPF nasceu diferente. No chão de estúdio, sob o calor de 40 graus, no detalhe invisível que separa o comum do impecável — no carro que vai voltar pra casa carregando a expectativa do dono.',
-  'Cada rolo é validado em veículos reais, em condições reais, antes de encostar no seu carro. Sem atalhos. Sem suposições.'
+  'A NZ PPF nasceu diferente. No chão de estúdio, sob o calor de 40 graus — no detalhe invisível que separa o comum do impecável.',
+  'Cada rolo é validado em veículos reais, em condições reais. Sem atalhos. Sem suposições.'
 ];
 
 interface ManifestPageProps {
