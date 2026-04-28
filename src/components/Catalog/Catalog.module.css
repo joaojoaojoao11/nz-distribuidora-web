@@ -1,7 +1,25 @@
 /* ============================================================
-   NZPPF Catalog — Print-Ready @ 300 DPI
-   Page: 150mm × 200mm = 1772 × 2362 px
-   Safe area: 142px (≈ 12mm) inset
+   NZPPF Catalog — Print-Ready @ 300 DPI · A5 + sangria 3mm
+   ────────────────────────────────────────────────────────────
+   ETAPA 1 do checklist gráfico (Caminho C — html2canvas/jsPDF):
+   geometria adequada para impressão offset profissional em A5.
+
+   Geometria (px @ 300 DPI):
+     Trim (A5 final):       148 × 210 mm = 1748 × 2480 px
+     Bleed (sangria):       3 mm cada lado = 35.4 px
+     Page (media + bleed):  154 × 216 mm = 1819 × 2551 px
+
+   As crop marks (marcas de corte) e registration marks ficam no
+   PDF, desenhadas via jsPDF em generateCatalogPdf.ts (não em CSS,
+   pois o pipeline html2canvas não respeita @page/marks).
+
+   Backgrounds devem se estender até a borda do .page (sangria),
+   nunca terminando na linha de corte — implementado via
+   background-size: cover sobre o .page inteiro.
+
+   Safe area atual: 142px (~12mm) do edge da page (~9mm do trim).
+   Margem 10mm exata será aplicada na ETAPA 2.
+
    Typography:
      Display/Headlines  → Outfit (geometric sans)
      Body / Editorial   → Cormorant Garamond (luxury serif)
@@ -33,11 +51,16 @@
 /* ─────────── PAGE FRAME + NEW BACKGROUND ─────────── */
 /* Interior pages (2–13) usam a imagem backgroud.png full-bleed com overlay
    sutil escuro por cima, garantindo contraste AAA em todo texto branco.
-   Capa (página 1) e contracapa (página 14) sobrescrevem via inline style. */
+   Capa (página 1) e contracapa (página 14) sobrescrevem via inline style.
+
+   Dimensões: 1819 × 2551 px = 154 × 216 mm @ 300 DPI
+   = trim A5 (148×210) + sangria 3mm em cada lado.
+   Background-color e background-image cobrem todo o .page,
+   estendendo até a sangria (sem terminação na linha de corte). */
 .page {
   position: relative;
-  width: 1772px;
-  height: 2362px;
+  width: 1819px;
+  height: 2551px;
   background-color: #060606;
   background-image:
     linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.28) 60%, rgba(0,0,0,0.45) 100%),
