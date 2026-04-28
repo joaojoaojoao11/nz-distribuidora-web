@@ -17,8 +17,11 @@
    nunca terminando na linha de corte — implementado via
    background-size: cover sobre o .page inteiro.
 
-   Safe area atual: 142px (~12mm) do edge da page (~9mm do trim).
-   Margem 10mm exata será aplicada na ETAPA 2.
+   Safe area: 154px (~13mm) do edge da page = ~10mm do trim.
+   Margem mínima de segurança ETAPA 2 do checklist gráfico:
+   nenhum elemento textual ou crítico deve ficar a menos de 10mm
+   da linha de corte. Footer, QR blocks e productSide.padding
+   ajustados em conjunto.
 
    Typography:
      Display/Headlines  → Outfit (geometric sans)
@@ -88,7 +91,9 @@
 
 .safeArea {
   position: absolute;
-  inset: 142px 142px 142px 142px;
+  /* 154px do edge da page (1819×2551) = 13mm = 10mm do trim (148×210)
+     Garante margem de segurança ABNT/ABTG para impressão A5. */
+  inset: 154px 154px 154px 154px;
   display: flex;
   flex-direction: column;
 }
@@ -96,9 +101,11 @@
 /* ─────────── PAGE FOOTER ─────────── */
 .footer {
   position: absolute;
-  bottom: 60px;
-  left: 142px;
-  right: 142px;
+  /* bottom 154px = 10mm do trim. Antes ficava a 60px (= 5mm da page,
+     2mm do trim) e era cortado. left/right 154px alinha com .safeArea. */
+  bottom: 154px;
+  left: 154px;
+  right: 154px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -281,7 +288,8 @@
 
 .coverContent {
   position: absolute;
-  inset: 142px;
+  /* 154px = 10mm do trim — margem segura para logo, headline e edição */
+  inset: 154px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -527,8 +535,10 @@
 
 .productSide {
   position: absolute;
-  top: 120px;
-  bottom: 120px;
+  /* top/bottom 154px = 10mm do trim. Antes 120px (7mm) era abaixo do
+     spec ABNT de 10mm de margem de segurança. */
+  top: 154px;
+  bottom: 154px;
   width: 50%;
   padding: 0 60px;
   display: flex;
@@ -537,8 +547,8 @@
   z-index: 3;
 }
 
-.productSide.left { left: 0; padding-left: 142px; }
-.productSide.right { right: 0; padding-right: 142px; }
+.productSide.left { left: 0; padding-left: 154px; }
+.productSide.right { right: 0; padding-right: 154px; }
 
 .productEyebrow {
   font-family: 'Inter', sans-serif;
@@ -754,14 +764,18 @@
   backdrop-filter: blur(4px);
 }
 
-.productQrBlock.left { left: 142px; }
-.productQrBlock.right { right: 142px; flex-direction: row-reverse; }
+.productQrBlock.left { left: 154px; }
+.productQrBlock.right { right: 154px; flex-direction: row-reverse; }
 
 .productQrBlock .qrImg {
-  width: 160px;
-  height: 160px;
+  /* Container 240×240 (~20.3mm) com padding 48px = 4mm quiet zone.
+     PNG do QR ocupa 144×144 internos (~12.2mm) — preserva o tamanho
+     scannable original e satisfaz simultaneamente ETAPA 2.3 (quiet
+     zone 4mm) e ETAPA 6.1 (mínimo 20mm de container). */
+  width: 240px;
+  height: 240px;
   background: #fff;
-  padding: 8px;
+  padding: 48px;
   flex-shrink: 0;
 }
 
@@ -1310,10 +1324,11 @@
 }
 
 .certQr {
-  width: 160px;
-  height: 160px;
+  /* Quiet zone 4mm (48px @ 300 DPI). PNG interno permanece em 140×140. */
+  width: 236px;
+  height: 236px;
   background: #ffffff;
-  padding: 10px;
+  padding: 48px;
 }
 
 .certQr img {
@@ -1422,10 +1437,12 @@
 }
 
 .backCoverQr {
-  width: 320px;
-  height: 320px;
+  /* Quiet zone 4mm. PNG interno fica em 272×272 (~23mm) — bem acima
+     do mínimo de 20mm da ETAPA 6.1 e altamente scannable. */
+  width: 368px;
+  height: 368px;
   background: #ffffff;
-  padding: 24px;
+  padding: 48px;
   margin: 20px 0;
 }
 
@@ -1712,10 +1729,11 @@
 }
 
 .backCoverCtaQr {
-  width: 360px;
-  height: 360px;
+  /* Quiet zone 4mm. PNG interno fica em 316×316 (~26.8mm). */
+  width: 412px;
+  height: 412px;
   background: #ffffff;
-  padding: 22px;
+  padding: 48px;
 }
 
 .backCoverCtaQr img {
