@@ -32,18 +32,18 @@ const MAX_SLIDES = 10;
 
 const SYSTEM_PROMPT = `Você é redator publicitário sênior da Agência NZ — sistema de marketing da NZ Group, distribuidora premium de PPF (Paint Protection Film) e vinis Oracal.
 
-Sua tarefa: gerar copy (headline, subline, CTA) pra cada slide de um carrossel de Instagram, dado: marca, linha/produto, tom e a sequência de layouts dos slides.
+Sua tarefa: gerar copy COMPLETO (todos os elementos textuais relevantes ao layout) pra cada slide de um carrossel de Instagram, dado: marca, linha/produto, tom e a sequência de layouts dos slides.
 
 # Voz da marca
 Premium, direta, confiante. Fala com o dono do veículo. Sem jargão exagerado, sem exclamações, sem emoji. Curto, com peso. Em PT-BR.
 
-# Estilo de copy por layout
-- announce-badge (tipicamente capa): headline impacto que anuncia + subline curto. Pode mencionar o nome da linha.
-- hero-bottom-cta (tipicamente fechamento): headline central forte + CTA de ação clara.
-- centered-quote: headline tipo manifesto + subline curto identificando marca/produto.
-- split-photo: headline curto (1-3 palavras) + subline descritivo curto.
-- full-bleed-headline: headline GIGANTE de 1-3 palavras + CTA único e forte.
-- stat-driven: headline pode ficar VAZIA (string ""); o subline contextualiza um número que aparece como destaque visual em outro lugar.
+# CAMPOS POR LAYOUT (preencha SOMENTE os campos relevantes do layout do slide; nos demais, devolva string vazia "")
+- announce-badge: headline + subline + cta + badge. Badge é etiqueta curta ALL CAPS (2-4 palavras) tipo "NOVO LANÇAMENTO", "EDIÇÃO 2026", "AGORA NA REDE".
+- hero-bottom-cta: headline + subline + cta + eyebrow. Eyebrow é spec-line da linha tipo "TPU 175μ · Hidrofóbico · 4 anos" — use SOMENTE specs do bloco de fatos reais e separe com " · ".
+- centered-quote: headline (manifesto) + subline (atribuição curta tipo "NZPPF · MANIFESTO" ou "NZPPF · {linha}"). cta pode ficar "" (não aparece na imagem).
+- split-photo: headline curto (1-3 palavras) + subline descritivo + cta.
+- full-bleed-headline: headline GIGANTE de 1-3 palavras. subline e cta podem ficar "" (não aparecem na imagem deste layout).
+- stat-driven: stat + statLabel + subline + cta. headline fica VAZIA (""). Stat é número/medida em destaque (ex "12 ANOS", "190μ", "+32%") — DEVE vir do bloco de fatos reais, NUNCA invente número. StatLabel é rótulo ALL CAPS (2-5 palavras) que contextualiza o stat (ex "DE GARANTIA REAL", "DE BRILHO A MAIS").
 
 # Tons
 - tecnico: specs, materiais, garantias, dados. Voz de engenheiro premium.
@@ -51,9 +51,13 @@ Premium, direta, confiante. Fala com o dono do veículo. Sem jargão exagerado, 
 - promocional: ação, oportunidade, prazo. Voz direta de venda.
 
 # Regras de formato
-- Headline: use \\n pra quebrar linha (1-2 linhas, no máximo 4 palavras por linha). Pode ser vazia em stat-driven.
+- Headline: use \\n pra quebrar linha (1-2 linhas, no máximo 4 palavras por linha). Pode ser vazia em stat-driven e full-bleed-headline geralmente é 1-3 palavras inteiras.
 - Subline: 1 frase curta (5-14 palavras).
-- CTA: 1-3 palavras (ex "Ver linha", "Onde comprar", "Ficha técnica", "Reservar").
+- CTA: 1-3 palavras imperativas (ex "Ver linha", "Onde comprar", "Ficha técnica", "Reservar", "Conhecer").
+- Badge: ALL CAPS, 2-4 palavras.
+- Stat: 1-3 palavras com número/medida real.
+- StatLabel: ALL CAPS, 2-5 palavras.
+- Eyebrow: 2-4 specs reais separadas por " · ".
 
 # Coerência narrativa
 O carrossel inteiro é UMA história sequencial: capa engaja, slides do meio aprofundam (varie o ângulo: benefício, prova, técnica, sensação), fechamento convoca à ação. Não repita a mesma headline em slides diferentes. Construa progressão.
@@ -70,31 +74,52 @@ Você SEMPRE responde via tool use chamando "generate_carousel_copy", devolvendo
 const carouselCopyTool = {
   name: 'generate_carousel_copy',
   description:
-    'Gera copy para todos os slides do carrossel, na mesma ordem dos layouts recebidos.',
+    'Gera copy COMPLETO para todos os slides do carrossel (todos os elementos textuais relevantes a cada layout), na mesma ordem dos layouts recebidos.',
   input_schema: {
     type: 'object' as const,
     properties: {
       slides: {
         type: 'array',
-        description: 'Array com 1 objeto por slide, na ordem.',
+        description: 'Array com 1 objeto por slide, na ordem dos layouts.',
         items: {
           type: 'object',
           properties: {
             headline: {
               type: 'string',
               description:
-                'Headline do slide. Use \\n pra quebra de linha. Pode ser vazia em stat-driven.',
+                'Headline do slide. Use \\n pra quebra de linha. Pode ser vazia ("") em stat-driven.',
             },
             subline: {
               type: 'string',
-              description: 'Frase curta de apoio (5-14 palavras).',
+              description: 'Frase curta de apoio (5-14 palavras). Pode ser "" em full-bleed-headline.',
             },
             cta: {
               type: 'string',
-              description: 'Call-to-action de 1-3 palavras.',
+              description:
+                'Call-to-action de 1-3 palavras. Pode ser "" em centered-quote/full-bleed-headline (não aparecem na imagem desses layouts).',
+            },
+            badge: {
+              type: 'string',
+              description:
+                'APENAS para announce-badge: badge curto ALL CAPS (2-4 palavras). Em outros layouts, devolva "".',
+            },
+            stat: {
+              type: 'string',
+              description:
+                'APENAS para stat-driven: número/medida em destaque (ex "12 ANOS", "190μ"). DEVE vir dos fatos reais. Em outros layouts, "".',
+            },
+            statLabel: {
+              type: 'string',
+              description:
+                'APENAS para stat-driven: rótulo do stat ALL CAPS (2-5 palavras). Em outros layouts, "".',
+            },
+            eyebrow: {
+              type: 'string',
+              description:
+                'APENAS para hero-bottom-cta: spec-line da linha (ex "TPU 175μ · Hidrofóbico · 4 anos"). Use APENAS specs reais. Em outros layouts, "".',
             },
           },
-          required: ['headline', 'subline', 'cta'],
+          required: ['headline', 'subline', 'cta', 'badge', 'stat', 'statLabel', 'eyebrow'],
         },
       },
     },
@@ -226,7 +251,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const data = toolUseBlock.input as {
-      slides?: Array<{ headline?: unknown; subline?: unknown; cta?: unknown }>;
+      slides?: Array<{
+        headline?: unknown;
+        subline?: unknown;
+        cta?: unknown;
+        badge?: unknown;
+        stat?: unknown;
+        statLabel?: unknown;
+        eyebrow?: unknown;
+      }>;
     };
     if (!Array.isArray(data.slides) || data.slides.length !== layoutsRaw.length) {
       res.status(500).json({
@@ -235,10 +268,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
+    // Normaliza: tudo string (vazia se ausente). Front decide quais aplicar
+    // baseado nos LAYOUT_FIELD_KEYS de cada slide.
+    const str = (v: unknown): string => (typeof v === 'string' ? v : '');
     const slides = data.slides.map((s) => ({
-      headline: typeof s.headline === 'string' ? s.headline : '',
-      subline: typeof s.subline === 'string' ? s.subline : '',
-      cta: typeof s.cta === 'string' ? s.cta : '',
+      headline: str(s.headline),
+      subline: str(s.subline),
+      cta: str(s.cta),
+      badge: str(s.badge),
+      stat: str(s.stat),
+      statLabel: str(s.statLabel),
+      eyebrow: str(s.eyebrow),
     }));
 
     res.status(200).json({ slides });

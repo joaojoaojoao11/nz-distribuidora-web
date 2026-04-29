@@ -463,20 +463,30 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
       return;
     }
 
+    // Aplica TODOS os campos textuais que vieram da IA, mas só os que são
+    // relevantes ao layout do slide (LAYOUT_FIELD_KEYS). Campos não-relevantes
+    // ficam intactos (não sobrescreve com string vazia que a IA devolve por
+    // contrato pra layouts que não usam aquele campo).
     setSlides((current) =>
       current.map((s, i) => {
         const copy = result.slides[i];
         if (!copy) return s;
-        return {
-          ...s,
-          fields: {
-            ...s.fields,
-            headline: { ...s.fields.headline, value: copy.headline },
-            subline: { ...s.fields.subline, value: copy.subline },
-            cta: { ...s.fields.cta, value: copy.cta },
-          },
-          customized: true,
+        const visible = new Set(LAYOUT_FIELD_KEYS[s.layout]);
+        const newFields = { ...s.fields };
+        const apply = (k: SocialFieldKey, v: string) => {
+          if (!visible.has(k)) return;
+          // String vazia é válida pra alguns layouts (ex headline em
+          // stat-driven, subline em full-bleed-headline). Aplica como veio.
+          newFields[k] = { ...s.fields[k], value: v };
         };
+        apply('headline', copy.headline);
+        apply('subline', copy.subline);
+        apply('cta', copy.cta);
+        apply('badge', copy.badge);
+        apply('stat', copy.stat);
+        apply('statLabel', copy.statLabel);
+        apply('eyebrow', copy.eyebrow);
+        return { ...s, fields: newFields, customized: true };
       })
     );
     setAiCopyOk(true);
@@ -761,10 +771,11 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
           </h2>
 
           <small className={styles.fieldHint}>
-            A IA escreve headline, subline e CTA pra todos os slides usando a
-            linha + tom acima e respeitando os fatos verificáveis. Você pode
-            editar cada campo manualmente depois — incluindo wordmark, badge,
-            stat, footer etc. nas seções de cada slide.
+            A IA escreve TODOS os campos textuais relevantes ao layout de cada
+            slide (headline, subline, CTA, badge, stat, statLabel, eyebrow)
+            usando a linha + tom acima e respeitando os fatos verificáveis.
+            Trocou a linha? Regenere e tudo se atualiza junto. Você pode
+            editar campo a campo depois.
           </small>
 
           <div className={styles.field}>

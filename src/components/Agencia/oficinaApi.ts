@@ -93,6 +93,11 @@ export interface CarouselSlideCopy {
   headline: string;
   subline: string;
   cta: string;
+  /** Layout-específicos: vem string vazia quando não aplicável ao layout do slide. */
+  badge: string;
+  stat: string;
+  statLabel: string;
+  eyebrow: string;
 }
 
 export interface CarouselContentResult {
