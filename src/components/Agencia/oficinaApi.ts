@@ -86,3 +86,70 @@ export async function generateBackgroundFromPrompt(
     return { ok: false, error: msg };
   }
 }
+
+/* ─── Carousel content (Claude tool use) ─── */
+
+export interface CarouselSlideCopy {
+  headline: string;
+  subline: string;
+  cta: string;
+}
+
+export interface CarouselContentResult {
+  ok: true;
+  slides: CarouselSlideCopy[];
+}
+
+export interface CarouselContentError {
+  ok: false;
+  error: string;
+}
+
+export interface GenerateCarouselContentParams {
+  brand: string;
+  productShortName: string;
+  productSubtitle?: string;
+  tone: string;
+  layouts: string[];
+  extraInstructions?: string;
+  /** Specs verificáveis da linha (ex "TPU 175μ; 4 anos; hidrofóbico"). */
+  factsContext?: string;
+  /** Carros típicos do segmento (ex "GWM Haval, Tank, Ora; BYD"). */
+  carBrands?: string;
+  /** Rótulo humano do segmento (ex "GWM e elétricos premium"). */
+  segmentLabel?: string;
+}
+
+/**
+ * Chama /api/oficina/generate-carousel-content pra obter copy completo
+ * (headline/subline/CTA) por slide, baseado em tom + linha + sequência
+ * de layouts. Retorna 1 entrada por slide na mesma ordem.
+ */
+export async function generateCarouselContent(
+  params: GenerateCarouselContentParams
+): Promise<CarouselContentResult | CarouselContentError> {
+  try {
+    const response = await fetch('/api/oficina/generate-carousel-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+
+    const data = await response
+      .json()
+      .catch(() => ({} as { slides?: CarouselSlideCopy[]; error?: string }));
+
+    if (!response.ok) {
+      return { ok: false, error: data.error || `HTTP ${response.status}` };
+    }
+
+    if (!Array.isArray(data.slides)) {
+      return { ok: false, error: 'Resposta sem campo "slides".' };
+    }
+
+    return { ok: true, slides: data.slides };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Falha de rede.';
+    return { ok: false, error: msg };
+  }
+}

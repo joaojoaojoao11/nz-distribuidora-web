@@ -22,6 +22,64 @@ export interface SocialProduct {
   accent: string;
 }
 
+/**
+ * Chaves dos elementos textuais que aparecem nos layouts. Cada um pode ser
+ * sobrescrito (override) e/ou ocultado individualmente por slide.
+ *
+ * Mapeamento layout→fields visíveis está em LAYOUT_FIELD_KEYS abaixo.
+ */
+export type SocialFieldKey =
+  | 'wordmark'    // marca no topo (default = brandName)
+  | 'lineBadge'   // pílula da linha (default = product.shortName)
+  | 'eyebrow'     // sub-rótulo dourado (default = product.subtitle, só hero-bottom-cta)
+  | 'badge'       // badge dourado (só announce-badge, default = copy.badge)
+  | 'headline'    // título principal
+  | 'subline'     // legenda secundária
+  | 'stat'        // número gigante (só stat-driven)
+  | 'statLabel'   // rótulo do stat (só stat-driven)
+  | 'cta'         // call-to-action
+  | 'footer';     // URL no rodapé (default = "nzgroup.com.br")
+
+/**
+ * Quais campos cada layout efetivamente renderiza. UI usa isso pra mostrar
+ * só os campos relevantes em cada slide. Renderers usam pra saber o que
+ * pode ser overridado — campos não-listados são ignorados se vierem.
+ */
+export const LAYOUT_FIELD_KEYS: Record<SocialLayout, SocialFieldKey[]> = {
+  'announce-badge':      ['wordmark', 'badge', 'headline', 'subline', 'lineBadge', 'cta', 'footer'],
+  'hero-bottom-cta':     ['wordmark', 'lineBadge', 'eyebrow', 'headline', 'subline', 'cta', 'footer'],
+  'centered-quote':      ['wordmark', 'headline', 'subline', 'footer'],
+  'split-photo':         ['wordmark', 'lineBadge', 'headline', 'subline', 'cta'],
+  'full-bleed-headline': ['wordmark', 'lineBadge', 'headline', 'footer'],
+  'stat-driven':         ['wordmark', 'lineBadge', 'stat', 'statLabel', 'subline', 'cta', 'footer'],
+};
+
+export const FIELD_LABELS: Record<SocialFieldKey, string> = {
+  wordmark: 'Marca (topo)',
+  lineBadge: 'Pílula da linha',
+  eyebrow: 'Subtítulo dourado',
+  badge: 'Badge de anúncio',
+  headline: 'Headline',
+  subline: 'Subline',
+  stat: 'Stat (número grande)',
+  statLabel: 'Stat — rótulo',
+  cta: 'CTA',
+  footer: 'URL/rodapé',
+};
+
+/**
+ * Override por campo: texto customizado e flag de oculto. Renderers checam:
+ *   const text = overrides?.[key]?.value ?? defaultValue;
+ *   const hidden = overrides?.[key]?.hidden === true;
+ *   if (!hidden && text) render(text);
+ */
+export interface SocialFieldOverride {
+  value?: string;
+  hidden?: boolean;
+}
+
+export type SocialFieldOverrides = Partial<Record<SocialFieldKey, SocialFieldOverride>>;
+
 export interface SocialImageData {
   product: SocialProduct;
   format: SocialFormat;
@@ -37,6 +95,11 @@ export interface SocialImageData {
   brandName: string;
   /** Sobrepõe a foto fixa do produto. Data URL (base64) ou URL pública. */
   aiBackground?: string;
+  /**
+   * Overrides per-field (texto customizado e/ou hide). Quando ausente, layouts
+   * caem no comportamento legado (defaults vindos de copy/product/brandName).
+   */
+  fieldOverrides?: SocialFieldOverrides;
 }
 
 export interface FormatDimensions {

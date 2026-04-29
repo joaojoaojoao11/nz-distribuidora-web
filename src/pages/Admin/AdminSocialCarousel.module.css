@@ -57,6 +57,9 @@
   display: grid;
   grid-template-columns: 380px 1fr;
   gap: 2rem;
+  /* sticky precisa de align-items:start no grid pra que cada coluna tenha sua
+     própria altura — sem isso o "esticão" do grid impede o preview de fixar. */
+  align-items: start;
 }
 
 .controls, .previewSection {
@@ -66,6 +69,30 @@
   background: rgba(20,20,24,0.85);
   border: 1px solid rgba(255,255,255,0.08);
   padding: 1.75rem;
+}
+
+/* Preview acompanha a rolagem da coluna de controles. top:1rem é a folga em
+   relação ao topo do viewport quando o preview "ancora". max-height + overflow
+   garante que se o preview ficar mais alto que a janela (story-9x16) ainda
+   role internamente em vez de cortar caption/dots embaixo. */
+.previewSection {
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  /* No empilhado mobile não faz sentido fixar — volta ao fluxo normal. */
+  .previewSection {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
 }
 
 .sectionTitle {
@@ -338,6 +365,127 @@
   border: 1px solid rgba(231,76,60,0.4);
   color: #ff8b80;
   padding: 0.75rem 1rem;
+}
+
+.aiSuccess {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  background: rgba(90,155,122,0.12);
+  border: 1px solid rgba(90,155,122,0.4);
+  color: #8de0a8;
+  padding: 0.75rem 1rem;
+}
+
+/* ─── Per-field row com toggle de oculto ─── */
+.fieldHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.eyeToggle {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.6rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(212,175,55,0.08);
+  border: 1px solid rgba(212,175,55,0.35);
+  color: #D4AF37;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.eyeToggle:hover:not(:disabled) {
+  background: rgba(212,175,55,0.18);
+  border-color: #D4AF37;
+}
+
+.eyeToggleHidden {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.18);
+  color: #888;
+}
+
+.eyeToggleHidden:hover:not(:disabled) {
+  background: rgba(255,255,255,0.08);
+  color: #c8c8cc;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.eyeToggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.inputDimmed {
+  opacity: 0.45;
+  text-decoration: line-through;
+  text-decoration-color: rgba(255,255,255,0.3);
+}
+
+/* ─── Anexo de fatos da linha (varredura de informações) ─── */
+.factsBox {
+  background: rgba(212,175,55,0.04);
+  border: 1px solid rgba(212,175,55,0.22);
+  border-left: 2px solid #D4AF37;
+}
+
+.factsToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  color: #D4AF37;
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.factsToggle:hover {
+  background: rgba(212,175,55,0.06);
+}
+
+.factsChevron {
+  font-size: 0.85rem;
+  width: 0.9rem;
+  text-align: center;
+}
+
+.factsBadge {
+  margin-left: auto;
+  padding: 0.1rem 0.5rem;
+  background: #D4AF37;
+  color: #1a1208;
+  font-size: 0.6rem;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+}
+
+.factsContent {
+  font-family: var(--font-body, 'Inter'), sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: #c8c8cc;
+  padding: 0 0.9rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.factsRow strong {
+  color: #D4AF37;
+  font-weight: 700;
 }
 
 /* ─── Carrossel · slider de quantidade ─── */

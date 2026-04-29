@@ -4,6 +4,7 @@ import type {
   SocialCopyTemplate,
 } from './socialImageTypes';
 import type { SocialImageMotorConfig } from '../Agencia/motorTypes';
+import type { LineProfile } from '../Agencia/lineProfiles';
 
 /**
  * Defaults compartilhados de copy/labels/prompt entre os motores sociais
@@ -120,7 +121,9 @@ export function buildBackgroundPrompt(
   product: { shortName: string; subtitle: string; accent: string },
   layout: SocialLayout,
   tone: SocialTone,
-  brand: string
+  brand: string,
+  /** Perfil canônico da linha — quando presente, define o carro/cena ideal. */
+  lineProfile?: LineProfile | null
 ): string {
   const layoutComp =
     layout === 'split-photo'
@@ -135,13 +138,19 @@ export function buildBackgroundPrompt(
       ? 'dramatic composition with negative space at the top for a badge and below for a headline'
       : 'cinematic composition with negative space in the center for overlay text';
 
-  // Contexto visual diferente por marca: PPF é cena de carro premium;
-  // Oracal é cena com aplicação/superfície de vinil adesivo.
-  const subjectByBrand: Record<string, string> = {
-    NZPPF: `Premium luxury vehicle scene inspired by NZPPF ${product.shortName} paint protection film`,
-    'ORACAL 651': `Professional sign-making scene featuring Oracal 651 vinyl in ${product.shortName} color, applied on premium surfaces or signage`,
-    'ORACAL 670RA': `Automotive wrap installation scene featuring Oracal 670RA wrap film in ${product.shortName} color, applied on a luxury vehicle`,
-  };
-  const subject = subjectByBrand[brand] || subjectByBrand.NZPPF;
-  return `${subject}. ${TONE_MOOD[tone]}. Subtle ${product.accent} accent lighting highlights. ${layoutComp}.`;
+  // Quando há perfil de linha (PPF: luxury/prime/flow/core/headlight/windshield;
+  // Oracal: defaults), usa o sujeito específico daquele segmento — caso
+  // contrário cai no genérico por marca.
+  let subject: string;
+  if (lineProfile) {
+    subject = lineProfile.imageSubject;
+  } else {
+    const subjectByBrand: Record<string, string> = {
+      NZPPF: `Premium luxury vehicle scene inspired by NZPPF ${product.shortName} paint protection film`,
+      'ORACAL 651': `Professional sign-making scene featuring Oracal 651 vinyl in ${product.shortName} color, applied on premium surfaces or signage`,
+      'ORACAL 670RA': `Automotive wrap installation scene featuring Oracal 670RA wrap film in ${product.shortName} color, applied on a luxury vehicle`,
+    };
+    subject = subjectByBrand[brand] || subjectByBrand.NZPPF;
+  }
+  return `${subject}. ${TONE_MOOD[tone]}. Subtle ${product.accent} accent lighting highlights. ${layoutComp}. Photorealistic, high-end automotive photography style.`;
 }

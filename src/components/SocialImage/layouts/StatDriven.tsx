@@ -1,24 +1,38 @@
 import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
+import { field } from '../resolveField';
 
 export default function StatDriven({ data }: { data: SocialImageData }) {
   const { product, copy, accent, brandName } = data;
-  const stat = copy.stat || '12 ANOS';
-  const statLabel = copy.statLabel || 'DE GARANTIA REAL';
+
+  const wordmark = field(data, 'wordmark', brandName);
+  const lineBadge = field(data, 'lineBadge', product.shortName);
+  const stat = field(data, 'stat', copy.stat || '12 ANOS');
+  const statLabel = field(data, 'statLabel', copy.statLabel || 'DE GARANTIA REAL');
+  const subline = field(data, 'subline', copy.subline);
+  const cta = field(data, 'cta', copy.cta);
+  const footer = field(data, 'footer', 'nzgroup.com.br');
+
   return (
     <>
       <div className={styles.sdTop}>
-        <div className={styles.wordmark}>{brandName}</div>
-        <div className={styles.lineBadge} style={{ borderColor: accent, color: accent }}>{product.shortName}</div>
+        {wordmark.visible && <div className={styles.wordmark}>{wordmark.text}</div>}
+        {lineBadge.visible && (
+          <div className={styles.lineBadge} style={{ borderColor: accent, color: accent }}>
+            {lineBadge.text}
+          </div>
+        )}
       </div>
       <div className={styles.sdCenter}>
-        <div className={styles.sdStat} style={{ color: accent }}>{stat}</div>
-        <div className={styles.sdLabel}>{statLabel}</div>
-        {copy.subline && <div className={styles.sdSubline}>{copy.subline}</div>}
+        {stat.visible && <div className={styles.sdStat} style={{ color: accent }}>{stat.text}</div>}
+        {statLabel.visible && <div className={styles.sdLabel}>{statLabel.text}</div>}
+        {subline.visible && <div className={styles.sdSubline}>{subline.text}</div>}
       </div>
       <div className={styles.sdBottom}>
-        <div className={styles.url}>nzgroup.com.br</div>
-        <div className={styles.sdCta} style={{ color: accent }}>→ {copy.cta}</div>
+        {footer.visible && <div className={styles.url}>{footer.text}</div>}
+        {cta.visible && (
+          <div className={styles.sdCta} style={{ color: accent }}>→ {cta.text}</div>
+        )}
       </div>
     </>
   );
