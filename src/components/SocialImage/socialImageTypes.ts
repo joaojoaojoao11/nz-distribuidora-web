@@ -96,6 +96,12 @@ export interface SocialImageData {
   /** Sobrepõe a foto fixa do produto. Data URL (base64) ou URL pública. */
   aiBackground?: string;
   /**
+   * URL pra um logo SVG/PNG da marca. Quando presente, o wordmark do topo
+   * é renderizado como imagem (em vez do texto `brandName`) — desde que o
+   * usuário não tenha digitado um override explícito no campo wordmark.
+   */
+  brandLogoUrl?: string;
+  /**
    * Overrides per-field (texto customizado e/ou hide). Quando ausente, layouts
    * caem no comportamento legado (defaults vindos de copy/product/brandName).
    */

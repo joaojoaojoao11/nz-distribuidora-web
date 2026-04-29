@@ -22,6 +22,7 @@ import {
   loadProductCatalog,
   CATALOG_LABELS,
   BRAND_NAME_BY_CATALOG,
+  BRAND_LOGO_BY_CATALOG,
 } from '../../components/Agencia/productSources';
 import {
   TONE_LABELS,
@@ -161,6 +162,7 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   const productCatalog: ProductCatalog = config?.productCatalog || 'ppf';
   const productLabel = CATALOG_LABELS[productCatalog];
   const brandName = BRAND_NAME_BY_CATALOG[productCatalog];
+  const brandLogoUrl = BRAND_LOGO_BY_CATALOG[productCatalog];
 
   const initialFormat: SocialFormat = config?.defaultFormat || 'feed-1x1';
   const initialTone: SocialTone = config?.defaultTone || 'aspiracional';
@@ -306,6 +308,7 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
       tone,
       accent,
       brandName,
+      brandLogoUrl,
       aiBackground,
       copy: {
         ...suggested,
@@ -739,6 +742,11 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
           {visibleFieldKeys.map((key) => {
             const f = activeSlide.fields[key];
             const multiline = MULTILINE_FIELDS.includes(key);
+            // Wordmark com logo configurado: ele renderiza como imagem SVG
+            // a menos que o usuário digite um texto custom (override). Avisa
+            // o usuário pra que essa lógica não pareça mágica.
+            const isLogoWordmark = key === 'wordmark' && !!brandLogoUrl;
+            const usingLogo = isLogoWordmark && f.value === brandName;
             return (
               <div key={key} className={styles.field}>
                 <div className={styles.fieldHeader}>
@@ -769,6 +777,13 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
                     onChange={(e) => setSlideFieldValue(activeIdx, key, e.target.value)}
                     disabled={exporting}
                   />
+                )}
+                {isLogoWordmark && (
+                  <small className={styles.fieldHint}>
+                    {usingLogo
+                      ? `Renderizando o logo SVG oficial NZPPF 2026. Apague o texto ou digite outro pra usar texto custom.`
+                      : `Texto custom em uso — apague pra voltar ao logo SVG oficial.`}
+                  </small>
                 )}
               </div>
             );

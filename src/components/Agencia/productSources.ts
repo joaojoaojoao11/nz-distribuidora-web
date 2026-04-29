@@ -98,3 +98,15 @@ export const BRAND_NAME_BY_CATALOG: Record<ProductCatalog, string> = {
   'oracal-651': 'ORACAL 651',
   'oracal-670': 'ORACAL 670RA',
 };
+
+/**
+ * Logo SVG da marca para o wordmark no topo dos layouts. Quando definido,
+ * o renderer prioriza a imagem em vez do texto `BRAND_NAME_BY_CATALOG`.
+ *
+ * NZPPF usa o logo oficial 2026 (cliente forneceu o SVG calibrado em
+ * `taste-skill/NOVO LOGO 2026/...`). Oracal segue como texto por enquanto
+ * — pode ser plugado aqui quando a NZWRAP receber tratamento equivalente.
+ */
+export const BRAND_LOGO_BY_CATALOG: Partial<Record<ProductCatalog, string>> = {
+  ppf: '/assets/logos/logo-nzppf-2026.svg',
+};

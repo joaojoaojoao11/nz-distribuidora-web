@@ -1,11 +1,11 @@
 import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 import { field } from '../resolveField';
+import Wordmark from '../Wordmark';
 
 export default function AnnounceBadge({ data }: { data: SocialImageData }) {
-  const { product, copy, accent, brandName } = data;
+  const { product, copy, accent } = data;
 
-  const wordmark = field(data, 'wordmark', brandName);
   const badge = field(data, 'badge', copy.badge || 'NOVO');
   const headline = field(data, 'headline', copy.headline);
   const subline = field(data, 'subline', copy.subline);
@@ -16,7 +16,7 @@ export default function AnnounceBadge({ data }: { data: SocialImageData }) {
   return (
     <>
       <div className={styles.abTop}>
-        {wordmark.visible && <div className={styles.wordmark}>{wordmark.text}</div>}
+        <Wordmark data={data} />
       </div>
       <div className={styles.abCenter}>
         {badge.visible && (

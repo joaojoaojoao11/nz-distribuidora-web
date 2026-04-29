@@ -1,11 +1,11 @@
 import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 import { field } from '../resolveField';
+import Wordmark from '../Wordmark';
 
 export default function StatDriven({ data }: { data: SocialImageData }) {
-  const { product, copy, accent, brandName } = data;
+  const { product, copy, accent } = data;
 
-  const wordmark = field(data, 'wordmark', brandName);
   const lineBadge = field(data, 'lineBadge', product.shortName);
   const stat = field(data, 'stat', copy.stat || '12 ANOS');
   const statLabel = field(data, 'statLabel', copy.statLabel || 'DE GARANTIA REAL');
@@ -16,7 +16,7 @@ export default function StatDriven({ data }: { data: SocialImageData }) {
   return (
     <>
       <div className={styles.sdTop}>
-        {wordmark.visible && <div className={styles.wordmark}>{wordmark.text}</div>}
+        <Wordmark data={data} />
         {lineBadge.visible && (
           <div className={styles.lineBadge} style={{ borderColor: accent, color: accent }}>
             {lineBadge.text}

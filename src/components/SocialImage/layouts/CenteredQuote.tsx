@@ -1,11 +1,11 @@
 import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 import { field } from '../resolveField';
+import Wordmark from '../Wordmark';
 
 export default function CenteredQuote({ data }: { data: SocialImageData }) {
-  const { copy, accent, brandName } = data;
+  const { copy, accent } = data;
 
-  const wordmark = field(data, 'wordmark', brandName);
   const headline = field(data, 'headline', copy.headline);
   const subline = field(data, 'subline', copy.subline);
   const footer = field(data, 'footer', 'nzgroup.com.br');
@@ -13,7 +13,7 @@ export default function CenteredQuote({ data }: { data: SocialImageData }) {
   return (
     <>
       <div className={styles.cqTop}>
-        {wordmark.visible && <div className={styles.wordmark}>{wordmark.text}</div>}
+        <Wordmark data={data} />
       </div>
       <div className={styles.cqCenter}>
         {headline.visible && <div className={styles.cqMark} style={{ color: accent }}>"</div>}

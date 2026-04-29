@@ -81,6 +81,24 @@
 
 .formatStory .wordmark { font-size: 44px; }
 
+/* Wordmark renderizado como logo SVG/PNG (NZPPF logo 2026 etc).
+   Mantém a presença visual do wordmark de texto (~38-44px de altura)
+   mas via imagem; aspect-ratio é preservado. Filtra pra dourado quando
+   o SVG vem como traçado branco/preto, mas só quando o asset é monocrome
+   — o NZPPF logo já vem com cor própria, então o filter padrão é none. */
+.wordmarkLogo {
+  height: 56px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  /* Preserva tom dourado caso o asset venha em traçado branco. */
+  filter: none;
+}
+
+.formatStory .wordmarkLogo {
+  height: 64px;
+}
+
 .lineBadge {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
