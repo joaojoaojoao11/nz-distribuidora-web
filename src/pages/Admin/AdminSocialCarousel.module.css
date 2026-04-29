@@ -240,10 +240,32 @@
 .previewFrame {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   background: rgba(10,10,12,0.6);
   border: 1px solid rgba(255,255,255,0.06);
   padding: 1.5rem;
   min-height: 400px;
+  /* Cap a altura visual do frame pra que o editPanel + dots + caption não
+     fiquem empurrados pra fora do viewport quando o slide for stories
+     (1080×1920 → 480×853 escalado). Stories agora rola internamente; feed
+     1:1 (480×480) cabe inteiro sem scroll. */
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212,175,55,0.4) transparent;
+}
+
+.previewFrame::-webkit-scrollbar {
+  width: 8px;
+}
+
+.previewFrame::-webkit-scrollbar-thumb {
+  background: rgba(212,175,55,0.4);
+  border-radius: 4px;
+}
+
+.previewFrame::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .previewScale {
@@ -410,6 +432,97 @@
   letter-spacing: 0;
   font-size: 0.85rem;
   text-transform: none;
+}
+
+/* ─── Fullscreen viewer ─── */
+
+.fullscreenButton {
+  width: 34px;
+  height: 34px;
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  color: #D4AF37;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  transition: all 140ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreenButton:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: #D4AF37;
+}
+
+.fullscreenButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fullscreenOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 6, 8, 0.94);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: fadeIn 140ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fullscreenStage {
+  position: relative;
+  cursor: default;
+  /* Sombra dourada sutil pra dar peso visual sem competir com a arte. */
+  box-shadow: 0 0 80px rgba(212, 175, 55, 0.18);
+}
+
+.fullscreenClose {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 44px;
+  height: 44px;
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: rgba(212, 175, 55, 0.15);
+  color: #D4AF37;
+  border: 1px solid rgba(212, 175, 55, 0.6);
+  cursor: pointer;
+  z-index: 1;
+  transition: all 140ms ease;
+}
+
+.fullscreenClose:hover {
+  background: rgba(212, 175, 55, 0.3);
+  border-color: #D4AF37;
+}
+
+.fullscreenHint {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.7);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(212, 175, 55, 0.25);
 }
 
 /* ─── AI Background controls ─── */

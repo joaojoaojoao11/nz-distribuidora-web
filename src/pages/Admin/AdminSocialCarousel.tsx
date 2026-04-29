@@ -7,6 +7,7 @@ import {
   LAYOUT_LABELS,
   LAYOUT_FIELD_KEYS,
   FIELD_LABELS,
+  FORMAT_DIMENSIONS,
   TRANSFORM_LIMITS,
   type SocialFormat,
   type SocialLayout,
@@ -247,6 +248,34 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
    */
   const [editMode, setEditMode] = useState(false);
   const [selectedFieldKey, setSelectedFieldKey] = useState<SocialFieldKey | null>(null);
+
+  /**
+   * Fullscreen do preview: overlay modal que renderiza a imagem escalada pra
+   * caber no viewport. Útil pra ver o slide inteiro sem o frame compacto +
+   * scroll interno do preview inline. ESC fecha.
+   */
+  const [fullscreen, setFullscreen] = useState(false);
+  const [winSize, setWinSize] = useState<{ w: number; h: number }>(() => ({
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    h: typeof window !== 'undefined' ? window.innerHeight : 800,
+  }));
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const update = () =>
+      setWinSize({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  useEffect(() => {
+    if (!fullscreen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setFullscreen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [fullscreen]);
 
   // Carrega catálogo de produtos (sync pra PPF, async via Supabase pra Oracal)
   useEffect(() => {
@@ -715,9 +744,19 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   }
 
   // Preview scale: 0.444 (480 / 1080) — mesmo do AdminSocialImage
+  // Preview inline: mantém scale fixo (480 / 1080 = 0.444) — frame agora tem
+  // max-height 60vh + overflow scroll, então stories rolam internamente.
   const previewScale = 0.444;
-  const previewWidth = 1080 * previewScale;
-  const previewHeight = (format === 'story-9x16' ? 1920 : 1080) * previewScale;
+  const dims = FORMAT_DIMENSIONS[format];
+  const previewWidth = dims.width * previewScale;
+  const previewHeight = dims.height * previewScale;
+
+  // Fullscreen: scale calculado pra caber em 88vw × 88vh, preservando aspect.
+  const fsMaxW = winSize.w * 0.88;
+  const fsMaxH = winSize.h * 0.88;
+  const fsScale = Math.min(fsMaxW / dims.width, fsMaxH / dims.height);
+  const fsWidth = dims.width * fsScale;
+  const fsHeight = dims.height * fsScale;
 
   const customizedCount = slides.filter((s) => s.customized).length;
   const visibleFieldKeys = LAYOUT_FIELD_KEYS[activeSlide.layout];
@@ -1116,6 +1155,15 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
               </button>
               <button
                 type="button"
+                className={styles.fullscreenButton}
+                onClick={() => setFullscreen(true)}
+                disabled={exporting}
+                title="Ver imagem completa em tela cheia (ESC pra fechar)"
+              >
+                ⛶
+              </button>
+              <button
+                type="button"
                 className={styles.previewNavButton}
                 onClick={() => setActiveIdx((i) => Math.max(0, i - 1))}
                 disabled={activeIdx === 0 || exporting}
@@ -1340,6 +1388,46 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
           {captionError && <div className={styles.aiError}>⚠️ {captionError}</div>}
         </section>
       </div>
+
+      {/* Overlay de fullscreen — escala a imagem pra caber em 88vw × 88vh
+          mantendo aspect, com fundo escuro full-viewport. Click no fundo
+          ou tecla ESC fecham. Edit mode é desligado aqui pra simplicidade
+          (visual-only) — o usuário pode editar no preview inline e visualizar
+          o resultado em tamanho maior aqui. */}
+      {fullscreen && (
+        <div
+          className={styles.fullscreenOverlay}
+          onClick={() => setFullscreen(false)}
+        >
+          <button
+            type="button"
+            className={styles.fullscreenClose}
+            onClick={() => setFullscreen(false)}
+            title="Fechar (ESC)"
+          >
+            ✕
+          </button>
+          <div
+            className={styles.fullscreenStage}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className={styles.previewScale}
+              style={{ width: fsWidth, height: fsHeight }}
+            >
+              <div
+                className={styles.previewVisible}
+                style={{ transform: `scale(${fsScale})` }}
+              >
+                <SocialImageDocument data={activeData} />
+              </div>
+            </div>
+          </div>
+          <div className={styles.fullscreenHint}>
+            Slide {activeIdx + 1} / {slidesCount} · ESC pra fechar
+          </div>
+        </div>
+      )}
     </div>
   );
 }
