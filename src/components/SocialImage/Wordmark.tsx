@@ -1,5 +1,6 @@
 import styles from './SocialImage.module.css';
 import type { SocialImageData } from './socialImageTypes';
+import EditableElement from './EditableElement';
 
 /**
  * Renderiza o wordmark do topo dos layouts. Regras:
@@ -10,8 +11,10 @@ import type { SocialImageData } from './socialImageTypes';
  *  3. Senão, se há `brandLogoUrl` → renderiza o logo SVG/PNG.
  *  4. Senão → renderiza o texto `brandName`.
  *
- * Centraliza essa lógica num só lugar pra que os 6 layouts não precisem
- * repeti-la — basta chamar <Wordmark data={data} /> no topo.
+ * Em qualquer dos 3 casos visíveis, o conteúdo vai dentro de um
+ * EditableElement — assim o usuário pode arrastar e redimensionar o
+ * wordmark no edit mode, e o transform persistido vale tanto pro preview
+ * quanto pro PNG exportado.
  */
 export default function Wordmark({ data }: { data: SocialImageData }) {
   const o = data.fieldOverrides?.wordmark;
@@ -28,14 +31,24 @@ export default function Wordmark({ data }: { data: SocialImageData }) {
 
   if (useLogo) {
     return (
-      <img
-        src={data.brandLogoUrl}
-        alt={defaultText}
-        className={styles.wordmarkLogo}
-      />
+      <EditableElement
+        fieldKey="wordmark"
+        className={styles.wordmarkLogoWrap}
+        override={o}
+      >
+        <img src={data.brandLogoUrl} alt={defaultText} className={styles.wordmarkLogo} />
+      </EditableElement>
     );
   }
 
   if (!value) return null;
-  return <div className={styles.wordmark}>{value}</div>;
+  return (
+    <EditableElement
+      fieldKey="wordmark"
+      className={styles.wordmark}
+      override={o}
+    >
+      {value}
+    </EditableElement>
+  );
 }

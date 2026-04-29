@@ -99,6 +99,46 @@
   height: 64px;
 }
 
+/* Wrapper do logo: precisa ser inline-block pra que o transform escala em
+   torno da própria imagem, sem esticar pra largura cheia do flex parent. */
+.wordmarkLogoWrap {
+  display: inline-block;
+}
+
+/* ─── Edit mode (manipulação direta tipo Canva) ─── */
+/* Esses estilos só aparecem quando o EditModeProvider envolve um
+   SocialImageDocument (preview visível com toggle ligado). O off-screen
+   usado pra exportar PNG NUNCA renderiza com .editable, então o PNG fica
+   limpo (sem outlines, sem cursores). */
+
+.editable {
+  cursor: grab;
+  position: relative;
+  outline: 1px dashed rgba(212, 175, 55, 0.4);
+  outline-offset: 4px;
+  transition: outline-color 120ms ease, background-color 120ms ease;
+}
+
+.editable:hover {
+  outline-color: rgba(212, 175, 55, 0.85);
+  background-color: rgba(212, 175, 55, 0.08);
+}
+
+.editable:active {
+  cursor: grabbing;
+}
+
+.editableSelected {
+  outline: 2px solid #D4AF37;
+  outline-offset: 4px;
+  background-color: rgba(212, 175, 55, 0.12);
+  box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.18);
+}
+
+.editableSelected:hover {
+  outline-color: #D4AF37;
+}
+
 .lineBadge {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;

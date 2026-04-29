@@ -68,15 +68,41 @@ export const FIELD_LABELS: Record<SocialFieldKey, string> = {
 };
 
 /**
- * Override por campo: texto customizado e flag de oculto. Renderers checam:
+ * Override por campo: texto customizado, flag de oculto, e transform manual
+ * (offset X/Y + scale) controlado pela camada de edit mode estilo Canva no
+ * AdminSocialCarousel. Renderers checam:
  *   const text = overrides?.[key]?.value ?? defaultValue;
  *   const hidden = overrides?.[key]?.hidden === true;
- *   if (!hidden && text) render(text);
+ *   if (!hidden && text) render(text, transform);
  */
 export interface SocialFieldOverride {
   value?: string;
   hidden?: boolean;
+  /** Deslocamento em px no espaço do canvas 1080 (clamp ±150). */
+  offsetX?: number;
+  offsetY?: number;
+  /** Multiplicador de tamanho (0.7–1.5). 1 = tamanho original do CSS. */
+  scale?: number;
 }
+
+/**
+ * Transform consolidado pra renderização — calculado por resolveField a
+ * partir do override. `null` quando não há transform aplicado (mais barato
+ * que objeto vazio pro JSX).
+ */
+export interface ResolvedTransform {
+  offsetX: number;
+  offsetY: number;
+  scale: number;
+}
+
+/** Limites pra clamp dos sliders/drags. */
+export const TRANSFORM_LIMITS = {
+  offsetMin: -150,
+  offsetMax: 150,
+  scaleMin: 0.7,
+  scaleMax: 1.5,
+} as const;
 
 export type SocialFieldOverrides = Partial<Record<SocialFieldKey, SocialFieldOverride>>;
 

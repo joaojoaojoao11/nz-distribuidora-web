@@ -7,6 +7,7 @@ import {
   LAYOUT_LABELS,
   LAYOUT_FIELD_KEYS,
   FIELD_LABELS,
+  TRANSFORM_LIMITS,
   type SocialFormat,
   type SocialLayout,
   type SocialImageData,
@@ -14,6 +15,7 @@ import {
   type SocialFieldKey,
   type SocialFieldOverrides,
 } from '../../components/SocialImage/socialImageTypes';
+import { EditModeProvider } from '../../components/SocialImage/EditModeContext';
 import {
   generateBackgroundFromPrompt,
   generateCarouselContent,
@@ -78,6 +80,10 @@ const WAND_FIELDS = new Set<SocialFieldKey>([
 interface SlideFieldValue {
   value: string;
   hidden: boolean;
+  /** Transform manual via edit mode (Canva-like). Ausente = posição/tamanho default. */
+  offsetX?: number;
+  offsetY?: number;
+  scale?: number;
 }
 
 interface CarouselSlide {
@@ -234,6 +240,14 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   const [captionGenerating, setCaptionGenerating] = useState(false);
   const [captionError, setCaptionError] = useState('');
 
+  /**
+   * Edit mode "tipo Canva". Quando ligado, o preview visível ganha pointer
+   * listeners pra clicar+arrastar elementos. selectedFieldKey aponta o
+   * elemento atualmente focado pra exibir o painel de ajustes finos.
+   */
+  const [editMode, setEditMode] = useState(false);
+  const [selectedFieldKey, setSelectedFieldKey] = useState<SocialFieldKey | null>(null);
+
   // Carrega catálogo de produtos (sync pra PPF, async via Supabase pra Oracal)
   useEffect(() => {
     let cancelled = false;
@@ -327,7 +341,13 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
     for (const key of visibleKeys) {
       const f = slide.fields[key];
       if (f) {
-        fieldOverrides[key] = { value: f.value, hidden: f.hidden };
+        fieldOverrides[key] = {
+          value: f.value,
+          hidden: f.hidden,
+          offsetX: f.offsetX,
+          offsetY: f.offsetY,
+          scale: f.scale,
+        };
       }
     }
     return {
@@ -409,6 +429,68 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
             }
           : s
       )
+    );
+  }
+
+  /** Atualiza offsetX/Y de um campo (drag ou slider). Marca customized. */
+  function setSlideFieldOffset(
+    idx: number,
+    key: SocialFieldKey,
+    offsetX: number,
+    offsetY: number
+  ) {
+    setSlides((current) =>
+      current.map((s, i) =>
+        i === idx
+          ? {
+              ...s,
+              fields: {
+                ...s.fields,
+                [key]: { ...s.fields[key], offsetX, offsetY },
+              },
+              customized: true,
+            }
+          : s
+      )
+    );
+  }
+
+  /** Atualiza scale de um campo (slider de tamanho). Marca customized. */
+  function setSlideFieldScale(idx: number, key: SocialFieldKey, scale: number) {
+    setSlides((current) =>
+      current.map((s, i) =>
+        i === idx
+          ? {
+              ...s,
+              fields: {
+                ...s.fields,
+                [key]: { ...s.fields[key], scale },
+              },
+              customized: true,
+            }
+          : s
+      )
+    );
+  }
+
+  /**
+   * Reseta transform (posição + tamanho) de UM campo do slide ativo. Mantém
+   * value/hidden — só zera offsets e scale. Pra "voltar ao automático" do
+   * slide inteiro use handleResetCopy.
+   */
+  function resetSlideFieldTransform(idx: number, key: SocialFieldKey) {
+    setSlides((current) =>
+      current.map((s, i) => {
+        if (i !== idx) return s;
+        const next = { ...s.fields[key] };
+        delete next.offsetX;
+        delete next.offsetY;
+        delete next.scale;
+        return {
+          ...s,
+          fields: { ...s.fields, [key]: next },
+        };
+      })
     );
   }
 
@@ -1022,6 +1104,18 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
             <div className={styles.previewNav}>
               <button
                 type="button"
+                className={`${styles.editModeToggle} ${editMode ? styles.editModeToggleActive : ''}`}
+                onClick={() => {
+                  setEditMode((v) => !v);
+                  setSelectedFieldKey(null);
+                }}
+                disabled={exporting}
+                title="Liga/desliga manipulação direta dos elementos no canvas"
+              >
+                🎨 {editMode ? 'Editando' : 'Editar canvas'}
+              </button>
+              <button
+                type="button"
                 className={styles.previewNavButton}
                 onClick={() => setActiveIdx((i) => Math.max(0, i - 1))}
                 disabled={activeIdx === 0 || exporting}
@@ -1044,20 +1138,136 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
             </div>
           </div>
 
-          <div className={styles.previewFrame}>
+          <div
+            className={`${styles.previewFrame} ${editMode ? styles.previewFrameEdit : ''}`}
+          >
             <div
               className={styles.previewScale}
               style={{ width: previewWidth, height: previewHeight }}
             >
+              {/* Off-screen pra exportação — SEMPRE sem provider de edit mode,
+                  pra que o PNG saia limpo (sem outlines/cursores). */}
               <SocialImageDocument ref={docRef} data={activeData} />
               <div
                 className={styles.previewVisible}
                 style={{ transform: `scale(${previewScale})` }}
               >
-                <SocialImageDocument data={activeData} />
+                <EditModeProvider
+                  value={{
+                    editable: editMode && !exporting,
+                    previewScale,
+                    selectedFieldKey,
+                    onSelectField: (key) => setSelectedFieldKey(key),
+                    onUpdateOffset: (key, ox, oy) =>
+                      setSlideFieldOffset(activeIdx, key, ox, oy),
+                  }}
+                >
+                  <SocialImageDocument data={activeData} />
+                </EditModeProvider>
               </div>
             </div>
           </div>
+
+          {editMode && selectedFieldKey && (() => {
+            // Painel de ajuste fino do elemento selecionado: scale + offset
+            // X/Y via slider, sem precisar arrastar. Acessa o override atual
+            // pra exibir os valores correntes.
+            const sel = activeSlide.fields[selectedFieldKey];
+            const sx = sel?.offsetX ?? 0;
+            const sy = sel?.offsetY ?? 0;
+            const sc = sel?.scale ?? 1;
+            const isUntouched = sx === 0 && sy === 0 && sc === 1;
+            return (
+              <div className={styles.editPanel}>
+                <div className={styles.editPanelHeader}>
+                  <span className={styles.editPanelLabel}>
+                    {FIELD_LABELS[selectedFieldKey]}
+                  </span>
+                  <button
+                    type="button"
+                    className={styles.linkButton}
+                    onClick={() => setSelectedFieldKey(null)}
+                  >
+                    ✕ Fechar
+                  </button>
+                </div>
+
+                <div className={styles.editPanelRow}>
+                  <label className={styles.editPanelSliderLabel}>
+                    Tamanho <strong>{sc.toFixed(2)}×</strong>
+                  </label>
+                  <input
+                    type="range"
+                    className={styles.slider}
+                    min={TRANSFORM_LIMITS.scaleMin}
+                    max={TRANSFORM_LIMITS.scaleMax}
+                    step={0.05}
+                    value={sc}
+                    onChange={(e) =>
+                      setSlideFieldScale(activeIdx, selectedFieldKey, Number(e.target.value))
+                    }
+                  />
+                </div>
+
+                <div className={styles.editPanelRow}>
+                  <label className={styles.editPanelSliderLabel}>
+                    Offset X <strong>{sx > 0 ? '+' : ''}{Math.round(sx)}px</strong>
+                  </label>
+                  <input
+                    type="range"
+                    className={styles.slider}
+                    min={TRANSFORM_LIMITS.offsetMin}
+                    max={TRANSFORM_LIMITS.offsetMax}
+                    step={1}
+                    value={sx}
+                    onChange={(e) =>
+                      setSlideFieldOffset(
+                        activeIdx,
+                        selectedFieldKey,
+                        Number(e.target.value),
+                        sy
+                      )
+                    }
+                  />
+                </div>
+
+                <div className={styles.editPanelRow}>
+                  <label className={styles.editPanelSliderLabel}>
+                    Offset Y <strong>{sy > 0 ? '+' : ''}{Math.round(sy)}px</strong>
+                  </label>
+                  <input
+                    type="range"
+                    className={styles.slider}
+                    min={TRANSFORM_LIMITS.offsetMin}
+                    max={TRANSFORM_LIMITS.offsetMax}
+                    step={1}
+                    value={sy}
+                    onChange={(e) =>
+                      setSlideFieldOffset(
+                        activeIdx,
+                        selectedFieldKey,
+                        sx,
+                        Number(e.target.value)
+                      )
+                    }
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  className={styles.linkButton}
+                  onClick={() => resetSlideFieldTransform(activeIdx, selectedFieldKey)}
+                  disabled={isUntouched}
+                >
+                  ↺ Resetar este elemento
+                </button>
+                <small className={styles.fieldHint}>
+                  Você também pode arrastar o elemento direto no canvas. Limites:
+                  ±{TRANSFORM_LIMITS.offsetMax}px e {TRANSFORM_LIMITS.scaleMin}×–{TRANSFORM_LIMITS.scaleMax}×.
+                </small>
+              </div>
+            );
+          })()}
 
           <div className={styles.dotsRow}>
             {slides.map((s, i) => (

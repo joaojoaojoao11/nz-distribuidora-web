@@ -2,6 +2,7 @@ import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 import { field } from '../resolveField';
 import Wordmark from '../Wordmark';
+import EditableElement from '../EditableElement';
 
 export default function StatDriven({ data }: { data: SocialImageData }) {
   const { product, copy, accent } = data;
@@ -13,25 +14,72 @@ export default function StatDriven({ data }: { data: SocialImageData }) {
   const cta = field(data, 'cta', copy.cta);
   const footer = field(data, 'footer', 'nzgroup.com.br');
 
+  const ov = data.fieldOverrides;
+
   return (
     <>
       <div className={styles.sdTop}>
         <Wordmark data={data} />
         {lineBadge.visible && (
-          <div className={styles.lineBadge} style={{ borderColor: accent, color: accent }}>
+          <EditableElement
+            fieldKey="lineBadge"
+            className={styles.lineBadge}
+            style={{ borderColor: accent, color: accent }}
+            override={ov?.lineBadge}
+          >
             {lineBadge.text}
-          </div>
+          </EditableElement>
         )}
       </div>
       <div className={styles.sdCenter}>
-        {stat.visible && <div className={styles.sdStat} style={{ color: accent }}>{stat.text}</div>}
-        {statLabel.visible && <div className={styles.sdLabel}>{statLabel.text}</div>}
-        {subline.visible && <div className={styles.sdSubline}>{subline.text}</div>}
+        {stat.visible && (
+          <EditableElement
+            fieldKey="stat"
+            className={styles.sdStat}
+            style={{ color: accent }}
+            override={ov?.stat}
+          >
+            {stat.text}
+          </EditableElement>
+        )}
+        {statLabel.visible && (
+          <EditableElement
+            fieldKey="statLabel"
+            className={styles.sdLabel}
+            override={ov?.statLabel}
+          >
+            {statLabel.text}
+          </EditableElement>
+        )}
+        {subline.visible && (
+          <EditableElement
+            fieldKey="subline"
+            className={styles.sdSubline}
+            override={ov?.subline}
+          >
+            {subline.text}
+          </EditableElement>
+        )}
       </div>
       <div className={styles.sdBottom}>
-        {footer.visible && <div className={styles.url}>{footer.text}</div>}
+        {footer.visible && (
+          <EditableElement
+            fieldKey="footer"
+            className={styles.url}
+            override={ov?.footer}
+          >
+            {footer.text}
+          </EditableElement>
+        )}
         {cta.visible && (
-          <div className={styles.sdCta} style={{ color: accent }}>→ {cta.text}</div>
+          <EditableElement
+            fieldKey="cta"
+            className={styles.sdCta}
+            style={{ color: accent }}
+            override={ov?.cta}
+          >
+            → {cta.text}
+          </EditableElement>
         )}
       </div>
     </>

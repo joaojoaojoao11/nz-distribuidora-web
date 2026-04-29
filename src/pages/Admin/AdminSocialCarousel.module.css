@@ -310,6 +310,108 @@
   min-height: 200px;
 }
 
+/* ─── Edit mode (manipulação direta tipo Canva) ─── */
+
+.editModeToggle {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  color: #D4AF37;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  transition: all 140ms ease;
+}
+
+.editModeToggle:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: #D4AF37;
+}
+
+.editModeToggleActive {
+  background: linear-gradient(135deg, #D4AF37 0%, #f0c757 100%);
+  color: #1a1208;
+  border-color: #D4AF37;
+}
+
+.editModeToggleActive:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c4a132 0%, #e0b94e 100%);
+}
+
+.editModeToggle:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Frame em edit mode: borda dourada sutil indica que é uma área interativa.
+   O click no fundo (target === currentTarget) deseleciona — o usuário
+   precisa de feedback visual de "área editável". */
+.previewFrameEdit {
+  border-color: rgba(212, 175, 55, 0.5);
+  background: rgba(212, 175, 55, 0.02);
+}
+
+/* Painel lateral de ajuste fino do elemento selecionado. Aparece abaixo
+   do preview frame quando há um campo selecionado em edit mode. */
+.editPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  background: rgba(212, 175, 55, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-left: 2px solid #D4AF37;
+  padding: 0.85rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.editPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+.editPanelLabel {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #D4AF37;
+}
+
+.editPanelRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.editPanelSliderLabel {
+  font-family: var(--font-heading, 'Outfit'), sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #b8b8bc;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.editPanelSliderLabel strong {
+  color: #D4AF37;
+  font-weight: 800;
+  letter-spacing: 0;
+  font-size: 0.85rem;
+  text-transform: none;
+}
+
 /* ─── AI Background controls ─── */
 .aiStatusPill {
   display: inline-flex;

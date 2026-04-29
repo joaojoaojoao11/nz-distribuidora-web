@@ -2,6 +2,7 @@ import styles from '../SocialImage.module.css';
 import type { SocialImageData } from '../socialImageTypes';
 import { field } from '../resolveField';
 import Wordmark from '../Wordmark';
+import EditableElement from '../EditableElement';
 
 export default function HeroBottomCta({ data }: { data: SocialImageData }) {
   const { product, copy, accent } = data;
@@ -13,33 +14,74 @@ export default function HeroBottomCta({ data }: { data: SocialImageData }) {
   const cta = field(data, 'cta', copy.cta);
   const footer = field(data, 'footer', 'nzgroup.com.br');
 
+  const ov = data.fieldOverrides;
+
   return (
     <>
       <div className={styles.hbcTop}>
         <Wordmark data={data} />
         {lineBadge.visible && (
-          <div className={styles.lineBadge} style={{ borderColor: accent, color: accent }}>
+          <EditableElement
+            fieldKey="lineBadge"
+            className={styles.lineBadge}
+            style={{ borderColor: accent, color: accent }}
+            override={ov?.lineBadge}
+          >
             {lineBadge.text}
-          </div>
+          </EditableElement>
         )}
       </div>
       <div className={styles.hbcCenter}>
         {eyebrow.visible && (
-          <div className={styles.hbcEyebrow} style={{ color: accent }}>
+          <EditableElement
+            fieldKey="eyebrow"
+            className={styles.hbcEyebrow}
+            style={{ color: accent }}
+            override={ov?.eyebrow}
+          >
             {eyebrow.text}
-          </div>
+          </EditableElement>
         )}
-        {headline.visible && <div className={styles.hbcHeadline}>{headline.text}</div>}
-        {subline.visible && <div className={styles.hbcSubline}>{subline.text}</div>}
+        {headline.visible && (
+          <EditableElement
+            fieldKey="headline"
+            className={styles.hbcHeadline}
+            override={ov?.headline}
+          >
+            {headline.text}
+          </EditableElement>
+        )}
+        {subline.visible && (
+          <EditableElement
+            fieldKey="subline"
+            className={styles.hbcSubline}
+            override={ov?.subline}
+          >
+            {subline.text}
+          </EditableElement>
+        )}
       </div>
       <div className={styles.hbcBottom}>
         {cta.visible && (
-          <div className={styles.hbcCta} style={{ borderColor: accent }}>
+          <EditableElement
+            fieldKey="cta"
+            className={styles.hbcCta}
+            style={{ borderColor: accent }}
+            override={ov?.cta}
+          >
             <span className={styles.hbcCtaArrow} style={{ color: accent }}>→</span>
             <span className={styles.hbcCtaText}>{cta.text}</span>
-          </div>
+          </EditableElement>
         )}
-        {footer.visible && <div className={styles.url}>{footer.text}</div>}
+        {footer.visible && (
+          <EditableElement
+            fieldKey="footer"
+            className={styles.url}
+            override={ov?.footer}
+          >
+            {footer.text}
+          </EditableElement>
+        )}
       </div>
     </>
   );
