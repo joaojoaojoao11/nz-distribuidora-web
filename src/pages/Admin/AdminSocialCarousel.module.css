@@ -279,6 +279,37 @@
   word-wrap: break-word;
 }
 
+/* Header da seção Caption: título à esquerda, ações à direita. */
+.captionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.captionHeader .sectionTitle {
+  flex: 1;
+  margin: 0;
+}
+
+.captionActions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-bottom: 0.5rem;
+}
+
+/* Textarea da caption — fonte mono pra preservar quebras como o Instagram
+   exibe; height confortável pro storytelling. */
+.captionTextarea {
+  font-family: var(--font-body, 'Inter'), 'Segoe UI', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  min-height: 200px;
+}
+
 /* ─── AI Background controls ─── */
 .aiStatusPill {
   display: inline-flex;
@@ -377,12 +408,54 @@
   padding: 0.75rem 1rem;
 }
 
-/* ─── Per-field row com toggle de oculto ─── */
+/* ─── Per-field row com toggle de oculto + varinha ─── */
 .fieldHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+}
+
+.fieldActions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Varinha mágica — botão pequeno, dourado vibrante, com hover marcante.
+   Spinner é só "…" durante a chamada (~1-2s); pra reduzir mais era
+   exagero pra esse caso. */
+.wandButton {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  background: linear-gradient(135deg, #D4AF37 0%, #f0c757 100%);
+  border: 1px solid #D4AF37;
+  color: #1a1208;
+  cursor: pointer;
+  transition: all 140ms ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.wandButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(212,175,55,0.45);
+}
+
+.wandButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.wandButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.12);
+  color: #888;
 }
 
 .eyeToggle {

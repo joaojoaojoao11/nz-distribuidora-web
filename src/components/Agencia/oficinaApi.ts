@@ -153,3 +153,115 @@ export async function generateCarouselContent(
     return { ok: false, error: msg };
   }
 }
+
+/* ─── Field-level wand (varinha por campo) ─── */
+
+export interface GenerateFieldTextParams {
+  fieldKey: string;
+  layout: string;
+  tone: string;
+  brand: string;
+  productShortName: string;
+  productSubtitle?: string;
+  factsContext?: string;
+  carBrands?: string;
+  segmentLabel?: string;
+  currentValue?: string;
+  slideIdx: number;
+  totalSlides: number;
+  /** Outros campos do mesmo slide (pra coerência narrativa). */
+  otherFields: Record<string, string>;
+}
+
+export interface FieldTextResult {
+  ok: true;
+  value: string;
+}
+
+export interface FieldTextError {
+  ok: false;
+  error: string;
+}
+
+/**
+ * Regenera UM campo do slide ativo. Chamada curta (~1-2s) com tool use.
+ * O endpoint força a IA a NÃO repetir `currentValue` e a manter coerência
+ * com `otherFields`.
+ */
+export async function generateFieldText(
+  params: GenerateFieldTextParams
+): Promise<FieldTextResult | FieldTextError> {
+  try {
+    const response = await fetch('/api/oficina/generate-field', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    const data = await response
+      .json()
+      .catch(() => ({} as { value?: string; error?: string }));
+    if (!response.ok) {
+      return { ok: false, error: data.error || `HTTP ${response.status}` };
+    }
+    if (typeof data.value !== 'string') {
+      return { ok: false, error: 'Resposta sem campo "value".' };
+    }
+    return { ok: true, value: data.value };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Falha de rede.';
+    return { ok: false, error: msg };
+  }
+}
+
+/* ─── Caption (Instagram) ─── */
+
+export interface GenerateCaptionParams {
+  brand: string;
+  productShortName: string;
+  productSubtitle?: string;
+  tone: string;
+  factsContext?: string;
+  carBrands?: string;
+  segmentLabel?: string;
+  slides: Array<{ layout: string; headline: string; subline: string; cta: string }>;
+  hashtags: string[];
+}
+
+export interface CaptionResult {
+  ok: true;
+  caption: string;
+}
+
+export interface CaptionError {
+  ok: false;
+  error: string;
+}
+
+/**
+ * Gera o texto da caption do post (legenda Instagram). Diferente do copy
+ * IN-image, é storytelling com line breaks e hashtags ao final.
+ */
+export async function generateCaption(
+  params: GenerateCaptionParams
+): Promise<CaptionResult | CaptionError> {
+  try {
+    const response = await fetch('/api/oficina/generate-caption', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    const data = await response
+      .json()
+      .catch(() => ({} as { caption?: string; error?: string }));
+    if (!response.ok) {
+      return { ok: false, error: data.error || `HTTP ${response.status}` };
+    }
+    if (typeof data.caption !== 'string') {
+      return { ok: false, error: 'Resposta sem campo "caption".' };
+    }
+    return { ok: true, caption: data.caption };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Falha de rede.';
+    return { ok: false, error: msg };
+  }
+}

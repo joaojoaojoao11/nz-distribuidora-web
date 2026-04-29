@@ -17,6 +17,8 @@ import {
 import {
   generateBackgroundFromPrompt,
   generateCarouselContent,
+  generateFieldText,
+  generateCaption,
 } from '../../components/Agencia/oficinaApi';
 import {
   loadProductCatalog,
@@ -58,6 +60,20 @@ const ALL_FIELD_KEYS: SocialFieldKey[] = [
 
 /** Quais campos viram textarea (multilinha) vs input (uma linha). */
 const MULTILINE_FIELDS: SocialFieldKey[] = ['headline', 'subline'];
+
+/**
+ * Campos que aceitam regeneração via varinha mágica (botão ✨ por campo).
+ * Wordmark/lineBadge/footer são identidade fixa — não rolam IA.
+ */
+const WAND_FIELDS = new Set<SocialFieldKey>([
+  'headline',
+  'subline',
+  'cta',
+  'badge',
+  'stat',
+  'statLabel',
+  'eyebrow',
+]);
 
 interface SlideFieldValue {
   value: string;
@@ -205,6 +221,19 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   const [aiCopyOk, setAiCopyOk] = useState(false);
   const [factsExpanded, setFactsExpanded] = useState(false);
 
+  /**
+   * Conjunto de busy keys (`${slideIdx}:${fieldKey}`) pra varinhas em
+   * andamento. Permite cliques simultâneos em campos diferentes — cada
+   * botão mostra spinner próprio. Erros vão pra `aiFieldError`.
+   */
+  const [aiFieldBusy, setAiFieldBusy] = useState<Set<string>>(() => new Set());
+  const [aiFieldError, setAiFieldError] = useState('');
+
+  // Caption (legenda Instagram). Quando vazio, exibe a auto-derivada.
+  const [caption, setCaption] = useState('');
+  const [captionGenerating, setCaptionGenerating] = useState(false);
+  const [captionError, setCaptionError] = useState('');
+
   // Carrega catálogo de produtos (sync pra PPF, async via Supabase pra Oracal)
   useEffect(() => {
     let cancelled = false;
@@ -331,7 +360,8 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   );
   const firstHeadline =
     slides[0] && buildSlideData(slides[0]).copy.headline.replace(/\n/g, ' ');
-  const fullCaption = `${firstHeadline}\n\nDeslize → para ver tudo.\n\n${hashtags.join(' ')}`;
+  const autoCaption = `${firstHeadline}\n\nDeslize → para ver tudo.\n\n${hashtags.join(' ')}`;
+  const displayCaption = caption.trim() ? caption : autoCaption;
 
   /** Atualiza a layout de um slide. Se !customized, reaplica defaults novos. */
   function updateSlideLayout(idx: number, layout: SocialLayout) {
@@ -470,6 +500,92 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   }
 
   /**
+   * Varinha mágica por campo: regenera UMA string isolada usando layout +
+   * tom + linha + fatos + outros campos do slide como contexto. Marca o
+   * slide como customizado pra preservar o resultado.
+   */
+  async function handleFieldWand(fieldKey: SocialFieldKey) {
+    const busyKey = `${activeIdx}:${fieldKey}`;
+    setAiFieldBusy((prev) => {
+      const next = new Set(prev);
+      next.add(busyKey);
+      return next;
+    });
+    setAiFieldError('');
+
+    const otherFields: Record<string, string> = {};
+    for (const k of LAYOUT_FIELD_KEYS[activeSlide.layout]) {
+      if (k === fieldKey) continue;
+      const v = activeSlide.fields[k]?.value;
+      if (v) otherFields[k] = v;
+    }
+
+    const result = await generateFieldText({
+      fieldKey,
+      layout: activeSlide.layout,
+      tone,
+      brand: brandName,
+      productShortName: product.shortName,
+      productSubtitle: product.subtitle,
+      factsContext: lineProfile?.factsContext,
+      carBrands: lineProfile?.carBrands,
+      segmentLabel: lineProfile?.segmentLabel,
+      currentValue: activeSlide.fields[fieldKey]?.value,
+      slideIdx: activeIdx,
+      totalSlides: slidesCount,
+      otherFields,
+    });
+
+    if (result.ok) {
+      setSlideFieldValue(activeIdx, fieldKey, result.value);
+    } else {
+      setAiFieldError(`${fieldKey}: ${result.error}`);
+    }
+
+    setAiFieldBusy((prev) => {
+      const next = new Set(prev);
+      next.delete(busyKey);
+      return next;
+    });
+  }
+
+  /** Varinha da caption: gera o texto da legenda Instagram do carrossel. */
+  async function handleCaptionWand() {
+    setCaptionGenerating(true);
+    setCaptionError('');
+    const result = await generateCaption({
+      brand: brandName,
+      productShortName: product.shortName,
+      productSubtitle: product.subtitle,
+      tone,
+      factsContext: lineProfile?.factsContext,
+      carBrands: lineProfile?.carBrands,
+      segmentLabel: lineProfile?.segmentLabel,
+      slides: slides.map((s) => {
+        const d = buildSlideData(s);
+        return {
+          layout: s.layout,
+          headline: d.copy.headline,
+          subline: d.copy.subline,
+          cta: d.copy.cta,
+        };
+      }),
+      hashtags,
+    });
+    if (result.ok) {
+      setCaption(result.caption);
+    } else {
+      setCaptionError(result.error);
+    }
+    setCaptionGenerating(false);
+  }
+
+  function handleResetCaption() {
+    setCaption('');
+    setCaptionError('');
+  }
+
+  /**
    * Exporta todos os slides em sequência. Para cada slide muda o activeIdx
    * (que dirige a renderização off-screen via docRef), espera 2 frames pro
    * React commitar + browser pintar, e captura o PNG.
@@ -500,7 +616,7 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
   }
 
   function handleCopyCaption() {
-    navigator.clipboard.writeText(fullCaption).then(
+    navigator.clipboard.writeText(displayCaption).then(
       () => alert('Caption copiada!'),
       () => alert('Não consegui copiar.')
     );
@@ -747,20 +863,46 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
             // o usuário pra que essa lógica não pareça mágica.
             const isLogoWordmark = key === 'wordmark' && !!brandLogoUrl;
             const usingLogo = isLogoWordmark && f.value === brandName;
+            const wandSupported = WAND_FIELDS.has(key);
+            const fieldBusyKey = `${activeIdx}:${key}`;
+            const fieldGenerating = aiFieldBusy.has(fieldBusyKey);
             return (
               <div key={key} className={styles.field}>
                 <div className={styles.fieldHeader}>
                   <label className={styles.label}>{FIELD_LABELS[key]}</label>
-                  <button
-                    type="button"
-                    className={`${styles.eyeToggle} ${f.hidden ? styles.eyeToggleHidden : ''}`}
-                    onClick={() => toggleSlideFieldHidden(activeIdx, key)}
-                    disabled={exporting}
-                    title={f.hidden ? 'Mostrar este campo' : 'Ocultar este campo na imagem'}
-                    aria-pressed={f.hidden}
-                  >
-                    {f.hidden ? '🚫 Oculto' : '👁 Visível'}
-                  </button>
+                  <div className={styles.fieldActions}>
+                    {wandSupported && (
+                      <button
+                        type="button"
+                        className={styles.wandButton}
+                        onClick={() => handleFieldWand(key)}
+                        disabled={
+                          exporting ||
+                          fieldGenerating ||
+                          f.hidden ||
+                          !product.slug ||
+                          product.shortName === '—'
+                        }
+                        title={
+                          f.hidden
+                            ? 'Mostre o campo antes de regenerar'
+                            : 'Regenerar este campo com IA (mantém os outros)'
+                        }
+                      >
+                        {fieldGenerating ? '…' : '✨'}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className={`${styles.eyeToggle} ${f.hidden ? styles.eyeToggleHidden : ''}`}
+                      onClick={() => toggleSlideFieldHidden(activeIdx, key)}
+                      disabled={exporting}
+                      title={f.hidden ? 'Mostrar este campo' : 'Ocultar este campo na imagem'}
+                      aria-pressed={f.hidden}
+                    >
+                      {f.hidden ? '🚫 Oculto' : '👁 Visível'}
+                    </button>
+                  </div>
                 </div>
                 {multiline ? (
                   <textarea
@@ -788,6 +930,8 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
               </div>
             );
           })}
+
+          {aiFieldError && <div className={styles.aiError}>⚠️ {aiFieldError}</div>}
 
           <h2 className={styles.sectionTitle}>
             Imagem de fundo
@@ -853,13 +997,6 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
             >
               {exporting ? `Gerando ${activeIdx + 1}/${slidesCount}…` : `Baixar ${slidesCount} slides`}
             </button>
-            <button
-              className={styles.secondaryButton}
-              onClick={handleCopyCaption}
-              disabled={exporting}
-            >
-              Copiar caption
-            </button>
           </div>
 
           <small className={styles.fieldHint}>
@@ -924,8 +1061,62 @@ export default function AdminSocialCarousel({ motor }: AdminSocialCarouselProps 
             ))}
           </div>
 
-          <h2 className={styles.sectionTitle}>Caption sugerida</h2>
-          <pre className={styles.captionBox}>{fullCaption}</pre>
+          <div className={styles.captionHeader}>
+            <h2 className={styles.sectionTitle}>
+              Caption sugerida
+              <span
+                className={styles.aiStatusPill}
+                data-active={caption.trim() ? 'true' : 'false'}
+              >
+                {caption.trim() ? 'Customizada' : 'Auto'}
+              </span>
+            </h2>
+            <div className={styles.captionActions}>
+              <button
+                type="button"
+                className={styles.wandButton}
+                onClick={handleCaptionWand}
+                disabled={
+                  captionGenerating ||
+                  exporting ||
+                  !product.slug ||
+                  product.shortName === '—'
+                }
+                title="Gerar legenda Instagram com IA (storytelling do carrossel)"
+              >
+                {captionGenerating ? '…' : '✨'}
+              </button>
+              {caption.trim() && (
+                <button
+                  type="button"
+                  className={styles.linkButton}
+                  onClick={handleResetCaption}
+                  disabled={captionGenerating || exporting}
+                >
+                  ✕ Auto
+                </button>
+              )}
+              <button
+                type="button"
+                className={styles.linkButton}
+                onClick={handleCopyCaption}
+                disabled={exporting}
+                title="Copiar caption pro clipboard"
+              >
+                📋 Copiar
+              </button>
+            </div>
+          </div>
+
+          <textarea
+            className={`${styles.input} ${styles.captionTextarea}`}
+            rows={9}
+            value={displayCaption}
+            onChange={(e) => setCaption(e.target.value)}
+            disabled={exporting || captionGenerating}
+          />
+
+          {captionError && <div className={styles.aiError}>⚠️ {captionError}</div>}
         </section>
       </div>
     </div>
