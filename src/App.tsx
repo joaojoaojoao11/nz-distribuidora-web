@@ -26,6 +26,7 @@ import Dashboard from './pages/Admin/Dashboard';
 import WarrantyRegistration from './pages/Warranty/WarrantyRegistration';
 import WarrantyValidator from './pages/Warranty/WarrantyValidator';
 import PpfPromo from './pages/Links/PpfPromo';
+import NzGroupPromo from './pages/Links/NzGroupPromo';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
@@ -48,8 +49,9 @@ function App() {
         <Route path="/login" element={<><Navbar /><Login /></>} />
         <Route path="/cadastro" element={<><Navbar /><Register /></>} />
 
-        {/* Hidden Linktree-style page (no Navbar/Footer/Whatsapp) */}
+        {/* Hidden Linktree-style pages (no Navbar/Footer/Whatsapp) */}
         <Route path="/ppf-promo" element={<PpfPromo />} />
+        <Route path="/nzgroup-promo" element={<NzGroupPromo />} />
 
         {/* Public pages */}
         <Route path="*" element={

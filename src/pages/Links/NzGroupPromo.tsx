@@ -3,15 +3,53 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import SellerModal from '../../components/SellerModal/SellerModal';
-import styles from './PpfPromo.module.css';
+import styles from './NzGroupPromo.module.css';
 
-const lines = [
-  { slug: 'luxury-gloss', name: 'NZPPF Luxury Gloss', tag: '12 ANOS · 190μ' },
-  { slug: 'prime-gloss',  name: 'NZPPF Prime Gloss',  tag: '10 ANOS · 190μ' },
-  { slug: 'flow-gloss',   name: 'NZPPF Flow Gloss',   tag: '4 ANOS · 175μ'  },
-  { slug: 'core-gloss',   name: 'NZPPF Core Gloss',   tag: '3 ANOS · 175μ'  },
-  { slug: 'headlight',    name: 'NZPPF Headlight',    tag: '10 ANOS · UV'   },
-  { slug: 'windshield',   name: 'NZPPF Windshield',   tag: '2 ANOS · 190μ'  },
+type Brand = {
+  name: string;
+  tag: string;
+  logo: string;
+  to: string;
+  external?: boolean;
+};
+
+const brands: Brand[] = [
+  {
+    name: 'NZ PPF',
+    tag: 'Proteção de pintura · 6 linhas',
+    logo: '/assets/logos/logo-nzppf-2026.svg',
+    to: '/ppf-promo',
+  },
+  {
+    name: 'NZ Wrap Premium',
+    tag: 'PVC alto brilho · 30 cores',
+    logo: '/assets/logos/logo-nz-wrap.svg',
+    to: '/wrap/nzwrap-premium',
+  },
+  {
+    name: 'Oracal 970RA',
+    tag: 'Cast alemão · 80+ cores · 10 anos',
+    logo: '/assets/logos/logo-orafol.svg',
+    to: '/wrap/oracal-970ra',
+  },
+  {
+    name: 'Oracal 651',
+    tag: 'Plotter & sinalização · 62 cores',
+    logo: '/assets/logos/logo-orafol.svg',
+    to: '/wrap/oracal-651',
+  },
+  {
+    name: 'Oracal 670RA',
+    tag: 'Wrapping econômico · 18 cores',
+    logo: '/assets/logos/logo-orafol.svg',
+    to: '/wrap/oracal-670ra',
+  },
+  {
+    name: 'SH Colors',
+    tag: 'Variedade máxima · 180μ',
+    logo: '/assets/logos/logo-sh-colors.svg',
+    to: '/wrap/sh-colors',
+  },
 ];
 
 const container = {
@@ -29,7 +67,7 @@ const item = {
   },
 };
 
-export default function PpfPromo() {
+export default function NzGroupPromo() {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -39,7 +77,7 @@ export default function PpfPromo() {
     meta.content = 'noindex, nofollow';
     document.head.appendChild(meta);
     const prevTitle = document.title;
-    document.title = 'NZ PPF · Linhas e Vendas';
+    document.title = 'NZ Group · Marcas e Vendas';
     return () => {
       document.head.removeChild(meta);
       document.title = prevTitle;
@@ -67,41 +105,44 @@ export default function PpfPromo() {
         <motion.header className={styles.header} variants={item}>
           <div className={styles.logoHalo}>
             <img
-              src="/assets/logos/logo-nzppf-2026.svg"
-              alt="NZ PPF"
+              src="/assets/logos/logo-nz-group-base.svg"
+              alt="NZ Group"
               className={styles.logo}
             />
           </div>
-          <p className={styles.kicker}>CATÁLOGO OFICIAL</p>
-          <h1 className={styles.title}>Conheça nossas linhas</h1>
+          <p className={styles.kicker}>GRUPO OFICIAL</p>
+          <h1 className={styles.title}>Soluções automotivas premium</h1>
           <p className={styles.subtitle}>
-            Selecione uma linha para explorar ou fale direto com um consultor.
+            Marcas próprias e parceiros globais sob curadoria NZ.
           </p>
         </motion.header>
 
-        {/* LINE BUTTONS */}
-        <motion.section className={styles.lines} variants={item}>
+        {/* BRAND BUTTONS */}
+        <motion.section className={styles.brands} variants={item}>
           <div className={styles.sectionLabel}>
             <span className={styles.sectionLabelDot} />
-            <span>LINHAS NZ PPF</span>
+            <span>NOSSAS MARCAS</span>
           </div>
 
-          <div className={styles.lineList}>
-            {lines.map((line) => (
+          <div className={styles.brandList}>
+            {brands.map((brand) => (
               <motion.button
-                key={line.slug}
-                className={styles.lineBtn}
+                key={brand.to}
+                className={styles.brandBtn}
                 variants={item}
-                onClick={() => navigate(`/ppf/${line.slug}`)}
+                onClick={() => navigate(brand.to)}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.985 }}
               >
-                <span className={styles.lineGlow} aria-hidden />
-                <span className={styles.lineContent}>
-                  <span className={styles.lineName}>{line.name}</span>
-                  <span className={styles.lineTag}>{line.tag}</span>
+                <span className={styles.brandGlow} aria-hidden />
+                <span className={styles.brandLogoBox}>
+                  <img src={brand.logo} alt={brand.name} className={styles.brandLogo} />
                 </span>
-                <ArrowRight size={20} className={styles.lineArrow} />
+                <span className={styles.brandContent}>
+                  <span className={styles.brandName}>{brand.name}</span>
+                  <span className={styles.brandTag}>{brand.tag}</span>
+                </span>
+                <ArrowRight size={20} className={styles.brandArrow} />
               </motion.button>
             ))}
           </div>
@@ -146,7 +187,7 @@ export default function PpfPromo() {
         </motion.section>
 
         <motion.footer className={styles.footer} variants={item}>
-          <span>NZ Distribuidora · NZ PPF</span>
+          <span>NZ Group</span>
           <span className={styles.footerSep}>·</span>
           <span>Tecnologia que protege.</span>
         </motion.footer>
@@ -155,7 +196,7 @@ export default function PpfPromo() {
       <SellerModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        messageContext="as linhas de NZ PPF"
+        messageContext="os produtos NZ Group"
       />
     </div>
   );

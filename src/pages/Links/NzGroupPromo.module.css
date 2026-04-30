@@ -1,5 +1,5 @@
 /* ============================================================
-   PpfPromo — Linktree-style hidden landing for NZ PPF
+   NzGroupPromo — Hidden Linktree-style landing for NZ Group
    ============================================================ */
 
 .page {
@@ -46,7 +46,7 @@
   height: 55vmax;
   bottom: -20%;
   right: -15%;
-  background: radial-gradient(circle at 70% 70%, #6b0f0f 0%, transparent 65%);
+  background: radial-gradient(circle at 70% 70%, #a01515 0%, transparent 65%);
   animation: drift2 26s ease-in-out infinite;
 }
 
@@ -73,7 +73,6 @@
   50%      { transform: translate(-45%, -55%) scale(1.15); }
 }
 
-/* film grain */
 .grain {
   position: absolute;
   inset: 0;
@@ -96,7 +95,7 @@
 .shell {
   position: relative;
   width: 100%;
-  max-width: 460px;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
@@ -136,7 +135,7 @@
 }
 
 .logo {
-  width: 180px;
+  width: 200px;
   height: auto;
   filter: drop-shadow(0 4px 20px rgba(209, 30, 30, 0.3));
 }
@@ -153,7 +152,7 @@
 
 .title {
   font-family: var(--font-heading);
-  font-size: clamp(1.75rem, 6vw, 2.25rem);
+  font-size: clamp(1.6rem, 5.5vw, 2.1rem);
   font-weight: 800;
   letter-spacing: -0.025em;
   background: linear-gradient(180deg, #fff 0%, #b8b8c0 100%);
@@ -166,7 +165,7 @@
 .subtitle {
   font-size: 0.95rem;
   color: var(--text-secondary);
-  max-width: 32ch;
+  max-width: 36ch;
   line-height: 1.5;
 }
 
@@ -199,25 +198,25 @@
   50%      { opacity: 0.3; }
 }
 
-/* ---------- LINE BUTTONS ---------- */
-.lines {
+/* ---------- BRAND BUTTONS ---------- */
+.brands {
   display: flex;
   flex-direction: column;
 }
 
-.lineList {
+.brandList {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
 }
 
-.lineBtn {
+.brandBtn {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.9rem;
   width: 100%;
-  padding: 1.05rem 1.25rem;
+  padding: 0.85rem 1rem;
   background: rgba(20, 20, 20, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
@@ -230,7 +229,7 @@
   isolation: isolate;
 }
 
-.lineBtn::before {
+.brandBtn::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -240,18 +239,18 @@
   z-index: -1;
 }
 
-.lineBtn:hover {
+.brandBtn:hover {
   border-color: rgba(209, 30, 30, 0.4);
   background: rgba(30, 15, 15, 0.7);
   box-shadow: 0 10px 40px -10px rgba(209, 30, 30, 0.4),
               inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.lineBtn:hover::before {
+.brandBtn:hover::before {
   transform: translateX(100%);
 }
 
-.lineGlow {
+.brandGlow {
   position: absolute;
   left: -2px;
   top: 50%;
@@ -264,11 +263,38 @@
   transition: height var(--transition-smooth);
 }
 
-.lineBtn:hover .lineGlow {
+.brandBtn:hover .brandGlow {
   height: 60%;
 }
 
-.lineContent {
+.brandLogoBox {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.5rem;
+  transition: all var(--transition-smooth);
+}
+
+.brandBtn:hover .brandLogoBox {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.brandLogo {
+  max-width: 100%;
+  max-height: 32px;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(1.05);
+}
+
+.brandContent {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -276,7 +302,7 @@
   min-width: 0;
 }
 
-.lineName {
+.brandName {
   font-family: var(--font-heading);
   font-size: 1rem;
   font-weight: 600;
@@ -284,21 +310,21 @@
   color: #fff;
 }
 
-.lineTag {
-  font-size: 0.7rem;
+.brandTag {
+  font-size: 0.72rem;
   font-weight: 500;
   color: var(--text-muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
 }
 
-.lineArrow {
+.brandArrow {
   color: var(--text-muted);
   flex-shrink: 0;
   transition: all var(--transition-smooth);
 }
 
-.lineBtn:hover .lineArrow {
+.brandBtn:hover .brandArrow {
   color: var(--accent-red);
   transform: translateX(4px);
 }
@@ -334,7 +360,7 @@
   white-space: nowrap;
 }
 
-/* CTA Button — premium, hypnotic */
+/* CTA Button */
 .cta {
   position: relative;
   width: 100%;
@@ -484,16 +510,17 @@
   opacity: 0.5;
 }
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+/* ---------- RESPONSIVE ---------- */
 @media (max-width: 480px) {
   .page { padding: 2.5rem 1rem 4rem; }
   .shell { gap: 2rem; }
-  .logo { width: 150px; }
-  .title { font-size: 1.6rem; }
-  .lineBtn { padding: 0.95rem 1rem; }
-  .lineName { font-size: 0.95rem; }
+  .logo { width: 170px; }
+  .title { font-size: 1.5rem; }
+  .brandBtn { padding: 0.75rem 0.85rem; gap: 0.75rem; }
+  .brandLogoBox { width: 48px; height: 48px; padding: 0.4rem; }
+  .brandLogo { max-height: 26px; }
+  .brandName { font-size: 0.95rem; }
+  .brandTag { font-size: 0.68rem; }
   .ctaInner { padding: 1.1rem 1.25rem; font-size: 0.9rem; letter-spacing: 0.15em; }
 }
 
