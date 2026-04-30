@@ -25,6 +25,7 @@ import Register from './pages/Auth/Register';
 import Dashboard from './pages/Admin/Dashboard';
 import WarrantyRegistration from './pages/Warranty/WarrantyRegistration';
 import WarrantyValidator from './pages/Warranty/WarrantyValidator';
+import PpfPromo from './pages/Links/PpfPromo';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
@@ -46,6 +47,9 @@ function App() {
         {/* Auth pages (without Footer, with Navbar) */}
         <Route path="/login" element={<><Navbar /><Login /></>} />
         <Route path="/cadastro" element={<><Navbar /><Register /></>} />
+
+        {/* Hidden Linktree-style page (no Navbar/Footer/Whatsapp) */}
+        <Route path="/ppf-promo" element={<PpfPromo />} />
 
         {/* Public pages */}
         <Route path="*" element={
