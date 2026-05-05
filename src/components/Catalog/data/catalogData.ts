@@ -4,6 +4,13 @@ export interface ArchitectureItem {
   num: string;
   title: string;
   desc: string;
+  /**
+   * Caminho do SVG-âncora visual (substitui prosa por símbolo + microcopy
+   * conforme a refundação tipográfica para impressão A5). Reaproveita
+   * o set em /public/assets/simbolos/ — mesmo vocabulário visual usado
+   * em DifferentiatorsPage.
+   */
+  icon: string;
 }
 
 export interface FinishItem {
@@ -42,18 +49,37 @@ export interface ProductLine {
   architecture: ArchitectureItem[];
   /** Acabamentos/tonalidades — usado apenas no modo "Completo com Acabamentos" */
   finishes?: FinishesData;
+  /** Eyebrow editorial da seção de fechamento, abaixo dos specs */
+  closingTagline?: string;
+  /** Pull line aspiracional de marca — 1 frase curta, em itálico */
+  closingLine?: string;
 }
+
+// Caminhos dos símbolos compartilhados entre páginas. Centralizados aqui
+// para evitar string drift e facilitar troca futura por icons SVG inline.
+const ICON = {
+  camada: '/assets/simbolos/simbolo-camada.svg',
+  escudoVazio: '/assets/simbolos/simbolo-escudo-vazio.svg',
+  escudoBraco: '/assets/simbolos/simbolo-escudo-com-braco.svg',
+  regeneracao: '/assets/simbolos/simbolo-regeneracao.svg',
+  repelencia: '/assets/simbolos/simbolo-repelencia.svg',
+  certo: '/assets/simbolos/simbolo-certo.svg',
+  presente: '/assets/simbolos/simbolo-presente.svg',
+} as const;
 
 const rawProductLines: ProductLine[] = [
   {
     slug: 'luxury-gloss',
     title: 'NZ PPF LUXURY GLOSS',
     shortName: 'LUXURY',
-    subtitle: 'TPU Alifático 190µ · +32% Brilho · 12 Anos de Garantia',
+    subtitle: 'TPU Alifático 190µ · 12 anos',
     sectionTitle: 'A Melhor Matéria-Prima do Mundo',
     bodyParagraphs: [
-      'TPU Alifático de 190μ blinda cada centímetro da pintura. Nano-Revestimento japonês entrega +32% de brilho — acabamento vitrificado e espelhado.'
+      'TPU Alifático 190µ. Nano-japonês entrega +32% brilho. Acabamento vitrificado e espelhado.',
+      '12 anos não é número de marketing — é o ciclo real da camada alifática contra UV. O intervalo que separa filme premium de filme honesto.'
     ],
+    closingTagline: 'PARA QUEM EXIGE O ABSOLUTO',
+    closingLine: 'Não é proteção. É declaração.',
     image: '/assets/images/luxury_lambo.png',
     thickness: '190μ',
     warranty: '12 ANOS',
@@ -66,10 +92,10 @@ const rawProductLines: ProductLine[] = [
       { label: 'Garantia', value: '12 anos' }
     ],
     architecture: [
-      { num: '01', title: 'Top Coat Nano-Japonês',    desc: 'Repele contaminantes. Auto-cura térmica.' },
-      { num: '02', title: 'TPU Alifático 190μ',       desc: 'Não amarela sob UV. Blindagem real.' },
-      { num: '03', title: 'Regeneração Térmica',      desc: 'Micro-riscos somem com o sol.' },
-      { num: '04', title: 'Adesivo PSA',              desc: 'Remoção limpa após 12 anos.' }
+      { num: '01', title: 'Top Coat Nano-Japonês', desc: 'Repele sujeira. Auto-cura.',     icon: ICON.camada },
+      { num: '02', title: 'TPU Alifático 190μ',    desc: 'Não amarela sob UV.',            icon: ICON.escudoVazio },
+      { num: '03', title: 'Regeneração Térmica',   desc: 'Riscos somem com o sol.',        icon: ICON.regeneracao },
+      { num: '04', title: 'Adesivo PSA',           desc: 'Remoção limpa em 12 anos.',      icon: ICON.presente }
     ],
     finishes: {
       tagline: 'Cada acabamento. Uma expressão do seu padrão.',
@@ -77,21 +103,21 @@ const rawProductLines: ProductLine[] = [
         {
           name: 'GLOSS',
           anchor: 'O brilho que vira presença.',
-          desc: 'Espelhamento vitrificado, profundidade cristalina. Para quem faz questão de ser notado pelos detalhes — sob qualquer luz.',
+          desc: 'Espelhamento vitrificado, profundidade cristalina sob qualquer luz.',
           image: '/assets/images/nzppf_super_brilho.png',
           swatch: '#F5F5F7'
         },
         {
           name: 'MATTE',
           anchor: 'Silêncio premium.',
-          desc: 'Aveludado, discreto, sofisticado. Luxo verdadeiro não grita — apenas existe.',
+          desc: 'Aveludado, discreto, sofisticado. Luxo verdadeiro não grita.',
           image: '/assets/images/nzppf_matte.png',
           swatch: '#2E2E30'
         },
         {
           name: 'BLACK',
           anchor: 'Luxo absoluto. Profundidade inegociável.',
-          desc: 'Preto vitrificado profundo. Cada centímetro comunica presença e poder.',
+          desc: 'Preto vitrificado profundo. Cada centímetro comunica presença.',
           image: '/assets/images/nzppf_black.png',
           swatch: '#0A0A0A'
         }
@@ -102,11 +128,14 @@ const rawProductLines: ProductLine[] = [
     slug: 'prime-gloss',
     title: 'NZ PPF PRIME GLOSS',
     shortName: 'PRIME',
-    subtitle: 'TPU 100% Virgem 190µ · Nano-Dúplex · 10 Anos de Garantia',
+    subtitle: 'TPU Virgem 190µ · Nano-Dúplex · 10 anos',
     sectionTitle: 'Proteção Premium com o Melhor Custo-Benefício',
     bodyParagraphs: [
-      'TPU 100% virgem — mais flexível, mais durável, mais brilhante que PU comum. Não resseca, não trinca, não amarela. Proteção real contra micro-riscos e chuva ácida.'
+      'TPU 100% virgem. Mais flexível, durável, brilhante. Não trinca, não amarela.',
+      'Top coat Nano-Dúplex hidrofóbico de fábrica. 10 anos de garantia. O ponto onde proteção real encontra preço inteligente.'
     ],
+    closingTagline: 'EQUILÍBRIO PREMIUM',
+    closingLine: 'O custo do erro é maior que o custo do correto.',
     image: '/assets/images/nzppf_prime_hero.png',
     thickness: '190μ',
     warranty: '10 ANOS',
@@ -119,10 +148,10 @@ const rawProductLines: ProductLine[] = [
       { label: 'Garantia', value: '10 anos' }
     ],
     architecture: [
-      { num: '01', title: 'Top Coat Nano-Dúplex',  desc: 'Hidrofóbico. Repele água e poeira.' },
-      { num: '02', title: 'TPU 100% Virgem 190μ',  desc: 'Pureza química. Durabilidade real.' },
-      { num: '03', title: 'Regeneração Térmica',   desc: 'Micro-riscos somem sob o sol.' },
-      { num: '04', title: 'Adesivo Flexível',      desc: 'Conformação total em curvas.' }
+      { num: '01', title: 'Top Coat Nano-Dúplex', desc: 'Hidrofóbico. Repele água.',  icon: ICON.camada },
+      { num: '02', title: 'TPU 100% Virgem 190μ', desc: 'Pureza química. Durável.',   icon: ICON.escudoVazio },
+      { num: '03', title: 'Regeneração Térmica',  desc: 'Auto-cura solar.',           icon: ICON.regeneracao },
+      { num: '04', title: 'Adesivo Flexível',     desc: 'Conforma curvas totais.',    icon: ICON.presente }
     ],
     finishes: {
       tagline: 'Três acabamentos. Um padrão de excelência.',
@@ -130,21 +159,21 @@ const rawProductLines: ProductLine[] = [
         {
           name: 'GLOSS',
           anchor: 'Brilho que sustenta o tempo.',
-          desc: 'Reflexo intenso e uniforme, com hidrofobia nano-dúplex que mantém o acabamento impecável da garagem à estrada.',
+          desc: 'Reflexo intenso e uniforme com hidrofobia nano-dúplex.',
           image: '/assets/images/nzppf_prime_brilho.png',
           swatch: '#F0F0F4'
         },
         {
           name: 'MATTE',
           anchor: 'Elegância que escolhe não competir.',
-          desc: 'Aveludado, acetinado. Diferenciação que não precisa de exagero — precisa de intenção.',
+          desc: 'Aveludado, acetinado. Diferenciação com intenção.',
           image: '/assets/images/nzppf_prime_matte.jpg',
           swatch: '#2B2D30'
         },
         {
           name: 'BLACK PIANO',
           anchor: 'Profundidade espelhada. Absoluta.',
-          desc: 'Preto vitrificado com reflexo de instrumento de alta categoria. Conceito premium com 10 anos de garantia.',
+          desc: 'Preto vitrificado de instrumento de alta categoria.',
           image: '/assets/images/nzppf_prime_black.jpg',
           swatch: '#050505'
         }
@@ -155,11 +184,14 @@ const rawProductLines: ProductLine[] = [
     slug: 'flow-gloss',
     title: 'NZ PPF FLOW GLOSS',
     shortName: 'FLOW',
-    subtitle: 'TPU Técnico 175µ · Hidrofóbico · 4 Anos de Garantia',
+    subtitle: 'TPU Técnico 175µ · 4 anos',
     sectionTitle: 'Entrada Inteligente no Mundo do PPF',
     bodyParagraphs: [
-      'A porta de entrada no PPF de verdade. TPU técnico hidrofóbico que não resseca, não trinca e regenera micro-riscos com o calor do sol. Acima de qualquer PU comum.'
+      'TPU técnico hidrofóbico. Não resseca, não trinca. Auto-cura sob o sol.',
+      '175µ é o suficiente pro impacto urbano: pedra, areia, lavagem agressiva. Quatro anos de garantia que resistem ao mundo real.'
     ],
+    closingTagline: 'ENTRADA TÉCNICA',
+    closingLine: 'Nem todo carro precisa de 12 anos. Mas todo carro merece 4.',
     image: '/assets/images/flow_haval.png',
     thickness: '175μ',
     warranty: '4 ANOS',
@@ -172,10 +204,10 @@ const rawProductLines: ProductLine[] = [
       { label: 'Garantia', value: '4 anos' }
     ],
     architecture: [
-      { num: '01', title: 'Revestimento Hidrofóbico', desc: 'Repele água. Lavagem facilitada.' },
-      { num: '02', title: 'TPU Técnico 175μ',         desc: 'Não resseca. Não trinca.' },
-      { num: '03', title: 'Regeneração Térmica',      desc: 'Auto-cura leve sob o sol.' },
-      { num: '04', title: 'Adesivo Acrílico',         desc: 'Conformação em curvas complexas.' }
+      { num: '01', title: 'Revestimento Hidrofóbico', desc: 'Repele água. Lavagem fácil.', icon: ICON.repelencia },
+      { num: '02', title: 'TPU Técnico 175μ',         desc: 'Não resseca. Não trinca.',    icon: ICON.escudoVazio },
+      { num: '03', title: 'Regeneração Térmica',      desc: 'Auto-cura leve solar.',       icon: ICON.regeneracao },
+      { num: '04', title: 'Adesivo Acrílico',         desc: 'Curvas complexas.',           icon: ICON.presente }
     ],
     finishes: {
       tagline: 'Versatilidade real. Estética sem compromisso.',
@@ -183,28 +215,28 @@ const rawProductLines: ProductLine[] = [
         {
           name: 'CLEAR GLOSS',
           anchor: 'A cor original, potencializada.',
-          desc: 'Transparente com brilho que realça a pintura de fábrica. Proteção sem alterar a identidade do veículo.',
+          desc: 'Transparente brilhante que realça a pintura de fábrica.',
           image: '/assets/images/flow_clear_gloss_haval.png',
           swatch: '#EAEAEE'
         },
         {
           name: 'CLEAR MATTE',
           anchor: 'O fosco que suaviza sem apagar.',
-          desc: 'Acetinado macio, acabamento aveludado. Transforma a pintura original em algo mais contido e sofisticado.',
+          desc: 'Acetinado macio, aveludado. Pintura mais contida.',
           image: '/assets/images/flow_clear_matte_haval.png',
           swatch: '#AAAAAE'
         },
         {
           name: 'BLACK GLOSS',
           anchor: 'O Black Piano por um valor justo.',
-          desc: 'Preto espelhado com máximo escurecimento. Impacto visual sem abrir mão do custo consciente.',
+          desc: 'Preto espelhado com máximo escurecimento.',
           image: '/assets/images/flow_black_gloss_haval.png',
           swatch: '#0A0A0A'
         },
         {
           name: 'BLACK MATTE',
           anchor: 'Presença furtiva. Intenção clara.',
-          desc: 'Preto fosco profundo, absorção de luz dramática. Para carros que não pedem licença — apenas aparecem.',
+          desc: 'Preto fosco profundo, absorção de luz dramática.',
           image: '/assets/images/flow_black_matte_haval.png',
           swatch: '#1A1A1A'
         }
@@ -215,11 +247,14 @@ const rawProductLines: ProductLine[] = [
     slug: 'core-gloss',
     title: 'NZ PPF CORE GLOSS',
     shortName: 'CORE',
-    subtitle: 'Híbrido 80/20 TPU+PVC · 175µ · 3 Anos de Garantia',
+    subtitle: 'Híbrido 80/20 · 175µ · 3 anos',
     sectionTitle: 'O Mercado Exigia Preço. Nós Entregamos Engenharia.',
     bodyParagraphs: [
-      'Engenharia híbrida 80/20: TPU premium + PVC de alta resistência. Proteção real contra riscos e pedras com a flexibilidade necessária — preço que cabe no planejamento.'
+      'Híbrido 80/20 TPU+PVC. Proteção real contra pedras. Preço que cabe no planejamento.',
+      'Engenharia híbrida não é compromisso — é decisão de design. Performance que entrega o que o mundo do dia a dia pede.'
     ],
+    closingTagline: 'ENGENHARIA ACESSÍVEL',
+    closingLine: 'O orçamento muda. A engenharia não.',
     image: '/assets/images/core_catalog_car.png',
     thickness: '175μ',
     warranty: '3 ANOS',
@@ -232,10 +267,10 @@ const rawProductLines: ProductLine[] = [
       { label: 'Garantia', value: '3 anos' }
     ],
     architecture: [
-      { num: '01', title: 'Híbrido 80/20',     desc: '80% TPU premium + 20% PVC.' },
-      { num: '02', title: 'Espessura 175μ',    desc: 'Otimizado para absorver impactos.' },
-      { num: '03', title: 'Adesivo Easy-Tack', desc: 'Reposicionável. Não agride pintura.' },
-      { num: '04', title: 'Top Coat Premium',  desc: 'Hidrofóbico contra chuva ácida.' }
+      { num: '01', title: 'Híbrido 80/20',     desc: '80% TPU + 20% PVC.',         icon: ICON.escudoBraco },
+      { num: '02', title: 'Espessura 175μ',    desc: 'Absorve impacto.',           icon: ICON.escudoVazio },
+      { num: '03', title: 'Adesivo Easy-Tack', desc: 'Reposicionável. Sem agredir.', icon: ICON.presente },
+      { num: '04', title: 'Top Coat Premium',  desc: 'Hidrofóbico contra ácidos.', icon: ICON.camada }
     ],
     finishes: {
       tagline: 'Engenharia híbrida. Estilo sem exceção.',
@@ -243,28 +278,28 @@ const rawProductLines: ProductLine[] = [
         {
           name: 'CORE GLOSS',
           anchor: 'Brilho honesto. Proteção inteligente.',
-          desc: 'Acabamento espelhado que corrige micro-imperfeições de orange-peel e devolve brilho uniforme à pintura.',
+          desc: 'Espelhado que corrige orange-peel e devolve brilho.',
           image: '/assets/images/core_clear_gloss.png',
           swatch: '#E8E8EC'
         },
         {
           name: 'CORE MATTE',
           anchor: 'Fosco bruto. Estética com atitude.',
-          desc: 'Acetinado bruto, difusão macia. Discrição com personalidade — sem pesar no bolso.',
+          desc: 'Acetinado bruto, difusão macia. Discrição com personalidade.',
           image: '/assets/images/core_clear_matte.png',
           swatch: '#8E9092'
         },
         {
           name: 'CORE BLACK',
           anchor: 'Preto puro. Reflexo de fibra envernizada.',
-          desc: 'Opaco reflexivo com aparência de fibra de carbono envernizada. Presença visual sem comprometer a escolha.',
+          desc: 'Opaco reflexivo com aparência de carbono envernizado.',
           image: '/assets/images/core_black_gloss.png',
           swatch: '#0A0A0A'
         },
         {
           name: 'CORE BLACK MATTE',
           anchor: 'Dark Stealth. Absorção implacável.',
-          desc: 'Preto fosco profundo, opacidade dramática. O acabamento mais agressivo da linha — engenharia híbrida real.',
+          desc: 'Preto fosco profundo, opacidade dramática.',
           image: '/assets/images/core_black_matte.png',
           swatch: '#1C1C1E'
         }
@@ -275,11 +310,14 @@ const rawProductLines: ProductLine[] = [
     slug: 'headlight',
     title: 'NZ PPF HEADLIGHT',
     shortName: 'HEADLIGHT',
-    subtitle: 'TPU Pigmentado Anti-UV · 150µ · 10 Anos de Garantia',
+    subtitle: 'Pigmentado Anti-UV 150µ · 10 anos',
     sectionTitle: 'Detalhes Definem o Conjunto',
     bodyParagraphs: [
-      'Proteção e personalização em uma única aplicação. Três tonalidades — Light Black, Light Gray e Dark Black — transformam o farol sem comprometer luminosidade nem segurança.'
+      'Pigmentação anti-UV. Três tonalidades sem comprometer luminosidade nem segurança.',
+      '10 anos de proteção contra amarelamento, ataque solar e perda óptica. O farol é o detalhe que define o conjunto.'
     ],
+    closingTagline: 'DETALHE QUE DEFINE',
+    closingLine: 'O farol é a primeira coisa que se vê. E a primeira que se julga.',
     image: '/assets/images/nzppf_headlight_light_black.png',
     thickness: '150μ',
     warranty: '10 ANOS',
@@ -292,10 +330,10 @@ const rawProductLines: ProductLine[] = [
       { label: 'Garantia', value: '10 anos' }
     ],
     architecture: [
-      { num: '01', title: 'Top Coat Anti-UV',      desc: 'Barreira contra amarelamento.' },
-      { num: '02', title: 'Pigmentação Calibrada', desc: 'Preserva luminosidade.' },
-      { num: '03', title: 'TPU Estabilizado',      desc: 'Flexível. Nunca amarela.' },
-      { num: '04', title: 'Adesivo PSA',           desc: 'Remoção limpa, sem marcar.' }
+      { num: '01', title: 'Top Coat Anti-UV',      desc: 'Anti-amarelamento.',     icon: ICON.camada },
+      { num: '02', title: 'Pigmentação Calibrada', desc: 'Preserva luminosidade.', icon: ICON.certo },
+      { num: '03', title: 'TPU Estabilizado',      desc: 'Flexível. Nunca amarela.', icon: ICON.escudoVazio },
+      { num: '04', title: 'Adesivo PSA',           desc: 'Remoção sem marcar.',    icon: ICON.presente }
     ],
     finishes: {
       tagline: 'O farol como extensão da identidade.',
@@ -306,21 +344,21 @@ const rawProductLines: ProductLine[] = [
         {
           name: 'LIGHT BLACK',
           anchor: 'Sofisticação sem exagero.',
-          desc: 'Escurecimento sutil que integra o farol ao conjunto visual. Refinamento discreto sem comprometer luminosidade.',
+          desc: 'Escurecimento sutil que integra o farol ao conjunto.',
           image: '/assets/images/nzppf_headlight_light_black.png',
           swatch: '#3A3A3C'
         },
         {
           name: 'LIGHT GRAY',
           anchor: 'O grafite que quase não se vê.',
-          desc: 'Tom neutro e refinado. Quase imperceptível em dia claro — só quem entende percebe.',
+          desc: 'Tom neutro e refinado. Quase imperceptível em dia claro.',
           image: '/assets/images/nzppf_headlight_light_gray.png',
           swatch: '#5E5E62'
         },
         {
           name: 'DARK BLACK',
           anchor: 'Presença máxima. Impacto visual total.',
-          desc: 'Fumê escuro profundo, o tom mais agressivo da linha. Transforma o farol em elemento de destaque — para carros que se impõem, não se apresentam.',
+          desc: 'Fumê escuro profundo, o tom mais agressivo da linha.',
           image: '/assets/images/nzppf_headlight_dark_black.png',
           swatch: '#0F0F10'
         }
@@ -331,11 +369,14 @@ const rawProductLines: ProductLine[] = [
     slug: 'windshield',
     title: 'NZ PPF WINDSHIELD',
     shortName: 'WINDSHIELD',
-    subtitle: 'TPU 190µ · Face Externa · ADAS · 2 Anos de Garantia',
+    subtitle: 'TPU 190µ · ADAS · 2 anos',
     sectionTitle: 'A Maior Superfície de Vidro Também é a Mais Exposta',
     bodyParagraphs: [
-      'Pedras, detritos, areia, insetos. O parabrisa é a superfície mais exposta do carro. 190μ de TPU na face externa absorvem cada impacto — invisível para você, letal para a pedra.'
+      '190µ TPU na face externa. Absorve impacto invisível para você, letal para a pedra.',
+      'Compatível com ADAS, transparência óptica preservada, repelência hidrofóbica permanente. A maior superfície do carro merece a mesma seriedade do resto.'
     ],
+    closingTagline: 'PROTEÇÃO DA SUPERFÍCIE MAIS EXPOSTA',
+    closingLine: 'A pedra não negocia. O parabrisa também não.',
     image: '/assets/images/nzppf_windshield_diff_impacto.png',
     thickness: '190μ',
     warranty: '2 ANOS',
@@ -348,10 +389,10 @@ const rawProductLines: ProductLine[] = [
       { label: 'Garantia', value: '2 anos' }
     ],
     architecture: [
-      { num: '01', title: 'TPU 190μ',             desc: 'Camada robusta contra impactos.' },
-      { num: '02', title: 'Top Coat Hidrofóbico', desc: 'Repele água. Bloqueia UV.' },
-      { num: '03', title: 'Transparência Óptica', desc: 'Zero distorção. Compatível ADAS.' },
-      { num: '04', title: 'Adesivo Face Externa', desc: 'Resiste a lavagens frequentes.' }
+      { num: '01', title: 'TPU 190μ',             desc: 'Camada anti-impacto.',   icon: ICON.escudoBraco },
+      { num: '02', title: 'Top Coat Hidrofóbico', desc: 'Repele água. Bloqueia UV.', icon: ICON.repelencia },
+      { num: '03', title: 'Transparência Óptica', desc: 'Zero distorção. ADAS.',   icon: ICON.certo },
+      { num: '04', title: 'Adesivo Face Externa', desc: 'Resiste a lavagens.',     icon: ICON.presente }
     ]
   }
 ];
@@ -384,7 +425,7 @@ const rawBenchmarkLines: BenchmarkLine[] = [
       { label: 'Repelência', value: 65 },
       { label: 'Custo-Benefício', value: 100 }
     ],
-    highlight: 'Híbrido 80/20 + Easy-Tack. Máxima durabilidade na entrada.'
+    highlight: 'Híbrido 80/20. Durabilidade na entrada.'
   },
   {
     id: 'flow', name: 'FLOW', thickness: '175μ', warranty: '4 Anos', accent: '#d11e1e',
@@ -395,7 +436,7 @@ const rawBenchmarkLines: BenchmarkLine[] = [
       { label: 'Repelência', value: 80 },
       { label: 'Custo-Benefício', value: 85 }
     ],
-    highlight: 'TPU técnico hidrofóbico. Entrada no PPF com regeneração.'
+    highlight: 'TPU técnico hidrofóbico com regeneração.'
   },
   {
     id: 'prime', name: 'PRIME', thickness: '190μ', warranty: '10 Anos', accent: '#4A90D9',
@@ -406,7 +447,7 @@ const rawBenchmarkLines: BenchmarkLine[] = [
       { label: 'Repelência', value: 90 },
       { label: 'Custo-Benefício', value: 75 }
     ],
-    highlight: 'TPU 100% Virgem + Nano-Dúplex. Padrão premium.'
+    highlight: 'TPU Virgem + Nano-Dúplex. Padrão premium.'
   },
   {
     id: 'luxury', name: 'LUXURY', thickness: '190μ', warranty: '12 Anos', accent: '#D4AF37',
@@ -417,7 +458,7 @@ const rawBenchmarkLines: BenchmarkLine[] = [
       { label: 'Repelência', value: 95 },
       { label: 'Custo-Benefício', value: 60 }
     ],
-    highlight: 'TPU Alifático + Nano-Japonês. +32% Brilho. Excelência absoluta.'
+    highlight: 'Alifático + Nano-Japonês. Excelência absoluta.'
   }
 ];
 
@@ -428,25 +469,25 @@ const rawExclusiveDifferentials = [
     icon: '/assets/simbolos/simbolo-camada.svg',
     title: 'Top Coat Aprovado',
     line: '5 LINHAS PREMIUM',
-    desc: 'Camada nano-estruturada com proteção UV certificada e repelência hidrofóbica.'
+    desc: 'Camada nano com proteção UV e repelência hidrofóbica.'
   },
   {
     icon: '/assets/simbolos/simbolo-certo.svg',
     title: 'Pigmentação Calibrada',
     line: 'EXCLUSIVO HEADLIGHT',
-    desc: 'Três tonalidades testadas em laboratório, sem comprometer luminosidade.'
+    desc: 'Três tonalidades testadas em laboratório, sem perder luminosidade.'
   },
   {
     icon: '/assets/simbolos/simbolo-escudo-vazio.svg',
     title: 'TPU Estabilizado',
     line: '5 LINHAS PREMIUM',
-    desc: 'Polímero alifático com estabilização química contra UV. No Core, vem do blend 80/20.'
+    desc: 'Polímero alifático estabilizado contra UV. No Core, vem do blend 80/20.'
   },
   {
     icon: '/assets/simbolos/simbolo-regeneracao.svg',
     title: 'Adesivo PSA',
     line: 'TODAS AS 6 LINHAS',
-    desc: 'Reposicionamento na aplicação e remoção limpa, sem resíduos.'
+    desc: 'Reposicionamento na aplicação, remoção sem resíduos.'
   }
 ];
 
@@ -459,18 +500,21 @@ export const catalogMeta = {
   url: 'www.nzgroup.com.br',
   baseUrl: 'https://www.nzgroup.com.br',
   ppfPath: '/ppf',
-  company: 'NZGROUP'
+  company: 'NZGROUP',
+  // URLs aprofundadas — referenciadas pelos QRs editoriais (manifesto,
+  // comparativo, diferenciais). Páginas no site espelham o conteúdo
+  // que foi cortado do catálogo impresso para caber em 12 pt.
+  manifestUrl: 'https://www.nzgroup.com.br/manifesto',
+  benchmarkUrl: 'https://www.nzgroup.com.br/comparativo',
+  differentialsUrl: 'https://www.nzgroup.com.br/diferenciais',
 };
 
 export function productUrl(slug: string): string {
   return `${catalogMeta.baseUrl}${catalogMeta.ppfPath}/${slug}`;
 }
 
-export const TOTAL_PAGES = 15;
-export const TOTAL_PAGES_COMPLETE = 20;
-
-export type CatalogMode = 'standard' | 'complete';
-
-export function totalPagesFor(mode: CatalogMode): number {
-  return mode === 'complete' ? TOTAL_PAGES_COMPLETE : TOTAL_PAGES;
-}
+// Catálogo único de 20 páginas (cover + manifesto + lines + 6 produtos
+// + 5 finishes + benchmark + diff + guarantee + closing + backcover +
+// ceoletter). O modo "standard" de 15 páginas foi descontinuado —
+// manter dois layouts gerava divergência editorial sem benefício real.
+export const TOTAL_PAGES = 20;

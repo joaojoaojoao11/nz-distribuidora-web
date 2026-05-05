@@ -9,20 +9,7 @@ export interface ProgressInfo {
 
 type ProgressFn = (info: ProgressInfo) => void;
 
-/**
- * Modo de saída do PDF (ETAPA 9 do checklist gráfico):
- *   'print'   — versão para gráfica: A5 + sangria 3mm + crop marks +
- *               registration marks. JPEG quality 0.94. Sem hyperlinks.
- *   'digital' — versão para envio digital: A5 trim only (148×210mm),
- *               sangria descartada, sem marks, JPEG 0.85 (arquivo
- *               menor), hyperlinks ativos sobre QR codes.
- *   'proof'   — versão para prova/aprovação: como 'print' + legenda
- *               técnica visível na sangria do topo (NÃO PARA PRODUÇÃO).
- */
-export type CatalogOutputMode = 'print' | 'digital' | 'proof';
-
 export interface GenerateCatalogOptions {
-  outputMode?: CatalogOutputMode;
   onProgress?: ProgressFn;
 }
 
@@ -114,34 +101,18 @@ function drawRegistrationMarks(pdf: jsPDF): void {
 }
 
 /**
- * Legenda técnica visível para a versão PROOF (ETAPA 9.3).
- * Texto em vermelho, fonte 6pt, posicionado dentro da sangria do
- * topo — quando a peça for cortada, esta linha some, então não
- * polui a peça final mas é claramente visível na prova.
- */
-function drawProofLegend(pdf: jsPDF): void {
-  pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(6);
-  pdf.setTextColor(180, 30, 30);
-  const text = 'PROOF · NZPPF Catálogo 2026 · A5 trim 148×210 + sangria 3mm · NÃO PARA PRODUÇÃO';
-  pdf.text(text, PAGE_WIDTH_MM / 2, 1.8, { align: 'center' });
-  // restaura cor de texto preta para outros usos
-  pdf.setTextColor(0, 0, 0);
-}
-
-/**
  * Coleta todos os elementos da página marcados com `data-page-link-url`
- * e calcula a posição em mm relativa ao trim (148×210mm). Usado pelo
- * modo DIGITAL para criar hyperlinks ativos sobre os QR codes.
+ * e calcula a posição em mm relativa à PAGE (com sangria). Usado para
+ * criar hyperlinks ativos sobre os QR codes do PDF unificado.
  *
- * Retorna coordenadas em mm já no sistema do trim (sem bleed).
- * Se a página tem altura/largura inesperada, retorna lista vazia.
+ * Retorna coordenadas em mm no sistema da PAGE (origem no topo-esquerda
+ * incluindo a sangria de 3mm), que é onde a imagem do canvas é colocada
+ * no PDF (addImage at 0,0).
  */
 function collectPageLinks(page: HTMLElement): Array<{
   x: number; y: number; w: number; h: number; url: string;
 }> {
   const pageRect = page.getBoundingClientRect();
-  // px → mm (PAGE_WIDTH_MM / canvas largura em px)
   const pxToMm = PAGE_WIDTH_MM / pageRect.width;
   const links: Array<{ x: number; y: number; w: number; h: number; url: string }> = [];
 
@@ -149,20 +120,11 @@ function collectPageLinks(page: HTMLElement): Array<{
     const url = el.dataset.pageLinkUrl;
     if (!url) return;
     const r = el.getBoundingClientRect();
-    // Posição relativa à página, em mm
     const xPageMm = (r.left - pageRect.left) * pxToMm;
     const yPageMm = (r.top - pageRect.top) * pxToMm;
     const wMm = r.width * pxToMm;
     const hMm = r.height * pxToMm;
-    // Converte de coords da PAGE (com bleed) para coords do TRIM
-    // (subtrai BLEED_MM em ambos os eixos)
-    links.push({
-      x: xPageMm - BLEED_MM,
-      y: yPageMm - BLEED_MM,
-      w: wMm,
-      h: hMm,
-      url
-    });
+    links.push({ x: xPageMm, y: yPageMm, w: wMm, h: hMm, url });
   });
 
   return links;
@@ -218,12 +180,21 @@ async function preloadImages(root: HTMLElement): Promise<void> {
   await new Promise((r) => setTimeout(r, 100));
 }
 
+/**
+ * Geração do PDF NZPPF — modo único (consolidado a partir de print/digital/proof).
+ *
+ * Geometria: A5 (148×210mm) + sangria 3mm = página 154×216mm @ 300 DPI
+ * Saída: JPEG 0.94 (qualidade gráfica) + crop marks + registration marks
+ *        + hyperlinks ativos sobre QR codes.
+ *
+ * Pode ser enviado direto à gráfica para impressão ou aberto em qualquer
+ * leitor de PDF — os QRs ficam clicáveis também no visualizador digital.
+ */
 export async function generateCatalogPdf(
   root: HTMLElement,
   options: GenerateCatalogOptions = {}
 ): Promise<void> {
-  const { outputMode = 'print', onProgress } = options;
-  const isDigital = outputMode === 'digital';
+  const { onProgress } = options;
 
   if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
     await (document as any).fonts.ready;
@@ -238,15 +209,9 @@ export async function generateCatalogPdf(
 
   const total = pages.length;
 
-  // Geometria do PDF varia por modo:
-  //  print/proof: media 154×216mm (trim + bleed) — gráfica corta no trim
-  //  digital:     trim only 148×210mm — sem bleed, sem marks
-  const pdfWidthMm = isDigital ? TRIM_WIDTH_MM : PAGE_WIDTH_MM;
-  const pdfHeightMm = isDigital ? TRIM_HEIGHT_MM : PAGE_HEIGHT_MM;
-
-  // Compressão JPEG: print/proof preservam qualidade gráfica (0.94),
-  // digital aceita compressão maior pra arquivo menor (0.85).
-  const jpegQuality = isDigital ? 0.85 : 0.94;
+  const pdfWidthMm = PAGE_WIDTH_MM;
+  const pdfHeightMm = PAGE_HEIGHT_MM;
+  const jpegQuality = 0.94;
 
   const pdf = new jsPDF({
     orientation: 'portrait',
@@ -278,7 +243,47 @@ export async function generateCatalogPdf(
         width: CANVAS_WIDTH_PX,
         height: CANVAS_HEIGHT_PX,
         windowWidth: CANVAS_WIDTH_PX,
-        windowHeight: CANVAS_HEIGHT_PX
+        windowHeight: CANVAS_HEIGHT_PX,
+        // html2canvas clona o DOM num iframe interno antes de rasterizar.
+        // Esse iframe tem `document.fonts` independente do main — o
+        // `await document.fonts.ready` que rodamos antes de chamar
+        // html2canvas garante apenas a janela principal. Sem esperar
+        // dentro do clone, o iframe captura com fontes em fallback
+        // (sans-serif → Arial), as métricas dos glyphs divergem do
+        // layout calculado e aparecem gaps mid-word no JPEG final
+        // ("Rev estimento", "flexív el", "Proteç ão" — ETAPA 7-bug).
+        onclone: ((clonedDoc: Document) => {
+          const cf = (clonedDoc as Document & { fonts?: FontFaceSet }).fonts;
+          const ready = cf?.ready ? cf.ready : Promise.resolve();
+          // Fallback de 300ms: alguns browsers resolvem fonts.ready
+          // antes do paint efetivo dos glyphs custom.
+          return ready
+            .then(() => new Promise<void>((r) => setTimeout(r, 300)))
+            .then(() => {
+              // html2canvas usa line-height literal e não adiciona o
+              // leading implícito que o navegador deriva das métricas
+              // da fonte. Em headlines com line-height ≤ 1.0 isso faz
+              // descendentes (Ç, P, Ã) tocarem ascendentes da linha
+              // seguinte no JPEG final, mesmo quando o preview ao vivo
+              // está espaçado. Aqui, dentro do iframe do clone, elevamos
+              // qualquer elemento abaixo de 1.05 para 1.05 — sem afetar
+              // o documento original que o usuário vê no PageEditor.
+              const minRatio = 1.05;
+              const win = clonedDoc.defaultView;
+              if (!win) return;
+              clonedDoc
+                .querySelectorAll<HTMLElement>('[data-catalog-page] *')
+                .forEach((el) => {
+                  const cs = win.getComputedStyle(el);
+                  const fs = parseFloat(cs.fontSize);
+                  const lh = parseFloat(cs.lineHeight);
+                  if (!isFinite(fs) || fs <= 0 || !isFinite(lh)) return;
+                  if (lh / fs < minRatio) {
+                    el.style.lineHeight = String(minRatio);
+                  }
+                });
+            });
+        }) as unknown as (doc: Document) => void
       });
 
       const imgData = canvas.toDataURL('image/jpeg', jpegQuality);
@@ -287,30 +292,17 @@ export async function generateCatalogPdf(
         pdf.addPage([pdfWidthMm, pdfHeightMm], 'portrait');
       }
 
-      if (isDigital) {
-        // Posiciona a imagem com offset NEGATIVO de bleed em ambos os
-        // eixos. A imagem (154×216mm) extrapola a página (148×210mm)
-        // em 3mm pra cada lado — o conteúdo da sangria fica fora dos
-        // limites da página, efetivamente cortado no trim.
-        pdf.addImage(imgData, 'JPEG', -BLEED_MM, -BLEED_MM, PAGE_WIDTH_MM, PAGE_HEIGHT_MM, `p${pageNum}`, 'FAST');
+      // Imagem cobre toda a página (com sangria 3mm em cada lado).
+      pdf.addImage(imgData, 'JPEG', 0, 0, PAGE_WIDTH_MM, PAGE_HEIGHT_MM, `p${pageNum}`, 'FAST');
 
-        // Hyperlinks ativos sobre QRs marcados com data-page-link-url.
-        // A função collectPageLinks já converte para coords TRIM.
-        const links = collectPageLinks(page);
-        for (const link of links) {
-          pdf.link(link.x, link.y, link.w, link.h, { url: link.url });
-        }
-      } else {
-        // print / proof: imagem cobre toda a página (com sangria).
-        pdf.addImage(imgData, 'JPEG', 0, 0, PAGE_WIDTH_MM, PAGE_HEIGHT_MM, `p${pageNum}`, 'FAST');
+      // Marcas de corte + registro dentro da sangria.
+      drawTrimMarks(pdf);
+      drawRegistrationMarks(pdf);
 
-        // Marcas de corte + registro dentro da sangria.
-        drawTrimMarks(pdf);
-        drawRegistrationMarks(pdf);
-
-        if (outputMode === 'proof') {
-          drawProofLegend(pdf);
-        }
+      // Hyperlinks ativos sobre QRs (coords em sistema PAGE, com sangria).
+      const links = collectPageLinks(page);
+      for (const link of links) {
+        pdf.link(link.x, link.y, link.w, link.h, { url: link.url });
       }
     } catch (err) {
       console.error(`Falha ao renderizar página ${pageNum}:`, err);
@@ -332,12 +324,7 @@ export async function generateCatalogPdf(
 
   onProgress?.({ current: total, total, label: 'Salvando PDF…' });
 
-  // Filename varia por modo (ETAPA 9.1/9.2/9.3):
-  //   print   → NZPPF_Catalogo_2026_A5_PRINT.pdf
-  //   digital → NZPPF_Catalogo_2026_A5_DIGITAL.pdf
-  //   proof   → NZPPF_Catalogo_2026_A5_PROOF.pdf
-  const suffix = outputMode.toUpperCase();
-  pdf.save(`NZPPF_Catalogo_2026_A5_${suffix}.pdf`);
+  pdf.save('NZPPF_Catalogo_2026_A5.pdf');
 
   if (failedPages.length > 0) {
     console.warn(

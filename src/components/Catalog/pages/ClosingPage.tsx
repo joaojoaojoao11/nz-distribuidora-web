@@ -1,24 +1,18 @@
 import CatalogPage from '../CatalogPage';
 import styles from '../Catalog.module.css';
-import { sanitizeCatalogText } from '../textHelpers';
+import {
+  usePageScale,
+  useElementHidden,
+} from '../useCatalogOverrides';
+import EditableText from '../EditableText';
 
-const closingBlocks = [
-  {
-    title: 'O QUE NOS SEPARA',
-    body: 'Domínio sobre a química do material. Resina, adesivo e coating combinados para garantir a entrega prometida.',
-  },
-  {
-    title: 'NOSSO COMPROMISSO',
-    body: 'Cada cliente protegido é parte da realização de um sonho. Não negociamos integridade técnica para vencer no preço.',
-  },
-  {
-    title: 'NOSSAS MATÉRIAS-PRIMAS',
-    body: 'Confiáveis e robustas. Sem mistura de "quase isso" com "quase aquilo" — só compounds rastreáveis com ficha técnica.',
-  },
-  {
-    title: 'ATENDIMENTO 360°',
-    body: 'Nosso compromisso não termina na venda. Aplicador qualificado próximo, suporte oficial sempre que precisar.',
-  },
+const PAGE_ID = 'closing';
+
+const closingDefaults = [
+  { title: 'O QUE NOS SEPARA',         body: 'Domínio sobre a química. Resina, adesivo e coating alinhados.' },
+  { title: 'NOSSO COMPROMISSO',        body: 'Cada cliente é um sonho protegido. Não negociamos integridade no preço.' },
+  { title: 'NOSSAS MATÉRIAS-PRIMAS',   body: 'Compounds rastreáveis com ficha técnica. Sem "quase isso, quase aquilo".' },
+  { title: 'ATENDIMENTO 360°',         body: 'Aplicador qualificado próximo, suporte oficial sempre que precisar.' },
 ];
 
 interface ClosingPageProps {
@@ -26,65 +20,117 @@ interface ClosingPageProps {
   totalPages?: number;
 }
 
-/**
- * Página "Nossos Diferenciais" (posicionamento de marca).
- * Redesign:
- *   • Quote de abertura agora aparece NO TOPO como manifesto
- *     (substitui o uso decorativo do rodapé).
- *   • Os 4 blocos viram grid 2×2 com numerais 01–04 dourados gigantes
- *     como elemento gráfico — quebra a monotonia da lista vertical e
- *     diferencia visualmente da página "Diferenciais Exclusivos".
- */
 export default function ClosingPage({
   pageNumber = 13,
   totalPages,
 }: ClosingPageProps = {}) {
+  const scale = usePageScale(PAGE_ID);
+  const quoteHidden = useElementHidden(PAGE_ID, 'quote');
+  const quoteAuthorHidden = useElementHidden(PAGE_ID, 'quote.author');
+
   return (
     <CatalogPage
       pageNumber={pageNumber}
       totalPages={totalPages}
+      pageId={PAGE_ID}
       className={styles.closingPage}
+      style={{ ['--user-scale' as string]: scale }}
     >
       <div className={styles.safeArea}>
         <div className={styles.pageHeader}>
           <div>
-            <div className={styles.pageSection}>13  ·  POSICIONAMENTO</div>
+            <EditableText
+              pageId={PAGE_ID}
+              fieldKey="pageSection"
+              defaultValue="13  ·  POSICIONAMENTO"
+              as="div"
+              className={styles.pageSection}
+            />
             <div className={styles.h2} style={{ marginTop: 16 }}>
-              NOSSOS<br />
-              <span style={{ color: '#D4AF37' }}>DIFERENCIAIS</span>
+              <EditableText pageId={PAGE_ID} fieldKey="h2.l1" defaultValue="NOSSOS" />
+              <br />
+              <EditableText
+                pageId={PAGE_ID}
+                fieldKey="h2.l2"
+                defaultValue="DIFERENCIAIS"
+                style={{ color: '#D4AF37' }}
+              />
             </div>
           </div>
-          <div className={styles.darkBadge}>POR QUE NZPPF</div>
+          <EditableText
+            pageId={PAGE_ID}
+            fieldKey="badge"
+            defaultValue="POR QUE NZPPF"
+            as="div"
+            className={styles.darkBadge}
+          />
         </div>
 
         <div className={styles.closingContent}>
-          <div className={styles.closingQuoteTop}>
-            <span className={styles.closingQuoteMark} aria-hidden>
-              “
-            </span>
-            Nossos diferenciais vão além de entregar um produto de qualidade —
-            isso é obrigação.
-            <span className={styles.closingQuoteAuthor}>— NZ Group</span>
-          </div>
+          {!quoteHidden && (
+            <div className={styles.closingQuoteTop}>
+              <span className={styles.closingQuoteMark} aria-hidden>
+                “
+              </span>
+              <EditableText
+                pageId={PAGE_ID}
+                fieldKey="quote"
+                defaultValue="Nossos diferenciais vão além de entregar um produto de qualidade — isso é obrigação."
+                as="span"
+              />
+              {!quoteAuthorHidden && (
+                <EditableText
+                  pageId={PAGE_ID}
+                  fieldKey="quote.author"
+                  defaultValue="— NZ Group"
+                  as="span"
+                  className={styles.closingQuoteAuthor}
+                />
+              )}
+            </div>
+          )}
 
           <div className={styles.closingGridV2}>
-            {closingBlocks.map((b, i) => {
-              const numStr = String(i + 1).padStart(2, '0');
-              return (
-                <div key={i} className={styles.closingBlockV2}>
-                  <div className={styles.closingBlockNum} aria-hidden>
-                    {numStr}
-                  </div>
-                  <div className={styles.closingBlockBody}>
-                    <h4>{sanitizeCatalogText(b.title)}</h4>
-                    <p>{sanitizeCatalogText(b.body)}</p>
-                  </div>
-                </div>
-              );
-            })}
+            {closingDefaults.map((b, i) => (
+              <ClosingBlock key={i} index={i} title={b.title} body={b.body} />
+            ))}
           </div>
         </div>
       </div>
     </CatalogPage>
+  );
+}
+
+interface ClosingBlockProps {
+  index: number;
+  title: string;
+  body: string;
+}
+
+function ClosingBlock({ index, title, body }: ClosingBlockProps) {
+  const numStr = String(index + 1).padStart(2, '0');
+  const titleHidden = useElementHidden(PAGE_ID, `block.${index}.title`);
+  const bodyHidden = useElementHidden(PAGE_ID, `block.${index}.body`);
+  if (titleHidden && bodyHidden) return null;
+  return (
+    <div className={styles.closingBlockV2}>
+      <div className={styles.closingBlockNum} aria-hidden>
+        {numStr}
+      </div>
+      <div className={styles.closingBlockBody}>
+        <EditableText
+          pageId={PAGE_ID}
+          fieldKey={`block.${index}.title`}
+          defaultValue={title}
+          as="h4"
+        />
+        <EditableText
+          pageId={PAGE_ID}
+          fieldKey={`block.${index}.body`}
+          defaultValue={body}
+          as="p"
+        />
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,523 @@
+/* ────────────────────────────────────────────────────────────────────
+   PageEditor — modal de edição de página do catálogo NZPPF.
+   Layout side-by-side: formulário (esquerda) + preview vivo (direita).
+   ──────────────────────────────────────────────────────────────────── */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal {
+  position: relative;
+  width: min(1480px, 96vw);
+  height: 92vh;
+  background: #0a0a0c;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  display: grid;
+  /* Header (auto) + área de conteúdo (1fr — fica com a altura restante).
+     `min-height: 0` nas colunas permite que cada uma role independente
+     dentro do espaço dado pelo grid em vez de crescer pra acomodar todo
+     o conteúdo (default do CSS Grid).                                  */
+  grid-template-columns: minmax(420px, 1fr) minmax(360px, 1fr);
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Header (full-width, dois lados) ── */
+
+.header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.06) 0%, transparent 100%);
+}
+
+.headerTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.headerEyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #D4AF37;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.headerLabel {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.btnGhost {
+  background: transparent;
+  border: 1px solid rgba(245, 245, 247, 0.2);
+  color: rgba(245, 245, 247, 0.85);
+  padding: 9px 18px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnGhost:hover {
+  border-color: rgba(245, 245, 247, 0.4);
+  color: #fff;
+}
+
+.btnDanger {
+  background: transparent;
+  border: 1px solid rgba(220, 80, 80, 0.4);
+  color: #f0a0a0;
+  padding: 9px 18px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnDanger:hover {
+  background: rgba(220, 80, 80, 0.1);
+  border-color: rgba(220, 80, 80, 0.7);
+  color: #ffb8b8;
+}
+
+.btnPrimary {
+  background: #D4AF37;
+  border: 1px solid #D4AF37;
+  color: #1a1208;
+  padding: 9px 22px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnPrimary:hover {
+  background: #E5C04A;
+  border-color: #E5C04A;
+}
+
+/* ── Coluna esquerda: formulário ── */
+
+.formCol {
+  grid-row: 2;
+  padding: 24px 28px;
+  overflow-y: auto;
+  /* min-height: 0 é necessário em grid items para que `overflow: auto`
+     respeite a altura da célula. Sem isso o item cresce indefinidamente
+     pra acomodar o conteúdo intrínseco e o scroll nunca dispara.        */
+  min-height: 0;
+  background: #08080a;
+}
+
+.scaleBlock {
+  background: rgba(212, 175, 55, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 18px 20px;
+  border-radius: 8px;
+  margin-bottom: 28px;
+}
+
+.scaleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.scaleLabel {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #D4AF37;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.scaleValue {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.scaleRange {
+  width: 100%;
+  appearance: none;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+  margin: 4px 0;
+}
+
+.scaleRange::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #D4AF37;
+  cursor: pointer;
+  border: 2px solid #1a1208;
+}
+
+.scaleRange::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #D4AF37;
+  cursor: pointer;
+  border: 2px solid #1a1208;
+}
+
+.scaleHint {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: rgba(245, 245, 247, 0.5);
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.fieldsTitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #D4AF37;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.fieldHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.fieldLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(245, 245, 247, 0.85);
+  letter-spacing: 0.5px;
+}
+
+.fieldChips {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.chip {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(245, 245, 247, 0.5);
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  color: rgba(245, 245, 247, 0.9);
+  border-color: rgba(245, 245, 247, 0.2);
+}
+
+.chipActive {
+  background: rgba(212, 175, 55, 0.18);
+  color: #D4AF37;
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.chipDanger {
+  color: rgba(245, 100, 100, 0.7);
+}
+
+.chipDanger:hover {
+  color: rgba(255, 130, 130, 0.95);
+  border-color: rgba(255, 130, 130, 0.3);
+}
+
+/* ── Stepper A−/A+ por campo (ajuste de tamanho de fonte) ───────────── */
+
+.sizeStepper {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid rgba(245, 245, 247, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sizeBtn {
+  background: transparent;
+  border: none;
+  color: rgba(245, 245, 247, 0.75);
+  padding: 0 9px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  min-width: 28px;
+}
+
+.sizeBtn:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.18);
+  color: #fff;
+}
+
+.sizeBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.sizeValue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  padding: 0 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(245, 245, 247, 0.6);
+  font-variant-numeric: tabular-nums;
+  border-left: 1px solid rgba(245, 245, 247, 0.1);
+  border-right: 1px solid rgba(245, 245, 247, 0.1);
+}
+
+.sizeValueDirty {
+  color: #D4AF37;
+  background: rgba(212, 175, 55, 0.06);
+}
+
+.input {
+  width: 100%;
+  background: #0d0d0f;
+  border: 1px solid rgba(245, 245, 247, 0.12);
+  color: #f5f5f7;
+  padding: 10px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.input:focus {
+  border-color: rgba(212, 175, 55, 0.6);
+}
+
+.input.dirty {
+  border-color: rgba(212, 175, 55, 0.4);
+  background: rgba(212, 175, 55, 0.04);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.fieldHidden .input {
+  opacity: 0.4;
+  text-decoration: line-through;
+  pointer-events: none;
+}
+
+/* Indicador de campo type='element' — não tem input, só os controles A−/A+
+   e ocultar no header. Mostra uma dica em itálico pra o usuário entender
+   que esse campo só tem ajuste de tamanho e visibilidade. */
+.elementHint {
+  width: 100%;
+  background: rgba(212, 175, 55, 0.04);
+  border: 1px dashed rgba(212, 175, 55, 0.18);
+  color: rgba(245, 245, 247, 0.55);
+  padding: 10px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.4;
+  border-radius: 6px;
+}
+
+.fieldHidden .elementHint {
+  opacity: 0.4;
+}
+
+/* ── Coluna direita: preview vivo ── */
+
+.previewCol {
+  grid-row: 2;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 8px, rgba(255, 255, 255, 0.015) 8px 16px),
+    #050507;
+  display: flex;
+  /* `safe center` centraliza quando cabe e cai pra flex-start quando o
+     preview é maior que a célula — sem isso o topo do preview fica
+     cortado em viewports baixos.                                     */
+  align-items: safe center;
+  justify-content: safe center;
+  padding: 24px;
+  overflow: auto;
+  min-height: 0;
+}
+
+.previewWrap {
+  /* Tamanho aplicado inline via JS — escala dinâmica calculada a partir
+     do tamanho da `.previewCol` por ResizeObserver no PageEditor. Aqui
+     só os estilos visuais e o overflow: hidden que mascara o transform.  */
+  position: relative;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  background: #050505;
+  flex-shrink: 0;
+}
+
+/* Marker do trim (linha pontilhada que demarca o A5 dentro da sangria 3 mm).
+   Inset usa percentual pra escalar junto com previewWrap — 3 mm sobre
+   216 mm ≈ 1.39 % vertical · 3 mm sobre 154 mm ≈ 1.95 % horizontal. */
+.previewWrap::after {
+  content: '';
+  position: absolute;
+  top: 1.39%;
+  bottom: 1.39%;
+  left: 1.95%;
+  right: 1.95%;
+  border: 1px dashed rgba(212, 175, 55, 0.35);
+  pointer-events: none;
+  z-index: 100;
+}
+
+.previewInner {
+  /* Página real renderizada em 1819×2551 px. `transform: scale(...)` é
+     aplicado inline pelo PageEditor (escala dinâmica). transform-origin
+     top-left mantém alinhamento com o canto superior do previewWrap.    */
+  transform-origin: top left;
+  width: 1819px;
+  height: 2551px;
+}
+
+/* ── Hover/focus dos elementos editáveis dentro do preview ─────────────
+   Cada texto editável tem `data-edit-key="{pageId}|{fieldKey}"`.
+   Hover → outline dourado pontilhado pra sinalizar que é clicável.
+   Quando o data-focused-key bate (após clique), pulsa um glow dourado.
+   ────────────────────────────────────────────────────────────────────── */
+
+/* outline e offset multiplicados ×2.5 pra compensar transform: scale(0.4)
+   no previewInner — sem isso a borda dourada de hover fica imperceptível. */
+.previewInner [data-edit-key] {
+  cursor: pointer;
+  transition: outline 0.12s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  outline: 5px dashed transparent;
+  outline-offset: 10px;
+  border-radius: 4px;
+}
+
+.previewInner [data-edit-key]:hover {
+  outline-color: rgba(212, 175, 55, 0.85);
+  background-color: rgba(212, 175, 55, 0.08);
+}
+
+/* Pulso dourado no elemento focado pelo clique no preview ou via flash */
+@keyframes editor-flash-outline {
+  0%   { outline-color: rgba(212, 175, 55, 1); box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.35); }
+  60%  { outline-color: rgba(212, 175, 55, 0.6); box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.18); }
+  100% { outline-color: rgba(212, 175, 55, 0.3); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+}
+
+@keyframes editor-flash-form {
+  0%   { box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.6); border-color: #D4AF37; }
+  60%  { box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3); }
+  100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+}
+
+.flash {
+  animation: editor-flash-form 1.4s ease-out;
+}
+
+.fieldFocused {
+  background: rgba(212, 175, 55, 0.05);
+  border-radius: 6px;
+  padding: 4px 6px;
+  margin-left: -6px;
+  margin-right: -6px;
+}
+
+.previewLegend {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(245, 245, 247, 0.45);
+  white-space: nowrap;
+}
+
+/* Estado vazio quando o pageId não tem editor configurado */
+
+.emptyState {
+  grid-column: 1 / -1;
+  padding: 80px 40px;
+  text-align: center;
+  color: rgba(245, 245, 247, 0.6);
+}
