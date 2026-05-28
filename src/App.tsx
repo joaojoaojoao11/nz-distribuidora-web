@@ -16,6 +16,8 @@ import Oracal670ColorPage from './pages/Wrap/Oracal670Colors';
 import Oracal651Colors from './pages/Wrap/Oracal651Colors';
 import ShWrappingColors from './pages/Wrap/ShWrappingColors';
 import NzwrapColorPage from './pages/Wrap/NzwrapColorPage';
+import Sign from './pages/Sign/Sign';
+import SignProduct from './pages/Sign/SignProduct';
 import FindInstaller from './pages/FindInstaller/FindInstaller';
 import Company from './pages/Company/Company';
 import BlogList from './pages/Blog/BlogList';
@@ -78,6 +80,8 @@ function App() {
                 <Route path="/wrap/oracal-651/:id" element={<Oracal651Colors />} />
                 <Route path="/wrap/oracal-670ra" element={<Oracal670 />} />
                 <Route path="/wrap/oracal-670ra/:colorCode" element={<Oracal670ColorPage />} />
+                <Route path="/sign" element={<Sign />} />
+                <Route path="/sign/:slug" element={<SignProduct />} />
                 <Route path="/sobre" element={<Company />} />
                 <Route path="/encontre-aplicador" element={<FindInstaller />} />
                 <Route path="/blog" element={<BlogList />} />

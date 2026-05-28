@@ -1,0 +1,322 @@
+/* ============================================================
+   NZSIGN · Bloco Avery Dennison
+   ============================================================ */
+
+.averySection {
+  position: relative;
+  padding: clamp(5rem, 10vh, 8rem) 0;
+  background-color: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.averySectionBackground {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(209, 30, 30, 0.06), transparent 55%),
+    radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.02), transparent 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.averySection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to top, transparent 0%, #070709 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.averySection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to bottom, transparent 0%, #040405 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.averyContainer {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+}
+
+/* --- Header --- */
+.averyHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.averyBrandLogo {
+  max-width: 280px;
+  height: auto;
+  margin: 0 auto 1.5rem;
+  display: block;
+  filter: brightness(1.05) drop-shadow(0 4px 20px rgba(0, 0, 0, 0.6));
+}
+
+.averyTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.averySubtitle {
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+/* --- Description --- */
+.averyDescription {
+  max-width: 920px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.8;
+}
+
+/* --- Badges --- */
+.averyBadges {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(3.5rem, 6vh, 5rem);
+}
+
+.averyBadge {
+  padding: 0.55rem 1.1rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+/* --- Diferenciais (4 cards numerados) --- */
+.averyDiffs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: clamp(4rem, 7vh, 6rem);
+}
+
+.averyDiff {
+  display: flex;
+  gap: 1.2rem;
+  padding: 1.8rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+}
+
+.averyDiff:hover {
+  border-color: rgba(209, 30, 30, 0.25);
+  transform: translateY(-2px);
+}
+
+.averyDiffNumber {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent-red);
+  flex-shrink: 0;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.averyDiffTitle {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.averyDiffText {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+/* --- Header das famílias --- */
+.familiesHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.familiesTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.familiesSub {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+/* --- Grid das famílias --- */
+.familiesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.familyCard {
+  padding: 1.8rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.familyCard:hover {
+  border-color: rgba(209, 30, 30, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+}
+
+.familyCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 1.2rem;
+  opacity: 0.85;
+  transition: var(--transition-snappy);
+}
+
+.familyCard:hover .familyCta {
+  opacity: 1;
+}
+
+.familyCtaArrow {
+  display: inline-block;
+  transition: transform var(--transition-snappy);
+}
+
+.familyCard:hover .familyCtaArrow {
+  transform: translateX(4px);
+}
+
+.familyCardBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1.1rem;
+  min-height: 1.6rem;
+}
+
+.familyBadge {
+  padding: 0.28rem 0.65rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  font-family: var(--font-heading);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.familyName {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.35rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.familySubtitle {
+  color: var(--accent-red);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.9rem;
+  letter-spacing: 0.01em;
+}
+
+.familyDescription {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .averyDiffs {
+    grid-template-columns: 1fr;
+  }
+  .familiesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .averyBrandLogo {
+    max-width: 200px;
+  }
+  .averyBadges {
+    gap: 0.4rem;
+  }
+  .averyBadge {
+    font-size: 0.66rem;
+    padding: 0.45rem 0.85rem;
+  }
+  .averyDiff {
+    padding: 1.4rem;
+    gap: 0.9rem;
+  }
+  .averyDiffNumber {
+    font-size: 1.6rem;
+  }
+  .familiesGrid {
+    grid-template-columns: 1fr;
+  }
+}

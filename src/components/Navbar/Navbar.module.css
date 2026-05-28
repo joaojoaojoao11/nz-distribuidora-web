@@ -53,6 +53,18 @@
   filter: brightness(0.8) contrast(1.2);
 }
 
+/* NZSIGN é wordmark wide (~5.5:1) enquanto NZPPF/NZWRAP têm viewBox quadrado.
+   Mantém height=80px igual aos siblings + max-width controla o footprint horizontal.
+   Com object-fit: contain o SVG escala pra dentro dessa caixa e o wordmark fica
+   com altura visual equivalente às letras dos outros logos. */
+.navLogoNzsign {
+  max-width: 72px;
+}
+
+.navLink:hover .navLogoNzsign {
+  filter: brightness(1.15) contrast(1.15);
+}
+
 .navLogoEmpresa {
   height: 80px;
   width: auto;
@@ -216,6 +228,10 @@
   .navLogoEmpresa {
     height: 55px;
     margin: 0.5rem 0;
+  }
+
+  .navLogoNzsign {
+    max-width: 130px;
   }
 
   .cta {

@@ -1,0 +1,874 @@
+/* ============================================================
+   NZSIGN · Página de Produto (/sign/:slug)
+   ============================================================ */
+
+.page {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+}
+
+.notFound {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.notFound h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+}
+
+.notFound p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.backLink {
+  display: inline-block;
+  padding: 0.9rem 2rem;
+  background: var(--accent-red);
+  color: #fff;
+  border-radius: 4px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* --- HERO --- */
+.hero {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  padding: 10rem 0 5rem;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(209, 30, 30, 0.08), transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.03), transparent 60%),
+    linear-gradient(180deg, #050507 0%, #0a0a0d 100%);
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(5, 5, 7, 0.6) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.heroBottomShadow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent 0%, #050505 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.heroContainer {
+  position: relative;
+  z-index: 3;
+}
+
+.heroTextContent {
+  max-width: 800px;
+}
+
+/* --- HERO BRAND MARK (logo Avery em destaque) --- */
+.heroBrandMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem 1.1rem 0.6rem 0.7rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-light);
+  border-radius: 100px;
+  margin-bottom: 1.4rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.heroBrandLogo {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+.heroBrandText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  line-height: 1;
+}
+
+.heroBrandKicker {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.heroBrandName {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.heroBreadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.heroBreadcrumb a {
+  color: var(--text-secondary);
+  transition: color var(--transition-snappy);
+}
+
+.heroBreadcrumb a:hover {
+  color: var(--text-primary);
+}
+
+.breadcrumbSep {
+  color: var(--text-muted);
+}
+
+.breadcrumbCurrent {
+  color: var(--accent-red);
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  margin-bottom: 1.2rem;
+}
+
+.heroSubtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  color: var(--text-secondary);
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 640px;
+}
+
+.heroBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.heroBadge {
+  padding: 0.55rem 1rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.heroCta {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+/* --- CTA BUTTONS (compartilhado) --- */
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.2rem;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: var(--transition-snappy);
+}
+
+.ctaPrimary:hover {
+  background: var(--accent-red-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -8px rgba(209, 30, 30, 0.45);
+}
+
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.2rem;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: var(--transition-snappy);
+  text-decoration: none;
+}
+
+.ctaSecondary:hover {
+  border-color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* --- SECTION COMMONS --- */
+.sectionHeader {
+  margin-bottom: 2.5rem;
+}
+
+.sectionKicker {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+/* --- DESC SECTION --- */
+.descSection {
+  position: relative;
+  padding: clamp(4rem, 8vh, 6rem) 0;
+  background-color: var(--bg-primary);
+}
+
+.descContainer {
+  max-width: 1180px;
+}
+
+.descGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+.descTextCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.descTextCol .sectionKicker {
+  margin-bottom: 0.6rem;
+}
+
+.descTextCol .sectionTitle {
+  margin-bottom: 1.5rem;
+}
+
+.descParagraph {
+  font-size: clamp(1rem, 1.25vw, 1.1rem);
+  color: var(--text-secondary);
+  line-height: 1.85;
+}
+
+/* --- BRAND PANEL (Avery destacado na descrição) --- */
+.brandPanel {
+  position: sticky;
+  top: 6rem;
+  padding: 2.2rem 1.8rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.brandPanelLogo {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  display: block;
+  margin-bottom: 1.2rem;
+}
+
+.brandPanelDivider {
+  width: 40px;
+  height: 2px;
+  background: var(--accent-red);
+  margin-bottom: 1.2rem;
+}
+
+.brandPanelStatement {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
+}
+
+.brandPanelFacts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.brandPanelFacts li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.75rem 0.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+}
+
+.brandFactValue {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--accent-red);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.brandFactLabel {
+  font-family: var(--font-heading);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* --- SPECS SECTION --- */
+.specsSection {
+  position: relative;
+  padding: clamp(4rem, 8vh, 6rem) 0;
+  background-color: var(--bg-secondary);
+}
+
+.specsContainer {
+  max-width: 1100px;
+}
+
+.specsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.specsCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.colTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 2vw, 1.6rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.015em;
+}
+
+.applicationsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.applicationItem {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.applicationItem:last-child {
+  border-bottom: none;
+}
+
+.bullet {
+  color: var(--accent-red);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.specsList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.specRow {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.specRow:last-child {
+  border-bottom: none;
+}
+
+.specLabel {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.specValue {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* --- FEATURES SECTION --- */
+.featuresSection {
+  position: relative;
+  padding: clamp(4rem, 9vh, 7rem) 0;
+  background-color: var(--bg-primary);
+}
+
+.featuresContainer {
+  max-width: 1100px;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.featureCard {
+  padding: 1.8rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+}
+
+.featureCard:hover {
+  border-color: rgba(209, 30, 30, 0.25);
+  transform: translateY(-2px);
+}
+
+.featureNumber {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent-red);
+  line-height: 1;
+  margin-bottom: 0.8rem;
+  letter-spacing: -0.02em;
+}
+
+.featureTitle {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.featureText {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* --- SUB-LINES SECTION --- */
+.subLinesSection {
+  position: relative;
+  padding: clamp(4rem, 9vh, 7rem) 0;
+  background-color: var(--bg-secondary);
+}
+
+.subLinesContainer {
+  max-width: 1100px;
+}
+
+.subLinesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.subLineCard {
+  padding: 1.8rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+}
+
+.subLineCard:hover {
+  border-color: rgba(209, 30, 30, 0.3);
+  transform: translateY(-3px);
+}
+
+.subLineCode {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent-red);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+
+.subLineName {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
+}
+
+.subLineDesc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* --- CTA SECTION --- */
+.ctaSection {
+  position: relative;
+  padding: clamp(5rem, 10vh, 8rem) 0;
+  background: linear-gradient(180deg, var(--bg-primary) 0%, #000 100%);
+  text-align: center;
+  overflow: hidden;
+}
+
+.ctaSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(209, 30, 30, 0.08), transparent 60%);
+  pointer-events: none;
+}
+
+.ctaContainer {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+}
+
+.ctaTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0.5rem 0 1rem;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.ctaSubtitle {
+  color: var(--text-secondary);
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.7;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* --- CTA AUTH BADGE (selo Avery no rodapé do CTA) --- */
+.ctaAuthBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+  padding: 0.65rem 1.2rem 0.65rem 0.8rem;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border-light);
+  border-radius: 100px;
+}
+
+.ctaAuthLogo {
+  height: 26px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+
+.ctaAuthText {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+/* --- RELATED SECTION --- */
+.relatedSection {
+  position: relative;
+  padding: clamp(4rem, 8vh, 6rem) 0;
+  background-color: var(--bg-primary);
+}
+
+.relatedContainer {
+  max-width: 1100px;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.relatedCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1.8rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.relatedCard:hover {
+  border-color: rgba(209, 30, 30, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+}
+
+.relatedBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+  min-height: 1.6rem;
+}
+
+.relatedBadge {
+  padding: 0.28rem 0.65rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  font-family: var(--font-heading);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.relatedName {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.relatedSubtitle {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin-bottom: 1.2rem;
+  flex-grow: 1;
+}
+
+.relatedCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: auto;
+}
+
+.relatedCard:hover .relatedCta span {
+  transform: translateX(4px);
+  transition: transform var(--transition-snappy);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .descGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .brandPanel {
+    position: static;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .specsGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+  .subLinesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .relatedGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 8rem 0 4rem;
+    min-height: 60vh;
+  }
+
+  .heroBreadcrumb {
+    font-size: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .heroCta {
+    flex-direction: column;
+  }
+
+  .ctaPrimary,
+  .ctaSecondary {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .heroCta .ctaPrimary,
+  .heroCta .ctaSecondary {
+    max-width: none;
+  }
+
+  .subLinesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .relatedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .heroBrandMark {
+    padding: 0.5rem 1rem 0.5rem 0.6rem;
+    gap: 0.7rem;
+  }
+
+  .heroBrandLogo {
+    height: 28px;
+  }
+
+  .heroBrandName {
+    font-size: 0.72rem;
+  }
+
+  .heroBrandKicker {
+    font-size: 0.56rem;
+  }
+
+  .brandPanelLogo {
+    max-width: 150px;
+  }
+
+  .brandPanelFacts {
+    gap: 0.35rem;
+  }
+
+  .brandFactValue {
+    font-size: 0.95rem;
+  }
+
+  .ctaAuthBadge {
+    flex-direction: row;
+    padding: 0.55rem 1rem 0.55rem 0.7rem;
+  }
+
+  .ctaAuthText {
+    font-size: 0.7rem;
+  }
+
+  .ctaAuthLogo {
+    height: 22px;
+  }
+}

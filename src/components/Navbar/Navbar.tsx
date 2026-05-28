@@ -38,6 +38,9 @@ export default function Navbar() {
           <Link to="/wrap" className={`${styles.navLink} ${location.pathname === '/wrap' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             <img src="/assets/logos/logo-nz-wrap.svg" alt="Linha NZ WRAP" className={styles.navLogo} />
           </Link>
+          <Link to="/sign" className={`${styles.navLink} ${location.pathname.startsWith('/sign') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
+            <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="Linha NZSIGN" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
+          </Link>
           <Link to="/sobre" className={`${styles.navLink} ${location.pathname === '/sobre' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             EMPRESA
           </Link>
