@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import styles from './WarrantyRegistration.module.css';
-import { CheckCircle2, Shield, AlertCircle, ChevronRight, QrCode, CalendarClock, Droplets, Leaf } from 'lucide-react';
+import { CheckCircle2, Shield, AlertCircle, ChevronRight, QrCode, CalendarClock, Droplets, Leaf, Car, LayoutGrid, Sofa } from 'lucide-react';
 
 const blurReveal: any = {
   hidden: { opacity: 0, y: 20, filter: 'blur(10px)' },
@@ -38,7 +38,7 @@ interface WarrantyFormData {
   data_aplicacao: string;
   linha_escolhida: 'NZWrap' | 'PPF' | '';
   produto_nome: string;
-  tipo_servico: 'Total/Full' | 'Parcial' | '';
+  tipo_servico: 'Total/Full' | 'Parcial' | 'Movel/Eletro' | '';
   areas_protegidas: string[];
 }
 
@@ -165,13 +165,18 @@ const WarrantyRegistration = () => {
 
   const handleNext = () => {
     if (step === 1) {
-      if (!formData.cliente_cpf || !formData.veiculo_placa_chassi || !formData.data_aplicacao || !formData.aplicador_nome) {
-        setErrorMsg('Preencha os campos obrigatórios.');
+      if (!formData.linha_escolhida) {
+        setErrorMsg('Selecione o tipo de certificado (NZPPF ou NZWRAP).');
         return;
       }
     } else if (step === 2) {
-      if (!formData.linha_escolhida) {
-        setErrorMsg('Selecione uma linha de produto.');
+      if (!formData.tipo_servico) {
+        setErrorMsg('Selecione o tipo de serviço.');
+        return;
+      }
+    } else if (step === 3) {
+      if (!formData.produto_nome.trim()) {
+        setErrorMsg('Selecione/informe a linha do produto.');
         return;
       }
     }
@@ -180,8 +185,8 @@ const WarrantyRegistration = () => {
   };
 
   const handleSubmit = async () => {
-    if (!formData.tipo_servico) {
-      setErrorMsg('Selecione o tipo de serviço.');
+    if (!formData.cliente_cpf || !formData.veiculo_placa_chassi || !formData.data_aplicacao || !formData.aplicador_nome) {
+      setErrorMsg('Preencha os campos obrigatórios.');
       return;
     }
     setErrorMsg('');
@@ -215,7 +220,7 @@ const WarrantyRegistration = () => {
         produto_nome: formData.produto_nome || formData.linha_escolhida,
         linha_escolhida: formData.linha_escolhida,
         tipo_servico: formData.tipo_servico,
-        areas_protegidas: formData.tipo_servico === 'Total/Full' ? ["Veículo Completo"] : formData.areas_protegidas,
+        areas_protegidas: formData.tipo_servico === 'Total/Full' ? ["Veículo Completo"] : formData.tipo_servico === 'Movel/Eletro' ? ["Item Completo"] : formData.areas_protegidas,
         codigo_autenticacao: code,
         garantia_anos: garantiaAnos,
         durabilidade_anos: durabilidadeAnos
@@ -250,7 +255,7 @@ const WarrantyRegistration = () => {
         console.error('Erro na notificação', e);
       }
 
-      setStep(4); // Certificate generated success
+      setStep(5); // Certificate generated success
     } catch (err: any) {
       setErrorMsg(err.message || 'Erro ao registrar garantia. Tente novamente.');
     } finally {
@@ -268,7 +273,7 @@ const WarrantyRegistration = () => {
     <div className={styles.container}>
       <div className={styles.content}>
 
-        {step < 4 && (
+        {step < 5 && (
           <motion.div
             className={styles.header}
             variants={stagger}
@@ -281,7 +286,7 @@ const WarrantyRegistration = () => {
               Se você está aqui, significa que seu veículo recebeu <strong>o que há de mais avançado</strong> em tecnologia de proteção de pintura no mundo.
             </motion.p>
             <motion.p variants={blurReveal} className={styles.subtitle}>
-              Autentique sua garantia oficial e legitime seu patrimônio [ PASSO {step}/3 ]
+              Autentique sua garantia oficial e legitime seu patrimônio [ PASSO {step}/4 ]
             </motion.p>
           </motion.div>
         )}
@@ -294,9 +299,9 @@ const WarrantyRegistration = () => {
         )}
 
         <AnimatePresence mode="wait">
-          {step === 1 && (
+          {step === 4 && (
             <motion.div
-              key="step1"
+              key="step4"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -370,12 +375,12 @@ const WarrantyRegistration = () => {
                   <input className={styles.input} type="text" name="aplicador_nome" value={formData.aplicador_nome} onChange={handleChange} placeholder="Nome do Credenciado" />
                 </div>
                 <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
-                  <label className={styles.label}>Placa ou Chassi</label>
-                  <input className={styles.input} type="text" name="veiculo_placa_chassi" value={formData.veiculo_placa_chassi} onChange={handleChange} placeholder="ABC-1234" />
+                  <label className={styles.label}>{formData.tipo_servico === 'Movel/Eletro' ? 'Identificação do Item (Nº de série / etiqueta)' : 'Placa ou Chassi'}</label>
+                  <input className={styles.input} type="text" name="veiculo_placa_chassi" value={formData.veiculo_placa_chassi} onChange={handleChange} placeholder={formData.tipo_servico === 'Movel/Eletro' ? 'Ex: SN-9F3K21 / etiqueta interna' : 'ABC-1234'} />
                 </div>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Modelo do Veículo</label>
-                  <input className={styles.input} type="text" name="veiculo_modelo" value={formData.veiculo_modelo} onChange={handleChange} placeholder="Ex: Porsche 911 Carrera" />
+                  <label className={styles.label}>{formData.tipo_servico === 'Movel/Eletro' ? 'Descrição do Móvel/Eletrodoméstico' : 'Modelo do Veículo'}</label>
+                  <input className={styles.input} type="text" name="veiculo_modelo" value={formData.veiculo_modelo} onChange={handleChange} placeholder={formData.tipo_servico === 'Movel/Eletro' ? 'Ex: Geladeira Brastemp Inox 540L' : 'Ex: Porsche 911 Carrera'} />
                 </div>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Data da Aplicação</label>
@@ -383,7 +388,46 @@ const WarrantyRegistration = () => {
                 </div>
               </div>
               <div className={styles.footerNav}>
-                <button className={styles.btnPrimary} style={{ marginLeft: 'auto' }} onClick={handleNext}>
+                <button className={styles.btnSecondary} onClick={() => setStep(3)}>VOLTAR</button>
+                <button className={styles.btnPrimary} onClick={handleSubmit} disabled={loading}>
+                  {loading ? 'PROCESSANDO...' : 'EMITIR CERTIFICADO OFICIAL'}
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className={styles.stepCard}
+            >
+              <div className={styles.bentoGrid}>
+                <div
+                  className={`${styles.bentoCard} ${formData.linha_escolhida === 'PPF' ? styles.bentoCardActive : ''}`}
+                  onClick={() => setFormData({ ...formData, linha_escolhida: 'PPF', produto_nome: '', tipo_servico: '', areas_protegidas: [] })}
+                >
+                  <div className={styles.bentoTitle} style={{ marginBottom: '1.5rem' }}>
+                    <img src="/assets/simbolos/LOGO-NZPPF-BRANCO.svg" alt="NZ-PPF" style={{ height: '110px', opacity: formData.linha_escolhida === 'PPF' ? 1 : 0.6, transition: 'all 0.3s ease', filter: formData.linha_escolhida === 'PPF' ? 'brightness(0) invert(0)' : 'none' }} />
+                  </div>
+                  <div className={styles.bentoServiceText}>PPF</div>
+                </div>
+                <div
+                  className={`${styles.bentoCard} ${formData.linha_escolhida === 'NZWrap' ? styles.bentoCardActive : ''}`}
+                  onClick={() => setFormData({ ...formData, linha_escolhida: 'NZWrap', produto_nome: '', tipo_servico: '', areas_protegidas: [] })}
+                >
+                  <div className={styles.bentoTitle} style={{ marginBottom: '1.5rem' }}>
+                    <img src="/assets/simbolos/LOGO-NZWRAP-BRANCO.svg" alt="NZWrap" style={{ height: '110px', opacity: formData.linha_escolhida === 'NZWrap' ? 1 : 0.6, transition: 'all 0.3s ease', filter: formData.linha_escolhida === 'NZWrap' ? 'brightness(0) invert(0)' : 'none' }} />
+                  </div>
+                  <div className={styles.bentoServiceText}>ENVELOPAMENTO</div>
+                </div>
+              </div>
+
+              <div className={styles.footerNav}>
+                <button className={styles.btnPrimary} style={{ marginLeft: 'auto' }} disabled={!formData.linha_escolhida} onClick={handleNext}>
                   AVANÇAR <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
                 </button>
               </div>
@@ -399,89 +443,30 @@ const WarrantyRegistration = () => {
               exit="exit"
               className={styles.stepCard}
             >
-              <div className={styles.bentoGrid}>
-                <div
-                  className={`${styles.bentoCard} ${formData.linha_escolhida === 'PPF' ? styles.bentoCardActive : ''}`}
-                  onClick={() => setFormData({ ...formData, linha_escolhida: 'PPF', produto_nome: '' })}
-                >
-                  <div className={styles.bentoTitle} style={{ marginBottom: '1.5rem' }}>
-                    <img src="/assets/simbolos/LOGO-NZPPF-BRANCO.svg" alt="NZ-PPF" style={{ height: '110px', opacity: formData.linha_escolhida === 'PPF' ? 1 : 0.6, transition: 'all 0.3s ease', filter: formData.linha_escolhida === 'PPF' ? 'brightness(0) invert(0)' : 'none' }} />
-                  </div>
-                  <div className={styles.bentoServiceText}>PPF</div>
-                </div>
-                <div
-                  className={`${styles.bentoCard} ${formData.linha_escolhida === 'NZWrap' ? styles.bentoCardActive : ''}`}
-                  onClick={() => setFormData({ ...formData, linha_escolhida: 'NZWrap', produto_nome: '' })}
-                >
-                  <div className={styles.bentoTitle} style={{ marginBottom: '1.5rem' }}>
-                    <img src="/assets/simbolos/LOGO-NZWRAP-BRANCO.svg" alt="NZWrap" style={{ height: '110px', opacity: formData.linha_escolhida === 'NZWrap' ? 1 : 0.6, transition: 'all 0.3s ease', filter: formData.linha_escolhida === 'NZWrap' ? 'brightness(0) invert(0)' : 'none' }} />
-                  </div>
-                  <div className={styles.bentoServiceText}>ENVELOPAMENTO</div>
-                </div>
-              </div>
-
-              {formData.linha_escolhida && (
-                <div className={styles.formGroup} style={{ marginTop: '2rem' }}>
-                  <label className={styles.label}>Linha do Produto / Material Utilizado ({formData.linha_escolhida})</label>
-                  {formData.linha_escolhida === 'PPF' ? (
-                    <select
-                      className={styles.inputSelect}
-                      name="produto_nome"
-                      value={formData.produto_nome}
-                      onChange={handleChange}
-                    >
-                      <option value="">Selecione a Linha Oficial...</option>
-                      {ppfProducts.map(p => (
-                        <option key={p.name} value={p.name}>{p.name}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      className={styles.input}
-                      type="text"
-                      name="produto_nome"
-                      value={formData.produto_nome}
-                      onChange={handleChange}
-                      placeholder="Ex: Preto Brilho, Nardo Grey, Fibra de Carbono..."
-                    />
-                  )}
-                </div>
-              )}
-
-              <div className={styles.footerNav}>
-                <button className={styles.btnSecondary} onClick={() => setStep(1)}>VOLTAR</button>
-                <button className={styles.btnPrimary} disabled={!formData.linha_escolhida || !formData.produto_nome.trim()} onClick={handleNext}>
-                  AVANÇAR <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {step === 3 && (
-            <motion.div
-              key="step3"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className={styles.stepCard}
-            >
-              <div className={styles.serviceTypeGrid}>
+              <div className={styles.serviceTypeGrid} style={formData.linha_escolhida === 'PPF' ? { gridTemplateColumns: 'repeat(3, 1fr)' } : undefined}>
                 <button
                   className={`${styles.serviceBtn} ${formData.tipo_servico === 'Total/Full' ? styles.serviceBtnActive : ''}`}
                   onClick={() => setFormData({ ...formData, tipo_servico: 'Total/Full', areas_protegidas: [] })}
                 >
-                  <Shield size={24} style={{ marginBottom: '0.5rem' }} />
-                  <br />
-                  Total / Full
+                  <span className={styles.serviceMarker}><Car size={22} /></span>
+                  <span className={styles.serviceLabel}>Total / Full</span>
                 </button>
                 <button
                   className={`${styles.serviceBtn} ${formData.tipo_servico === 'Parcial' ? styles.serviceBtnActive : ''}`}
                   onClick={() => setFormData({ ...formData, tipo_servico: 'Parcial' })}
                 >
-                  [+]<br />
-                  Parcial Frontal / Kit
+                  <span className={styles.serviceMarker}><LayoutGrid size={22} /></span>
+                  <span className={styles.serviceLabel}>Parcial Frontal / Kit</span>
                 </button>
+                {formData.linha_escolhida === 'PPF' && (
+                  <button
+                    className={`${styles.serviceBtn} ${formData.tipo_servico === 'Movel/Eletro' ? styles.serviceBtnActive : ''}`}
+                    onClick={() => setFormData({ ...formData, tipo_servico: 'Movel/Eletro', areas_protegidas: [] })}
+                  >
+                    <span className={styles.serviceMarker}><Sofa size={22} /></span>
+                    <span className={styles.serviceLabel}>Móvel / Eletrodoméstico</span>
+                  </button>
+                )}
               </div>
 
               {formData.tipo_servico === 'Parcial' && (
@@ -502,17 +487,61 @@ const WarrantyRegistration = () => {
               )}
 
               <div className={styles.footerNav}>
-                <button className={styles.btnSecondary} onClick={() => setStep(2)}>VOLTAR</button>
-                <button className={styles.btnPrimary} onClick={handleSubmit} disabled={loading || !formData.tipo_servico}>
-                  {loading ? 'PROCESSANDO...' : 'EMITIR CERTIFICADO OFICIAL'}
+                <button className={styles.btnSecondary} onClick={() => setStep(1)}>VOLTAR</button>
+                <button className={styles.btnPrimary} onClick={handleNext} disabled={!formData.tipo_servico}>
+                  AVANÇAR <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
                 </button>
               </div>
             </motion.div>
           )}
 
-          {step === 4 && (
+          {step === 3 && (
             <motion.div
-              key="step4"
+              key="step3"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className={styles.stepCard}
+            >
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Linha do Produto / Material Utilizado ({formData.linha_escolhida})</label>
+                {formData.linha_escolhida === 'PPF' ? (
+                  <select
+                    className={styles.inputSelect}
+                    name="produto_nome"
+                    value={formData.produto_nome}
+                    onChange={handleChange}
+                  >
+                    <option value="">Selecione a Linha Oficial...</option>
+                    {ppfProducts.map(p => (
+                      <option key={p.name} value={p.name}>{p.name}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    className={styles.input}
+                    type="text"
+                    name="produto_nome"
+                    value={formData.produto_nome}
+                    onChange={handleChange}
+                    placeholder="Ex: Preto Brilho, Nardo Grey, Fibra de Carbono..."
+                  />
+                )}
+              </div>
+
+              <div className={styles.footerNav}>
+                <button className={styles.btnSecondary} onClick={() => setStep(2)}>VOLTAR</button>
+                <button className={styles.btnPrimary} onClick={handleNext} disabled={!formData.produto_nome.trim()}>
+                  AVANÇAR <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 5 && (
+            <motion.div
+              key="step5"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -539,11 +568,11 @@ const WarrantyRegistration = () => {
 
                 <div className={styles.blueprintDataGrid}>
                   <div className={styles.dataCell}>
-                    <div className={styles.dataLabel}>VEÍCULO</div>
+                    <div className={styles.dataLabel}>{formData.tipo_servico === 'Movel/Eletro' ? 'ITEM' : 'VEÍCULO'}</div>
                     <div className={styles.dataValue}>{formData.veiculo_modelo.toUpperCase()}</div>
                   </div>
                   <div className={styles.dataCell}>
-                    <div className={styles.dataLabel}>PLACA/CHASSI</div>
+                    <div className={styles.dataLabel}>{formData.tipo_servico === 'Movel/Eletro' ? 'IDENTIFICAÇÃO' : 'PLACA/CHASSI'}</div>
                     <div className={styles.dataValue}>{formData.veiculo_placa_chassi.toUpperCase()}</div>
                   </div>
                   <div className={styles.dataCell}>

@@ -299,28 +299,94 @@
 }
 
 .serviceBtn {
-  background: rgba(0, 0, 0, 0.4);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 158px;
+  padding: 1.75rem 1.25rem;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.045), rgba(0, 0, 0, 0.35));
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.6);
-  padding: 1.5rem;
+  color: rgba(255, 255, 255, 0.55);
   font-family: 'Space Grotesk', monospace;
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 0;
+  overflow: hidden;
+  border-radius: 2px;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease, color 0.3s ease, background 0.3s ease,
+    box-shadow 0.35s ease;
+}
+
+/* Animated gold accent line that sweeps across the top */
+.serviceBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+  transform: scaleX(0);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .serviceBtn:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(212, 175, 55, 0.5);
   color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+}
+
+.serviceBtn:hover::before {
+  transform: scaleX(1);
+}
+
+/* Circular icon medallion */
+.serviceMarker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  color: #D4AF37;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.serviceBtn:hover .serviceMarker {
+  border-color: rgba(212, 175, 55, 0.6);
+  transform: scale(1.06);
+}
+
+.serviceLabel {
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .serviceBtnActive {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
+  background: linear-gradient(160deg, rgba(212, 175, 55, 0.16), rgba(212, 175, 55, 0.035));
+  border-color: #D4AF37;
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.35), 0 12px 32px rgba(212, 175, 55, 0.14);
+}
+
+.serviceBtnActive::before {
+  transform: scaleX(1);
+}
+
+.serviceBtnActive .serviceMarker {
+  background: #D4AF37;
+  border-color: #D4AF37;
+  color: #0a0a0a;
 }
 
 /* Chips Grid */
