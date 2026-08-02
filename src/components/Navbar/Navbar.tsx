@@ -41,6 +41,9 @@ export default function Navbar() {
           <Link to="/sign" className={`${styles.navLink} ${location.pathname.startsWith('/sign') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="Linha NZSIGN" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
           </Link>
+          <Link to="/decor" className={`${styles.navLink} ${location.pathname.startsWith('/decor') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
+            <img src="/assets/logos/nzdecor/logo-nzdecor-branco.svg" alt="Linha NZDECOR" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
+          </Link>
           <Link to="/sobre" className={`${styles.navLink} ${location.pathname === '/sobre' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             EMPRESA
           </Link>

@@ -1,0 +1,73 @@
+.segmentsSection { padding: 9rem 0; background: var(--bg-secondary); }
+.segmentsHeader { text-align: center; margin-bottom: 4rem; }
+.segmentsTag {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.segmentsTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+.segmentsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.segmentCard {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: default;
+  border: 1px solid var(--border-light);
+}
+.segmentImage {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+.segmentCard:hover .segmentImage { transform: scale(1.06); }
+.segmentOverlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(5,5,5,0.2) 0%, rgba(5,5,5,0.85) 90%);
+}
+.segmentContent {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 1.8rem 2rem;
+  color: white;
+}
+.segmentLabel {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--accent-red);
+  text-transform: uppercase;
+}
+.segmentName {
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0.4rem 0 0.6rem;
+}
+.segmentDesc {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  max-width: 90%;
+}
+
+@media (max-width: 720px) { .segmentsGrid { grid-template-columns: 1fr; } }

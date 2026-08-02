@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
   --bg-primary: #050505;
@@ -20,6 +20,7 @@
 
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --font-tech: 'Space Grotesk', 'Outfit', sans-serif;
 
   --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-snappy: 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
