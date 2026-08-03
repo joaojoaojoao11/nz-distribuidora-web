@@ -42,7 +42,7 @@ export default function Decor() {
             variants={staggerContainer}
           >
             <motion.img
-              src="/assets/logos/nzdecor/logo-nzdecor-branco.svg"
+              src="/assets/logos/nzdecor/logo-nzdecor-branco.png"
               alt="NZDECOR"
               className={styles.pageTitleImage}
               variants={fadeUpItem}
