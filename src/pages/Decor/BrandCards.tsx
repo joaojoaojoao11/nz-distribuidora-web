@@ -19,7 +19,8 @@ export default function BrandCards() {
           {decorBrands.map(b => (
             <motion.article key={b.slug} className={styles.brandCard} variants={scaleReveal}>
               <div className={styles.brandCardImage}>
-                <img src={b.image} alt={b.name} loading="lazy" />
+                <img src={b.image} alt={b.name} className={styles.brandCardPhoto} loading="lazy" />
+                <img src={b.logo} alt={`Logo ${b.name}`} className={styles.brandCardLogo} />
               </div>
               <div className={styles.brandCardContent}>
                 <div className={styles.brandOrigin}>{b.origin}</div>

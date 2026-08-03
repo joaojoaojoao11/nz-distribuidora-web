@@ -37,16 +37,26 @@
   box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 .brandCardImage {
+  position: relative;
   aspect-ratio: 16/10;
   overflow: hidden;
   background: #0a0a0a;
 }
-.brandCardImage img {
+.brandCardLogo {
+  position: absolute;
+  left: 1.6rem;
+  bottom: 1.4rem;
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,0.85));
+}
+.brandCardPhoto {
   width: 100%; height: 100%;
   object-fit: cover;
   transition: transform 0.8s ease;
 }
-.brandCard:hover .brandCardImage img { transform: scale(1.05); }
+.brandCard:hover .brandCardPhoto { transform: scale(1.05); }
 .brandCardContent {
   padding: 2.2rem;
   display: flex;
