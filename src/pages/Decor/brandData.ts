@@ -8,6 +8,7 @@ export type Brand = {
   logo: string;
   image: string;
   officialSite: string;
+  catalogPath?: string;
 };
 
 export const decorBrands: Brand[] = [
@@ -21,6 +22,7 @@ export const decorBrands: Brand[] = [
     logo: '/assets/logos/nzdecor/logo-sh-decor-branco.svg',
     image: '/assets/images/decor/decor_sh_card.jpg',
     officialSite: 'https://www.shdecorbrasil.com.br',
+    catalogPath: '/decor/sh',
   },
   {
     slug: 'etherna',

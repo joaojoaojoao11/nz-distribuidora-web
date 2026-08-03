@@ -1,0 +1,46 @@
+{
+  "slug": "cedro-amarelo",
+  "name": "Cedro Amarelo",
+  "code": "IT 251",
+  "family": "madeira",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor Cedro Amarelo, da família Madeira, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "200 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "9 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "61,5cm ou 123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "1.56m (somente rolo com 123cm), 3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/cedro-amarelo-revestimento-de-vinil-autoadesivo-600-a6a48f9a.png",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cedro-amarelo-revestimento-de-vinil-autoadesivo-gb-9a318-600-15a96248.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cedro-amarelo-revestimento-de-vinil-autoadesivo-gb-00c68-600-678e46a8.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cedro-amarelo-revestimento-de-vinil-autoadesivo-gb-3b5a6-600-e1042e1f.png"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/cedro-amarelo-revestimento-de-vinil-autoadesivo"
+}

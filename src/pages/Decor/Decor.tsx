@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
 import { staggerContainer, fadeUpItem } from './variants';
@@ -70,7 +71,7 @@ export default function Decor() {
             Papel de parede protege por 2 anos. Pintura descasca com umidade. Laminado exige marcenaria. Vinil decorativo profissional resolve tudo isso ao mesmo tempo — antibacteriano, antifúngico, resistente a chamas, à prova d'água, aplicado sem obra, removível quando o projeto pedir.
           </motion.p>
           <motion.p className={styles.manifestoParagraph} variants={fadeUpItem}>
-            A NZDecor distribui as duas linhas mais consistentes do mercado brasileiro — <strong>SH Decor</strong> e <strong>Etherna Decor</strong> — e faz consultoria técnica com arquitetos, designers e integradores. Não vendemos rolo. Especificamos ambiente.
+            A NZDecor distribui as duas linhas mais consistentes do mercado brasileiro — <Link to="/decor/sh"><strong>SH Decor</strong></Link> e <strong>Etherna Decor</strong> — e faz consultoria técnica com arquitetos, designers e integradores. Não vendemos rolo. Especificamos ambiente.
           </motion.p>
         </motion.div>
       </section>

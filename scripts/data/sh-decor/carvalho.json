@@ -1,0 +1,26 @@
+{
+  "slug": "carvalho",
+  "name": "Carvalho",
+  "code": "IT 334",
+  "family": "madeira",
+  "description": "Padrão Carvalho, da família Madeira, desenvolvido para ambientes internos. Termo moldável, garante acabamento perfeito mesmo em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas e eletrodomésticos. Contraindicado apenas para pisos e áreas externas.",
+  "specs": [
+    { "label": "Material", "value": "PVC Calandrado" },
+    { "label": "Espessura", "value": "200 microns" },
+    { "label": "Adesivo", "value": "Acrílico semi permanente" },
+    { "label": "Cor do Adesivo (Fundo)", "value": "Transparente" },
+    { "label": "Liner", "value": "Papel siliconado 120gr" },
+    { "label": "Durabilidade", "value": "9 anos" },
+    { "label": "Largura do Rolo", "value": "61,5cm ou 123cm" },
+    { "label": "Metragem", "value": "1,56m (só rolo 123cm), 3,12m, 6,25m, 12,5m ou 25m" }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-600-59376a05.png",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-gb-4bb30-600-7fa8c054.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-gb-f371c-600-1c2ea6e9.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-revestimento-de-vinil-autoadesivo-gb-b6663-600-ed3a0801.png"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/carvalho-revestimento-de-vinil-autoadesivo"
+}

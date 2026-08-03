@@ -19,6 +19,8 @@ import NzwrapColorPage from './pages/Wrap/NzwrapColorPage';
 import Sign from './pages/Sign/Sign';
 import SignProduct from './pages/Sign/SignProduct';
 import Decor from './pages/Decor/Decor';
+import ShDecorCatalog from './pages/Decor/ShDecorCatalog';
+import ShDecorProduct from './pages/Decor/ShDecorProduct';
 import FindInstaller from './pages/FindInstaller/FindInstaller';
 import Company from './pages/Company/Company';
 import BlogList from './pages/Blog/BlogList';
@@ -84,6 +86,8 @@ function App() {
                 <Route path="/sign" element={<Sign />} />
                 <Route path="/sign/:slug" element={<SignProduct />} />
                 <Route path="/decor" element={<Decor />} />
+                <Route path="/decor/sh" element={<ShDecorCatalog />} />
+                <Route path="/decor/sh/:slug" element={<ShDecorProduct />} />
                 <Route path="/sobre" element={<Company />} />
                 <Route path="/encontre-aplicador" element={<FindInstaller />} />
                 <Route path="/blog" element={<BlogList />} />

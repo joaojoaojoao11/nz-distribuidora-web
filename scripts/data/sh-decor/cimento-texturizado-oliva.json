@@ -1,0 +1,46 @@
+{
+  "slug": "cimento-texturizado-oliva",
+  "name": "Cimento Texturizado Oliva",
+  "code": "PCR 511",
+  "family": "cimento",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Cimento Texturizado Oliva, da família Cimento, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "200 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "9 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "61,5cm ou 123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "1.56m (somente rolo com 123cm), 3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/cimento-texturizado-oliva-revestimento-de-vinil-autoadesivo-600-495e7c63.png",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cimento-texturizado-oliva-revestimento-de-vinil-autoadesivo-gb-7580f-600-bcaa1659.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cimento-texturizado-oliva-revestimento-de-vinil-autoadesivo-gb-6f848-600-8c734338.jpg",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cimento-texturizado-oliva-revestimento-de-vinil-autoadesivo-gb-cd607-600-5394b1c3.jpg"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/cimento-texturizado-oliva-revestimento-de-vinil-autoadesivo"
+}

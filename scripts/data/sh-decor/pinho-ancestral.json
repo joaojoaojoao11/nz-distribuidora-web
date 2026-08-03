@@ -1,0 +1,50 @@
+{
+  "slug": "pinho-ancestral",
+  "name": "Pinho Ancestral",
+  "code": "IPW 838",
+  "family": "madeira",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Pinho Ancestral, da família Madeira, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "200 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Cor do Adesivo (Fundo)",
+      "value": "Transparente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "9 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "61,5cm ou 123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "1.56m (somente rolo com 123cm), 3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/pinho-ancestral-600-5083943c.jpg",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/pinho-ancestral-gb-11f8b-600-75873a82.jpg",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/pinho-ancestral-gb-4de2a-600-1a725a72.jpg",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/pinho-ancestral-gb-b48eb-600-5b30b1b6.jpg"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/pinho-ancestral-revestimento-de-vinil-autoadesivo"
+}

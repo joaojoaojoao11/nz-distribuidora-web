@@ -82,6 +82,12 @@
   margin-bottom: 1.4rem;
 }
 .manifestoParagraph strong { color: var(--text-primary); font-weight: 600; }
+.manifestoParagraph a strong {
+  border-bottom: 1px solid var(--border-strong);
+  padding-bottom: 1px;
+  transition: border-color 0.2s;
+}
+.manifestoParagraph a:hover strong { border-color: var(--accent-red); color: var(--accent-red); }
 
 /* CTA FINAL */
 .ctaSection {

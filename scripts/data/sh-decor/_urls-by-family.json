@@ -1,0 +1,72 @@
+{
+  "madeira": [
+    "carvalho-revestimento-de-vinil-autoadesivo",
+    "acacia-revestimento-de-vinil-autoadesivo",
+    "freijo-real-revestimento-de-vinil-autoadesivo",
+    "peroba-revestimento-de-vinil-autoadesivo",
+    "freixo-amarelo-revestimento-de-vinil-autoadesivo",
+    "cerejeira-rosa-revestimento-de-vinil-autoadesivo",
+    "carvalho-preto-revestimento-de-vinil-autoadesivo",
+    "carvalho-branco-revestimento-de-vinil-autoadesivo",
+    "carvalho-sonoma-revestimento-de-vinil-autoadesivo",
+    "cedro-amarelo-revestimento-de-vinil-autoadesivo",
+    "freixo-cinza-revestimento-de-vinil-autoadesivo",
+    "cedro-revestimento-de-vinil-autoadesivo",
+    "cerejeira-amendoa-revestimento-de-vinil-autoadesivo",
+    "nogal-peruano-revestimento-de-vinil-autoadesivo",
+    "freijo-natural-revestimento-de-vinil-autoadesivo",
+    "freixo-bege-revestimento-de-vinil-autoadesivo",
+    "freixo-marrom-revestimento-de-vinil-autoadesivo",
+    "carvalho-avela-revestimento-de-vinil-autoadesivo",
+    "pinho-chileno-revestimento-de-vinil-autoadesivo",
+    "pinho-ancestral-revestimento-de-vinil-autoadesivo",
+    "tabaco-revestimento-de-vinil-autoadesivo",
+    "freijo-amazonas-revestimento-de-vinil-autoadesivo"
+  ],
+  "pedra": [
+    "carrara-fosco-revestimento-de-vinil-autoadesivo",
+    "travertino-bege-revestimento-de-vinil-autoadesivo",
+    "marrom-imperial-revestimento-de-vinil-autoadesivo",
+    "mambo-revestimento-de-vinil-autoadesivo",
+    "travertino-brilho-revestimento-de-vinil-autoadesivo",
+    "preto-indiano-revestimento-de-vinil-autoadesivo",
+    "granilite-marfim-revestimento-de-vinil-autoadesivo"
+  ],
+  "cimento": [
+    "cimento-queimado-revestimento-de-vinil-autoadesivo",
+    "cimento-natural-revestimento-de-vinil-autoadesivo",
+    "concreto-revestimento-de-vinil-autoadesivo",
+    "cimento-texturizado-oliva-revestimento-de-vinil-autoadesivo"
+  ],
+  "couro": [
+    "couro-natural-revestimento-de-vinil-autoadesivo",
+    "couro-branco-revestimento-de-vinil-autoadesivo",
+    "couro-preto-revestimento-de-vinil-autoadesivo",
+    "couro-off-white-revestimento-de-vinil-autoadesivo"
+  ],
+  "tecido": [
+    "linho-revestimento-de-vinil-autoadesivo",
+    "palha-revestimento-de-vinil-autoadesivo",
+    "linho-azulado-revestimento-de-vinil-autoadesivo",
+    "tricoline-bege-revestimento-de-vinil-autoadesivo",
+    "savana-bege-revestimento-de-vinil-autoadesivo",
+    "romano-artico-revestimento-de-vinil-autoadesivo"
+  ],
+  "solido": [
+    "formica-branca-revestimento-de-vinil-autoadesivo",
+    "formica-azul-petroleo-revestimento-de-vinil-autoadesivo",
+    "formica-off-white-revestimento-de-vinil-autoadesivo",
+    "formica-preta-revestimento-de-vinil-autoadesivo",
+    "formica-cinza-esmeralda-revestimento-de-vinil-autoadesivo",
+    "formica-cinza-glacial-revestimento-de-vinil-autoadesivo",
+    "formica-verde-balsamo-revestimento-de-vinil-autoadesivo",
+    "formica-nude-revestimento-de-vinil-autoadesivo",
+    "formica-cinza-telegrey-revestimento-de-vinil-autoadesivo",
+    "formica-laca-branco-revestimento-de-vinil-autoadesivo"
+  ],
+  "piso": [
+    "carvalho-alpino-revestimento-de-vinil-autoadesivo",
+    "carvalho-europeu-revestimento-de-vinil-autoadesivo"
+  ],
+  "tijolo": []
+}

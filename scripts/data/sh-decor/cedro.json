@@ -1,0 +1,46 @@
+{
+  "slug": "cedro",
+  "name": "Cedro",
+  "code": "IT 252",
+  "family": "madeira",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Cedro, da família Madeira, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "200 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "9 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "61,5cm ou 123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "1.56m (somente rolo com 123cm), 3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/cedro-600-ef9acacd.jpg",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cedro-gb-c292a-600-53b3d769.jpg",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cedro-gb-3397e-600-2ba05b1c.jpg",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/cedro-gb-ea7dc-600-063ca9c9.jpg"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/cedro-revestimento-de-vinil-autoadesivo"
+}

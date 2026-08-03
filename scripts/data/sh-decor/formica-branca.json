@@ -1,0 +1,46 @@
+{
+  "slug": "formica-branca",
+  "name": "Fórmica Branca",
+  "code": "SD 901",
+  "family": "solido",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Fórmica Branca, da família Sólido, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "200 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "9 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "61,5cm ou 123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "1.56m (somente rolo com 123cm), 3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/formica-branca-600-0f697249.png",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/formica-branca-gb-109ad-600-63c03e2b.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/formica-branca-gb-d06c9-600-611b2a65.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/formica-branca-gb-b4155-600-14c4a19f.png"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/formica-branca-revestimento-de-vinil-autoadesivo"
+}

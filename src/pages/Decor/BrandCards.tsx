@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { staggerContainer, fadeUpItem, cardStagger, scaleReveal } from './variants';
 import { decorBrands } from './brandData';
@@ -32,9 +33,20 @@ export default function BrandCards() {
                     <span key={bd} className={styles.brandBadge}>{bd}</span>
                   ))}
                 </div>
-                <a href={b.officialSite} target="_blank" rel="noopener noreferrer" className={styles.brandLink}>
-                  Ver catálogo oficial →
-                </a>
+                {b.catalogPath ? (
+                  <div className={styles.brandLinks}>
+                    <Link to={b.catalogPath} className={styles.brandLink}>
+                      VER CATÁLOGO COMPLETO →
+                    </Link>
+                    <a href={b.officialSite} target="_blank" rel="noopener noreferrer" className={styles.brandLinkSecondary}>
+                      site oficial ↗
+                    </a>
+                  </div>
+                ) : (
+                  <a href={b.officialSite} target="_blank" rel="noopener noreferrer" className={styles.brandLink}>
+                    Ver catálogo oficial →
+                  </a>
+                )}
               </div>
             </motion.article>
           ))}

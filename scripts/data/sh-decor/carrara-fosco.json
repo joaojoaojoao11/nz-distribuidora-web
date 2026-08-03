@@ -1,0 +1,46 @@
+{
+  "slug": "carrara-fosco",
+  "name": "Carrara Fosco",
+  "code": "IP 413-12",
+  "family": "pedra",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Carrara Fosco, da família Pedra, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "200 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "9 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "61,5cm ou 123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "1.56m (somente rolo com 123cm), 3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/carrara-600-598afae4.png",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carrara-gb-519f3-600-8e7b61f0.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carrara-gb-e69c9-600-62f4efab.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carrara-fosco-revestimento-de-vinil-autoadesivo-gb-1568c-600-df59510b.jpg"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/carrara-fosco-revestimento-de-vinil-autoadesivo"
+}

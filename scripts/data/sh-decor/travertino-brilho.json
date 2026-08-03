@@ -1,0 +1,45 @@
+{
+  "slug": "travertino-brilho",
+  "name": "Travertino Brilho",
+  "code": "IP 413-3",
+  "family": "pedra",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Travertino Brilho, da família Pedra, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "200 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "9 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "61,5cm ou 123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "1.56m (somente rolo com 123cm), 3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/travertino-brilho-600-e062504b.png",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/travertino-brilho-gb-670ae-600-2557bb16.jpg",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/travertino-brilho-gb-002b3-600-1510da07.png"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/travertino-brilho-revestimento-de-vinil-autoadesivo"
+}

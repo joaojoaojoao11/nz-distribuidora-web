@@ -1,0 +1,49 @@
+{
+  "slug": "carvalho-europeu",
+  "name": "Carvalho Europeu",
+  "code": "FDS 1007",
+  "family": "piso",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Carvalho Europeu da família Piso, desenvolvido para utilização em pisos de ambientes internos. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "500 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Cor do Adesivo (Fundo)",
+      "value": "Transparente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "5 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-europeu-revestimento-de-vinil-autoadesivo-600-a2b91536.png",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-europeu-revestimento-de-vinil-autoadesivo-gb-5c012-600-9307d39b.jpg",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-europeu-revestimento-de-vinil-autoadesivo-gb-a63cb-600-ad55656d.jpg"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/carvalho-europeu-revestimento-de-vinil-autoadesivo"
+}

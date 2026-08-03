@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { shDecorSlugs } from './_lib/shDecorSlugs.js';
 
 // Initialize Supabase admin client for the serverless function
 // We use Vite's environment variables if available locally, or Vercel's standard environment variables in production
@@ -24,6 +25,9 @@ export default async function handler(req: Request) {
     '/ppf/flow-gloss',
     '/ppf/core-gloss',
     '/wrap',
+    '/sign',
+    '/decor',
+    '/decor/sh',
     '/sobre',
     '/encontre-aplicador',
     '/blog'
@@ -47,6 +51,15 @@ export default async function handler(req: Request) {
     sitemapContent += `    <loc>${baseUrl}${path}</loc>\n`;
     sitemapContent += `    <changefreq>weekly</changefreq>\n`;
     sitemapContent += `    <priority>${path === '' ? '1.0' : '0.8'}</priority>\n`;
+    sitemapContent += `  </url>\n`;
+  }
+
+  // Add SH Decor catalog products
+  for (const slug of shDecorSlugs) {
+    sitemapContent += `  <url>\n`;
+    sitemapContent += `    <loc>${baseUrl}/decor/sh/${slug}</loc>\n`;
+    sitemapContent += `    <changefreq>monthly</changefreq>\n`;
+    sitemapContent += `    <priority>0.7</priority>\n`;
     sitemapContent += `  </url>\n`;
   }
 

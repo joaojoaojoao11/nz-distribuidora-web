@@ -116,6 +116,23 @@
   transition: color 0.2s;
 }
 .brandLink:hover { color: var(--accent-red-hover); }
+.brandLinks {
+  margin-top: auto;
+  padding-top: 1.2rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brandLinks .brandLink { margin-top: 0; padding-top: 0; }
+.brandLinkSecondary {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.brandLinkSecondary:hover { color: var(--text-secondary); }
 
 @media (max-width: 900px) {
   .brandsGrid { grid-template-columns: 1fr; }

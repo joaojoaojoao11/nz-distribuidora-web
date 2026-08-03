@@ -1,0 +1,46 @@
+{
+  "slug": "carvalho-alpino",
+  "name": "Carvalho Alpino",
+  "code": "FDS 1005",
+  "family": "piso",
+  "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Carvalho Alpini da família Piso, desenvolvido para utilização em pisos de ambientes internos. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade.",
+  "specs": [
+    {
+      "label": "Material",
+      "value": "PVC Calandrado"
+    },
+    {
+      "label": "Espessura",
+      "value": "500 microns"
+    },
+    {
+      "label": "Adesivo",
+      "value": "Acrílico semi permanente"
+    },
+    {
+      "label": "Liner",
+      "value": "Papel siliconado 120gr"
+    },
+    {
+      "label": "Durabilidade",
+      "value": "5 anos"
+    },
+    {
+      "label": "Tamanho do Rolo",
+      "value": "123cm"
+    },
+    {
+      "label": "Metragem",
+      "value": "3.12m, 6.25m, 12.5m ou 25m"
+    }
+  ],
+  "imageUrls": {
+    "texture": "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-alpino-revestimento-de-vinil-autoadesivo-600-cc3f3097.png",
+    "ambient": [
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-alpino-revestimento-de-vinil-autoadesivo-gb-1c266-600-464a9e42.jpg",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-alpino-revestimento-de-vinil-autoadesivo-gb-4f1f8-600-32fa1a7d.png",
+      "https://www.shdecorbrasil.com.br/storage/images/cache/carvalho-alpino-revestimento-de-vinil-autoadesivo-gb-1322c-600-5c98ffac.png"
+    ]
+  },
+  "sourceUrl": "https://www.shdecorbrasil.com.br/produto/carvalho-alpino-revestimento-de-vinil-autoadesivo"
+}
