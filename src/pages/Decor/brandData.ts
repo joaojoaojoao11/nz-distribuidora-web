@@ -18,7 +18,7 @@ export const decorBrands: Brand[] = [
     tagline: 'Curadoria ampla. Padrão internacional.',
     description: 'Linha decorativa da Sign House, distribuidora referência da Orafol Alemanha no Brasil há mais de 20 anos. Portfólio organizado em famílias temáticas: madeira, pedra, cimento, metal, tecido, couro, tijolo, sólidos. Textura tátil realista, tecnologia Bubble Free, exclusivo uso interno.',
     badges: ['TEXTURA TÁTIL REALISTA', 'BUBBLE FREE', 'USO INTERNO', 'LAVÁVEL · ATÓXICO'],
-    logo: '/assets/logos/nzdecor/logo-sh-decor.svg',
+    logo: '/assets/logos/nzdecor/logo-sh-decor-branco.svg',
     image: '/assets/images/decor/decor_sh_card.jpg',
     officialSite: 'https://www.shdecorbrasil.com.br',
   },
