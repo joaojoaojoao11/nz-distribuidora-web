@@ -13,6 +13,25 @@ import styles from './ShDecorCatalog.module.css';
 const WHATSAPP_URL =
   'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20estou%20vendo%20o%20cat%C3%A1logo%20SH%20Decor%20no%20site%20da%20NZDecor%20e%20quero%20um%20or%C3%A7amento.';
 
+// Mosaico do hero: texturas reais do catálogo, intercaladas por família.
+// São os mesmos arquivos do grid — o navegador reaproveita o download.
+const heroMosaicTextures = (() => {
+  const byFamily = new Map<string, string[]>();
+  for (const p of shDecorProducts) {
+    const list = byFamily.get(p.family) ?? [];
+    list.push(p.images.texture);
+    byFamily.set(p.family, list);
+  }
+  const pools = [...byFamily.values()];
+  const picks: string[] = [];
+  for (let round = 0; picks.length < 18 && round < 6; round++) {
+    for (const pool of pools) {
+      if (pool[round] && picks.length < 18) picks.push(pool[round]);
+    }
+  }
+  return picks;
+})();
+
 export default function ShDecorCatalog() {
   const [searchParams, setSearchParams] = useSearchParams();
   const familiaParam = searchParams.get('familia');
@@ -61,6 +80,12 @@ export default function ShDecorCatalog() {
 
       {/* HERO COMPACTO */}
       <header className={styles.hero}>
+        <div className={styles.heroMosaic} aria-hidden="true">
+          {heroMosaicTextures.map((src) => (
+            <img key={src} src={src} alt="" />
+          ))}
+        </div>
+        <div className={styles.heroOverlay} aria-hidden="true"></div>
         <div className={`container ${styles.heroContainer}`}>
           <motion.div initial="hidden" animate="show" variants={staggerContainer}>
             <motion.div className={styles.breadcrumb} variants={fadeUpItem}>
@@ -148,6 +173,8 @@ export default function ShDecorCatalog() {
                     className={styles.productImage}
                     loading="lazy"
                   />
+                  <span className={styles.productCodeChip}>{p.code}</span>
+                  <span className={styles.productHoverCta}>VER PADRÃO →</span>
                 </div>
                 <div className={styles.productInfo}>
                   <span className={styles.productFamily}>

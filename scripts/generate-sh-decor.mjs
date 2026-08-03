@@ -37,8 +37,10 @@ const entries = products.map((p) => {
     }
   }
   const famName = FAMILY_NAMES[p.family] ?? p.family;
+  // corrige palavras coladas vindas do scrape (ex.: "CouroNatural")
+  const cleanDescription = (p.description || '').replace(/([a-zà-ú])([A-ZÀ-Ú])/g, '$1 $2');
   const description =
-    p.description ||
+    cleanDescription ||
     `Padrão ${p.name}, da família ${famName}. Revestimento de vinil autoadesivo SH Decor para ambientes internos, termo moldável, com aplicação em móveis, paredes, portas e superfícies de alta complexidade.`;
 
   return {

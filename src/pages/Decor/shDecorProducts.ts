@@ -1792,7 +1792,7 @@ export const shDecorProducts: ShDecorProduct[] = [
     "name": "Couro Natural",
     "code": "IE 029",
     "family": "couro",
-    "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no CouroNatural, da família Couro, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
+    "description": "Utilize os revestimentos de vinil autoadesivo da SH Decor no Couro Natural, da família Couro, desenvolvido para utilização em ambientes internos. O material adesivo pode ser utilizado como papel de parede e muito mais, com contraindicações de uso apenas para pisos e áreas externas. Sua característica termo moldável é determinante para um acabamento perfeito, sendo indicado inclusive para aplicação em superfícies de alta complexidade: pias, paredes, armários, tetos, mesas, guarda-roupas, geladeiras, portas, eletrodomésticos, entre outros.",
     "specs": [
       {
         "label": "Material",
