@@ -21,6 +21,8 @@ import SignProduct from './pages/Sign/SignProduct';
 import Decor from './pages/Decor/Decor';
 import ShDecorCatalog from './pages/Decor/ShDecorCatalog';
 import ShDecorProduct from './pages/Decor/ShDecorProduct';
+import EthernaCatalog from './pages/Decor/EthernaCatalog';
+import EthernaProduct from './pages/Decor/EthernaProduct';
 import FindInstaller from './pages/FindInstaller/FindInstaller';
 import Company from './pages/Company/Company';
 import BlogList from './pages/Blog/BlogList';
@@ -88,6 +90,8 @@ function App() {
                 <Route path="/decor" element={<Decor />} />
                 <Route path="/decor/sh" element={<ShDecorCatalog />} />
                 <Route path="/decor/sh/:slug" element={<ShDecorProduct />} />
+                <Route path="/decor/etherna" element={<EthernaCatalog />} />
+                <Route path="/decor/etherna/:slug" element={<EthernaProduct />} />
                 <Route path="/sobre" element={<Company />} />
                 <Route path="/encontre-aplicador" element={<FindInstaller />} />
                 <Route path="/blog" element={<BlogList />} />

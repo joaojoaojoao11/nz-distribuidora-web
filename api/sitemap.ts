@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { shDecorSlugs } from './_lib/shDecorSlugs.js';
+import { ethernaSlugs } from './_lib/ethernaSlugs.js';
 
 // Initialize Supabase admin client for the serverless function
 // We use Vite's environment variables if available locally, or Vercel's standard environment variables in production
@@ -28,6 +29,7 @@ export default async function handler(req: Request) {
     '/sign',
     '/decor',
     '/decor/sh',
+    '/decor/etherna',
     '/sobre',
     '/encontre-aplicador',
     '/blog'
@@ -58,6 +60,15 @@ export default async function handler(req: Request) {
   for (const slug of shDecorSlugs) {
     sitemapContent += `  <url>\n`;
     sitemapContent += `    <loc>${baseUrl}/decor/sh/${slug}</loc>\n`;
+    sitemapContent += `    <changefreq>monthly</changefreq>\n`;
+    sitemapContent += `    <priority>0.7</priority>\n`;
+    sitemapContent += `  </url>\n`;
+  }
+
+  // Add Etherna Decor catalog products
+  for (const slug of ethernaSlugs) {
+    sitemapContent += `  <url>\n`;
+    sitemapContent += `    <loc>${baseUrl}/decor/etherna/${slug}</loc>\n`;
     sitemapContent += `    <changefreq>monthly</changefreq>\n`;
     sitemapContent += `    <priority>0.7</priority>\n`;
     sitemapContent += `  </url>\n`;
