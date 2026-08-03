@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
@@ -32,22 +33,57 @@ const heroMosaicTextures = (() => {
   return picks;
 })();
 
+// busca sem acentos/caixa: "acacia" encontra "Acácia"
+const normalize = (s: string) =>
+  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+
 export default function ShDecorCatalog() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const searchRef = useRef<HTMLInputElement>(null);
+
   const familiaParam = searchParams.get('familia');
   const activeFamily = shDecorFamilies.find((f) => f.slug === familiaParam)?.slug ?? null;
+  const query = searchParams.get('q') ?? '';
+  const nq = normalize(query);
 
-  const visibleProducts = activeFamily
-    ? shDecorProducts.filter((p) => p.family === activeFamily)
-    : shDecorProducts;
+  const familyName = (slug: ShDecorFamilySlug) =>
+    shDecorFamilies.find((f) => f.slug === slug)?.name ?? slug;
+
+  const visibleProducts = shDecorProducts.filter((p) => {
+    if (activeFamily && p.family !== activeFamily) return false;
+    if (!nq) return true;
+    return (
+      normalize(p.name).includes(nq) ||
+      normalize(p.code).includes(nq) ||
+      normalize(familyName(p.family)).includes(nq)
+    );
+  });
 
   const familyCount = (slug: ShDecorFamilySlug) =>
     shDecorProducts.filter((p) => p.family === slug).length;
 
-  const setFamily = (slug: ShDecorFamilySlug | null) => {
-    if (slug) setSearchParams({ familia: slug });
-    else setSearchParams({});
+  const updateParams = (familia: string | null, q: string) => {
+    const params: Record<string, string> = {};
+    if (familia) params.familia = familia;
+    if (q) params.q = q;
+    setSearchParams(params, { replace: true });
   };
+
+  const setFamily = (slug: ShDecorFamilySlug | null) => updateParams(slug, query);
+  const setQuery = (q: string) => updateParams(activeFamily, q);
+
+  // atalho "/" foca a busca em qualquer ponto da página
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(target.tagName)) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const schema = JSON.stringify({
     '@context': 'https://schema.org',
@@ -134,28 +170,80 @@ export default function ShDecorCatalog() {
       {/* FILTRO + GRID */}
       <section className={styles.catalogSection}>
         <div className={`container ${styles.catalogContainer}`}>
-          <div className={styles.familyFilter}>
-            <button
-              type="button"
-              className={`${styles.familyPill} ${!activeFamily ? styles.familyPillActive : ''}`}
-              onClick={() => setFamily(null)}
-            >
-              TODOS <span className={styles.pillCount}>{shDecorProducts.length}</span>
-            </button>
-            {shDecorFamilies.map(
-              (f) =>
-                familyCount(f.slug) > 0 && (
-                  <button
-                    key={f.slug}
-                    type="button"
-                    className={`${styles.familyPill} ${activeFamily === f.slug ? styles.familyPillActive : ''}`}
-                    onClick={() => setFamily(f.slug)}
-                  >
-                    {f.name.toUpperCase()} <span className={styles.pillCount}>{familyCount(f.slug)}</span>
-                  </button>
-                )
-            )}
+          <div className={styles.filterBar}>
+            <div className={styles.searchWrap}>
+              <svg
+                className={styles.searchIcon}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.5" y2="16.5" />
+              </svg>
+              <input
+                ref={searchRef}
+                type="search"
+                className={styles.searchInput}
+                placeholder="Buscar padrão, código ou família…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    setQuery('');
+                    e.currentTarget.blur();
+                  }
+                }}
+                aria-label="Buscar padrão"
+              />
+              {query ? (
+                <button
+                  type="button"
+                  className={styles.searchClear}
+                  onClick={() => setQuery('')}
+                  aria-label="Limpar busca"
+                >
+                  ✕
+                </button>
+              ) : (
+                <kbd className={styles.searchKbd}>/</kbd>
+              )}
+            </div>
+
+            <div className={styles.familyFilter}>
+              <button
+                type="button"
+                className={`${styles.familyPill} ${!activeFamily ? styles.familyPillActive : ''}`}
+                onClick={() => setFamily(null)}
+              >
+                TODOS <span className={styles.pillCount}>{shDecorProducts.length}</span>
+              </button>
+              {shDecorFamilies.map(
+                (f) =>
+                  familyCount(f.slug) > 0 && (
+                    <button
+                      key={f.slug}
+                      type="button"
+                      className={`${styles.familyPill} ${activeFamily === f.slug ? styles.familyPillActive : ''}`}
+                      onClick={() => setFamily(f.slug)}
+                    >
+                      {f.name.toUpperCase()} <span className={styles.pillCount}>{familyCount(f.slug)}</span>
+                    </button>
+                  )
+              )}
+            </div>
           </div>
+
+          {query && (
+            <p className={styles.searchMeta}>
+              {visibleProducts.length}{' '}
+              {visibleProducts.length === 1 ? 'padrão encontrado' : 'padrões encontrados'} para
+              “{query}”
+            </p>
+          )}
 
           {activeFamily && (
             <p className={styles.familyDescription}>
@@ -188,7 +276,25 @@ export default function ShDecorCatalog() {
           </div>
 
           {visibleProducts.length === 0 && (
-            <p className={styles.emptyState}>Nenhum padrão nesta família ainda.</p>
+            <div className={styles.emptyState}>
+              <p className={styles.emptyTitle}>
+                Nenhum padrão encontrado{query ? ` para “${query}”` : ' nesta família'}.
+              </p>
+              <p className={styles.emptyHint}>
+                Tente outro nome ou código — ou fale com a gente: temos acesso ao portfólio
+                completo da SH Decor.
+              </p>
+              <div className={styles.emptyActions}>
+                {query && (
+                  <button type="button" className={styles.emptyClear} onClick={() => setQuery('')}>
+                    LIMPAR BUSCA
+                  </button>
+                )}
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={styles.emptyWhats}>
+                  FALAR COM A NZDECOR →
+                </a>
+              </div>
+            </div>
           )}
         </div>
       </section>
