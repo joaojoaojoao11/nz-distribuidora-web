@@ -7,7 +7,8 @@ import ApplicationGrid from './ApplicationGrid';
 import EnterpriseProjects from './EnterpriseProjects';
 import styles from './Decor.module.css';
 
-const WHATSAPP_URL = 'https://wa.me/5511953037391?text=Ol%C3%A1%2C%20quero%20iniciar%20consultoria%20decorativa%20NZDecor.%20Meu%20projeto%20%C3%A9...';
+const WHATSAPP_URL = 'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20quero%20iniciar%20consultoria%20decorativa%20NZDecor.%20Meu%20projeto%20%C3%A9...';
+const CONTACT_EMAIL = 'daniela@nzdistribuidora.com.br';
 
 export default function Decor() {
   const schema = JSON.stringify({
@@ -100,6 +101,9 @@ export default function Decor() {
               INICIAR CONSULTORIA
             </a>
           </motion.div>
+          <motion.p className={styles.ctaEmail} variants={fadeUpItem}>
+            ou escreva para <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          </motion.p>
         </motion.div>
       </section>
     </div>

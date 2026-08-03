@@ -126,6 +126,20 @@
   font-size: 0.95rem;
 }
 .ctaPrimary:hover { background: var(--accent-red-hover); transform: translateY(-2px); }
+.ctaEmail {
+  margin-top: 1.6rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+.ctaEmail a {
+  color: var(--text-secondary);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-strong);
+  padding-bottom: 1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.ctaEmail a:hover { color: var(--accent-red); border-color: var(--accent-red); }
 
 @media (max-width: 720px) {
   .manifestoSection, .ctaSection { padding: 6rem 0; }
