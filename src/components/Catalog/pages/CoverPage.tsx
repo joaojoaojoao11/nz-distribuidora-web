@@ -67,14 +67,14 @@ export default function CoverPage({ pageNumber = 1, totalPages }: CoverPageProps
               defaultValue="FILMES PPF AUTOMOTIVOS"
               as="div"
               className={styles.captionMono}
-              style={{ marginBottom: 10 }}
+              style={{ marginBottom: 'var(--space-2)' }}
             />
             <EditableText
               pageId={PAGE_ID}
               fieldKey="footer.left2"
               defaultValue="6 LINHAS · ATÉ 12 ANOS DE GARANTIA"
               as="div"
-              style={{ fontFamily: 'Outfit', fontWeight: 600, fontSize: 32, color: '#fff', letterSpacing: 1 }}
+              className={styles.coverFooterTagline}
             />
           </div>
           <EditableText

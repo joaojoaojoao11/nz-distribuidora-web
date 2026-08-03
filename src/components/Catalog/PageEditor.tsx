@@ -195,6 +195,8 @@ export default function PageEditor({ pageId, ctx, onClose }: PageEditorProps) {
       hidden: undefined,
       fontScale: undefined,
       letterSpacing: undefined,
+      offsetX: undefined,
+      offsetY: undefined,
     });
   };
 
@@ -222,6 +224,35 @@ export default function PageEditor({ pageId, ctx, onClose }: PageEditorProps) {
     const next = Math.round((current + delta) * 1000) / 1000;
     const clamped = Math.max(-0.02, Math.min(0.05, next));
     setElement(pageId, field.key, { letterSpacing: clamped });
+  };
+
+  /**
+   * Ajusta a posição (translate) do elemento em px no referencial da
+   * página real (1819×2551). Step default: 10 px. Faixa: −400 a +400 px
+   * em cada eixo — o suficiente pra encostar um elemento na borda oposta
+   * sem deixar o usuário se perder.
+   */
+  const handleOffsetAdjust = (
+    field: EditableField,
+    axis: 'x' | 'y',
+    delta: number
+  ) => {
+    const el = pageOverrides.elements?.[field.key];
+    const currentX = el?.offsetX ?? 0;
+    const currentY = el?.offsetY ?? 0;
+    if (axis === 'x') {
+      const next = Math.round(currentX + delta);
+      const clamped = Math.max(-400, Math.min(400, next));
+      setElement(pageId, field.key, { offsetX: clamped });
+    } else {
+      const next = Math.round(currentY + delta);
+      const clamped = Math.max(-400, Math.min(400, next));
+      setElement(pageId, field.key, { offsetY: clamped });
+    }
+  };
+
+  const handleOffsetReset = (field: EditableField) => {
+    setElement(pageId, field.key, { offsetX: undefined, offsetY: undefined });
   };
 
   const handleScaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -329,6 +360,8 @@ export default function PageEditor({ pageId, ctx, onClose }: PageEditorProps) {
               onReset={() => handleReset(field)}
               onFontScaleAdjust={(delta) => handleFontScaleAdjust(field, delta)}
               onLetterSpacingAdjust={(delta) => handleLetterSpacingAdjust(field, delta)}
+              onOffsetAdjust={(axis, delta) => handleOffsetAdjust(field, axis, delta)}
+              onOffsetReset={() => handleOffsetReset(field)}
             />
           ))}
         </div>
@@ -379,6 +412,8 @@ interface FieldRowProps {
   onReset: () => void;
   onFontScaleAdjust: (delta: number) => void;
   onLetterSpacingAdjust: (delta: number) => void;
+  onOffsetAdjust: (axis: 'x' | 'y', delta: number) => void;
+  onOffsetReset: () => void;
 }
 
 function FieldRow({
@@ -390,6 +425,8 @@ function FieldRow({
   onReset,
   onFontScaleAdjust,
   onLetterSpacingAdjust,
+  onOffsetAdjust,
+  onOffsetReset,
 }: FieldRowProps) {
   const value = override?.text ?? field.defaultValue;
   const isDirty = override?.text != null && override.text !== field.defaultValue;
@@ -407,6 +444,9 @@ function FieldRow({
     : letterSpacingUnits > 0
       ? `+${letterSpacingUnits}`
       : String(letterSpacingUnits);
+  const offsetX = override?.offsetX ?? 0;
+  const offsetY = override?.offsetY ?? 0;
+  const offsetDirty = offsetX !== 0 || offsetY !== 0;
   const isElementField = field.type === 'element';
 
   const inputClass = [
@@ -417,11 +457,12 @@ function FieldRow({
   ].filter(Boolean).join(' ');
 
   // Mostra "resetar" quando há QUALQUER override pendente (texto, hide,
-  // tamanho ou tracking), pra dar ao usuário 1 clique pra voltar ao default.
-  // Para campos type='element' não há texto — só hide/fontScale/tracking contam.
+  // tamanho, tracking ou posição), pra dar ao usuário 1 clique pra voltar
+  // ao default. Para campos type='element' não há texto — só hide/scale/
+  // tracking/offset contam.
   const showReset = isElementField
-    ? isHidden || fontScaleDirty || letterSpacingDirty
-    : isDirty || isHidden || fontScaleDirty || letterSpacingDirty;
+    ? isHidden || fontScaleDirty || letterSpacingDirty || offsetDirty
+    : isDirty || isHidden || fontScaleDirty || letterSpacingDirty || offsetDirty;
 
   return (
     <div className={`${styles.field} ${isHidden ? styles.fieldHidden : ''} ${isFocused ? styles.fieldFocused : ''}`}>
@@ -537,6 +578,78 @@ function FieldRow({
           disabled={isHidden}
           data-form-field-key={field.key}
         />
+      )}
+
+      {/* Controles de posição (translate). Aparecem em todos os tipos de
+          campo — inclusive element (logo/QR) — porque deslocar é útil
+          mesmo sem texto. Botões em cruz (← ↑ ↓ →) com leitura "x: +10
+          y: −20" no centro. Shift no clique = passo 50 px em vez de 10. */}
+      {!isHidden && (
+        <div className={styles.positionBlock} aria-label="Posição do elemento">
+          <div className={styles.positionLabel}>
+            <span>Posição</span>
+            <span
+              className={`${styles.positionReadout} ${offsetDirty ? styles.positionReadoutDirty : ''}`}
+              title="Posição atual em px (referencial da página)"
+            >
+              x:{offsetX >= 0 ? `+${offsetX}` : offsetX}
+              {' · '}
+              y:{offsetY >= 0 ? `+${offsetY}` : offsetY}
+            </span>
+            {offsetDirty && (
+              <button
+                type="button"
+                className={`${styles.chip} ${styles.chipDanger}`}
+                onClick={onOffsetReset}
+                title="Voltar à posição original"
+              >
+                ↺
+              </button>
+            )}
+          </div>
+          <div className={styles.positionPad}>
+            <button
+              type="button"
+              className={`${styles.posBtn} ${styles.posUp}`}
+              onClick={(e) => onOffsetAdjust('y', e.shiftKey ? -50 : -10)}
+              disabled={offsetY <= -400}
+              title="Mover para cima (10 px · Shift = 50 px)"
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              className={`${styles.posBtn} ${styles.posLeft}`}
+              onClick={(e) => onOffsetAdjust('x', e.shiftKey ? -50 : -10)}
+              disabled={offsetX <= -400}
+              title="Mover para a esquerda (10 px · Shift = 50 px)"
+            >
+              ←
+            </button>
+            <div className={styles.posCenter} aria-hidden="true">
+              <span>{offsetX >= 0 ? `+${offsetX}` : offsetX}</span>
+              <span className={styles.posCenterY}>{offsetY >= 0 ? `+${offsetY}` : offsetY}</span>
+            </div>
+            <button
+              type="button"
+              className={`${styles.posBtn} ${styles.posRight}`}
+              onClick={(e) => onOffsetAdjust('x', e.shiftKey ? 50 : 10)}
+              disabled={offsetX >= 400}
+              title="Mover para a direita (10 px · Shift = 50 px)"
+            >
+              →
+            </button>
+            <button
+              type="button"
+              className={`${styles.posBtn} ${styles.posDown}`}
+              onClick={(e) => onOffsetAdjust('y', e.shiftKey ? 50 : 10)}
+              disabled={offsetY >= 400}
+              title="Mover para baixo (10 px · Shift = 50 px)"
+            >
+              ↓
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -401,6 +401,110 @@
   opacity: 0.4;
 }
 
+/* ── Controles de posição (translate por campo) ─────────────────────────
+   Grid 3×3 em cruz: setas nos eixos cardeais, readout x/y no centro.
+   Aparece logo abaixo do input em cada field row. Step 10 px (Shift = 50). */
+
+.positionBlock {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(245, 245, 247, 0.08);
+  background: rgba(255, 255, 255, 0.015);
+  border-radius: 6px;
+}
+
+.positionLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(245, 245, 247, 0.55);
+}
+
+.positionReadout {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+  color: rgba(245, 245, 247, 0.5);
+  text-transform: none;
+  font-weight: 500;
+}
+
+.positionReadoutDirty {
+  color: #D4AF37;
+}
+
+.positionPad {
+  display: grid;
+  grid-template-columns: repeat(3, 28px);
+  grid-template-rows: repeat(3, 28px);
+  gap: 4px;
+  align-self: center;
+}
+
+.posBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(245, 245, 247, 0.12);
+  color: rgba(245, 245, 247, 0.75);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.posBtn:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.18);
+  border-color: rgba(212, 175, 55, 0.5);
+  color: #fff;
+}
+
+.posBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.posUp    { grid-column: 2; grid-row: 1; }
+.posLeft  { grid-column: 1; grid-row: 2; }
+.posRight { grid-column: 3; grid-row: 2; }
+.posDown  { grid-column: 2; grid-row: 3; }
+
+.posCenter {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+  color: rgba(212, 175, 55, 0.75);
+  line-height: 1.05;
+  background: rgba(212, 175, 55, 0.04);
+  border: 1px dashed rgba(212, 175, 55, 0.2);
+  border-radius: 4px;
+}
+
+.posCenterY {
+  opacity: 0.75;
+}
+
 /* ── Coluna direita: preview vivo ── */
 
 .previewCol {

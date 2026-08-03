@@ -4,6 +4,7 @@ import {
   useElementHidden,
   useElementFontScale,
   useElementLetterSpacing,
+  useElementOffset,
 } from './useCatalogOverrides';
 import { sanitizeCatalogText } from '../../utils/sanitize';
 
@@ -64,6 +65,7 @@ export default function EditableText({
   const hidden = useElementHidden(pageId, fieldKey);
   const fontScale = useElementFontScale(pageId, fieldKey);
   const letterSpacing = useElementLetterSpacing(pageId, fieldKey);
+  const offset = useElementOffset(pageId, fieldKey);
 
   if (allowHide && hidden) return null;
 
@@ -85,7 +87,8 @@ export default function EditableText({
   //     da classe pai diretamente no inline. Em em pra escalar com a
   //     fonte; mesmo ratio visual no preview e no PDF.
   let mergedStyle: CSSProperties | undefined = style;
-  if (fontScale !== 1 || letterSpacing !== 0) {
+  const hasOffset = offset.x !== 0 || offset.y !== 0;
+  if (fontScale !== 1 || letterSpacing !== 0 || hasOffset) {
     const next: Record<string, unknown> = { ...(style ?? {}) };
     if (fontScale !== 1) {
       next['--field-scale'] = fontScale;
@@ -95,6 +98,19 @@ export default function EditableText({
     }
     if (letterSpacing !== 0) {
       next.letterSpacing = `${letterSpacing}em`;
+    }
+    if (hasOffset) {
+      // translate em px no referencial da página real (1819×2551). O preview
+      // do PageEditor já está dentro de um transform: scale(...), mas como o
+      // translate é em px na coordenada do contexto local, o escalamento
+      // acompanha automaticamente (translate(20px) escalado em 0.4 = 8px
+      // visuais no preview, mas mantém 20px reais no PDF).
+      const existingTransform =
+        typeof next.transform === 'string' ? next.transform + ' ' : '';
+      next.transform = `${existingTransform}translate(${offset.x}px, ${offset.y}px)`;
+      // display: inline-block garante que o translate funcione em spans
+      // inline (default do EditableText) sem afetar o fluxo dos vizinhos.
+      if (!next.display) next.display = 'inline-block';
     }
     mergedStyle = next as CSSProperties;
   }

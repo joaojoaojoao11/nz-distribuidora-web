@@ -39,6 +39,18 @@ export interface ElementOverride {
    * visual no preview do editor (transform: scale) e no PDF (escala 1).
    */
   letterSpacing?: number;
+  /**
+   * Deslocamento horizontal do elemento, em px (no referencial da página
+   * real 1819×2551). Aplicado via `transform: translate(...)` no
+   * EditableText / EditableElement — não impacta o fluxo dos elementos
+   * vizinhos. Faixa prática: −400 a +400 px.
+   */
+  offsetX?: number;
+  /**
+   * Deslocamento vertical do elemento, em px (mesmo referencial).
+   * Faixa prática: −400 a +400 px.
+   */
+  offsetY?: number;
 }
 
 export interface PageOverrides {
@@ -122,6 +134,20 @@ export function CatalogOverridesProvider({ children }: { children: ReactNode }) 
           Number.isNaN(merged.letterSpacing)
         ) {
           delete merged.letterSpacing;
+        }
+        if (
+          merged.offsetX === undefined ||
+          merged.offsetX === 0 ||
+          Number.isNaN(merged.offsetX)
+        ) {
+          delete merged.offsetX;
+        }
+        if (
+          merged.offsetY === undefined ||
+          merged.offsetY === 0 ||
+          Number.isNaN(merged.offsetY)
+        ) {
+          delete merged.offsetY;
         }
         if (Object.keys(merged).length === 0) {
           delete elements[fieldKey];
@@ -233,4 +259,18 @@ export function useElementFontScale(pageId: string, fieldKey: string): number {
 export function useElementLetterSpacing(pageId: string, fieldKey: string): number {
   const { getPage } = useCatalogOverrides();
   return getPage(pageId).elements?.[fieldKey]?.letterSpacing ?? 0;
+}
+
+/**
+ * Deslocamento individual do elemento em px (referencial da página real),
+ * default {x:0, y:0}. Componentes consomem e aplicam via
+ * `transform: translate(Xpx, Ypx)` no inline style.
+ */
+export function useElementOffset(
+  pageId: string,
+  fieldKey: string
+): { x: number; y: number } {
+  const { getPage } = useCatalogOverrides();
+  const el = getPage(pageId).elements?.[fieldKey];
+  return { x: el?.offsetX ?? 0, y: el?.offsetY ?? 0 };
 }

@@ -1,5 +1,9 @@
 import { type CSSProperties, type ReactNode } from 'react';
-import { useElementFontScale, useElementHidden } from './useCatalogOverrides';
+import {
+  useElementFontScale,
+  useElementHidden,
+  useElementOffset,
+} from './useCatalogOverrides';
 
 /**
  * Wrapper para elementos NÃO-textuais editáveis pelo PageEditor
@@ -42,14 +46,21 @@ export default function EditableElement({
 }: EditableElementProps) {
   const hidden = useElementHidden(pageId, fieldKey);
   const scale = useElementFontScale(pageId, fieldKey);
+  const offset = useElementOffset(pageId, fieldKey);
 
   if (allowHide && hidden) return null;
 
+  const hasOffset = offset.x !== 0 || offset.y !== 0;
   const mergedStyle: CSSProperties = {
     display: 'inline-block',
     ...style,
     ['--element-scale' as string]: scale,
   };
+  if (hasOffset) {
+    const existing =
+      typeof mergedStyle.transform === 'string' ? mergedStyle.transform + ' ' : '';
+    mergedStyle.transform = `${existing}translate(${offset.x}px, ${offset.y}px)`;
+  }
 
   return (
     <span
