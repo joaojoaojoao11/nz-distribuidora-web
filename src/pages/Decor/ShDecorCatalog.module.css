@@ -125,8 +125,29 @@
   align-self: center;
 }
 
-/* FILTRO — sticky com vidro */
-.catalogSection { padding: 2.5rem 0 7rem; }
+/* CATÁLOGO — fundo com malha técnica + glows */
+.catalogSection {
+  position: relative;
+  padding: 2.5rem 0 7rem;
+  background:
+    radial-gradient(ellipse 55% 40% at 8% 15%, rgba(209, 30, 30, 0.055) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 45% at 94% 55%, rgba(146, 96, 54, 0.075) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 35% at 15% 90%, rgba(209, 30, 30, 0.04) 0%, transparent 70%),
+    var(--bg-primary);
+}
+.catalogSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 25%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 25%, transparent 80%);
+  pointer-events: none;
+}
+.catalogContainer { position: relative; z-index: 1; }
 .familyFilter {
   position: sticky;
   top: 76px;
