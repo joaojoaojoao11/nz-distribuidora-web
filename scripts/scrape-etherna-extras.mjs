@@ -1,43 +1,96 @@
-// Baixa as texturas quadradas limpas (1200×1200, sem branding) do carrossel
-// oficial da Etherna Decor e salva como ambient-1 dos padrões correspondentes.
-// Mapeamento manual: só entram matches inequívocos (Verona/Corten têm 3
-// variações cada e o carrossel não distingue; Taj Mahal saiu de linha).
-// Uso: node scripts/scrape-etherna-extras.mjs  (depois: converter PNG→JPG e regenerar)
+// Enriquece a galeria dos padrões Etherna com imagens oficiais extras.
+// Fonte: biblioteca de mídia do WordPress oficial (REST API aberta) — contém
+// as fotos originais SEM o texto/logo dos cards (lotes 2024/06 PNG e 2024/10 JPG)
+// e swatches quadrados 1200×1200 do carrossel.
+// Match: nome canônico do arquivo === slug do padrão (sem fuzzy, sem substring).
+// Uso: node scripts/scrape-etherna-extras.mjs
+// Depois: converter com o passo PowerShell (extras + crop de detalhe) e regenerar.
 import fs from 'node:fs';
 import path from 'node:path';
 
-const BASE = 'https://ethernaprodutos.com.br/wp-content/uploads/2024/09';
-const OUT = path.resolve('scripts/data/etherna/_originals');
+const API = 'https://ethernaprodutos.com.br/wp-json/wp/v2/media';
+const DATA_DIR = path.resolve('scripts/data/etherna');
+const ORIG_DIR = path.join(DATA_DIR, '_originals');
+const MAX_EXTRAS = 2; // slot 3 fica para o crop de detalhe do card
 
-const CLEAN_TEXTURES = {
-  'marmore-quartzo-cinza': `${BASE}/Marmore-Quartzo_1200x1200.png`,
-  'madeira-figueira-ocre': `${BASE}/Madeira-Figueira-Ocre_1200x1200.png`,
-  'madeira-figueira-marfim': `${BASE}/Madeira-Figueira-Marfim_1200x1200.png`,
-  'madeira-ebano-avela': `${BASE}/Madeira-Ebano-Avela_1200x1200.png`,
-  'madeira-cerejeira-cacau': `${BASE}/Madeira-Cerejeira-Cacau2_1200x1200.png`,
-  'granilite-bege': `${BASE}/Granilite-Bege_1200x1200.png`,
-  'marmore-claro-ouro': `${BASE}/Marmore-Claro-Ouro_1200x1200.png`,
-  'marmore-carrara-ocre': `${BASE}/Marmore-Carrara-Ocre2_1200x1200.png`,
-  'marmore-carrara-bege': `${BASE}/Marmore-Carrara-Bege_1200x1200.png`,
-  'marmore-carrara-preto': `${BASE}/Marmore-Carrara-Preto_1200x1200.png`,
-  'madeira-ripada-marfim': `${BASE}/Madeira-Ripada2_1200x1200.png`,
-  'madeira-classica-cinza': `${BASE}/Madeira-Classica-Cinza2_1200x1200.png`,
+// squares do carrossel com nome abreviado/ambíguo no arquivo
+const ALIASES = {
+  'marmore-quartzo': 'marmore-quartzo-cinza',
+  'madeira-ripada': 'madeira-ripada-marfim',
+  // 'corten' e 'madeira-verona' têm 3 variações cada — ambíguos, ficam de fora
 };
 
-fs.mkdirSync(OUT, { recursive: true });
-let ok = 0;
-for (const [slug, url] of Object.entries(CLEAN_TEXTURES)) {
-  if (!fs.existsSync(path.resolve(`scripts/data/etherna/${slug}.json`))) {
-    console.error(`AVISO: ${slug} não existe no catálogo — pulando`);
-    continue;
+const canon = (fname) => {
+  let b = decodeURIComponent(fname).replace(/\.(jpe?g|png|webp)$/i, '');
+  b = b.replace(/_1200x1200$/i, '').replace(/-scaled$/i, '').replace(/-\d$/, '');
+  b = b.replace(/^\d{1,3}-/, '').replace(/^Etherna-Adesivos-Etherna-Decor-/i, '').replace(/^Adesivo-/i, '');
+  b = b.replace(/-(\d{2,4}-C)$/i, '');
+  b = b.replace(/(\D)\d$/, '$1'); // "Cacau2", "Ocre2" → sem o dígito colado
+  const slug = b.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return ALIASES[slug] ?? slug;
+};
+
+const products = fs.readdirSync(DATA_DIR)
+  .filter((f) => f.endsWith('.json') && !f.startsWith('_'))
+  .map((f) => JSON.parse(fs.readFileSync(path.join(DATA_DIR, f), 'utf8')));
+const bySlug = new Map(products.map((p) => [p.slug, p]));
+
+// índice completo da biblioteca de mídia (com retry — o WP falha esporadicamente)
+const fetchPage = async (page) => {
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const res = await fetch(`${API}?per_page=100&page=${page}&_fields=source_url`);
+      if (res.ok) return res;
+      console.error(`page ${page}: HTTP ${res.status} (tentativa ${attempt})`);
+    } catch (e) {
+      console.error(`page ${page}: ${e.message} (tentativa ${attempt})`);
+    }
+    await new Promise((r) => setTimeout(r, 1500 * attempt));
   }
-  const dest = path.join(OUT, `${slug}--ambient-1.png`);
-  if (fs.existsSync(dest) && fs.statSync(dest).size > 20_000) { ok++; continue; }
-  const res = await fetch(url);
-  if (!res.ok) { console.error(`FALHA ${slug}: HTTP ${res.status}`); continue; }
-  const buf = Buffer.from(await res.arrayBuffer());
-  if (buf.length < 20_000) { console.error(`FALHA ${slug}: ${buf.length} bytes`); continue; }
-  fs.writeFileSync(dest, buf);
-  ok++;
+  throw new Error(`page ${page}: esgotou tentativas`);
+};
+
+const first = await fetchPage(1);
+const totalPages = Number(first.headers.get('x-wp-totalpages') ?? 1);
+const media = (await first.json()).map((m) => m.source_url);
+for (let page = 2; page <= totalPages; page++) {
+  const res = await fetchPage(page);
+  media.push(...(await res.json()).map((m) => m.source_url));
 }
-console.log(`texturas limpas baixadas: ${ok}/${Object.keys(CLEAN_TEXTURES).length}`);
+console.log(`mídia indexada: ${media.length} (${totalPages} páginas)`);
+
+const extras = new Map(); // slug -> [urls]
+for (const url of media) {
+  const fname = url.split('/').pop();
+  if (/-\d+x\d+\.(jpe?g|png|webp)$/i.test(fname)) continue; // thumbs do WP
+  const slug = canon(fname);
+  const p = bySlug.get(slug);
+  if (!p) continue;
+  if (fname === p.imageUrl.split('/').pop()) continue; // o próprio card
+  const list = extras.get(slug) ?? [];
+  list.push(url);
+  extras.set(slug, list);
+}
+
+// fotos limpas primeiro, squares por último; no máximo MAX_EXTRAS por padrão
+const isSquare = (u) => /_1200x1200/i.test(u);
+let downloaded = 0;
+fs.mkdirSync(ORIG_DIR, { recursive: true });
+for (const [slug, urls] of extras) {
+  const picked = [...new Set(urls)]
+    .sort((a, b) => Number(isSquare(a)) - Number(isSquare(b)))
+    .slice(0, MAX_EXTRAS);
+  for (let i = 0; i < picked.length; i++) {
+    const ext = picked[i].match(/\.(png|webp)$/i) ? 'png' : 'jpg';
+    const dest = path.join(ORIG_DIR, `${slug}--extra-${i + 1}.${ext}`);
+    if (fs.existsSync(dest) && fs.statSync(dest).size > 20_000) { downloaded++; continue; }
+    const res = await fetch(picked[i]);
+    if (!res.ok) { console.error(`FALHA ${slug}: HTTP ${res.status}`); continue; }
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length < 20_000) { console.error(`FALHA ${slug}: ${buf.length} bytes`); continue; }
+    fs.writeFileSync(dest, buf);
+    downloaded++;
+  }
+}
+console.log(`padrões com extras: ${extras.size} | arquivos baixados/ok: ${downloaded}`);

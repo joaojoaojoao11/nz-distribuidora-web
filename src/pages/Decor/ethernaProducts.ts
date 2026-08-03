@@ -96,7 +96,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-carvalho-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-carvalho-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Carvalho Areia — Vinil Adesivo Etherna Decor (cód. 104)",
@@ -146,7 +148,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-carvalho-caramelo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-carvalho-caramelo/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Carvalho Caramelo — Vinil Adesivo Etherna Decor (cód. 103)",
@@ -197,7 +201,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-cerejeira-cacau/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-cerejeira-cacau/ambient-1.jpg"
+        "/assets/images/decor/etherna/madeira-cerejeira-cacau/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-cerejeira-cacau/ambient-2.jpg",
+        "/assets/images/decor/etherna/madeira-cerejeira-cacau/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -248,7 +254,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-cerejeira-marfim/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-cerejeira-marfim/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-cerejeira-marfim/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Cerejeira Marfim — Vinil Adesivo Etherna Decor (cód. 49)",
@@ -298,7 +307,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-classica-areia/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-classica-areia/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Clássica Areia — Vinil Adesivo Etherna Decor (cód. 2)",
@@ -348,7 +360,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-bege/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-classica-bege/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-classica-bege/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Clássica Bege — Vinil Adesivo Etherna Decor (cód. 4)",
@@ -398,7 +413,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-cacau/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-classica-cacau/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-classica-cacau/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Clássica Cacau — Vinil Adesivo Etherna Decor (cód. 5)",
@@ -449,7 +467,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-cinza/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-classica-cinza/ambient-1.jpg"
+        "/assets/images/decor/etherna/madeira-classica-cinza/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-classica-cinza/ambient-2.jpg",
+        "/assets/images/decor/etherna/madeira-classica-cinza/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -500,7 +520,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-marfim/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-classica-marfim/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-classica-marfim/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Clássica Marfim — Vinil Adesivo Etherna Decor (cód. 3)",
@@ -550,7 +573,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-cumaru-avela/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-cumaru-avela/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Cumaru Avelã — Vinil Adesivo Etherna Decor (cód. 102)",
@@ -600,7 +625,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-demolicao-marrom/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-demolicao-marrom/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Demolição Marrom — Vinil Adesivo Etherna Decor (cód. 100)",
@@ -650,7 +677,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-ebano-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-ebano-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Ébano Areia — Vinil Adesivo Etherna Decor (cód. 96)",
@@ -701,7 +730,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-ebano-avela/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-ebano-avela/ambient-1.jpg"
+        "/assets/images/decor/etherna/madeira-ebano-avela/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-ebano-avela/ambient-2.jpg",
+        "/assets/images/decor/etherna/madeira-ebano-avela/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -752,7 +783,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-ebano-marrom/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-ebano-marrom/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-ebano-marrom/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Ébano Marrom — Vinil Adesivo Etherna Decor (cód. 52)",
@@ -802,7 +836,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-ebano-pinhao/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-ebano-pinhao/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-ebano-pinhao/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Ébano Pinhão — Vinil Adesivo Etherna Decor (cód. 53)",
@@ -853,7 +890,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-figueira-marfim/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-figueira-marfim/ambient-1.jpg"
+        "/assets/images/decor/etherna/madeira-figueira-marfim/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-figueira-marfim/ambient-2.jpg",
+        "/assets/images/decor/etherna/madeira-figueira-marfim/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -905,7 +944,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-figueira-ocre/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-figueira-ocre/ambient-1.jpg"
+        "/assets/images/decor/etherna/madeira-figueira-ocre/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-figueira-ocre/ambient-2.jpg",
+        "/assets/images/decor/etherna/madeira-figueira-ocre/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -956,7 +997,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-jacaranda-avela/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-jacaranda-avela/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Jacarandá Avelã — Vinil Adesivo Etherna Decor (cód. 101)",
@@ -1006,7 +1049,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-mogno-avela/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-mogno-avela/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-mogno-avela/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Mogno Avelã — Vinil Adesivo Etherna Decor (cód. 56)",
@@ -1056,7 +1102,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-mogno-terra/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-mogno-terra/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-mogno-terra/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Mogno Terra — Vinil Adesivo Etherna Decor (cód. 59)",
@@ -1106,7 +1155,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-nogueira-marrom/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-nogueira-marrom/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Nogueira Marrom — Vinil Adesivo Etherna Decor (cód. 99)",
@@ -1156,7 +1207,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-painel-bege/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-painel-bege/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-painel-bege/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Painel Bege — Vinil Adesivo Etherna Decor (cód. 12)",
@@ -1206,7 +1260,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-painel-caramelo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-painel-caramelo/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-painel-caramelo/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Painel Caramelo — Vinil Adesivo Etherna Decor (cód. 13)",
@@ -1256,7 +1313,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-painel-cedro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-painel-cedro/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-painel-cedro/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Painel Cedro — Vinil Adesivo Etherna Decor (cód. 14)",
@@ -1307,7 +1367,8 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-ripada-marfim/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-ripada-marfim/ambient-1.jpg"
+        "/assets/images/decor/etherna/madeira-ripada-marfim/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-ripada-marfim/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -1358,7 +1419,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-rustica-caramelo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-rustica-caramelo/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-rustica-caramelo/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Rústica Caramelo — Vinil Adesivo Etherna Decor (cód. 10)",
@@ -1408,7 +1472,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-rustica-marrom/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-rustica-marrom/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-rustica-marrom/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Rústica Marrom — Vinil Adesivo Etherna Decor (cód. 11)",
@@ -1458,7 +1525,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-verona-ebano/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-verona-ebano/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-verona-ebano/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Verona Ébano — Vinil Adesivo Etherna Decor (cód. 8)",
@@ -1508,7 +1578,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-verona-marfim/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-verona-marfim/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-verona-marfim/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Verona Marfim — Vinil Adesivo Etherna Decor (cód. 7)",
@@ -1558,7 +1631,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-verona-preto/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/madeira-verona-preto/ambient-1.jpg",
+        "/assets/images/decor/etherna/madeira-verona-preto/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Madeira Verona Preto — Vinil Adesivo Etherna Decor (cód. 9)",
@@ -1608,7 +1684,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-bianco-branco/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-bianco-branco/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-bianco-branco/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Bianco Branco — Vinil Adesivo Etherna Decor (cód. 21)",
@@ -1658,7 +1737,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-calacatta-gold-fosco/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-calacatta-gold-fosco/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Calacatta Gold Fosco — Vinil Adesivo Etherna Decor (cód. 95)",
@@ -1708,7 +1789,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-calacatta-ouro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-calacatta-ouro/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Calacatta Ouro — Vinil Adesivo Etherna Decor (cód. 60)",
@@ -1758,7 +1841,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-calacatta-silver/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-calacatta-silver/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Calacatta Silver — Vinil Adesivo Etherna Decor (cód. 94)",
@@ -1808,7 +1893,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-carrara-azul-marinho/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-carrara-azul-marinho/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-carrara-azul-marinho/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Carrara Azul Marinho — Vinil Adesivo Etherna Decor (cód. 26)",
@@ -1859,7 +1947,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-carrara-bege/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-carrara-bege/ambient-1.jpg"
+        "/assets/images/decor/etherna/marmore-carrara-bege/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-carrara-bege/ambient-2.jpg",
+        "/assets/images/decor/etherna/marmore-carrara-bege/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -1910,7 +2000,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-carrara-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-carrara-cinza/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-carrara-cinza/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Carrara Cinza — Vinil Adesivo Etherna Decor (cód. 22)",
@@ -1961,7 +2054,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-carrara-ocre/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-carrara-ocre/ambient-1.jpg"
+        "/assets/images/decor/etherna/marmore-carrara-ocre/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-carrara-ocre/ambient-2.jpg",
+        "/assets/images/decor/etherna/marmore-carrara-ocre/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -2013,7 +2108,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-carrara-preto/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-carrara-preto/ambient-1.jpg"
+        "/assets/images/decor/etherna/marmore-carrara-preto/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-carrara-preto/ambient-2.jpg",
+        "/assets/images/decor/etherna/marmore-carrara-preto/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -2064,7 +2161,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-carrara-verde/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-carrara-verde/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Carrara Verde — Vinil Adesivo Etherna Decor (cód. 25)",
@@ -2114,7 +2213,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-casablanca-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-casablanca-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Casablanca Areia — Vinil Adesivo Etherna Decor (cód. 97)",
@@ -2164,7 +2265,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-casablanca-areia-fosco/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-casablanca-areia-fosco/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Casablanca Areia Fosco — Vinil Adesivo Etherna Decor (cód. 98)",
@@ -2215,7 +2318,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-claro-ouro/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-claro-ouro/ambient-1.jpg"
+        "/assets/images/decor/etherna/marmore-claro-ouro/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-claro-ouro/ambient-2.jpg",
+        "/assets/images/decor/etherna/marmore-claro-ouro/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -2266,7 +2371,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-claro-prata/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-claro-prata/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-claro-prata/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Claro Prata — Vinil Adesivo Etherna Decor (cód. 20)",
@@ -2316,7 +2424,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-imperial-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-imperial-cinza/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-imperial-cinza/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Imperial Cinza — Vinil Adesivo Etherna Decor (cód. 45)",
@@ -2366,7 +2477,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-ivec-bege/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-ivec-bege/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Ivec Bege — Vinil Adesivo Etherna Decor (cód. 87)",
@@ -2416,7 +2529,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-marquina-preto/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-marquina-preto/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Marquina Preto — Vinil Adesivo Etherna Decor",
@@ -2466,7 +2581,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-marrakesh-branco-fosco/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-marrakesh-branco-fosco/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Marrakesh Branco Fosco — Vinil Adesivo Etherna Decor (cód. 111)",
@@ -2516,7 +2633,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-nero-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-nero-cinza/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Nero Cinza — Vinil Adesivo Etherna Decor (cód. 86)",
@@ -2567,7 +2686,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-quartzo-cinza/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-quartzo-cinza/ambient-1.jpg"
+        "/assets/images/decor/etherna/marmore-quartzo-cinza/ambient-1.jpg",
+        "/assets/images/decor/etherna/marmore-quartzo-cinza/ambient-2.jpg",
+        "/assets/images/decor/etherna/marmore-quartzo-cinza/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -2618,7 +2739,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-thassos-bege/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-thassos-bege/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Thassos Bege — Vinil Adesivo Etherna Decor (cód. 85)",
@@ -2668,7 +2791,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-travertino-bege/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/marmore-travertino-bege/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Mármore Travertino Bege — Vinil Adesivo Etherna Decor (cód. 63)",
@@ -2718,7 +2843,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/travertino-premium-bege/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/travertino-premium-bege/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Travertino Premium Bege — Vinil Adesivo Etherna Decor (cód. 92)",
@@ -2764,7 +2891,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Areia — Vinil Adesivo Etherna Decor (cód. 89)",
@@ -2810,7 +2939,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-azul/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-azul/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Azul — Vinil Adesivo Etherna Decor (cód. 4137-C)",
@@ -2856,7 +2987,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-azul-marinho/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-azul-marinho/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Azul Marinho — Vinil Adesivo Etherna Decor",
@@ -2902,7 +3035,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-azul-oxford/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-azul-oxford/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Azul Oxford — Vinil Adesivo Etherna Decor",
@@ -2948,7 +3083,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-azul-pastel/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-azul-pastel/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Azul Pastel — Vinil Adesivo Etherna Decor",
@@ -2994,7 +3131,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-bege/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-bege/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Bege — Vinil Adesivo Etherna Decor (cód. 4248-C)",
@@ -3040,7 +3179,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-bege-greige/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-bege-greige/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Bege Greige — Vinil Adesivo Etherna Decor",
@@ -3086,7 +3227,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-bordo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-bordo/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Bordô — Vinil Adesivo Etherna Decor (cód. 195-C)",
@@ -3132,7 +3275,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-branco/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-branco/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Branco — Vinil Adesivo Etherna Decor",
@@ -3178,7 +3323,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-caramelo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-caramelo/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Caramelo — Vinil Adesivo Etherna Decor",
@@ -3224,7 +3371,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-cinza-8-c/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-cinza-8-c/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Cinza 8 C — Vinil Adesivo Etherna Decor",
@@ -3270,7 +3419,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-cinza-cromio/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-cinza-cromio/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Cinza Crômio — Vinil Adesivo Etherna Decor",
@@ -3316,7 +3467,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-cinza-glacial/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-cinza-glacial/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Cinza Glacial — Vinil Adesivo Etherna Decor (cód. 88)",
@@ -3362,7 +3515,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-fendi/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-fendi/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Fendi — Vinil Adesivo Etherna Decor (cód. 407-C)",
@@ -3408,7 +3563,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-grafite/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-grafite/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Grafite — Vinil Adesivo Etherna Decor",
@@ -3454,7 +3611,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-marrom/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-marrom/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Marrom — Vinil Adesivo Etherna Decor",
@@ -3500,7 +3659,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-moka/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-moka/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Moka — Vinil Adesivo Etherna Decor (cód. 410-C)",
@@ -3546,7 +3707,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-mostarda/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-mostarda/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Mostarda — Vinil Adesivo Etherna Decor",
@@ -3592,7 +3755,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-nude/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-nude/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Nude — Vinil Adesivo Etherna Decor (cód. 4260-C)",
@@ -3638,7 +3803,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-off-white/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-off-white/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Off White — Vinil Adesivo Etherna Decor",
@@ -3684,7 +3851,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-preto/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-preto/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Preto — Vinil Adesivo Etherna Decor",
@@ -3730,7 +3899,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-rosa-claro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-rosa-claro/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Rosa Claro — Vinil Adesivo Etherna Decor (cód. 107)",
@@ -3776,7 +3947,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-taupe/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-taupe/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Taupe — Vinil Adesivo Etherna Decor",
@@ -3822,7 +3995,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-telha/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-telha/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Telha — Vinil Adesivo Etherna Decor",
@@ -3868,7 +4043,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-terracota/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-terracota/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Terracota — Vinil Adesivo Etherna Decor (cód. 471-C)",
@@ -3914,7 +4091,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-tiza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-tiza/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Tiza — Vinil Adesivo Etherna Decor",
@@ -3960,7 +4139,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-toscana/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-toscana/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Toscana — Vinil Adesivo Etherna Decor (cód. 2441-C)",
@@ -4006,7 +4187,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-verde-escuro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-verde-escuro/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Verde Escuro — Vinil Adesivo Etherna Decor",
@@ -4052,7 +4235,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-verde-musgo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-verde-musgo/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Verde Musgo — Vinil Adesivo Etherna Decor",
@@ -4098,7 +4283,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-verde-oliva/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-verde-oliva/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Verde Oliva — Vinil Adesivo Etherna Decor (cód. 108)",
@@ -4144,7 +4331,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-verde-pastel/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-verde-pastel/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Verde Pastel — Vinil Adesivo Etherna Decor (cód. 4178-C)",
@@ -4190,7 +4379,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-verde-selva/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-verde-selva/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Verde Selva — Vinil Adesivo Etherna Decor (cód. 2409-C)",
@@ -4236,7 +4427,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/formica-vinho/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/formica-vinho/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Fórmica Vinho — Vinil Adesivo Etherna Decor",
@@ -4282,7 +4475,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/wood-branco/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/wood-branco/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Wood Branco — Vinil Adesivo Etherna Decor (cód. 90)",
@@ -4328,7 +4523,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/wood-preto/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/wood-preto/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Wood Preto — Vinil Adesivo Etherna Decor (cód. 91)",
@@ -4378,7 +4575,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/cimento-queimado-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/cimento-queimado-cinza/ambient-1.jpg",
+        "/assets/images/decor/etherna/cimento-queimado-cinza/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Cimento Queimado Cinza — Vinil Adesivo Etherna Decor (cód. 34)",
@@ -4428,7 +4628,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/cimento-queimado-ocre/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/cimento-queimado-ocre/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Cimento Queimado Ocre — Vinil Adesivo Etherna Decor",
@@ -4478,7 +4680,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/cimento-texturizado-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/cimento-texturizado-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Cimento Texturizado Areia — Vinil Adesivo Etherna Decor (cód. 105)",
@@ -4528,7 +4732,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/cimento-texturizado-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/cimento-texturizado-cinza/ambient-1.jpg",
+        "/assets/images/decor/etherna/cimento-texturizado-cinza/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Cimento Texturizado Cinza — Vinil Adesivo Etherna Decor (cód. 61)",
@@ -4578,7 +4785,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/cimento-texturizado-cinza-claro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/cimento-texturizado-cinza-claro/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Cimento Texturizado Cinza Claro — Vinil Adesivo Etherna Decor (cód. 106)",
@@ -4629,7 +4838,9 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/granilite-bege/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/granilite-bege/ambient-1.jpg"
+        "/assets/images/decor/etherna/granilite-bege/ambient-1.jpg",
+        "/assets/images/decor/etherna/granilite-bege/ambient-2.jpg",
+        "/assets/images/decor/etherna/granilite-bege/ambient-3.jpg"
       ]
     },
     "seo": {
@@ -4680,7 +4891,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/granilite-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/granilite-cinza/ambient-1.jpg",
+        "/assets/images/decor/etherna/granilite-cinza/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Granilite Cinza — Vinil Adesivo Etherna Decor (cód. 42)",
@@ -4730,7 +4944,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/granilite-color-branco/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/granilite-color-branco/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Granilite Color Branco — Vinil Adesivo Etherna Decor (cód. 93)",
@@ -4780,7 +4996,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/granilite-grafite/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/granilite-grafite/ambient-1.jpg",
+        "/assets/images/decor/etherna/granilite-grafite/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Granilite Grafite — Vinil Adesivo Etherna Decor (cód. 43)",
@@ -4830,7 +5049,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/granilite-romanza-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/granilite-romanza-cinza/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Granilite Romanza Cinza — Vinil Adesivo Etherna Decor",
@@ -4880,7 +5101,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/granilite-romanza-gelo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/granilite-romanza-gelo/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Granilite Romanza Gelo — Vinil Adesivo Etherna Decor",
@@ -4930,7 +5153,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/miracema-bege/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/miracema-bege/ambient-1.jpg",
+        "/assets/images/decor/etherna/miracema-bege/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Miracema Bege — Vinil Adesivo Etherna Decor (cód. 62)",
@@ -4980,7 +5206,11 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/tijolo-branco/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/tijolo-branco/ambient-1.jpg",
+        "/assets/images/decor/etherna/tijolo-branco/ambient-2.jpg",
+        "/assets/images/decor/etherna/tijolo-branco/ambient-3.jpg"
+      ]
     },
     "seo": {
       "title": "Tijolo Branco — Vinil Adesivo Etherna Decor (cód. 38)",
@@ -5030,7 +5260,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/tijolo-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/tijolo-cinza/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Tijolo Cinza — Vinil Adesivo Etherna Decor (cód. 39)",
@@ -5080,7 +5312,11 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/tijolo-laranja/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/tijolo-laranja/ambient-1.jpg",
+        "/assets/images/decor/etherna/tijolo-laranja/ambient-2.jpg",
+        "/assets/images/decor/etherna/tijolo-laranja/ambient-3.jpg"
+      ]
     },
     "seo": {
       "title": "Tijolo Laranja — Vinil Adesivo Etherna Decor (cód. 37)",
@@ -5130,7 +5366,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/tijolo-preto/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/tijolo-preto/ambient-1.jpg",
+        "/assets/images/decor/etherna/tijolo-preto/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Tijolo Preto — Vinil Adesivo Etherna Decor (cód. 40)",
@@ -5180,7 +5419,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/corten-ferrugem/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/corten-ferrugem/ambient-1.jpg",
+        "/assets/images/decor/etherna/corten-ferrugem/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Corten Ferrugem — Vinil Adesivo Etherna Decor (cód. 30)",
@@ -5230,7 +5472,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/corten-grafite/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/corten-grafite/ambient-1.jpg",
+        "/assets/images/decor/etherna/corten-grafite/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Corten Grafite — Vinil Adesivo Etherna Decor (cód. 29)",
@@ -5280,7 +5525,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/corten-inox/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/corten-inox/ambient-1.jpg",
+        "/assets/images/decor/etherna/corten-inox/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Corten Inox — Vinil Adesivo Etherna Decor (cód. 28)",
@@ -5326,7 +5574,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/escovado-grafite/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/escovado-grafite/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Escovado Grafite — Vinil Adesivo Etherna Decor",
@@ -5372,7 +5622,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/escovado-inox/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/escovado-inox/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Escovado Inox — Vinil Adesivo Etherna Decor",
@@ -5418,7 +5670,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/escovado-prata/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/escovado-prata/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Escovado Prata — Vinil Adesivo Etherna Decor",
@@ -5468,7 +5722,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-algodao-egipcio/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-algodao-egipcio/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Algodão Egípcio — Vinil Adesivo Etherna Decor (cód. 161)",
@@ -5518,7 +5774,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Areia — Vinil Adesivo Etherna Decor (cód. 157)",
@@ -5568,7 +5826,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-bege-greige/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-bege-greige/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Bege Greige — Vinil Adesivo Etherna Decor (cód. 162)",
@@ -5618,7 +5878,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-cinza-cromio/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-cinza-cromio/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Cinza Crômio — Vinil Adesivo Etherna Decor (cód. 164)",
@@ -5668,7 +5930,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-creme/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-creme/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Creme — Vinil Adesivo Etherna Decor (cód. 159)",
@@ -5718,7 +5982,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-fendi/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-fendi/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Fendi — Vinil Adesivo Etherna Decor (cód. 163)",
@@ -5768,7 +6034,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-nude/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-nude/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Nude — Vinil Adesivo Etherna Decor (cód. 160)",
@@ -5818,7 +6086,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-off-white/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-off-white/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Off White — Vinil Adesivo Etherna Decor (cód. 156)",
@@ -5868,7 +6138,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/amalfi-palha/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/amalfi-palha/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Amalfi Palha — Vinil Adesivo Etherna Decor (cód. 158)",
@@ -5918,7 +6190,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/avalon-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/avalon-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Avalon Areia — Vinil Adesivo Etherna Decor (cód. 133)",
@@ -5968,7 +6242,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/avalon-azul-acero/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/avalon-azul-acero/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Avalon Azul Acero — Vinil Adesivo Etherna Decor (cód. 138)",
@@ -6018,7 +6294,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/avalon-bege-castor/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/avalon-bege-castor/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Avalon Bege Castor — Vinil Adesivo Etherna Decor (cód. 134)",
@@ -6068,7 +6346,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/avalon-cinza-claro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/avalon-cinza-claro/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Avalon Cinza Claro — Vinil Adesivo Etherna Decor (cód. 154)",
@@ -6118,7 +6398,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/avalon-mostarda-djon/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/avalon-mostarda-djon/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Avalon Mostarda Djon — Vinil Adesivo Etherna Decor (cód. 135)",
@@ -6168,7 +6450,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/avalon-nude-frio/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/avalon-nude-frio/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Avalon Nude Frio — Vinil Adesivo Etherna Decor (cód. 136)",
@@ -6218,7 +6502,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/avalon-off-white/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/avalon-off-white/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Avalon Off White — Vinil Adesivo Etherna Decor (cód. 132)",
@@ -6268,7 +6554,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/avalon-verde-esmeralda/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/avalon-verde-esmeralda/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Avalon Verde Esmeralda — Vinil Adesivo Etherna Decor (cód. 137)",
@@ -6318,7 +6606,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/flow-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/flow-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Flow Areia — Vinil Adesivo Etherna Decor (cód. 152)",
@@ -6368,7 +6658,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/flow-cinza-claro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/flow-cinza-claro/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Flow Cinza Claro — Vinil Adesivo Etherna Decor (cód. 155)",
@@ -6418,7 +6710,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/flow-creme/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/flow-creme/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Flow Creme — Vinil Adesivo Etherna Decor (cód. 153)",
@@ -6468,7 +6762,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/flow-off-white/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/flow-off-white/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Flow Off White — Vinil Adesivo Etherna Decor (cód. 151)",
@@ -6514,7 +6810,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Areia — Vinil Adesivo Etherna Decor (cód. 67)",
@@ -6560,7 +6858,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-azul-denim/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-azul-denim/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Azul Denim — Vinil Adesivo Etherna Decor (cód. 148)",
@@ -6606,7 +6906,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-bege-greige/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-bege-greige/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Bege Greige — Vinil Adesivo Etherna Decor (cód. 143)",
@@ -6652,7 +6954,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-cinza/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-cinza/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Cinza — Vinil Adesivo Etherna Decor (cód. 68)",
@@ -6698,7 +7002,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-cinza-claro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-cinza-claro/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Cinza Claro — Vinil Adesivo Etherna Decor (cód. 109)",
@@ -6744,7 +7050,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-cinza-nevoa/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-cinza-nevoa/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Cinza Névoa — Vinil Adesivo Etherna Decor (cód. 147)",
@@ -6790,7 +7098,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-creme/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-creme/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Creme — Vinil Adesivo Etherna Decor (cód. 66)",
@@ -6836,7 +7146,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-cromio/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-cromio/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Crômio — Vinil Adesivo Etherna Decor (cód. 146)",
@@ -6882,7 +7194,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-gelo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-gelo/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Gelo — Vinil Adesivo Etherna Decor (cód. 110)",
@@ -6928,7 +7242,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-granizo/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-granizo/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Granizo — Vinil Adesivo Etherna Decor (cód. 145)",
@@ -6974,7 +7290,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-nude/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-nude/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Nude — Vinil Adesivo Etherna Decor (cód. 142)",
@@ -7020,7 +7338,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-off-white/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-off-white/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Off White — Vinil Adesivo Etherna Decor (cód. 64)",
@@ -7066,7 +7386,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-palha/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-palha/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Palha — Vinil Adesivo Etherna Decor (cód. 65)",
@@ -7112,7 +7434,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/linem-taupe/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/linem-taupe/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Linem Taupe — Vinil Adesivo Etherna Decor (cód. 144)",
@@ -7162,7 +7486,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-algodao-egipcio/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-algodao-egipcio/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Algodão Egípcio — Vinil Adesivo Etherna Decor (cód. 170)",
@@ -7212,7 +7538,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-areia/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-areia/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Areia — Vinil Adesivo Etherna Decor (cód. 166)",
@@ -7262,7 +7590,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-bege-greige/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-bege-greige/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Bege Greige — Vinil Adesivo Etherna Decor (cód. 171)",
@@ -7312,7 +7642,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-cinza-cromio/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-cinza-cromio/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Cinza Crômio — Vinil Adesivo Etherna Decor (cód. 173)",
@@ -7362,7 +7694,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-creme/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-creme/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Creme — Vinil Adesivo Etherna Decor (cód. 168)",
@@ -7412,7 +7746,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-fendi/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-fendi/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Fendi — Vinil Adesivo Etherna Decor (cód. 172)",
@@ -7462,7 +7798,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-nude/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-nude/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Nude — Vinil Adesivo Etherna Decor (cód. 169)",
@@ -7512,7 +7850,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-off-white/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-off-white/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Off White — Vinil Adesivo Etherna Decor (cód. 165)",
@@ -7562,7 +7902,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/rivera-palha/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/rivera-palha/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Rivera Palha — Vinil Adesivo Etherna Decor (cód. 167)",
@@ -7612,7 +7954,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/pincelado-acqua/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/pincelado-acqua/ambient-1.jpg",
+        "/assets/images/decor/etherna/pincelado-acqua/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Pincelado Acqua — Vinil Adesivo Etherna Decor (cód. 31)",
@@ -7662,7 +8007,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/chevron-soft-gold/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/chevron-soft-gold/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Chevron Soft Gold — Vinil Adesivo Etherna Decor (cód. 140)",
@@ -7712,7 +8059,9 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/chevron-white-pearl/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/chevron-white-pearl/ambient-1.jpg"
+      ]
     },
     "seo": {
       "title": "Chevron White Pearl — Vinil Adesivo Etherna Decor (cód. 139)",
@@ -7762,7 +8111,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/cubo-geometrico-marmorizado-ouro/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-ouro/ambient-1.jpg",
+        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-ouro/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Cubo Geométrico Marmorizado Ouro — Vinil Adesivo Etherna Decor (cód. 18)",
@@ -7812,7 +8164,10 @@ export const ethernaProducts: EthernaProduct[] = [
     ],
     "images": {
       "texture": "/assets/images/decor/etherna/cubo-geometrico-marmorizado-rose/texture.jpg",
-      "ambient": []
+      "ambient": [
+        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-rose/ambient-1.jpg",
+        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-rose/ambient-2.jpg"
+      ]
     },
     "seo": {
       "title": "Cubo Geométrico Marmorizado Rose — Vinil Adesivo Etherna Decor (cód. 17)",
