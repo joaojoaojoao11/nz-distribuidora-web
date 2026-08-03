@@ -1,0 +1,108 @@
+.enterpriseSection {
+  padding: 9rem 0;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+  position: relative;
+  overflow: hidden;
+}
+.enterpriseSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 15% 30%, rgba(209,30,30,0.05) 0%, transparent 55%);
+  pointer-events: none;
+}
+.enterpriseContainer { position: relative; }
+.enterpriseGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.enterpriseTag {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.enterpriseTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin-bottom: 1.8rem;
+}
+.enterpriseParagraph {
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  margin-bottom: 1.2rem;
+}
+.enterpriseParagraph strong { color: var(--text-primary); font-weight: 600; }
+.enterpriseLink {
+  display: inline-block;
+  margin-top: 0.6rem;
+  color: var(--accent-red);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+.enterpriseLink:hover { color: var(--accent-red-hover); }
+
+.pillarList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.pillarCard {
+  display: flex;
+  gap: 1.6rem;
+  align-items: flex-start;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  transition: var(--transition-smooth);
+}
+.pillarCard:hover {
+  border-color: var(--border-strong);
+  transform: translateX(4px);
+}
+.pillarNum {
+  font-family: var(--font-tech, var(--font-heading));
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  padding-top: 0.15rem;
+}
+.pillarTitle {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+.pillarDesc {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+@media (max-width: 960px) {
+  .enterpriseGrid { grid-template-columns: 1fr; gap: 3rem; }
+}
+@media (max-width: 720px) {
+  .enterpriseSection { padding: 6rem 0; }
+  .pillarCard { padding: 1.5rem 1.4rem; gap: 1.1rem; }
+}

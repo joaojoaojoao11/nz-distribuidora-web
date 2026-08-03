@@ -4,6 +4,7 @@ import { staggerContainer, fadeUpItem } from './variants';
 import BrandCards from './BrandCards';
 import TechFeatures from './TechFeatures';
 import ApplicationGrid from './ApplicationGrid';
+import EnterpriseProjects from './EnterpriseProjects';
 import styles from './Decor.module.css';
 
 const WHATSAPP_URL = 'https://wa.me/5511953037391?text=Ol%C3%A1%2C%20quero%20iniciar%20consultoria%20decorativa%20NZDecor.%20Meu%20projeto%20%C3%A9...';
@@ -81,6 +82,9 @@ export default function Decor() {
 
       {/* APLICAÇÕES */}
       <ApplicationGrid />
+
+      {/* PROJETOS EM ESCALA — hotelaria e franquias */}
+      <EnterpriseProjects />
 
       {/* CTA FINAL */}
       <section className={styles.ctaSection}>
