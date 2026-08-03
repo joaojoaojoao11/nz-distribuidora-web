@@ -104,6 +104,21 @@ export default function ShDecorProduct() {
 
       {/* BLOCO PRINCIPAL */}
       <section className={styles.mainSection}>
+        <div className={styles.backdrop} aria-hidden="true">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={activeIndex}
+              src={gallery[activeIndex]}
+              alt=""
+              className={styles.backdropImage}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+            />
+          </AnimatePresence>
+          <div className={styles.backdropOverlay}></div>
+        </div>
         <motion.div
           className={`container ${styles.mainContainer}`}
           initial="hidden"
