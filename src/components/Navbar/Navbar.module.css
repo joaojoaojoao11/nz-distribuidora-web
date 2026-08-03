@@ -92,6 +92,103 @@
   color: var(--text-primary);
 }
 
+/* ==========================================
+   DROPDOWN NZDECOR — marcas no hover
+   ========================================== */
+.dropdownWrap {
+  position: relative;
+  height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.dropdownCaret {
+  font-size: 0.5rem;
+  color: var(--text-muted);
+  margin-left: 0.25rem;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.dropdownWrap:hover .dropdownCaret {
+  color: var(--accent-red);
+  transform: translateY(2px);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 10px);
+  min-width: 210px;
+  padding: 0.55rem;
+  background: rgba(8, 8, 8, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border-light);
+  border-radius: 0 0 14px 14px;
+  border-top: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.dropdownWrap:hover .dropdown,
+.dropdownWrap:focus-within .dropdown {
+  opacity: 1;
+  pointer-events: all;
+  transform: translate(-50%, 0);
+}
+
+.dropdownItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.8rem 1rem 0.65rem;
+  border-radius: 9px;
+  transition: background 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dropdownLogoSh {
+  height: 17px;
+  width: auto;
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdownLogoEtherna {
+  height: 26px;
+  width: auto;
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdownItem:hover .dropdownLogoSh,
+.dropdownItem:hover .dropdownLogoEtherna {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.dropdownLabel {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.dropdownItem:hover .dropdownLabel {
+  color: var(--accent-red);
+}
+
 .cta {
   padding: 0.5rem 1.25rem;
   background: var(--accent-red);
@@ -232,6 +329,36 @@
 
   .navLogoNzsign {
     max-width: 130px;
+  }
+
+  /* dropdown vira lista fixa dentro do menu mobile */
+  .dropdownWrap {
+    height: auto;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .dropdownCaret {
+    display: none;
+  }
+
+  .dropdown {
+    position: static;
+    transform: none;
+    opacity: 1;
+    pointer-events: all;
+    background: none;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0 0 0.4rem;
+  }
+
+  .dropdownItem {
+    padding: 0.4rem 0.8rem;
   }
 
   .cta {

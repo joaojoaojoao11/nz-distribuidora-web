@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
+import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
@@ -41,9 +43,30 @@ export default function Navbar() {
           <Link to="/sign" className={`${styles.navLink} ${location.pathname.startsWith('/sign') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="Linha NZSIGN" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
           </Link>
-          <Link to="/decor" className={`${styles.navLink} ${location.pathname.startsWith('/decor') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
-            <img src="/assets/logos/nzdecor/logo-nzdecor-branco.png" alt="Linha NZDECOR" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
-          </Link>
+          <div className={styles.dropdownWrap}>
+            <Link to="/decor" className={`${styles.navLink} ${location.pathname.startsWith('/decor') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
+              <img src="/assets/logos/nzdecor/logo-nzdecor-branco.png" alt="Linha NZDECOR" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
+              <span className={styles.dropdownCaret} aria-hidden="true">▾</span>
+            </Link>
+            <div className={styles.dropdown}>
+              <Link to="/decor/sh" className={styles.dropdownItem} onClick={closeMenu}>
+                <img
+                  src="/assets/logos/nzdecor/logo-sh-decor-branco.svg"
+                  alt="Catálogo SH Decor"
+                  className={styles.dropdownLogoSh}
+                />
+                <span className={styles.dropdownLabel}>{shDecorProducts.length} padrões</span>
+              </Link>
+              <Link to="/decor/etherna" className={styles.dropdownItem} onClick={closeMenu}>
+                <img
+                  src="/assets/logos/nzdecor/logo-etherna.webp"
+                  alt="Catálogo Etherna Decor"
+                  className={styles.dropdownLogoEtherna}
+                />
+                <span className={styles.dropdownLabel}>{ethernaProducts.length} padrões</span>
+              </Link>
+            </div>
+          </div>
           <Link to="/sobre" className={`${styles.navLink} ${location.pathname === '/sobre' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             EMPRESA
           </Link>
