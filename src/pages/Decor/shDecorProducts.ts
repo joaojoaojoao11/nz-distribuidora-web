@@ -2080,8 +2080,7 @@ export const shDecorProducts: ShDecorProduct[] = [
       "texture": "/assets/images/decor/sh/palha/texture.jpg",
       "ambient": [
         "/assets/images/decor/sh/palha/ambient-1.jpg",
-        "/assets/images/decor/sh/palha/ambient-2.jpg",
-        "/assets/images/decor/sh/palha/ambient-3.jpg"
+        "/assets/images/decor/sh/palha/ambient-2.jpg"
       ]
     },
     "seo": {
