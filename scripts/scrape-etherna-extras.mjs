@@ -11,7 +11,9 @@ import path from 'node:path';
 const API = 'https://ethernaprodutos.com.br/wp-json/wp/v2/media';
 const DATA_DIR = path.resolve('scripts/data/etherna');
 const ORIG_DIR = path.join(DATA_DIR, '_originals');
-const MAX_EXTRAS = 2; // slot 3 fica para o crop de detalhe do card
+// baixa até 4 candidatos distintos por padrão; o passo PowerShell filtra por
+// hash perceptual (descarta quase-idênticos ao card) e usa no máximo 2
+const MAX_EXTRAS = 4;
 
 // squares do carrossel com nome abreviado/ambíguo no arquivo
 const ALIASES = {
@@ -73,24 +75,31 @@ for (const url of media) {
   extras.set(slug, list);
 }
 
-// fotos limpas primeiro, squares por último; no máximo MAX_EXTRAS por padrão
+// fotos limpas primeiro, squares por último; no máximo MAX_EXTRAS DISTINTOS
+// por padrão (re-uploads "-1"/"-2" do WP costumam ser o mesmo arquivo — dedupe
+// por md5 do conteúdo; quase-idênticos são filtrados depois por hash perceptual)
+import { createHash } from 'node:crypto';
 const isSquare = (u) => /_1200x1200/i.test(u);
 let downloaded = 0;
 fs.mkdirSync(ORIG_DIR, { recursive: true });
 for (const [slug, urls] of extras) {
-  const picked = [...new Set(urls)]
-    .sort((a, b) => Number(isSquare(a)) - Number(isSquare(b)))
-    .slice(0, MAX_EXTRAS);
-  for (let i = 0; i < picked.length; i++) {
-    const ext = picked[i].match(/\.(png|webp)$/i) ? 'png' : 'jpg';
-    const dest = path.join(ORIG_DIR, `${slug}--extra-${i + 1}.${ext}`);
-    if (fs.existsSync(dest) && fs.statSync(dest).size > 20_000) { downloaded++; continue; }
-    const res = await fetch(picked[i]);
+  const candidates = [...new Set(urls)]
+    .sort((a, b) => Number(isSquare(a)) - Number(isSquare(b)));
+  const seenMd5 = new Set();
+  let slot = 0;
+  for (const url of candidates) {
+    if (slot >= MAX_EXTRAS) break;
+    const res = await fetch(url);
     if (!res.ok) { console.error(`FALHA ${slug}: HTTP ${res.status}`); continue; }
     const buf = Buffer.from(await res.arrayBuffer());
     if (buf.length < 20_000) { console.error(`FALHA ${slug}: ${buf.length} bytes`); continue; }
-    fs.writeFileSync(dest, buf);
+    const md5 = createHash('md5').update(buf).digest('hex');
+    if (seenMd5.has(md5)) continue; // re-upload idêntico
+    seenMd5.add(md5);
+    slot++;
+    const ext = url.match(/\.(png|webp)$/i) ? 'png' : 'jpg';
+    fs.writeFileSync(path.join(ORIG_DIR, `${slug}--extra-${slot}.${ext}`), buf);
     downloaded++;
   }
 }
-console.log(`padrões com extras: ${extras.size} | arquivos baixados/ok: ${downloaded}`);
+console.log(`padrões com extras: ${extras.size} | arquivos distintos baixados: ${downloaded}`);

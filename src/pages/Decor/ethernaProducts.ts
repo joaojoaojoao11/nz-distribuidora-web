@@ -202,8 +202,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/madeira-cerejeira-cacau/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/madeira-cerejeira-cacau/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-cerejeira-cacau/ambient-2.jpg",
-        "/assets/images/decor/etherna/madeira-cerejeira-cacau/ambient-3.jpg"
+        "/assets/images/decor/etherna/madeira-cerejeira-cacau/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -255,8 +254,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-cerejeira-marfim/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-cerejeira-marfim/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-cerejeira-marfim/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-cerejeira-marfim/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -308,8 +306,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-areia/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-classica-areia/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-classica-areia/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-classica-areia/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -361,8 +358,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-bege/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-classica-bege/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-classica-bege/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-classica-bege/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -414,8 +410,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-cacau/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-classica-cacau/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-classica-cacau/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-classica-cacau/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -468,8 +463,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/madeira-classica-cinza/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/madeira-classica-cinza/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-classica-cinza/ambient-2.jpg",
-        "/assets/images/decor/etherna/madeira-classica-cinza/ambient-3.jpg"
+        "/assets/images/decor/etherna/madeira-classica-cinza/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -521,8 +515,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-classica-marfim/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-classica-marfim/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-classica-marfim/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-classica-marfim/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -731,8 +724,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/madeira-ebano-avela/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/madeira-ebano-avela/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-ebano-avela/ambient-2.jpg",
-        "/assets/images/decor/etherna/madeira-ebano-avela/ambient-3.jpg"
+        "/assets/images/decor/etherna/madeira-ebano-avela/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -784,8 +776,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-ebano-marrom/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-ebano-marrom/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-ebano-marrom/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-ebano-marrom/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -837,8 +828,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-ebano-pinhao/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-ebano-pinhao/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-ebano-pinhao/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-ebano-pinhao/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -891,8 +881,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/madeira-figueira-marfim/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/madeira-figueira-marfim/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-figueira-marfim/ambient-2.jpg",
-        "/assets/images/decor/etherna/madeira-figueira-marfim/ambient-3.jpg"
+        "/assets/images/decor/etherna/madeira-figueira-marfim/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -945,8 +934,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/madeira-figueira-ocre/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/madeira-figueira-ocre/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-figueira-ocre/ambient-2.jpg",
-        "/assets/images/decor/etherna/madeira-figueira-ocre/ambient-3.jpg"
+        "/assets/images/decor/etherna/madeira-figueira-ocre/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -1050,8 +1038,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-mogno-avela/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-mogno-avela/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-mogno-avela/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-mogno-avela/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1103,8 +1090,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-mogno-terra/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-mogno-terra/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-mogno-terra/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-mogno-terra/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1208,8 +1194,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-painel-bege/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-painel-bege/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-painel-bege/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-painel-bege/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1261,8 +1246,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-painel-caramelo/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-painel-caramelo/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-painel-caramelo/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-painel-caramelo/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1314,8 +1298,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-painel-cedro/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-painel-cedro/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-painel-cedro/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-painel-cedro/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1420,8 +1403,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-rustica-caramelo/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-rustica-caramelo/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-rustica-caramelo/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-rustica-caramelo/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1473,8 +1455,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-rustica-marrom/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-rustica-marrom/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-rustica-marrom/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-rustica-marrom/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1526,8 +1507,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-verona-ebano/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-verona-ebano/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-verona-ebano/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-verona-ebano/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1579,8 +1559,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-verona-marfim/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-verona-marfim/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-verona-marfim/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-verona-marfim/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1632,8 +1611,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/madeira-verona-preto/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/madeira-verona-preto/ambient-1.jpg",
-        "/assets/images/decor/etherna/madeira-verona-preto/ambient-2.jpg"
+        "/assets/images/decor/etherna/madeira-verona-preto/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1685,8 +1663,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-bianco-branco/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-bianco-branco/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-bianco-branco/ambient-2.jpg"
+        "/assets/images/decor/etherna/marmore-bianco-branco/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1894,8 +1871,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-carrara-azul-marinho/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-carrara-azul-marinho/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-carrara-azul-marinho/ambient-2.jpg"
+        "/assets/images/decor/etherna/marmore-carrara-azul-marinho/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -1948,8 +1924,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/marmore-carrara-bege/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/marmore-carrara-bege/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-carrara-bege/ambient-2.jpg",
-        "/assets/images/decor/etherna/marmore-carrara-bege/ambient-3.jpg"
+        "/assets/images/decor/etherna/marmore-carrara-bege/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -2001,8 +1976,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-carrara-cinza/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-carrara-cinza/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-carrara-cinza/ambient-2.jpg"
+        "/assets/images/decor/etherna/marmore-carrara-cinza/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -2055,8 +2029,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/marmore-carrara-ocre/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/marmore-carrara-ocre/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-carrara-ocre/ambient-2.jpg",
-        "/assets/images/decor/etherna/marmore-carrara-ocre/ambient-3.jpg"
+        "/assets/images/decor/etherna/marmore-carrara-ocre/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -2109,8 +2082,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/marmore-carrara-preto/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/marmore-carrara-preto/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-carrara-preto/ambient-2.jpg",
-        "/assets/images/decor/etherna/marmore-carrara-preto/ambient-3.jpg"
+        "/assets/images/decor/etherna/marmore-carrara-preto/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -2319,8 +2291,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/marmore-claro-ouro/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/marmore-claro-ouro/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-claro-ouro/ambient-2.jpg",
-        "/assets/images/decor/etherna/marmore-claro-ouro/ambient-3.jpg"
+        "/assets/images/decor/etherna/marmore-claro-ouro/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -2372,8 +2343,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-claro-prata/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-claro-prata/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-claro-prata/ambient-2.jpg"
+        "/assets/images/decor/etherna/marmore-claro-prata/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -2425,8 +2395,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/marmore-imperial-cinza/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/marmore-imperial-cinza/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-imperial-cinza/ambient-2.jpg"
+        "/assets/images/decor/etherna/marmore-imperial-cinza/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -2687,8 +2656,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/marmore-quartzo-cinza/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/marmore-quartzo-cinza/ambient-1.jpg",
-        "/assets/images/decor/etherna/marmore-quartzo-cinza/ambient-2.jpg",
-        "/assets/images/decor/etherna/marmore-quartzo-cinza/ambient-3.jpg"
+        "/assets/images/decor/etherna/marmore-quartzo-cinza/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -4576,8 +4544,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/cimento-queimado-cinza/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/cimento-queimado-cinza/ambient-1.jpg",
-        "/assets/images/decor/etherna/cimento-queimado-cinza/ambient-2.jpg"
+        "/assets/images/decor/etherna/cimento-queimado-cinza/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -4733,8 +4700,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/cimento-texturizado-cinza/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/cimento-texturizado-cinza/ambient-1.jpg",
-        "/assets/images/decor/etherna/cimento-texturizado-cinza/ambient-2.jpg"
+        "/assets/images/decor/etherna/cimento-texturizado-cinza/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -4839,8 +4805,7 @@ export const ethernaProducts: EthernaProduct[] = [
       "texture": "/assets/images/decor/etherna/granilite-bege/texture.jpg",
       "ambient": [
         "/assets/images/decor/etherna/granilite-bege/ambient-1.jpg",
-        "/assets/images/decor/etherna/granilite-bege/ambient-2.jpg",
-        "/assets/images/decor/etherna/granilite-bege/ambient-3.jpg"
+        "/assets/images/decor/etherna/granilite-bege/ambient-2.jpg"
       ]
     },
     "seo": {
@@ -4892,8 +4857,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/granilite-cinza/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/granilite-cinza/ambient-1.jpg",
-        "/assets/images/decor/etherna/granilite-cinza/ambient-2.jpg"
+        "/assets/images/decor/etherna/granilite-cinza/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -4997,8 +4961,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/granilite-grafite/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/granilite-grafite/ambient-1.jpg",
-        "/assets/images/decor/etherna/granilite-grafite/ambient-2.jpg"
+        "/assets/images/decor/etherna/granilite-grafite/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -5154,8 +5117,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/miracema-bege/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/miracema-bege/ambient-1.jpg",
-        "/assets/images/decor/etherna/miracema-bege/ambient-2.jpg"
+        "/assets/images/decor/etherna/miracema-bege/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -5207,9 +5169,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/tijolo-branco/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/tijolo-branco/ambient-1.jpg",
-        "/assets/images/decor/etherna/tijolo-branco/ambient-2.jpg",
-        "/assets/images/decor/etherna/tijolo-branco/ambient-3.jpg"
+        "/assets/images/decor/etherna/tijolo-branco/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -5313,9 +5273,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/tijolo-laranja/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/tijolo-laranja/ambient-1.jpg",
-        "/assets/images/decor/etherna/tijolo-laranja/ambient-2.jpg",
-        "/assets/images/decor/etherna/tijolo-laranja/ambient-3.jpg"
+        "/assets/images/decor/etherna/tijolo-laranja/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -5367,8 +5325,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/tijolo-preto/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/tijolo-preto/ambient-1.jpg",
-        "/assets/images/decor/etherna/tijolo-preto/ambient-2.jpg"
+        "/assets/images/decor/etherna/tijolo-preto/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -5420,8 +5377,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/corten-ferrugem/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/corten-ferrugem/ambient-1.jpg",
-        "/assets/images/decor/etherna/corten-ferrugem/ambient-2.jpg"
+        "/assets/images/decor/etherna/corten-ferrugem/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -5473,8 +5429,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/corten-grafite/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/corten-grafite/ambient-1.jpg",
-        "/assets/images/decor/etherna/corten-grafite/ambient-2.jpg"
+        "/assets/images/decor/etherna/corten-grafite/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -5526,8 +5481,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/corten-inox/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/corten-inox/ambient-1.jpg",
-        "/assets/images/decor/etherna/corten-inox/ambient-2.jpg"
+        "/assets/images/decor/etherna/corten-inox/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -7955,8 +7909,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/pincelado-acqua/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/pincelado-acqua/ambient-1.jpg",
-        "/assets/images/decor/etherna/pincelado-acqua/ambient-2.jpg"
+        "/assets/images/decor/etherna/pincelado-acqua/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -8112,8 +8065,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/cubo-geometrico-marmorizado-ouro/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-ouro/ambient-1.jpg",
-        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-ouro/ambient-2.jpg"
+        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-ouro/ambient-1.jpg"
       ]
     },
     "seo": {
@@ -8165,8 +8117,7 @@ export const ethernaProducts: EthernaProduct[] = [
     "images": {
       "texture": "/assets/images/decor/etherna/cubo-geometrico-marmorizado-rose/texture.jpg",
       "ambient": [
-        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-rose/ambient-1.jpg",
-        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-rose/ambient-2.jpg"
+        "/assets/images/decor/etherna/cubo-geometrico-marmorizado-rose/ambient-1.jpg"
       ]
     },
     "seo": {
