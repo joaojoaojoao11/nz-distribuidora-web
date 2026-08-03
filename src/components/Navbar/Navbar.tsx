@@ -37,9 +37,40 @@ export default function Navbar() {
           <Link to="/ppf" className={`${styles.navLink} ${location.pathname === '/ppf' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             <img src="/assets/logos/logo-nz-ppf.svg" alt="Linha NZ PPF" className={styles.navLogo} />
           </Link>
-          <Link to="/wrap" className={`${styles.navLink} ${location.pathname === '/wrap' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
-            <img src="/assets/logos/logo-nz-wrap.svg" alt="Linha NZ WRAP" className={styles.navLogo} />
-          </Link>
+          <div className={styles.dropdownWrap}>
+            <Link to="/wrap" className={`${styles.navLink} ${location.pathname.startsWith('/wrap') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
+              <img src="/assets/logos/logo-nz-wrap.svg" alt="Linha NZ WRAP" className={styles.navLogo} />
+              <span className={styles.dropdownCaret} aria-hidden="true">▾</span>
+            </Link>
+            <div className={styles.dropdown}>
+              <Link to="/wrap/nzwrap-premium" className={styles.dropdownItem} onClick={closeMenu}>
+                <img
+                  src="/assets/logos/logo-nz-wrap.svg"
+                  alt="NZWrap Premium"
+                  className={styles.dropdownLogoNzwrap}
+                />
+                <span className={styles.dropdownLabel}>linha premium</span>
+              </Link>
+              <Link to="/wrap/sh-colors" className={styles.dropdownItem} onClick={closeMenu}>
+                <img
+                  src="/assets/logos/logo-sh-colors.svg"
+                  alt="SH Wrapping Colors"
+                  className={styles.dropdownLogoShColors}
+                />
+                <span className={styles.dropdownLabel}>sh wrapping</span>
+              </Link>
+              <span className={styles.dropdownDivider} aria-hidden="true" />
+              <Link to="/wrap/oracal-970ra" className={styles.dropdownTextItem} onClick={closeMenu}>
+                ORACAL 970RA
+              </Link>
+              <Link to="/wrap/oracal-670ra" className={styles.dropdownTextItem} onClick={closeMenu}>
+                ORACAL 670RA
+              </Link>
+              <Link to="/wrap/oracal-651" className={styles.dropdownTextItem} onClick={closeMenu}>
+                ORACAL 651
+              </Link>
+            </div>
+          </div>
           <Link to="/sign" className={`${styles.navLink} ${location.pathname.startsWith('/sign') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="Linha NZSIGN" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
           </Link>
