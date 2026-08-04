@@ -4,6 +4,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 // Reusing FlowGloss styles conceptually, they are globally loaded module-like patterns from PrimeGloss.
 // We'll import PrimeGloss.module.css to maintain structural purity while overriding colors inline or via data-attributes if necessary.
 import styles from './PrimeGloss.module.css';
+import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
+
+const seoDescription = 'PPF híbrido projetado para máxima rentabilidade do instalador. 175μ, 3 anos de garantia e o melhor custo-benefício da linha NZPPF.';
+const productSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "NZPPF Core Gloss",
+  "description": seoDescription,
+  "brand": { "@type": "Brand", "name": "NZPPF" },
+  "category": "Película de Proteção de Pintura (PPF)",
+  "url": `${SITE_URL}/ppf/core-gloss`
+});
 
 const blurReveal = {
   hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
@@ -105,6 +118,13 @@ export default function CoreGloss() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="NZPPF Core Gloss — PPF 175μ com 3 Anos de Garantia"
+        description={seoDescription}
+        canonicalUrl="/ppf/core-gloss"
+        schema={productSchema}
+        type="product"
+      />
 
       {/* SEÇÃO 1: HERO */}
       <section className={styles.heroSection}>
@@ -174,9 +194,9 @@ export default function CoreGloss() {
           <motion.h2 className={styles.sectionTitle} variants={blurReveal}>A Tecnologia por trás da <span style={{ color: coreColor }}>Margem</span></motion.h2>
           <motion.div className={styles.techGrid} variants={scaleIn}>
             <div className={styles.techImagePanel}>
-              <img src="/assets/images/core_layers.png" alt="Camadas da Película Core TPU" className={styles.techImage} />
+              <img src="/assets/images/core_layers.png" alt="Camadas da Película Core TPU" className={styles.techImage} loading="lazy" decoding="async" />
               <div className={styles.techImageOverlay} style={{ background: 'linear-gradient(to top, rgba(14,14,18,1) 0%, rgba(14,14,18,0.2) 100%)' }}></div>
-              <img src={CamadaIcon} className={styles.techDiagramIcon} style={{ filter: 'brightness(0) saturate(100%) invert(64%) sepia(31%) saturate(543%) hue-rotate(85deg) brightness(88%) contrast(93%)' }} alt="" />
+              <img src={CamadaIcon} className={styles.techDiagramIcon} style={{ filter: 'brightness(0) saturate(100%) invert(64%) sepia(31%) saturate(543%) hue-rotate(85deg) brightness(88%) contrast(93%)' }} alt="" loading="lazy" decoding="async" />
             </div>
             <div className={styles.techLayers}>
               {[
@@ -205,11 +225,11 @@ export default function CoreGloss() {
             {diferenciais.map((item, i) => (
               <motion.div key={i} className={styles.diffCard} variants={scaleIn}>
                 <div className={styles.diffCardImageWrap}>
-                  <img src={item.image} alt={item.title} className={styles.diffCardImage} />
+                  <img src={item.image} alt={item.title} className={styles.diffCardImage} loading="lazy" decoding="async" />
                   <div className={styles.diffCardAccent} style={{ background: coreColor }}>{item.accent}</div>
                 </div>
                 <div className={styles.diffCardContent}>
-                  <img src={item.icon} className={styles.diffCardIcon} style={{ filter: 'brightness(0) saturate(100%) invert(64%) sepia(31%) saturate(543%) hue-rotate(85deg) brightness(88%) contrast(93%)' }} alt="" />
+                  <img src={item.icon} className={styles.diffCardIcon} style={{ filter: 'brightness(0) saturate(100%) invert(64%) sepia(31%) saturate(543%) hue-rotate(85deg) brightness(88%) contrast(93%)' }} alt="" loading="lazy" decoding="async" />
                   <h3 className={styles.diffCardTitle}>{item.title}</h3>
                   <p className={styles.diffCardDesc}>{item.desc}</p>
                 </div>
@@ -268,7 +288,7 @@ export default function CoreGloss() {
             </div>
             <div className={styles.specsCardActions}>
               <button className={styles.specsBtn} style={{ background: coreColor }} onClick={() => { setModalTab('specs'); setIsTableModalOpen(true); }}>
-                <img src={CamadaIcon} className={styles.specsBtnIcon} style={{ filter: 'brightness(0) invert(1)' }} alt="" />
+                <img src={CamadaIcon} className={styles.specsBtnIcon} style={{ filter: 'brightness(0) invert(1)' }} alt="" loading="lazy" decoding="async" />
                 ANÁLISE ESTRUTURAL
               </button>
               <button className={styles.specsBtnOutline} onClick={() => { setModalTab('benchmark'); setIsTableModalOpen(true); }}>

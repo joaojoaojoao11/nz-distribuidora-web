@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, NavigationArrow } from '@phosphor-icons/react';
+import SEO from '../../components/SEO/SEO';
 import styles from './Company.module.css';
 
 const ADDRESS = 'R. Brasilândia, 366 - Chácaras Marco, Barueri - SP, 06419-060';
@@ -159,6 +160,11 @@ export default function Company() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="Sobre a NZ Group — Distribuidora de PPF e Envelopamento"
+        description="Conheça a NZ Group: operação completa de distribuição com inteligência comercial, logística nacional e compromisso real com o crescimento dos parceiros."
+        canonicalUrl="/sobre"
+      />
       {/* HERO */}
       <header className={styles.hero}>
         <div className={styles.heroBg}></div>
@@ -178,9 +184,9 @@ export default function Company() {
               className={styles.heroLogo}
               variants={blurUp}
             />
-            <motion.p className={styles.heroTagline} variants={blurUp}>
+            <motion.h1 className={styles.heroTagline} variants={blurUp}>
               Muito mais do que material.
-            </motion.p>
+            </motion.h1>
             <motion.p className={styles.heroSubtitle} variants={blurUp}>
               Uma empresa forjada na realidade das ruas, moldada para tracionar lojistas de alta performance no Brasil.
             </motion.p>

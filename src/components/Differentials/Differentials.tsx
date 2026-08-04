@@ -83,7 +83,7 @@ export default function Differentials() {
               variants={blurReveal}
             >
               <div className={styles.cardIcon}>
-                <img src={card.icon} alt="" />
+                <img src={card.icon} alt="" loading="lazy" decoding="async" />
               </div>
               <span className={styles.cardAccent}>{card.accent}</span>
               <h3 className={styles.cardTitle}>{card.title}</h3>

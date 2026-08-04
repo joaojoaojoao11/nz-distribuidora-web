@@ -32,11 +32,11 @@ export default function Showcase() {
         <div className={styles.splitGrid}>
           <Link to="/ppf" className={styles.splitCard}>
             <div className={styles.splitImageWrapper}>
-              <img src="/assets/images/wrap_nzwrap_hero.png" alt="NZ PPF" className={styles.splitImage} />
+              <img src="/assets/images/wrap_nzwrap_hero.png" alt="NZ PPF" className={styles.splitImage} loading="lazy" decoding="async" />
               <div className={styles.splitOverlay} />
             </div>
             <div className={styles.splitContent}>
-              <img src="/assets/logos/logo-nz-ppf.svg" alt="NZ PPF" className={styles.splitLogo} />
+              <img src="/assets/logos/logo-nz-ppf.svg" alt="NZ PPF" className={styles.splitLogo} loading="lazy" decoding="async" />
               <span className={styles.splitSub}>PROTEÇÃO DE PINTURA PREMIUM</span>
               <p className={styles.splitDesc}>
                 A barreira definitiva contra riscos, pedras e desgaste diário. Acabamento invisível com performance de fábrica.
@@ -50,11 +50,11 @@ export default function Showcase() {
 
           <Link to="/wrap" className={styles.splitCard}>
             <div className={styles.splitImageWrapper}>
-              <img src="/assets/images/wrap_hero.png" alt="NZ WRAP" className={styles.splitImage} />
+              <img src="/assets/images/wrap_hero.png" alt="NZ WRAP" className={styles.splitImage} loading="lazy" decoding="async" />
               <div className={styles.splitOverlay} />
             </div>
             <div className={styles.splitContent}>
-              <img src="/assets/logos/logo-nz-wrap.svg" alt="NZ WRAP" className={styles.splitLogo} />
+              <img src="/assets/logos/logo-nz-wrap.svg" alt="NZ WRAP" className={styles.splitLogo} loading="lazy" decoding="async" />
               <span className={styles.splitSub}>ENVELOPAMENTO AUTOMOTIVO</span>
               <p className={styles.splitDesc}>
                 Cores profundas, texturas ultrarrealistas e aplicação premium. Para projetos que demandam perfeição.
@@ -68,11 +68,11 @@ export default function Showcase() {
 
           <Link to="/sign" className={styles.splitCard}>
             <div className={styles.splitImageWrapper}>
-              <img src="/assets/images/sign/sign_hero.png" alt="NZSIGN" className={styles.splitImage} />
+              <img src="/assets/images/sign/sign_hero.png" alt="NZSIGN" className={styles.splitImage} loading="lazy" decoding="async" />
               <div className={styles.splitOverlay} />
             </div>
             <div className={styles.splitContent}>
-              <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="NZSIGN" className={`${styles.splitLogo} ${styles.splitLogoWide}`} />
+              <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="NZSIGN" className={`${styles.splitLogo} ${styles.splitLogoWide}`} loading="lazy" decoding="async" />
               <span className={styles.splitSub}>COMUNICAÇÃO VISUAL AVERY DENNISON</span>
               <p className={styles.splitDesc}>
                 Filmes para impressão digital, recorte e sinalização com padrão global Avery Dennison. Do MPI ao refletivo, tudo para o profissional de sign.
@@ -86,11 +86,11 @@ export default function Showcase() {
 
           <Link to="/decor" className={styles.splitCard}>
             <div className={styles.splitImageWrapper}>
-              <img src="/assets/images/decor/decor_hero.jpg" alt="NZDECOR" className={styles.splitImage} />
+              <img src="/assets/images/decor/decor_hero.jpg" alt="NZDECOR" className={styles.splitImage} loading="lazy" decoding="async" />
               <div className={styles.splitOverlay} />
             </div>
             <div className={styles.splitContent}>
-              <img src="/assets/logos/nzdecor/logo-nzdecor-branco.png" alt="NZDECOR" className={`${styles.splitLogo} ${styles.splitLogoWide}`} />
+              <img src="/assets/logos/nzdecor/logo-nzdecor-branco.png" alt="NZDECOR" className={`${styles.splitLogo} ${styles.splitLogoWide}`} loading="lazy" decoding="async" />
               <span className={styles.splitSub}>ENVELOPAMENTO ARQUITETÔNICO</span>
               <p className={styles.splitDesc}>
                 Vinil decorativo técnico para móveis, paredes e superfícies. Mais de 210 padrões SH Decor e Etherna Decor em catálogo.

@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { shDecorSlugs } from './_lib/shDecorSlugs.js';
 import { ethernaSlugs } from './_lib/ethernaSlugs.js';
+import { signSlugs } from './_lib/signSlugs.js';
 
 // Initialize Supabase admin client for the serverless function
 // We use Vite's environment variables if available locally, or Vercel's standard environment variables in production
@@ -13,9 +14,9 @@ export const config = {
   runtime: 'edge', // Use Edge runtime for fast execution globally
 };
 
-export default async function handler(req: Request) {
-  const url = new URL(req.url);
-  const baseUrl = `${url.protocol}//${url.host}`;
+export default async function handler(_req: Request) {
+  // Domínio canônico fixo: previews .vercel.app não devem gerar sitemap com host próprio
+  const baseUrl = 'https://www.nzgroup.com.br';
 
   // Base static paths
   const staticPaths = [
@@ -25,13 +26,25 @@ export default async function handler(req: Request) {
     '/ppf/prime-gloss',
     '/ppf/flow-gloss',
     '/ppf/core-gloss',
+    '/ppf/headlight',
+    '/ppf/windshield',
     '/wrap',
+    '/wrap/nzwrap-premium',
+    '/wrap/sh-colors',
+    '/wrap/oracal-970ra',
+    '/wrap/oracal-651',
+    '/wrap/oracal-670ra',
     '/sign',
     '/decor',
     '/decor/sh',
     '/decor/etherna',
     '/sobre',
     '/encontre-aplicador',
+    '/registro-garantia',
+    '/validar-garantia',
+    '/contato',
+    '/privacidade',
+    '/termos',
     '/blog'
   ];
 
@@ -53,6 +66,15 @@ export default async function handler(req: Request) {
     sitemapContent += `    <loc>${baseUrl}${path}</loc>\n`;
     sitemapContent += `    <changefreq>weekly</changefreq>\n`;
     sitemapContent += `    <priority>${path === '' ? '1.0' : '0.8'}</priority>\n`;
+    sitemapContent += `  </url>\n`;
+  }
+
+  // Add Avery Dennison sign families
+  for (const slug of signSlugs) {
+    sitemapContent += `  <url>\n`;
+    sitemapContent += `    <loc>${baseUrl}/sign/${slug}</loc>\n`;
+    sitemapContent += `    <changefreq>monthly</changefreq>\n`;
+    sitemapContent += `    <priority>0.7</priority>\n`;
     sitemapContent += `  </url>\n`;
   }
 

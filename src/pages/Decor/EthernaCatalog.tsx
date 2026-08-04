@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import { staggerContainer, fadeUpItem } from './variants';
 import {
   ethernaFamilies,
@@ -92,14 +93,14 @@ export default function EthernaCatalog() {
     name: 'Catálogo Etherna Decor — Vinil Adesivo Decorativo',
     description:
       'Catálogo completo dos padrões Etherna Decor distribuídos pela NZDecor. Indústria nacional com tecnologia Shield®.',
-    url: 'https://agencianz.com/decor/etherna',
+    url: `${SITE_URL}/decor/etherna`,
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: ethernaProducts.length,
       itemListElement: ethernaProducts.map((p, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        url: `https://agencianz.com/decor/etherna/${p.slug}`,
+        url: `${SITE_URL}/decor/etherna/${p.slug}`,
         name: p.name,
       })),
     },

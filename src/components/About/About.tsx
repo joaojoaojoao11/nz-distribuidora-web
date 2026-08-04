@@ -42,6 +42,8 @@ export default function About() {
               alt="NZ GROUP Base" 
               className={styles.aboutImage}
               style={{ objectFit: 'contain', padding: '4rem', backgroundColor: 'var(--bg-tertiary)', width: '100%', maxWidth: '350px', maxHeight: '500px' }}
+              loading="lazy"
+              decoding="async"
             />
             {/* Efeito de Vidro por cima */}
             <div className={styles.glassEffect}></div>

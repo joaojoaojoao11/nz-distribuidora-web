@@ -10,6 +10,7 @@ export interface AICampaign {
   instructions: string | null;
   frequency_hours: number;
   is_active: boolean;
+  auto_publish?: boolean;
   last_run_at: string | null;
   next_run_at: string | null;
 }
@@ -26,10 +27,19 @@ export interface AIMemoryLog {
   created_at: string;
 }
 
+export interface AIRunLog {
+  id: string;
+  created_at: string;
+  status: string | null;
+  reason: string | null;
+  image_mode: string | null;
+}
+
 export default function AdminAIBlog() {
   const [campaigns, setCampaigns] = useState<AICampaign[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [logs, setLogs] = useState<AIMemoryLog[]>([]);
+  const [runLogs, setRunLogs] = useState<AIRunLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<AICampaign | null>(null);
@@ -40,7 +50,8 @@ export default function AdminAIBlog() {
     target_category_id: '',
     instructions: '',
     frequency_hours: 24,
-    is_active: true
+    is_active: true,
+    auto_publish: false
   });
 
   useEffect(() => {
@@ -49,15 +60,17 @@ export default function AdminAIBlog() {
 
   const fetchData = async () => {
     setLoading(true);
-    const [campaignRes, catRes, logsRes] = await Promise.all([
+    const [campaignRes, catRes, logsRes, runsRes] = await Promise.all([
       supabase.from('blog_ai_campaigns').select('*').order('created_at', { ascending: false }),
       supabase.from('blog_categories').select('*').order('name'),
-      supabase.from('blog_ai_memory_log').select('*').order('created_at', { ascending: false }).limit(20)
+      supabase.from('blog_ai_memory_log').select('*').order('created_at', { ascending: false }).limit(20),
+      supabase.from('blog_ai_run_log').select('*').order('created_at', { ascending: false }).limit(15)
     ]);
 
     if (campaignRes.data) setCampaigns(campaignRes.data as AICampaign[]);
     if (catRes.data) setCategories(catRes.data as Category[]);
     if (logsRes.data) setLogs(logsRes.data as AIMemoryLog[]);
+    if (runsRes.data) setRunLogs(runsRes.data as AIRunLog[]);
     setLoading(false);
   };
 
@@ -74,7 +87,10 @@ export default function AdminAIBlog() {
       target_category_id: categories.length > 0 ? categories[0].id : null,
       instructions: '',
       frequency_hours: 24,
-      is_active: true
+      is_active: true,
+      // Campanha nova nasce gerando RASCUNHO — valide o tom antes de ligar a
+      // publicação automática.
+      auto_publish: false
     });
     setShowEditor(true);
   };
@@ -91,7 +107,10 @@ export default function AdminAIBlog() {
   };
 
   const handleFireNow = async (campaign: AICampaign) => {
-    if (!window.confirm(`Disparar o Motor AGORA para a campanha "${campaign.theme}"?\n\nIsto vai gerar 1 post e publicar imediatamente no blog.`)) {
+    const destino = campaign.auto_publish === false
+      ? 'gerar 1 RASCUNHO para você revisar na aba Blog'
+      : 'gerar 1 post e publicar imediatamente no blog';
+    if (!window.confirm(`Disparar o Motor AGORA para a campanha "${campaign.theme}"?\n\nIsto vai ${destino}.`)) {
       return;
     }
     setFiringCampaignId(campaign.id);
@@ -120,9 +139,11 @@ export default function AdminAIBlog() {
         return;
       }
       if (run.status === 'posted') {
-        alert(`Post publicado!\n\nTítulo: ${run.title}\nImagem: ${run.imageMode === 'generated' ? 'gerada pela IA' : 'fallback Unsplash'}`);
+        alert(`Post publicado!\n\nTítulo: ${run.title}\nImagem: ${run.imageMode === 'generated' ? 'gerada pela IA' : 'fallback do pool'}`);
+      } else if (run.status === 'draft_created') {
+        alert(`Rascunho criado!\n\nTítulo: ${run.title}\nImagem: ${run.imageMode === 'generated' ? 'gerada pela IA' : 'fallback do pool'}\n\nRevise e publique na aba Blog.`);
       } else {
-        alert(`Motor rodou mas não publicou. Status: ${run.status}. Motivo: ${run.reason || '-'}`);
+        alert(`Motor rodou mas não gerou artigo. Status: ${run.status}. Motivo: ${run.reason || '-'}`);
       }
       fetchData();
     } catch (err) {
@@ -144,7 +165,8 @@ export default function AdminAIBlog() {
       target_category_id: formData.target_category_id || null,
       instructions: formData.instructions,
       frequency_hours: formData.frequency_hours,
-      is_active: formData.is_active
+      is_active: formData.is_active,
+      auto_publish: formData.auto_publish !== false
     };
 
     if (editingCampaign) {
@@ -218,6 +240,17 @@ export default function AdminAIBlog() {
                 <option value="paused">Pausado</option>
               </select>
             </div>
+            <div className={styles.adminFormGroup}>
+              <label className={styles.adminLabel}>Publicação</label>
+              <select
+                className={styles.adminSelect}
+                value={formData.auto_publish === false ? 'draft' : 'auto'}
+                onChange={e => setFormData({ ...formData, auto_publish: e.target.value === 'auto' })}
+              >
+                <option value="draft">Rascunho para revisão</option>
+                <option value="auto">Publicar automaticamente</option>
+              </select>
+            </div>
           </div>
 
           <div className={styles.adminFormGroup}>
@@ -257,6 +290,7 @@ export default function AdminAIBlog() {
                 <th>Status</th>
                 <th>Tema Base</th>
                 <th>Frequência</th>
+                <th>Publicação</th>
                 <th>Próximo Disparo</th>
                 <th>Ações</th>
               </tr>
@@ -279,6 +313,11 @@ export default function AdminAIBlog() {
                   <td style={{ fontWeight: 600 }}>{camp.theme}</td>
                   <td>a cada {camp.frequency_hours}h</td>
                   <td>
+                    <span style={{ color: camp.auto_publish === false ? '#FFD400' : '#00C9A7', fontSize: '0.85rem' }}>
+                      {camp.auto_publish === false ? 'Rascunho' : 'Automática'}
+                    </span>
+                  </td>
+                  <td>
                     {camp.next_run_at
                       ? new Date(camp.next_run_at).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
                       : 'Aguardando'
@@ -299,10 +338,48 @@ export default function AdminAIBlog() {
                 </tr>
               ))}
               {campaigns.length === 0 && (
-                <tr><td colSpan={5} className={styles.emptyState}>Nenhum cronograma de IA rodando. O blog depende unicamente de postagens humanas.</td></tr>
+                <tr><td colSpan={6} className={styles.emptyState}>Nenhum cronograma de IA rodando. O blog depende unicamente de postagens humanas.</td></tr>
               )}
             </tbody>
           </table>
+
+          <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <h3 className={styles.createModalLabel}>Saúde do Motor (Últimas Execuções do Cron)</h3>
+            {(() => {
+              const generated = runLogs.filter(r => r.status === 'posted' || r.status === 'draft_created');
+              const last = runLogs[0];
+              return (
+                <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', margin: '12px 0 16px', fontSize: '0.9rem' }}>
+                  <span>Última execução: <strong>{last ? `${new Date(last.created_at).toLocaleString('pt-BR')} — ${last.status}` : 'nenhuma registrada'}</strong></span>
+                  <span>Artigos nas últimas {runLogs.length} execuções: <strong style={{ color: '#00C9A7' }}>{generated.length}</strong></span>
+                  <span>Texto: <strong style={{ color: '#00C9A7' }}>Claude</strong> · Capa: <strong>pool de fotos</strong> (personalizar na revisão)</span>
+                </div>
+              );
+            })()}
+            <table className={styles.table} style={{ opacity: 0.8 }}>
+              <thead>
+                <tr>
+                  <th>Quando</th>
+                  <th>Status</th>
+                  <th>Motivo</th>
+                  <th>Capa</th>
+                </tr>
+              </thead>
+              <tbody>
+                {runLogs.map(run => (
+                  <tr key={run.id}>
+                    <td>{new Date(run.created_at).toLocaleString('pt-BR')}</td>
+                    <td style={{ color: run.status === 'posted' || run.status === 'draft_created' ? '#00C9A7' : '#FF6B6B' }}>{run.status || '-'}</td>
+                    <td>{run.reason || '-'}</td>
+                    <td>{run.image_mode === 'generated' ? 'IA' : run.image_mode === 'fallback' ? 'fallback' : '-'}</td>
+                  </tr>
+                ))}
+                {runLogs.length === 0 && (
+                  <tr><td colSpan={4} className={styles.emptyState}>Nenhuma execução registrada ainda (o log começa a partir do motor v2).</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
           <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
             <h3 className={styles.createModalLabel}>Memória Semântica (Últimas Decisões Autônomas do Bot)</h3>

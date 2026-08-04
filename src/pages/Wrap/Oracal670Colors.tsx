@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
+import SEO from '../../components/SEO/SEO';
 import styles from './Oracal670Colors.module.css';
 
 export interface ColorData {
@@ -107,6 +108,11 @@ export default function Oracal670ColorPage() {
 
   return (
     <div className={styles.colorPage}>
+      <SEO
+        title={`${colorData.name} — ORACAL 670RA`}
+        description={`Cor ${colorData.name} da linha ORACAL 670RA. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
+        canonicalUrl={`/wrap/oracal-670ra/${colorData.slug}`}
+      />
       {/* Dynamic Hero Section */}
       <section 
         className={styles.hero} 
@@ -201,7 +207,7 @@ export default function Oracal670ColorPage() {
             className={styles.gridItem}
           >
             <div className={styles.imageWrapper}>
-              <img src={images.sedan} alt={`${colorData.name} on Sedan`} />
+              <img src={images.sedan} alt={`${colorData.name} on Sedan`} loading="lazy" decoding="async" />
               <div className={styles.overlay}>
                 <span>Sport Sedan Curves</span>
               </div>
@@ -216,7 +222,7 @@ export default function Oracal670ColorPage() {
             className={styles.gridItem}
           >
             <div className={styles.imageWrapper}>
-              <img src={images.supercar} alt={`${colorData.name} on Supercar`} />
+              <img src={images.supercar} alt={`${colorData.name} on Supercar`} loading="lazy" decoding="async" />
               <div className={styles.overlay}>
                 <span>Supercar Dynamics</span>
               </div>

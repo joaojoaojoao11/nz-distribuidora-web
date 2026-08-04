@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE } from '../../lib/siteConfig';
 
 interface SEOProps {
   title: string;
@@ -8,22 +9,23 @@ interface SEOProps {
   schema?: string;
   imageUrl?: string;
   type?: 'website' | 'article' | 'product';
+  noindex?: boolean;
 }
 
-export default function SEO({ 
-  title, 
-  description, 
-  canonicalUrl, 
-  keywords, 
-  schema, 
-  imageUrl = 'https://agencianz.com/assets/images/nz-logo-og.jpg', // Default OG image
-  type = 'website'
+export default function SEO({
+  title,
+  description,
+  canonicalUrl,
+  keywords,
+  schema,
+  imageUrl = DEFAULT_OG_IMAGE,
+  type = 'website',
+  noindex = false
 }: SEOProps) {
   const defaultTitle = 'NZ Distribuidora | PPF e Envelopamento Premium';
-  const siteUrl = 'https://agencianz.com';
-  
-  const fullTitle = title ? `${title} | NZ Distribuidora` : defaultTitle;
-  const url = canonicalUrl ? `${siteUrl}${canonicalUrl}` : siteUrl;
+
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : defaultTitle;
+  const url = canonicalUrl ? `${SITE_URL}${canonicalUrl}` : SITE_URL;
 
   return (
     <Helmet>
@@ -31,6 +33,7 @@ export default function SEO({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
       <link rel="canonical" href={url} />
 
       {/* Open Graph (Facebook, LinkedIn) */}
@@ -39,7 +42,8 @@ export default function SEO({
       <meta property="og:url" content={url} />
       <meta property="og:type" content={type} />
       <meta property="og:image" content={imageUrl} />
-      <meta property="og:site_name" content="NZ Distribuidora" />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content="pt_BR" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />

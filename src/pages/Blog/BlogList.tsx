@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Blog.module.css';
 
 interface BlogPost {
@@ -33,7 +34,6 @@ const itemVariants = {
 export default function BlogList() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchPosts() {
@@ -58,7 +58,7 @@ export default function BlogList() {
     "@context": "https://schema.org",
     "@type": "Blog",
     "name": "Blog NZ Distribuidora - Tudo sobre Envelopamento PPF e Premium Wrap",
-    "url": "https://agencianz.com/blog",
+    "url": `${SITE_URL}/blog`,
     "description": "Veja artigos, novidades e tutoriais avançados sobre aplicação de PPF e adesivos automotivos produzidos pelos especialistas da NZ."
   });
 
@@ -96,14 +96,14 @@ export default function BlogList() {
             animate="show"
           >
             {posts.map(post => (
-              <motion.div 
-                key={post.id} 
+              <motion.div key={post.id} variants={itemVariants}>
+              <Link
+                to={`/blog/${post.slug}`}
                 className={styles.blogCard}
-                variants={itemVariants}
-                onClick={() => navigate(`/blog/${post.slug}`)}
+                style={{ display: 'block', height: '100%', textDecoration: 'none', color: 'inherit' }}
               >
                 {post.cover_image_url && (
-                  <img src={post.cover_image_url} alt={post.title} className={styles.blogCardImage} />
+                  <img src={post.cover_image_url} alt={post.title} className={styles.blogCardImage} loading="lazy" />
                 )}
                 <div className={styles.blogCardContent}>
                   {post.categories?.name && (
@@ -121,6 +121,7 @@ export default function BlogList() {
                     </span>
                   </div>
                 </div>
+              </Link>
               </motion.div>
             ))}
           </motion.div>

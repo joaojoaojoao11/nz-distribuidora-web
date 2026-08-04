@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import { staggerContainer, fadeUpItem, cardStagger } from './variants';
 import {
   getShProductBySlug,
@@ -86,8 +87,8 @@ export default function ShDecorProduct() {
     brand: { '@type': 'Brand', name: 'SH Decor' },
     category: `Revestimento Decorativo / ${family?.name ?? ''}`,
     description: product.description,
-    image: gallery.map((g) => `https://agencianz.com${g}`),
-    url: `https://agencianz.com/decor/sh/${product.slug}`,
+    image: gallery.map((g) => `${SITE_URL}${g}`),
+    url: `${SITE_URL}/decor/sh/${product.slug}`,
   });
 
   return (
@@ -99,7 +100,7 @@ export default function ShDecorProduct() {
         canonicalUrl={`/decor/sh/${product.slug}`}
         schema={schema}
         type="product"
-        imageUrl={`https://agencianz.com${product.images.texture}`}
+        imageUrl={`${SITE_URL}${product.images.texture}`}
       />
 
       {/* BLOCO PRINCIPAL */}

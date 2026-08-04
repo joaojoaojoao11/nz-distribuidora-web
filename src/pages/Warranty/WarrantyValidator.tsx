@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { ShieldCheck, ShieldAlert, Building2, Calendar, ChevronLeft } from 'lucide-react';
+import SEO from '../../components/SEO/SEO';
 import styles from './WarrantyValidator.module.css';
 
 interface ValidatorWarrantyData {
@@ -71,8 +72,13 @@ export default function WarrantyValidator() {
 
   return (
     <div className={styles.container}>
+      <SEO
+        title="Validar Certificado de Garantia NZPPF"
+        description="Valide a autenticidade do seu certificado de garantia NZPPF em tempo real usando o código do certificado."
+        canonicalUrl="/validar-garantia"
+      />
       <div className={styles.content}>
-        
+
         <div className={styles.logoWrapper}>
           <img src="/assets/logos/logo-nz-group-base.svg" alt="NZ Distribuidora" className={styles.logo} style={{ height: '50px', filter: 'brightness(0) invert(1)' }} />
         </div>

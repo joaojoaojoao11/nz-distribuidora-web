@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Ppf.module.css';
 
 const staggerContainer = {
@@ -155,13 +156,18 @@ const comparisonData = [
 export default function Ppf() {
   const navigate = useNavigate();
   const [activeCompareId, setActiveCompareId] = useState('flow');
+  // Renderiza só o vídeo do formato atual — antes os dois (desktop + mobile)
+  // eram baixados juntos, mesmo com um escondido via CSS.
+  const [isMobile] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches
+  );
 
   const schema = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "name": "Catálogo de Envelopamento PPF Premium - NZPPF",
     "description": "Descubra as linhas de PPF automotivo da NZ Distribuidora. Tecnologias Luxury Gloss, Prime, Flow e Core com alta durabilidade, regeneração térmica (self-healing) e repelência.",
-    "url": "https://agencianz.com/ppf"
+    "url": `${SITE_URL}/ppf`
   });
 
   return (
@@ -175,12 +181,15 @@ export default function Ppf() {
       />
       {/* HERO */}
       <header className={styles.hero}>
-        <video className={`${styles.heroVideo} ${styles.heroVideoDesktop}`} autoPlay muted loop playsInline>
-          <source src="/assets/videos/NOVO-VIDEO-HERO-NZPPF-WEB-SITE.mp4" type="video/mp4" />
-        </video>
-        <video className={`${styles.heroVideo} ${styles.heroVideoMobile}`} autoPlay muted loop playsInline>
-          <source src="/assets/videos/HERO-NZPPF-CELULAR.mp4" type="video/mp4" />
-        </video>
+        {isMobile ? (
+          <video className={`${styles.heroVideo} ${styles.heroVideoMobile}`} autoPlay muted loop playsInline preload="metadata">
+            <source src="/assets/videos/HERO-NZPPF-CELULAR.mp4" type="video/mp4" />
+          </video>
+        ) : (
+          <video className={`${styles.heroVideo} ${styles.heroVideoDesktop}`} autoPlay muted loop playsInline preload="metadata">
+            <source src="/assets/videos/NOVO-VIDEO-HERO-NZPPF-WEB-SITE.mp4" type="video/mp4" />
+          </video>
+        )}
         <div className={styles.heroOverlay}></div>
         <div className={styles.heroBottomShadow}></div>
         <div className={`container ${styles.heroContainer}`}>
@@ -243,7 +252,7 @@ export default function Ppf() {
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && product.available && navigate(`/ppf/${product.slug}`)}
               >
-                <img src={product.image} alt={product.title} className={styles.productCardImage} />
+                <img src={product.image} alt={product.title} className={styles.productCardImage} loading="lazy" decoding="async" />
                 <div className={styles.productCardOverlay}></div>
                 <div className={styles.productCardContent}>
                   <div className={styles.productCardBadgesContainer}>

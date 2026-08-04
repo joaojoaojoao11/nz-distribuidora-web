@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
+import SEO from '../../components/SEO/SEO';
 import styles from './WrapProduct.module.css';
 
 const blurReveal = {
@@ -91,7 +92,7 @@ function WrapProductPage({ data, children }: { data: WrapProductData, children?:
             {data.specs.map((spec, i) => (
               <motion.div key={i} className={styles.specCard} variants={scaleIn}>
                 <div className={styles.specIconWrapper}>
-                  <img src={spec.icon} alt="" className={styles.specIcon} />
+                  <img src={spec.icon} alt="" className={styles.specIcon} loading="lazy" decoding="async" />
                 </div>
                 <div className={styles.specInfo}>
                   <span className={styles.specLabel}>{spec.info}</span>
@@ -122,12 +123,12 @@ function WrapProductPage({ data, children }: { data: WrapProductData, children?:
             {data.diferenciais.map((dif, i) => (
               <motion.div key={i} className={styles.diferencialCard} variants={scaleIn}>
                 <div className={styles.diferencialImageWrapper}>
-                  <img src={dif.image} alt={dif.title} className={styles.diferencialImage} />
+                  <img src={dif.image} alt={dif.title} className={styles.diferencialImage} loading="lazy" decoding="async" />
                   <div className={styles.diferencialImageOverlay}></div>
                 </div>
                 <div className={styles.diferencialContent}>
                   <div className={styles.diferencialHeader}>
-                    <img src={dif.icon} alt="" className={styles.diferencialIcon} />
+                    <img src={dif.icon} alt="" className={styles.diferencialIcon} loading="lazy" decoding="async" />
                     <span className={styles.diferencialAccent}>{dif.accent}</span>
                   </div>
                   <h3 className={styles.diferencialTitle}>{dif.title}</h3>
@@ -408,9 +409,11 @@ function NzwrapPremiumContent() {
                     width: '100%', 
                     overflow: 'hidden' 
                   }}>
-                    <img 
-                      src={color.thumbnail} 
+                    <img
+                      src={color.thumbnail}
                       alt={color.name}
+                      loading="lazy"
+                      decoding="async"
                       style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)', transformOrigin: 'center' }}
                       onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.05)' }}
                       onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
@@ -473,7 +476,13 @@ function NzwrapPremiumContent() {
 
 /* ======================== NZWRAP PREMIUM ======================== */
 export function NzwrapPremium() {
-  return <WrapProductPage data={{
+  return <>
+  <SEO
+    title="NZWRAP Premium — Envelopamento PVC Alto Brilho"
+    description="Linha proprietária NZWRAP Premium: PVC alto brilho com curadoria exclusiva de cores, 3 anos de garantia e suporte direto da NZ Distribuidora."
+    canonicalUrl="/wrap/nzwrap-premium"
+  />
+  <WrapProductPage data={{
     title: 'NZWRAP PREMIUM',
     subtitle: 'PVC Alto Brilho | Linha Proprietária NZ',
     heroDescription: 'Adesivo PVC de alta performance com laminação estrutural exclusiva NZ Distribuidora. 40% mais resistente a esbranquiçamento em dobras extremas. O autêntico efeito espelhado para alta performance automotiva.',
@@ -501,7 +510,8 @@ export function NzwrapPremium() {
     ]
   }}>
     <NzwrapPremiumContent />
-  </WrapProductPage>;
+  </WrapProductPage>
+  </>;
 }
 
 /* ======================== SH WRAPPING COLORS ======================== */
@@ -567,9 +577,11 @@ function ShColorsGrid() {
                   borderBottom: '1px solid #222',
                   overflow: 'hidden'
                 }}>
-                  <img 
-                    src={imageUrl} 
-                    alt={color.name} 
+                  <img
+                    src={imageUrl}
+                    alt={color.name}
+                    loading="lazy"
+                    decoding="async"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     onError={(e) => { e.currentTarget.src = '/assets/images/wrap_sh_card.png'; }}
                   />
@@ -594,7 +606,13 @@ function ShColorsGrid() {
 }
 
 export function ShColors() {
-  return <WrapProductPage data={{
+  return <>
+  <SEO
+    title="SH Wrapping Colors — Vinil de Envelopamento 180μ"
+    description="PVC multidirecional anti-bolhas 180μ nas versões Gloss, Matte, Color Shift e Metallic. Catálogo completo SH Wrapping Colors na NZ Distribuidora."
+    canonicalUrl="/wrap/sh-colors"
+  />
+  <WrapProductPage data={{
     title: 'SH WRAPPING COLORS',
     subtitle: 'PVC Multidirecional | VINIL DE ALTA PERFORMANCE',
     heroDescription: 'A maior variedade de cores do Brasil. Cola anti-bolhas, base solvente reposicionável e acabamentos que vão do Gloss ao Color Shift. Referência nacional em envelopamento automotivo.',
@@ -622,12 +640,19 @@ export function ShColors() {
     ]
   }}>
     <ShColorsGrid />
-  </WrapProductPage>;
+  </WrapProductPage>
+  </>;
 }
 
 /* ======================== ORACAL 970RA ======================== */
 export function Oracal970() {
-  return <WrapProductPage data={{
+  return <>
+  <SEO
+    title="ORACAL 970RA — Vinil Premium de Envelopamento"
+    description="ORACAL 970RA com tecnologia RapidAir anti-bolhas: o vinil alemão premium para envelopamento automotivo completo. Distribuição oficial NZ."
+    canonicalUrl="/wrap/oracal-970ra"
+  />
+  <WrapProductPage data={{
     title: 'ORACAL 970RA',
     subtitle: 'Premium Wrapping Cast | Engenharia Alemã ORAFOL',
     heroDescription: 'PVC Cast multicamada com tecnologia RapidAir da ORAFOL. Acabamento paint-like que replica a pintura de fábrica com perfeição. Até 10 anos de durabilidade.',
@@ -653,7 +678,8 @@ export function Oracal970() {
       { metric: 'Estabilidade Dimensional', desc: 'Resistência a deformações', nz: [96, 94, 92], mercado: [85, 76, 68] },
       { metric: 'Conformabilidade', desc: 'Aplicação em curvas complexas', nz: [95, 93, 91], mercado: [88, 82, 76] }
     ]
-  }} />;
+  }} />
+  </>;
 }
 
 // Helper component for the Oracal 651 colors grid
@@ -735,7 +761,13 @@ function Oracal651ColorGrid() {
 
 /* ======================== ORACAL 651 ======================== */
 export function Oracal651() {
-  return <WrapProductPage data={{
+  return <>
+  <SEO
+    title="ORACAL 651 — Vinil para Recortes e Sinalização"
+    description="ORACAL 651 com mais de 62 cores: vinil intermediário para recortes, sinalização e detalhes, 63μ e 6 anos de durabilidade. Pronta entrega NZ."
+    canonicalUrl="/wrap/oracal-651"
+  />
+  <WrapProductPage data={{
     title: 'ORACAL 651',
     subtitle: 'Intermediate Cal | O Vinil Mais Popular do Mundo',
     heroDescription: 'Com 62+ cores vibrantes e alto brilho, o Oracal 651 é a referência mundial para sinalização automotiva, recortes de precisão e detalhamentos. Durabilidade de até 6 anos.',
@@ -803,7 +835,8 @@ export function Oracal651() {
       </div>
       <Oracal651ColorGrid />
     </section>
-  </WrapProductPage>;
+  </WrapProductPage>
+  </>;
 }
 
 
@@ -886,7 +919,13 @@ function Oracal670ColorGrid() {
 }
 
 export function Oracal670() {
-  return <WrapProductPage data={{
+  return <>
+  <SEO
+    title="ORACAL 670RA — Vinil de Envelopamento RapidAir"
+    description="ORACAL 670RA: evolução do 651 para envelopamento completo com tecnologia RapidAir anti-bolhas, 70μ em rolo de 1,52m. Distribuição oficial NZ."
+    canonicalUrl="/wrap/oracal-670ra"
+  />
+  <WrapProductPage data={{
     title: 'ORACAL 670RA',
     subtitle: 'Wrapping Film | O 651 Evoluído para Envelopamento',
     heroDescription: 'O lendário 651 foi redesenhado para envelopamento automotivo completo. Agora com largura profissional de 1,52m e a exclusiva tecnologia RapidAir® que elimina bolhas durante a aplicação. Mesma qualidade alemã ORAFOL, 18 cores sólidas (15 brilho + 3 foscas) e até 5 anos de durabilidade.',
@@ -922,5 +961,6 @@ export function Oracal670() {
       </div>
       <Oracal670ColorGrid />
     </section>
-  </WrapProductPage>;
+  </WrapProductPage>
+  </>;
 }

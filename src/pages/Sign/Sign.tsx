@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import AveryBlock from './AveryBlock';
 import styles from './Sign.module.css';
 
@@ -25,7 +26,7 @@ export default function Sign() {
     name: 'NZSIGN — Comunicação Visual Avery Dennison',
     description:
       'NZSIGN é a divisão de comunicação visual da NZ Group. Distribuímos a linha Avery Dennison no Brasil: MPI, SLP, DOL, ETCHMARK, MASCARA e refletivos.',
-    url: 'https://agencianz.com/sign',
+    url: `${SITE_URL}/sign`,
   });
 
   return (

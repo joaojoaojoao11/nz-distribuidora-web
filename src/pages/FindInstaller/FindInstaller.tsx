@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import BrazilMap from '../../components/BrazilMap/BrazilMap';
+import SEO from '../../components/SEO/SEO';
 import styles from './FindInstaller.module.css';
 
 // NZ SVG icons
@@ -227,6 +228,11 @@ export default function FindInstaller() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="Encontre um Aplicador Credenciado de PPF e Envelopamento"
+        description="A NZ encaminha um especialista que negocia com a rede credenciada por você. Mais de 500 aplicadores certificados no Brasil. Contato em até 2h úteis."
+        canonicalUrl="/encontre-aplicador"
+      />
 
       {/* ═══════════════════════════════════════════
           SEÇÃO 1: HERO

@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Headlight.module.css';
+
+const seoDescription = 'PPF para faróis com estabilização UV em 3 tonalidades. Personalize o farol sem comprometer a luminosidade. 10 anos de garantia NZPPF.';
+const productSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "NZ PPF Headlight",
+  "description": seoDescription,
+  "brand": { "@type": "Brand", "name": "NZPPF" },
+  "category": "Película de Proteção de Pintura (PPF)",
+  "url": `${SITE_URL}/ppf/headlight`
+});
 
 
 const blurReveal = {
@@ -101,6 +114,13 @@ export default function Headlight() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="NZ PPF Headlight — Película para Faróis com 10 Anos de Garantia"
+        description={seoDescription}
+        canonicalUrl="/ppf/headlight"
+        schema={productSchema}
+        type="product"
+      />
 
       {/* ═══════════════════════════════════════════
           SEÇÃO 1: HERO DO PRODUTO
@@ -173,9 +193,9 @@ export default function Headlight() {
           <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Arquitetura do Filme</motion.h2>
           <motion.div className={styles.techGrid} variants={scaleIn}>
             <div className={styles.techImagePanel}>
-              <img src="/assets/images/nzppf_headlight_light_black.png" alt="Farol com NZ PPF Headlight aplicado" className={styles.techImage} />
+              <img src="/assets/images/nzppf_headlight_light_black.png" alt="Farol com NZ PPF Headlight aplicado" className={styles.techImage} loading="lazy" decoding="async" />
               <div className={styles.techImageOverlay}></div>
-              <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.goldIcon}`} alt="" />
+              <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.goldIcon}`} alt="" loading="lazy" decoding="async" />
             </div>
             <div className={styles.techLayers}>
               {[
@@ -207,11 +227,11 @@ export default function Headlight() {
             {diferenciais.map((item, i) => (
               <motion.div key={i} className={styles.diffCard} variants={scaleIn}>
                 <div className={styles.diffCardImageWrap}>
-                  <img src={item.image} alt={item.title} className={styles.diffCardImage} />
+                  <img src={item.image} alt={item.title} className={styles.diffCardImage} loading="lazy" decoding="async" />
                   <div className={styles.diffCardImageOverlay}></div>
                 </div>
                 <div className={styles.diffCardBody}>
-                  <img src={item.icon} alt="" className={`${styles.diffCardIcon} ${styles.goldIcon}`} />
+                  <img src={item.icon} alt="" className={`${styles.diffCardIcon} ${styles.goldIcon}`} loading="lazy" decoding="async" />
                   <h3 className={styles.diffCardTitle}>{item.title}</h3>
                   <p className={styles.diffCardDesc}>{item.desc}</p>
                   <span className={styles.diffCardAccent}>{item.accent}</span>
@@ -271,7 +291,7 @@ export default function Headlight() {
             </div>
             <div className={styles.specsCardActions}>
               <button className={styles.specsBtn} onClick={() => { setModalTab('specs'); setIsTableModalOpen(true); }}>
-                <img src={CamadaIcon} alt="" className={`${styles.specsBtnIcon} ${styles.goldIcon}`} />
+                <img src={CamadaIcon} alt="" className={`${styles.specsBtnIcon} ${styles.goldIcon}`} loading="lazy" decoding="async" />
                 ANÁLISE TÉCNICA
               </button>
               <button className={styles.specsBtnOutline} onClick={() => { setModalTab('benchmark'); setIsTableModalOpen(true); }}>

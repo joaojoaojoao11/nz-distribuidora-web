@@ -74,6 +74,8 @@ export default function AveryBlock() {
             src="/assets/logos/nzsign/logo-avery-dennison.png"
             alt="Avery Dennison"
             className={styles.averyBrandLogo}
+            loading="lazy"
+            decoding="async"
           />
           <h2 className={styles.averyTitle}>AVERY DENNISON</h2>
           <p className={styles.averySubtitle}>Padrão global em comunicação visual há 90 anos.</p>

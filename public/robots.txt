@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /cadastro
+Disallow: /ppf-promo
+Disallow: /nzgroup-promo
 
-Sitemap: https://agencianz.com/sitemap.xml
+Sitemap: https://www.nzgroup.com.br/sitemap.xml

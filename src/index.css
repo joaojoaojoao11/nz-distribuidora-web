@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+/* Fontes carregadas via <link> no index.html (preconnect + display=swap).
+   Não usar @import aqui: bloqueia o render em cascata atrás do bundle CSS. */
 
 :root {
   --bg-primary: #050505;

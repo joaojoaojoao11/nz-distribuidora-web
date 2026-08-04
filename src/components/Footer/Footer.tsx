@@ -31,7 +31,8 @@ export default function Footer() {
             <ul className={styles.navLinks}>
               <li><Link to="/ppf">Linha NZ PPF</Link></li>
               <li><Link to="/wrap">Envelopamento</Link></li>
-              <li><Link to="/ferramentas">Acessórios</Link></li>
+              <li><Link to="/sign">Comunicação Visual</Link></li>
+              <li><Link to="/decor">Decoração</Link></li>
             </ul>
           </div>
 
@@ -41,7 +42,13 @@ export default function Footer() {
             <ul className={styles.navLinks}>
               <li><Link to="/sobre">Nossa História</Link></li>
               <li><Link to="/contato">Fale Conosco</Link></li>
-              <li><Link to="/seja-parceiro">Seja um Aplicador</Link></li>
+              <li><Link to="/blog">Blog</Link></li>
+              <li><Link to="/encontre-aplicador">Encontre um Aplicador</Link></li>
+              <li>
+                <a href="https://wa.me/message/3DBGPIZF4EMWO1" target="_blank" rel="noreferrer">
+                  Seja um Aplicador
+                </a>
+              </li>
             </ul>
           </div>
 

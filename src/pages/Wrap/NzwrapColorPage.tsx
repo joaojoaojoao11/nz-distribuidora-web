@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
+import SEO from '../../components/SEO/SEO';
 
 export default function NzwrapColorPage() {
   const { sku } = useParams<{ sku: string }>();
@@ -29,7 +30,12 @@ export default function NzwrapColorPage() {
 
   return (
     <div style={{ backgroundColor: '#0a0a0c', minHeight: '100vh', paddingBottom: '8rem', position: 'relative', overflow: 'hidden' }}>
-      
+      <SEO
+        title={`${colorData.name} — NZWRAP Premium`}
+        description={`Cor ${colorData.name} da linha NZWRAP Premium. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
+        canonicalUrl={`/wrap/nzwrap-premium/${colorData.sku.toLowerCase()}`}
+      />
+
       {/* Background Imersivo com Efeito Especial */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden', pointerEvents: 'none' }}>
         <AnimatePresence mode="wait">
@@ -265,7 +271,7 @@ export default function NzwrapColorPage() {
                     onMouseOver={(e) => { if(activeImage !== img) e.currentTarget.style.opacity = '0.8'; }}
                     onMouseOut={(e) => { if(activeImage !== img) e.currentTarget.style.opacity = '0.4'; }}
                   >
-                    <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                    <img src={img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" loading="lazy" decoding="async" />
                   </div>
                 ))}
               </div>
@@ -325,7 +331,7 @@ export default function NzwrapColorPage() {
               </div>
               <div style={{ position: 'relative' }}>
                 <div style={{ position: 'absolute', inset: -20, background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)', filter: 'blur(20px)' }}></div>
-                <img src="/assets/simbolos/simbolo-escudo-vazio.svg" alt="Garantia" style={{ width: 'clamp(60px, 8vw, 90px)', opacity: 0.9, position: 'relative', filter: 'invert(76%) sepia(35%) saturate(762%) hue-rotate(352deg) brightness(97%) contrast(88%)' }} />
+                <img src="/assets/simbolos/simbolo-escudo-vazio.svg" alt="Garantia" style={{ width: 'clamp(60px, 8vw, 90px)', opacity: 0.9, position: 'relative', filter: 'invert(76%) sepia(35%) saturate(762%) hue-rotate(352deg) brightness(97%) contrast(88%)' }} loading="lazy" decoding="async" />
               </div>
             </motion.div>
 

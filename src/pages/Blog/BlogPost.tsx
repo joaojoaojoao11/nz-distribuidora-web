@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL, SITE_NAME, SITE_LOGO } from '../../lib/siteConfig';
+import NotFound from '../NotFound';
 import styles from './Blog.module.css';
+
+interface FaqItem {
+  question: string;
+  answer: string;
+}
 
 interface BlogPostDetail {
   id: string;
@@ -18,13 +25,14 @@ interface BlogPostDetail {
   published_at: string;
   author: string;
   categories: any;
+  faq?: FaqItem[] | null;
 }
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const [post, setPost] = useState<BlogPostDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     async function fetchPost() {
@@ -37,15 +45,18 @@ export default function BlogPost() {
         .single();
 
       if (error || !data) {
-        navigate('/blog', { replace: true });
+        setNotFound(true);
+        setLoading(false);
         return;
       }
 
       setPost(data as BlogPostDetail);
       setLoading(false);
     }
+    setNotFound(false);
+    setLoading(true);
     fetchPost();
-  }, [slug, navigate]);
+  }, [slug]);
 
   if (loading) {
     return (
@@ -57,45 +68,63 @@ export default function BlogPost() {
     );
   }
 
-  if (!post) return null;
+  if (notFound || !post) return <NotFound />;
 
-  const schema = JSON.stringify({
-    "@context": "https://schema.org",
+  const faqItems: FaqItem[] = Array.isArray(post.faq)
+    ? post.faq.filter(f => f && f.question && f.answer)
+    : [];
+
+  const articleSchema: Record<string, unknown> = {
     "@type": "Article",
     "headline": post.title,
     "image": post.cover_image_url ? [post.cover_image_url] : [],
     "datePublished": post.published_at,
     "dateModified": post.published_at,
+    "mainEntityOfPage": `${SITE_URL}/blog/${post.slug}`,
     "author": [{
-        "@type": "Person",
-        "name": post.author,
-        "url": "https://agencianz.com/sobre"
+      "@type": "Person",
+      "name": post.author,
+      "url": `${SITE_URL}/sobre`
     }],
     "publisher": {
       "@type": "Organization",
-      "name": "NZ Distribuidora",
+      "name": SITE_NAME,
       "logo": {
         "@type": "ImageObject",
-        "url": "https://agencianz.com/assets/logos/logo-nz-ppf.svg"
+        "url": SITE_LOGO
       }
     },
     "description": post.meta_description
-  });
+  };
+
+  const graph: Record<string, unknown>[] = [articleSchema];
+  if (faqItems.length > 0) {
+    graph.push({
+      "@type": "FAQPage",
+      "mainEntity": faqItems.map(f => ({
+        "@type": "Question",
+        "name": f.question,
+        "acceptedAnswer": { "@type": "Answer", "text": f.answer }
+      }))
+    });
+  }
+
+  const schema = JSON.stringify({ "@context": "https://schema.org", "@graph": graph });
 
   return (
     <div className={styles.blogPage}>
-      <SEO 
+      <SEO
         title={post.title}
         description={post.meta_description || post.title}
-        keywords={post.focus_keyword || "envelopamento ppf, nzd distribuidora, blog automotivo"}
+        keywords={post.focus_keyword || "envelopamento ppf, nz distribuidora, blog automotivo"}
         canonicalUrl={`/blog/${post.slug}`}
         imageUrl={post.cover_image_url}
         type="article"
         schema={schema}
       />
-      
+
       <main className={`container ${styles.postDetail}`}>
-        <motion.article 
+        <motion.article
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -119,9 +148,9 @@ export default function BlogPost() {
           </header>
 
           {post.cover_image_url && (
-            <img 
-              src={post.cover_image_url} 
-              alt={post.title} 
+            <img
+              src={post.cover_image_url}
+              alt={post.title}
               className={styles.postCover}
               loading="lazy"
             />
@@ -132,6 +161,18 @@ export default function BlogPost() {
               {post.content}
             </ReactMarkdown>
           </div>
+
+          {faqItems.length > 0 && (
+            <section className={styles.postContent} aria-label="Perguntas frequentes">
+              <h2>Perguntas frequentes</h2>
+              {faqItems.map((f, i) => (
+                <details key={i} style={{ marginBottom: '12px' }}>
+                  <summary style={{ cursor: 'pointer', fontWeight: 600 }}>{f.question}</summary>
+                  <p style={{ marginTop: '8px' }}>{f.answer}</p>
+                </details>
+              ))}
+            </section>
+          )}
         </motion.article>
       </main>
     </div>

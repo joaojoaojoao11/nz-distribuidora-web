@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import styles from './FlowGloss.module.css';
+
+const seoDescription = 'PPF de TPU técnico com revestimento hidrofóbico e acabamento impecável. 175μ e 4 anos de garantia com o melhor equilíbrio entre qualidade e preço.';
+const productSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "NZPPF Flow Gloss",
+  "description": seoDescription,
+  "brand": { "@type": "Brand", "name": "NZPPF" },
+  "category": "Película de Proteção de Pintura (PPF)",
+  "url": `${SITE_URL}/ppf/flow-gloss`
+});
 
 const blurReveal = {
   hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
@@ -101,6 +114,13 @@ export default function FlowGloss() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="NZPPF Flow Gloss — PPF 175μ com 4 Anos de Garantia"
+        description={seoDescription}
+        canonicalUrl="/ppf/flow-gloss"
+        schema={productSchema}
+        type="product"
+      />
 
       {/* SEÇÃO 1: HERO */}
       <section className={styles.heroSection}>
@@ -167,9 +187,9 @@ export default function FlowGloss() {
           <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Tecnologia Balanceada</motion.h2>
           <motion.div className={styles.techGrid} variants={scaleIn}>
             <div className={styles.techImagePanel}>
-              <img src="/assets/images/flow_layers.png" alt="Camadas da Película Flow TPU" className={styles.techImage} />
+              <img src="/assets/images/flow_layers.png" alt="Camadas da Película Flow TPU" className={styles.techImage} loading="lazy" decoding="async" />
               <div className={styles.techImageOverlay}></div>
-              <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.accentIcon}`} alt="" />
+              <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.accentIcon}`} alt="" loading="lazy" decoding="async" />
             </div>
             <div className={styles.techLayers}>
               {[
@@ -198,11 +218,11 @@ export default function FlowGloss() {
             {diferenciais.map((item, i) => (
               <motion.div key={i} className={styles.diffCard} variants={scaleIn}>
                 <div className={styles.diffCardImageWrap}>
-                  <img src={item.image} alt={item.title} className={styles.diffCardImage} />
+                  <img src={item.image} alt={item.title} className={styles.diffCardImage} loading="lazy" decoding="async" />
                   <div className={styles.diffCardImageOverlay}></div>
                 </div>
                 <div className={styles.diffCardBody}>
-                  <img src={item.icon} alt="" className={`${styles.diffCardIcon} ${styles.accentIcon}`} />
+                  <img src={item.icon} alt="" className={`${styles.diffCardIcon} ${styles.accentIcon}`} loading="lazy" decoding="async" />
                   <h3 className={styles.diffCardTitle}>{item.title}</h3>
                   <p className={styles.diffCardDesc}>{item.desc}</p>
                   <span className={styles.diffCardAccent}>{item.accent}</span>
@@ -261,7 +281,7 @@ export default function FlowGloss() {
             </div>
             <div className={styles.specsCardActions}>
               <button className={styles.specsBtn} onClick={() => { setModalTab('specs'); setIsTableModalOpen(true); }}>
-                <img src={CamadaIcon} alt="" className={`${styles.specsBtnIcon} ${styles.accentIcon}`} />
+                <img src={CamadaIcon} alt="" className={`${styles.specsBtnIcon} ${styles.accentIcon}`} loading="lazy" decoding="async" />
                 ANÁLISE TÉCNICA
               </button>
               <button className={styles.specsBtnOutline} onClick={() => { setModalTab('benchmark'); setIsTableModalOpen(true); }}>

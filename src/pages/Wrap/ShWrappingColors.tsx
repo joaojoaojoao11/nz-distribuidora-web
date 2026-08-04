@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
+import SEO from '../../components/SEO/SEO';
 import styles from './ShWrappingColors.module.css';
 
 export interface SHColorData {
@@ -144,6 +145,11 @@ export default function ShWrappingColors() {
 
   return (
     <div className={styles.colorPage}>
+        <SEO
+          title={`${productData.name} — SH Wrapping Colors`}
+          description={`Cor ${productData.name} da linha SH Wrapping Colors. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
+          canonicalUrl={`/wrap/sh-colors/${productData.slug}`}
+        />
         {/* Background Cinematográfico */}
         <div 
           className={styles.pageBackground}
@@ -185,7 +191,7 @@ export default function ShWrappingColors() {
                   className={`${styles.thumbnailCard} ${activeImage === imgUrl ? styles.active : ''}`}
                   onClick={() => setActiveImage(imgUrl)}
                 >
-                  <img src={imgUrl} alt={`Thumbnail ${idx}`} />
+                  <img src={imgUrl} alt={`Thumbnail ${idx}`} loading="lazy" decoding="async" />
                 </div>
               ))}
             </div>

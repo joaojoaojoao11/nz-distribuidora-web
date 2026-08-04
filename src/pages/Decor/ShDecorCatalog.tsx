@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import { staggerContainer, fadeUpItem } from './variants';
 import {
   shDecorFamilies,
@@ -91,14 +92,14 @@ export default function ShDecorCatalog() {
     name: 'Catálogo SH Decor — Vinil Decorativo',
     description:
       'Catálogo completo de revestimentos de vinil autoadesivo SH Decor distribuídos pela NZDecor.',
-    url: 'https://agencianz.com/decor/sh',
+    url: `${SITE_URL}/decor/sh`,
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: shDecorProducts.length,
       itemListElement: shDecorProducts.map((p, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        url: `https://agencianz.com/decor/sh/${p.slug}`,
+        url: `${SITE_URL}/decor/sh/${p.slug}`,
         name: p.name,
       })),
     },

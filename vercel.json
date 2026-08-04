@@ -1,11 +1,11 @@
 {
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/((?!api/|src/|@vite/|@react-refresh|@id/|@fs/|assets/|node_modules/).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|src/|@vite/|@react-refresh|@id/|@fs/|assets/|node_modules/|index\\.html).*)", "destination": "/api/render?path=/$1" }
   ],
   "functions": {
     "api/cron/ai-writer.ts": {
-      "maxDuration": 60
+      "maxDuration": 300
     }
   },
   "crons": [

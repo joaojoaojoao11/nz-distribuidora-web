@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import { staggerContainer, fadeUpItem } from './variants';
 import BrandCards from './BrandCards';
 import TechFeatures from './TechFeatures';
@@ -17,7 +18,7 @@ export default function Decor() {
     "@type": "CollectionPage",
     "name": "NZDECOR — Envelopamento Decorativo Técnico",
     "description": "Envelopamento decorativo com vinil técnico de alta performance. Consultoria técnica, SH Decor e Etherna Decor.",
-    "url": "https://agencianz.com/decor"
+    "url": `${SITE_URL}/decor`
   });
 
   return (

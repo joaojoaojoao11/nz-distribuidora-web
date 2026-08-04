@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Wrap.module.css';
 
 const staggerContainer = {
@@ -151,7 +152,7 @@ export default function Wrap() {
     "@type": "CollectionPage",
     "name": "Catálogo de Adesivos Automotivos e Vinil Premium - NZ Distribuidora",
     "description": "Veja nossa linha de Vinil Automotivo: NZWrap Premium, Oracal 651, Oracal 670RA e SH Colors. Alta performance para envelopamento.",
-    "url": "https://agencianz.com/wrap"
+    "url": `${SITE_URL}/wrap`
   });
 
   return (
@@ -228,7 +229,7 @@ export default function Wrap() {
                 tabIndex={0}
                 onKeyDown={(e) => e.key === 'Enter' && product.available && navigate(`/wrap/${product.slug}`)}
               >
-                <img src={product.image} alt={product.title} className={styles.productCardImage} />
+                <img src={product.image} alt={product.title} className={styles.productCardImage} loading="lazy" decoding="async" />
                 <div className={styles.productCardOverlay}></div>
                 <div className={styles.productCardContent}>
                   <div className={styles.productCardBadgesContainer}>
@@ -237,7 +238,7 @@ export default function Wrap() {
                     {product.badge3 && <span className={styles.productCardBadge}>{product.badge3}</span>}
                   </div>
                   {product.cardLogo && (
-                    <img src={product.cardLogo} alt={`${product.title} Logo`} className={styles.productCardBrandLogo} />
+                    <img src={product.cardLogo} alt={`${product.title} Logo`} className={styles.productCardBrandLogo} loading="lazy" decoding="async" />
                   )}
                   <h3 className={styles.productCardTitle}>{product.title}</h3>
                   <p className={styles.productCardSubtitle}>{product.subtitle}</p>

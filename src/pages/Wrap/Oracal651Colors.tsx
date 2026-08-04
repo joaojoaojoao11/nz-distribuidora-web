@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
+import SEO from '../../components/SEO/SEO';
 
 interface DbProduct {
   id: string;
@@ -71,7 +72,12 @@ export default function Oracal651Colors() {
 
   return (
     <div style={{ backgroundColor: '#0a0a0c', minHeight: '100vh', paddingBottom: '8rem', position: 'relative', overflow: 'hidden' }}>
-      
+      <SEO
+        title={`${colorData.name} — ORACAL 651`}
+        description={`Cor ${colorData.name} da linha ORACAL 651. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
+        canonicalUrl={`/wrap/oracal-651/${colorData.slug}`}
+      />
+
       {/* Background Imersivo com Efeito Especial */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden', pointerEvents: 'none' }}>
         <AnimatePresence mode="wait">
@@ -373,7 +379,7 @@ export default function Oracal651Colors() {
               </div>
               <div style={{ position: 'relative' }}>
                 <div style={{ position: 'absolute', inset: -20, background: 'radial-gradient(circle, rgba(56,189,248,0.15) 0%, transparent 70%)', filter: 'blur(20px)' }}></div>
-                <img src="/assets/simbolos/simbolo-escudo-vazio.svg" alt="Garantia Orafol" style={{ width: 'clamp(80px, 10vw, 120px)', opacity: 0.9, position: 'relative', filter: 'invert(58%) sepia(87%) saturate(1661%) hue-rotate(184deg) brightness(101%) contrast(97%)' }} />
+                <img src="/assets/simbolos/simbolo-escudo-vazio.svg" alt="Garantia Orafol" style={{ width: 'clamp(80px, 10vw, 120px)', opacity: 0.9, position: 'relative', filter: 'invert(58%) sepia(87%) saturate(1661%) hue-rotate(184deg) brightness(101%) contrast(97%)' }} loading="lazy" decoding="async" />
               </div>
             </motion.div>
 

@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Windshield.module.css';
+
+const seoDescription = 'PPF de parabrisa com absorção de impacto, compatível com sensores e ADAS. 190μ e 2 anos de garantia. Proteção invisível para o vidro do seu carro.';
+const productSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "NZ PPF Windshield",
+  "description": seoDescription,
+  "brand": { "@type": "Brand", "name": "NZPPF" },
+  "category": "Película de Proteção de Pintura (PPF)",
+  "url": `${SITE_URL}/ppf/windshield`
+});
 
 
 const blurReveal = {
@@ -93,6 +106,13 @@ export default function Windshield() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="NZ PPF Windshield — Película de Proteção para Parabrisa 190μ"
+        description={seoDescription}
+        canonicalUrl="/ppf/windshield"
+        schema={productSchema}
+        type="product"
+      />
 
       {/* ═══════════════════════════════════════════
           SEÇÃO 1: HERO DO PRODUTO
@@ -165,9 +185,9 @@ export default function Windshield() {
           <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Arquitetura do Filme</motion.h2>
           <motion.div className={styles.techGrid} variants={scaleIn}>
             <div className={styles.techImagePanel}>
-              <img src="/assets/images/nzppf_windshield_hero.png" alt="Parabrisa protegido pelo NZ PPF Windshield" className={styles.techImage} style={{ objectPosition: 'center 30%' }} />
+              <img src="/assets/images/nzppf_windshield_hero.png" alt="Parabrisa protegido pelo NZ PPF Windshield" className={styles.techImage} style={{ objectPosition: 'center 30%' }} loading="lazy" decoding="async" />
               <div className={styles.techImageOverlay}></div>
-              <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.goldIcon}`} alt="" />
+              <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.goldIcon}`} alt="" loading="lazy" decoding="async" />
             </div>
             <div className={styles.techLayers}>
               {[
@@ -199,11 +219,11 @@ export default function Windshield() {
             {diferenciais.map((item, i) => (
               <motion.div key={i} className={styles.diffCard} variants={scaleIn}>
                 <div className={styles.diffCardImageWrap}>
-                  <img src={item.image} alt={item.title} className={styles.diffCardImage} />
+                  <img src={item.image} alt={item.title} className={styles.diffCardImage} loading="lazy" decoding="async" />
                   <div className={styles.diffCardImageOverlay}></div>
                 </div>
                 <div className={styles.diffCardBody}>
-                  <img src={item.icon} alt="" className={`${styles.diffCardIcon} ${styles.goldIcon}`} />
+                  <img src={item.icon} alt="" className={`${styles.diffCardIcon} ${styles.goldIcon}`} loading="lazy" decoding="async" />
                   <h3 className={styles.diffCardTitle}>{item.title}</h3>
                   <p className={styles.diffCardDesc}>{item.desc}</p>
                   <span className={styles.diffCardAccent}>{item.accent}</span>
@@ -225,7 +245,7 @@ export default function Windshield() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 1 }}
         >
-          <img src="/assets/images/nzppf_windshield_hero.png" alt="Cenário de proteção NZ PPF Windshield" className={styles.scenarioImage} />
+          <img src="/assets/images/nzppf_windshield_hero.png" alt="Cenário de proteção NZ PPF Windshield" className={styles.scenarioImage} loading="lazy" decoding="async" />
           <div className={styles.scenarioOverlay}></div>
           <motion.div
             className={styles.scenarioContent}
@@ -261,7 +281,7 @@ export default function Windshield() {
             </div>
             <div className={styles.specsCardActions}>
               <button className={styles.specsBtn} onClick={() => { setModalTab('specs'); setIsTableModalOpen(true); }}>
-                <img src={CamadaIcon} alt="" className={`${styles.specsBtnIcon} ${styles.goldIcon}`} />
+                <img src={CamadaIcon} alt="" className={`${styles.specsBtnIcon} ${styles.goldIcon}`} loading="lazy" decoding="async" />
                 ANÁLISE TÉCNICA
               </button>
               <button className={styles.specsBtnOutline} onClick={() => { setModalTab('benchmark'); setIsTableModalOpen(true); }}>

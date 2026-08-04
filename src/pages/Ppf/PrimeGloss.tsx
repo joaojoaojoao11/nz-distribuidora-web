@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import styles from './PrimeGloss.module.css';
+
+const seoDescription = 'PPF de TPU 100% virgem com revestimento nano-dúplex, regeneração térmica e repelência. 190μ e 10 anos de garantia para proteção de pintura premium.';
+const productSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "NZPPF Prime Gloss",
+  "description": seoDescription,
+  "brand": { "@type": "Brand", "name": "NZPPF" },
+  "category": "Película de Proteção de Pintura (PPF)",
+  "url": `${SITE_URL}/ppf/prime-gloss`
+});
 
 
 const blurReveal = {
@@ -103,6 +116,13 @@ export default function PrimeGloss() {
 
   return (
     <div className={styles.page}>
+      <SEO
+        title="NZPPF Prime Gloss — PPF 190μ com 10 Anos de Garantia"
+        description={seoDescription}
+        canonicalUrl="/ppf/prime-gloss"
+        schema={productSchema}
+        type="product"
+      />
 
       {/* ═══════════════════════════════════════════
           SEÇÃO 1: HERO DO PRODUTO
@@ -175,9 +195,9 @@ export default function PrimeGloss() {
           <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Arquitetura de Alta Performance</motion.h2>
           <motion.div className={styles.techGrid} variants={scaleIn}>
             <div className={styles.techImagePanel}>
-              <img src="/assets/images/nzppf_prime_layers.jpg" alt="Camadas TPU Prime" className={styles.techImage} />
+              <img src="/assets/images/nzppf_prime_layers.jpg" alt="Camadas TPU Prime" className={styles.techImage} loading="lazy" decoding="async" />
               <div className={styles.techImageOverlay}></div>
-              <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.accentIcon}`} alt="" />
+              <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.accentIcon}`} alt="" loading="lazy" decoding="async" />
             </div>
             <div className={styles.techLayers}>
               {[
@@ -209,11 +229,11 @@ export default function PrimeGloss() {
             {diferenciais.map((item, i) => (
               <motion.div key={i} className={styles.diffCard} variants={scaleIn}>
                 <div className={styles.diffCardImageWrap}>
-                  <img src={item.image} alt={item.title} className={styles.diffCardImage} />
+                  <img src={item.image} alt={item.title} className={styles.diffCardImage} loading="lazy" decoding="async" />
                   <div className={styles.diffCardImageOverlay}></div>
                 </div>
                 <div className={styles.diffCardBody}>
-                  <img src={item.icon} alt="" className={`${styles.diffCardIcon} ${styles.accentIcon}`} />
+                  <img src={item.icon} alt="" className={`${styles.diffCardIcon} ${styles.accentIcon}`} loading="lazy" decoding="async" />
                   <h3 className={styles.diffCardTitle}>{item.title}</h3>
                   <p className={styles.diffCardDesc}>{item.desc}</p>
                   <span className={styles.diffCardAccent}>{item.accent}</span>
@@ -273,7 +293,7 @@ export default function PrimeGloss() {
             </div>
             <div className={styles.specsCardActions}>
               <button className={styles.specsBtn} onClick={() => { setModalTab('specs'); setIsTableModalOpen(true); }}>
-                <img src={CamadaIcon} alt="" className={`${styles.specsBtnIcon} ${styles.accentIcon}`} />
+                <img src={CamadaIcon} alt="" className={`${styles.specsBtnIcon} ${styles.accentIcon}`} loading="lazy" decoding="async" />
                 ANÁLISE TÉCNICA
               </button>
               <button className={styles.specsBtnOutline} onClick={() => { setModalTab('benchmark'); setIsTableModalOpen(true); }}>

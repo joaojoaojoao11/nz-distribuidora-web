@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
+import SEO from '../../components/SEO/SEO';
 import styles from './WarrantyRegistration.module.css';
 import { CheckCircle2, Shield, AlertCircle, ChevronRight, QrCode, CalendarClock, Droplets, Leaf, Car, LayoutGrid, Sofa } from 'lucide-react';
 
@@ -271,6 +272,11 @@ const WarrantyRegistration = () => {
 
   return (
     <div className={styles.container}>
+      <SEO
+        title="Registro de Garantia NZPPF — Certificado Digital"
+        description="Registre a garantia da sua película NZPPF: certificado com hash único e assinatura digital vinculada a placa e chassi. Proteção Elite validada em tempo real."
+        canonicalUrl="/registro-garantia"
+      />
       <div className={styles.content}>
 
         {step < 5 && (

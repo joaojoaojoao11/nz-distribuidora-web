@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import { SITE_URL } from '../../lib/siteConfig';
 import { getFamilyBySlug, averyFamilies } from './averyLines';
 import styles from './SignProduct.module.css';
 
@@ -61,7 +62,7 @@ export default function SignProduct() {
       name: 'Avery Dennison',
     },
     category: 'Comunicação Visual / Vinil Adesivo',
-    url: `https://agencianz.com/sign/${family.slug}`,
+    url: `${SITE_URL}/sign/${family.slug}`,
     offers: {
       '@type': 'Offer',
       availability: 'https://schema.org/InStock',
@@ -167,6 +168,8 @@ export default function SignProduct() {
                 src="/assets/logos/nzsign/logo-avery-dennison.png"
                 alt="Avery Dennison"
                 className={styles.brandPanelLogo}
+                loading="lazy"
+                decoding="async"
               />
               <div className={styles.brandPanelDivider}></div>
               <p className={styles.brandPanelStatement}>
@@ -327,6 +330,8 @@ export default function SignProduct() {
               src="/assets/logos/nzsign/logo-avery-dennison.png"
               alt="Avery Dennison"
               className={styles.ctaAuthLogo}
+              loading="lazy"
+              decoding="async"
             />
             <span className={styles.ctaAuthText}>
               NZSIGN · Distribuição autorizada Avery Dennison no Brasil
