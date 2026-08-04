@@ -134,6 +134,12 @@
   opacity: 0.9;
 }
 
+/* NZSIGN/NZDECOR são wordmarks largos — caixa menor pra peso visual parecido */
+.splitLogoWide {
+  height: 160px;
+  max-width: 210px;
+}
+
 .splitSub {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.7rem;

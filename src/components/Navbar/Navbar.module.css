@@ -253,6 +253,37 @@
   transform: translateY(-2px);
 }
 
+/* ==========================================
+   BOTÃO DE BUSCA (lupa)
+   ========================================== */
+.searchBtn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-snappy);
+}
+
+.searchBtn svg {
+  width: 17px;
+  height: 17px;
+}
+
+.searchBtn:hover {
+  color: var(--accent-red);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.searchBtnMobile {
+  display: none;
+}
+
 .loginBtn {
   padding: 0.45rem 1.1rem;
   border: 1px solid rgba(255,255,255,0.15);
@@ -321,6 +352,17 @@
 
   .hamburger {
     display: flex;
+  }
+
+  /* lupa fica na barra, colada ao hambúrguer */
+  .searchBtnMobile {
+    display: grid;
+    margin-left: auto;
+    margin-right: 0.4rem;
+  }
+
+  .searchBtnDesktop {
+    display: none;
   }
 
   .links {

@@ -1,16 +1,42 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
 import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
+import SearchPalette from './SearchPalette';
 import styles from './Navbar.module.css';
+
+const SearchIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="7" />
+    <line x1="21" y1="21" x2="16.5" y2="16.5" />
+  </svg>
+);
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const { user, isAdmin } = useAuth();
 
   const closeMenu = () => setIsOpen(false);
+
+  const openSearch = () => {
+    setIsOpen(false);
+    setSearchOpen(true);
+  };
+
+  // Ctrl+K / Cmd+K abre a busca em qualquer página
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <nav className={styles.navbar}>
@@ -18,6 +44,16 @@ export default function Navbar() {
         <Link to="/" className={styles.brand} onClick={closeMenu}>
           <img src="/assets/logos/logo-nz-group-base.svg" alt="NZ Distribuidora" style={{ height: '75px', display: 'block', margin: '-15px 0' }} />
         </Link>
+
+        {/* Lupa — visível na barra em mobile, fora do overlay */}
+        <button
+          type="button"
+          className={`${styles.searchBtn} ${styles.searchBtnMobile}`}
+          onClick={openSearch}
+          aria-label="Buscar no site"
+        >
+          <SearchIcon />
+        </button>
 
         {/* Hamburger Button — mobile only */}
         <button
@@ -111,6 +147,16 @@ export default function Navbar() {
             GARANTIA
           </Link>
 
+          <button
+            type="button"
+            className={`${styles.searchBtn} ${styles.searchBtnDesktop}`}
+            onClick={openSearch}
+            aria-label="Buscar no site (Ctrl+K)"
+            title="Buscar (Ctrl+K)"
+          >
+            <SearchIcon />
+          </button>
+
           {user ? (
             <Link to={isAdmin ? '/admin' : '/painel'} className={styles.loginBtn} onClick={closeMenu}>
               {isAdmin ? '⚙ Admin' : '👤 Minha Conta'}
@@ -120,6 +166,8 @@ export default function Navbar() {
           )}
         </div>
       </div>
+
+      <SearchPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
     </nav>
   );
 }

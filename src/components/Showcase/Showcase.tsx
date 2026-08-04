@@ -25,7 +25,7 @@ export default function Showcase() {
         >
           <motion.span className={styles.eyebrow} variants={blurReveal}>NOSSAS VERTICAIS</motion.span>
           <motion.h2 className={styles.title} variants={blurReveal}>
-            Duas linhas. <span className={styles.gold}>Uma missão.</span>
+            Quatro linhas. <span className={styles.gold}>Uma missão.</span>
           </motion.h2>
         </motion.div>
 
@@ -58,6 +58,42 @@ export default function Showcase() {
               <span className={styles.splitSub}>ENVELOPAMENTO AUTOMOTIVO</span>
               <p className={styles.splitDesc}>
                 Cores profundas, texturas ultrarrealistas e aplicação premium. Para projetos que demandam perfeição.
+              </p>
+              <span className={styles.splitCta}>
+                EXPLORAR
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </Link>
+
+          <Link to="/sign" className={styles.splitCard}>
+            <div className={styles.splitImageWrapper}>
+              <img src="/assets/images/sign/sign_hero.png" alt="NZSIGN" className={styles.splitImage} />
+              <div className={styles.splitOverlay} />
+            </div>
+            <div className={styles.splitContent}>
+              <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="NZSIGN" className={`${styles.splitLogo} ${styles.splitLogoWide}`} />
+              <span className={styles.splitSub}>COMUNICAÇÃO VISUAL AVERY DENNISON</span>
+              <p className={styles.splitDesc}>
+                Filmes para impressão digital, recorte e sinalização com padrão global Avery Dennison. Do MPI ao refletivo, tudo para o profissional de sign.
+              </p>
+              <span className={styles.splitCta}>
+                EXPLORAR
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </div>
+          </Link>
+
+          <Link to="/decor" className={styles.splitCard}>
+            <div className={styles.splitImageWrapper}>
+              <img src="/assets/images/decor/decor_hero.jpg" alt="NZDECOR" className={styles.splitImage} />
+              <div className={styles.splitOverlay} />
+            </div>
+            <div className={styles.splitContent}>
+              <img src="/assets/logos/nzdecor/logo-nzdecor-branco.png" alt="NZDECOR" className={`${styles.splitLogo} ${styles.splitLogoWide}`} />
+              <span className={styles.splitSub}>ENVELOPAMENTO ARQUITETÔNICO</span>
+              <p className={styles.splitDesc}>
+                Vinil decorativo técnico para móveis, paredes e superfícies. Mais de 210 padrões SH Decor e Etherna Decor em catálogo.
               </p>
               <span className={styles.splitCta}>
                 EXPLORAR
