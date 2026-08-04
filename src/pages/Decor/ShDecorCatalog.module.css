@@ -468,6 +468,37 @@
 
 @media (max-width: 1100px) { .productGrid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 820px) { .productGrid { grid-template-columns: repeat(2, 1fr); } }
+
+/* MOBILE — a barra é sticky: as pills precisam ficar em UMA linha rolável,
+   senão o filtro empilhado cobre o conteúdo durante o scroll */
+@media (max-width: 768px) {
+  .filterBar {
+    top: 60px; /* navbar mobile tem 64px */
+    gap: 0.55rem;
+    padding: 0.6rem 1rem 0.55rem;
+  }
+  .searchWrap {
+    max-width: none;
+    padding: 0.5rem 0.8rem;
+  }
+  .searchInput { font-size: 16px; } /* <16px dispara auto-zoom no iOS */
+  .searchKbd { display: none; }
+  .familyFilter {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 0 -1rem;
+    padding: 0 1rem 0.3rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .familyFilter::-webkit-scrollbar { display: none; }
+  .familyPill {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 0.5rem 0.95rem;
+  }
+}
+
 @media (max-width: 480px) {
   .productGrid { grid-template-columns: 1fr; }
   .hero { padding-top: 7rem; }
