@@ -4,22 +4,15 @@ Guia prático pós-implantação do SEO v2 (agosto/2026). O que é automático j
 
 ---
 
-## ⚠️ 1. Google Search Console (fazer 1 vez, ~10 min) — O MAIS IMPORTANTE
+## ✅ 1. Google Search Console — FEITO em 04/08/2026
 
-Sem isso o Google indexa "no escuro" e você não vê o resultado do trabalho.
+Propriedade `sc-domain:nzgroup.com.br` já estava verificada; o sitemap `https://www.nzgroup.com.br/sitemap.xml` foi enviado em 04/08/2026 (status Processado, 252 páginas encontradas). Baseline antes do SEO v2: 15 páginas indexadas, 129 cliques/3 meses.
 
-1. Acesse https://search.google.com/search-console e entre com a conta Google da empresa.
-2. Clique em **Adicionar propriedade** → escolha o tipo **Domínio** → digite `nzgroup.com.br`.
-3. O Google vai mostrar um registro **TXT** (algo como `google-site-verification=xxxx`).
-4. No painel onde o domínio foi registrado (Registro.br, GoDaddy etc.), abra a **zona DNS** e crie um registro **TXT** no domínio raiz com esse valor.
-5. Volte ao Search Console e clique **Verificar** (pode levar até 1h para o DNS propagar).
-6. Depois de verificado: menu **Sitemaps** → adicionar `https://www.nzgroup.com.br/sitemap.xml` → Enviar.
-7. Em 2–4 semanas, acompanhe em **Indexação → Páginas** (cobertura) e **Desempenho** (cliques/impressões por palavra).
+**Acompanhar** (2–4 semanas): https://search.google.com/search-console → **Indexação → Páginas** (cobertura deve subir de 15 para 100+) e **Desempenho** (cliques/impressões por palavra).
 
-## ⚠️ 2. Bing Webmaster Tools (~2 min, depois do passo 1)
+## ✅ 2. Bing Webmaster Tools — FEITO em 04/08/2026
 
-1. Acesse https://www.bing.com/webmasters e entre com qualquer conta Microsoft.
-2. Use a opção **Importar do Google Search Console** — ele puxa tudo, incluindo o sitemap.
+Propriedade importada do GSC (conta joao.vanderleia@gmail.com) + sitemap enviado manualmente. Bing rastreia as 252 URLs em 24–48h.
 
 ## 3. IndexNow — já automático ✅
 
@@ -51,7 +44,10 @@ Cada post novo publicado pelo Motor avisa Bing/Yandex na hora (chave em `public/
 1. **Converter PNGs pesados para WebP** (328 MB em `public/assets/images`): `npm i -D sharp` e `node scripts/convert-webp.mjs`, depois trocar referências aos poucos testando o visual.
 2. **Recomprimir vídeos hero** (`hero-home.mp4` tem 28,8 MB; ideal < 5 MB): qualquer conversor H.264 CRF 28 ou WebM resolve.
 3. **Verificar no painel Vercel** se `nzgroup.com.br` (sem www) redireciona para `www.nzgroup.com.br` (Settings → Domains — deve mostrar "Redirect").
-4. **Segurança Supabase**: a tabela `configuracoes_nz` está com RLS desabilitado (qualquer pessoa com a chave pública consegue ler/alterar). Corrigir com uma policy de admin — pedir ao Claude na próxima sessão.
+4. ~~RLS de `configuracoes_nz`~~ ✅ resolvido em 04/08/2026 (Cowork): RLS ativo com 4 policies (leitura pública, escrita só admin). Painel admin validado — login usa Supabase Auth e há 2 admins em `user_profiles`.
+5. **Storage — uploads públicos** ⚠️: os buckets `warranties` e `site-assets` aceitam INSERT de qualquer pessoa sem login (policies "Permitir Upload Publico"). `warranties` também é leitura pública — se PDFs de garantia com dados de cliente forem salvos lá, ficam acessíveis por URL (LGPD). Antes de restringir, mapear o fluxo de registro de garantia (o upload é feito por visitante anônimo?). `blog_media` está correto (leitura pública, escrita autenticada).
+
+**Feito em 04/08/2026 (blog):** 22 posts duplicados deletados (sobrou `comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp`); redirects 301 dos 22 slugs antigos adicionados no `vercel.json`; sitemap é dinâmico e já se auto-corrigiu.
 
 ## 7. Teste rápido pós-deploy
 
