@@ -1,0 +1,30 @@
+/* Só o que difere do AveryBlock — o resto das classes vem de AveryBlock.module.css. */
+
+.section {
+  border-top: 1px solid var(--border-light);
+}
+
+.logo {
+  height: 44px;
+  width: auto;
+  display: block;
+  margin: 0 auto 1.2rem;
+}
+
+/* um card só: largura contida para não esticar como a grade de famílias Avery */
+.cardWrap {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.trademark {
+  margin: 2.5rem 0 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 768px) {
+  .logo { height: 36px; }
+}

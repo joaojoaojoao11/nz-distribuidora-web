@@ -30,6 +30,8 @@ const Oracal670ColorPage = lazy(() => import('./pages/Wrap/Oracal670Colors'));
 const Oracal651Colors = lazy(() => import('./pages/Wrap/Oracal651Colors'));
 const ShWrappingColors = lazy(() => import('./pages/Wrap/ShWrappingColors'));
 const NzwrapColorPage = lazy(() => import('./pages/Wrap/NzwrapColorPage'));
+const MetamarkMcx = lazy(() => import('./pages/Wrap/WrapMetamark').then(m => ({ default: m.MetamarkMcx })));
+const MetamarkM7 = lazy(() => import('./pages/Wrap/WrapMetamark').then(m => ({ default: m.MetamarkM7 })));
 const Sign = lazy(() => import('./pages/Sign/Sign'));
 const SignProduct = lazy(() => import('./pages/Sign/SignProduct'));
 const Decor = lazy(() => import('./pages/Decor/Decor'));
@@ -114,6 +116,8 @@ function App() {
                   <Route path="/wrap/oracal-651/:id" element={<Oracal651Colors />} />
                   <Route path="/wrap/oracal-670ra" element={<Oracal670 />} />
                   <Route path="/wrap/oracal-670ra/:colorCode" element={<Oracal670ColorPage />} />
+                  <Route path="/wrap/metamark-mcx" element={<MetamarkMcx />} />
+                  <Route path="/wrap/metamark-7-series" element={<MetamarkM7 />} />
                   <Route path="/sign" element={<Sign />} />
                   <Route path="/sign/:slug" element={<SignProduct />} />
                   <Route path="/decor" element={<Decor />} />

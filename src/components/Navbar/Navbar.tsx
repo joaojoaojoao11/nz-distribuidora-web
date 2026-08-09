@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
 import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
-import SearchPalette from './SearchPalette';
 import styles from './Navbar.module.css';
+
+// O índice da busca carrega ~340 destinos (páginas, linhas e todas as cores e
+// padrões dos catálogos). Fora do bundle inicial: só baixa quando abre a busca.
+const SearchPalette = lazy(() => import('./SearchPalette'));
 
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -95,7 +98,18 @@ export default function Navbar() {
                 />
                 <span className={styles.dropdownLabel}>sh wrapping</span>
               </Link>
+              <Link to="/wrap/metamark-mcx" className={styles.dropdownItem} onClick={closeMenu}>
+                <img
+                  src="/assets/logos/metamark/logo-metamark.svg"
+                  alt="MetaCast MCX"
+                  className={styles.dropdownLogoMetamark}
+                />
+                <span className={styles.dropdownLabel}>metacast mcx</span>
+              </Link>
               <span className={styles.dropdownDivider} aria-hidden="true" />
+              <Link to="/wrap/metamark-7-series" className={styles.dropdownTextItem} onClick={closeMenu}>
+                METAMARK 7 SERIES
+              </Link>
               <Link to="/wrap/oracal-970ra" className={styles.dropdownTextItem} onClick={closeMenu}>
                 ORACAL 970RA
               </Link>
@@ -167,7 +181,11 @@ export default function Navbar() {
         </div>
       </div>
 
-      <SearchPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
+      {searchOpen && (
+        <Suspense fallback={null}>
+          <SearchPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
+        </Suspense>
+      )}
     </nav>
   );
 }

@@ -1,0 +1,51 @@
+{
+  "_fonte": "https://metamark.co.uk/pages/mcx — painéis <div id=\"tab-*\" class=\"tabbed-swatches__panel\"> do HTML oficial, conferidos em 2026-08-09",
+  "_nota": "chipFile NAO pode ser derivado do nome por slugify: 'Simply White' -> SimpleWhite, 'Bullitt Green' -> BullitGreen, 'Café Racer' -> CafeRacer.",
+  "_recortes": {
+    "blacks": ["MCX-99", "MCX-10", "MCX-12"],
+    "inspire": "campo inspire:true nos 11 itens"
+  },
+  "colors": [
+    { "code": "MCX-54", "name": "Bavarian Blue", "finish": "matt-metallic", "inspire": false, "chipFile": "BavarianBlue_Chip_400x400.jpg" },
+    { "code": "MCX-63", "name": "Speed Green", "finish": "matt-metallic", "inspire": true, "chipFile": "SpeedGreen_Chip_400x400.jpg" },
+    { "code": "MCX-73", "name": "Capri Bronze", "finish": "matt-metallic", "inspire": false, "chipFile": "CapriBronze_Chip_400x400.jpg" },
+    { "code": "MCX-87", "name": "Plum Crazy", "finish": "matt-metallic", "inspire": false, "chipFile": "PlumCrazy_Chip_400x400.jpg" },
+    { "code": "MCX-96", "name": "Urban Steel", "finish": "matt-metallic", "inspire": true, "chipFile": "UrbanSteel_Chip_400x400.jpg" },
+    { "code": "MCX-97", "name": "Carbon Steel", "finish": "matt-metallic", "inspire": true, "chipFile": "CarbonSteel_Chip_400x400.jpg" },
+
+    { "code": "MCX-39", "name": "FireFox", "finish": "gloss-metallic", "inspire": false, "chipFile": "FireFox_Chip_400x400.jpg" },
+    { "code": "MCX-46", "name": "Volcano Red", "finish": "gloss-metallic", "inspire": false, "chipFile": "VolcanoRed_Chip_400x400.jpg" },
+    { "code": "MCX-59", "name": "Blue Abyss", "finish": "gloss-metallic", "inspire": false, "chipFile": "BlueAbyss_Chip_400x400.jpg" },
+    { "code": "MCX-60", "name": "Sub Lime", "finish": "gloss-metallic", "inspire": true, "chipFile": "SubLime_Chip_400x400.jpg" },
+    { "code": "MCX-61", "name": "Atomic Green", "finish": "gloss-metallic", "inspire": false, "chipFile": "AtomicGreen_Chip_400x400.jpg" },
+    { "code": "MCX-67", "name": "Bullitt Green", "finish": "gloss-metallic", "inspire": false, "chipFile": "BullitGreen_Chip_400x400.jpg" },
+    { "code": "MCX-68", "name": "Chimera Green", "finish": "gloss-metallic", "inspire": false, "chipFile": "ChimeraGreen_Chip_400x400.jpg" },
+    { "code": "MCX-84", "name": "Electric Storm", "finish": "gloss-metallic", "inspire": false, "chipFile": "ElectricStorm_Chip_400x400.jpg" },
+    { "code": "MCX-86", "name": "Nightlife", "finish": "gloss-metallic", "inspire": false, "chipFile": "Nightlife_Chip_400x400.jpg" },
+    { "code": "MCX-94", "name": "Pure Iridium", "finish": "gloss-metallic", "inspire": false, "chipFile": "PureIridium_Chip_400x400.jpg" },
+    { "code": "MCX-98", "name": "Blizzard Stone", "finish": "gloss-metallic", "inspire": false, "chipFile": "BlizzardStone_Chip_400x400.jpg" },
+    { "code": "MCX-99", "name": "Obsidian Black", "finish": "gloss-metallic", "inspire": false, "chipFile": "ObsidianBlack_Chip_400x400.jpg" },
+
+    { "code": "MCX-65", "name": "Carbon Green", "finish": "satin-metallic", "inspire": false, "chipFile": "CarbonGreen_Chip_400x400.jpg" },
+
+    { "code": "MCX-35", "name": "Modena Yellow", "finish": "gloss-solid", "inspire": true, "chipFile": "ModenaYellow_Chip_400x400.jpg" },
+    { "code": "MCX-36", "name": "Monza Yellow", "finish": "gloss-solid", "inspire": false, "chipFile": "MonzaYellow_Chip_400x400.jpg" },
+    { "code": "MCX-38", "name": "Venturi Orange", "finish": "gloss-solid", "inspire": true, "chipFile": "VenturiOrange_Chip_400x400.jpg" },
+    { "code": "MCX-48", "name": "Cooper Red", "finish": "gloss-solid", "inspire": false, "chipFile": "CooperRed_Chip_400x400.jpg" },
+    { "code": "MCX-49", "name": "Maranello Red", "finish": "gloss-solid", "inspire": false, "chipFile": "MaranelloRed_Chip_400x400.jpg" },
+    { "code": "MCX-51", "name": "Miami Blue", "finish": "gloss-solid", "inspire": true, "chipFile": "MiamiBlue_Chip_400x400.jpg" },
+    { "code": "MCX-52", "name": "Mexico Blue", "finish": "gloss-solid", "inspire": true, "chipFile": "MexicoBlue_Chip_400x400.jpg" },
+    { "code": "MCX-56", "name": "Icon Blue", "finish": "gloss-solid", "inspire": false, "chipFile": "IconBlue_Chip_400x400.jpg" },
+    { "code": "MCX-57", "name": "Yacht Blue", "finish": "gloss-solid", "inspire": false, "chipFile": "YachtBlue_Chip_400x400.jpg" },
+    { "code": "MCX-58", "name": "Lapis Blue", "finish": "gloss-solid", "inspire": false, "chipFile": "LapisBlue_Chip_400x400.jpg" },
+    { "code": "MCX-62", "name": "Viper Green", "finish": "gloss-solid", "inspire": true, "chipFile": "ViperGreen_Chip_400x400.jpg" },
+    { "code": "MCX-00", "name": "Simply White", "finish": "gloss-solid", "inspire": false, "chipFile": "SimpleWhite_Chip_400x400.jpg" },
+    { "code": "MCX-22", "name": "Chalk Grey", "finish": "gloss-solid", "inspire": true, "chipFile": "ChalkGrey_Chip_400x400.jpg" },
+    { "code": "MCX-26", "name": "Nardo Grey", "finish": "gloss-solid", "inspire": true, "chipFile": "NardoGrey_Chip_400x400.jpg" },
+    { "code": "MCX-28", "name": "Café Racer", "finish": "gloss-solid", "inspire": false, "chipFile": "CafeRacer_Chip_400x400.jpg" },
+    { "code": "MCX-10", "name": "Jet Black", "finish": "gloss-solid", "inspire": false, "chipFile": "JetBlack_Chip_400x400.jpg" },
+
+    { "code": "MCX-12", "name": "Gotham Black", "finish": "satin-solid", "inspire": false, "chipFile": "GothamBlack_Chip_400x400.jpg" },
+    { "code": "MCX-66", "name": "Army Olive", "finish": "satin-solid", "inspire": false, "chipFile": "ArmyOlive_Chip_400x400.jpg" }
+  ]
+}

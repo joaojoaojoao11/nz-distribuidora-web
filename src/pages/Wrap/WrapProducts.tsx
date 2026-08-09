@@ -25,14 +25,14 @@ const scaleIn = {
 };
 
 // Icons
-const CamadaIcon = "/assets/simbolos/simbolo-camada.svg";
-const CertoIcon = "/assets/simbolos/simbolo-certo.svg";
-const EscudoVazioIcon = "/assets/simbolos/simbolo-escudo-vazio.svg";
-const RegeneracaoIcon = "/assets/simbolos/simbolo-regeneracao.svg";
-const RepelenciaIcon = "/assets/simbolos/simbolo-repelencia.svg";
-const PresenteIcon = "/assets/simbolos/simbolo-presente.svg";
+export const CamadaIcon = "/assets/simbolos/simbolo-camada.svg";
+export const CertoIcon = "/assets/simbolos/simbolo-certo.svg";
+export const EscudoVazioIcon = "/assets/simbolos/simbolo-escudo-vazio.svg";
+export const RegeneracaoIcon = "/assets/simbolos/simbolo-regeneracao.svg";
+export const RepelenciaIcon = "/assets/simbolos/simbolo-repelencia.svg";
+export const PresenteIcon = "/assets/simbolos/simbolo-presente.svg";
 
-interface WrapProductData {
+export interface WrapProductData {
   title: string;
   subtitle: string;
   heroDescription: string;
@@ -40,10 +40,23 @@ interface WrapProductData {
   heroImage: string;
   specs: { icon: string; info: string; spec: string; detalhe: string }[];
   diferenciais: { icon: string; title: string; desc: string; accent: string; image: string }[];
-  benchmarks: { metric: string; desc: string; nz: number[]; mercado: number[] }[];
+  /** Comparativo NZ vs mercado. Só faz sentido nas linhas próprias — omitir em marca de terceiro. */
+  benchmarks?: { metric: string; desc: string; nz: number[]; mercado: number[] }[];
+  /** Dados declarados pelo fabricante, com a fonte citada. Alternativa honesta ao benchmark. */
+  officialData?: {
+    title: string;
+    subtitle: string;
+    unit: string;
+    rows: { label: string; value: number }[];
+    source: string;
+  };
 }
 
-function WrapProductPage({ data, children }: { data: WrapProductData, children?: React.ReactNode }) {
+export function WrapProductPage({ data, children }: { data: WrapProductData, children?: React.ReactNode }) {
+  const maxOfficial = data.officialData
+    ? Math.max(...data.officialData.rows.map((r) => r.value))
+    : 0;
+
   return (
     <div className={styles.page}>
       {/* HERO */}
@@ -140,7 +153,47 @@ function WrapProductPage({ data, children }: { data: WrapProductData, children?:
         </motion.div>
       </section>
 
+      {/* DADOS OFICIAIS DO FABRICANTE — alternativa ao benchmark para marcas de terceiros */}
+      {data.officialData && (
+        <section className={styles.benchmarkSection}>
+          <motion.div
+            className={`container ${styles.benchmarkContainer}`}
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <motion.div className={styles.specsSectionHeader} variants={blurReveal}>
+              <h2 className={styles.sectionTitle}>{data.officialData.title}</h2>
+              <p className={styles.sectionSub}>{data.officialData.subtitle}</p>
+            </motion.div>
+
+            <motion.div className={styles.officialCard} variants={scaleIn}>
+              {data.officialData.rows.map((row) => (
+                <div key={row.label} className={styles.officialRow}>
+                  <span className={styles.officialLabel}>{row.label}</span>
+                  <div className={styles.officialBarBg}>
+                    <motion.div
+                      className={styles.officialBar}
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${(row.value / maxOfficial) * 100}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8 }}
+                    />
+                  </div>
+                  <span className={styles.officialValue}>
+                    {row.value} <small>{data.officialData!.unit}</small>
+                  </span>
+                </div>
+              ))}
+              <p className={styles.officialSource}>{data.officialData.source}</p>
+            </motion.div>
+          </motion.div>
+        </section>
+      )}
+
       {/* BENCHMARK */}
+      {data.benchmarks && (
       <section className={styles.benchmarkSection}>
         <motion.div
           className={`container ${styles.benchmarkContainer}`}
@@ -202,8 +255,11 @@ function WrapProductPage({ data, children }: { data: WrapProductData, children?:
             ))}
           </motion.div>
         </motion.div>
+      </section>
+      )}
 
-        {/* CTA */}
+      {/* CTA — fora do benchmark, que é opcional */}
+      <section className={styles.ctaBand}>
         <motion.div
           className={styles.ctaSection}
           initial="hidden"

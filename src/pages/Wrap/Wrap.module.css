@@ -464,6 +464,22 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* No celular as abas não cabem espremidas — viram régua rolável. */
+@media (max-width: 768px) {
+  .comparisonTabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .comparisonTabs::-webkit-scrollbar { display: none; }
+  .compareTab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 .compareTab {
   flex: 1;
   padding: 0.85rem 0.35rem;

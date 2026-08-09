@@ -34,6 +34,8 @@ export default async function handler(_req: Request) {
     '/wrap/oracal-970ra',
     '/wrap/oracal-651',
     '/wrap/oracal-670ra',
+    '/wrap/metamark-mcx',
+    '/wrap/metamark-7-series',
     '/sign',
     '/decor',
     '/decor/sh',

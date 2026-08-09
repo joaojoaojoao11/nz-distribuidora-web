@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import AveryBlock from './AveryBlock';
+import MetamarkBlock from './MetamarkBlock';
 import styles from './Sign.module.css';
 
 const staggerContainer = {
@@ -34,7 +35,7 @@ export default function Sign() {
       <SEO
         title="NZSIGN — Comunicação Visual Avery Dennison"
         description="Distribuição Avery Dennison para comunicação visual no Brasil. Vinis calandrados MPI, sobrelaminados DOL, ETCHMARK, refletivos e filmes para vidros."
-        keywords="avery dennison brasil, mpi 1105, mpi 2105, dol sobrelaminado, etchmark, vinil comunicação visual, nzsign"
+        keywords="avery dennison brasil, mpi 1105, mpi 2105, dol sobrelaminado, etchmark, vinil comunicação visual, metamark 7 series, vinil de recorte metamark, nzsign"
         canonicalUrl="/sign"
         schema={schema}
       />
@@ -96,6 +97,9 @@ export default function Sign() {
 
       {/* BLOCO AVERY */}
       <AveryBlock />
+
+      {/* BLOCO METAMARK — ponte para a 7 Series, que vive em /wrap */}
+      <MetamarkBlock />
 
       {/* CTA FINAL */}
       <section className={styles.ctaSection}>

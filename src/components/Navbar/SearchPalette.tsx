@@ -5,6 +5,8 @@ import { shDecorProducts, shDecorFamilies } from '../../pages/Decor/shDecorProdu
 import { ethernaProducts, ethernaFamilies } from '../../pages/Decor/ethernaProducts';
 import { averyFamilies } from '../../pages/Sign/averyLines';
 import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
+import { MCX_COLORS, MCX_FINISHES } from '../../lib/data/metamarkMcxColors';
+import { M7_COLORS, M7_FAMILIES } from '../../lib/data/metamark7Colors';
 import styles from './SearchPalette.module.css';
 
 type SearchItem = {
@@ -35,6 +37,8 @@ const STATIC_PAGES: SearchItem[] = [
   { label: 'Oracal 970RA', sublabel: 'Wrapping premium Orafol', group: 'NZWRAP', path: '/wrap/oracal-970ra', keywords: 'oracal orafol 970' },
   { label: 'Oracal 670RA', sublabel: 'Wrapping film Orafol', group: 'NZWRAP', path: '/wrap/oracal-670ra', keywords: 'oracal orafol 670' },
   { label: 'Oracal 651', sublabel: 'Vinil intermediário Orafol', group: 'NZWRAP', path: '/wrap/oracal-651', keywords: 'oracal orafol 651' },
+  { label: 'MetaCast MCX', sublabel: 'Cast premium Metamark · 37 cores', group: 'NZWRAP', path: '/wrap/metamark-mcx', keywords: 'metamark metacast mcx cast envelopamento inspire colours metaglide metasure reino unido' },
+  { label: 'Metamark 7 Series', sublabel: 'Vinil de recorte · 92 cores', group: 'NZWRAP', path: '/wrap/metamark-7-series', keywords: 'metamark m7 7 series recorte sinalizacao vinil sign pantone plotter' },
   { label: 'NZSIGN', sublabel: 'Comunicação visual Avery Dennison', group: 'PÁGINA', path: '/sign', keywords: 'sign avery dennison comunicacao visual impressao' },
   { label: 'NZDECOR', sublabel: 'Envelopamento arquitetônico', group: 'PÁGINA', path: '/decor', keywords: 'decor decorativo arquitetonico moveis parede' },
   { label: 'Catálogo SH Decor', sublabel: '55 padrões de vinil decorativo', group: 'NZDECOR', path: '/decor/sh', keywords: 'sh decor catalogo padroes' },
@@ -59,9 +63,26 @@ const buildIndex = (): SearchItem[] => [
     label: c.name.replace(/^NZWRAP /, ''),
     sublabel: `${c.sku} · ${c.finish}`,
     group: 'NZWRAP',
-    path: `/wrap/nzwrap-premium/${c.sku}`,
+    // minúsculo: é o formato que a página de cor emite como canonical
+    path: `/wrap/nzwrap-premium/${c.sku.toLowerCase()}`,
     swatch: c.hex,
     keywords: 'cor nzwrap premium',
+  })),
+  ...MCX_COLORS.map((c) => ({
+    label: c.name,
+    sublabel: `${c.code} · ${MCX_FINISHES.find((f) => f.id === c.finish)?.label ?? ''}`,
+    group: 'METACAST MCX',
+    path: `/wrap/metamark-mcx?cor=${c.slug}`,
+    thumb: c.chip,
+    keywords: `metamark metacast cor envelopamento ${c.inspire ? 'inspire colours' : ''}`,
+  })),
+  ...M7_COLORS.map((c) => ({
+    label: c.name,
+    sublabel: `${c.code}${c.pantone ? ` · Pantone ${c.pantone}` : ''}`,
+    group: 'METAMARK M7',
+    path: `/wrap/metamark-7-series?cor=${c.slug}`,
+    swatch: c.hex,
+    keywords: `metamark m7 vinil recorte cor ${M7_FAMILIES.find((f) => f.id === c.family)?.labelPt ?? ''} ${c.pantone ?? ''} ${c.cmyk ?? ''}`,
   })),
   ...shDecorProducts.map((p) => ({
     label: p.name,

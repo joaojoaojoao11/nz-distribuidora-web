@@ -207,8 +207,18 @@
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
+/* o logo da Metamark já vem com o retângulo roxo da marca: não precisa de
+   variante branca, só de altura calibrada para o mesmo peso visual dos vizinhos */
+.dropdownLogoMetamark {
+  height: 26px;
+  width: auto;
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
 .dropdownItem:hover .dropdownLogoNzwrap,
-.dropdownItem:hover .dropdownLogoShColors {
+.dropdownItem:hover .dropdownLogoShColors,
+.dropdownItem:hover .dropdownLogoMetamark {
   opacity: 1;
   transform: scale(1.04);
 }

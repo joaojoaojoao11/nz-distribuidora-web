@@ -369,9 +369,89 @@
    SEÇÃO 4: BENCHMARK
    ═══════════════════════════════════════════ */
 .benchmarkSection {
-  padding: clamp(4rem, 8vh, 6rem) 0 clamp(6rem, 12vh, 10rem);
+  padding: clamp(4rem, 8vh, 6rem) 0 0;
   background: linear-gradient(to bottom, #060608, #040405);
   position: relative;
+}
+
+/* O CTA vive numa faixa própria porque a seção de benchmark é opcional
+   (linhas de terceiros não têm comparativo). Continua o #040405 do degradê. */
+.ctaBand {
+  padding: 0 0 clamp(6rem, 12vh, 10rem);
+  background: #040405;
+  position: relative;
+}
+
+/* ==========================================
+   DADOS OFICIAIS DO FABRICANTE
+   Substitui o benchmark nas linhas de terceiros: em vez de nota comparativa
+   inventada, barras cujo comprimento é o próprio número declarado no datasheet.
+   ========================================== */
+.officialCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2rem 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.officialRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 190px) 1fr auto;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.officialLabel {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+.officialBarBg {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.officialBar {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--accent-red), #e8534f);
+}
+
+.officialValue {
+  font-family: var(--font-tech, monospace);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.officialValue small {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  margin-left: 0.15rem;
+}
+
+.officialSource {
+  margin: 0.6rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 640px) {
+  .officialRow {
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem 0.9rem;
+  }
+  .officialBarBg { grid-column: 1 / -1; order: 3; }
 }
 
 .benchmarkContainer {
