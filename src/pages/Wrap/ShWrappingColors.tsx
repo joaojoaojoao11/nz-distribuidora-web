@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
 import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
+import { buildColorSchema } from '../../lib/colorSchema';
 import styles from './ShWrappingColors.module.css';
 
 export interface SHColorData {
@@ -150,6 +151,15 @@ export default function ShWrappingColors() {
           title={`${productData.name} — SH Wrapping Colors`}
           description={`Cor ${productData.name} da linha SH Wrapping Colors. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
           canonicalUrl={`/wrap/sh-colors/${productData.slug}`}
+          schema={buildColorSchema({
+            name: productData.name,
+            path: `/wrap/sh-colors/${productData.slug}`,
+            brand: 'SH Wrapping',
+            catalogPath: '/wrap/sh-colors',
+            catalogLabel: 'SH Wrapping',
+            hex: productData.hex_code,
+            description: productData.technical_description,
+          })}
         />
         {/* Background Cinematográfico */}
         <div 

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
 import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
+import { buildColorSchema } from '../../lib/colorSchema';
 
 interface DbProduct {
   id: string;
@@ -79,6 +80,16 @@ export default function Oracal651Colors() {
         title={`${colorData.name} — ORACAL 651`}
         description={`Cor ${colorData.name} da linha ORACAL 651. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
         canonicalUrl={`/wrap/oracal-651/${colorData.slug}`}
+        schema={buildColorSchema({
+          name: colorData.name,
+          path: `/wrap/oracal-651/${colorData.slug}`,
+          brand: 'Oracal 651',
+          catalogPath: '/wrap/oracal-651',
+          catalogLabel: 'Oracal 651',
+          sku: colorData.sku,
+          hex: colorData.hex_code,
+          description: colorData.technical_description,
+        })}
       />
 
       {/* Background Imersivo com Efeito Especial */}

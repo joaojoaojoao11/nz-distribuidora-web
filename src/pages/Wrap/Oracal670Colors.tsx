@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
 import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
+import { buildColorSchema } from '../../lib/colorSchema';
 import styles from './Oracal670Colors.module.css';
 
 export interface ColorData {
@@ -113,6 +114,16 @@ export default function Oracal670ColorPage() {
         title={`${colorData.name} — ORACAL 670RA`}
         description={`Cor ${colorData.name} da linha ORACAL 670RA. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
         canonicalUrl={`/wrap/oracal-670ra/${colorData.slug}`}
+        schema={buildColorSchema({
+          name: colorData.name,
+          path: `/wrap/oracal-670ra/${colorData.slug}`,
+          brand: 'Oracal 670',
+          catalogPath: '/wrap/oracal-670ra',
+          catalogLabel: 'Oracal 670RA',
+          sku: colorData.sku,
+          hex: colorData.hex_code,
+          description: colorData.technical_description,
+        })}
       />
       {/* Dynamic Hero Section */}
       <section 

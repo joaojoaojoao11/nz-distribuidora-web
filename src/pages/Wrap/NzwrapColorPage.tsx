@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
 import SEO from '../../components/SEO/SEO';
 import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
+import { buildColorSchema } from '../../lib/colorSchema';
 
 export default function NzwrapColorPage() {
   const { sku } = useParams<{ sku: string }>();
@@ -35,6 +36,15 @@ export default function NzwrapColorPage() {
         title={`${colorData.name} — NZWRAP Premium`}
         description={`Cor ${colorData.name} da linha NZWRAP Premium. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
         canonicalUrl={`/wrap/nzwrap-premium/${colorData.sku.toLowerCase()}`}
+        schema={buildColorSchema({
+          name: colorData.name.replace(/^NZWRAP\s+/i, ''),
+          path: `/wrap/nzwrap-premium/${colorData.sku.toLowerCase()}`,
+          brand: 'NZWRAP',
+          catalogPath: '/wrap/nzwrap-premium',
+          catalogLabel: 'NZWRAP Premium',
+          sku: colorData.sku,
+          hex: colorData.hex,
+        })}
       />
 
       {/* Background Imersivo com Efeito Especial */}
