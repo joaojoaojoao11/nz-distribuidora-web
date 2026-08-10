@@ -58,6 +58,9 @@ const mcxItems: CatalogItem[] = MCX_COLORS.map((c) => {
       alt: `Amostra do filme MetaCast MCX ${c.code} ${c.name}`,
     },
     chips,
+    photo: c.photo
+      ? { src: c.photo, alt: `Veículo envelopado em MetaCast MCX ${c.code} ${c.name}` }
+      : undefined,
     details: [
       { label: 'Código', value: c.code },
       { label: 'Acabamento', value: `${finish.label} (${finish.labelPt})` },

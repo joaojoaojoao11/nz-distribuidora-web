@@ -18,6 +18,8 @@ export interface CatalogItem {
   swatch: CatalogSwatch;
   /** Micro-selos no card, ex.: ['INSPIRE™'] ou ['FOSCO']. */
   chips?: string[];
+  /** Foto de veículo aplicado nessa cor. Opcional — nem toda cor tem. */
+  photo?: { src: string; alt: string };
   /** Linhas técnicas do painel — montadas pela página, para o catálogo não conhecer a linha. */
   details: { label: string; value: string }[];
   /** Texto já normalizado (sem acento) para a busca. */
@@ -373,9 +375,26 @@ export default function MetamarkColorCatalog({
               </div>
 
               <div className={styles.panelBody}>
-                <div className={styles.panelSwatch}>
-                  <Swatch swatch={activeItem.swatch} />
-                </div>
+                {activeItem.photo ? (
+                  <>
+                    <div className={styles.panelPhoto}>
+                      <img src={activeItem.photo.src} alt={activeItem.photo.alt} loading="lazy" />
+                    </div>
+                    <div className={styles.panelSampleRow}>
+                      <span className={styles.panelSample}>
+                        <Swatch swatch={activeItem.swatch} />
+                      </span>
+                      <span className={styles.panelSampleLabel}>
+                        Amostra do filme
+                        <small>A foto é ilustrativa; a amostra é a referência de cor.</small>
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className={styles.panelSwatch}>
+                    <Swatch swatch={activeItem.swatch} />
+                  </div>
+                )}
 
                 <dl className={styles.panelSpecs}>
                   {activeItem.details.map((d) => (

@@ -107,6 +107,16 @@ fs.writeFileSync(
     `vem de terceiros (revendas, aplicadores ou bancos de imagem).\n\n` +
     `Metamark®, MetaCast®, MetaGlide®, MetaSure™ e Inspire Colours™ são marcas registradas\n` +
     `da Metamark (UK) Limited.\n\n` +
+    `## mcx/aplicacao/\n\n` +
+    `As 25 fotos de veículo aplicado vêm da brochure oficial **MetaCast MCX Inspiring Colours\n` +
+    `(2025)** da Metamark, publicada em \`cdn.shopify.com/s/files/1/0916/9158/1769/files/\n` +
+    `MetaCast_MCX_Inspiring_Colours_Brochure_-_2025.pdf\`. Cada foto foi recortada da página\n` +
+    `em que a própria Metamark a associa ao código da cor, com o mapeamento conferido\n` +
+    `visualmente página a página. Não são geradas por IA e não vêm de terceiros.\n\n` +
+    `As 12 cores restantes (Sub Lime, Atomic Green, Chimera Green, Carbon Green, Modena\n` +
+    `Yellow, Venturi Orange, Maranello Red, Mexico Blue, Icon Blue, Yacht Blue, Viper Green\n` +
+    `e Army Olive) não aparecem na brochure e ficam só com a amostra do filme.\n\n` +
+    `## Baixados por este script\n\n` +
     `Última sincronização: ${today}\n\n` +
     `| Arquivo | Origem |\n| --- | --- |\n${credits.join('\n')}\n`,
 );

@@ -7,7 +7,52 @@ vem de terceiros (revendas, aplicadores ou bancos de imagem).
 Metamark®, MetaCast®, MetaGlide®, MetaSure™ e Inspire Colours™ são marcas registradas
 da Metamark (UK) Limited.
 
-Última sincronização: 2026-08-09
+## mcx/aplicacao/
+
+As 25 fotos de veículo aplicado vêm da brochure oficial **MetaCast MCX Inspiring Colours
+(2025)** da Metamark, publicada em `cdn.shopify.com/s/files/1/0916/9158/1769/files/
+MetaCast_MCX_Inspiring_Colours_Brochure_-_2025.pdf`. Cada foto foi recortada da página
+em que a própria Metamark a associa ao código da cor, com o mapeamento conferido
+visualmente página a página. Não são geradas por IA e não vêm de terceiros.
+
+As 12 cores restantes (Sub Lime, Atomic Green, Chimera Green, Carbon Green, Modena
+Yellow, Venturi Orange, Maranello Red, Mexico Blue, Icon Blue, Yacht Blue, Viper Green
+e Army Olive) não aparecem na brochure e ficam só com a amostra do filme.
+
+
+### Procedência foto a foto
+
+| Arquivo | Cor | Página da brochure |
+| --- | --- | --- |
+| `mcx/aplicacao/mcx-36-monza-yellow.jpg` | MCX-36 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-84-electric-storm.jpg` | MCX-84 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-22-chalk-grey.jpg` | MCX-22 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-87-plum-crazy.jpg` | MCX-87 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-98-blizzard-stone.jpg` | MCX-98 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-39-firefox.jpg` | MCX-39 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-63-speed-green.jpg` | MCX-63 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-51-miami-blue.jpg` | MCX-51 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-10-jet-black.jpg` | MCX-10 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-94-pure-iridium.jpg` | MCX-94 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-00-simply-white.jpg` | MCX-00 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-46-volcano-red.jpg` | MCX-46 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-67-bullitt-green.jpg` | MCX-67 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-99-obsidian-black.jpg` | MCX-99 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-58-lapis-blue.jpg` | MCX-58 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-28-cafe-racer.jpg` | MCX-28 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-54-bavarian-blue.jpg` | MCX-54 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-26-nardo-grey.jpg` | MCX-26 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-73-capri-bronze.jpg` | MCX-73 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-59-blue-abyss.jpg` | MCX-59 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-12-gotham-black.jpg` | MCX-12 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-48-cooper-red.jpg` | MCX-48 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-96-urban-steel.jpg` | MCX-96 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-86-nightlife.jpg` | MCX-86 | Inspiring Colours 2025 |
+| `mcx/aplicacao/mcx-97-carbon-steel.jpg` | MCX-97 | Inspiring Colours 2025 |
+
+## Baixados por este script
+
+Última sincronização: 2026-08-10
 
 | Arquivo | Origem |
 | --- | --- |

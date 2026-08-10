@@ -8,6 +8,7 @@ import path from 'node:path';
 
 const DATA_DIR = path.resolve('scripts/data/metamark');
 const CHIP_DIR = path.resolve('public/assets/images/metamark/mcx/chips');
+const PHOTO_DIR = path.resolve('public/assets/images/metamark/mcx/aplicacao');
 const OUT_MCX = path.resolve('src/lib/data/metamarkMcxColors.ts');
 const OUT_M7 = path.resolve('src/lib/data/metamark7Colors.ts');
 
@@ -49,7 +50,12 @@ const mcx = mcxRaw.colors.map((c) => {
     throw new Error(`${c.code} ${c.name}: chip ausente em disco (${file}). Rode scripts/scrape-metamark.mjs.`);
   }
   if (!FINISH_LABELS[c.finish]) throw new Error(`${c.code}: acabamento desconhecido "${c.finish}"`);
-  return { ...c, slug, chip: `/assets/images/metamark/mcx/chips/${file}` };
+  // foto de aplicação: opcional, existe só para as cores presentes na brochure oficial
+  const photoFile = `${slug}.jpg`;
+  const photo = fs.existsSync(path.join(PHOTO_DIR, photoFile))
+    ? `/assets/images/metamark/mcx/aplicacao/${photoFile}`
+    : null;
+  return { ...c, slug, chip: `/assets/images/metamark/mcx/chips/${file}`, photo };
 });
 
 const dupCodes = mcx.map((c) => c.code).filter((c, i, a) => a.indexOf(c) !== i);
@@ -65,6 +71,7 @@ const mcxTs =
   `  finish: McxFinish;\n` +
   `  /** Inspire Colours™ — desenvolvida para reproduzir um tom de pintura OEM. */\n  inspire: boolean;\n` +
   `  /** Foto oficial do filme (400x400). A MetaCast MCX não publica valor hexadecimal por cor. */\n  chip: string;\n` +
+  `  /** Foto de veículo aplicado, da brochure oficial. Nem toda cor tem. */\n  photo: string | null;\n` +
   `}\n\n` +
   `export const MCX_FINISHES: { id: McxFinish; label: string; labelPt: string }[] = [\n` +
   Object.entries(FINISH_LABELS)
@@ -77,7 +84,7 @@ const mcxTs =
   mcx
     .map(
       (c) =>
-        `  { code: ${q(c.code)}, name: ${q(c.name)}, slug: ${q(c.slug)}, finish: ${q(c.finish)}, inspire: ${c.inspire}, chip: ${q(c.chip)} },`,
+        `  { code: ${q(c.code)}, name: ${q(c.name)}, slug: ${q(c.slug)}, finish: ${q(c.finish)}, inspire: ${c.inspire}, chip: ${q(c.chip)}, photo: ${c.photo ? q(c.photo) : 'null'} },`,
     )
     .join('\n') +
   `\n];\n\n` +
@@ -186,6 +193,9 @@ fs.writeFileSync(OUT_M7, m7Ts);
 
 console.log(`\n${mcx.length} cores MCX`, tally(mcx, 'finish'));
 console.log(`  Inspire Colours™: ${mcx.filter((c) => c.inspire).length} · Blacks: ${BLACK_CODES.length}`);
+console.log(
+  `  com foto de aplicação: ${mcx.filter((c) => c.photo).length} · só amostra: ${mcx.filter((c) => !c.photo).length}`,
+);
 console.log(`${m7.length} cores M7`, tally(m7, 'family'));
 console.log(
   `  com Pantone: ${m7.filter((c) => c.pantone).length} · fosco: ${m7.filter((c) => c.matt).length} · 1.600 mm: ${m7.filter((c) => c.wide).length}`,

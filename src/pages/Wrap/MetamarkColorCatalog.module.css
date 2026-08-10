@@ -367,6 +367,52 @@
   margin-bottom: 1.4rem;
 }
 
+/* foto de veículo aplicado + amostra do filme como referência secundária */
+.panelPhoto {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  border: 1px solid var(--border-light);
+  margin-bottom: 0.9rem;
+}
+.panelPhoto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.panelSampleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.3rem;
+}
+.panelSample {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 9px;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  background: #111;
+  display: block;
+}
+.panelSampleLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.panelSampleLabel small {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
 .panelSpecs { margin: 0; }
 .panelSpecRow {
   display: flex;
