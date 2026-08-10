@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 // We'll import PrimeGloss.module.css to maintain structural purity while overriding colors inline or via data-attributes if necessary.
 import styles from './PrimeGloss.module.css';
 import SEO from '../../components/SEO/SEO';
+import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
 import { SITE_URL } from '../../lib/siteConfig';
 import { supabase } from '../../lib/supabase';
 
@@ -427,6 +428,7 @@ export default function CoreGloss() {
           </motion.div>
         )}
       </AnimatePresence>
+      <PpfFaqSection path="/ppf/core-gloss" name="NZPPF Core Gloss" />
     </div>
   );
 }

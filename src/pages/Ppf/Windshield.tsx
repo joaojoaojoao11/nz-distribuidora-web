@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Windshield.module.css';
 import { supabase } from '../../lib/supabase';
@@ -384,6 +385,7 @@ export default function Windshield() {
           </motion.div>
         </div>
       )}
+      <PpfFaqSection path="/ppf/windshield" name="NZPPF Windshield" />
     </div>
   );
 }

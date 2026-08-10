@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './LuxuryGloss.module.css';
 import { supabase } from '../../lib/supabase';
@@ -399,6 +400,7 @@ export default function LuxuryGloss() {
           </motion.div>
         </div>
       )}
+      <PpfFaqSection path="/ppf/luxury-gloss" name="NZPPF Luxury Gloss" />
     </div>
   );
 }

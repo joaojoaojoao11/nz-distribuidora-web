@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
+import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './FlowGloss.module.css';
 import { supabase } from '../../lib/supabase';
@@ -385,6 +386,7 @@ export default function FlowGloss() {
           </motion.div>
         </div>
       )}
+      <PpfFaqSection path="/ppf/flow-gloss" name="NZPPF Flow Gloss" />
     </div>
   );
 }
