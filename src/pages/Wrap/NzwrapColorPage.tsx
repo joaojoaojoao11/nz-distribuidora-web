@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
 import SEO from '../../components/SEO/SEO';
+import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
 
 export default function NzwrapColorPage() {
   const { sku } = useParams<{ sku: string }>();
@@ -25,7 +26,7 @@ export default function NzwrapColorPage() {
 
   const handleBuy = () => {
     const text = `Olá time NZ! Quero solicitar a cor ${colorData.name} (${colorData.sku}) da linha premium.`;
-    window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/5511918907565?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
@@ -486,6 +487,16 @@ export default function NzwrapColorPage() {
             </div>
           </motion.div>
         </section>
+        <ColorSeoSection
+          name={colorData.name.replace(/^NZWRAP\s+/i, '')}
+          brandLabel="NZWRAP Premium"
+          catalogPath="/wrap/nzwrap-premium"
+          sku={colorData.sku}
+          finish={colorData.finish}
+          hex={colorData.hex}
+          durabilidadeAnos={5}
+          garantiaAnos={3}
+        />
       </div>
     </div>
   );

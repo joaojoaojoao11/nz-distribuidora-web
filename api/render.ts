@@ -2,6 +2,8 @@ import { routeMeta, type RouteMeta } from './_lib/routeMeta.js';
 import { signSlugs } from './_lib/signSlugs.js';
 import { shDecorSlugs } from './_lib/shDecorSlugs.js';
 import { ethernaSlugs } from './_lib/ethernaSlugs.js';
+import { colorFamilies, colorTitle, colorDescription, type ColorRow } from './_lib/colorCatalog.js';
+import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 
 // Shell HTML com meta correta por rota, para TODOS os user-agents.
 // O React continua renderizando o corpo no cliente; aqui garantimos que
@@ -81,6 +83,36 @@ async function fetchBlogPostMeta(slug: string): Promise<ResolvedMeta | null> {
   }
 }
 
+async function fetchColorMeta(
+  cfg: (typeof colorFamilies)[string],
+  slug: string,
+  path: string,
+): Promise<ResolvedMeta | null> {
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '';
+  const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
+  if (!supabaseUrl || !supabaseKey) return null;
+
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/web_catalog_products?slug=eq.${encodeURIComponent(slug)}&brand=eq.${encodeURIComponent(cfg.brand)}&is_active=eq.true&select=name,sku,finish_type,hex_code,garantia_anos,durabilidade_anos,technical_description&limit=1`,
+      { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } },
+    );
+    if (!res.ok) return null;
+    const rows = (await res.json()) as ColorRow[];
+    const row = rows?.[0];
+    if (!row) return null;
+    return {
+      status: 200,
+      canonicalPath: path,
+      type: 'website',
+      title: colorTitle(row, cfg),
+      description: colorDescription(row, cfg),
+    };
+  } catch {
+    return null;
+  }
+}
+
 async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
   const path = pathname !== '/' ? pathname.replace(/\/+$/, '') : '/';
 
@@ -133,12 +165,32 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
     return NOT_FOUND_META;
   }
 
-  // Páginas de cor do catálogo Wrap (sem lista no edge — herdam meta do catálogo pai)
+  // Páginas de cor do catálogo Wrap — meta única por cor (programmatic SEO)
   if (segments[0] === 'wrap' && segments.length === 3) {
-    const parent = routeMeta[`/wrap/${segments[1]}`];
-    if (parent) {
-      return { ...parent, status: 200, canonicalPath: path, type: 'website' };
+    const [, family, slug] = segments;
+
+    // NZWRAP Premium: catálogo estático, URL usa o SKU em minúsculas
+    if (family === 'nzwrap-premium') {
+      const c = nzwrapColorMeta[slug.toLowerCase()];
+      if (!c) return NOT_FOUND_META;
+      const row: ColorRow = { name: c.name, sku: slug.toUpperCase(), finish_type: c.finish, hex_code: c.hex, durabilidade_anos: 5, garantia_anos: 3 };
+      return {
+        status: 200,
+        canonicalPath: `/wrap/nzwrap-premium/${slug.toLowerCase()}`,
+        type: 'website',
+        title: colorTitle(row, { label: 'NZWRAP Premium', skuInTitle: true }),
+        description: colorDescription(row, { label: 'NZWRAP Premium' }),
+      };
     }
+
+    // SH / Oracal 651 / Oracal 670RA: catálogo no Supabase, URL usa o slug
+    const cfg = colorFamilies[family];
+    if (cfg) {
+      const meta = await fetchColorMeta(cfg, slug, path);
+      return meta || NOT_FOUND_META;
+    }
+
+    // Família sem página de cor (ex.: metamark, oracal-970ra) = 404 real
     return NOT_FOUND_META;
   }
 
@@ -205,11 +257,14 @@ export default async function handler(req: Request) {
   try {
     const meta = await resolveMeta(pathname);
     const html = injectMeta(shell, meta);
+    const isColorPage = /^\/wrap\/[^/]+\/[^/]+$/.test(pathname);
     const cache = meta.status === 404
       ? 'public, s-maxage=300'
       : pathname.startsWith('/blog/')
         ? 'public, s-maxage=600, stale-while-revalidate=86400'
-        : 'public, s-maxage=3600, stale-while-revalidate=86400';
+        : isColorPage
+          ? 'public, s-maxage=86400, stale-while-revalidate=604800'
+          : 'public, s-maxage=3600, stale-while-revalidate=86400';
 
     return new Response(html, {
       status: meta.status,

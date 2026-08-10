@@ -26,6 +26,17 @@ export default function Home() {
       "postalCode": "06419-060",
       "addressCountry": "BR"
     },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -23.4804547,
+      "longitude": -46.8865522
+    },
+    "areaServed": [
+      { "@type": "State", "name": "São Paulo" },
+      { "@type": "Country", "name": "Brasil" }
+    ],
+    "sameAs": ["https://www.instagram.com/nzgroup.br"],
+    "priceRange": "$$",
     "openingHoursSpecification": [{
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],

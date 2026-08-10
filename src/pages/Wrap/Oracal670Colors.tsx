@@ -3,6 +3,7 @@ import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
+import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
 import styles from './Oracal670Colors.module.css';
 
 export interface ColorData {
@@ -230,6 +231,15 @@ export default function Oracal670ColorPage() {
           </motion.div>
         </div>
       </section>
+      <ColorSeoSection
+        name={colorData.name}
+        brandLabel="Oracal 670RA"
+        catalogPath="/wrap/oracal-670ra"
+        sku={colorData.sku}
+        finish={colorData.finish_type}
+        hex={colorData.hex_code}
+        description={colorData.technical_description}
+      />
     </div>
   );
 }

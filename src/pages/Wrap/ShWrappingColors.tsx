@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
+import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
 import styles from './ShWrappingColors.module.css';
 
 export interface SHColorData {
@@ -140,7 +141,7 @@ export default function ShWrappingColors() {
   
   const handleBuy = () => {
     const text = `Olá time NZ! Quero falar com um especialista sobre o envelopamento *${productData.name}* (${productData.finish_type}).`;
-    window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/5511918907565?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
@@ -427,6 +428,14 @@ export default function ShWrappingColors() {
             </motion.div>
           )}
         </AnimatePresence>
+        <ColorSeoSection
+          name={productData.name}
+          brandLabel="SH Wrapping"
+          catalogPath="/wrap/sh-colors"
+          finish={productData.finish_type}
+          hex={productData.hex_code}
+          description={productData.technical_description}
+        />
       </div>
     );
 }

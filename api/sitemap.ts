@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { shDecorSlugs } from './_lib/shDecorSlugs.js';
 import { ethernaSlugs } from './_lib/ethernaSlugs.js';
 import { signSlugs } from './_lib/signSlugs.js';
+import { colorFamilies } from './_lib/colorCatalog.js';
+import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 
 // Initialize Supabase admin client for the serverless function
 // We use Vite's environment variables if available locally, or Vercel's standard environment variables in production
@@ -56,9 +58,21 @@ export default async function handler(_req: Request) {
     .select('slug, updated_at')
     .eq('status', 'published');
 
-  // We could also fetch products here if they had dedicated DB rows, 
-  // but for now we rely on the hardcoded wrapping catalog paths built into the app.
-  
+  // Páginas de cor do catálogo Wrap (programmatic SEO): SH + Oracal via banco, NZWRAP via mapa estático
+  const brandToPrefix = new Map(Object.values(colorFamilies).map((f) => [f.brand, f.routePrefix]));
+  const { data: colorRows } = await supabase
+    .from('web_catalog_products')
+    .select('slug, brand')
+    .eq('is_active', true);
+  const colorPaths: string[] = [];
+  for (const row of colorRows || []) {
+    const prefix = brandToPrefix.get(row.brand);
+    if (prefix && row.slug) colorPaths.push(`${prefix}/${row.slug}`);
+  }
+  for (const sku of Object.keys(nzwrapColorMeta)) {
+    colorPaths.push(`/wrap/nzwrap-premium/${sku}`);
+  }
+
   let sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   sitemapContent += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
@@ -95,6 +109,15 @@ export default async function handler(_req: Request) {
     sitemapContent += `    <loc>${baseUrl}/decor/etherna/${slug}</loc>\n`;
     sitemapContent += `    <changefreq>monthly</changefreq>\n`;
     sitemapContent += `    <priority>0.7</priority>\n`;
+    sitemapContent += `  </url>\n`;
+  }
+
+  // Add wrap color pages
+  for (const path of colorPaths) {
+    sitemapContent += `  <url>\n`;
+    sitemapContent += `    <loc>${baseUrl}${path}</loc>\n`;
+    sitemapContent += `    <changefreq>monthly</changefreq>\n`;
+    sitemapContent += `    <priority>0.6</priority>\n`;
     sitemapContent += `  </url>\n`;
   }
 

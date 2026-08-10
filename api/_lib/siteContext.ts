@@ -1,6 +1,6 @@
 // Contexto real da NZ Distribuidora para injetar no prompt do Motor SEO IA.
-// Objetivo: o Gemini deixa de "alucinar" produtos e passa a falar do que a NZ
-// realmente vende. Mantido como texto cru para economizar tokens.
+// Objetivo: a IA não "alucina" produtos e fala só do que a NZ realmente vende.
+// Mantido como texto cru para economizar tokens.
 
 export const NZ_PPF_LINES = `
 LINHAS OFICIAIS NZPPF (PPF = Paint Protection Film):
@@ -22,10 +22,22 @@ LINHAS OFICIAIS NZWRAP (envelopamento automotivo premium):
   Stuttgart Sport Grey, Alpine Sport Grey, Luxury British Pink, Mystic Teal.
 - SH WRAPPING COLORS: linha parceira, acabamentos variados.
 
-CATÁLOGO ORACAL 651: ~651 cores em vinil adesivo (não é envelopamento automotivo),
-com finish Gloss, SKUs numerados (010 White, 020 Golden Yellow, 070 Black, etc.).
-Uso principal: comunicação visual, recorte, fachada, frota. Não confundir com PPF
-nem com NZWRAP Premium.
+CATÁLOGO ORACAL 651: 62 cores em pronta entrega de vinil adesivo (não é
+envelopamento automotivo), finish Gloss, SKUs numerados (010 White, 020 Golden
+Yellow, 070 Black, etc.). Uso principal: comunicação visual, recorte, fachada,
+frota. Não confundir com PPF nem com NZWRAP Premium.
+
+CATÁLOGO ORACAL 670RA: 24 cores premium com tecnologia RapidAir (aplicação sem
+bolhas), uso em frota e envelopamento comercial.
+`.trim();
+
+export const NZ_LOCAL = `
+LOCALIZAÇÃO E ATENDIMENTO:
+- Sede/centro de distribuição: R. Brasilândia, 366 — Chácaras Marco, Barueri-SP,
+  CEP 06419-060 (região de Alphaville, Grande São Paulo).
+- Atende instaladores de todo o Brasil com envio nacional; foco comercial em
+  São Paulo capital e Grande SP (Barueri, Alphaville, Osasco, Guarulhos, ABC).
+- Contato: WhatsApp comercial no site www.nzgroup.com.br.
 `.trim();
 
 export const NZ_WARRANTY_RULES = `
@@ -56,5 +68,6 @@ export function buildSiteContext(): string {
     NZ_PPF_LINES,
     NZ_WRAP_LINES,
     NZ_WARRANTY_RULES,
+    NZ_LOCAL,
   ].join('\n\n');
 }

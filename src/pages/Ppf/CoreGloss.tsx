@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import styles from './PrimeGloss.module.css';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
+import { supabase } from '../../lib/supabase';
 
 const seoDescription = 'PPF híbrido projetado para máxima rentabilidade do instalador. 175μ, 3 anos de garantia e o melhor custo-benefício da linha NZPPF.';
 const productSchema = JSON.stringify({
@@ -101,11 +102,7 @@ export default function CoreGloss() {
     e.preventDefault();
     setSubmitStatus('loading');
     try {
-      await fetch('https://ipehorttsrvjynnhyzhu.supabase.co/rest/v1/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwZWhvcnR0c3J2anlubmh5emh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2MDYwNTMsImV4cCI6MjA4MjE4MjA1M30.m6GW1AckPRGVP8wagfc9t4hzjvMOlHoEIskS36eKwDU', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlwZWhvcnR0c3J2anlubmh5emh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY2MDYwNTMsImV4cCI6MjA4MjE4MjA1M30.m6GW1AckPRGVP8wagfc9t4hzjvMOlHoEIskS36eKwDU' },
-        body: JSON.stringify({ name: formData.name, email: formData.email, phone: formData.phone, source: 'NZPPF Core - Lead Direto' })
-      }).catch(() => null); // Silent fallback if token is mocked
+      await supabase.from('leads').insert({ name: formData.name, email: formData.email, phone: formData.phone, source: 'NZPPF Core - Lead Direto' });
       await fetch('https://formsubmit.co/ajax/joaovitor@nzdistribuidora.com.br', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },

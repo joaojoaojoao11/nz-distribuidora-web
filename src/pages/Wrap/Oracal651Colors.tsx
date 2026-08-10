@@ -3,6 +3,7 @@ import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
+import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
 
 interface DbProduct {
   id: string;
@@ -13,6 +14,8 @@ interface DbProduct {
   hex_code: string;
   finish_type: string;
   technical_description: string;
+  garantia_anos?: number;
+  durabilidade_anos?: number;
   is_active: boolean;
 }
 
@@ -534,6 +537,17 @@ export default function Oracal651Colors() {
             </div>
           </motion.div>
         </section>
+        <ColorSeoSection
+          name={colorData.name}
+          brandLabel="Oracal 651"
+          catalogPath="/wrap/oracal-651"
+          sku={colorData.sku}
+          finish={colorData.finish_type}
+          hex={colorData.hex_code}
+          durabilidadeAnos={colorData.durabilidade_anos}
+          garantiaAnos={colorData.garantia_anos}
+          description={colorData.technical_description}
+        />
       </div>
     </div>
   );

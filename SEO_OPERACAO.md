@@ -49,6 +49,28 @@ Cada post novo publicado pelo Motor avisa Bing/Yandex na hora (chave em `public/
 
 **Feito em 04/08/2026 (blog):** 22 posts duplicados deletados (sobrou `comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp`); redirects 301 dos 22 slugs antigos adicionados no `vercel.json`; sitemap é dinâmico e já se auto-corrigiu.
 
+---
+
+## 8. SEO v3 — Fase 0+1 (09/08/2026)
+
+**Correções:**
+- 🐞 **Bug de leads corrigido**: os formulários "Cupom Surpresa" das 6 páginas PPF enviavam leads para um projeto Supabase antigo (`ipehortt...`) — agora gravam na tabela `leads` do projeto atual. Leads aparecem no admin.
+- Blog consolidado de vez: os 5 duplicados restantes foram deletados (+5 redirects 301); o post sobrevivente ganhou categoria PPF e FAQ (elegível a rich results).
+- WhatsApp placeholder (11 99999-9999) trocado pelo número real em 2 páginas de cor.
+- Memória do motor vacinada contra o tema "guia/comparativo NZPPF" (não será reescrito).
+
+**Programmatic SEO (maior novidade):** as ~146 páginas de cor de vinil (`/wrap/oracal-651/*`, `/wrap/sh-colors/*`, `/wrap/oracal-670ra/*`, `/wrap/nzwrap-premium/*`) agora têm:
+- Title/description únicos por cor no HTML do edge (specs reais: acabamento, hex, durabilidade);
+- Entrada no sitemap (252 → ~390 URLs);
+- Seção visível de specs + FAQ + links internos em cada página (anti-conteúdo-raso);
+- Cor inexistente responde 404 real.
+- Após cada deploy que mude o catálogo: `node scripts/submit-indexnow.mjs /wrap/` avisa os buscadores.
+- Se o catálogo NZWRAP hardcoded mudar: rodar `node scripts/gen-color-meta.mjs` e commitar.
+
+**IAs (ChatGPT, Perplexity, Claude, Gemini):** criado `public/llms.txt` (cartão de visitas para bots de IA) e `robots.txt` liberando GPTBot, ClaudeBot, PerplexityBot, Google-Extended e CCBot.
+
+**Próximas fases do plano v3** (ver `C:\Users\joaov\.claude\plans\quero-que-voce-analise-cached-boole.md`): JSON-LD no edge + breadcrumbs (F2), hubs/categorias/pillar pages (F3), diretório de instaladores (F4), performance (F6), Google Business Profile + backlinks (F7 — ver seção do plano).
+
 ## 7. Teste rápido pós-deploy
 
 ```
