@@ -107,24 +107,30 @@ for (const job of jobs) {
 }
 
 const today = new Date().toISOString().slice(0, 10);
+
+// O script é dono APENAS da seção abaixo deste heading. Tudo acima é escrito à
+// mão — a tabela de procedência foto a foto da MCX, por exemplo, com o
+// mapeamento conferido página a página na brochure. Reescrever o arquivo inteiro
+// apagava esse conteúdo a cada rodada; agora só o trecho gerado é substituído.
+const GENERATED_HEADING = '## Baixados por este script';
+
+const DEFAULT_PREAMBLE =
+  `# Créditos das imagens — Metamark\n\n` +
+  `Todo o material desta pasta é **oficial da Metamark (UK) Limited**, baixado do site do\n` +
+  `fabricante por \`scripts/scrape-metamark.mjs\`. Nenhuma imagem é gerada por IA e nenhuma\n` +
+  `vem de terceiros (revendas, aplicadores ou bancos de imagem).\n\n` +
+  `Metamark®, MetaCast®, MetaGlide®, MetaSure™ e Inspire Colours™ são marcas registradas\n` +
+  `da Metamark (UK) Limited.\n\n`;
+
+const existing = fs.existsSync(CREDITS) ? fs.readFileSync(CREDITS, 'utf8') : '';
+const preamble = existing.includes(GENERATED_HEADING)
+  ? existing.slice(0, existing.indexOf(GENERATED_HEADING))
+  : DEFAULT_PREAMBLE;
+
 fs.writeFileSync(
   CREDITS,
-  `# Créditos das imagens — Metamark\n\n` +
-    `Todo o material desta pasta é **oficial da Metamark (UK) Limited**, baixado do site do\n` +
-    `fabricante por \`scripts/scrape-metamark.mjs\`. Nenhuma imagem é gerada por IA e nenhuma\n` +
-    `vem de terceiros (revendas, aplicadores ou bancos de imagem).\n\n` +
-    `Metamark®, MetaCast®, MetaGlide®, MetaSure™ e Inspire Colours™ são marcas registradas\n` +
-    `da Metamark (UK) Limited.\n\n` +
-    `## mcx/aplicacao/\n\n` +
-    `As 25 fotos de veículo aplicado vêm da brochure oficial **MetaCast MCX Inspiring Colours\n` +
-    `(2025)** da Metamark, publicada em \`cdn.shopify.com/s/files/1/0916/9158/1769/files/\n` +
-    `MetaCast_MCX_Inspiring_Colours_Brochure_-_2025.pdf\`. Cada foto foi recortada da página\n` +
-    `em que a própria Metamark a associa ao código da cor, com o mapeamento conferido\n` +
-    `visualmente página a página. Não são geradas por IA e não vêm de terceiros.\n\n` +
-    `As 12 cores restantes (Sub Lime, Atomic Green, Chimera Green, Carbon Green, Modena\n` +
-    `Yellow, Venturi Orange, Maranello Red, Mexico Blue, Icon Blue, Yacht Blue, Viper Green\n` +
-    `e Army Olive) não aparecem na brochure e ficam só com a amostra do filme.\n\n` +
-    `## Baixados por este script\n\n` +
+  preamble +
+    `${GENERATED_HEADING}\n\n` +
     `Última sincronização: ${today}\n\n` +
     `| Arquivo | Origem |\n| --- | --- |\n${credits.join('\n')}\n`,
 );
