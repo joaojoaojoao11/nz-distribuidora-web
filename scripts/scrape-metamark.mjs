@@ -12,6 +12,7 @@ const FORCE = process.argv.includes('--force');
 const CHIP_DIR = path.resolve('public/assets/images/metamark/mcx/chips');
 const MCX_DIR = path.resolve('public/assets/images/metamark/mcx');
 const M7_DIR = path.resolve('public/assets/images/metamark/m7');
+const MD80_DIR = path.resolve('public/assets/images/metamark/md80');
 const LOGO_DIR = path.resolve('public/assets/logos/metamark');
 const CREDITS = path.resolve('public/assets/images/metamark/CREDITS.md');
 
@@ -34,6 +35,13 @@ const LINE_ASSETS = [
   { remote: 'M7_10_ab1f5251-7ee2-4095-8e86-e1d5c15566c7.jpg', out: path.join(M7_DIR, 'm7-aplicacao-2.jpg'), w: 1600 },
   { remote: 'M7_5_e72390fd-fb1b-4105-a729-9d83bbbc7da9.jpg', out: path.join(M7_DIR, 'm7-aplicacao-3.jpg'), w: 1600 },
   { remote: 'M7_8.jpg', out: path.join(M7_DIR, 'm7-aplicacao-4.jpg'), w: 1600 },
+  // MD-80 Series — as duas fotos que a Metamark publica por produto. O acabamento
+  // fosco (MD-81M / MD-81MB) é variante dentro da mesma página, sem foto própria,
+  // então os cards fosco do /sign herdam a foto do produto correspondente.
+  { remote: 'MD-80_1.jpg', out: path.join(MD80_DIR, 'md-80-card.jpg'), w: 1200 },
+  { remote: 'MD-80_2.jpg', out: path.join(MD80_DIR, 'md-80-detalhe.jpg'), w: 1200 },
+  { remote: 'MD-80B_1.jpg', out: path.join(MD80_DIR, 'md-80b-card.jpg'), w: 1200 },
+  { remote: 'MD-80B_2.jpg', out: path.join(MD80_DIR, 'md-80b-detalhe.jpg'), w: 1200 },
   { remote: 'Logo_1.svg', out: path.join(LOGO_DIR, 'logo-metamark.svg') },
 ];
 

@@ -1,14 +1,185 @@
 /* Só o que difere do AveryBlock — o resto das classes vem de AveryBlock.module.css. */
 
+/* A base da seção fica em var(--bg-secondary), herdada de .averySection: os
+ * pseudo-elementos ::before/::after de lá fazem o fade de emenda para #070709 e
+ * #040405 com valores fixos, então repintar o fundo aqui abriria uma faixa
+ * visível entre as seções. O destaque de lançamento vem do badge, do brilho
+ * vermelho mais forte e do painel interno .launchPanel. */
 .section {
-  border-top: 1px solid var(--border-light);
+  border-top: 1px solid var(--border-strong);
+  border-bottom: 1px solid var(--border-strong);
 }
 
+/* Mesmo papel do .averySectionBackground, com o radial vermelho mais presente. */
+.sectionGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(209, 30, 30, 0.1), transparent 55%),
+    radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.025), transparent 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Luz de fundo tirada de uma aplicação real da linha. Entra desfocada, quase
+   apagada e com máscara radial, então lê como atmosfera colorida atrás do título
+   — não como foto. As fotos nítidas ficam nos cards, logo abaixo. */
+.headerBackdrop {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(1500px, 120%);
+  height: 640px;
+  transform: translateX(-50%) scale(1.15);
+  background: url('/assets/images/metamark/md80/md-80b-card.jpg') center 30% / cover no-repeat;
+  opacity: 0.18;
+  filter: blur(52px) saturate(1.1);
+  /* Pico em 32% e não no topo: o ::before de .averySection cobre os primeiros
+     180px com fade opaco e apagaria o brilho justo onde ficam logo e título.
+     O magenta que sobra conversa com a sombra do logo, que é da mesma cor. */
+  -webkit-mask-image: radial-gradient(ellipse 65% 58% at 50% 32%, #000 0%, transparent 74%);
+  mask-image: radial-gradient(ellipse 65% 58% at 50% 32%, #000 0%, transparent 74%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.header {
+  margin-bottom: 3rem;
+}
+
+.launchBadge {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  margin-bottom: 2rem;
+  background: var(--accent-red);
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 0.81rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  box-shadow: 0 8px 28px -8px rgba(209, 30, 30, 0.6);
+}
+
+/* O SVG oficial é uma placa magenta #7F1183 fechada — a Metamark não publica
+   versão solta. A 44px parecia adesivo colado; em 68px, com sombra tirada da
+   própria cor da marca, lê como placa institucional. */
 .logo {
-  height: 44px;
+  height: 68px;
   width: auto;
   display: block;
-  margin: 0 auto 1.2rem;
+  margin: 0 auto 1.5rem;
+  border-radius: 6px;
+  filter: drop-shadow(0 14px 34px rgba(127, 17, 131, 0.45));
+}
+
+/* --- Painel do lançamento MD-80 Series --- */
+.launchPanel {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: clamp(2rem, 4vw, 3.5rem);
+}
+
+.skuGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+/* Os cards de SKU são de exibição, não navegam — anula o cursor de .familyCard. */
+.skuCard {
+  cursor: default;
+}
+
+/* Destaque sutil da linha V80B, de adesivo cinza. */
+.blockoutCard {
+  border-color: rgba(209, 30, 30, 0.28);
+}
+
+/* As fotos oficiais são 1:1. Recortadas em 16/9 elas viram faixa de topo do card,
+   senão cada card ganharia ~400px só de imagem e o grid 2×2 ficaria interminável. */
+.skuImage {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1.1rem;
+  display: block;
+}
+
+/* --- Ficha técnica comum --- */
+.specsBlock {
+  margin-top: clamp(3rem, 5vh, 4rem);
+}
+
+.specsTitle {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+}
+
+.specsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 3rem;
+}
+
+/* Espelha a lista de especificações de SignProduct.module.css — CSS Module não
+ * compartilha classe entre arquivos sem acoplar este bloco ao módulo de uma página. */
+.specsList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.specRow {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.specRow:last-child {
+  border-bottom: none;
+}
+
+.specLabel {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.specValue {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.notes {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+/* --- Ponte para a 7 Series --- */
+.bridgeHeader {
+  margin: clamp(4rem, 7vh, 6rem) 0 2rem;
+  padding-top: clamp(3rem, 5vh, 4rem);
+  border-top: 1px solid var(--border-light);
+  text-align: center;
 }
 
 /* um card só: largura contida para não esticar como a grade de famílias Avery */
@@ -26,5 +197,10 @@
 }
 
 @media (max-width: 768px) {
-  .logo { height: 36px; }
+  .logo { height: 48px; }
+  .headerBackdrop { height: 380px; filter: blur(36px) saturate(1.3); }
+  .header { margin-bottom: 2rem; }
+  .skuGrid { grid-template-columns: 1fr; }
+  .specsGrid { grid-template-columns: 1fr; gap: 0; }
+  .specRow { grid-template-columns: 1fr; gap: 0.2rem; }
 }

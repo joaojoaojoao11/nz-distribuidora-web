@@ -3,6 +3,7 @@ import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import AveryBlock from './AveryBlock';
 import MetamarkBlock from './MetamarkBlock';
+import { metamarkSkus } from './metamarkMd80';
 import styles from './Sign.module.css';
 
 const staggerContainer = {
@@ -21,21 +22,30 @@ const fadeUpItem = {
 };
 
 export default function Sign() {
+  /* As famílias Avery não entram no mainEntity: cada uma já emite o próprio
+   * @type Product na sua rota /sign/:slug, via SignProduct.tsx. */
   const schema = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'NZSIGN — Comunicação Visual Avery Dennison',
+    name: 'NZSIGN — Metamark MD-80 e Avery Dennison',
     description:
-      'NZSIGN é a divisão de comunicação visual da NZ Group. Distribuímos a linha Avery Dennison no Brasil: MPI, SLP, DOL, ETCHMARK, MASCARA e refletivos.',
+      'NZSIGN é a divisão de comunicação visual da NZ Group. Distribuímos a linha Metamark MD-80 (lançamento setembro/2026) e a linha Avery Dennison completa.',
     url: `${SITE_URL}/sign`,
+    mainEntity: metamarkSkus.map((sku) => ({
+      '@type': 'Product',
+      name: `Metamark ${sku.code}`,
+      brand: { '@type': 'Brand', name: 'Metamark' },
+      description: sku.description,
+      manufacturer: { '@type': 'Organization', name: 'Metamark (UK) Limited' },
+    })),
   });
 
   return (
     <div className={styles.page}>
       <SEO
-        title="NZSIGN — Comunicação Visual Avery Dennison"
-        description="Distribuição Avery Dennison para comunicação visual no Brasil. Vinis calandrados MPI, sobrelaminados DOL, ETCHMARK, refletivos e filmes para vidros."
-        keywords="avery dennison brasil, mpi 1105, mpi 2105, dol sobrelaminado, etchmark, vinil comunicação visual, metamark 7 series, vinil de recorte metamark, nzsign"
+        title="NZSIGN — Metamark MD-80 e Avery Dennison"
+        description="Distribuição Metamark MD-80 (impressão digital branca brilho e fosco, adesivo cinza blockout) e linha Avery Dennison completa. Vinis para comunicação visual profissional no Brasil, com garantia de fábrica."
+        keywords="metamark md-80, metamark md-80b, metamark md-81m, metamark brasil, vinil impressão digital, branco brilho impressão, branco fosco impressão, adesivo cinza blockout, avery dennison brasil, mpi 1105, mpi 2105, dol sobrelaminado, etchmark, metamark 7 series, vinil de recorte metamark, nzsign"
         canonicalUrl="/sign"
         schema={schema}
       />
@@ -60,10 +70,10 @@ export default function Sign() {
               variants={fadeUpItem}
             />
             <motion.p className={styles.heroSubtitle} variants={fadeUpItem}>
-              A NZSIGN é a divisão da NZ Group dedicada à comunicação visual profissional. Trabalhamos a linha Avery Dennison no Brasil — referência mundial em vinis calandrados, sobrelaminados, refletivos e filmes especiais.
+              A NZSIGN é a divisão da NZ Group dedicada à comunicação visual profissional. Trabalhamos duas linhas globais de referência: Metamark (UK) para impressão digital premium e Avery Dennison para vinis calandrados, sobrelaminados, refletivos e filmes especiais.
             </motion.p>
             <motion.p className={styles.heroSubtitleWarning} variants={fadeUpItem}>
-              Não vendemos apenas vinil — entregamos durabilidade, acabamento e padrão Avery.
+              Não vendemos apenas vinil — entregamos durabilidade, acabamento e padrão global.
             </motion.p>
           </motion.div>
         </div>
@@ -90,16 +100,16 @@ export default function Sign() {
             Atendemos gráficas, comunicadores visuais, frotas, oficinas de wrap e produtores de sinalização. Vendemos por bobina, atendemos pedido recortado e damos respaldo técnico em aplicação.
           </motion.p>
           <motion.p className={styles.aboutParagraph} variants={fadeUpItem}>
-            Nosso catálogo é centrado na Avery Dennison — fabricante americano referência global em adesivos para comunicação visual, com tecnologia Easy Apply RS, padrão ICS (Integrated Component System) e durabilidade certificada.
+            Nosso catálogo combina dois pilares. A Metamark, fundada em 1992 no Reino Unido e subsidiária da UPM Raflatac desde 2025, amplia sua presença na NZSIGN em setembro de 2026 com a linha MD-80 — vinil calandrado para impressão digital, com garantia MetaSure® e selo Ecovadis Platinum de sustentabilidade. A Avery Dennison, americana e referência global há mais de 90 anos, completa a linha com MPI, SLP, DOL, ETCHMARK, MASCARA e refletivos.
           </motion.p>
         </motion.div>
       </section>
 
+      {/* BLOCO METAMARK — destaque de lançamento MD-80 Series (setembro/2026) + ponte para a 7 Series */}
+      <MetamarkBlock />
+
       {/* BLOCO AVERY */}
       <AveryBlock />
-
-      {/* BLOCO METAMARK — ponte para a 7 Series, que vive em /wrap */}
-      <MetamarkBlock />
 
       {/* CTA FINAL */}
       <section className={styles.ctaSection}>
