@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
 import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
+import PpfPortfolioButton from './PpfPortfolioButton';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Headlight.module.css';
 import { supabase } from '../../lib/supabase';
@@ -395,6 +396,15 @@ export default function Headlight() {
           </motion.div>
         </div>
       )}
+      {/* PORTFÓLIO EM PDF */}
+      <PpfPortfolioButton
+        slug="headlight"
+        tabelaTecnica={tabelaTecnica}
+        benchmarkData={benchmarkData}
+        diferenciais={diferenciais}
+        finishes={tonalidades}
+      />
+
       <PpfFaqSection path="/ppf/headlight" name="NZPPF Headlight" />
     </div>
   );

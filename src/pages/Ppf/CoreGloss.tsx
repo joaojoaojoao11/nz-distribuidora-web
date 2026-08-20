@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import styles from './PrimeGloss.module.css';
 import SEO from '../../components/SEO/SEO';
 import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
+import PpfPortfolioButton from './PpfPortfolioButton';
 import { SITE_URL } from '../../lib/siteConfig';
 import { supabase } from '../../lib/supabase';
 
@@ -428,6 +429,15 @@ export default function CoreGloss() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* PORTFÓLIO EM PDF */}
+      <PpfPortfolioButton
+        slug="core-gloss"
+        tabelaTecnica={tabelaTecnica}
+        benchmarkData={benchmarkData}
+        diferenciais={diferenciais}
+        finishes={finishesData}
+      />
+
       <PpfFaqSection path="/ppf/core-gloss" name="NZPPF Core Gloss" />
     </div>
   );

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
 import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
+import PpfPortfolioButton from './PpfPortfolioButton';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Windshield.module.css';
 import { supabase } from '../../lib/supabase';
@@ -385,6 +386,14 @@ export default function Windshield() {
           </motion.div>
         </div>
       )}
+      {/* PORTFÓLIO EM PDF */}
+      <PpfPortfolioButton
+        slug="windshield"
+        tabelaTecnica={tabelaTecnica}
+        benchmarkData={benchmarkData}
+        diferenciais={diferenciais}
+      />
+
       <PpfFaqSection path="/ppf/windshield" name="NZPPF Windshield" />
     </div>
   );
