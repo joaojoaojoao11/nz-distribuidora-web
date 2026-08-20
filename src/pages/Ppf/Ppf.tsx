@@ -52,11 +52,11 @@ const productLines = [
   {
     slug: 'flow-gloss',
     title: 'NZPPF FLOW GLOSS',
-    subtitle: 'TPU de Base Técnica | Desempenho Confiável',
-    description: 'Material de tecnologia real, acabamento impecável e valor acessível. TPU técnico com revestimento hidrofóbico e 4 anos de garantia.',
+    subtitle: 'Nova Formulação G2 | Performance Intermediária',
+    description: 'Reformulada: TPU Técnico G2 com top coat nano-hidrofóbico, agora em 185 micras. Mais absorção de impacto, auto-cura acelerada e 7 anos de garantia.',
     image: '/assets/images/flow_haval.png',
-    thickness: '175μ',
-    warranty: '4 ANOS',
+    thickness: '185μ',
+    warranty: '7 ANOS',
     available: true
   },
   {
@@ -112,16 +112,16 @@ const comparisonData = [
   {
     id: 'flow',
     name: 'FLOW',
-    thickness: '175μ',
-    warranty: '4 Anos',
+    thickness: '185μ',
+    warranty: '7 Anos',
     metrics: [
-      { label: 'Brilho', value: 85 },
-      { label: 'Durabilidade', value: 75 },
-      { label: 'Regeneração', value: 70 },
-      { label: 'Repelência', value: 80 },
-      { label: 'Custo-Benefício', value: 85 }
+      { label: 'Brilho', value: 89 },
+      { label: 'Durabilidade', value: 85 },
+      { label: 'Regeneração', value: 82 },
+      { label: 'Repelência', value: 87 },
+      { label: 'Custo-Benefício', value: 90 }
     ],
-    highlight: 'A porta de entrada inteligente no mundo do PPF Técnico. Desempenho equilibrado e acessível.'
+    highlight: 'Reformulada com o TPU Técnico G2: a linha intermediária de performance. Agora com 185 micras de corpo.'
   },
   {
     id: 'prime',

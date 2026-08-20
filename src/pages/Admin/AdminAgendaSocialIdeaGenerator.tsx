@@ -46,9 +46,9 @@ const IDEA_BANK: Record<Account, Record<string, IdeaTemplate[]>> = {
       { title: 'Close no top-coat nano-dúplex — {parte} de {carro}', format: 'Foto' },
     ],
     'Showcase Flow': [
-      { title: 'Flow Gloss em {carro} — proteção real custo-benefício', format: 'Reel' },
+      { title: 'Flow Gloss em {carro} — nova formulação G2, 7 anos de garantia', format: 'Reel' },
       { title: '{carro} com Flow: hidrofobia em ação na chuva', format: 'Reel' },
-      { title: 'Detalhamento Flow no {parte} — vinil técnico 175μ', format: 'Foto' },
+      { title: 'Detalhamento Flow no {parte} — TPU técnico G2 185μ', format: 'Foto' },
     ],
     'Showcase Core': [
       { title: 'Core Gloss em {carro} — entrada premium pra frota', format: 'Carrossel' },

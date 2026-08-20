@@ -35,8 +35,9 @@ export interface LineProfile {
  * linha NZ é lançada — ou ajusta-se quando o posicionamento mudar.
  *
  * Nota: NZPPF FLOW está explicitamente atrelado a GWM (Haval/Tank/Ora) +
- * elétricos do segmento por decisão comercial — é o entry-point e atende
- * o cliente que dirige um SUV chinês premium ou EV mid-tier.
+ * elétricos do segmento por decisão comercial — atende o cliente que dirige
+ * um SUV chinês premium ou EV mid-tier. Desde a reformulação G2 (7 anos) ela
+ * não é mais o entry-point da marca: esse papel é da CORE.
  */
 export const LINE_PROFILES: Record<string, LineProfile> = {
   'luxury-gloss': {
@@ -67,7 +68,7 @@ export const LINE_PROFILES: Record<string, LineProfile> = {
     imageSubject:
       'Chinese premium SUV or premium electric car — preferably GWM brand vehicle (Haval H6 or H9, Tank 300 or 500, Ora 03) or BYD Han / Tang, or premium electric Volvo XC40 Recharge — modern urban setting or charging station ambient',
     factsContext:
-      'TPU técnico 175μ. Top-coat hidrofóbico. Garantia de 4 anos. Acima de qualquer PU comum. Regeneração térmica leve. Adesivo acrílico pra conformação em curvas complexas. Linha de entrada no PPF de verdade.',
+      'TPU Técnico G2 185μ (nova formulação — subiu de 175 para 185μ). Top-coat nano-hidrofóbico G2. Garantia de 7 anos. Muito acima de qualquer PU comum. Regeneração térmica acelerada. Adesivo acrílico pra conformação em curvas complexas. Linha intermediária de performance da NZPPF.',
   },
   'core-gloss': {
     slug: 'core-gloss',

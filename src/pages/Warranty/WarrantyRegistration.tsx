@@ -90,7 +90,7 @@ const WarrantyRegistration = () => {
   const defaultPPF = [
     { name: 'NZPPF LUXURY', garantia_anos: 12, durabilidade_anos: 15 },
     { name: 'NZPPF PRIME', garantia_anos: 10, durabilidade_anos: 12 },
-    { name: 'NZPPF FLOW', garantia_anos: 5, durabilidade_anos: 7 },
+    { name: 'NZPPF FLOW', garantia_anos: 7, durabilidade_anos: 9 },
     { name: 'NZPPF CORE', garantia_anos: 3, durabilidade_anos: 5 },
     { name: 'NZPPF HEADLIGHT', garantia_anos: 10, durabilidade_anos: 12 },
     { name: 'NZPPF WINDSHIELD', garantia_anos: 2, durabilidade_anos: 3 }

@@ -3,11 +3,20 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
 import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
+import PpfPortfolioButton from './PpfPortfolioButton';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './FlowGloss.module.css';
 import { supabase } from '../../lib/supabase';
-
-const seoDescription = 'PPF de TPU técnico com revestimento hidrofóbico e acabamento impecável. 175μ e 4 anos de garantia com o melhor equilíbrio entre qualidade e preço.';
+import {
+  FLOW_ICONS,
+  FLOW_SEO_DESCRIPTION as seoDescription,
+  tabelaTecnica,
+  benchmarkData,
+  BENCHMARK_ANOS,
+  diferenciais,
+  finishesData,
+  camadas,
+} from './flowGlossData';
 const productSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Product",
@@ -43,43 +52,8 @@ const staggerCards = {
   show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.2 } }
 };
 
-// Icons
-const CamadaIcon = "/assets/simbolos/simbolo-camada.svg";
-const CertoIcon = "/assets/simbolos/simbolo-certo.svg";
-const EscudoVazioIcon = "/assets/simbolos/simbolo-escudo-vazio.svg";
-const RegeneracaoIcon = "/assets/simbolos/simbolo-regeneracao.svg";
-const RepelenciaIcon = "/assets/simbolos/simbolo-repelencia.svg";
-const PresenteIcon = "/assets/simbolos/simbolo-presente.svg";
-
-const tabelaTecnica = [
-  { icon: CamadaIcon, info: 'Espessura Total', spec: '175 Micras', detalhe: 'Proteção equilibrada para o dia a dia.' },
-  { icon: EscudoVazioIcon, info: 'Material Base (Core)', spec: 'TPU Técnico', detalhe: 'Flexibilidade superior ao PU comum.' },
-  { icon: CamadaIcon, info: 'Arquitetura', spec: 'Multicamada Otimizada', detalhe: 'Foco em custo-benefício sem perder durabilidade.' },
-  { icon: RepelenciaIcon, info: 'Top Coating', spec: 'Revestimento Hidrofóbico', detalhe: 'Alta eficiência contra retenção de água.' },
-  { icon: CertoIcon, info: 'Adesivo', spec: 'Alta Conformação', detalhe: 'Boa adaptação em curvas e fixação segura.' },
-  { icon: RegeneracaoIcon, info: 'Garantia de Fábrica', spec: '4 Anos', detalhe: 'Selo de Autenticidade NZPPF.' }
-];
-
-const benchmarkData = [
-  { metric: 'Retenção de Brilho', desc: 'Medição de desgaste em lavagens', nz: [93, 89, 84], mercado: [90, 80, 71] },
-  { metric: 'Resistência a Impactos', desc: 'Absorção de resíduos da via', nz: [90, 86, 81], mercado: [85, 75, 66] },
-  { metric: 'Regeneração Térmica', desc: 'Capacidade de auto-cura', nz: [92, 85, 79], mercado: [88, 70, 52] },
-  { metric: 'Nível de Repelência', desc: 'Efeito hidrofóbico diário', nz: [91, 84, 76], mercado: [86, 68, 50] }
-];
-
-const diferenciais = [
-  { icon: RegeneracaoIcon, title: 'Regeneração Ativa', desc: 'Corrige micro riscos leves com ação térmica. Prolonga o aspecto de carro recém polido.', accent: 'Auto-cura leve', image: '/assets/images/flow_heal_haval.png' },
-  { icon: RepelenciaIcon, title: 'Superfície Autolimpante', desc: 'Reduz o acúmulo de água e sujeira. Facilita muito a lavagem e manutenção do carro.', accent: 'Hidrofobia', image: '/assets/images/flow_water_haval.png' },
-  { icon: CertoIcon, title: 'Brilho Estável', desc: 'Acabamento limpo, uniforme e profundo, proporcionando bom realce visual à pintura.', accent: 'Reflexo Premium', image: '/assets/images/flow_brilho_haval.png' },
-  { icon: EscudoVazioIcon, title: 'Durabilidade Sólida', desc: 'Proteção contra arranhões, oxidação e chuva ácida que dura até 4 anos sem amarelamento.', accent: 'Garantia de 4 Anos', image: '/assets/images/flow_durabilidade_xiaomi.png' }
-];
-
-const finishesData = [
-  { src: '/assets/images/flow_clear_gloss_haval.png', title: 'Clear Gloss', sub: 'Transparente Brilho: Conserva a cor original com espelhamento intenso e reflexo espelhado profundo.', tech: 'TPU 175μ • Base Incolor' },
-  { src: '/assets/images/flow_clear_matte_haval.png', title: 'Clear Matte', sub: 'Transparente Fosco: Transforma o aspecto da pintura original para um acabamento acetinado macio sob a luz.', tech: 'TPU 175μ • Micro Texturizado' },
-  { src: '/assets/images/flow_black_gloss_haval.png', title: 'Black Gloss', sub: 'Opaco Brilho: Efeito Black Piano absoluto. Máximo escurecimento bloqueando a matriz de cor inferior.', tech: 'TPU 175μ • Base Pigmentada' },
-  { src: '/assets/images/flow_black_matte_haval.png', title: 'Black Matte', sub: 'Opaco Fosco: Absorção de luz dramática. Aparência furtiva e agressiva.', tech: 'TPU 175μ • Base Negra Fosca' }
-];
+const CamadaIcon = FLOW_ICONS.camada;
+const PresenteIcon = FLOW_ICONS.presente;
 
 export default function FlowGloss() {
   const [currentFinish, setCurrentFinish] = useState(0);
@@ -113,7 +87,7 @@ export default function FlowGloss() {
   return (
     <div className={styles.page}>
       <SEO
-        title="NZPPF Flow Gloss — PPF 175μ com 4 Anos de Garantia"
+        title="NZPPF Flow Gloss — Nova Formulação com 7 Anos de Garantia"
         description={seoDescription}
         canonicalUrl="/ppf/flow-gloss"
         schema={productSchema}
@@ -138,7 +112,7 @@ export default function FlowGloss() {
               ))}
             </h1>
             <p className={styles.heroSub}>
-              {'TPU DE BASE TÉCNICA | DESEMPENHO CONFIÁVEL'.split('').map((char, i) => (
+              {'NOVA FORMULAÇÃO G2 | 7 ANOS DE GARANTIA'.split('').map((char, i) => (
                 <motion.span
                   key={i}
                   style={{ display: char === ' ' ? 'inline' : 'inline-block' }}
@@ -165,14 +139,14 @@ export default function FlowGloss() {
         <motion.div className="container" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={stagger}>
           <div className={styles.manifestoGrid}>
             <motion.div className={styles.manifestoText} variants={blurReveal}>
-              <h2 className={styles.sectionTitle}>Entrada inteligente no mundo do PPF</h2>
-              <p>O <strong>NZPPF FLOW GLOSS</strong> é a linha ideal para quem quer um material de tecnologia real, acabamento impecável e valor acessível. Desenvolvida para entregar performance consistente, ela combina TPU técnico com adesivo de alta performance.</p>
-              <p>Com <strong>175 micras de espessura</strong> e um coating hidrofóbico que repele poeira e água, a linha Flow garante aplicação segura, flexibilidade em curvas complexas e um visual limpo e cristalino, superando as expectativas da categoria.</p>
-              <p>Muito superior aos materiais PU comuns, o TPU Técnico NZ não resseca e não trinca, possuindo estabilidade dimensional prolongada e regeneração de micro-riscos leves pela ação do sol ou estufa.</p>
+              <h2 className={styles.sectionTitle}>A nova geração do PPF intermediário</h2>
+              <p>O <strong>NZPPF FLOW GLOSS</strong> foi reformulado. A linha estreia o <strong>TPU Técnico G2</strong> — uma base de segunda geração — somado a um novo top coat nano-hidrofóbico. Não é a mesma película com outro rótulo: mudou a química e mudou o corpo do filme.</p>
+              <p>A espessura subiu de 175 para <strong>185 micras</strong>: dez micras a mais de material para absorver pedra, areia e detrito da via antes que cheguem à pintura. E o ganho não parou no volume — a nova base tem estabilidade dimensional e resistência a UV maiores, e o top coat G2 repele água e sujeira com mais eficiência que a formulação anterior.</p>
+              <p>Muito acima de qualquer PU comum, o TPU G2 não resseca, não trinca e regenera micro-riscos com mais rapidez. Foi justamente esse conjunto que permitiu à NZ <strong>estender a garantia de fábrica para 7 anos</strong>.</p>
             </motion.div>
             <motion.div className={styles.manifestoHighlight} variants={slideFromRight}>
               <div className={styles.highlightQuote}>
-                <p>Uma escolha esperta para quem exige custo-benefício sem sacrificar tecnologia e qualidade óptica. Garantia certificada estrutural de <strong>4 ANOS</strong> pela NZ.</p>
+                <p>A Flow deixou de ser a escolha de entrada e virou a linha intermediária de performance da NZPPF: <strong>185 micras</strong> de corpo com a química da nova geração. Garantia certificada estrutural de <strong>7 ANOS</strong> pela NZ.</p>
               </div>
             </motion.div>
           </div>
@@ -182,7 +156,7 @@ export default function FlowGloss() {
       {/* SEÇÃO 3: TECNOLOGIA */}
       <section className={styles.techSection}>
         <motion.div className="container" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={stagger}>
-          <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Tecnologia Balanceada</motion.h2>
+          <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Nova Formulação, Mais Espessura</motion.h2>
           <motion.div className={styles.techGrid} variants={scaleIn}>
             <div className={styles.techImagePanel}>
               <img src="/assets/images/flow_layers.png" alt="Camadas da Película Flow TPU" className={styles.techImage} loading="lazy" decoding="async" />
@@ -190,11 +164,7 @@ export default function FlowGloss() {
               <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.accentIcon}`} alt="" loading="lazy" decoding="async" />
             </div>
             <div className={styles.techLayers}>
-              {[
-                { name: 'Revestimento Hidrofóbico (Top Coat)', desc: 'Menor acúmulo de sujeira e gotas d\'água' },
-                { name: 'Base em TPU Técnico (Core)', desc: 'Excelente estética, durabilidade superior plástica e regeneração simples.' },
-                { name: 'Adesivo Acrílico de Alta Conformação', desc: 'Aplicação amigável até nas geometrias mais complexas.' }
-              ].map((layer, i) => (
+              {camadas.map((layer, i) => (
                 <motion.div key={i} className={styles.layerCard} variants={slideFromRight}>
                   <span className={styles.layerNumber}>0{i + 1}</span>
                   <div>
@@ -211,7 +181,7 @@ export default function FlowGloss() {
       {/* SEÇÃO 4: DIFERENCIAIS */}
       <section className={styles.differentialsSection}>
         <motion.div className="container" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} variants={staggerCards}>
-          <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Diferenciais Práticos</motion.h2>
+          <motion.h2 className={styles.sectionTitle} variants={blurReveal}>O Que Melhorou na G2</motion.h2>
           <div className={styles.differentialsGrid}>
             {diferenciais.map((item, i) => (
               <motion.div key={i} className={styles.diffCard} variants={scaleIn}>
@@ -234,7 +204,7 @@ export default function FlowGloss() {
       {/* SEÇÃO 5: ACABAMENTOS */}
       <section className={styles.finishesSection}>
         <motion.div className="container" initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} variants={stagger}>
-          <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Acabamentos e Versões Disponíveis</motion.h2>
+          <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Os Mesmos 4 Acabamentos, Agora em G2</motion.h2>
           <motion.div className={styles.finishesShowcase} variants={scaleIn}>
             <div className={styles.finishesImageArea}>
               <AnimatePresence mode="wait">
@@ -249,16 +219,25 @@ export default function FlowGloss() {
                   transition={{ duration: 0.5 }}
                 />
               </AnimatePresence>
+              {finishesData[currentFinish].soldOut && (
+                <div className={styles.soldOutOverlay}>
+                  <span className={styles.soldOutStamp}>ESGOTADO</span>
+                  <span className={styles.soldOutNote}>Consulte previsão de reposição</span>
+                </div>
+              )}
             </div>
             <div className={styles.finishesTabs}>
               {finishesData.map((item, index) => (
-                <button 
-                  key={index} 
-                  className={`${styles.finishTab} ${currentFinish === index ? styles.finishTabActive : ''}`}
+                <button
+                  key={index}
+                  className={`${styles.finishTab} ${currentFinish === index ? styles.finishTabActive : ''} ${item.soldOut ? styles.finishTabSoldOut : ''}`}
                   onClick={() => setCurrentFinish(index)}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                    <span className={styles.finishTabTitle}>{item.title}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem', gap: '0.5rem' }}>
+                    <span className={styles.finishTabTitle}>
+                      {item.title}
+                      {item.soldOut && <span className={styles.soldOutTag}>ESGOTADO</span>}
+                    </span>
                     {currentFinish === index && <span style={{ fontSize: '0.7rem', color: '#0daebd', fontFamily: 'monospace', letterSpacing: '1px' }}>{item.tech}</span>}
                   </div>
                   <span className={styles.finishTabSub}>{item.sub}</span>
@@ -275,7 +254,7 @@ export default function FlowGloss() {
           <motion.div className={styles.specsCard} variants={scaleIn}>
             <div className={styles.specsCardText}>
               <h2 className={styles.sectionTitle}>Ficha Técnica</h2>
-              <p className={styles.specsDesc}>Confira os aspectos de engenharia da linha de entrada NZPPF Flow e visualize como ela supera os índices normais do mercado de películas desta faixa.</p>
+              <p className={styles.specsDesc}>Confira os aspectos de engenharia da linha intermediária NZPPF Flow, agora reformulada, e visualize como a nova base G2 se comporta ao longo dos 7 anos de garantia.</p>
             </div>
             <div className={styles.specsCardActions}>
               <button className={styles.specsBtn} onClick={() => { setModalTab('specs'); setIsTableModalOpen(true); }}>
@@ -290,6 +269,16 @@ export default function FlowGloss() {
         </motion.div>
       </section>
 
+      {/* SEÇÃO 7: PORTFÓLIO EM PDF */}
+      <PpfPortfolioButton
+        slug="flow-gloss"
+        tabelaTecnica={tabelaTecnica}
+        benchmarkData={benchmarkData}
+        diferenciais={diferenciais}
+        finishes={finishesData}
+        description="Baixe o portfólio completo do NZPPF Flow Gloss em PDF: manifesto, arquitetura de camadas, diferenciais da formulação G2, acabamentos com disponibilidade, ficha técnica e os gráficos de desgaste em 7 anos. Oito páginas em A4, prontas para apresentar ao cliente."
+      />
+
       {/* MODAL FICHA/BENCHMARK */}
       {isTableModalOpen && (
         <div className={styles.modalOverlay} onClick={() => setIsTableModalOpen(false)}>
@@ -299,7 +288,7 @@ export default function FlowGloss() {
               <h2 className={styles.modalTitle}>SPEC SHEET: FLOW</h2>
               <div className={styles.modalTabs}>
                 <button className={`${styles.modalTabBtn} ${modalTab === 'specs' ? styles.modalTabActive : ''}`} onClick={() => setModalTab('specs')}>Análise Técnica</button>
-                <button className={`${styles.modalTabBtn} ${modalTab === 'benchmark' ? styles.modalTabActive : ''}`} onClick={() => setModalTab('benchmark')}>Desgaste (4 Anos)</button>
+                <button className={`${styles.modalTabBtn} ${modalTab === 'benchmark' ? styles.modalTabActive : ''}`} onClick={() => setModalTab('benchmark')}>Desgaste (7 Anos)</button>
               </div>
             </div>
 
@@ -321,11 +310,11 @@ export default function FlowGloss() {
             {modalTab === 'benchmark' && (
               <motion.div key="benchmark" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}>
                 <div className={styles.chartLegend}>
-                  <div className={styles.legendItem}><div className={styles.legendDotNz}></div> NZPPF Flow (TPU)</div>
+                  <div className={styles.legendItem}><div className={styles.legendDotNz}></div> NZPPF Flow G2 (TPU)</div>
                   <div className={styles.legendItem}><div className={styles.legendDotCom}></div> PU Comum</div>
                 </div>
                 {benchmarkData.map((item, index) => {
-                  /* Plotting 3 points for Flow (Year 1, Year 2, Year 4) */
+                  /* Plotting 3 points for Flow G2 (Year 1, Year 4, Year 7) */
                   const getLinePath = (data: number[]) => data.map((val, i) => { const x = 40 + i * (720 / 2); const y = 280 - (val / 100) * 200; return `${i === 0 ? 'M' : 'L'} ${x} ${y}`; }).join(' ');
                   const getAreaPath = (data: number[]) => getLinePath(data) + ` L 760 280 L 40 280 Z`;
                   return (
@@ -341,7 +330,7 @@ export default function FlowGloss() {
                           <filter id="glow"><feGaussianBlur stdDeviation="3" result="cb"/><feMerge><feMergeNode in="cb"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
                         </defs>
                         {[0,25,50,75,100].map(y => { const yP = 280-(y/100)*200; return <g key={y}><line x1="40" y1={yP} x2="760" y2={yP} stroke="rgba(255,255,255,0.04)" strokeWidth="1" strokeDasharray={y===0?"none":"4 4"}/><text x="10" y={yP+4} fill="#666" fontSize="12" fontFamily="monospace">{y}%</text></g> })}
-                        {['Ano 1','Ano 2','Ano 4'].map((l,i) => <text key={l} x={40+i*(720/2)} y="310" fill="#888" fontSize="12" fontFamily="var(--font-heading)" textAnchor="middle">{l}</text>)}
+                        {BENCHMARK_ANOS.map((l,i) => <text key={l} x={40+i*(720/2)} y="310" fill="#888" fontSize="12" fontFamily="var(--font-heading)" textAnchor="middle">{l}</text>)}
                         <motion.path d={getAreaPath(item.mercado)} fill={`url(#gCm-${index})`} initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.3}}/>
                         <motion.path d={getLinePath(item.mercado)} fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="3" initial={{pathLength:0}} animate={{pathLength:1}} transition={{duration:1.5,ease:"easeOut"}}/>
                         <motion.path d={getAreaPath(item.nz)} fill={`url(#gNz-${index})`} initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.5}}/>
@@ -363,7 +352,7 @@ export default function FlowGloss() {
         <div className={styles.offerOverlay} onClick={() => setIsOfferModalOpen(false)}>
           <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} className={styles.offerModal} onClick={(e) => e.stopPropagation()}>
             <button className={styles.closeBtn} onClick={() => setIsOfferModalOpen(false)} style={{ position: 'absolute', top: 15, right: 15 }}>✕</button>
-            <div className={styles.offerHeader}><h3>Resgatar Desconto Especial</h3><p>Deixe seu contato para receber nossa condição exclusiva no NZPPF Flow.</p></div>
+            <div className={styles.offerHeader}><h3>Resgatar Desconto Especial</h3><p>Deixe seu contato para receber nossa condição exclusiva na nova formulação G2 do NZPPF Flow.</p></div>
             {submitStatus === 'success' ? (
               <div style={{ textAlign: 'center', padding: '2rem 0', color: '#25D366' }}>
                 <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" strokeWidth="2" fill="none" style={{ margin: '0 auto 1rem' }}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>

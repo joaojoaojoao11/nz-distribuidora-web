@@ -6,7 +6,11 @@ export const NZ_PPF_LINES = `
 LINHAS OFICIAIS NZPPF (PPF = Paint Protection Film):
 - NZPPF LUXURY GLOSS: 190μm (micras) de espessura, garantia de 12 ANOS. Top de linha.
 - NZPPF PRIME GLOSS: 190μm, garantia de 10 ANOS. Premium intermediário.
-- NZPPF FLOW GLOSS: 175μm, garantia de 4 ANOS. Linha intermediária.
+- NZPPF FLOW GLOSS: 185μm, garantia de 7 ANOS. Linha intermediária de
+  performance. Reformulada: subiu de 175 para 185 micras e passou a usar o TPU
+  Técnico G2 (2ª geração) com top coat nano-hidrofóbico — foi esse conjunto que
+  elevou a garantia de 4 para 7 anos. NUNCA cite os 175μm nem os 4 anos antigos
+  como specs atuais.
 - NZPPF CORE GLOSS: 175μm, garantia de 3 ANOS. Entrada / volume.
 - NZ PPF HEADLIGHT: aplicação em faróis, garantia de 10 ANOS.
 - NZ PPF WINDSHIELD: aplicação em para-brisas, 190μm, garantia de 2 ANOS.

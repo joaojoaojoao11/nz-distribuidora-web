@@ -71,7 +71,7 @@ interface RunReport {
 const PRODUCT_LINKS: LinkCandidate[] = [
   { title: 'NZPPF Luxury Gloss (190μ, 12 anos)', path: '/ppf/luxury-gloss' },
   { title: 'NZPPF Prime Gloss (190μ, 10 anos)', path: '/ppf/prime-gloss' },
-  { title: 'NZPPF Flow Gloss (175μ, 4 anos)', path: '/ppf/flow-gloss' },
+  { title: 'NZPPF Flow Gloss (185μ, 7 anos)', path: '/ppf/flow-gloss' },
   { title: 'NZPPF Core Gloss (175μ, 3 anos)', path: '/ppf/core-gloss' },
   { title: 'NZ PPF Headlight (faróis)', path: '/ppf/headlight' },
   { title: 'NZ PPF Windshield (parabrisa)', path: '/ppf/windshield' },

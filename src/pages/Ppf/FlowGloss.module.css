@@ -394,6 +394,21 @@
   aspect-ratio: 16/9;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.06);
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Precisa vir DEPOIS da regra base: media query não soma especificidade.
+   No layout de 2 colunas o align-items:stretch dá altura definida ao item
+   (a altura da coluna de abas). Com aspect-ratio ativo, a largura passa a ser
+   DERIVADA dessa altura (altura × 16/9) e ignora a largura da coluna — quando
+   o texto das abas cresce, a imagem transborda por cima delas. Aqui a
+   proporção é dispensável: o item preenche a célula e o object-fit:cover da
+   imagem cuida do enquadramento. */
+@media (min-width: 1024px) {
+  .finishesImageArea {
+    aspect-ratio: auto;
+  }
 }
 
 .finishesImage {
@@ -458,6 +473,67 @@
 
 .finishTabActive .finishTabTitle {
   color: #0daebd;
+}
+
+/* ── Acabamentos esgotados ─────────────────────────────── */
+.soldOutTag {
+  display: inline-block;
+  margin-left: 0.55rem;
+  padding: 0.15rem 0.45rem;
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.45);
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 2px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.finishTabSoldOut .finishTabTitle {
+  color: #8a8a92;
+}
+
+.finishTabSoldOut .finishTabSub {
+  opacity: 0.6;
+}
+
+.finishTabSoldOut.finishTabActive .finishTabTitle {
+  color: #b9b9c2;
+}
+
+.soldOutOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: rgba(6, 6, 8, 0.62);
+  backdrop-filter: saturate(0.35);
+  pointer-events: none;
+}
+
+.soldOutStamp {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #fff;
+  padding: 0.5rem 1.4rem;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 3px;
+  transform: rotate(-6deg);
+}
+
+.soldOutNote {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.68);
 }
 
 /* ═══════════════════════════════════════════

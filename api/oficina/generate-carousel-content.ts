@@ -39,7 +39,7 @@ Premium, direta, confiante. Fala com o dono do veículo. Sem jargão exagerado, 
 
 # CAMPOS POR LAYOUT (preencha SOMENTE os campos relevantes do layout do slide; nos demais, devolva string vazia "")
 - announce-badge: headline + subline + cta + badge. Badge é etiqueta curta ALL CAPS (2-4 palavras) tipo "NOVO LANÇAMENTO", "EDIÇÃO 2026", "AGORA NA REDE".
-- hero-bottom-cta: headline + subline + cta + eyebrow. Eyebrow é spec-line da linha tipo "TPU 175μ · Hidrofóbico · 4 anos" — use SOMENTE specs do bloco de fatos reais e separe com " · ".
+- hero-bottom-cta: headline + subline + cta + eyebrow. Eyebrow é spec-line da linha tipo "TPU 185μ · Hidrofóbico · 7 anos" — use SOMENTE specs do bloco de fatos reais e separe com " · ".
 - centered-quote: headline (manifesto) + subline (atribuição curta tipo "NZPPF · MANIFESTO" ou "NZPPF · {linha}"). cta pode ficar "" (não aparece na imagem).
 - split-photo: headline curto (1-3 palavras) + subline descritivo + cta.
 - full-bleed-headline: headline GIGANTE de 1-3 palavras. subline e cta podem ficar "" (não aparecem na imagem deste layout).
@@ -116,7 +116,7 @@ const carouselCopyTool = {
             eyebrow: {
               type: 'string',
               description:
-                'APENAS para hero-bottom-cta: spec-line da linha (ex "TPU 175μ · Hidrofóbico · 4 anos"). Use APENAS specs reais. Em outros layouts, "".',
+                'APENAS para hero-bottom-cta: spec-line da linha (ex "TPU 185μ · Hidrofóbico · 7 anos"). Use APENAS specs reais. Em outros layouts, "".',
             },
           },
           required: ['headline', 'subline', 'cta', 'badge', 'stat', 'statLabel', 'eyebrow'],

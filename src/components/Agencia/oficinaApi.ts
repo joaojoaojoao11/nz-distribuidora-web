@@ -117,7 +117,7 @@ export interface GenerateCarouselContentParams {
   tone: string;
   layouts: string[];
   extraInstructions?: string;
-  /** Specs verificáveis da linha (ex "TPU 175μ; 4 anos; hidrofóbico"). */
+  /** Specs verificáveis da linha (ex "TPU 185μ; 7 anos; hidrofóbico"). */
   factsContext?: string;
   /** Carros típicos do segmento (ex "GWM Haval, Tank, Ora; BYD"). */
   carBrands?: string;

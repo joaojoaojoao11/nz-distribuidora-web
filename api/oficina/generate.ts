@@ -66,7 +66,7 @@ Inputs configuráveis no motor:
 
 - LUXURY GLOSS: TPU Alifático 190µ, +32% brilho, 12 anos. Slug 'luxury-gloss', accent #D4AF37.
 - PRIME GLOSS: TPU 100% Virgem 190µ, 10 anos. Slug 'prime-gloss', accent #4A9EFF.
-- FLOW GLOSS: TPU Técnico 175µ, 4 anos. Slug 'flow-gloss', accent #E74C3C.
+- FLOW GLOSS: TPU Técnico G2 185µ (nova formulação), 7 anos. Slug 'flow-gloss', accent #E74C3C.
 - CORE GLOSS: Híbrido 80/20 TPU+PVC, 3 anos. Slug 'core-gloss', accent #5A9B7A.
 - HEADLIGHT: TPU Pigmentado, 10 anos. Slug 'headlight', accent #D4A840.
 - WINDSHIELD: TPU 190µ, 2 anos. Slug 'windshield'.

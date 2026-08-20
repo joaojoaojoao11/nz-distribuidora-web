@@ -51,7 +51,7 @@ const FIELD_RULES: Record<string, string> = {
   statLabel:
     'Rótulo do stat em ALL CAPS. 2-5 palavras. Ex "DE GARANTIA REAL", "DE BRILHO A MAIS", "DE PROTEÇÃO", "DE DURABILIDADE".',
   eyebrow:
-    'Subtítulo da linha em formato spec-like. Ex "TPU 175μ · Hidrofóbico · 4 anos". Use ponto-mediano " · " pra separar 2-4 specs verificáveis.',
+    'Subtítulo da linha em formato spec-like. Ex "TPU 185μ · Hidrofóbico · 7 anos". Use ponto-mediano " · " pra separar 2-4 specs verificáveis.',
 };
 
 const SYSTEM_PROMPT = `Você é redator publicitário sênior da Agência NZ — sistema de marketing da NZ Group, fabricante premium de PPF e vinis Oracal.

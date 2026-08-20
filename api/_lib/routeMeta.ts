@@ -27,8 +27,8 @@ export const routeMeta: Record<string, RouteMeta> = {
     description: 'PPF de TPU 100% virgem com revestimento nano-dúplex, regeneração térmica e repelência. 190μ e 10 anos de garantia para proteção de pintura premium.',
   },
   '/ppf/flow-gloss': {
-    title: 'NZPPF Flow Gloss — PPF 175μ com 4 Anos de Garantia',
-    description: 'PPF de TPU técnico com revestimento hidrofóbico e acabamento impecável. 175μ e 4 anos de garantia com o melhor equilíbrio entre qualidade e preço.',
+    title: 'NZPPF Flow Gloss — Nova Formulação com 7 Anos de Garantia',
+    description: 'Nova formulação G2: TPU técnico de 2ª geração com top coat nano-hidrofóbico, agora em 185μ. Mais corpo, mais proteção e 7 anos de garantia — a linha intermediária de performance da NZPPF.',
   },
   '/ppf/core-gloss': {
     title: 'NZPPF Core Gloss — PPF 175μ com 3 Anos de Garantia',

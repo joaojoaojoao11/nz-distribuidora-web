@@ -1,0 +1,549 @@
+/* Portfólio NZPPF Flow Gloss — layout de impressão A4.
+   Renderizado fora da tela e rasterizado por html2canvas (ver
+   generateFlowPortfolioPdf.ts). Regras deliberadamente conservadoras:
+   sem backdrop-filter, sem aspect-ratio e sem gradiente cônico — o
+   html2canvas não rasteriza esses recursos de forma confiável. */
+
+.stage {
+  position: fixed;
+  left: -20000px;
+  top: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 1;
+}
+
+/* A4 retrato @150 DPI (1240×1754). O PDF é gerado em escala 2 → ~300 DPI. */
+.page {
+  width: 1240px;
+  height: 1754px;
+  position: relative;
+  overflow: hidden;
+  background: #08080a;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body, 'Inter', system-ui, sans-serif);
+  box-sizing: border-box;
+}
+
+.pad {
+  padding: 96px 88px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.eyebrow {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--pf-accent, #0daebd);
+  margin: 0 0 18px;
+}
+
+.h1 {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 86px;
+  line-height: 1.06;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 0 0 20px;
+  text-transform: uppercase;
+}
+
+.h2 {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 46px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 0 0 34px;
+  text-transform: uppercase;
+}
+
+.lead {
+  font-size: 21px;
+  line-height: 1.65;
+  color: #c9c9d2;
+  margin: 0 0 22px;
+}
+
+.lead strong { color: #ffffff; font-weight: 700; }
+
+/* ── Capa ───────────────────────────────────────────── */
+.coverImageWrap {
+  position: absolute;
+  inset: 0;
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.coverScrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(5,5,7,0.55) 0%, rgba(5,5,7,0.82) 55%, #08080a 100%);
+}
+
+.coverBody {
+  position: relative;
+  margin-top: auto;
+}
+
+.coverSub {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 24px;
+  letter-spacing: 3px;
+  color: var(--pf-accent, #0daebd);
+  text-transform: uppercase;
+  margin: 0 0 44px;
+}
+
+.badgeRow {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  border: 1px solid rgba(var(--pf-accent-rgb, 13,174,189), 0.45);
+  background: rgba(var(--pf-accent-rgb, 13,174,189), 0.09);
+  padding: 14px 22px;
+  border-radius: 3px;
+}
+
+.badgeValue {
+  display: block;
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 30px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+.badgeLabel {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--pf-accent-soft, #8fd6dd);
+  margin-top: 4px;
+}
+
+/* ── Quote / destaque ───────────────────────────────── */
+.quote {
+  border-left: 3px solid var(--pf-accent, #0daebd);
+  background: rgba(var(--pf-accent-rgb, 13,174,189), 0.06);
+  padding: 28px 32px;
+  margin-top: 12px;
+}
+
+.quote p {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.6;
+  color: #e6e6ee;
+}
+
+/* ── Camadas (tecnologia) ───────────────────────────── */
+.techImage {
+  width: 100%;
+  height: 470px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 40px;
+}
+
+.layerCard {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 24px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.layerNum {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--pf-accent, #0daebd);
+  min-width: 62px;
+  line-height: 1;
+}
+
+.layerName {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+
+.layerDesc {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: #b4b4c0;
+}
+
+/* ── Grid de cards (diferenciais / acabamentos) ─────── */
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  flex: 1;
+  /* stretch distribui a sobra de altura entre as linhas auto; a imagem
+     de cada card absorve essa sobra (ver .cardImageWrap). */
+  align-content: stretch;
+}
+
+.card {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #0d0d11;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cardImageWrap {
+  position: relative;
+  flex: 1;
+  min-height: 280px;
+  overflow: hidden;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cardBody {
+  padding: 24px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+
+.cardTitle {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 10px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.cardDesc {
+  margin: 0 0 16px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #b4b4c0;
+}
+
+.cardAccent {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--pf-accent, #0daebd);
+}
+
+.cardTech {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--pf-accent, #0daebd);
+  margin-top: 10px;
+}
+
+/* ── Selo de esgotado ───────────────────────────────── */
+.soldOutScrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 6, 8, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.soldOutStamp {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #ffffff;
+  border: 2px solid rgba(255,255,255,0.78);
+  padding: 8px 22px;
+  transform: rotate(-6deg);
+}
+
+.soldOutInline {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 9px;
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #ff6b6b;
+  border: 1px solid rgba(255,107,107,0.5);
+  background: rgba(255,107,107,0.1);
+  vertical-align: middle;
+}
+
+/* ── Ficha técnica ──────────────────────────────────── */
+.specRow {
+  display: grid;
+  grid-template-columns: 300px 300px 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 26px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.specRowHead {
+  border-top: none;
+  padding-bottom: 14px;
+}
+
+.specHeadCell {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #7d7d89;
+}
+
+.specInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.specIcon {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.specValue {
+  font-size: 20px;
+  color: var(--pf-accent, #0daebd);
+  font-weight: 700;
+}
+
+.specDetail {
+  font-size: 17px;
+  line-height: 1.5;
+  color: #9d9daa;
+}
+
+/* ── Benchmark ──────────────────────────────────────── */
+.legend {
+  display: flex;
+  gap: 34px;
+  margin-bottom: 26px;
+  font-size: 15px;
+  color: #b4b4c0;
+}
+
+.legendItem { display: flex; align-items: center; gap: 10px; }
+.legendDotNz { width: 14px; height: 14px; background: var(--pf-accent, #0daebd); border-radius: 50%; display: block; }
+.legendDotCm { width: 14px; height: 14px; background: #888; border-radius: 50%; display: block; }
+
+.chartGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  flex: 1;
+  align-content: stretch;
+}
+
+.chartBox {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #0d0d11;
+  padding: 24px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.chartTitle {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 19px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.chartDesc {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #8b8b97;
+  text-align: center;
+  margin: 0 0 12px;
+}
+
+/* ── Cabeçalho / rodapé de página ───────────────────── */
+.runningHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #6d6d79;
+  padding-bottom: 26px;
+  margin-bottom: 34px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 22px;
+  /* auto: fixa o rodapé na base da página A4, independentemente de
+     quanto conteúdo a seção tem. */
+  margin-top: auto;
+  font-size: 13px;
+  color: #6d6d79;
+  letter-spacing: 1px;
+}
+
+/* ── Página de contato ──────────────────────────────── */
+.contactGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  margin-top: 30px;
+}
+
+.contactCard {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #0d0d11;
+  padding: 30px 28px;
+}
+
+.contactLabel {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--pf-accent, #0daebd);
+  margin: 0 0 10px;
+}
+
+.contactValue {
+  font-size: 19px;
+  line-height: 1.5;
+  color: #e6e6ee;
+  margin: 0;
+}
+
+.disclaimer {
+  margin-top: auto;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #7d7d89;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 22px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BOTÃO DE DOWNLOAD (renderizado na página da linha)
+   Vive aqui, e não nos .module.css de cada linha, para que
+   incluir o portfólio numa página seja só render do componente.
+   A cor de destaque vem de --pf-accent, setada inline.
+   ═══════════════════════════════════════════════════════════ */
+.ctaSection {
+  padding: clamp(3rem, 6vh, 5rem) 0 clamp(4rem, 8vh, 6rem);
+  background: #08080a;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.ctaCard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  padding: clamp(2rem, 4vw, 3rem);
+  border: 1px solid rgba(var(--pf-accent-rgb, 13, 174, 189), 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--pf-accent-rgb, 13, 174, 189), 0.07),
+    rgba(var(--pf-accent-rgb, 13, 174, 189), 0.01)
+  );
+}
+
+@media (min-width: 900px) {
+  .ctaCard { grid-template-columns: 1.6fr 1fr; gap: 3rem; }
+}
+
+.ctaTitle {
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  margin: 0;
+  color: #fff;
+}
+
+.ctaDesc {
+  color: var(--text-secondary, #b4b4c0);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-top: 0.75rem;
+  max-width: 62ch;
+}
+
+.ctaActions { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 1.1rem 1.6rem;
+  background: var(--pf-accent, #0daebd);
+  color: #06131a;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-heading, 'Inter', system-ui, sans-serif);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: filter 0.25s ease, transform 0.25s ease;
+}
+
+.ctaBtn:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-2px); }
+.ctaBtn:disabled { opacity: 0.65; cursor: progress; transform: none; }
+
+.ctaHint {
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary, #9d9daa);
+}

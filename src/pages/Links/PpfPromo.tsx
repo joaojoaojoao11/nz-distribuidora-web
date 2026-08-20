@@ -8,7 +8,7 @@ import styles from './PpfPromo.module.css';
 const lines = [
   { slug: 'luxury-gloss', name: 'NZPPF Luxury Gloss', tag: '12 ANOS · 190μ' },
   { slug: 'prime-gloss',  name: 'NZPPF Prime Gloss',  tag: '10 ANOS · 190μ' },
-  { slug: 'flow-gloss',   name: 'NZPPF Flow Gloss',   tag: '4 ANOS · 175μ'  },
+  { slug: 'flow-gloss',   name: 'NZPPF Flow Gloss',   tag: '7 ANOS · 185μ'  },
   { slug: 'core-gloss',   name: 'NZPPF Core Gloss',   tag: '3 ANOS · 175μ'  },
   { slug: 'headlight',    name: 'NZPPF Headlight',    tag: '10 ANOS · UV'   },
   { slug: 'windshield',   name: 'NZPPF Windshield',   tag: '2 ANOS · 190μ'  },
