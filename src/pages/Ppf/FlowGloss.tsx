@@ -272,10 +272,6 @@ export default function FlowGloss() {
       {/* SEÇÃO 7: PORTFÓLIO EM PDF */}
       <PpfPortfolioButton
         slug="flow-gloss"
-        tabelaTecnica={tabelaTecnica}
-        benchmarkData={benchmarkData}
-        diferenciais={diferenciais}
-        finishes={finishesData}
         description="Baixe o portfólio completo do NZPPF Flow Gloss em PDF: manifesto, arquitetura de camadas, diferenciais da formulação G2, acabamentos com disponibilidade, ficha técnica e os gráficos de desgaste em 7 anos. Oito páginas em A4, prontas para apresentar ao cliente."
       />
 

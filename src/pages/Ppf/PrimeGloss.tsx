@@ -46,42 +46,14 @@ const staggerCards = {
   show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.2 } }
 };
 
-// Icons
-const CamadaIcon = "/assets/simbolos/simbolo-camada.svg";
-const CertoIcon = "/assets/simbolos/simbolo-certo.svg";
-const EscudoVazioIcon = "/assets/simbolos/simbolo-escudo-vazio.svg";
-const RegeneracaoIcon = "/assets/simbolos/simbolo-regeneracao.svg";
-const RepelenciaIcon = "/assets/simbolos/simbolo-repelencia.svg";
-const PresenteIcon = "/assets/simbolos/simbolo-presente.svg";
-
-const tabelaTecnica = [
-  { icon: CamadaIcon, info: 'Espessura Total', spec: '190 Micras (7.5 mil)', detalhe: 'Camada robusta dimensionada para proteção consistente.' },
-  { icon: EscudoVazioIcon, info: 'Material Base (Core)', spec: 'TPU 100% Virgem', detalhe: 'Mais flexível e durável que PU/blends reciclados.' },
-  { icon: CamadaIcon, info: 'Arquitetura do Filme', spec: 'Multicamada de Alta Performance', detalhe: 'Top Coat, TPU Core e Adesivo Flexível.' },
-  { icon: RepelenciaIcon, info: 'Top Coat (Superfície)', spec: 'Hidrofóbico Nano-Dúplex', detalhe: 'Dupla camada de repelência e proteção de superfície.' },
-  { icon: CertoIcon, info: 'Tecnologia de Adesivo', spec: 'Flexível Alta Conformação', detalhe: 'Perfeita adesão em curvas e detalhes complexos.' },
-  { icon: RegeneracaoIcon, info: 'Garantia de Fábrica', spec: '10 Anos Certificados', detalhe: 'Contra amarelamento, trinca e descolamento.' }
-];
-
-const benchmarkData = [
-  { metric: 'Retenção de Brilho (Gloss Units)', desc: 'Medição em laboratório simulando lavagens e intempéries', nz: [96, 93, 91, 87, 83], mercado: [92, 82, 74, 62, 48] },
-  { metric: 'Resistência a Impactos (Impact Absorption)', desc: 'Absorção de energia cinética superficial', nz: [95, 92, 90, 86, 82], mercado: [88, 76, 68, 55, 42] },
-  { metric: 'Regeneração Térmica (Self-Healing)', desc: 'Capacidade de auto-cura de micro-riscos', nz: [96, 94, 89, 84, 78], mercado: [90, 75, 58, 40, 25] },
-  { metric: 'Nível de Repelência (Beading Angle)', desc: 'Efeito hidrofóbico e facilidade de limpeza', nz: [95, 91, 87, 82, 76], mercado: [89, 74, 58, 43, 30] }
-];
-
-const diferenciais = [
-  { icon: RegeneracaoIcon, title: 'Regeneração Térmica', desc: 'Micro-riscos desaparecem com exposição ao calor. Tecnologia que o PU comum não oferece.', accent: 'Auto-cura inteligente', image: '/assets/images/nzppf_prime_regeneracao.png' },
-  { icon: RepelenciaIcon, title: 'Repelência Hidrofóbica', desc: 'Revestimento nano-dúplex que repele água, poeira e sujeira. Limpeza facilitada no dia a dia.', accent: 'Nano-Dúplex', image: '/assets/images/nzppf_prime_repelencia.png' },
-  { icon: CertoIcon, title: 'Brilho Intenso', desc: 'Acabamento uniforme e duradouro com alto realce visual. Potencializa a estética original da pintura.', accent: 'Alto Realce Visual', image: '/assets/images/nzppf_prime_brilho.png' },
-  { icon: EscudoVazioIcon, title: 'Estabilidade Superior', desc: 'Sem encolhimento ou descolamento com o tempo. Alta conformação em curvas e detalhes do veículo.', accent: '10 Anos de Garantia', image: '/assets/images/nzppf_prime_estabilidade.png' }
-];
-
-const finishesData = [
-  { src: '/assets/images/nzppf_prime_brilho.png', title: 'GLOSS', sub: 'Brilho intenso e uniforme' },
-  { src: '/assets/images/nzppf_prime_matte.jpg', title: 'MATTE', sub: 'Toque suave aveludado' },
-  { src: '/assets/images/nzppf_prime_black.jpg', title: 'BLACK PIANO', sub: 'Profundidade absoluta espelhada' }
-];
+import {
+  CamadaIcon,
+  PresenteIcon,
+  tabelaTecnica,
+  benchmarkData,
+  diferenciais,
+  finishesData,
+} from './primeGlossData';
 
 export default function PrimeGloss() {
   const [isTableModalOpen, setIsTableModalOpen] = useState(false);
@@ -403,13 +375,7 @@ export default function PrimeGloss() {
         </div>
       )}
       {/* PORTFÓLIO EM PDF */}
-      <PpfPortfolioButton
-        slug="prime-gloss"
-        tabelaTecnica={tabelaTecnica}
-        benchmarkData={benchmarkData}
-        diferenciais={diferenciais}
-        finishes={finishesData}
-      />
+      <PpfPortfolioButton slug="prime-gloss" />
 
       <PpfFaqSection path="/ppf/prime-gloss" name="NZPPF Prime Gloss" />
     </div>

@@ -1,38 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import styles from './PpfPortfolio.module.css';
-import PpfPortfolioDocument, {
-  type SpecRow,
-  type BenchmarkRow,
-  type DiferencialRow,
-  type FinishRow,
-} from './PpfPortfolioDocument';
-import { PPF_PORTFOLIOS } from './ppfPortfolioConfig';
+import PpfPortfolioDocument from './PpfPortfolioDocument';
+import { getPortfolioLine, portfolioPageCount } from './ppfPortfolioRegistry';
 
 /**
- * Seção de download do portfólio em PDF, pronta para ser colocada no fim da
- * página de qualquer linha NZPPF:
+ * Seção de download do portfólio em PDF, no fim da página de uma linha:
  *
- *   <PpfPortfolioButton
- *     slug="prime-gloss"
- *     tabelaTecnica={tabelaTecnica}
- *     benchmarkData={benchmarkData}
- *     diferenciais={diferenciais}
- *     finishes={finishesData}
- *   />
+ *   <PpfPortfolioButton slug="prime-gloss" />
  *
- * A página passa as constantes que já tem em escopo, então o portfólio não
- * duplica o conteúdo. Estilos e cor de destaque vêm do próprio componente.
+ * Todos os dados vêm de ppfPortfolioRegistry.ts pelo slug — a página não
+ * precisa passar nada. Estilos e cor de destaque saem do próprio componente.
  */
 
 interface PpfPortfolioButtonProps {
-  /** Chave em PPF_PORTFOLIOS (ex: 'prime-gloss'). */
+  /** Chave da linha no registro (ex: 'prime-gloss'). */
   slug: string;
-  tabelaTecnica: SpecRow[];
-  benchmarkData: BenchmarkRow[];
-  diferenciais: DiferencialRow[];
-  finishes?: FinishRow[];
-  /** Sobrescreve o texto padrão da seção. */
   title?: string;
   description?: string;
 }
@@ -49,14 +32,10 @@ const fade = {
 
 export default function PpfPortfolioButton({
   slug,
-  tabelaTecnica,
-  benchmarkData,
-  diferenciais,
-  finishes,
   title = 'Leve esta página com você',
   description,
 }: PpfPortfolioButtonProps) {
-  const config = PPF_PORTFOLIOS[slug];
+  const entry = getPortfolioLine(slug);
 
   // O documento imprimível só é montado durante a geração — são várias
   // páginas A4 com imagens, caro para manter no DOM o tempo todo.
@@ -66,7 +45,7 @@ export default function PpfPortfolioButton({
   const docRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !entry) return;
     let cancelled = false;
 
     (async () => {
@@ -76,7 +55,8 @@ export default function PpfPortfolioButton({
         // Dinâmico: mantém html2canvas + jsPDF fora do chunk inicial da página.
         const { generatePpfPortfolioPdf } = await import('./generatePpfPortfolioPdf');
         await generatePpfPortfolioPdf(el, {
-          fileName: config.fileName,
+          fileName: entry.config.fileName,
+          quality: 'alta',
           onProgress: (p) => {
             if (!cancelled) setLabel(p.label);
           },
@@ -99,19 +79,15 @@ export default function PpfPortfolioButton({
     return () => {
       cancelled = true;
     };
-  }, [mounted, config]);
+  }, [mounted, entry]);
 
-  if (!config) {
+  if (!entry) {
     console.warn(`PpfPortfolioButton: slug desconhecido "${slug}".`);
     return null;
   }
 
-  // 6 páginas fixas: capa, manifesto, diferenciais, ficha, benchmark e contato.
-  // Tecnologia e acabamentos só existem nas linhas que têm esses dados.
-  const pageCount =
-    6 +
-    (config.tecnologia ? 1 : 0) +
-    (config.finishesTitle && finishes && finishes.length > 0 ? 1 : 0);
+  const { config } = entry;
+  const pageCount = portfolioPageCount(entry);
 
   const defaultDesc =
     description ??
@@ -163,16 +139,7 @@ export default function PpfPortfolioButton({
         </motion.div>
       </section>
 
-      {mounted && (
-        <PpfPortfolioDocument
-          ref={docRef}
-          config={config}
-          tabelaTecnica={tabelaTecnica}
-          benchmarkData={benchmarkData}
-          diferenciais={diferenciais}
-          finishes={finishes}
-        />
-      )}
+      {mounted && <PpfPortfolioDocument ref={docRef} lines={[entry]} />}
     </>
   );
 }

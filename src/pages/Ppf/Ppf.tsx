@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Ppf.module.css';
+import PpfCatalogSection from './PpfCatalogSection';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -382,6 +383,9 @@ export default function Ppf() {
         </motion.div>
         <div className={styles.comparisonBottomShadow}></div>
       </section>
+
+      {/* CATÁLOGO EM PDF */}
+      <PpfCatalogSection />
     </div>
   );
 }
