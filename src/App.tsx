@@ -48,6 +48,7 @@ const Register = lazy(() => import('./pages/Auth/Register'));
 const Dashboard = lazy(() => import('./pages/Admin/Dashboard'));
 const WarrantyRegistration = lazy(() => import('./pages/Warranty/WarrantyRegistration'));
 const WarrantyValidator = lazy(() => import('./pages/Warranty/WarrantyValidator'));
+const Interlagos = lazy(() => import('./pages/Interlagos/Interlagos'));
 const PpfPromo = lazy(() => import('./pages/Links/PpfPromo'));
 const NzGroupPromo = lazy(() => import('./pages/Links/NzGroupPromo'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -129,6 +130,7 @@ function App() {
                   <Route path="/encontre-aplicador" element={<FindInstaller />} />
                   <Route path="/blog" element={<BlogList />} />
                   <Route path="/blog/:slug" element={<BlogPost />} />
+                  <Route path="/interlagos" element={<Interlagos />} />
                   <Route path="/registro-garantia" element={<WarrantyRegistration />} />
                   <Route path="/validar-garantia" element={<WarrantyValidator />} />
                   <Route path="/contato" element={<Contact />} />
