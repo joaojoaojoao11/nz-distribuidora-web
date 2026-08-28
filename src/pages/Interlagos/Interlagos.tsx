@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, ArrowRight, ArrowLeft, MapPin, Gift, CircleAlert, LoaderCircle } from 'lucide-react';
-import { InstagramLogo } from '@phosphor-icons/react';
+import { Check, ArrowRight, ArrowLeft, MapPin, Gift, CircleAlert, LoaderCircle, X } from 'lucide-react';
+import { InstagramLogo, WhatsappLogo } from '@phosphor-icons/react';
 import SEO from '../../components/SEO/SEO';
 import { supabase } from '../../lib/supabase';
 import {
   formatPhone, toE164, isValidPhone,
   normalizeInstagram, isValidInstagram,
-  formatCep, buscarCep, isValidEmail,
+  formatCep, buscarCep,
 } from '../../lib/formatters';
 import {
   INTERLAGOS, PERFIS, PERFIL_LABEL, isProfissional,
@@ -28,7 +28,6 @@ interface Answers {
   nome: string;
   telefone: string;
   instagram: string;
-  email: string;
   cep: string;
   logradouro: string;
   bairro: string;
@@ -43,17 +42,18 @@ interface Answers {
 const EMPTY: Answers = {
   perfil: '',
   quer_indicacao_aplicador: null, servico_interesse: '',
-  nome: '', telefone: '', instagram: '', email: '',
+  nome: '', telefone: '', instagram: '',
   cep: '', logradouro: '', bairro: '', cidade: '', uf: '',
   numero: '', complemento: '',
   consentimento_lgpd: false, segue_instagram: false,
 };
 
-const STORAGE_KEY = 'nz_interlagos_quiz_v1';
+// v2: o fluxo mudou de 10 para 5-6 etapas. Um rascunho da v1 retomaria numa
+// etapa que não existe mais — melhor descartar do que abrir na tela errada.
+const STORAGE_KEY = 'nz_interlagos_quiz_v2';
 
 type StepId =
-  | 'perfil' | 'ramo' | 'nome' | 'whatsapp' | 'instagram'
-  | 'email' | 'cep' | 'endereco' | 'lgpd' | 'seguir';
+  | 'perfil' | 'ramo' | 'contato' | 'instagram' | 'endereco' | 'confirmar';
 
 const easing = [0.22, 1, 0.36, 1] as const;
 
@@ -164,7 +164,7 @@ export default function Interlagos() {
   const steps = useMemo<StepId[]>(() => {
     const base: StepId[] = ['perfil'];
     if (answers.perfil && !isProfissional(answers.perfil)) base.push('ramo');
-    return [...base, 'nome', 'whatsapp', 'instagram', 'email', 'cep', 'endereco', 'lgpd', 'seguir'];
+    return [...base, 'contato', 'instagram', 'endereco', 'confirmar'];
   }, [answers.perfil]);
 
   // Clamp: um rascunho salvo com índice além do fluxo atual (troca de perfil,
@@ -174,21 +174,39 @@ export default function Interlagos() {
   const current = steps[safeIndex];
   const progress = ((safeIndex + 1) / steps.length) * 100;
 
+  const nomeOk = answers.nome.trim().length > 2 && answers.nome.trim().includes(' ');
+
   const canAdvance = useMemo(() => {
     switch (current) {
       case 'perfil': return answers.perfil !== '';
       case 'ramo': return answers.quer_indicacao_aplicador !== null && answers.servico_interesse !== '';
-      case 'nome': return answers.nome.trim().length > 2 && answers.nome.trim().includes(' ');
-      case 'whatsapp': return isValidPhone(answers.telefone);
+      case 'contato': return nomeOk && isValidPhone(answers.telefone);
       case 'instagram': return isValidInstagram(answers.instagram);
-      case 'email': return answers.email.trim() === '' || isValidEmail(answers.email);
-      case 'cep': return answers.logradouro.trim() !== '' && answers.cidade.trim() !== '' && answers.uf.trim() !== '';
-      case 'endereco': return answers.numero.trim() !== '';
-      case 'lgpd': return answers.consentimento_lgpd;
-      case 'seguir': return true;
+      case 'endereco':
+        return answers.logradouro.trim() !== '' && answers.cidade.trim() !== ''
+          && answers.uf.trim() !== '' && answers.numero.trim() !== '';
+      case 'confirmar': return answers.consentimento_lgpd;
       default: return false;
     }
-  }, [current, answers]);
+  }, [current, answers, nomeOk]);
+
+  /** O que falta nesta tela — sem isso o botão fica cinza sem explicar por quê. */
+  const faltando = useMemo(() => {
+    if (canAdvance) return '';
+    switch (current) {
+      case 'contato':
+        if (!nomeOk) return 'Escreva seu nome e sobrenome.';
+        return 'Confira o número do WhatsApp com o DDD.';
+      case 'instagram': return 'Digite seu @ do Instagram.';
+      case 'endereco':
+        if (!answers.logradouro.trim()) return 'Digite o CEP para preenchermos o endereço.';
+        if (!answers.numero.trim()) return 'Falta o número.';
+        return 'Complete o endereço.';
+      case 'ramo': return 'Escolha o serviço e responda sobre a indicação.';
+      case 'confirmar': return 'Marque a autorização para enviarmos o brinde.';
+      default: return '';
+    }
+  }, [canAdvance, current, answers, nomeOk]);
 
   const next = () => {
     if (!canAdvance) return;
@@ -196,6 +214,35 @@ export default function Interlagos() {
     else void handleSubmit();
   };
   const back = () => setStepIndex(Math.max(0, safeIndex - 1));
+
+  /* ── Painel de tela cheia ──
+     Enquanto o quiz está aberto ele cobre tudo. Isso resolve o motivo real de
+     o cadastro estar sendo abandonado: com o quiz inline, o teclado empurrava
+     a página e os cards das linhas (que são links para o site) ficavam sob o
+     dedo. Aqui não há nada atrás para tocar por engano. ── */
+  useEffect(() => {
+    if (!quizOpen || success) return;
+
+    const anterior = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    // O "voltar" do Android sairia do link e perderia o cadastro. Com esta
+    // entrada extra no histórico, ele fecha o painel — o rascunho fica salvo.
+    window.history.pushState({ nzQuiz: true }, '');
+    const onPop = () => setQuizOpen(false);
+    window.addEventListener('popstate', onPop);
+
+    return () => {
+      document.body.style.overflow = anterior;
+      window.removeEventListener('popstate', onPop);
+    };
+  }, [quizOpen, success]);
+
+  const closeQuiz = () => {
+    // Volta a entrada que empilhamos ao abrir; o popstate acima fecha o painel.
+    if (window.history.state?.nzQuiz) window.history.back();
+    else setQuizOpen(false);
+  };
 
   /* ── ViaCEP ── */
   const onCepChange = async (raw: string) => {
@@ -242,7 +289,9 @@ export default function Interlagos() {
       perfil: answers.perfil,
       nome: answers.nome.trim(),
       telefone,
-      email: answers.email.trim() || null,
+      // A coluna continua existindo (nullable), mas o quiz não pede mais
+      // e-mail: era mais uma tela para ganhar um dado que nunca usamos.
+      email: null,
       instagram,
       cep: answers.cep.replace(/\D/g, ''),
       logradouro: answers.logradouro.trim(),
@@ -299,7 +348,6 @@ export default function Interlagos() {
           Nome: payload.nome,
           WhatsApp: answers.telefone,
           Instagram: `@${instagram}`,
-          Email: payload.email || '—',
           Endereco_para_etiqueta: endereco,
           Quer_indicacao_aplicador: profissional ? '—' : (payload.quer_indicacao_aplicador ? 'Sim' : 'Não'),
           Servico_interesse: payload.servico_interesse || '—',
@@ -317,12 +365,8 @@ export default function Interlagos() {
     setSuccess(true);
   };
 
-  const startQuiz = () => {
-    setQuizOpen(true);
-    requestAnimationFrame(() => {
-      document.getElementById('quiz')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  };
+  // Painel de tela cheia: não há mais para onde rolar.
+  const startQuiz = () => setQuizOpen(true);
 
   /* ═══════════════════════════════════════════
      Tela de sucesso
@@ -491,33 +535,64 @@ export default function Interlagos() {
         </div>
       </section>
 
-      {/* ═══ QUIZ ═══ */}
+      {/* ═══ QUIZ (chamada) ═══ */}
       <section className={styles.quizSection} id="quiz">
         <div className={styles.container}>
-          {!quizOpen ? (
-            <div className={styles.quizTeaser}>
-              <h2 className={styles.sectionTitle}>Desbloqueie seu brinde</h2>
-              <p className={styles.sectionSub}>
-                Perguntas rápidas, uma por tela. Precisamos do seu endereço só para enviar o brinde.
-              </p>
-              <button className={styles.formSubmit} onClick={startQuiz}>
-                Começar <ArrowRight size={16} />
+          <div className={styles.quizTeaser}>
+            <h2 className={styles.sectionTitle}>Desbloqueie seu brinde</h2>
+            <p className={styles.sectionSub}>
+              São poucas perguntas. Precisamos do seu endereço só para enviar o brinde.
+            </p>
+            <button className={styles.formSubmit} onClick={startQuiz}>
+              Começar <ArrowRight size={16} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ PAINEL DO QUIZ — tela cheia ═══
+          Cobre a página inteira enquanto o usuário preenche. Nada atrás fica
+          clicável, então não há como cair no site por um toque torto. ═══ */}
+      {quizOpen && (
+        <div className={styles.quizOverlay} role="dialog" aria-modal="true" aria-label="Cadastro do brinde">
+          {/* ── Topo fixo ── */}
+          <div className={styles.quizTop}>
+            <div className={styles.progressWrap}>
+              <div className={styles.progressTrack}>
+                <motion.div
+                  className={styles.progressFill}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.4, ease: easing }}
+                />
+              </div>
+              <span className={styles.progressLabel}>{safeIndex + 1}/{steps.length}</span>
+            </div>
+            <div className={styles.quizTopActions}>
+              {/* O flutuante do site fica coberto pelo painel — o WhatsApp
+                  continua a um toque de distância por aqui. */}
+              <a
+                href={INTERLAGOS.WHATSAPP_URL}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.quizIconBtn}
+                aria-label="Falar no WhatsApp"
+              >
+                <WhatsappLogo size={20} />
+              </a>
+              <button
+                type="button"
+                className={styles.quizIconBtn}
+                onClick={closeQuiz}
+                aria-label="Fechar cadastro"
+              >
+                <X size={20} />
               </button>
             </div>
-          ) : (
-            <div className={styles.quizCard}>
-              {/* Barra de progresso */}
-              <div className={styles.progressWrap}>
-                <div className={styles.progressTrack}>
-                  <motion.div
-                    className={styles.progressFill}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.4, ease: easing }}
-                  />
-                </div>
-                <span className={styles.progressLabel}>{safeIndex + 1}/{steps.length}</span>
-              </div>
+          </div>
 
+          {/* ── Miolo com rolagem própria ── */}
+          <div className={styles.quizScroll}>
+            <div className={styles.quizInner}>
               {/* Honeypot — fora da tela, nunca focável */}
               <input
                 ref={honeypotRef}
@@ -597,32 +672,33 @@ export default function Interlagos() {
                     </>
                   )}
 
-                  {current === 'nome' && (
+                  {current === 'contato' && (
                     <>
-                      <h2 className={styles.quizQuestion}>Qual é o seu nome completo?</h2>
-                      <p className={styles.quizHelp}>É o nome que vai na etiqueta do envio.</p>
-                      <input
-                        className={styles.formInputLarge}
-                        value={answers.nome}
-                        onChange={e => set('nome', e.target.value)}
-                        placeholder="Nome e sobrenome"
-                        autoComplete="name"
-                      />
-                    </>
-                  )}
-
-                  {current === 'whatsapp' && (
-                    <>
-                      <h2 className={styles.quizQuestion}>Seu WhatsApp</h2>
-                      <p className={styles.quizHelp}>É por aqui que avisamos quando o brinde sair.</p>
-                      <input
-                        className={styles.formInputLarge}
-                        value={answers.telefone}
-                        onChange={e => set('telefone', formatPhone(e.target.value))}
-                        placeholder="(11) 90000-0000"
-                        inputMode="numeric"
-                        autoComplete="tel"
-                      />
+                      <h2 className={styles.quizQuestion}>Como te chamamos?</h2>
+                      <p className={styles.quizHelp}>
+                        O nome vai na etiqueta e o WhatsApp é por onde avisamos quando o brinde sair.
+                      </p>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Nome completo</label>
+                        <input
+                          className={styles.formInputLarge}
+                          value={answers.nome}
+                          onChange={e => set('nome', e.target.value)}
+                          placeholder="Nome e sobrenome"
+                          autoComplete="name"
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>WhatsApp</label>
+                        <input
+                          className={styles.formInputLarge}
+                          value={answers.telefone}
+                          onChange={e => set('telefone', formatPhone(e.target.value))}
+                          placeholder="(11) 90000-0000"
+                          inputMode="numeric"
+                          autoComplete="tel"
+                        />
+                      </div>
                     </>
                   )}
 
@@ -644,25 +720,7 @@ export default function Interlagos() {
                     </>
                   )}
 
-                  {current === 'email' && (
-                    <>
-                      <h2 className={styles.quizQuestion}>Seu e-mail</h2>
-                      <p className={styles.quizHelp}>
-                        Opcional — mas é como mandamos o código de rastreio do envio.
-                      </p>
-                      <input
-                        className={styles.formInputLarge}
-                        type="email"
-                        value={answers.email}
-                        onChange={e => set('email', e.target.value)}
-                        placeholder="voce@email.com"
-                        autoCapitalize="none"
-                        autoComplete="email"
-                      />
-                    </>
-                  )}
-
-                  {current === 'cep' && (
+                  {current === 'endereco' && (
                     <>
                       <h2 className={styles.quizQuestion}>Para onde mandamos?</h2>
                       <p className={styles.quizHelp}>Digite o CEP que preenchemos o resto.</p>
@@ -701,58 +759,38 @@ export default function Interlagos() {
                                 onChange={e => set('uf', e.target.value.toUpperCase())} placeholder="SP" />
                             </div>
                           </div>
+
+                          {/* Número junto do resto: separar isso numa tela própria
+                              quebrava o fluxo bem no meio do endereço. */}
+                          <div className={styles.formRow}>
+                            <div className={styles.formGroupSmall}>
+                              <label className={styles.formLabel}>Número</label>
+                              <input className={styles.formInput} value={answers.numero} inputMode="numeric"
+                                onChange={e => set('numero', e.target.value)} placeholder="123" />
+                            </div>
+                            <div className={styles.formGroup}>
+                              <label className={styles.formLabel}>
+                                Complemento <span className={styles.formOptional}>(opcional)</span>
+                              </label>
+                              <input className={styles.formInput} value={answers.complemento}
+                                onChange={e => set('complemento', e.target.value)} placeholder="Apto, bloco" />
+                            </div>
+                          </div>
                         </div>
                       )}
                     </>
                   )}
 
-                  {current === 'endereco' && (
-                    <>
-                      <h2 className={styles.quizQuestion}>Número e complemento</h2>
-                      <p className={styles.quizHelp}>
-                        {answers.logradouro}{answers.bairro ? `, ${answers.bairro}` : ''} — {answers.cidade}/{answers.uf}
-                      </p>
-                      <div className={styles.formRow}>
-                        <div className={styles.formGroupSmall}>
-                          <label className={styles.formLabel}>Número</label>
-                          <input className={styles.formInput} value={answers.numero} inputMode="numeric"
-                            onChange={e => set('numero', e.target.value)} placeholder="123" />
-                        </div>
-                        <div className={styles.formGroup}>
-                          <label className={styles.formLabel}>Complemento <span className={styles.formOptional}>(opcional)</span></label>
-                          <input className={styles.formInput} value={answers.complemento}
-                            onChange={e => set('complemento', e.target.value)} placeholder="Apto, bloco, referência" />
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {current === 'lgpd' && (
-                    <>
-                      <h2 className={styles.quizQuestion}>Só falta autorizar.</h2>
-                      <button
-                        type="button"
-                        className={answers.consentimento_lgpd ? styles.consentBoxActive : styles.consentBox}
-                        onClick={() => set('consentimento_lgpd', !answers.consentimento_lgpd)}
-                      >
-                        <span className={styles.consentCheck}>
-                          {answers.consentimento_lgpd && <Check size={14} strokeWidth={3} />}
-                        </span>
-                        <span className={styles.consentText}>
-                          Autorizo a NZ Group a usar meus dados para <strong>enviar o brinde</strong> no
-                          endereço informado e para <strong>contato comercial</strong>. Posso pedir a
-                          exclusão a qualquer momento.
-                        </span>
-                      </button>
-                    </>
-                  )}
-
-                  {current === 'seguir' && (
+                  {current === 'confirmar' && (
                     <>
                       <h2 className={styles.quizQuestion}>Última etapa.</h2>
                       <p className={styles.quizHelp}>
                         O brinde é para quem acompanha a NZ Group.
                       </p>
+
+                      {/* Este link sai do site. Fica isolado aqui em cima, longe
+                          do botão de enviar lá no rodapé, para ninguém tocar
+                          nele por engano na hora de confirmar. */}
                       <a
                         href={INTERLAGOS.INSTAGRAM_URL}
                         target="_blank"
@@ -763,16 +801,34 @@ export default function Interlagos() {
                         <InstagramLogo size={18} />
                         Abrir @{INTERLAGOS.INSTAGRAM_HANDLE}
                       </a>
-                      <button
-                        type="button"
-                        className={answers.segue_instagram ? styles.consentBoxActive : styles.consentBox}
-                        onClick={() => set('segue_instagram', !answers.segue_instagram)}
-                      >
-                        <span className={styles.consentCheck}>
-                          {answers.segue_instagram && <Check size={14} strokeWidth={3} />}
-                        </span>
-                        <span className={styles.consentText}>Já estou seguindo a NZ Group</span>
-                      </button>
+
+                      <div className={styles.consentStack}>
+                        <button
+                          type="button"
+                          className={answers.segue_instagram ? styles.consentBoxActive : styles.consentBox}
+                          onClick={() => set('segue_instagram', !answers.segue_instagram)}
+                        >
+                          <span className={styles.consentCheck}>
+                            {answers.segue_instagram && <Check size={14} strokeWidth={3} />}
+                          </span>
+                          <span className={styles.consentText}>Já estou seguindo a NZ Group</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          className={answers.consentimento_lgpd ? styles.consentBoxActive : styles.consentBox}
+                          onClick={() => set('consentimento_lgpd', !answers.consentimento_lgpd)}
+                        >
+                          <span className={styles.consentCheck}>
+                            {answers.consentimento_lgpd && <Check size={14} strokeWidth={3} />}
+                          </span>
+                          <span className={styles.consentText}>
+                            Autorizo a NZ Group a usar meus dados para <strong>enviar o brinde</strong> no
+                            endereço informado e para <strong>contato comercial</strong>.
+                          </span>
+                        </button>
+                      </div>
+
                       <p className={styles.quizWarn}>
                         <CircleAlert size={13} />
                         Conferimos a lista de seguidores antes de despachar o brinde.
@@ -781,38 +837,53 @@ export default function Interlagos() {
                   )}
                 </motion.div>
               </AnimatePresence>
-
-              {submitError && (
-                <div className={styles.errorBox}>
-                  <CircleAlert size={15} />
-                  <span>{submitError}</span>
-                </div>
-              )}
-
-              <div className={styles.formNavRow}>
-                {safeIndex > 0 && (
-                  <button type="button" className={styles.formBack} onClick={back} disabled={submitting}>
-                    <ArrowLeft size={15} />
-                  </button>
-                )}
-                {current !== 'perfil' && (
-                  <button
-                    type="button"
-                    className={styles.formSubmit}
-                    onClick={next}
-                    disabled={!canAdvance || submitting}
-                  >
-                    {submitting ? (<><LoaderCircle size={16} className={styles.spin} /> Enviando...</>)
-                      : current === 'seguir' ? (submitError ? 'Tentar de novo' : 'Confirmar meu brinde')
-                      : current === 'email' && !answers.email.trim() ? 'Pular esta'
-                      : (<>Continuar <ArrowRight size={16} /></>)}
-                  </button>
-                )}
-              </div>
             </div>
-          )}
+          </div>
+
+          {/* ── Rodapé fixo ──
+              Os botões vivem aqui, dentro do painel, com folga lateral e
+              respeitando a barra de gestos do celular. Era exatamente na
+              borda que o toque escapava para o WhatsApp flutuante. ── */}
+          <div className={styles.quizBottom}>
+            {submitError && (
+              <div className={styles.errorBox}>
+                <CircleAlert size={15} />
+                <span>{submitError}</span>
+              </div>
+            )}
+
+            {!canAdvance && !submitError && faltando && (
+              <p className={styles.quizPending}>{faltando}</p>
+            )}
+
+            <div className={styles.formNavRow}>
+              {safeIndex > 0 && (
+                <button
+                  type="button"
+                  className={styles.formBack}
+                  onClick={back}
+                  disabled={submitting}
+                  aria-label="Voltar uma etapa"
+                >
+                  <ArrowLeft size={15} />
+                </button>
+              )}
+              {current !== 'perfil' && (
+                <button
+                  type="button"
+                  className={styles.formSubmit}
+                  onClick={next}
+                  disabled={!canAdvance || submitting}
+                >
+                  {submitting ? (<><LoaderCircle size={16} className={styles.spin} /> Enviando...</>)
+                    : current === 'confirmar' ? (submitError ? 'Tentar de novo' : 'Confirmar meu brinde')
+                    : (<>Continuar <ArrowRight size={16} /></>)}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
-      </section>
+      )}
 
       {/* ═══ QUEM É A NZ ═══ */}
       <section className={styles.aboutSection}>
