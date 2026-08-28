@@ -1,6 +1,7 @@
 {
   "redirects": [
     { "source": "/festival", "destination": "/interlagos", "permanent": false },
+    { "source": "/festinterlagos", "destination": "/interlagos", "permanent": false },
     { "source": "/blog/nzppf-guia-completo-linhas-protecao-carro-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
     { "source": "/blog/nzppf-guia-completo-linhas-instaladores-donos-carro-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
     { "source": "/blog/nzppf-linhas-guia-completo-instaladores-donos-carro-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
