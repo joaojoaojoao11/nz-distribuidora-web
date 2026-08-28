@@ -638,3 +638,206 @@
   .heatmapCanvas { height: 250px; }
   .heatmapEmpty { height: 250px; }
 }
+
+/* ============================================================
+   PÁGINAS PROMOCIONAIS
+   Landing pages de campanha + os cadastros que elas geram.
+   ============================================================ */
+
+.promoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.promoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.2s;
+}
+
+.promoCardActive {
+  border-color: rgba(212, 168, 83, 0.5);
+  background: rgba(212, 168, 83, 0.04);
+}
+
+.promoCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.promoCount {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #D4A853;
+  line-height: 1;
+}
+
+.promoCount small {
+  font-family: monospace;
+  font-size: 0.58rem;
+  font-weight: 400;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-left: 0.3rem;
+}
+
+.promoTitle {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+.promoDesc {
+  font-size: 0.82rem;
+  color: #999;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.promoMeta {
+  font-family: monospace;
+  font-size: 0.65rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.promoLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.6rem 0.7rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-left: 2px solid rgba(212, 168, 83, 0.4);
+}
+
+.promoUrl {
+  font-family: monospace;
+  font-size: 0.68rem;
+  color: #D4A853;
+  word-break: break-all;
+}
+
+.promoUrlAlias {
+  font-family: monospace;
+  font-size: 0.62rem;
+  color: #666;
+  word-break: break-all;
+}
+
+.promoActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.promoBtn {
+  padding: 0.55rem 0.85rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #bbb;
+  font-family: var(--font-heading);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.promoBtn:hover:not(:disabled) { border-color: rgba(255, 255, 255, 0.4); color: #fff; }
+
+.promoBtnPrimary {
+  composes: promoBtn;
+  background: #D4A853;
+  border-color: #D4A853;
+  color: #000;
+}
+
+.promoBtnPrimary:hover:not(:disabled) { background: #c9a430; border-color: #c9a430; color: #000; }
+
+.promoBtn:disabled, .promoBtnPrimary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.promoStatusRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.promoStatusChip {
+  padding: 0.5rem 0.85rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #999;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.promoStatusChip strong {
+  color: #fff;
+  font-size: 0.85rem;
+  margin-right: 0.3rem;
+}
+
+.promoStatusChip:hover { border-color: rgba(255, 255, 255, 0.3); color: #fff; }
+
+.promoStatusChipActive {
+  composes: promoStatusChip;
+  border-color: rgba(212, 168, 83, 0.6);
+  background: rgba(212, 168, 83, 0.1);
+  color: #D4A853;
+}
+
+.promoToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: stretch;
+  margin-bottom: 1rem;
+}
+
+.promoToolbar .adminInput { flex: 1; min-width: 220px; }
+
+.promoError {
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 68, 68, 0.4);
+  background: rgba(255, 68, 68, 0.08);
+  color: #ffb4b4;
+  font-size: 0.8rem;
+}
+
+.promoCellAddress {
+  min-width: 280px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: #ccc;
+}
+
+@media (max-width: 768px) {
+  .promoGrid { grid-template-columns: 1fr; }
+  .promoToolbar .adminInput { min-width: 100%; }
+}

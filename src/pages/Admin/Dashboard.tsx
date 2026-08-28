@@ -15,6 +15,8 @@ import AdminBlog from './AdminBlog';
 import AdminAIBlog from './AdminAIBlog';
 import AdminAgenciaNZ from './AdminAgenciaNZ';
 import AdminAgendaSocial from './AdminAgendaSocial';
+import AdminPromoPages from './AdminPromoPages';
+import { PROMO_PAGES } from '../../lib/promoPages';
 
 interface Lead { id: string; name: string; email: string; phone: string; source: string; status: string; created_at: string; }
 interface UserProfile {
@@ -27,7 +29,7 @@ interface UserProfile {
   address_zip?: string | null; created_at: string;
 }
 
-type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'users' | 'clients' | 'garantias' | 'agencia' | 'agenda-social' | 'settings';
+type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'promo' | 'users' | 'clients' | 'garantias' | 'agencia' | 'agenda-social' | 'settings';
 type PeriodType = 'today' | '7d' | 'month' | 'quarter' | 'semester' | 'year';
 
 const PERIOD_LABELS: Record<PeriodType, string> = {
@@ -66,6 +68,7 @@ export default function Dashboard() {
   const [createError, setCreateError] = useState('');
   const [creating, setCreating] = useState(false);
   const [pendingWarrantiesCount, setPendingWarrantiesCount] = useState(0);
+  const [promoPendingCount, setPromoPendingCount] = useState(0);
 
   // Dashboard analytics state
   const [period, setPeriod] = useState<PeriodType>('month');
@@ -105,6 +108,18 @@ export default function Dashboard() {
       .select('*', { count: 'exact', head: true })
       .eq('certificado_gerado', false);
     setPendingWarrantiesCount(wCount || 0);
+
+    // Cadastros de campanha aguardando conferência/envio do brinde
+    let promoPend = 0;
+    for (const p of PROMO_PAGES) {
+      if (!p.statusColuna) continue;
+      const { count } = await supabase
+        .from(p.tabela)
+        .select('id', { count: 'exact', head: true })
+        .eq(p.statusColuna, 'pendente');
+      promoPend += count || 0;
+    }
+    setPromoPendingCount(promoPend);
   };
 
   const loadAnalytics = useCallback(async () => {
@@ -376,6 +391,7 @@ export default function Dashboard() {
     blog: 'Blog & Conteúdos',
     'blog-ai': 'Motor IA (SEO Autônomo)',
     leads: 'Leads & Contatos',
+    promo: 'Páginas Promocionais',
     users: 'Usuários do Sistema',
     clients: 'Clientes & Revendedores',
     garantias: 'Garantias Oficiais',
@@ -405,6 +421,11 @@ export default function Dashboard() {
           </button>
           <button className={`${styles.navLink} ${activeTab === 'leads' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('leads')}>
             <span>📩</span> <span>Leads</span>
+          </button>
+          {/* Landing pages de campanha (Festival Interlagos e afins) + seus cadastros */}
+          <button className={`${styles.navLink} ${activeTab === 'promo' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('promo')}>
+            <span>🎟️</span> <span>Páginas Promocionais</span>
+            {promoPendingCount > 0 && <span className={styles.navBadge}>{promoPendingCount}</span>}
           </button>
           <button className={`${styles.navLink} ${activeTab === 'clients' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('clients')}>
             <span>🛒</span> <span>Clientes</span>
@@ -874,6 +895,8 @@ export default function Dashboard() {
         {activeTab === 'blog-ai' && <AdminAIBlog />}
 
         {/* ===== GARANTIAS ===== */}
+        {activeTab === 'promo' && <AdminPromoPages />}
+
         {activeTab === 'garantias' && <AdminWarranties onUpdate={loadData} />}
 
         {/* ===== AGÊNCIA NZ (hub de materiais de marketing) ===== */}

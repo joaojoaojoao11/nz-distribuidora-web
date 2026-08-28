@@ -122,6 +122,13 @@ export const routeMeta: Record<string, RouteMeta> = {
     title: 'Termos de Uso',
     description: 'Condições de uso do site da NZ Distribuidora: conteúdo, garantias, registro de produtos e responsabilidades.',
   },
+  // Campanha de evento: página de QR Code do estande, não deve ser indexada
+  // (o brinde é para quem está no festival), mas precisa de OG para compartilhamento.
+  '/interlagos': {
+    title: 'Festival Interlagos 2026 — Brinde exclusivo NZ Group',
+    description: 'A NZ Group está no Festival Interlagos, de 27 a 30 de agosto. Responda em menos de 1 minuto e desbloqueie um brinde exclusivo, enviado no seu endereço.',
+    noindex: true,
+  },
   // Rotas internas: servem o app normalmente, mas sinalizam noindex.
   '/admin': { title: 'Painel Administrativo', description: 'Área interna NZ.', noindex: true },
   '/login': { title: 'Login', description: 'Acesso ao painel NZ.', noindex: true },
