@@ -532,10 +532,12 @@ export default function Interlagos() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={current}
-                  initial={{ opacity: 0, x: 24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -24 }}
-                  transition={{ duration: 0.28, ease: easing }}
+                  /* Só opacidade: mover o card no eixo X fazia o alvo do toque
+                     andar durante a animação e o dedo errava o campo. */
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.16, ease: 'linear' }}
                   className={styles.stepBody}
                 >
                   {current === 'perfil' && (
@@ -605,7 +607,6 @@ export default function Interlagos() {
                         onChange={e => set('nome', e.target.value)}
                         placeholder="Nome e sobrenome"
                         autoComplete="name"
-                        autoFocus
                       />
                     </>
                   )}
@@ -621,7 +622,6 @@ export default function Interlagos() {
                         placeholder="(11) 90000-0000"
                         inputMode="numeric"
                         autoComplete="tel"
-                        autoFocus
                       />
                     </>
                   )}
@@ -637,7 +637,6 @@ export default function Interlagos() {
                         placeholder="@seuperfil"
                         autoCapitalize="none"
                         autoCorrect="off"
-                        autoFocus
                       />
                       {answers.instagram && isValidInstagram(answers.instagram) && (
                         <p className={styles.quizHint}>Vamos registrar como @{normalizeInstagram(answers.instagram)}</p>
@@ -659,7 +658,6 @@ export default function Interlagos() {
                         placeholder="voce@email.com"
                         autoCapitalize="none"
                         autoComplete="email"
-                        autoFocus
                       />
                     </>
                   )}
@@ -675,7 +673,6 @@ export default function Interlagos() {
                         placeholder="00000-000"
                         inputMode="numeric"
                         autoComplete="postal-code"
-                        autoFocus
                       />
                       {cepStatus === 'loading' && <p className={styles.quizHint}>Buscando endereço...</p>}
                       {cepStatus === 'erro' && <p className={styles.quizWarn}><CircleAlert size={13} /> {cepMsg}</p>}
@@ -719,7 +716,7 @@ export default function Interlagos() {
                         <div className={styles.formGroupSmall}>
                           <label className={styles.formLabel}>Número</label>
                           <input className={styles.formInput} value={answers.numero} inputMode="numeric"
-                            onChange={e => set('numero', e.target.value)} placeholder="123" autoFocus />
+                            onChange={e => set('numero', e.target.value)} placeholder="123" />
                         </div>
                         <div className={styles.formGroup}>
                           <label className={styles.formLabel}>Complemento <span className={styles.formOptional}>(opcional)</span></label>

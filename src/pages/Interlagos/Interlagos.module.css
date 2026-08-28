@@ -9,6 +9,9 @@
 
 .page {
   min-height: 100vh;
+  /* dvh acompanha a barra do navegador e a abertura do teclado; sem isso o
+     layout "pula" quando o teclado sobe e o toque seguinte erra o alvo. */
+  min-height: 100dvh;
   padding-top: 80px;
   background-color: #0a0a0c;
   overflow-x: hidden;
@@ -530,6 +533,9 @@
 
 .formInput {
   width: 100%;
+  /* Sem isto o navegador segura ~300ms esperando um duplo-toque e o
+     campo parece "não responder" ao primeiro toque. */
+  touch-action: manipulation;
   padding: 0.875rem 1rem;
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1013,4 +1019,41 @@
   .spin { animation: none; }
   .lineCard:hover { transform: none; }
   .lineCard:hover .lineImg { transform: none; }
+}
+
+/* ============================================================
+   Toque no celular — 100% do público entra pelo QR Code, em pé,
+   segurando o telefone com uma mão só.
+   ============================================================ */
+
+/* Todo alvo tocável responde ao primeiro toque, sem a espera de
+   duplo-toque e sem zoom acidental ao tocar duas vezes rápido. */
+.option,
+.optionActive,
+.chip,
+.chipActive,
+.formSubmit,
+.formBack,
+.igButton,
+.consentCheck,
+.successCta {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(212, 175, 55, 0.15);
+}
+
+/* Alvo mínimo de 44px: dedo em movimento erra alvo menor que isso. */
+.chip,
+.chipActive,
+.formBack {
+  min-height: 44px;
+}
+
+@media (max-width: 639px) {
+  /* backdrop-filter custa caro em GPU de celular intermediário e trava
+     o quadro exatamente no momento do toque. Fundo sólido resolve. */
+  .quizCard {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #101013;
+  }
 }
