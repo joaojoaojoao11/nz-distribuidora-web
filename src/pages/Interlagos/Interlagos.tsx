@@ -23,7 +23,6 @@ import styles from './Interlagos.module.css';
 
 interface Answers {
   perfil: PerfilValue | '';
-  quer_indicacao_aplicador: boolean | null;
   servico_interesse: string;
   nome: string;
   telefone: string;
@@ -41,7 +40,7 @@ interface Answers {
 
 const EMPTY: Answers = {
   perfil: '',
-  quer_indicacao_aplicador: null, servico_interesse: '',
+  servico_interesse: '',
   nome: '', telefone: '', instagram: '',
   cep: '', logradouro: '', bairro: '', cidade: '', uf: '',
   numero: '', complemento: '',
@@ -179,7 +178,7 @@ export default function Interlagos() {
   const canAdvance = useMemo(() => {
     switch (current) {
       case 'perfil': return answers.perfil !== '';
-      case 'ramo': return answers.quer_indicacao_aplicador !== null && answers.servico_interesse !== '';
+      case 'ramo': return answers.servico_interesse !== '';
       case 'contato': return nomeOk && isValidPhone(answers.telefone);
       case 'instagram': return isValidInstagram(answers.instagram);
       case 'endereco':
@@ -202,7 +201,7 @@ export default function Interlagos() {
         if (!answers.logradouro.trim()) return 'Digite o CEP para preenchermos o endereço.';
         if (!answers.numero.trim()) return 'Falta o número.';
         return 'Complete o endereço.';
-      case 'ramo': return 'Escolha o serviço e responda sobre a indicação.';
+      case 'ramo': return 'Escolha o serviço que te interessa.';
       case 'confirmar': return 'Marque a autorização para enviarmos o brinde.';
       default: return '';
     }
@@ -220,11 +219,21 @@ export default function Interlagos() {
      o cadastro estar sendo abandonado: com o quiz inline, o teclado empurrava
      a página e os cards das linhas (que são links para o site) ficavam sob o
      dedo. Aqui não há nada atrás para tocar por engano. ── */
+  const overlayRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!quizOpen || success) return;
 
-    const anterior = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    /* Trava de rolagem no padrão que o iOS respeita: `overflow: hidden` no
+       body sozinho não segura o Safari. Guardamos a posição e devolvemos ao
+       fechar. */
+    const y = window.scrollY;
+    const b = document.body.style;
+    const antes = { position: b.position, top: b.top, width: b.width, overflow: b.overflow };
+    b.position = 'fixed';
+    b.top = `-${y}px`;
+    b.width = '100%';
+    b.overflow = 'hidden';
 
     // O "voltar" do Android sairia do link e perderia o cadastro. Com esta
     // entrada extra no histórico, ele fecha o painel — o rascunho fica salvo.
@@ -233,8 +242,36 @@ export default function Interlagos() {
     window.addEventListener('popstate', onPop);
 
     return () => {
-      document.body.style.overflow = anterior;
+      Object.assign(b, antes);
+      window.scrollTo(0, y);
       window.removeEventListener('popstate', onPop);
+    };
+  }, [quizOpen, success]);
+
+  /* ── Altura real da tela ──
+     `100dvh` mede a viewport de layout, que no Safari do iPhone é mais alta
+     que a área realmente visível quando as barras estão abertas. O rodapé com
+     o "Continuar" caía atrás da barra inferior e sumia. A visualViewport dá a
+     altura de verdade e acompanha teclado, barras e rotação. */
+  useEffect(() => {
+    if (!quizOpen || success) return;
+    const vv = window.visualViewport;
+
+    const medir = () => {
+      const el = overlayRef.current;
+      if (!el) return;
+      el.style.setProperty('--quizH', `${vv?.height ?? window.innerHeight}px`);
+      el.style.setProperty('--quizTop', `${vv?.offsetTop ?? 0}px`);
+    };
+
+    medir();
+    vv?.addEventListener('resize', medir);
+    vv?.addEventListener('scroll', medir);
+    window.addEventListener('orientationchange', medir);
+    return () => {
+      vv?.removeEventListener('resize', medir);
+      vv?.removeEventListener('scroll', medir);
+      window.removeEventListener('orientationchange', medir);
     };
   }, [quizOpen, success]);
 
@@ -300,7 +337,9 @@ export default function Interlagos() {
       bairro: answers.bairro.trim(),
       cidade: answers.cidade.trim(),
       uf: answers.uf.trim().toUpperCase(),
-      quer_indicacao_aplicador: profissional ? false : answers.quer_indicacao_aplicador ?? false,
+      // Deixou de ser perguntado: escolher um servico ja significa
+      // querer quem faca. Profissional nao precisa de indicacao.
+      quer_indicacao_aplicador: !profissional,
       servico_interesse: profissional ? null : answers.servico_interesse || null,
       segue_instagram: answers.segue_instagram,
       consentimento_lgpd: answers.consentimento_lgpd,
@@ -349,7 +388,7 @@ export default function Interlagos() {
           WhatsApp: answers.telefone,
           Instagram: `@${instagram}`,
           Endereco_para_etiqueta: endereco,
-          Quer_indicacao_aplicador: profissional ? '—' : (payload.quer_indicacao_aplicador ? 'Sim' : 'Não'),
+          Quer_indicacao_aplicador: profissional ? '—' : 'Sim',
           Servico_interesse: payload.servico_interesse || '—',
           Segue_instagram: payload.segue_instagram ? 'Sim (declarado)' : 'Não',
           Origem: payload.utm_source ? `${payload.utm_source} / ${payload.utm_medium} / ${payload.utm_campaign}` : 'direto',
@@ -554,7 +593,13 @@ export default function Interlagos() {
           Cobre a página inteira enquanto o usuário preenche. Nada atrás fica
           clicável, então não há como cair no site por um toque torto. ═══ */}
       {quizOpen && (
-        <div className={styles.quizOverlay} role="dialog" aria-modal="true" aria-label="Cadastro do brinde">
+        <div
+          ref={overlayRef}
+          className={styles.quizOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Cadastro do brinde"
+        >
           {/* ── Topo fixo ── */}
           <div className={styles.quizTop}>
             <div className={styles.progressWrap}>
@@ -641,33 +686,23 @@ export default function Interlagos() {
                       <p className={styles.quizHelp}>
                         A NZ tem rede de aplicadores credenciados no Brasil inteiro.
                       </p>
-                      <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Serviço de interesse</label>
-                        <div className={styles.optionList}>
-                          {SERVICOS_INTERESSE.map(s => (
-                            <button
-                              key={s}
-                              type="button"
-                              className={answers.servico_interesse === s ? styles.chipActive : styles.chip}
-                              onClick={() => set('servico_interesse', s)}
-                            >{s}</button>
-                          ))}
-                        </div>
-                      </div>
-                      <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Quer indicação de um aplicador credenciado?</label>
-                        <div className={styles.chipGroup}>
+                      {/* A pergunta "quer indicação de aplicador?" saiu: quem
+                          escolhe um serviço aqui obviamente quer alguém para
+                          fazer. Gravamos a indicação como pedida. */}
+                      <div className={styles.optionList}>
+                        {SERVICOS_INTERESSE.map(s => (
                           <button
+                            key={s}
                             type="button"
-                            className={answers.quer_indicacao_aplicador === true ? styles.chipActive : styles.chip}
-                            onClick={() => set('quer_indicacao_aplicador', true)}
-                          >Sim, quero</button>
-                          <button
-                            type="button"
-                            className={answers.quer_indicacao_aplicador === false ? styles.chipActive : styles.chip}
-                            onClick={() => set('quer_indicacao_aplicador', false)}
-                          >Agora não</button>
-                        </div>
+                            className={answers.servico_interesse === s ? styles.optionActive : styles.option}
+                            onClick={() => {
+                              set('servico_interesse', s);
+                              setStepIndex(safeIndex + 1);
+                            }}
+                          >
+                            <span className={styles.optionLabel}>{s}</span>
+                          </button>
+                        ))}
                       </div>
                     </>
                   )}
@@ -723,7 +758,9 @@ export default function Interlagos() {
                   {current === 'endereco' && (
                     <>
                       <h2 className={styles.quizQuestion}>Para onde mandamos?</h2>
-                      <p className={styles.quizHelp}>Digite o CEP que preenchemos o resto.</p>
+                      <p className={styles.quizHelp}>
+                        Digite o CEP que preenchemos o resto — depois é só o número da residência.
+                      </p>
                       <input
                         className={styles.formInputLarge}
                         value={answers.cep}
@@ -762,11 +799,22 @@ export default function Interlagos() {
 
                           {/* Número junto do resto: separar isso numa tela própria
                               quebrava o fluxo bem no meio do endereço. */}
+                          {!answers.numero.trim() && (
+                            <p className={styles.numeroAviso}>
+                              <CircleAlert size={14} />
+                              Falta o número da sua residência.
+                            </p>
+                          )}
                           <div className={styles.formRow}>
                             <div className={styles.formGroupSmall}>
                               <label className={styles.formLabel}>Número</label>
-                              <input className={styles.formInput} value={answers.numero} inputMode="numeric"
-                                onChange={e => set('numero', e.target.value)} placeholder="123" />
+                              <input
+                                className={answers.numero.trim() ? styles.formInput : `${styles.formInput} ${styles.fieldNeeded}`}
+                                value={answers.numero}
+                                inputMode="numeric"
+                                onChange={e => set('numero', e.target.value)}
+                                placeholder="123"
+                              />
                             </div>
                             <div className={styles.formGroup}>
                               <label className={styles.formLabel}>
