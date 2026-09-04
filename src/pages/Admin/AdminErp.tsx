@@ -128,7 +128,7 @@ export default function AdminErp() {
     setErro('');
     try {
       const { data } = await supabase.auth.getSession();
-      const res = await fetch('/api/erp/sync', {
+      const res = await fetch('/api/nz/sync', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

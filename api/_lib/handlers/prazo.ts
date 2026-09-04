@@ -1,4 +1,4 @@
-// POST /api/logistica/prazo — prazo de entrega por transportadora.
+// POST /api/nz/prazo — prazo de entrega por transportadora.
 //
 // Endpoint PÚBLICO (a página de produto chama sem login), mas nada parecido
 // com os handlers de api/oficina/*, que são POST aberto com CORS '*' e sem
@@ -11,8 +11,8 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { getAdapter } from '../_lib/carriers/index.js';
-import { CarrierError } from '../_lib/carriers/types.js';
+import { getAdapter } from '../carriers/index.js';
+import { CarrierError } from '../carriers/types.js';
 
 const CEP_RE = /^[0-9]{8}$/;
 const CACHE_DIAS = 7;

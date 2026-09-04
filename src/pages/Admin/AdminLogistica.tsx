@@ -129,7 +129,7 @@ export default function AdminLogistica() {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
       if (!token) return;
-      const res = await fetch('/api/logistica/testar', {
+      const res = await fetch('/api/nz/testar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({}),
@@ -254,7 +254,7 @@ export default function AdminLogistica() {
     try {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
-      const res = await fetch('/api/logistica/testar', {
+      const res = await fetch('/api/nz/testar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token ?? ''}` },
         body: JSON.stringify({ cep: testeCep.replace(/\D/g, ''), profileId: testePerfil }),

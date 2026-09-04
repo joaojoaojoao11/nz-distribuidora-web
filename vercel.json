@@ -160,7 +160,7 @@
     "api/cron/ai-writer.ts": {
       "maxDuration": 300
     },
-    "api/erp/sync.ts": {
+    "api/nz/[acao].ts": {
       "maxDuration": 60
     }
   },
@@ -170,7 +170,7 @@
       "schedule": "0 9 * * *"
     },
     {
-      "path": "/api/erp/sync",
+      "path": "/api/nz/sync",
       "schedule": "0 6 * * *"
     }
   ]

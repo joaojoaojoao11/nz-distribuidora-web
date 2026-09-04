@@ -1,4 +1,4 @@
-// POST /api/loja/estoque — disponibilidade de um produto, por papel do usuário.
+// POST /api/nz/estoque — disponibilidade de um produto, por papel do usuário.
 //
 // ESTE ENDPOINT EXISTE POR UMA RESTRIÇÃO DURA: o catálogo da LOJA é um arquivo
 // .ts no bundle público, que qualquer visitante baixa e lê. Nada restrito pode

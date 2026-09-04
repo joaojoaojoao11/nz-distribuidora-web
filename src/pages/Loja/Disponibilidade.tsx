@@ -1,7 +1,7 @@
 // Bloco de disponibilidade da página de produto.
 //
 // O que aparece depende do PAPEL, e o papel é decidido no servidor
-// (api/loja/estoque.ts), nunca aqui. Este componente só desenha o que recebe —
+// (_lib/handlers/estoque.ts), nunca aqui. Este componente só desenha o que recebe —
 // se ele tentasse decidir, bastaria abrir o DevTools para ver o dado do nível
 // de cima.
 //
@@ -60,7 +60,7 @@ export default function Disponibilidade({ slug }: { slug: string }) {
         const { data } = await supabase.auth.getSession();
         const token = data.session?.access_token;
 
-        const res = await fetch('/api/loja/estoque', {
+        const res = await fetch('/api/nz/estoque', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

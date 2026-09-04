@@ -1,6 +1,6 @@
-// POST /api/logistica/testar — diagnóstico de transportadora, só para admin.
+// POST /api/nz/testar — diagnóstico de transportadora, só para admin.
 //
-// Diferente do endpoint público (/api/logistica/prazo), este devolve a resposta
+// Diferente do endpoint público (/api/nz/prazo), este devolve a resposta
 // CRUA da transportadora, inclusive os campos de valor que o público descarta.
 // É o que permite conferir a integração sem adivinhar. Por isso exige JWT com
 // role='admin' lida NO SERVIDOR — nunca confiando no que o cliente diz que é.
@@ -9,7 +9,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-import { carrierConfigStatus, getAdapter, isRealMode } from '../_lib/carriers/index.js';
+import { carrierConfigStatus, getAdapter, isRealMode } from '../carriers/index.js';
 
 const CEP_RE = /^[0-9]{8}$/;
 

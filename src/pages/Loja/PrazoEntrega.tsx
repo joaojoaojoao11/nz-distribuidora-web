@@ -72,7 +72,7 @@ export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey:
 
       setEstado({ tipo: 'carregando' });
       try {
-        const res = await fetch('/api/logistica/prazo', {
+        const res = await fetch('/api/nz/prazo', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slug, lineKey, cep: digits, profileId }),

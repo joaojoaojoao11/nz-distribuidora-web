@@ -1,4 +1,4 @@
-// POST/GET /api/erp/sync — sincroniza o catálogo ativo e o estoque do NZERP.
+// POST/GET /api/nz/sync — sincroniza o catálogo ativo e o estoque do NZERP.
 //
 // Dois clients Supabase, um por projeto, ambos com chave SÓ NO SERVIDOR:
 //   leitura : NZERP  (ipehorttsrvjynnhyzhu), views catalogo_estoque_site
@@ -22,7 +22,7 @@
 // Não é escolha de projeto — é o limite do plano Hobby da Vercel, que só
 // aceita cron diário; um schedule mais frequente faz a Vercel rejeitar o
 // deploy inteiro. Consequência prática: durante o dia, o frescor do estoque
-// depende do webhook do ERP (api/erp/webhook.ts), que é entrega no melhor
+// depende do webhook do ERP (_lib/handlers/webhook.ts), que é entrega no melhor
 // esforço, e do botão "Sincronizar agora" no painel. O cron diário vira uma
 // reconciliação de madrugada em vez de rede de segurança contínua.
 //
