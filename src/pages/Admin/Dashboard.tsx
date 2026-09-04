@@ -16,6 +16,8 @@ import AdminAIBlog from './AdminAIBlog';
 import AdminAgenciaNZ from './AdminAgenciaNZ';
 import AdminAgendaSocial from './AdminAgendaSocial';
 import AdminPromoPages from './AdminPromoPages';
+import AdminLogistica from './AdminLogistica';
+import AdminErp from './AdminErp';
 import { PROMO_PAGES } from '../../lib/promoPages';
 
 interface Lead { id: string; name: string; email: string; phone: string; source: string; status: string; created_at: string; }
@@ -29,7 +31,7 @@ interface UserProfile {
   address_zip?: string | null; created_at: string;
 }
 
-type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'promo' | 'users' | 'clients' | 'garantias' | 'agencia' | 'agenda-social' | 'settings';
+type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'promo' | 'users' | 'clients' | 'garantias' | 'agencia' | 'agenda-social' | 'logistica' | 'erp' | 'settings';
 type PeriodType = 'today' | '7d' | 'month' | 'quarter' | 'semester' | 'year';
 
 const PERIOD_LABELS: Record<PeriodType, string> = {
@@ -397,6 +399,8 @@ export default function Dashboard() {
     garantias: 'Garantias Oficiais',
     agencia: 'Agência NZ',
     'agenda-social': 'Agenda Social Media',
+    logistica: 'Logística & Transportadoras',
+  erp: 'Integração NZERP',
     settings: 'Configurações Globais'
   };
 
@@ -453,6 +457,12 @@ export default function Dashboard() {
           </button>
           <button className={`${styles.navLink} ${activeTab === 'users' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('users')}>
             <span>🔐</span> <span>Usuários</span>
+          </button>
+          <button className={`${styles.navLink} ${activeTab === 'erp' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('erp')}>
+            <span>🔗</span> <span>Integração ERP</span>
+          </button>
+          <button className={`${styles.navLink} ${activeTab === 'logistica' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('logistica')}>
+            <span>📦</span> <span>Logística</span>
           </button>
           <button className={`${styles.navLink} ${activeTab === 'settings' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('settings')}>
             <span>⛭</span> <span>Configurações</span>
@@ -906,6 +916,8 @@ export default function Dashboard() {
         {activeTab === 'agenda-social' && <AdminAgendaSocial />}
 
         {/* ===== CONFIGURAÇÕES ===== */}
+        {activeTab === 'logistica' && <AdminLogistica />}
+        {activeTab === 'erp' && <AdminErp />}
         {activeTab === 'settings' && <AdminSettings />}
       </main>
     </div>

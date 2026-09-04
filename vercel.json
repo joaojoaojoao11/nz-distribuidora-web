@@ -1,48 +1,177 @@
 {
   "redirects": [
-    { "source": "/festival", "destination": "/interlagos", "permanent": false },
-    { "source": "/festinterlagos", "destination": "/interlagos", "permanent": false },
-    { "source": "/blog/nzppf-guia-completo-linhas-protecao-carro-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-linhas-instaladores-donos-carro-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-linhas-guia-completo-instaladores-donos-carro-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/guia-completo-nzppf-protecao-veiculo-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/comparativo-nzppf-linhas-protecao-automotiva-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/guia-completo-nzppf-protecao-ideal-carro-sp-instalador", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/guia-completo-linhas-nzppf-protecao-automotiva-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/guia-completo-nzppf-protecao-ideal-sao-paulo-2024", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-linhas-protecao-automotiva-sao-paulo-ms1le3g1", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/guia-nzppf-escolha-protecao-perfeita-veiculo-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-linhas-protecao-automotiva-sao-paulo-mrrlbg5f", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-linhas-protecao-automotiva-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-linhas-instaladores-donos-carro-sp-mrj0o2e2", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/comparativo-definitivo-nzppf-protecao-ideal-carro-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/comparativo-completo-nzppf-protecao-automotiva-sp-instalador", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-definitivo-linhas-instaladores-proprietarios-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/guia-nzppf-linhas-micragens-garantias-aplicacao-instaladores-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/guia-definitivo-nzppf-comparativo-tecnico-instaladores-proprietarios-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/comparativo-completo-nzppf-protecao-ideal-veiculos-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/comparativo-nzppf-protecao-ideal-carro-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-linhas-protecao-instaladores-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-linhas-aplicacao-instaladores-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/comparativo-nzppf-guia-instaladores-donos-carro-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-escolher-protecao-ideal-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/nzppf-guia-completo-escolha-ppf-sao-paulo", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/comparativo-nzppf-linhas-protecao-automotiva-sp-guia", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true },
-    { "source": "/blog/comparativo-linhas-nzppf-protecao-roi-instalador-sp", "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp", "permanent": true }
+    {
+      "source": "/festival",
+      "destination": "/interlagos",
+      "permanent": false
+    },
+    {
+      "source": "/festinterlagos",
+      "destination": "/interlagos",
+      "permanent": false
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-linhas-protecao-carro-sao-paulo",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-linhas-instaladores-donos-carro-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-linhas-guia-completo-instaladores-donos-carro-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/guia-completo-nzppf-protecao-veiculo-sao-paulo",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/comparativo-nzppf-linhas-protecao-automotiva-sao-paulo",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/guia-completo-nzppf-protecao-ideal-carro-sp-instalador",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/guia-completo-linhas-nzppf-protecao-automotiva-sao-paulo",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/guia-completo-nzppf-protecao-ideal-sao-paulo-2024",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-linhas-protecao-automotiva-sao-paulo-ms1le3g1",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/guia-nzppf-escolha-protecao-perfeita-veiculo-sao-paulo",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-linhas-protecao-automotiva-sao-paulo-mrrlbg5f",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-linhas-protecao-automotiva-sao-paulo",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-linhas-instaladores-donos-carro-sp-mrj0o2e2",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/comparativo-definitivo-nzppf-protecao-ideal-carro-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/comparativo-completo-nzppf-protecao-automotiva-sp-instalador",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-definitivo-linhas-instaladores-proprietarios-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/guia-nzppf-linhas-micragens-garantias-aplicacao-instaladores-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/guia-definitivo-nzppf-comparativo-tecnico-instaladores-proprietarios-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/comparativo-completo-nzppf-protecao-ideal-veiculos-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/comparativo-nzppf-protecao-ideal-carro-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-linhas-protecao-instaladores-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-linhas-aplicacao-instaladores-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/comparativo-nzppf-guia-instaladores-donos-carro-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-escolher-protecao-ideal-sao-paulo",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/nzppf-guia-completo-escolha-ppf-sao-paulo",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/comparativo-nzppf-linhas-protecao-automotiva-sp-guia",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    },
+    {
+      "source": "/blog/comparativo-linhas-nzppf-protecao-roi-instalador-sp",
+      "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/((?!api/|src/|@vite/|@react-refresh|@id/|@fs/|assets/|node_modules/|index\\.html).*)", "destination": "/api/render?path=/$1" }
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/((?!api/|src/|@vite/|@react-refresh|@id/|@fs/|assets/|node_modules/|index\\.html).*)",
+      "destination": "/api/render?path=/$1"
+    }
   ],
   "functions": {
     "api/cron/ai-writer.ts": {
       "maxDuration": 300
+    },
+    "api/erp/sync.ts": {
+      "maxDuration": 60
     }
   },
   "crons": [
     {
       "path": "/api/cron/ai-writer",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/erp/sync",
+      "schedule": "*/5 * * * *"
     }
   ]
 }
