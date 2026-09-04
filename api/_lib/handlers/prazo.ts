@@ -60,6 +60,7 @@ interface Carrier {
   nome: string;
   cep_origem: string;
   dias_manuseio: number;
+  modalidade: string | null;
   ordem: number;
   config: unknown;
 }
@@ -132,7 +133,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { data: carriers } = await supabase
       .from('shipping_carriers')
-      .select('slug, nome, cep_origem, dias_manuseio, ordem, config')
+      .select('slug, nome, cep_origem, dias_manuseio, modalidade, ordem, config')
       .eq('ativo', true)
       .order('ordem', { ascending: true });
 
@@ -324,6 +325,10 @@ async function cotar(
       carrier: carrier.slug,
       nome: carrier.nome,
       dias: hit.prazo_dias + carrier.dias_manuseio,
+      // O cache não guarda a modalidade; a da transportadora é a mesma coisa,
+      // e sem isso a resposta mudava de formato entre o primeiro visitante
+      // (com modalidade) e todos os seguintes (sem).
+      modalidade: carrier.modalidade ?? undefined,
       valor: hit.valor_frete != null ? Number(hit.valor_frete) : null,
     };
   }

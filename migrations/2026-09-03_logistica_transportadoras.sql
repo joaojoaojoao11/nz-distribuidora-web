@@ -12,7 +12,7 @@
 -- para exceções.
 --
 -- Rodar no SQL Editor do Supabase (projeto uibjmvkvbthzypgozpcs).
--- Aplicada em produção em: (preencher ao aplicar)
+-- Aplicada em produção em: 2026-09-04 (projeto uibjmvkvbthzypgozpcs, via MCP)
 
 -- ---------------------------------------------------------------- perfis
 
