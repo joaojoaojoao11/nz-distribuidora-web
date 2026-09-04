@@ -7,7 +7,7 @@
 // nenhum buraco no layout.
 
 import { useMemo, useState } from 'react';
-import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { getShopItem, VERTICAL_LABEL } from '../../lib/shop/catalog';
@@ -43,10 +43,21 @@ export default function LojaProduct() {
   // visitante de volta à loja em vez de mostrar uma página quebrada.
   if (!item) return <Navigate to="/loja" replace />;
 
-  return <ProductView item={item} backTo={(location.state as { from?: string } | null)?.from ?? '/loja'} />;
+  const from = (location.state as { from?: string } | null)?.from;
+  return <ProductView item={item} backTo={from ?? '/loja'} viaHistorico={Boolean(from)} />;
 }
 
-function ProductView({ item, backTo }: { item: ShopItem; backTo: string }) {
+function ProductView({
+  item,
+  backTo,
+  viaHistorico,
+}: {
+  item: ShopItem;
+  backTo: string;
+  /** Veio de um card da lista: voltar pelo histórico restaura posição e filtros. */
+  viaHistorico: boolean;
+}) {
+  const navigate = useNavigate();
   const [activeImage, setActiveImage] = useState(0);
   const [copied, setCopied] = useState(false);
 
@@ -273,7 +284,21 @@ function ProductView({ item, backTo }: { item: ShopItem; backTo: string }) {
         )}
 
         <div className={styles.backWrap}>
-          <Link to={backTo} className={styles.back}>
+          {/* Com origem conhecida, volta pelo histórico (POP): a Loja lê a
+              posição salva e devolve o usuário ao mesmo card. Sem origem (link
+              direto, busca), o href continua sendo o fallback. */}
+          <Link
+            to={backTo}
+            className={styles.back}
+            onClick={
+              viaHistorico
+                ? (e) => {
+                    e.preventDefault();
+                    navigate(-1);
+                  }
+                : undefined
+            }
+          >
             ← VOLTAR PARA A LOJA
           </Link>
         </div>

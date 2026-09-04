@@ -5,12 +5,14 @@
 // pai. Isso torna a hierarquia visível: quem vê "Acetinado" recuado embaixo de
 // "Fosco" entende sem explicação por que marcar Fosco também traz acetinados.
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { closeModal, useModalLock } from '../../hooks/useModalLock';
 import { COLOR_SWATCH, type FacetOption, type Facets } from '../../lib/shop/facets';
 import type { FilterState } from '../../lib/shop/search/match';
 import type { FilterGroup } from './useShopFilters';
 import styles from './ShopFilters.module.css';
+
+const noop = () => {};
 
 interface Props {
   facets: Facets;
@@ -174,24 +176,11 @@ export default function ShopFilters({
   open = false,
   onClose,
 }: Props) {
-  // Trava o scroll do fundo enquanto a sheet está aberta — mesmo padrão do
-  // SearchPalette. Sem isso o mobile rola a página atrás do painel.
-  useEffect(() => {
-    if (mode !== 'sheet' || !open) return;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [mode, open]);
-
-  useEffect(() => {
-    if (mode !== 'sheet' || !open || !onClose) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [mode, open, onClose]);
+  // Trava de scroll que o iOS respeita, Voltar do Android fechando o painel,
+  // Escape e o sinal para o WhatsApp flutuante sumir — tudo no hook.
+  const fecharSheet = onClose ?? noop;
+  useModalLock(mode === 'sheet' && open, fecharSheet);
+  const reduce = useReducedMotion();
 
   if (mode === 'sidebar') {
     return (
@@ -209,41 +198,52 @@ export default function ShopFilters({
     );
   }
 
+  // Animação curta e quase parada: o spring anterior (~500ms, com overshoot)
+  // fazia a lista inteira de opções percorrer até 700px — qualquer toque nesse
+  // meio segundo acertava uma opção diferente da que o usuário viu. Agora é
+  // 180ms de opacidade com 24px de deslize (zero deslize com reduced-motion),
+  // e na saída o wrapper .leaving corta os toques enquanto o painel some.
   return (
-    <AnimatePresence>
-      {open && (
-        <>
-          <motion.div
-            className={styles.backdrop}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-            onClick={onClose}
-          />
-          <motion.div
-            className={styles.sheet}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Filtros"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 32, stiffness: 320 }}
-          >
-            <span className={styles.sheetHandle} aria-hidden="true" />
-            <Body facets={facets} filters={filters} onToggle={onToggle} />
-            <div className={styles.sheetFooter}>
-              <button type="button" className={styles.sheetClear} onClick={onClearAll}>
-                LIMPAR
-              </button>
-              <button type="button" className={styles.sheetApply} onClick={onClose}>
-                VER {resultCount} {resultCount === 1 ? 'PRODUTO' : 'PRODUTOS'}
-              </button>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+    <div className={open ? undefined : styles.leaving}>
+      <AnimatePresence>
+        {open && (
+          <>
+            <motion.div
+              className={styles.backdrop}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              onClick={() => closeModal(fecharSheet)}
+            />
+            <motion.div
+              className={styles.sheet}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Filtros"
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.12 } }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+            >
+              <span className={styles.sheetHandle} aria-hidden="true" />
+              <Body facets={facets} filters={filters} onToggle={onToggle} />
+              <div className={styles.sheetFooter}>
+                <button type="button" className={styles.sheetClear} onClick={onClearAll}>
+                  LIMPAR
+                </button>
+                <button
+                  type="button"
+                  className={styles.sheetApply}
+                  onClick={() => closeModal(fecharSheet)}
+                >
+                  VER {resultCount} {resultCount === 1 ? 'PRODUTO' : 'PRODUTOS'}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

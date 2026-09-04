@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { closeModal } from '../../hooks/useModalLock';
 import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
 import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
 import styles from './Navbar.module.css';
@@ -29,17 +30,21 @@ export default function Navbar() {
     setSearchOpen(true);
   };
 
-  // Ctrl+K / Cmd+K abre a busca em qualquer página
+  // Ctrl+K / Cmd+K abre a busca em qualquer página. Fechar passa por
+  // closeModal: a paleta empilha uma entrada no histórico ao abrir (é o que
+  // faz o Voltar do Android fechá-la), e fechar sem desempilhar deixaria um
+  // "voltar" morto.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        setSearchOpen((v) => !v);
+        if (searchOpen) closeModal(() => setSearchOpen(false));
+        else setSearchOpen(true);
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [searchOpen]);
 
   return (
     <nav className={styles.navbar}>

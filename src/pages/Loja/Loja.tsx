@@ -10,8 +10,9 @@
 // responsivo), quebraria o Ctrl+F do navegador e complicaria a restauração de
 // scroll ao voltar de um produto.
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigationType } from 'react-router-dom';
+import { SCROLL_KEY_PREFIX } from '../../components/ScrollToTop';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { getShopItem, SHOP_ITEMS } from '../../lib/shop/catalog';
@@ -43,6 +44,40 @@ const SORT_LABEL: Record<SortMode, string> = {
   marca: 'Marca',
 };
 
+/** Pausa entre a última tecla e a atualização da URL/lista. */
+const DEBOUNCE_BUSCA_MS = 150;
+/** Navbar (64) + barra sticky (~56) + folga: onde o topo dos resultados fica visível. */
+const OFFSET_TOPO_RESULTADOS = 128;
+/** Arrasto horizontal maior que isso nos chips não é toque. */
+const SLOP_ARRASTO_PX = 8;
+
+/** Posição salva ao sair para um produto, para o "voltar" devolver ao mesmo ponto. */
+interface ScrollSalvo {
+  y: number;
+  visible: number;
+}
+
+function lerScroll(chave: string): ScrollSalvo | null {
+  try {
+    const raw = sessionStorage.getItem(chave);
+    if (!raw) return null;
+    const v = JSON.parse(raw) as Partial<ScrollSalvo>;
+    return typeof v.y === 'number' && typeof v.visible === 'number'
+      ? { y: v.y, visible: v.visible }
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function gravarScroll(chave: string, dados: ScrollSalvo) {
+  try {
+    sessionStorage.setItem(chave, JSON.stringify(dados));
+  } catch {
+    // Storage bloqueado (janela anônima, cota): o voltar cai no topo, como antes.
+  }
+}
+
 export default function Loja() {
   const {
     filters,
@@ -59,15 +94,30 @@ export default function Loja() {
     activeCount,
   } = useShopFilters();
 
+  const location = useLocation();
+  const navType = useNavigationType();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [curando, setCurando] = useState(false);
   const [copiado, setCopiado] = useState<'ok' | 'erro' | null>(null);
-  // A paginação é keyed pelo estado dos filtros: quando eles mudam, o lote
-  // volta ao início. Ajustar no render (padrão "derivar estado de props") em
-  // vez de num efeito evita o render extra a cada tecla digitada na busca.
-  const [pagina, setPagina] = useState({ chave: '', visible: PAGE_SIZE });
+
+  // Voltar de um produto (POP) devolve o usuário ao mesmo ponto da lista, com
+  // os mesmos lotes carregados. Lido UMA vez, no inicializador: é decisão de
+  // montagem, não de render.
+  const chaveScroll = `${SCROLL_KEY_PREFIX}${location.pathname}${location.search}`;
+  const [restauro] = useState(() => (navType === 'POP' ? lerScroll(chaveScroll) : null));
+
+  // A paginação só cresce dentro da sessão da página. Antes ela voltava a 60 a
+  // cada troca de filtro: o documento encolhia milhares de px e o navegador
+  // reancorava a rolagem — "troquei um filtro e caí em outro lugar". Os cards
+  // já estão no DOM e o content-visibility cobre o custo de pintar.
+  const [visible, setVisible] = useState(() => Math.max(PAGE_SIZE, restauro?.visible ?? 0));
   const searchRef = useRef<HTMLInputElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
+  const chaveAoAbrir = useRef('');
+  const rolarAoTopoDosResultados = useRef(false);
+  const timerBusca = useRef<number | undefined>(undefined);
+  const pointerX = useRef(0);
 
   // Uma seleção congelada (?sel=) manda em tudo: é exatamente a lista que foi
   // enviada ao cliente, na ordem em que foi montada. Filtros não se aplicam —
@@ -109,15 +159,65 @@ export default function Loja() {
   };
 
   const chaveFiltros = JSON.stringify(filters);
-  if (pagina.chave !== chaveFiltros) {
-    setPagina({ chave: chaveFiltros, visible: PAGE_SIZE });
+
+  const abrirSheet = () => {
+    chaveAoAbrir.current = chaveFiltros;
+    setSheetOpen(true);
+  };
+  const fecharSheet = () => {
+    // Filtros mudaram com o painel aberto: "VER N PRODUTOS" pede o início da
+    // lista, não o ponto em que o usuário estava numa lista que já não existe.
+    if (chaveAoAbrir.current !== chaveFiltros) rolarAoTopoDosResultados.current = true;
+    setSheetOpen(false);
+  };
+
+  // Roda no mesmo flush em que a trava do painel devolve o scroll antigo —
+  // cleanups do filho antes dos efeitos do pai — então este scrollTo é o que
+  // fica. Nenhum setState aqui.
+  useEffect(() => {
+    if (sheetOpen || !rolarAoTopoDosResultados.current) return;
+    rolarAoTopoDosResultados.current = false;
+    const topo =
+      (mainRef.current?.getBoundingClientRect().top ?? 0) + window.scrollY - OFFSET_TOPO_RESULTADOS;
+    window.scrollTo(0, Math.max(0, topo));
+  }, [sheetOpen]);
+
+  // Busca com pausa: cada tecla reescrevia a URL, re-filtrava 505 itens e
+  // recalculava todas as facetas — com o teclado aberto num Android
+  // intermediário isso derrubava quadros e enfileirava toques. O input é
+  // controlado localmente e a URL só muda depois da pausa.
+  const [texto, setTexto] = useState(filters.q);
+  const [ultimoCommit, setUltimoCommit] = useState(filters.q);
+  const [qSync, setQSync] = useState(filters.q);
+  if (qSync !== filters.q) {
+    // A URL mudou por fora (✕ do chip, LIMPAR TUDO, voltar): o input segue. Se
+    // foi o nosso próprio commit chegando, não sobrescreve o que o usuário já
+    // digitou depois dele.
+    setQSync(filters.q);
+    if (filters.q !== ultimoCommit) setTexto(filters.q);
   }
-  const visible = pagina.chave === chaveFiltros ? pagina.visible : PAGE_SIZE;
-  const setVisible = useCallback(
-    (fn: (v: number) => number) =>
-      setPagina((p) => ({ chave: p.chave, visible: fn(p.visible) })),
-    []
-  );
+  const digitar = (v: string) => {
+    setTexto(v);
+    window.clearTimeout(timerBusca.current);
+    timerBusca.current = window.setTimeout(() => {
+      setUltimoCommit(v);
+      setQuery(v);
+    }, DEBOUNCE_BUSCA_MS);
+  };
+  const limparBusca = () => {
+    window.clearTimeout(timerBusca.current);
+    setTexto('');
+    setUltimoCommit('');
+    setQuery('');
+  };
+  useEffect(() => () => window.clearTimeout(timerBusca.current), []);
+
+  // Restauração de posição ao voltar de um produto. useLayoutEffect roda antes
+  // do efeito passivo do ScrollToTop; como ele pula em POP quando há posição
+  // salva, o scrollTo daqui é o que fica.
+  useLayoutEffect(() => {
+    if (restauro) window.scrollTo(0, restauro.y);
+  }, [restauro]);
 
   // Revelação progressiva. rootMargin generoso para o lote seguinte já estar
   // pronto quando o usuário chegar nele.
@@ -134,7 +234,7 @@ export default function Loja() {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [visible, results.length, setVisible]);
+  }, [visible, results.length]);
 
   // Atalho "/" foca a busca, igual aos catálogos existentes.
   useEffect(() => {
@@ -262,21 +362,21 @@ export default function Loja() {
               type="search"
               className={styles.searchInput}
               placeholder="Busque por cor, acabamento, marca ou código…"
-              value={filters.q}
-              onChange={(e) => setQuery(e.target.value)}
+              value={texto}
+              onChange={(e) => digitar(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Escape') {
-                  setQuery('');
+                  limparBusca();
                   e.currentTarget.blur();
                 }
               }}
               aria-label="Buscar na loja"
             />
-            {filters.q ? (
+            {texto ? (
               <button
                 type="button"
                 className={styles.searchClear}
-                onClick={() => setQuery('')}
+                onClick={limparBusca}
                 aria-label="Limpar busca"
               >
                 ✕
@@ -289,7 +389,7 @@ export default function Loja() {
           <button
             type="button"
             className={styles.filterBtn}
-            onClick={() => setSheetOpen(true)}
+            onClick={abrirSheet}
             aria-label="Abrir filtros"
           >
             FILTROS
@@ -347,24 +447,43 @@ export default function Loja() {
         />
         )}
 
-        <main className={styles.main}>
+        <main className={styles.main} ref={mainRef}>
           {!emSelecao && activeChips.length > 0 && (
-            <div className={styles.chips}>
-              {activeChips.map((chip) => (
-                <button
-                  key={`${chip.group}-${chip.id}`}
-                  type="button"
-                  className={styles.chip}
-                  onClick={() =>
-                    chip.group === 'q' ? setQuery('') : toggle(chip.group as FilterGroup, chip.id)
+            <div className={styles.chipsRow}>
+              {/* A fila rola na horizontal. Um arrasto menor que o "slop" do
+                  navegador era entregue como clique e removia o filtro sob o
+                  dedo; agora o clique só vale se o ponteiro ficou parado. */}
+              <div
+                className={styles.chips}
+                onPointerDown={(e) => {
+                  pointerX.current = e.clientX;
+                }}
+                onClickCapture={(e) => {
+                  // detail 0 = teclado: passa direto.
+                  if (e.detail !== 0 && Math.abs(e.clientX - pointerX.current) > SLOP_ARRASTO_PX) {
+                    e.preventDefault();
+                    e.stopPropagation();
                   }
-                >
-                  {chip.label}
-                  <span className={styles.chipX} aria-hidden="true">
-                    ✕
-                  </span>
-                </button>
-              ))}
+                }}
+              >
+                {activeChips.map((chip) => (
+                  <button
+                    key={`${chip.group}-${chip.id}`}
+                    type="button"
+                    className={styles.chip}
+                    onClick={() =>
+                      chip.group === 'q' ? limparBusca() : toggle(chip.group as FilterGroup, chip.id)
+                    }
+                  >
+                    {chip.label}
+                    <span className={styles.chipX} aria-hidden="true">
+                      ✕
+                    </span>
+                  </button>
+                ))}
+              </div>
+              {/* Fora do scroller: no fim da fila, arrastar até o final e soltar
+                  limpava tudo. */}
               {activeChips.length > 1 && (
                 <button type="button" className={styles.chipClearAll} onClick={clearAll}>
                   LIMPAR TUDO
@@ -461,13 +580,20 @@ export default function Loja() {
 
           {results.length > 0 ? (
             <>
-              <div className={styles.grid}>
+              {/* Ao sair para um produto, guarda onde estava e quantos lotes
+                  já tinha. Sobrescrita a cada clique e lida só em POP — não
+                  precisa apagar. */}
+              <div
+                className={styles.grid}
+                onClickCapture={() => gravarScroll(chaveScroll, { y: window.scrollY, visible })}
+              >
                 {shown.map((item, i) => (
                   <ShopCard
                     key={item.slug}
                     item={item}
                     eager={i < EAGER_COUNT}
                     onRemove={curando && !emSelecao ? removeItem : undefined}
+                    from={`${location.pathname}${location.search}`}
                   />
                 ))}
               </div>
@@ -521,7 +647,7 @@ export default function Loja() {
         onToggle={toggle}
         onClearAll={clearAll}
         open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
+        onClose={fecharSheet}
       />
       )}
     </div>

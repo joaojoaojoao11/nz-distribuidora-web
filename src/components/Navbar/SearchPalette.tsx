@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { closeModal, useModalLock } from '../../hooks/useModalLock';
 import { SHOP_ITEMS, SOURCE_LABEL } from '../../lib/shop/catalog';
 import { applyFilters, EMPTY_FILTERS } from '../../lib/shop/search/match';
 import { normalize } from '../../lib/shop/types';
@@ -109,25 +110,30 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
     setActiveIndex(0);
   }
 
-  // Efeito só para o que é de fato sincronização com o mundo externo: foco no
-  // input e trava do scroll do body.
+  // Trava de scroll (iOS), Voltar do Android, Escape e o sinal para o WhatsApp
+  // flutuante sumir — tudo no hook.
+  useModalLock(open, onClose);
+
+  // Foco programático só com mouse. No toque ele é o "autoFocus" que o quiz do
+  // Interlagos teve que tirar: o iOS ignora foco fora de um gesto, e o Android
+  // abria o teclado, redimensionava a viewport e movia as linhas de resultado
+  // sob o dedo antes de o usuário ler os atalhos.
   useEffect(() => {
-    if (!open) return;
+    if (!open || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     const t = setTimeout(() => inputRef.current?.focus(), 60);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      clearTimeout(t);
-      document.body.style.overflow = '';
-    };
+    return () => clearTimeout(t);
   }, [open]);
 
   const go = (path: string) => {
     onClose();
-    navigate(path);
+    // `replace`: substitui a entrada sentinela que o hook empilhou ao abrir.
+    // Sem isso o "voltar" seguinte cairia numa entrada morta da mesma página.
+    navigate(path, { replace: true });
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') onClose();
+    // Escape é tratado pelo hook (no window): tratar aqui também fecharia duas
+    // vezes pelo histórico e voltaria uma página a mais.
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setActiveIndex((i) => Math.min(i + 1, results.length - 1));
@@ -159,7 +165,7 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.18 }}
-          onClick={onClose}
+          onClick={() => closeModal(onClose)}
         >
           <motion.div
             className={styles.panel}
@@ -194,7 +200,12 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
                 onKeyDown={onKeyDown}
                 aria-label="Buscar no site"
               />
-              <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Fechar busca">
+              <button
+                type="button"
+                className={styles.closeBtn}
+                onClick={() => closeModal(onClose)}
+                aria-label="Fechar busca"
+              >
                 ESC
               </button>
             </div>

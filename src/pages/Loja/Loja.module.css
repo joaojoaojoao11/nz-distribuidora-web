@@ -270,11 +270,21 @@
 
 /* ------------------------------------------------------------ chips ativos */
 
+/* Linha dos chips: a fila que rola + LIMPAR TUDO fixo fora dela. Dentro do
+   scroller, arrastar até o fim e soltar acionava o botão. */
+.chipsRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
 .chips {
+  flex: 1;
+  min-width: 0;
   display: flex;
   /* 8px entre chips: abaixo disso o dedo pega o vizinho. */
   gap: 0.5rem;
-  margin-bottom: 0.8rem;
   /* No mobile rola na horizontal em vez de empurrar o grid para baixo. */
   flex-wrap: nowrap;
   overflow-x: auto;

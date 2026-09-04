@@ -165,8 +165,13 @@ export function useShopFilters(): UseShopFilters {
   );
 
   const clearAll = useCallback(() => {
-    setParams(new URLSearchParams(), { replace: true });
-  }, [setParams]);
+    const out = new URLSearchParams();
+    // Mesma regra do commit(): a curadoria (?fora=) sobrevive. "LIMPAR TUDO"
+    // limpa filtros, não a lista que o vendedor montou — antes descartava os
+    // itens ocultos em silêncio.
+    if (excluded.length) out.set(PARAM.out, excluded.join(','));
+    setParams(out, { replace: true });
+  }, [setParams, excluded]);
 
   const setExcluded = useCallback(
     (slugs: string[]) => {

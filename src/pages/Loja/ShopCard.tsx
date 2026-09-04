@@ -25,6 +25,12 @@ interface Props {
    * visitante qualquer.
    */
   onRemove?: (slug: string) => void;
+  /**
+   * De onde o visitante veio (pathname + search da lista). Vai no `state` do
+   * Link: é o que permite ao "VOLTAR" do produto usar o histórico e devolver o
+   * usuário à mesma posição, com os mesmos filtros.
+   */
+  from?: string;
 }
 
 function swatchBackground(hex: string): string {
@@ -33,11 +39,16 @@ function swatchBackground(hex: string): string {
   return `linear-gradient(145deg, ${hex} 0%, ${hex} 55%, color-mix(in srgb, ${hex} 78%, #000) 100%)`;
 }
 
-function ShopCardBase({ item, eager = false, onRemove }: Props) {
+function ShopCardBase({ item, eager = false, onRemove, from }: Props) {
   const hasImage = Boolean(item.image);
 
   return (
-    <Link to={`/loja/${item.slug}`} className={styles.card} aria-label={item.name}>
+    <Link
+      to={`/loja/${item.slug}`}
+      state={from ? { from } : undefined}
+      className={styles.card}
+      aria-label={item.name}
+    >
       <div className={styles.media}>
         {hasImage ? (
           <img
