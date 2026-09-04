@@ -326,11 +326,19 @@
 }
 
 .loginBtn {
-  padding: 0.45rem 1.1rem;
+  /* Compacto de propósito: é botão utilitário (Entrar/Admin), não CTA.
+     inline-flex + nowrap impedem o "⚙ Admin" de quebrar em duas linhas e
+     virar um bloco alto; o raio alinha com a pílula da LOJA. */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+  padding: 0.3rem 0.7rem;
   border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
   color: var(--text-secondary);
   font-family: var(--font-heading);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
