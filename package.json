@@ -14,7 +14,8 @@
     "shop:audit": "node scripts/audit-shop.mjs",
     "shop:index": "node scripts/generate-shop-index.mjs",
     "erp:sku-map": "node scripts/propose-sku-map.mjs",
-    "frete:test": "node scripts/test-frete.mjs"
+    "frete:test": "node scripts/test-frete.mjs",
+    "loja:alvos": "node scripts/audit-touch-targets.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",
