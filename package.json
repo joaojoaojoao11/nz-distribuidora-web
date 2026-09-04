@@ -8,7 +8,12 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "audit:catalog-images": "node scripts/audit-catalog-images.mjs"
+    "audit:catalog-images": "node scripts/audit-catalog-images.mjs",
+    "shop:snapshot": "node scripts/generate-shop-snapshot.mjs",
+    "shop:chip-hex": "node scripts/extract-chip-hex.mjs",
+    "shop:audit": "node scripts/audit-shop.mjs",
+    "shop:index": "node scripts/generate-shop-index.mjs",
+    "erp:sku-map": "node scripts/propose-sku-map.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",
