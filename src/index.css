@@ -61,6 +61,32 @@ button {
   font-family: inherit;
 }
 
+/* Toque. `manipulation` mantém rolagem e pinça, mas tira o duplo-toque para
+   zoom — e com ele a espera de ~300ms que o navegador fazia antes de entregar
+   o clique. Não altera layout. Mesmo padrão que o quiz do Interlagos já usava
+   por seletor; aqui vale para o site inteiro. */
+button,
+a,
+select,
+label,
+summary {
+  touch-action: manipulation;
+}
+
+@media (pointer: coarse) {
+  /* O flash cinza do WebKit ao tocar num link parece um estado de erro. */
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Toque longo num botão selecionava o texto dele e abria o balão do iOS;
+     o toque seguinte, para dispensar, caía em outro alvo. */
+  button {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
 /* Taste Skill Defaults */
 .container {
   width: 100%;

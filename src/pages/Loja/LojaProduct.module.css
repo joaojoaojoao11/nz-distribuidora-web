@@ -21,8 +21,17 @@
   color: var(--text-muted);
 }
 
-.breadcrumb a:hover {
-  color: var(--accent-red);
+/* Texto de 15px com ~40px de toque: padding empurra a área, margem negativa
+   devolve o espaço. */
+.breadcrumb a {
+  padding: 0.6rem 0.3rem;
+  margin: -0.6rem -0.3rem;
+}
+
+@media (hover: hover) {
+  .breadcrumb a:hover {
+    color: var(--accent-red);
+  }
 }
 
 .sep {
@@ -69,6 +78,7 @@
   gap: 0.5rem;
   margin-top: 0.6rem;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   scrollbar-width: none;
   padding-bottom: 0.2rem;
 }
@@ -95,8 +105,10 @@
   display: block;
 }
 
-.thumb:hover {
-  opacity: 1;
+@media (hover: hover) {
+  .thumb:hover {
+    opacity: 1;
+  }
 }
 
 .thumbActive {
@@ -138,14 +150,17 @@
   font-size: 0.6rem;
   letter-spacing: 1.2px;
   color: var(--text-secondary);
-  padding: 0.25rem 0.5rem;
+  min-height: 36px;
+  padding: 0.45rem 0.7rem;
   border: 1px solid var(--border-strong);
   border-radius: 6px;
 }
 
-.copyHex:hover {
-  color: var(--text-primary);
-  border-color: var(--accent-red);
+@media (hover: hover) {
+  .copyHex:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-red);
+  }
 }
 
 .colorNote {
@@ -271,8 +286,10 @@
   transition: background var(--transition-snappy);
 }
 
-.ctaPrimary:hover {
-  background: var(--accent-red-hover);
+@media (hover: hover) {
+  .ctaPrimary:hover {
+    background: var(--accent-red-hover);
+  }
 }
 
 .ctaNote {
@@ -355,14 +372,27 @@
 }
 
 .back {
+  display: inline-block;
   font-family: var(--font-tech);
   font-size: 0.68rem;
   letter-spacing: 1.4px;
   color: var(--text-muted);
+  /* ~41px de toque para um link de 17px de texto. */
+  padding: 0.8rem 0.4rem;
+  margin: -0.8rem -0.4rem;
 }
 
-.back:hover {
-  color: var(--accent-red);
+@media (hover: hover) {
+  .back:hover {
+    color: var(--accent-red);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb,
+  .ctaPrimary {
+    transition: none;
+  }
 }
 
 /* ------------------------------------------------------------ breakpoints */

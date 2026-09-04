@@ -29,8 +29,17 @@
   margin-bottom: 0.9rem;
 }
 
-.breadcrumb a:hover {
-  color: var(--accent-red);
+/* Link de 15px de texto logo abaixo da navbar, onde o polegar apoia. Padding +
+   margem negativa dão ~40px de toque sem mover o texto. */
+.breadcrumb a {
+  padding: 0.75rem 0.4rem;
+  margin: -0.75rem -0.4rem;
+}
+
+@media (hover: hover) {
+  .breadcrumb a:hover {
+    color: var(--accent-red);
+  }
 }
 
 .breadcrumbSep {
@@ -102,7 +111,9 @@
 
 .searchBar {
   position: sticky;
-  top: 76px;
+  /* Altura real da navbar (80 desktop / 64 mobile). Com 76/60 os 4px de cima
+     dos botões ficavam por baixo dela e não recebiam toque. */
+  top: 80px;
   z-index: 30;
   padding: 0.8rem 0 0.7rem;
   background: rgba(8, 8, 8, 0.88);
@@ -168,6 +179,16 @@
   font-size: 0.78rem;
 }
 
+/* O ✕ tinha ~12×20px; errar o toque focava o input e abria o teclado. Agora
+   ocupa a altura toda do campo numa coluna de 44px. */
+.searchClear {
+  right: 0;
+  width: 44px;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
 .searchKbd {
   font-family: var(--font-tech);
   font-size: 0.68rem;
@@ -176,8 +197,10 @@
   border-radius: 4px;
 }
 
-.searchClear:hover {
-  color: var(--text-primary);
+@media (hover: hover) {
+  .searchClear:hover {
+    color: var(--text-primary);
+  }
 }
 
 .filterBtn {
@@ -192,11 +215,14 @@
   font-size: 0.68rem;
   letter-spacing: 1.4px;
   white-space: nowrap;
+  min-height: 44px;
 }
 
-.filterBtn:hover {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
+@media (hover: hover) {
+  .filterBtn:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
 }
 
 .filterBadge {
@@ -246,11 +272,13 @@
 
 .chips {
   display: flex;
-  gap: 0.4rem;
+  /* 8px entre chips: abaixo disso o dedo pega o vizinho. */
+  gap: 0.5rem;
   margin-bottom: 0.8rem;
   /* No mobile rola na horizontal em vez de empurrar o grid para baixo. */
   flex-wrap: nowrap;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   scrollbar-width: none;
   padding-bottom: 0.2rem;
 }
@@ -264,7 +292,8 @@
   align-items: center;
   gap: 0.35rem;
   flex: none;
-  padding: 0.32rem 0.6rem;
+  min-height: 40px;
+  padding: 0.32rem 0.75rem;
   border-radius: 99px;
   border: 1px solid var(--accent-red);
   background: rgba(209, 30, 30, 0.1);
@@ -273,8 +302,10 @@
   white-space: nowrap;
 }
 
-.chip:hover {
-  background: rgba(209, 30, 30, 0.2);
+@media (hover: hover) {
+  .chip:hover {
+    background: rgba(209, 30, 30, 0.2);
+  }
 }
 
 .chipX {
@@ -284,7 +315,8 @@
 
 .chipClearAll {
   flex: none;
-  padding: 0.32rem 0.6rem;
+  min-height: 40px;
+  padding: 0.32rem 0.75rem;
   color: var(--text-muted);
   font-family: var(--font-tech);
   font-size: 0.62rem;
@@ -292,8 +324,10 @@
   white-space: nowrap;
 }
 
-.chipClearAll:hover {
-  color: var(--text-primary);
+@media (hover: hover) {
+  .chipClearAll:hover {
+    color: var(--text-primary);
+  }
 }
 
 .resultCount {
@@ -332,9 +366,11 @@
   letter-spacing: 1.4px;
 }
 
-.loadMore:hover {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
+@media (hover: hover) {
+  .loadMore:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
 }
 
 /* ------------------------------------------------------------ empty state */
@@ -388,8 +424,10 @@
   letter-spacing: 1.3px;
 }
 
-.emptyWhats:hover {
-  background: var(--accent-red-hover);
+@media (hover: hover) {
+  .emptyWhats:hover {
+    background: var(--accent-red-hover);
+  }
 }
 
 /* ------------------------------------------------------------ breakpoints */
@@ -403,11 +441,35 @@
 
 @media (max-width: 768px) {
   .searchBar {
-    top: 60px;
+    top: 64px;
     padding: 0.6rem 0 0.55rem;
   }
   .hero {
     padding: 5.5rem 0 1.2rem;
+  }
+  /* Folga para a última fileira e o CARREGAR MAIS rolarem acima do botão
+     flutuante do WhatsApp (54px + margem) e da barra do home indicator. */
+  .page {
+    padding-bottom: calc(5rem + 64px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Blur fora do desktop: a barra sticky compõe blur(14px) sobre TODO o grid a
+   cada quadro da rolagem — no celular intermediário é justamente o quadro em
+   que o toque acontece que trava. Fundo quase opaco entrega o mesmo efeito. */
+@media (max-width: 1023px) {
+  .searchBar {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(8, 8, 8, 0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .searchInput,
+  .curarBtn,
+  .chip {
+    transition: none;
   }
 }
 
@@ -456,11 +518,8 @@
   font-size: 0.66rem;
   letter-spacing: 1.3px;
   white-space: nowrap;
+  min-height: 44px;
   transition: background var(--transition-snappy), border-color var(--transition-snappy);
-}
-
-.curarBtn:hover {
-  background: rgba(209, 30, 30, 0.22);
 }
 
 .curarBtnAtivo {
@@ -468,8 +527,13 @@
   color: #fff;
 }
 
-.curarBtnAtivo:hover {
-  background: var(--accent-red-hover);
+@media (hover: hover) {
+  .curarBtn:hover {
+    background: rgba(209, 30, 30, 0.22);
+  }
+  .curarBtnAtivo:hover {
+    background: var(--accent-red-hover);
+  }
 }
 
 /* Há itens ocultos: o botão vira sólido e ganha contagem. É o estado que o
@@ -528,6 +592,8 @@
 }
 
 .alertaAcao {
+  /* Desfaz a curadoria inteira: alvo tem que ser deliberado, não um roçar. */
+  min-height: 40px;
   padding: 0.45rem 0.8rem;
   border: 1px solid #f0c000;
   border-radius: 8px;
@@ -538,9 +604,11 @@
   white-space: nowrap;
 }
 
-.alertaAcao:hover {
-  background: #f0c000;
-  color: #111;
+@media (hover: hover) {
+  .alertaAcao:hover {
+    background: #f0c000;
+    color: #111;
+  }
 }
 
 .resultOcultos {
@@ -578,8 +646,10 @@
   padding: 0;
 }
 
-.curadoriaUndo:hover {
-  color: var(--text-primary);
+@media (hover: hover) {
+  .curadoriaUndo:hover {
+    color: var(--text-primary);
+  }
 }
 
 .curadoriaAcoes {
@@ -589,6 +659,7 @@
 }
 
 .curadoriaCopiar {
+  min-height: 44px;
   padding: 0.6rem 1rem;
   border-radius: 8px;
   background: var(--accent-red);
@@ -600,8 +671,10 @@
   white-space: nowrap;
 }
 
-.curadoriaCopiar:hover:not(:disabled) {
-  background: var(--accent-red-hover);
+@media (hover: hover) {
+  .curadoriaCopiar:hover:not(:disabled) {
+    background: var(--accent-red-hover);
+  }
 }
 
 .curadoriaCopiar:disabled {
@@ -638,7 +711,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.28rem 0.55rem;
+  min-height: 40px;
+  padding: 0.28rem 0.75rem;
   border-radius: 99px;
   border: 1px dashed var(--border-strong);
   color: var(--text-muted);
@@ -646,11 +720,13 @@
   text-decoration: line-through;
 }
 
-.removidoChip:hover {
-  border-style: solid;
-  border-color: var(--accent-red);
-  color: var(--text-primary);
-  text-decoration: none;
+@media (hover: hover) {
+  .removidoChip:hover {
+    border-style: solid;
+    border-color: var(--accent-red);
+    color: var(--text-primary);
+    text-decoration: none;
+  }
 }
 
 /* ================================================ VISÃO DO CLIENTE
@@ -690,10 +766,15 @@
   letter-spacing: 1.3px;
   color: var(--text-muted);
   white-space: nowrap;
+  /* Descarta a seleção que o cliente recebeu: ~41px de toque, texto no lugar. */
+  padding: 0.75rem 0.4rem;
+  margin: -0.75rem -0.4rem;
 }
 
-.selecaoVerTudo:hover {
-  color: var(--accent-red);
+@media (hover: hover) {
+  .selecaoVerTudo:hover {
+    color: var(--accent-red);
+  }
 }
 
 @media (min-width: 1024px) {

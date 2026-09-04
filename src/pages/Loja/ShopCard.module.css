@@ -14,17 +14,33 @@
      centenas de nós no DOM sem virtualização. */
   content-visibility: auto;
   contain-intrinsic-size: auto 304px;
+  /* Toque longo selecionava o nome do produto e abria o balão do iOS; o toque
+     seguinte, para dispensar, caía no card vizinho. */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-.card:hover,
 .card:focus-visible {
   border-color: var(--border-strong);
   transform: translateY(-3px);
-}
-
-.card:focus-visible {
   outline: 2px solid var(--accent-red);
   outline-offset: 2px;
+}
+
+/* Hover só com ponteiro que paira. No toque o estado grudava no último card
+   tocado e o translateY movia o alvo justamente enquanto o dedo descia. */
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+  }
+  .card:hover .image {
+    transform: scale(1.04);
+  }
+  .card:hover .hoverCta {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .media {
@@ -40,10 +56,6 @@
   object-fit: cover;
   display: block;
   transition: transform var(--transition-smooth);
-}
-
-.card:hover .image {
-  transform: scale(1.04);
 }
 
 .swatch {
@@ -102,7 +114,6 @@
   transition: opacity var(--transition-snappy), transform var(--transition-snappy);
 }
 
-.card:hover .hoverCta,
 .card:focus-visible .hoverCta {
   opacity: 1;
   transform: translateY(0);
@@ -151,30 +162,55 @@
 }
 
 /* No toque não existe hover: o CTA fica sempre escondido e o card inteiro é o
-   alvo, então não faz sentido ocupar espaço com ele. */
+   alvo, então não faz sentido ocupar espaço com ele. (As regras de hover já
+   vivem dentro de @media (hover: hover), então não há mais o que neutralizar.) */
 @media (hover: none) {
   .hoverCta {
     display: none;
-  }
-  .card:hover {
-    transform: none;
-  }
-  .card:hover .image {
-    transform: none;
   }
 }
 
 @media (max-width: 1023px) {
   .card {
     grid-template-rows: auto 84px;
-    contain-intrinsic-size: auto 260px;
     border-radius: 10px;
+    /* Placeholder = altura real do card (coluna + 84 + 2 de borda). O `auto`
+       só memoriza o tamanho DEPOIS de renderizar; nos cards ainda fora da
+       tela é este número que segura a barra de rolagem. Com 260 fixo a lista
+       derivava até 13px por linha na primeira rolagem — e o dedo caía no card
+       de baixo. 421–1023px varia de 2 a 5 colunas: 262 é o meio da faixa. */
+    contain-intrinsic-size: auto 262px;
   }
   .name {
     font-size: 0.85rem;
   }
   .meta {
     font-size: 0.66rem;
+  }
+  /* 60 cards × blur(6px) em .code e .remove = 60+ camadas compostas por
+     quadro na rolagem. O mesmo fundo quase opaco lê igual e custa nada. */
+  .code,
+  .remove {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(5, 5, 5, 0.86);
+  }
+}
+
+@media (max-width: 420px) {
+  .card {
+    /* 2 colunas fixas com gap 10: coluna ≈ 45vw − 5px → 45vw + 81px de altura
+       (conferido: 256,5px em 390 de viewport). */
+    contain-intrinsic-size: auto calc(45vw + 81px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .image,
+  .hoverCta,
+  .remove {
+    transition: none;
   }
 }
 
@@ -201,10 +237,22 @@
     border-color var(--transition-snappy);
 }
 
-.remove:hover {
-  background: var(--accent-red);
-  border-color: var(--accent-red);
-  color: #fff;
+/* Área de toque de 44px com o × visual de 26px. O pseudo-elemento é hit-testado
+   como parte do botão, então o toque a 9px do círculo ainda dispara o onClick
+   do × (que faz preventDefault + stopPropagation) em vez de navegar pelo Link
+   do card — antes errar 8px abria o produto. */
+.remove::before {
+  content: '';
+  position: absolute;
+  inset: -9px;
+}
+
+@media (hover: hover) {
+  .remove:hover {
+    background: var(--accent-red);
+    border-color: var(--accent-red);
+    color: #fff;
+  }
 }
 
 .remove:focus-visible {

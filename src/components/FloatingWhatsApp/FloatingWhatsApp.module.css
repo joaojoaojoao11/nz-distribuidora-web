@@ -1,12 +1,22 @@
 .container {
   position: fixed;
-  bottom: 2rem;
+  bottom: calc(2rem + env(safe-area-inset-bottom));
   right: 2rem;
-  z-index: 9999;
+  /* 80: abaixo do painel de filtros e do backdrop da loja (150), da navbar
+     (100), da paleta de busca (300) e dos modais (≥1000). Com 9999 ele ficava
+     por cima de tudo e cobria o "VER N PRODUTOS" do painel. */
+  z-index: 80;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Some enquanto houver um painel modal aberto (filtros da loja, busca). O
+   sinal vem do hook useModalLock, que marca o body — nenhum estado precisa
+   atravessar componentes para isso. */
+body[data-nz-modal] .container {
+  display: none;
 }
 
 .menu {
@@ -67,9 +77,11 @@
   transition: all 0.2s ease;
 }
 
-.contactBtn:hover {
-  background: rgba(37, 211, 102, 0.1);
-  color: #25D366;
+@media (hover: hover) {
+  .contactBtn:hover {
+    background: rgba(37, 211, 102, 0.1);
+    color: #25D366;
+  }
 }
 
 .contactIcon {
@@ -93,25 +105,27 @@
   z-index: 10;
 }
 
-.mainBtn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
-}
-
 .mainBtnOpen {
   background-color: #1a1a1a;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.mainBtnOpen:hover {
-  background-color: #2a2a2a;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+/* O scale(1.1) no toque crescia o botão debaixo do dedo e grudava assim. */
+@media (hover: hover) {
+  .mainBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+  }
+  .mainBtnOpen:hover {
+    background-color: #2a2a2a;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+  }
 }
 
 @media (max-width: 768px) {
   .container {
-    bottom: 1.5rem;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom));
     right: 1.5rem;
   }
   

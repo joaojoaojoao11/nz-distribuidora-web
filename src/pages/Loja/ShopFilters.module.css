@@ -35,14 +35,19 @@
   color: var(--text-muted);
 }
 
+/* 18px de texto, 44px de toque: o padding empurra a área sensível para fora e
+   a margem negativa devolve o espaço, sem mexer no alinhamento do cabeçalho. */
 .clearLink {
   font-size: 0.7rem;
   color: var(--accent-red);
-  padding: 0;
+  padding: 0.75rem 0.5rem;
+  margin: -0.75rem -0.5rem;
 }
 
-.clearLink:hover {
-  color: var(--accent-red-hover);
+@media (hover: hover) {
+  .clearLink:hover {
+    color: var(--accent-red-hover);
+  }
 }
 
 /* ---------------------------------------------------------------- grupos */
@@ -74,6 +79,8 @@
 }
 
 .option {
+  /* Âncora do traço da árvore (.optionChild::before). */
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.55rem;
@@ -86,9 +93,13 @@
   transition: background var(--transition-snappy), color var(--transition-snappy);
 }
 
-.option:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+/* No toque não existe hover: sem o guard, o estado ficava "grudado" na opção
+   tocada e parecia uma segunda seleção. */
+@media (hover: hover) {
+  .option:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
 }
 
 /* Indentação do filho na árvore de acabamentos: é o que torna a relação
@@ -100,6 +111,7 @@
 .optionChild::before {
   content: '';
   position: absolute;
+  top: 50%;
   margin-left: -0.95rem;
   width: 7px;
   height: 1px;
@@ -161,9 +173,11 @@
   transition: background var(--transition-snappy), border-color var(--transition-snappy);
 }
 
-.colorChip:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+@media (hover: hover) {
+  .colorChip:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
 }
 
 .colorChipActive {
@@ -206,13 +220,16 @@
 
 /* --------------------------------------------------------- bottom-sheet */
 
+/* z-index 150/151: acima da navbar (100). Com 90/91 a navbar ficava POR CIMA
+   do escurecimento — logo e hambúrguer continuavam tocáveis com o painel
+   aberto, e o toque "ia parar em outra página". Abaixo da paleta de busca
+   (300) e dos modais (≥1000). Sem blur: era mais uma camada composta no
+   celular, e o escurecimento sozinho já isola o painel. */
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: 90;
-  background: rgba(0, 0, 0, 0.62);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  z-index: 150;
+  background: rgba(0, 0, 0, 0.66);
 }
 
 .sheet {
@@ -220,8 +237,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 91;
+  z-index: 151;
   max-height: 84vh;
+  /* dvh acompanha a barra do Safari; vh acima fica como fallback. */
+  max-height: 84dvh;
   overflow-y: auto;
   overscroll-behavior: contain;
   background: var(--bg-secondary);
@@ -271,8 +290,51 @@
   letter-spacing: 1.4px;
 }
 
-.sheetApply:hover {
-  background: var(--accent-red-hover);
+@media (hover: hover) {
+  .sheetApply:hover {
+    background: var(--accent-red-hover);
+  }
+}
+
+/* Painel em saída: continua no DOM durante a animação de fechar e recebia
+   toques — o usuário tocava em "VER N PRODUTOS", o grid aparecia embaixo e um
+   segundo toque caía num card. */
+.leaving {
+  pointer-events: none;
+}
+
+/* ------------------------------------------------- alvos de toque (sheet)
+   Só no bottom-sheet: a sidebar do desktop tem mouse e ficaria inflada.
+   48px é o alvo do Material; a folga de 4px entre opções é o que impede o
+   dedo (40-50px de polpa) de cobrir duas ao mesmo tempo — antes eram 34,7px
+   com 1,6px de separação. */
+@media (max-width: 1023px) {
+  .optionList {
+    gap: 0.25rem;
+  }
+  .option {
+    min-height: 48px;
+    padding: 0.5rem 0.6rem;
+  }
+  .colorGrid {
+    gap: 0.5rem;
+  }
+  .colorChip {
+    min-height: 48px;
+    padding: 0.5rem 0.6rem;
+  }
+  .sheetClear,
+  .sheetApply {
+    min-height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option,
+  .colorChip,
+  .optionBox {
+    transition: none;
+  }
 }
 
 @media (min-width: 1024px) {

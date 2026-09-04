@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon-zoomed.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover: sem isso o iOS resolve env(safe-area-inset-*) para 0
+         e o rodapé do painel de filtros da loja encosta na barra do home
+         indicator. Zoom continua liberado (acessibilidade). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Distribuidora de PPF e envelopamento premium no Brasil. Películas NZPPF, NZWRAP e ORACAL para instaladores e lojistas, com rede de aplicadores credenciados e garantia de fábrica." />
     <meta property="og:site_name" content="NZ Distribuidora" />
     <meta property="og:locale" content="pt_BR" />
