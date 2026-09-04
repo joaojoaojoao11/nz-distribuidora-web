@@ -198,7 +198,17 @@ export default function Loja() {
             <span className={styles.breadcrumbSep}>·</span>
             <span className={styles.breadcrumbCurrent}>LOJA</span>
           </div>
-          <h1 className={styles.heroTitle}>Loja NZ</h1>
+          {/* Continua sendo o h1 da página: o texto que o Google lê vem do
+              alt, não do conteúdo do elemento. */}
+          <h1 className={styles.heroTitle}>
+            <img
+              src="/assets/logos/logo-nzstore-branco.png"
+              alt="NZSTORE — Loja NZ"
+              className={styles.heroLogo}
+              width={713}
+              height={136}
+            />
+          </h1>
           <p className={styles.heroSubtitle}>
             Todo o portfólio num só lugar — cores, padrões e linhas técnicas. Valores sob consulta.
           </p>

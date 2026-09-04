@@ -78,7 +78,15 @@ export default function Navbar() {
             className={`${styles.navLink} ${styles.navLinkShop} ${location.pathname.startsWith('/loja') ? styles.navLinkShopActive : ''}`}
             onClick={closeMenu}
           >
-            LOJA
+            {/* width/height do arquivo: reservam o espaço antes de a imagem
+                carregar, senão o menu inteiro salta quando ela chega. */}
+            <img
+              src="/assets/logos/logo-nzstore-branco.png"
+              alt="NZSTORE"
+              className={styles.navLogoStore}
+              width={713}
+              height={136}
+            />
           </Link>
           <Link to="/ppf" className={`${styles.navLink} ${location.pathname === '/ppf' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             <img src="/assets/logos/logo-nz-ppf.svg" alt="Linha NZ PPF" className={styles.navLogo} />

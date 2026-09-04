@@ -49,6 +49,17 @@
   margin-bottom: 0.5rem;
 }
 
+/* O logotipo no lugar do texto do h1. A altura acompanha a mesma escala
+   fluida que a fonte do título usava, para o cabeçalho não mudar de peso entre
+   celular e desktop; max-width segura a largura em telas estreitas, já que o
+   desenho é bem alongado (5,2:1). */
+.heroLogo {
+  display: block;
+  height: clamp(2rem, 6.5vw, 3.1rem);
+  width: auto;
+  max-width: 100%;
+}
+
 .heroSubtitle {
   font-size: clamp(0.88rem, 2.2vw, 1rem);
   color: var(--text-secondary);

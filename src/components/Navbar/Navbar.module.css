@@ -52,6 +52,27 @@
     background var(--transition-snappy);
 }
 
+/* O logotipo NZSTORE ocupa o lugar da palavra "LOJA". Altura casada com a
+   altura da caixa de texto dos vizinhos (0.875rem), para a pílula continuar
+   alinhada à linha do menu — não é um logo de linha como os de /wrap e /ppf,
+   que são maiores de propósito. O PNG é branco puro com fundo transparente.
+
+   A opacidade substitui o que a cor fazia: como texto, "LOJA" nascia em
+   --text-secondary e clareava no hover e na rota ativa. Imagem não obedece a
+   `color`, então a mesma hierarquia vem daqui. */
+.navLogoStore {
+  display: block;
+  height: 14px;
+  width: auto;
+  opacity: 0.78;
+  transition: opacity var(--transition-snappy);
+}
+
+.navLinkShop:hover .navLogoStore,
+.navLinkShopActive .navLogoStore {
+  opacity: 1;
+}
+
 .navLinkShop:hover {
   color: var(--text-primary);
   border-color: var(--accent-red);
@@ -453,6 +474,10 @@
     justify-content: center;
     min-height: 56px;
     letter-spacing: 2px;
+  }
+
+  .navLogoStore {
+    height: 20px;
   }
 
   .navLogo {
