@@ -218,6 +218,7 @@ export function MetamarkMcx() {
           ]}
           cardMinPx={150}
           searchPlaceholder="Buscar cor ou código (ex.: MCX-59, Blue Abyss)…"
+          shopPath={(item) => `/loja/${item.id}`}
           disclaimer={COLOR_DISCLAIMER}
           whatsappUrl={(item) => quoteUrl('MetaCast MCX', item.code, item.name)}
         />
@@ -399,6 +400,7 @@ export function MetamarkM7() {
           extraFilters={[{ id: 'matt', label: 'Fosco', test: (i) => !!i.chips?.includes('FOSCO') }]}
           cardMinPx={120}
           searchPlaceholder="Buscar cor, código ou Pantone (ex.: M7-196, Graphite, 447C)…"
+          shopPath={(item) => `/loja/${item.id}`}
           disclaimer={COLOR_DISCLAIMER}
           whatsappUrl={(item) => quoteUrl('Metamark 7 Series', item.code, item.name)}
         />

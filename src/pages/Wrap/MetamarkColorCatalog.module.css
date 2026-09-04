@@ -526,3 +526,17 @@
   .panelSwatch { aspect-ratio: 16 / 9; margin-bottom: 1.1rem; }
   .panelFooter { padding: 1rem 1.2rem calc(1rem + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* Link para a ficha do item na LOJA. Estas cores não tinham URL própria — só
+   existiam como ?cor= dentro deste catálogo. */
+.panelLink {
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+  transition: color var(--transition-snappy);
+}
+
+.panelLink:hover {
+  color: var(--accent-red);
+}

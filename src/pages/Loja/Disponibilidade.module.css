@@ -1,0 +1,146 @@
+/* Bloco de disponibilidade. O que aparece depende do papel, decidido no
+   servidor — este CSS cobre os três níveis. */
+
+.block {
+  padding: 1.1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  margin-bottom: 1.2rem;
+}
+
+.title {
+  font-family: var(--font-tech);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.7rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 99px;
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 0.8px;
+}
+
+.badge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.em-estoque {
+  background: rgba(46, 139, 69, 0.14);
+  border: 1px solid rgba(46, 139, 69, 0.4);
+  color: #4ade80;
+}
+
+.ultimas-unidades {
+  background: rgba(240, 192, 0, 0.12);
+  border: 1px solid rgba(240, 192, 0, 0.38);
+  color: #f0c000;
+}
+
+.sob-encomenda {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+
+.saldo {
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0;
+}
+
+.saldoRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.saldoRow:last-child {
+  border-bottom: none;
+}
+
+.saldoRow dt {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.saldoRow dd {
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.lpns {
+  margin-top: 0.9rem;
+  border-top: 1px solid var(--border-light);
+  padding-top: 0.8rem;
+}
+
+.lpnsSummary {
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.lpnsSummary:hover {
+  color: var(--text-secondary);
+}
+
+.lpnsScroll {
+  margin-top: 0.7rem;
+  overflow-x: auto;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.lpnsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.lpnsTable th {
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  background: var(--bg-secondary);
+}
+
+.lpnsTable td {
+  padding: 0.4rem 0.5rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.nota {
+  margin-top: 0.7rem;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}

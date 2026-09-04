@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { shDecorProducts, shDecorFamilies } from '../../pages/Decor/shDecorProducts';
-import { ethernaProducts, ethernaFamilies } from '../../pages/Decor/ethernaProducts';
-import { averyFamilies } from '../../pages/Sign/averyLines';
-import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
-import { MCX_COLORS, MCX_FINISHES } from '../../lib/data/metamarkMcxColors';
-import { M7_COLORS, M7_FAMILIES } from '../../lib/data/metamark7Colors';
+import { SHOP_ITEMS, SOURCE_LABEL } from '../../lib/shop/catalog';
+import { applyFilters, EMPTY_FILTERS } from '../../lib/shop/search/match';
+import { normalize } from '../../lib/shop/types';
 import styles from './SearchPalette.module.css';
 
 type SearchItem = {
@@ -19,11 +16,12 @@ type SearchItem = {
   keywords?: string;
 };
 
-// busca sem acentos/caixa: "formica" encontra "Fórmica"
-const normalize = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-
+// Páginas do site. Os PRODUTOS não vivem mais aqui: vêm do catálogo unificado
+// de src/lib/shop, que é a mesma fonte que a LOJA usa. Antes esta lista
+// duplicava seis blocos de mapeamento à mão e, por construção, deixava de fora
+// as 116 cores que só existem no banco (Oracal 651/670, SH Wrapping).
 const STATIC_PAGES: SearchItem[] = [
+  { label: 'Loja', sublabel: 'Catálogo completo · todos os produtos', group: 'PÁGINA', path: '/loja', keywords: 'loja catalogo completo produtos comprar' },
   { label: 'NZPPF', sublabel: 'Proteção de pintura', group: 'PÁGINA', path: '/ppf', keywords: 'ppf pelicula protecao pintura' },
   { label: 'Luxury Gloss', sublabel: 'Linha NZPPF', group: 'NZPPF', path: '/ppf/luxury-gloss', keywords: 'ppf luxury' },
   { label: 'Prime Gloss', sublabel: 'Linha NZPPF', group: 'NZPPF', path: '/ppf/prime-gloss', keywords: 'ppf prime' },
@@ -50,61 +48,12 @@ const STATIC_PAGES: SearchItem[] = [
   { label: 'Validar Garantia', sublabel: 'Consulte um certificado', group: 'PÁGINA', path: '/validar-garantia', keywords: 'garantia validar certificado' },
 ];
 
-const buildIndex = (): SearchItem[] => [
-  ...STATIC_PAGES,
-  ...averyFamilies.map((f) => ({
-    label: f.shortName,
-    sublabel: f.subtitle,
-    group: 'NZSIGN',
-    path: `/sign/${f.slug}`,
-    keywords: `avery ${f.name}`,
-  })),
-  ...NZWRAP_COLORS.map((c) => ({
-    label: c.name.replace(/^NZWRAP /, ''),
-    sublabel: `${c.sku} · ${c.finish}`,
-    group: 'NZWRAP',
-    // minúsculo: é o formato que a página de cor emite como canonical
-    path: `/wrap/nzwrap-premium/${c.sku.toLowerCase()}`,
-    swatch: c.hex,
-    keywords: 'cor nzwrap premium',
-  })),
-  ...MCX_COLORS.map((c) => ({
-    label: c.name,
-    sublabel: `${c.code} · ${MCX_FINISHES.find((f) => f.id === c.finish)?.label ?? ''}`,
-    group: 'METACAST MCX',
-    path: `/wrap/metamark-mcx?cor=${c.slug}`,
-    thumb: c.chip,
-    keywords: `metamark metacast cor envelopamento ${c.inspire ? 'inspire colours' : ''}`,
-  })),
-  ...M7_COLORS.map((c) => ({
-    label: c.name,
-    sublabel: `${c.code}${c.pantone ? ` · Pantone ${c.pantone}` : ''}`,
-    group: 'METAMARK M7',
-    path: `/wrap/metamark-7-series?cor=${c.slug}`,
-    swatch: c.hex,
-    keywords: `metamark m7 vinil recorte cor ${M7_FAMILIES.find((f) => f.id === c.family)?.labelPt ?? ''} ${c.pantone ?? ''} ${c.cmyk ?? ''}`,
-  })),
-  ...shDecorProducts.map((p) => ({
-    label: p.name,
-    sublabel: `${p.code} · ${shDecorFamilies.find((f) => f.slug === p.family)?.name ?? ''}`,
-    group: 'SH DECOR',
-    path: `/decor/sh/${p.slug}`,
-    thumb: p.images.texture,
-    keywords: 'padrao vinil decorativo',
-  })),
-  ...ethernaProducts.map((p) => ({
-    label: p.name,
-    sublabel: `${p.code ? `CÓD. ${p.code} · ` : ''}${ethernaFamilies.find((f) => f.slug === p.family)?.name ?? ''}`,
-    group: 'ETHERNA',
-    path: `/decor/etherna/${p.slug}`,
-    thumb: p.images.texture,
-    keywords: 'padrao vinil adesivo',
-  })),
-];
-
 const QUICK_LINKS = STATIC_PAGES.filter((p) =>
-  ['/ppf', '/wrap', '/sign', '/decor', '/encontre-aplicador', '/registro-garantia'].includes(p.path)
+  ['/loja', '/ppf', '/wrap', '/sign', '/decor', '/encontre-aplicador'].includes(p.path)
 );
+
+const MAX_PAGES = 3;
+const MAX_PRODUCTS = 6;
 
 export default function SearchPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
   const navigate = useNavigate();
@@ -113,34 +62,57 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const index = useMemo(buildIndex, []);
-
-  const results = useMemo(() => {
+  const results = useMemo<SearchItem[]>(() => {
     const nq = normalize(query);
     if (!nq) return QUICK_LINKS;
-    const scored: { item: SearchItem; score: number }[] = [];
-    for (const item of index) {
-      const label = normalize(item.label);
-      const rest = normalize(`${item.sublabel} ${item.keywords ?? ''} ${item.group}`);
+
+    // Páginas: match textual simples, como antes.
+    const pages: { item: SearchItem; score: number }[] = [];
+    for (const page of STATIC_PAGES) {
+      const label = normalize(page.label);
+      const rest = normalize(`${page.sublabel} ${page.keywords ?? ''} ${page.group}`);
       let score: number | null = null;
       if (label.startsWith(nq)) score = 0;
       else if (label.includes(nq)) score = 1;
       else if (rest.includes(nq)) score = 2;
-      if (score !== null) scored.push({ item, score });
+      if (score !== null) pages.push({ item: page, score });
     }
-    return scored
-      .sort((a, b) => a.score - b.score)
-      .slice(0, 9)
-      .map((s) => s.item);
-  }, [index, query]);
+    pages.sort((a, b) => a.score - b.score);
 
-  useEffect(() => setActiveIndex(0), [query]);
+    // Produtos: o MESMO motor da LOJA, então "azul fosco" funciona aqui igual.
+    const products = applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, q: query })
+      .slice(0, MAX_PRODUCTS)
+      .map<SearchItem>((item) => ({
+        label: item.name,
+        sublabel: [item.code, item.finishLabel ?? item.line].filter(Boolean).join(' · '),
+        group: SOURCE_LABEL[item.source].toUpperCase(),
+        path: `/loja/${item.slug}`,
+        thumb: item.image ?? undefined,
+        swatch: item.image ? undefined : item.hex ?? undefined,
+      }));
 
-  // foco + trava o scroll do body enquanto aberto
+    return [...pages.slice(0, MAX_PAGES).map((p) => p.item), ...products];
+  }, [query]);
+
+  // Total real da busca, para oferecer "ver todos na loja".
+  const totalProducts = useMemo(() => {
+    if (!query.trim()) return 0;
+    return applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, q: query }).length;
+  }, [query]);
+
+  // Reset por comparação com o valor anterior, ajustado durante o render. O
+  // efeito equivalente causaria um render extra a cada tecla digitada.
+  const [prev, setPrev] = useState({ open, query });
+  if (prev.open !== open || prev.query !== query) {
+    setPrev({ open, query });
+    if (prev.open !== open && open) setQuery('');
+    setActiveIndex(0);
+  }
+
+  // Efeito só para o que é de fato sincronização com o mundo externo: foco no
+  // input e trava do scroll do body.
   useEffect(() => {
     if (!open) return;
-    setQuery('');
-    setActiveIndex(0);
     const t = setTimeout(() => inputRef.current?.focus(), 60);
     document.body.style.overflow = 'hidden';
     return () => {
@@ -149,9 +121,9 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
     };
   }, [open]);
 
-  const go = (item: SearchItem) => {
+  const go = (path: string) => {
     onClose();
-    navigate(item.path);
+    navigate(path);
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -164,7 +136,11 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
       e.preventDefault();
       setActiveIndex((i) => Math.max(i - 1, 0));
     }
-    if (e.key === 'Enter' && results[activeIndex]) go(results[activeIndex]);
+    if (e.key === 'Enter') {
+      // Sem item ativo válido, Enter leva à loja com a busca aplicada.
+      if (results[activeIndex]) go(results[activeIndex].path);
+      else if (query.trim()) go(`/loja?q=${encodeURIComponent(query)}`);
+    }
   };
 
   // mantém o item ativo visível na lista
@@ -212,7 +188,7 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
                 ref={inputRef}
                 type="text"
                 className={styles.input}
-                placeholder="Buscar linha, página, padrão ou cor…"
+                placeholder="Buscar produto, cor, acabamento ou página…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={onKeyDown}
@@ -232,7 +208,7 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
                   type="button"
                   data-index={i}
                   className={`${styles.resultItem} ${i === activeIndex ? styles.resultActive : ''}`}
-                  onClick={() => go(item)}
+                  onClick={() => go(item.path)}
                   onMouseEnter={() => setActiveIndex(i)}
                 >
                   {item.thumb && <img src={item.thumb} alt="" className={styles.resultThumb} loading="lazy" />}
@@ -244,9 +220,26 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
                   <span className={styles.resultGroup}>{item.group}</span>
                 </button>
               ))}
+
+              {query && totalProducts > MAX_PRODUCTS && (
+                <button
+                  type="button"
+                  className={styles.resultItem}
+                  onClick={() => go(`/loja?q=${encodeURIComponent(query)}`)}
+                >
+                  <span className={styles.resultText}>
+                    <span className={styles.resultLabel}>
+                      Ver os {totalProducts} resultados na Loja →
+                    </span>
+                    <span className={styles.resultSub}>Com filtros de cor, acabamento e marca</span>
+                  </span>
+                  <span className={styles.resultGroup}>LOJA</span>
+                </button>
+              )}
+
               {query && results.length === 0 && (
                 <p className={styles.empty}>
-                  Nada encontrado para “{query}”. Tente o nome de uma linha, padrão ou página.
+                  Nada encontrado para “{query}”. Tente uma cor (“azul fosco”), uma marca ou um código.
                 </p>
               )}
             </div>

@@ -28,8 +28,14 @@ export default function ProtectedRoute({ children, allowedRoles }: Props) {
     );
   }
 
-  if (allowedRoles && profile && !allowedRoles.includes(profile.role)) {
-    return <Navigate to="/" replace />;
+  // Falha FECHADA: sem perfil carregado não há como saber o papel, então o
+  // acesso é negado. A versão anterior tinha `&& profile` nesta condição, o que
+  // pulava o gate inteiro quando o perfil vinha null — um usuário sem linha em
+  // user_profiles entrava em rota restrita.
+  if (allowedRoles) {
+    if (!profile || !allowedRoles.includes(profile.role)) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   return <>{children}</>;

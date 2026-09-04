@@ -14,6 +14,10 @@ export const routeMeta: Record<string, RouteMeta> = {
     title: 'O Melhor Envelopamento PPF e Adesivo Premium do Brasil',
     description: 'A NZ Distribuidora oferece o portfólio definitivo em envelopamento: PPF, vinil automotivo premium, comunicação visual Avery Dennison e vinil decorativo SH Decor e Etherna Decor.',
   },
+  '/loja': {
+    title: 'Loja — Catálogo Completo NZ',
+    description: 'Todo o portfólio NZ num só lugar: cores de envelopamento, padrões decorativos, vinil de comunicação visual e linhas PPF. Filtre por cor, acabamento e marca.',
+  },
   '/ppf': {
     title: 'Envelopamento PPF Premium | Catálogo Completo',
     description: 'As melhores linhas de Envelopamento PPF do Brasil. Proteção veicular com regeneração térmica, hidrofobia e até 12 anos de garantia.',

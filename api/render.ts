@@ -5,6 +5,7 @@ import { ethernaSlugs } from './_lib/ethernaSlugs.js';
 import { colorFamilies, colorTitle, colorDescription, cleanColorName, type ColorRow } from './_lib/colorCatalog.js';
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 import { ppfLines } from './_lib/ppfLines.js';
+import { getShopIndexItem } from './_lib/shopItems.js';
 import { organization, localBusiness, webSite, breadcrumb, product, faqPage, article, collectionPage, graphScript } from './_lib/jsonld.js';
 
 // Shell HTML com meta correta por rota, para TODOS os user-agents.
@@ -33,6 +34,7 @@ interface ResolvedMeta extends RouteMeta {
 
 // Rótulos curtos para o BreadcrumbList (título completo fica no <title>)
 const crumbLabels: Record<string, string> = {
+  '/loja': 'Loja',
   '/ppf': 'NZPPF',
   '/wrap': 'Envelopamento',
   '/sign': 'NZSIGN',
@@ -57,6 +59,7 @@ const crumbLabels: Record<string, string> = {
 
 // Páginas de listagem que merecem CollectionPage (institucionais ficam só com breadcrumb)
 const catalogPaths = new Set([
+  '/loja',
   '/ppf', '/wrap', '/sign', '/decor', '/decor/sh', '/decor/etherna', '/blog',
   '/wrap/nzwrap-premium', '/wrap/sh-colors', '/wrap/oracal-970ra', '/wrap/oracal-651',
   '/wrap/oracal-670ra', '/wrap/metamark-mcx', '/wrap/metamark-7-series',
@@ -307,6 +310,39 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
     return NOT_FOUND_META;
   }
 
+  // /loja/:slug — página de produto unificada.
+  //
+  // Canonical em duas classes: os itens que já têm página de detalhe própria
+  // apontam para ela (a versão da loja é conveniência de navegação, não uma
+  // segunda entidade); os 129 itens M7 e MCX, que hoje só existem como
+  // ?cor=<slug> dentro do catálogo, são auto-canônicos — e é onde a LOJA gera
+  // páginas indexáveis novas em vez de duplicar as existentes.
+  if (segments[0] === 'loja' && segments.length === 2) {
+    const item = getShopIndexItem(segments[1]);
+    if (!item) return NOT_FOUND_META;
+
+    const canonicalPath = item.selfCanonical ? path : item.legacyPath ?? path;
+
+    return {
+      status: 200,
+      canonicalPath,
+      type: 'website',
+      title: item.title,
+      description: item.description,
+      image: item.image ? `${SITE_URL}${item.image}` : undefined,
+      schema: [
+        organization(),
+        product({
+          name: item.name,
+          path: canonicalPath,
+          brand: item.brand,
+          description: item.description,
+        }),
+        breadcrumb(crumbsFor(path, item.name)),
+      ],
+    };
+  }
+
   return NOT_FOUND_META;
 }
 
@@ -370,13 +406,29 @@ export default async function handler(req: Request) {
 
   try {
     const meta = await resolveMeta(pathname);
+
+    // Higiene de indexação das facetas da LOJA. O rewrite do vercel.json
+    // repassa a query original junto do `path`, então dá para contar aqui.
+    // Uma faceta é intenção de busca legítima (/loja?cor=azul); duas ou mais,
+    // ou qualquer texto livre, é combinação infinita e vira noindex apontando
+    // para /loja. A mesma regra roda no cliente (Loja.tsx) — as duas camadas
+    // precisam concordar.
+    if (pathname === '/loja') {
+      const facetKeys = [...url.searchParams.keys()].filter((k) => k !== 'path');
+      if (facetKeys.includes('q') || facetKeys.includes('sort') || facetKeys.length >= 2) {
+        meta.noindex = true;
+        meta.canonicalPath = '/loja';
+      }
+    }
+
     const html = injectMeta(shell, meta);
     const isColorPage = /^\/wrap\/[^/]+\/[^/]+$/.test(pathname);
+    const isShopProduct = /^\/loja\/[^/]+$/.test(pathname);
     const cache = meta.status === 404
       ? 'public, s-maxage=300'
       : pathname.startsWith('/blog/')
         ? 'public, s-maxage=600, stale-while-revalidate=86400'
-        : isColorPage
+        : isColorPage || isShopProduct
           ? 'public, s-maxage=86400, stale-while-revalidate=604800'
           : 'public, s-maxage=3600, stale-while-revalidate=86400';
 

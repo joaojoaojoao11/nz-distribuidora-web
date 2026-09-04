@@ -1,0 +1,160 @@
+/* Bloco de prazo de entrega. */
+
+.block {
+  padding: 1.1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  margin-bottom: 1.2rem;
+}
+
+.title {
+  font-family: var(--font-tech);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+.field {
+  display: block;
+  min-width: 0;
+}
+
+.input {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  /* 16px: abaixo disso o iOS dá zoom ao focar o campo. */
+  font-size: 16px;
+  transition: border-color var(--transition-snappy);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+.submit {
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 1.3px;
+  white-space: nowrap;
+  transition: color var(--transition-snappy), border-color var(--transition-snappy);
+}
+
+.submit:hover:not(:disabled) {
+  color: var(--text-primary);
+  border-color: var(--accent-red);
+}
+
+.submit:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.erro {
+  margin-top: 0.6rem;
+  font-size: 0.76rem;
+  color: var(--accent-red);
+}
+
+.formatoWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.formatoLabel {
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.formatoSelect {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 7px;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.prazos {
+  list-style: none;
+  margin-top: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.prazo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.prazo:last-child {
+  border-bottom: none;
+}
+
+.prazoCarrier {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.prazoDias {
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.nota {
+  margin-top: 0.7rem;
+  font-size: 0.72rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.nota strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.nota a {
+  color: var(--accent-red);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

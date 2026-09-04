@@ -1,0 +1,709 @@
+/* /loja — mobile-first. Só tokens de src/index.css; nenhuma cor nova. */
+
+.page {
+  background: var(--bg-primary);
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+/* ------------------------------------------------------------------ hero
+   Curto de propósito: a loja é utilitária, o conteúdo é o grid. Não replicar
+   o hero de 9.5rem com mosaico dos catálogos de padrão. */
+
+.hero {
+  position: relative;
+  padding: 7rem 0 1.6rem;
+  background:
+    radial-gradient(ellipse 60% 100% at 50% 0%, rgba(209, 30, 30, 0.1), transparent 70%),
+    var(--bg-primary);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 0.9rem;
+}
+
+.breadcrumb a:hover {
+  color: var(--accent-red);
+}
+
+.breadcrumbSep {
+  opacity: 0.5;
+}
+
+.breadcrumbCurrent {
+  color: var(--text-secondary);
+}
+
+.heroTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  line-height: 1.05;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.heroSubtitle {
+  font-size: clamp(0.88rem, 2.2vw, 1rem);
+  color: var(--text-secondary);
+  max-width: 52ch;
+  margin-bottom: 1.2rem;
+}
+
+.heroCounter {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.counterNumber {
+  font-family: var(--font-tech);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.counterLabel {
+  font-family: var(--font-tech);
+  font-size: 0.58rem;
+  letter-spacing: 1.8px;
+  color: var(--text-muted);
+  margin-right: 0.4rem;
+}
+
+.counterDivider {
+  width: 1px;
+  height: 12px;
+  background: var(--border-strong);
+  margin: 0 0.4rem;
+}
+
+/* ------------------------------------------------------- barra de busca
+   Sticky logo abaixo do menu. Os offsets (76/60) são os mesmos que os
+   catálogos existentes já usam. */
+
+.searchBar {
+  position: sticky;
+  top: 76px;
+  z-index: 30;
+  padding: 0.8rem 0 0.7rem;
+  background: rgba(8, 8, 8, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-light);
+  border-top: 1px solid var(--border-light);
+}
+
+.searchInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.searchWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.85rem;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.72rem 2.6rem 0.72rem 2.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 9px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  /* 16px: abaixo disso o iOS dá zoom ao focar o campo. */
+  font-size: 16px;
+  transition: border-color var(--transition-snappy);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+.searchInput::-webkit-search-cancel-button {
+  display: none;
+}
+
+.searchClear,
+.searchKbd {
+  position: absolute;
+  right: 0.7rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.searchKbd {
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  padding: 0.05rem 0.36rem;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+}
+
+.searchClear:hover {
+  color: var(--text-primary);
+}
+
+.filterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.72rem 0.95rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  color: var(--text-secondary);
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 1.4px;
+  white-space: nowrap;
+}
+
+.filterBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.filterBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 0.25rem;
+  border-radius: 99px;
+  background: var(--accent-red);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 600;
+}
+
+.sortWrap {
+  display: none;
+}
+
+.sortSelect {
+  padding: 0.72rem 0.7rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 9px;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* ----------------------------------------------------------------- shell */
+
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  padding-top: 1.2rem;
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------ chips ativos */
+
+.chips {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+  /* No mobile rola na horizontal em vez de empurrar o grid para baixo. */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 0.2rem;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: none;
+  padding: 0.32rem 0.6rem;
+  border-radius: 99px;
+  border: 1px solid var(--accent-red);
+  background: rgba(209, 30, 30, 0.1);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  background: rgba(209, 30, 30, 0.2);
+}
+
+.chipX {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+}
+
+.chipClearAll {
+  flex: none;
+  padding: 0.32rem 0.6rem;
+  color: var(--text-muted);
+  font-family: var(--font-tech);
+  font-size: 0.62rem;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+}
+
+.chipClearAll:hover {
+  color: var(--text-primary);
+}
+
+.resultCount {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 0.9rem;
+}
+
+.resultCount strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ grid */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-content: start;
+}
+
+.loadMoreWrap {
+  display: flex;
+  justify-content: center;
+  padding: 2.2rem 0 0.5rem;
+}
+
+.loadMore {
+  padding: 0.85rem 1.6rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  color: var(--text-secondary);
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 1.4px;
+}
+
+.loadMore:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+/* ------------------------------------------------------------ empty state */
+
+.empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  border: 1px dashed var(--border-light);
+  border-radius: 14px;
+}
+
+.emptyTitle {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.emptyHint {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  max-width: 46ch;
+  margin: 0 auto 1.4rem;
+}
+
+.emptyActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  justify-content: center;
+}
+
+.emptyClear {
+  padding: 0.72rem 1.2rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  color: var(--text-secondary);
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 1.3px;
+}
+
+.emptyWhats {
+  padding: 0.72rem 1.2rem;
+  border-radius: 9px;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 1.3px;
+}
+
+.emptyWhats:hover {
+  background: var(--accent-red-hover);
+}
+
+/* ------------------------------------------------------------ breakpoints */
+
+@media (min-width: 421px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .searchBar {
+    top: 60px;
+    padding: 0.6rem 0 0.55rem;
+  }
+  .hero {
+    padding: 5.5rem 0 1.2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .shell {
+    grid-template-columns: 252px minmax(0, 1fr);
+    gap: 2rem;
+    padding-top: 1.6rem;
+  }
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
+    gap: 14px;
+  }
+  /* A sidebar está visível: o botão vira ruído e a ordenação ganha o espaço. */
+  .filterBtn {
+    display: none;
+  }
+  .sortWrap {
+    display: block;
+  }
+  .chips {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+@media (min-width: 1600px) {
+  .shell {
+    grid-template-columns: 276px minmax(0, 1fr);
+  }
+}
+
+/* ======================================================== CURADORIA
+   Modo em que o vendedor monta uma lista para enviar ao cliente. */
+
+.curarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.72rem 0.9rem;
+  border: 1px solid var(--accent-red);
+  border-radius: 9px;
+  background: rgba(209, 30, 30, 0.1);
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.3px;
+  white-space: nowrap;
+  transition: background var(--transition-snappy), border-color var(--transition-snappy);
+}
+
+.curarBtn:hover {
+  background: rgba(209, 30, 30, 0.22);
+}
+
+.curarBtnAtivo {
+  background: var(--accent-red);
+  color: #fff;
+}
+
+.curarBtnAtivo:hover {
+  background: var(--accent-red-hover);
+}
+
+/* Há itens ocultos: o botão vira sólido e ganha contagem. É o estado que o
+   vendedor precisa notar antes de mandar a lista para o próximo cliente. */
+.curarBtnAlerta {
+  background: var(--accent-red);
+  color: #fff;
+}
+
+.curarBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 0.28rem;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
+/* Aviso permanente de itens ocultos.
+   Aparece MESMO fora do modo curadoria — esse é justamente o estado perigoso:
+   o vendedor escondeu itens para um cliente, saiu do modo, trocou o filtro
+   para outro cliente, e mandaria a lista incompleta sem perceber. */
+.alertaOcultos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.9rem;
+  border: 1px solid #f0c000;
+  border-left: 3px solid #f0c000;
+  border-radius: 10px;
+  background: rgba(240, 192, 0, 0.09);
+}
+
+.alertaIcone {
+  color: #f0c000;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.alertaTexto {
+  flex: 1;
+  min-width: 12rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.alertaTexto strong {
+  color: #f0c000;
+  font-weight: 600;
+}
+
+.alertaAcao {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #f0c000;
+  border-radius: 8px;
+  color: #f0c000;
+  font-family: var(--font-tech);
+  font-size: 0.64rem;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+}
+
+.alertaAcao:hover {
+  background: #f0c000;
+  color: #111;
+}
+
+.resultOcultos {
+  color: #f0c000;
+}
+
+.curadoria {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem;
+  margin-bottom: 0.9rem;
+  border: 1px solid var(--accent-red);
+  border-radius: 10px;
+  background: rgba(209, 30, 30, 0.08);
+}
+
+.curadoriaInfo {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.curadoriaInfo strong {
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+}
+
+.curadoriaUndo {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+}
+
+.curadoriaUndo:hover {
+  color: var(--text-primary);
+}
+
+.curadoriaAcoes {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.curadoriaCopiar {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  white-space: nowrap;
+}
+
+.curadoriaCopiar:hover:not(:disabled) {
+  background: var(--accent-red-hover);
+}
+
+.curadoriaCopiar:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.curadoriaAviso {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  max-width: 34ch;
+}
+
+/* Removidos: ficam visíveis para poder voltar. Esconder o que foi tirado
+   transforma um clique errado em item perdido. */
+.removidos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.removidosTitulo {
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-right: 0.2rem;
+}
+
+.removidoChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.55rem;
+  border-radius: 99px;
+  border: 1px dashed var(--border-strong);
+  color: var(--text-muted);
+  font-size: 0.73rem;
+  text-decoration: line-through;
+}
+
+.removidoChip:hover {
+  border-style: solid;
+  border-color: var(--accent-red);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+/* ================================================ VISÃO DO CLIENTE
+   O que quem recebe o link enxerga: sem hero, sem filtros, só a lista. */
+
+.selecaoBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 7rem;
+  margin-bottom: 1.4rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--accent-red);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.selecaoTitulo {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.selecaoTexto {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.selecaoVerTudo {
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.3px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.selecaoVerTudo:hover {
+  color: var(--accent-red);
+}
+
+@media (min-width: 1024px) {
+  /* Sem sidebar na visão do cliente: o grid ocupa a largura toda. */
+  .shellSemSidebar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .selecaoBanner {
+    margin-top: 5.5rem;
+  }
+  .curadoria {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .curadoriaAcoes {
+    width: 100%;
+  }
+  .curadoriaCopiar {
+    width: 100%;
+  }
+}

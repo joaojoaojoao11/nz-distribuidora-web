@@ -13,6 +13,8 @@ import './App.css';
 // Code splitting por rota: a Home carrega no bundle inicial; o resto (admin com
 // recharts/jspdf, mapas leaflet, three.js do simulador, catálogos) só baixa
 // quando o visitante navega até lá. Corta o bundle inicial de ~3 MB.
+const Loja = lazy(() => import('./pages/Loja/Loja'));
+const LojaProduct = lazy(() => import('./pages/Loja/LojaProduct'));
 const Ppf = lazy(() => import('./pages/Ppf/Ppf'));
 const LuxuryGloss = lazy(() => import('./pages/Ppf/LuxuryGloss'));
 const PrimeGloss = lazy(() => import('./pages/Ppf/PrimeGloss'));
@@ -100,6 +102,8 @@ function App() {
               <Suspense fallback={<RouteLoading />}>
                 <Routes>
                   <Route path="/" element={<Home />} />
+                  <Route path="/loja" element={<Loja />} />
+                  <Route path="/loja/:slug" element={<LojaProduct />} />
                   <Route path="/ppf" element={<Ppf />} />
                   <Route path="/ppf/luxury-gloss" element={<LuxuryGloss />} />
                   <Route path="/ppf/prime-gloss" element={<PrimeGloss />} />

@@ -29,6 +29,7 @@ export default function Footer() {
           <div className={styles.linksCol}>
             <h4 className={styles.heading}>Catálogo</h4>
             <ul className={styles.navLinks}>
+              <li><Link to="/loja">Loja — Catálogo Completo</Link></li>
               <li><Link to="/ppf">Linha NZ PPF</Link></li>
               <li><Link to="/wrap">Envelopamento</Link></li>
               <li><Link to="/sign">Comunicação Visual</Link></li>

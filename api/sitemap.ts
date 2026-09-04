@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { shDecorSlugs } from './_lib/shDecorSlugs.js';
 import { ethernaSlugs } from './_lib/ethernaSlugs.js';
+import { shopSelfCanonicalSlugs } from './_lib/shopItems.js';
 import { signSlugs } from './_lib/signSlugs.js';
 import { colorFamilies } from './_lib/colorCatalog.js';
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
@@ -23,6 +24,7 @@ export default async function handler(_req: Request) {
   // Base static paths
   const staticPaths = [
     '',
+    '/loja',
     '/ppf',
     '/ppf/luxury-gloss',
     '/ppf/prime-gloss',
@@ -119,6 +121,24 @@ export default async function handler(_req: Request) {
     sitemapContent += `    <changefreq>monthly</changefreq>\n`;
     sitemapContent += `    <priority>0.6</priority>\n`;
     sitemapContent += `  </url>\n`;
+  }
+
+  // Páginas de produto da LOJA que são auto-canônicas: as 129 cores Metamark
+  // 7 Series e MetaCast MCX, que até aqui só existiam como ?cor=<slug> dentro
+  // do catálogo e não eram indexáveis como entidade própria. Os demais itens
+  // da loja apontam o canonical para a página de detalhe que já existe, então
+  // ficam fora do sitemap de propósito — não duplicar URL já indexada.
+  for (const slug of shopSelfCanonicalSlugs) {
+    sitemapContent += `  <url>
+`;
+    sitemapContent += `    <loc>${baseUrl}/loja/${slug}</loc>
+`;
+    sitemapContent += `    <changefreq>monthly</changefreq>
+`;
+    sitemapContent += `    <priority>0.6</priority>
+`;
+    sitemapContent += `  </url>
+`;
   }
 
   // Add dynamic blog posts

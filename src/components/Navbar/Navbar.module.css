@@ -30,7 +30,35 @@
 .links {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  /* 1.6rem em vez de 2rem: com a aba LOJA o menu passou a ter 10 itens mais a
+     lupa e o botão Entrar, e 2rem já estourava a barra em telas de 1280px. */
+  gap: 1.6rem;
+}
+
+/* Aba LOJA — pílula contornada. Distinta o bastante para ler como novidade,
+   sem a carga visual de um botão vermelho competindo com o "Entrar" ao lado
+   nem interromper a fileira de logos das linhas. */
+.navLinkShop {
+  padding: 0.32rem 0.85rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 99px;
+  font-family: var(--font-tech);
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  transition: border-color var(--transition-snappy), color var(--transition-snappy),
+    background var(--transition-snappy);
+}
+
+.navLinkShop:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-red);
+  background: rgba(209, 30, 30, 0.1);
+}
+
+.navLinkShopActive {
+  color: var(--text-primary);
+  border-color: var(--accent-red);
+  background: rgba(209, 30, 30, 0.16);
 }
 
 .navLink {

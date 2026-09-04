@@ -73,6 +73,13 @@ export default function Navbar() {
         {/* Desktop links + Mobile overlay */}
         <div className={`${styles.links} ${isOpen ? styles.linksOpen : ''}`}>
           <Link to="/" className={`${styles.navLink} ${location.pathname === '/' ? styles.navLinkActive : ''}`} onClick={closeMenu}>Home</Link>
+          <Link
+            to="/loja"
+            className={`${styles.navLink} ${styles.navLinkShop} ${location.pathname.startsWith('/loja') ? styles.navLinkShopActive : ''}`}
+            onClick={closeMenu}
+          >
+            LOJA
+          </Link>
           <Link to="/ppf" className={`${styles.navLink} ${location.pathname === '/ppf' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             <img src="/assets/logos/logo-nz-ppf.svg" alt="Linha NZ PPF" className={styles.navLogo} />
           </Link>

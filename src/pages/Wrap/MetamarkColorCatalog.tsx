@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import styles from './MetamarkColorCatalog.module.css';
 
@@ -41,6 +41,13 @@ interface Props {
   /** Aviso de fidelidade de cor, exibido sob o grid e dentro do painel. */
   disclaimer: string;
   whatsappUrl: (item: CatalogItem) => string;
+  /**
+   * Rota da ficha do item na LOJA. Existe para dar ao item uma URL própria:
+   * estas cores só viviam como ?cor=<slug> e não eram indexáveis como
+   * entidade. O painel continua sendo a experiência principal — o link é
+   * complemento, não substituição.
+   */
+  shopPath?: (item: CatalogItem) => string;
 }
 
 const normalize = (s: string) =>
@@ -74,6 +81,7 @@ export default function MetamarkColorCatalog({
   searchPlaceholder,
   disclaimer,
   whatsappUrl,
+  shopPath,
 }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchRef = useRef<HTMLInputElement>(null);
@@ -418,6 +426,11 @@ export default function MetamarkColorCatalog({
                   SOLICITAR ORÇAMENTO
                 </a>
                 <span className={styles.panelNote}>Valores sob consulta</span>
+                {shopPath && (
+                  <Link to={shopPath(activeItem)} className={styles.panelLink}>
+                    Ver ficha completa →
+                  </Link>
+                )}
               </div>
             </motion.div>
           </motion.div>
