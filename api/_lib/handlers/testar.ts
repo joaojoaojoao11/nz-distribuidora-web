@@ -10,8 +10,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { carrierConfigStatus, getAdapter, isRealMode } from '../carriers/index.js';
+import { fatorCubagem, pesoTaxavel } from '../carriers/cubagem.js';
 
 const CEP_RE = /^[0-9]{8}$/;
+const QTD_MAX = 50;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -77,9 +79,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  // Quantidade e valor declarado são opcionais: sem eles o teste roda como uma
+  // consulta de 1 volume, que é o caso mais comum da página de produto.
+  const qtdBruta = Math.floor(Number(body.qtd));
+  const qtd = Number.isFinite(qtdBruta) && qtdBruta >= 1 ? Math.min(qtdBruta, QTD_MAX) : 1;
+  const vlBruto = Number(body.vldeclarado);
+  const vlOverride = Number.isFinite(vlBruto) && vlBruto > 0 ? vlBruto : null;
+
   const { data: perfil } = await supabase
     .from('shipping_profiles')
-    .select('id, nome, peso_kg, comprimento_cm, largura_cm, altura_cm')
+    .select('*')
     .eq('id', profileId)
     .maybeSingle();
 
@@ -94,11 +103,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     comprimento_cm: number;
     largura_cm: number;
     altura_cm: number;
+    valor_declarado?: number;
   };
 
   const { data: carriers } = await supabase
     .from('shipping_carriers')
-    .select('slug, nome, cep_origem, dias_manuseio')
+    .select('slug, nome, cep_origem, dias_manuseio, config')
     .order('ordem', { ascending: true });
 
   const lista = (carriers ?? []) as unknown as {
@@ -106,7 +116,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     nome: string;
     cep_origem: string;
     dias_manuseio: number;
+    config: unknown;
   }[];
+
+  const valorDeclarado = (vlOverride ?? Number(p.valor_declarado ?? 100)) * qtd;
 
   const resultados = await Promise.all(
     lista.map(async (c) => {
@@ -118,15 +131,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return { carrier: c.slug, ok: false, erro: 'Credencial não configurada' };
       }
 
+      // Mesma conta do endpoint público: é isso que permite conferir se a
+      // transportadora está cobrando pelo peso que esperamos.
+      const peso = pesoTaxavel(p, qtd, fatorCubagem(c.config));
+
       const inicio = Date.now();
       try {
         const cotacao = await adapter.quoteDeadline({
           cepOrigem: c.cep_origem,
           cepDestino: cep,
-          pesoKg: Number(p.peso_kg),
+          pesoKg: peso.pesoKg,
+          quantidade: qtd,
           comprimentoCm: Number(p.comprimento_cm),
           larguraCm: Number(p.largura_cm),
           alturaCm: Number(p.altura_cm),
+          valorDeclarado,
         });
         return {
           carrier: c.slug,
@@ -135,7 +154,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           diasTransporte: cotacao.dias,
           diasManuseio: c.dias_manuseio,
           diasTotal: cotacao.dias + c.dias_manuseio,
+          valorFrete: cotacao.valorTotal,
           modalidade: cotacao.modalidade,
+          // Os dois pesos lado a lado: qual venceu explica o valor cobrado.
+          pesoEnviadoKg: peso.pesoKg,
+          pesoRealKg: peso.pesoReal,
+          pesoCubadoKg: peso.pesoCubado,
+          fatorCubagem: peso.fator,
+          valorDeclarado,
           ms: Date.now() - inicio,
           // Só aqui: o payload cru, para conferir a integração.
           raw: cotacao.raw,
@@ -145,6 +171,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           carrier: c.slug,
           nome: c.nome,
           ok: false,
+          pesoEnviadoKg: peso.pesoKg,
+          pesoRealKg: peso.pesoReal,
+          pesoCubadoKg: peso.pesoCubado,
           ms: Date.now() - inicio,
           erro: err instanceof Error ? err.message : String(err),
         };
@@ -156,6 +185,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     modo: isRealMode() ? 'real' : 'mock',
     perfil: { id: p.id, nome: p.nome },
     cep,
+    quantidade: qtd,
     resultados,
   });
 }

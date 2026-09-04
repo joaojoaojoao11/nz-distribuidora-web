@@ -5,9 +5,11 @@
 // validados ponta a ponta sem depender do comercial fechar contrato. Trocar
 // pelo adapter real é mudar uma variável de ambiente.
 //
-// O prazo simulado é derivado da faixa de CEP e do peso, para exercitar a UI
-// com números plausíveis e variados — não é estimativa comercial e não deve
-// ser usado em produção com transportadora ativa.
+// O prazo e o valor simulados são derivados da faixa de CEP e do peso, para
+// exercitar a UI com números plausíveis e variados — NÃO são estimativa
+// comercial e não devem ser divulgados. O valor existe aqui porque a tela de
+// admin passou a mostrar preço: sem ele, o caminho do valor só seria testável
+// depois do contrato com a transportadora.
 
 import type { CarrierAdapter, QuoteInput, QuoteResult } from './types.js';
 
@@ -46,8 +48,14 @@ function build(slug: 'jadlog' | 'gollog', nome: string, ajuste: number): Carrier
       const { dias, regiao } = prazoBase(input.cepDestino);
       // Volume alto pesa no prazo, para a UI exercitar o seletor de formato.
       const pesoExtra = input.pesoKg > 20 ? 1 : 0;
+      const diasTotal = Math.max(1, dias + ajuste + pesoExtra);
+      // Fórmula sem qualquer pretensão de realismo: uma base, um tanto por kg e
+      // um tanto por dia de distância, só para o número variar como variaria de
+      // verdade quando o CEP ou a quantidade mudam.
+      const valor = Math.round((18 + input.pesoKg * 2.1 + diasTotal * 1.4) * 100) / 100;
       return {
-        dias: Math.max(1, dias + ajuste + pesoExtra),
+        dias: diasTotal,
+        valorTotal: valor,
         modalidade: slug === 'jadlog' ? '.Package (simulado)' : 'Standard (simulado)',
         raw: {
           simulado: true,

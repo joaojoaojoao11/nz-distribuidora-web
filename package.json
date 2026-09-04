@@ -13,7 +13,8 @@
     "shop:chip-hex": "node scripts/extract-chip-hex.mjs",
     "shop:audit": "node scripts/audit-shop.mjs",
     "shop:index": "node scripts/generate-shop-index.mjs",
-    "erp:sku-map": "node scripts/propose-sku-map.mjs"
+    "erp:sku-map": "node scripts/propose-sku-map.mjs",
+    "frete:test": "node scripts/test-frete.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",

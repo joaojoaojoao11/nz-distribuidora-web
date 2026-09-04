@@ -1,21 +1,33 @@
-// POST /api/nz/prazo — prazo de entrega por transportadora.
+// POST /api/nz/prazo — cotação de entrega por transportadora.
 //
 // Endpoint PÚBLICO (a página de produto chama sem login), mas nada parecido
 // com os handlers de api/oficina/*, que são POST aberto com CORS '*' e sem
 // autenticação. Aqui: mesma origem, CEP validado por regex, rate limit por IP,
 // timeout por transportadora e cache de 7 dias.
 //
-// REGRA CENTRAL: devolve PRAZO, nunca VALOR. As APIs de cotação retornam preço
-// junto; o valor é descartado aqui, no servidor, antes de montar a resposta.
-// Nenhum campo de preço trafega até o browser nem entra no cache.
+// REGRA CENTRAL — quem vê o quê:
+//   qualquer visitante  → PRAZO em dias úteis. Nada além disso.
+//   admin autenticado   → prazo + VALOR do frete.
+// As APIs de cotação devolvem prazo e preço no mesmo payload; o valor é
+// removido AQUI, no servidor, antes de montar a resposta. O papel vem de
+// user_profiles via JWT (../papel.ts), nunca de um campo do corpo. Fail-closed:
+// sem header, token inválido ou papel diferente de admin, nenhum valor sai.
+//
+// O peso enviado à transportadora é o MAIOR entre real e cubado, multiplicado
+// pela quantidade que o visitante escolheu (carriers/cubagem.ts).
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { getAdapter } from '../carriers/index.js';
+import { fatorCubagem, pesoTaxavel } from '../carriers/cubagem.js';
 import { CarrierError } from '../carriers/types.js';
+import { resolverPapel, type Db } from '../papel.js';
 
 const CEP_RE = /^[0-9]{8}$/;
 const CACHE_DIAS = 7;
+
+/** Teto de volumes por cotação. Acima disso é pedido comercial, não vitrine. */
+const QTD_MAX = 50;
 
 /** Rate limit em memória. Some a cada cold start — é uma barreira, não uma trava. */
 const RATE_LIMIT = new Map<string, { count: number; resetAt: number }>();
@@ -40,6 +52,7 @@ interface ShippingProfile {
   comprimento_cm: number;
   largura_cm: number;
   altura_cm: number;
+  valor_declarado?: number;
 }
 
 interface Carrier {
@@ -48,6 +61,16 @@ interface Carrier {
   cep_origem: string;
   dias_manuseio: number;
   ordem: number;
+  config: unknown;
+}
+
+/** Cotação como o servidor a conhece — com valor. O que sai daqui é filtrado. */
+interface CotacaoInterna {
+  carrier: string;
+  nome: string;
+  dias: number;
+  modalidade?: string;
+  valor: number | null;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -80,6 +103,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const lineKey = typeof body.lineKey === 'string' ? body.lineKey : '';
   const profileId = typeof body.profileId === 'string' ? body.profileId : null;
   const productSlug = typeof body.slug === 'string' ? body.slug : null;
+  const qtd = normalizarQtd(body.qtd);
 
   if (!CEP_RE.test(cep)) {
     res.status(400).json({ error: 'CEP inválido. Informe 8 dígitos.' });
@@ -92,6 +116,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const supabase = createClient(supabaseUrl, serviceKey);
 
+  // Header é opcional: o endpoint continua público. Ter ou não sessão só muda
+  // se o valor do frete entra na resposta.
+  const papel = await resolverPapel(supabase, req.headers.authorization);
+  const podeVerValor = papel === 'admin';
+
   try {
     const profile = await resolveProfile(supabase, { profileId, lineKey, productSlug });
     if (!profile) {
@@ -103,7 +132,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { data: carriers } = await supabase
       .from('shipping_carriers')
-      .select('slug, nome, cep_origem, dias_manuseio, ordem')
+      .select('slug, nome, cep_origem, dias_manuseio, ordem, config')
       .eq('ativo', true)
       .order('ordem', { ascending: true });
 
@@ -113,14 +142,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const resultados = await Promise.allSettled(
-      (carriers as Carrier[]).map((c) => cotar(supabase, c, profile, cep))
+      (carriers as unknown as Carrier[]).map((c) => cotar(supabase, c, profile, cep, qtd))
     );
 
-    const prazos = resultados
-      .filter(
-        (r): r is PromiseFulfilledResult<{ carrier: string; nome: string; dias: number; modalidade?: string }> =>
-          r.status === 'fulfilled'
-      )
+    const cotacoes = resultados
+      .filter((r): r is PromiseFulfilledResult<CotacaoInterna> => r.status === 'fulfilled')
       .map((r) => r.value);
 
     for (const r of resultados) {
@@ -129,7 +155,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    if (!prazos.length) {
+    if (!cotacoes.length) {
       res.status(502).json({ error: 'consulta-falhou', message: 'Não conseguimos consultar agora.' });
       return;
     }
@@ -138,18 +164,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // snapshot de build porque um perfil novo tem que aparecer sem rebuild.
     const formatos = lineKey ? await formatosDaLinha(supabase, lineKey) : [];
 
-    // Resposta deliberadamente enxuta: prazo, nome e modalidade. Nenhum campo
-    // de valor, nenhum `raw`, nenhuma dimensão ou peso.
+    // Objeto montado campo a campo, nunca por spread do interno: é a garantia
+    // de que um campo novo no servidor não vaza para o público por descuido.
+    const prazos = cotacoes
+      .sort((a, b) => a.dias - b.dias)
+      .map((c) => {
+        const publico: Record<string, unknown> = {
+          carrier: c.carrier,
+          nome: c.nome,
+          dias: c.dias,
+        };
+        if (c.modalidade) publico.modalidade = c.modalidade;
+        if (podeVerValor && c.valor != null) publico.valor = c.valor;
+        return publico;
+      });
+
     res.status(200).json({
-      prazos: prazos.sort((a, b) => a.dias - b.dias),
+      prazos,
       formato: { id: profile.id, nome: profile.nome },
       formatos,
+      quantidade: qtd,
+      // O front usa isto só para explicar de onde vem o valor exibido; o dado
+      // sensível já foi filtrado acima.
+      papel,
       atualizadoEm: new Date().toISOString(),
     });
   } catch (err) {
     console.error('[logistica] erro:', err);
     res.status(500).json({ error: 'erro-interno' });
   }
+}
+
+/** Quantidade de volumes: inteiro entre 1 e QTD_MAX, com 1 como padrão seguro. */
+function normalizarQtd(bruto: unknown): number {
+  const n = Math.floor(Number(bruto));
+  if (!Number.isFinite(n) || n < 1) return 1;
+  return Math.min(n, QTD_MAX);
 }
 
 function safeJson(raw: string): Record<string, unknown> {
@@ -160,30 +210,25 @@ function safeJson(raw: string): Record<string, unknown> {
   }
 }
 
-// O projeto não tem tipos gerados do banco, então o client vem sem schema.
-// Generics soltos aqui evitam que a inferência do supabase-js colapse os
-// parâmetros em `never` ao passar o client entre funções.
-/* eslint-disable @typescript-eslint/no-explicit-any */
-type Db = SupabaseClient<any, any, any>;
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
 /**
  * Cascata de resolução do perfil de embalagem:
  *   1. profileId explícito (o usuário escolheu o formato no seletor)
  *   2. override do produto em web_catalog_products.shipping_profile_id
  *   3. perfil padrão da linha
  *   4. qualquer perfil da linha
+ *
+ * Seleciona tudo de propósito: valor_declarado só existe depois da migration de
+ * 2026-09-04, e nomear a coluna faria o PostgREST recusar a consulta inteira na
+ * janela entre o deploy e a aplicação do SQL.
  */
 async function resolveProfile(
   supabase: Db,
   opts: { profileId: string | null; lineKey: string; productSlug: string | null }
 ): Promise<ShippingProfile | null> {
-  const columns = 'id, nome, peso_kg, comprimento_cm, largura_cm, altura_cm';
-
   if (opts.profileId) {
     const { data } = await supabase
       .from('shipping_profiles')
-      .select(columns)
+      .select('*')
       .eq('id', opts.profileId)
       .eq('ativo', true)
       .maybeSingle();
@@ -200,7 +245,7 @@ async function resolveProfile(
     if (override) {
       const { data } = await supabase
         .from('shipping_profiles')
-        .select(columns)
+        .select('*')
         .eq('id', override)
         .eq('ativo', true)
         .maybeSingle();
@@ -223,7 +268,7 @@ async function resolveProfile(
 
   const { data } = await supabase
     .from('shipping_profiles')
-    .select(columns)
+    .select('*')
     .eq('id', escolhida.profile_id)
     .eq('ativo', true)
     .maybeSingle();
@@ -232,8 +277,8 @@ async function resolveProfile(
 }
 
 /**
- * Formatos de envio de uma linha. Devolve só id e nome — peso e dimensão são
- * informação comercial e não saem do servidor.
+ * Formatos de envio de uma linha. Devolve só id e nome — peso, dimensão e valor
+ * declarado são informação comercial e não saem do servidor.
  */
 async function formatosDaLinha(
   supabase: Db,
@@ -259,23 +304,27 @@ async function cotar(
   supabase: Db,
   carrier: Carrier,
   profile: ShippingProfile,
-  cep: string
-): Promise<{ carrier: string; nome: string; dias: number; modalidade?: string }> {
-  // Cache primeiro: prazo por CEP muda muito pouco.
+  cep: string,
+  qtd: number
+): Promise<CotacaoInterna> {
+  // Cache primeiro: prazo e valor por CEP mudam muito pouco. A quantidade entra
+  // na chave — a cotação de 1 volume não vale para 10.
   const { data: cached } = await supabase
     .from('shipping_quote_cache')
-    .select('prazo_dias, expires_at')
+    .select('prazo_dias, valor_frete, expires_at')
     .eq('carrier_slug', carrier.slug)
     .eq('profile_id', profile.id)
     .eq('cep_destino', cep)
+    .eq('quantidade', qtd)
     .maybeSingle();
 
-  const hit = cached as { prazo_dias: number; expires_at: string } | null;
+  const hit = cached as { prazo_dias: number; valor_frete: number | null; expires_at: string } | null;
   if (hit && new Date(hit.expires_at) > new Date()) {
     return {
       carrier: carrier.slug,
       nome: carrier.nome,
       dias: hit.prazo_dias + carrier.dias_manuseio,
+      valor: hit.valor_frete != null ? Number(hit.valor_frete) : null,
     };
   }
 
@@ -283,33 +332,44 @@ async function cotar(
   if (!adapter) throw new CarrierError(carrier.slug, 'Adapter não encontrado');
   if (!adapter.isConfigured()) throw new CarrierError(carrier.slug, 'Credencial não configurada');
 
+  const peso = pesoTaxavel(profile, qtd, fatorCubagem(carrier.config));
+  const valorDeclarado = Number(profile.valor_declarado ?? 100) * qtd;
+
   const cotacao = await adapter.quoteDeadline({
     cepOrigem: carrier.cep_origem,
     cepDestino: cep,
-    pesoKg: Number(profile.peso_kg),
+    pesoKg: peso.pesoKg,
+    quantidade: qtd,
     comprimentoCm: Number(profile.comprimento_cm),
     larguraCm: Number(profile.largura_cm),
     alturaCm: Number(profile.altura_cm),
+    valorDeclarado,
   });
 
   const expiresAt = new Date(Date.now() + CACHE_DIAS * 86_400_000).toISOString();
   // `raw` guardado só para diagnóstico no painel; nunca sai por este endpoint.
-  await supabase.from('shipping_quote_cache').upsert(
+  // Falha de escrita não derruba a cotação: cache é otimização, não requisito —
+  // e essa é justamente a janela em que a migration pode não ter sido aplicada.
+  const { error: cacheErr } = await supabase.from('shipping_quote_cache').upsert(
     {
       carrier_slug: carrier.slug,
       profile_id: profile.id,
       cep_destino: cep,
+      quantidade: qtd,
       prazo_dias: cotacao.dias,
+      valor_frete: cotacao.valorTotal,
       raw: cotacao.raw,
       expires_at: expiresAt,
     },
-    { onConflict: 'carrier_slug,profile_id,cep_destino' }
+    { onConflict: 'carrier_slug,profile_id,cep_destino,quantidade' }
   );
+  if (cacheErr) console.warn('[logistica] cache não gravado:', cacheErr.message);
 
   return {
     carrier: carrier.slug,
     nome: carrier.nome,
     dias: cotacao.dias + carrier.dias_manuseio,
     modalidade: cotacao.modalidade,
+    valor: cotacao.valorTotal,
   };
 }

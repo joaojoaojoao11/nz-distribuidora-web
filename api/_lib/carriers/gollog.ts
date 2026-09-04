@@ -42,7 +42,7 @@ export const gollog: CarrierAdapter = {
           altura: input.alturaCm,
           largura: input.larguraCm,
           comprimento: input.comprimentoCm,
-          valorMercadoria: input.valorDeclarado ?? 100,
+          valorMercadoria: input.valorDeclarado,
         }),
       }),
       TIMEOUT_MS,
@@ -55,11 +55,22 @@ export const gollog: CarrierAdapter = {
       prazoEntrega?: number;
       prazo?: number;
       servico?: string;
+      valorTotal?: number | string;
+      valor?: number | string;
     };
 
     const dias = json.prazoEntrega ?? json.prazo;
     if (typeof dias !== 'number') throw new CarrierError('gollog', 'Resposta sem campo de prazo');
 
-    return { dias, modalidade: json.servico ?? 'Standard', raw: json };
+    // Nome do campo de valor é chute, como o resto deste adapter: se não vier
+    // um número, devolve null e a UI simplesmente não mostra valor da Gollog.
+    const valor = Number(json.valorTotal ?? json.valor);
+
+    return {
+      dias,
+      valorTotal: Number.isFinite(valor) && valor > 0 ? valor : null,
+      modalidade: json.servico ?? 'Standard',
+      raw: json,
+    };
   },
 };

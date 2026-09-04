@@ -14,13 +14,8 @@
 // ERP: as views em migrations/erp/ já as excluem na origem.
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-type Db = SupabaseClient<any, any, any>;
-/* eslint-enable @typescript-eslint/no-explicit-any */
-
-type Papel = 'anonimo' | 'client' | 'reseller' | 'admin';
+import { createClient } from '@supabase/supabase-js';
+import { resolverPapel } from '../papel.js';
 
 type Disponibilidade = 'em-estoque' | 'ultimas-unidades' | 'sob-encomenda';
 
@@ -132,33 +127,6 @@ function safeJson(raw: string): Record<string, unknown> {
   } catch {
     return {};
   }
-}
-
-/**
- * Lê o papel NO BANCO a partir do JWT. Nunca confia num campo do corpo nem numa
- * claim do token: um cliente pode forjar as duas coisas.
- */
-async function resolverPapel(site: Db, authHeader: string | undefined): Promise<Papel> {
-  if (!authHeader?.startsWith('Bearer ')) return 'anonimo';
-
-  const {
-    data: { user },
-  } = await site.auth.getUser(authHeader.slice(7));
-  if (!user) return 'anonimo';
-
-  const { data } = await site
-    .from('user_profiles')
-    .select('role, is_approved')
-    .eq('id', user.id)
-    .maybeSingle();
-
-  const profile = data as { role?: string; is_approved?: boolean } | null;
-  if (!profile) return 'anonimo';
-  if (profile.role === 'admin') return 'admin';
-  // Lojista não aprovado é tratado como cliente final: a aprovação é o que
-  // libera o dado comercial.
-  if (profile.role === 'reseller' && profile.is_approved) return 'reseller';
-  return 'client';
 }
 
 function classificar(espelho: Espelho, limiteGlobal: number): Disponibilidade {

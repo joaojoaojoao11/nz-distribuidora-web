@@ -38,6 +38,7 @@ interface Perfil {
   comprimento_cm: number;
   largura_cm: number;
   altura_cm: number;
+  valor_declarado: number | null;
   observacao: string | null;
   ativo: boolean;
 }
@@ -73,6 +74,7 @@ const FORM_VAZIO = {
   comprimento_cm: '',
   largura_cm: '',
   altura_cm: '',
+  valor_declarado: '100',
   observacao: '',
 };
 
@@ -93,8 +95,11 @@ export default function AdminLogistica() {
   // Diagnóstico
   const [testeCep, setTesteCep] = useState('');
   const [testePerfil, setTestePerfil] = useState('');
+  const [testeQtd, setTesteQtd] = useState('1');
   const [testeResultado, setTesteResultado] = useState<unknown>(null);
   const [testando, setTestando] = useState(false);
+  const [limpandoCache, setLimpandoCache] = useState(false);
+  const [cacheMsg, setCacheMsg] = useState('');
 
   // Nenhum setState antes do primeiro await: `loading` já nasce true e é
   // desligado no fim. Recarregar depois de uma alteração acontece em silêncio,
@@ -162,6 +167,7 @@ export default function AdminLogistica() {
         comprimento_cm: String(perfil.comprimento_cm),
         largura_cm: String(perfil.largura_cm),
         altura_cm: String(perfil.altura_cm),
+        valor_declarado: String(perfil.valor_declarado ?? 100),
         observacao: perfil.observacao ?? '',
       });
     } else {
@@ -184,6 +190,7 @@ export default function AdminLogistica() {
       comprimento_cm: parseFloat(form.comprimento_cm) || 0,
       largura_cm: parseFloat(form.largura_cm) || 0,
       altura_cm: parseFloat(form.altura_cm) || 0,
+      valor_declarado: parseFloat(form.valor_declarado) || 100,
       observacao: form.observacao.trim() || null,
     };
 
@@ -257,13 +264,41 @@ export default function AdminLogistica() {
       const res = await fetch('/api/nz/testar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token ?? ''}` },
-        body: JSON.stringify({ cep: testeCep.replace(/\D/g, ''), profileId: testePerfil }),
+        body: JSON.stringify({
+          cep: testeCep.replace(/\D/g, ''),
+          profileId: testePerfil,
+          qtd: Number(testeQtd) || 1,
+        }),
       });
       setTesteResultado(await res.json());
     } catch (err) {
       setTesteResultado({ erro: err instanceof Error ? err.message : String(err) });
     }
     setTestando(false);
+  };
+
+  /**
+   * O cache guarda prazo e valor por 7 dias. Ao ligar a transportadora real,
+   * o que estiver gravado ainda é resposta do simulador — e continuaria sendo
+   * servido até expirar. Este botão é o passo obrigatório da virada mock → real.
+   */
+  const limparCache = async () => {
+    if (
+      !window.confirm(
+        'Apagar todas as cotações em cache? As próximas consultas voltam a chamar a transportadora.'
+      )
+    )
+      return;
+    setLimpandoCache(true);
+    setCacheMsg('');
+    // Sem filtro o PostgREST recusa o DELETE; o gte casa qualquer CEP de 8
+    // dígitos e é a forma de dizer "todas as linhas".
+    const { error } = await supabase
+      .from('shipping_quote_cache')
+      .delete()
+      .gte('cep_destino', '0');
+    setCacheMsg(error ? `Falhou: ${error.message}` : 'Cache limpo.');
+    setLimpandoCache(false);
   };
 
   // Cobertura: sem isso ninguém percebe que metade do catálogo não mostra prazo.
@@ -275,8 +310,9 @@ export default function AdminLogistica() {
     <div>
       <p className={styles.tabDescription}>
         Peso e medidas são cadastrados por <strong>perfil de embalagem</strong> e ligados a uma
-        linha do catálogo — não produto a produto. A página de produto usa isso para consultar o{' '}
-        <strong>prazo</strong> de entrega. Valor de frete nunca é exibido no site.
+        linha do catálogo — não produto a produto. A página de produto multiplica esse perfil pela
+        quantidade escolhida e cota o frete. <strong>O valor em R$ só aparece para quem está
+        logado como admin</strong>; lojista, cliente e visitante veem apenas o prazo em dias úteis.
       </p>
 
       {erro && (
@@ -318,6 +354,7 @@ export default function AdminLogistica() {
                 <th>Formato</th>
                 <th>Peso</th>
                 <th>C × L × A (cm)</th>
+                <th>Vl. declarado</th>
                 <th>Linhas do catálogo</th>
                 <th>Ações</th>
               </tr>
@@ -333,6 +370,7 @@ export default function AdminLogistica() {
                     <td>
                       {p.comprimento_cm} × {p.largura_cm} × {p.altura_cm}
                     </td>
+                    <td>R$ {Number(p.valor_declarado ?? 100).toFixed(2)}</td>
                     <td>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem' }}>
                         {LINE_KEYS.map((l) => {
@@ -385,7 +423,7 @@ export default function AdminLogistica() {
               })}
               {perfis.length === 0 && (
                 <tr>
-                  <td colSpan={6} className={styles.emptyState}>
+                  <td colSpan={7} className={styles.emptyState}>
                     Nenhum perfil cadastrado. Sem perfil, nenhum produto mostra prazo.
                   </td>
                 </tr>
@@ -400,8 +438,43 @@ export default function AdminLogistica() {
         <h3 className={styles.tableSectionTitle}>Transportadoras — modo: {modo}</h3>
         <p style={{ color: '#6b6b70', fontSize: '0.8rem', marginBottom: '0.8rem' }}>
           Credenciais ficam em variável de ambiente do servidor e não são editáveis aqui. Enquanto
-          o modo for <code>mock</code>, os prazos são simulados e não devem ser divulgados.
+          o modo for <code>mock</code>, os prazos e valores são simulados e não devem ser
+          divulgados.
         </p>
+
+        {/* O passo que trava a integração não é código: é o credenciamento. Fica
+            escrito aqui para quem for atrás não depender de lembrar da conversa. */}
+        <details style={{ marginBottom: '1rem', fontSize: '0.82rem', color: '#a1a1a6' }}>
+          <summary style={{ cursor: 'pointer', color: '#f5f5f7', marginBottom: '0.5rem' }}>
+            Como habilitar a cotação real da Jadlog
+          </summary>
+          <ol style={{ paddingLeft: '1.2rem', lineHeight: 1.7 }}>
+            <li>
+              Não existe cadastro self-service. Falar com a <strong>franquia Jadlog que atende a
+              NZ</strong> (ou o comercial da matriz da região) e pedir os dados de integração da
+              API do Embarcador, vinculados ao CNPJ/conta.
+            </li>
+            <li>
+              Anotar: <strong>Token</strong>, Usuário (CNPJ), Código do Cliente, Conta Corrente (se
+              correntista), Código da Franquia, <strong>modalidade negociada</strong> (o padrão
+              daqui é 3 = .Package) e o <strong>fator de cubagem</strong> do contrato (o padrão
+              daqui é 3333).
+            </li>
+            <li>
+              Na Vercel, em Environment Variables de Production:{' '}
+              <code>LOGISTICA_MODO=real</code>, <code>JADLOG_TOKEN</code>,{' '}
+              <code>JADLOG_CNPJ</code>, <code>JADLOG_CONTA</code> (se correntista),{' '}
+              <code>JADLOG_CONTRATO</code> e <code>JADLOG_MODALIDADE</code> (só se for diferente de
+              3). Nunca com prefixo <code>VITE_</code>: isso publicaria a credencial no bundle.
+            </li>
+            <li>Redeploy — variável de ambiente só vale no próximo deploy.</li>
+            <li>
+              Voltar aqui: ativar a Jadlog, conferir o CEP de origem,{' '}
+              <strong>limpar o cache</strong> e rodar o teste abaixo com um CEP conhecido,
+              comparando o valor com o simulador do portal Jadlog.
+            </li>
+          </ol>
+        </details>
 
         <div className={styles.tableScroll}>
           <table className={styles.table}>
@@ -466,7 +539,26 @@ export default function AdminLogistica() {
 
       {/* ------------------------------------------------- diagnóstico */}
       <div className={styles.tableSection}>
-        <h3 className={styles.tableSectionTitle}>Teste de prazo</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 className={styles.tableSectionTitle}>Teste de cotação</h3>
+          <button
+            type="button"
+            className={styles.actionBtn}
+            onClick={limparCache}
+            disabled={limpandoCache}
+          >
+            {limpandoCache ? 'Limpando…' : 'Limpar cache de cotações'}
+          </button>
+        </div>
+        <p style={{ color: '#6b6b70', fontSize: '0.8rem', marginBottom: '0.8rem' }}>
+          Mostra a resposta crua da transportadora, com o peso real e o cubado lado a lado — o
+          maior dos dois é o que ela cobra. Ao trocar o modo de <code>mock</code> para{' '}
+          <code>real</code>, limpe o cache: as cotações simuladas valem 7 dias e continuariam
+          aparecendo.
+        </p>
+        {cacheMsg && (
+          <p style={{ color: '#a1a1a6', fontSize: '0.8rem', marginBottom: '0.8rem' }}>{cacheMsg}</p>
+        )}
         <div className={styles.adminFormRow3}>
           <div className={styles.adminFormGroup}>
             <label className={styles.adminLabel}>Perfil</label>
@@ -490,6 +582,17 @@ export default function AdminLogistica() {
               value={testeCep}
               onChange={(e) => setTesteCep(e.target.value)}
               placeholder="01310100"
+            />
+          </div>
+          <div className={styles.adminFormGroup}>
+            <label className={styles.adminLabel}>Quantidade</label>
+            <input
+              className={styles.adminInput}
+              type="number"
+              min={1}
+              max={50}
+              value={testeQtd}
+              onChange={(e) => setTesteQtd(e.target.value)}
             />
           </div>
           <div className={styles.adminFormGroup}>
@@ -602,6 +705,22 @@ export default function AdminLogistica() {
                   onChange={(e) => setForm({ ...form, altura_cm: e.target.value })}
                   required
                 />
+              </div>
+              <div className={styles.createField}>
+                <label className={styles.adminLabel}>Valor declarado (R$ / unid.)</label>
+                <input
+                  className={styles.adminInput}
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  value={form.valor_declarado}
+                  onChange={(e) => setForm({ ...form, valor_declarado: e.target.value })}
+                  required
+                />
+                <small style={{ color: '#6b6b70', fontSize: '0.72rem' }}>
+                  Valor de NF aproximado de UMA unidade. A transportadora usa isso para o seguro
+                  embutido no frete. Não é preço de venda e não sai do ERP.
+                </small>
               </div>
               <div className={styles.createField} style={{ gridColumn: '1 / -1' }}>
                 <label className={styles.adminLabel}>Observação</label>
