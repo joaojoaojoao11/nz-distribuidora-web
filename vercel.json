@@ -171,7 +171,7 @@
     },
     {
       "path": "/api/erp/sync",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 6 * * *"
     }
   ]
 }

@@ -17,6 +17,16 @@
 //
 // Aqui as chaves nunca saem do servidor, o retry é nosso e a falha é visível
 // em erp_sync_log.
+//
+// CADÊNCIA: o cron roda UMA VEZ POR DIA (0 6 * * *), não a cada 5 minutos.
+// Não é escolha de projeto — é o limite do plano Hobby da Vercel, que só
+// aceita cron diário; um schedule mais frequente faz a Vercel rejeitar o
+// deploy inteiro. Consequência prática: durante o dia, o frescor do estoque
+// depende do webhook do ERP (api/erp/webhook.ts), que é entrega no melhor
+// esforço, e do botão "Sincronizar agora" no painel. O cron diário vira uma
+// reconciliação de madrugada em vez de rede de segurança contínua.
+//
+// Ao migrar para o plano Pro, voltar para '*/5 * * * *' em vercel.json.
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
