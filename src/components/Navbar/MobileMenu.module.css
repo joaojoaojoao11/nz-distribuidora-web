@@ -1,0 +1,174 @@
+/* Menu do celular: lista vertical, uma coluna, texto.
+   Só é montado quando aberto — não há estado "fechado" aqui. */
+
+.painel {
+  position: fixed;
+  /* Abaixo da barra: o hambúrguer continua visível e vira o botão de fechar. */
+  top: 64px;
+  left: 0;
+  right: 0;
+  height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
+  z-index: 200;
+
+  /* Opaco, sem blur. O fundo translúcido deixava o texto da página aparecer
+     atrás do menu, e o blur de tela inteira é a operação mais cara que existe
+     num celular intermediário. */
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+
+  /* A lista é mais alta que a tela: rolar é o comportamento, não a exceção.
+     Sem isto o menu ficava centralizado e cortado nas duas pontas. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ------------------------------------------------------------------ itens */
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 56px;
+  padding: 0.9rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+
+  font-family: var(--font-tech);
+  font-size: 0.82rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+
+  touch-action: manipulation;
+  transition: color var(--transition-snappy), background var(--transition-snappy);
+}
+
+.itemAtivo {
+  color: var(--accent-red);
+}
+
+/* A loja é o destino principal do menu: fica no topo, com o logotipo no lugar
+   da palavra e uma faixa vermelha à esquerda. */
+.itemLoja {
+  gap: 0.8rem;
+  border-left: 3px solid var(--accent-red);
+  background: rgba(209, 30, 30, 0.07);
+}
+
+.logoLoja {
+  display: block;
+  height: 17px;
+  width: auto;
+}
+
+/* Sub-itens: indentados e menores. A indentação é a hierarquia — não há
+   acordeão, então a relação precisa ser visível de imediato. */
+.sublista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.subitem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.7rem 1.5rem 0.7rem 2.75rem;
+  border-bottom: 1px solid var(--border-light);
+
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  letter-spacing: 0.2px;
+  color: var(--text-muted);
+
+  touch-action: manipulation;
+  transition: color var(--transition-snappy);
+}
+
+.itemHint {
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+/* ----------------------------------------------------------------- rodapé */
+
+.rodape {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.4rem 1.5rem 0;
+  margin-top: auto;
+}
+
+.conta,
+.whats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border-radius: 10px;
+  font-family: var(--font-tech);
+  font-size: 0.74rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  touch-action: manipulation;
+}
+
+.conta {
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+}
+
+.whats {
+  background: var(--accent-red);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Hover só com ponteiro que paira: no toque o estado fica grudado no último
+   item tocado e parece seleção. */
+@media (hover: hover) {
+  .item:hover,
+  .subitem:hover {
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+  }
+  .conta:hover {
+    border-color: var(--accent-red);
+    color: var(--text-primary);
+  }
+  .whats:hover {
+    background: var(--accent-red-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .subitem,
+  .conta,
+  .whats {
+    transition: none;
+  }
+}
+
+/* Acima de 768px quem manda é o menu de logotipos do desktop. */
+@media (min-width: 769px) {
+  .painel {
+    display: none;
+  }
+}

@@ -51,7 +51,7 @@ const estado = async (page) => page.evaluate(() => ({
   url: location.pathname + location.search,
   modal: document.body.dataset.nzModal === '1',
   sheet: !!document.querySelector('[role=dialog][aria-label="Filtros"]'),
-  menu: !!document.querySelector('[class*=linksOpen]'),
+  menu: !!document.querySelector('nav[aria-label="Menu principal"]'),
   paleta: !!document.querySelector('[role=dialog][aria-label="Busca no site"]'),
 }));
 

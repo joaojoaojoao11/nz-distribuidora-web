@@ -9,6 +9,8 @@ import styles from './Navbar.module.css';
 // O índice da busca carrega ~340 destinos (páginas, linhas e todas as cores e
 // padrões dos catálogos). Fora do bundle inicial: só baixa quando abre a busca.
 const SearchPalette = lazy(() => import('./SearchPalette'));
+// Só baixa quando o hambúrguer é tocado — e some do DOM ao fechar.
+const MobileMenu = lazy(() => import('./MobileMenu'));
 
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -204,6 +206,19 @@ export default function Navbar() {
       {searchOpen && (
         <Suspense fallback={null}>
           <SearchPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
+        </Suspense>
+      )}
+
+      {/* Montado só quando aberto: fechado não existe no DOM, então não há
+          link invisível para receber toque por cima da página. */}
+      {isOpen && (
+        <Suspense fallback={null}>
+          <MobileMenu
+            onClose={closeMenu}
+            isAdmin={isAdmin}
+            logado={Boolean(user)}
+            contagens={{ shDecor: shDecorProducts.length, etherna: ethernaProducts.length }}
+          />
         </Suspense>
       )}
     </nav>
