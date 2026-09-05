@@ -106,6 +106,7 @@ export const SOURCE_LABEL: Record<SourceKey, string> = {
   avery: 'Avery Dennison',
   md80: 'Metamark MD-80',
   ppf: 'NZPPF',
+  erp: 'Cadastro NZ',
 };
 
 export const VERTICAL_LABEL: Record<Vertical, string> = {

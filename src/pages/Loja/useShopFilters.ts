@@ -16,6 +16,7 @@ import { PATTERN_LABEL } from '../../lib/shop/pattern/taxonomy';
 import { isFinishId, type FinishId } from '../../lib/shop/finish/tree';
 import { isPatternFamilyId, type PatternFamilyId } from '../../lib/shop/pattern/taxonomy';
 import type { BrandKey, ItemKind, LineKey, Vertical } from '../../lib/shop/types';
+import { LINHA_LABEL } from '../../lib/shop/erp/mapa';
 
 const PARAM = {
   q: 'q',
@@ -41,11 +42,8 @@ const KIND_CHIP: Record<ItemKind, string> = {
 };
 
 const VERTICALS: Vertical[] = ['PPF', 'WRAP', 'SIGN', 'DECOR'];
-const BRAND_KEYS: BrandKey[] = ['nz', 'sh', 'metamark', 'orafol', 'avery', 'etherna'];
-const LINE_KEYS: LineKey[] = [
-  'etherna', 'sh-decor', 'm7', 'mcx', 'nzwrap',
-  'oracal-651', 'oracal-670', 'sh-wrapping', 'avery', 'md80', 'ppf',
-];
+const BRAND_KEYS: BrandKey[] = ['nz', 'sh', 'metamark', 'orafol', 'avery', 'etherna', 'speed', 'nar', 'outro'];
+const LINE_KEYS = Object.keys(LINHA_LABEL) as LineKey[];
 const KINDS: ItemKind[] = ['cor', 'padrao', 'linha'];
 const SORTS: SortMode[] = ['relevancia', 'nome', 'marca'];
 

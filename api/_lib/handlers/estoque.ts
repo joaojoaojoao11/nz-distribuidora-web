@@ -1,26 +1,35 @@
-// POST /api/nz/estoque — disponibilidade de um produto, por papel do usuário.
+// POST /api/nz/estoque — disponibilidade de um ou mais produtos, por papel.
 //
-// ESTE ENDPOINT EXISTE POR UMA RESTRIÇÃO DURA: o catálogo da LOJA é um arquivo
-// .ts no bundle público, que qualquer visitante baixa e lê. Nada restrito pode
-// entrar nele. Dado por papel só pode vir de um request autenticado, com o
-// papel lido NO SERVIDOR — nunca do que o cliente diz que é.
+// ESTE ENDPOINT EXISTE POR UMA RESTRIÇÃO DURA: o catálogo público da LOJA é
+// um JSON que qualquer visitante baixa e lê. Nada restrito pode entrar nele.
+// Dado por papel só pode vir de um request autenticado, com o papel lido NO
+// SERVIDOR — nunca do que o cliente diz que é.
 //
 // Os três níveis, definidos com o cliente:
 //   anônimo / client   → só disponibilidade qualitativa. Nenhum número.
 //   reseller aprovado  → saldo em metros e rolos, com quebra fechado × aberto.
-//   admin              → tudo acima + LPNs, localização física e filial.
+//   admin              → tudo acima + os rótulos do ERP (ESTOQUE/DROP) + LPNs,
+//                        localização física — lidos AO VIVO no ERP.
 //
-// NENHUM papel vê preço, custo ou margem. Essas colunas nem são transferidas do
-// ERP: as views em migrations/erp/ já as excluem na origem.
+// NENHUM papel vê preço aqui — preço é /api/nz/precos, com a mesma régua.
+//
+// Aceita `slug` (um produto) ou `slugs[]` (até 60, a página da vitrine). Um
+// alias resolve para o SKU físico do produto original.
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-import { resolverPapel } from '../papel.js';
+import { resolverPapel, type Papel } from '../papel.js';
 
-type Disponibilidade = 'em-estoque' | 'ultimas-unidades' | 'sob-encomenda';
+type Nivel = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
+
+interface Produto {
+  slug: string;
+  erp_sku: string | null;
+  tipo_vinculo: string;
+}
 
 interface Espelho {
-  erp_sku: string;
+  sku: string;
   nome: string | null;
   ativo: boolean;
   saldo_ml: number;
@@ -30,7 +39,10 @@ interface Espelho {
   metragem_padrao: number | null;
   estoque_minimo: number | null;
   sincronizado_em: string;
+  estoque_atualizado_em: string | null;
 }
+
+const MAX_SLUGS = 60;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
@@ -46,44 +58,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const body = (typeof req.body === 'string' ? safeJson(req.body) : req.body) || {};
-  const slug = typeof body.slug === 'string' ? body.slug : '';
-  if (!slug) {
-    res.status(400).json({ error: 'Informe slug.' });
+  const unico = typeof body.slug === 'string' ? body.slug.trim() : '';
+  const lista = Array.isArray(body.slugs)
+    ? (body.slugs as unknown[]).filter((s): s is string => typeof s === 'string').map((s) => s.trim()).filter(Boolean)
+    : [];
+  const slugs = [...new Set(unico ? [unico, ...lista] : lista)].slice(0, MAX_SLUGS);
+  if (!slugs.length) {
+    res.status(400).json({ error: 'Informe slug ou slugs[].' });
     return;
   }
 
   const site = createClient(siteUrl, siteKey);
   const papel = await resolverPapel(site, req.headers.authorization);
 
-  // Mapa de SKU: sem correspondência conferida, não há estoque a mostrar.
-  const { data: mapa } = await site
-    .from('erp_sku_map')
-    .select('erp_sku')
-    .eq('shop_slug', slug)
-    .maybeSingle();
+  const { data: produtosData } = await site
+    .from('produtos')
+    .select('slug, erp_sku, tipo_vinculo')
+    .in('slug', slugs);
+  const produtos = (produtosData ?? []) as Produto[];
 
-  const erpSku = (mapa as { erp_sku?: string } | null)?.erp_sku;
-  if (!erpSku) {
-    res.status(200).json({ mapeado: false, papel });
-    return;
-  }
-
-  const { data: espelhoData } = await site
-    .from('erp_stock_mirror')
-    .select(
-      'erp_sku, nome, ativo, saldo_ml, rolos_fechados, rolos_abertos, largura_m, metragem_padrao, estoque_minimo, sincronizado_em'
-    )
-    .eq('erp_sku', erpSku)
-    .maybeSingle();
-
-  const espelho = espelhoData as unknown as Espelho | null;
-  if (!espelho) {
-    res.status(200).json({ mapeado: true, semDados: true, papel });
-    return;
-  }
+  const skus = [...new Set(produtos.map((p) => p.erp_sku).filter((s): s is string => !!s))];
+  const { data: espelhoData } = skus.length
+    ? await site
+        .from('erp_produtos')
+        .select('sku, nome, ativo, saldo_ml, rolos_fechados, rolos_abertos, largura_m, metragem_padrao, estoque_minimo, sincronizado_em, estoque_atualizado_em')
+        .in('sku', skus)
+    : { data: [] };
+  const espelhoPorSku = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
 
   const { data: cfg } = await site
-    .from('erp_config')
+    .from('loja_config')
     .select('limite_ultimas_unidades_ml')
     .eq('id', 1)
     .maybeSingle();
@@ -91,34 +95,53 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     (cfg as { limite_ultimas_unidades_ml?: number } | null)?.limite_ultimas_unidades_ml ?? 30
   );
 
-  const disponibilidade = classificar(espelho, limiteGlobal);
+  const itens: Record<string, unknown> = {};
+  for (const slug of slugs) {
+    const p = produtos.find((x) => x.slug === slug);
+    const e = p?.erp_sku ? espelhoPorSku.get(p.erp_sku) : undefined;
+    itens[slug] = await montar(p, e, papel, limiteGlobal);
+  }
+
+  // Compatibilidade com o chamador de um produto só: mesmo objeto no topo.
+  if (unico && slugs.length === 1) {
+    res.status(200).json({ papel, ...(itens[unico] as Record<string, unknown>) });
+    return;
+  }
+  res.status(200).json({ papel, itens });
+}
+
+async function montar(p: Produto | undefined, e: Espelho | undefined, papel: Papel, limiteGlobal: number) {
+  if (!p || !p.erp_sku) return { mapeado: false };
+  if (!e) return { mapeado: true, semDados: true };
+
+  const nivel = classificar(e, limiteGlobal);
 
   // --- nível 1: todo mundo. Só o badge qualitativo.
-  const resposta: Record<string, unknown> = {
+  const r: Record<string, unknown> = {
     mapeado: true,
-    papel,
-    disponibilidade,
-    atualizadoEm: espelho.sincronizado_em,
+    disponibilidade: nivel,
+    atualizadoEm: e.sincronizado_em,
   };
 
   // --- nível 2: lojista aprovado e admin.
   if (papel === 'reseller' || papel === 'admin') {
-    resposta.saldo = {
-      metrosLineares: Number(espelho.saldo_ml),
-      rolosFechados: espelho.rolos_fechados,
-      rolosAbertos: espelho.rolos_abertos,
-      larguraM: espelho.largura_m,
-      metragemPadrao: espelho.metragem_padrao,
+    r.saldo = {
+      metrosLineares: Number(e.saldo_ml),
+      rolosFechados: e.rolos_fechados,
+      rolosAbertos: e.rolos_abertos,
+      larguraM: e.largura_m,
+      metragemPadrao: e.metragem_padrao,
     };
   }
 
-  // --- nível 3: admin. Detalhe por rolo, lido AO VIVO no ERP.
+  // --- nível 3: admin. Rótulo do ERP e detalhe por rolo, lido AO VIVO.
   if (papel === 'admin') {
-    resposta.lpns = await lerLpns(erpSku);
-    resposta.estoqueMinimo = espelho.estoque_minimo;
+    r.erpSku = p.erp_sku;
+    r.rotuloErp = Number(e.saldo_ml) > 0.01 ? 'ESTOQUE' : 'DROP';
+    r.estoqueMinimo = e.estoque_minimo;
+    r.lpns = await lerLpns(p.erp_sku);
   }
-
-  res.status(200).json(resposta);
+  return r;
 }
 
 function safeJson(raw: string): Record<string, unknown> {
@@ -129,17 +152,14 @@ function safeJson(raw: string): Record<string, unknown> {
   }
 }
 
-function classificar(espelho: Espelho, limiteGlobal: number): Disponibilidade {
-  if (!espelho.ativo || espelho.saldo_ml <= 0) return 'sob-encomenda';
-  // O ERP mantém estoque_minimo por SKU — quando existe, é um limiar melhor
-  // que o global, porque já reflete o giro daquele item.
-  const limite = espelho.estoque_minimo && espelho.estoque_minimo > 0
-    ? Number(espelho.estoque_minimo)
-    : limiteGlobal;
-  return espelho.saldo_ml <= limite ? 'ultimas-unidades' : 'em-estoque';
+/** Mesma régua da view loja_catalogo — mudou lá, muda aqui. */
+function classificar(e: Espelho, limiteGlobal: number): Nivel {
+  if (!e.ativo || e.saldo_ml <= 0) return 'sob-encomenda';
+  const limite = e.estoque_minimo && e.estoque_minimo > 0 ? Number(e.estoque_minimo) : limiteGlobal;
+  return e.saldo_ml <= limite ? 'ultimas-unidades' : 'pronta-entrega';
 }
 
-/** Detalhe por LPN direto do ERP. Só chamado para admin. */
+/** Detalhe por LPN direto do ERP (pátio SP). Só chamado para admin. */
 async function lerLpns(erpSku: string) {
   const erpUrl = process.env.ERP_SUPABASE_URL;
   const erpKey = process.env.ERP_SUPABASE_SERVICE_ROLE_KEY || process.env.ERP_SUPABASE_ANON_KEY;

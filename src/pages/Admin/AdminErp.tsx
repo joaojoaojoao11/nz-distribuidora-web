@@ -56,15 +56,15 @@ export default function AdminErp() {
     const [m, l, c, e] = await Promise.all([
       supabase.from('erp_sku_map').select('*').order('confianca', { ascending: false }).limit(500),
       supabase.from('erp_sync_log').select('*').order('iniciado_em', { ascending: false }).limit(10),
-      supabase.from('erp_config').select('*').eq('id', 1).maybeSingle(),
-      supabase.from('erp_stock_mirror').select('erp_sku', { count: 'exact', head: true }),
+      supabase.from('loja_config').select('*').eq('id', 1).maybeSingle(),
+      supabase.from('erp_produtos').select('sku', { count: 'exact', head: true }),
     ]);
 
     setErro('');
 
     if (m.error) {
       setErro(
-        `Não consegui ler erp_sku_map: ${m.error.message}. A migration migrations/2026-09-03_erp_integracao.sql já foi aplicada?`
+        `Não consegui ler erp_sku_map: ${m.error.message}. A migration migrations/2026-09-06_loja_ecommerce.sql já foi aplicada?`
       );
       setLoading(false);
       return;
@@ -149,7 +149,7 @@ export default function AdminErp() {
 
   const salvarConfig = async (patch: Partial<Config>) => {
     const { error } = await supabase
-      .from('erp_config')
+      .from('loja_config')
       .update({ ...patch, atualizado_em: new Date().toISOString() })
       .eq('id', 1);
     if (error) setErro(error.message);

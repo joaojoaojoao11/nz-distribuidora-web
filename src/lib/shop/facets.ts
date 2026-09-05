@@ -70,6 +70,9 @@ const BRAND_OPTIONS: { id: BrandKey; label: string }[] = [
   { id: 'sh', label: 'SH' },
   { id: 'etherna', label: 'Etherna' },
   { id: 'avery', label: 'Avery Dennison' },
+  { id: 'speed', label: 'Speed Wrapping' },
+  { id: 'nar', label: 'NAR' },
+  { id: 'outro', label: 'Outras' },
 ];
 
 /**
@@ -90,6 +93,14 @@ const LINE_OPTIONS: { id: LineKey; label: string }[] = [
   { id: 'md80', label: 'Metamark MD-80' },
   { id: 'avery', label: 'Avery Dennison' },
   { id: 'ppf', label: 'NZPPF' },
+  // Linhas que só existem no ERP — chegam com o espelho (src/lib/shop/erp/mapa.ts).
+  { id: 'speed-wrapping', label: 'Speed Wrapping' },
+  { id: 'nzwrap-import', label: 'NZWRAP Import' },
+  { id: 'nar', label: 'NAR PPF' },
+  { id: 'next', label: 'SHNext PPF' },
+  { id: 'avery-adpro', label: 'Avery AD Pro' },
+  { id: 'nz-farol', label: 'NZ Película de Farol' },
+  { id: 'diversos', label: 'Diversos' },
 ];
 
 function countWith(items: readonly ShopItem[], filters: FilterState): number {

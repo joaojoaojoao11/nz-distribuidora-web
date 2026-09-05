@@ -1,15 +1,28 @@
 // Adapter do snapshot de web_catalog_products: Oracal 651, Oracal 670RA e
 // SH Wrapping (116 cores).
 //
-// Estas são as únicas cores do catálogo SEM imagem — a tabela não tem coluna de
-// imagem e as páginas de cor sempre renderizaram swatch a partir do hex. O card
-// da LOJA faz o mesmo, com um leve gradiente para não ficar chapado ao lado das
-// texturas fotografadas do DECOR.
+// Historicamente estas cores não tinham imagem — a tabela não tem coluna de
+// imagem e o card da LOJA renderizava só swatch do hex.
+//
+// SH Wrapping está ganhando fotos-de-rolo geradas por IA (Nano Banana Pro,
+// image-to-image referenciando padrão Inozetek), aplicadas cor por cor conforme
+// aprovadas pelo time. Convenção: `public/assets/images/shop/sh-wrapping/{slug}.webp`
+// mapeadas explicitamente em SH_WRAPPING_IMAGES abaixo — mapping explícito evita
+// 404 pra slugs sem foto ainda e mantém a decisão editorial rastreável.
 
 import { DB_SNAPSHOT, type DbSnapshotRow, type DbSnapshotSource } from '../generated/dbSnapshot';
 import { resolveColor } from '../color/resolveColor';
 import { normalizeFinishString } from '../finish/normalizeFinish';
 import { buildSearchText, shopSlug, type BrandKey, type ShopItem, type ShopSpec } from '../types';
+
+/**
+ * Fotos de rolo SH Wrapping já aprovadas. Adicionar uma entrada por cor à
+ * medida que o mockup for validado. Slugs faltantes seguem renderizando swatch
+ * do hex — não é 404.
+ */
+const SH_WRAPPING_IMAGES: Record<string, string> = {
+  'paprika-orange': '/assets/images/shop/sh-wrapping/paprika-orange.webp',
+};
 
 /**
  * Config por marca. O `routePrefix` é explícito de propósito: a coluna `brand`
@@ -100,8 +113,9 @@ function rowToShopItem(row: DbSnapshotRow): ShopItem {
     vertical: 'WRAP',
     kind: 'cor',
     aplicacoes: [cfg.aplicacao],
-    // A tabela não tem coluna de imagem: o card resolve por swatch do hex.
-    image: null,
+    // SH Wrapping: foto de rolo por slug quando existe; senão swatch do hex.
+    // Oracal 651/670: sempre swatch (não geramos fotos, hex chapado funciona).
+    image: row.source === 'sh-wrapping' ? (SH_WRAPPING_IMAGES[row.slug] ?? null) : null,
     gallery: [],
     hex: row.hex,
     colorFamilies: color.families,

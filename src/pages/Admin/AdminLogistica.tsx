@@ -13,22 +13,13 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { LINHA_LABEL } from '../../lib/shop/erp/mapa';
 import styles from './Admin.module.css';
 
-/** Linhas do catálogo — espelha LineKey de src/lib/shop/types.ts. */
-const LINE_KEYS: { key: string; label: string }[] = [
-  { key: 'nzwrap', label: 'NZWRAP Premium' },
-  { key: 'mcx', label: 'MetaCast MCX' },
-  { key: 'm7', label: 'Metamark 7 Series' },
-  { key: 'oracal-651', label: 'Oracal 651' },
-  { key: 'oracal-670', label: 'Oracal 670RA' },
-  { key: 'sh-wrapping', label: 'SH Wrapping' },
-  { key: 'etherna', label: 'Etherna Decor' },
-  { key: 'sh-decor', label: 'SH Decor' },
-  { key: 'avery', label: 'Avery Dennison' },
-  { key: 'md80', label: 'Metamark MD-80' },
-  { key: 'ppf', label: 'NZPPF' },
-];
+/** Linhas do catálogo — a lista canônica é LINHA_LABEL em src/lib/shop/erp/mapa.ts. */
+const LINE_KEYS: { key: string; label: string }[] = Object.entries(LINHA_LABEL).map(
+  ([key, label]) => ({ key, label })
+);
 
 interface Perfil {
   id: string;

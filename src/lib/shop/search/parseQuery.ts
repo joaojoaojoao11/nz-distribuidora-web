@@ -113,6 +113,8 @@ const BRAND_SYNONYMS: Record<string, BrandKey> = {
   sh: 'sh',
   nz: 'nz',
   'nz group': 'nz',
+  'speed wrapping': 'speed',
+  nar: 'nar',
 };
 
 /**
@@ -141,6 +143,17 @@ const LINE_SYNONYMS: Record<string, LineKey> = {
   'oracal 670ra': 'oracal-670',
   '670ra': 'oracal-670',
   nzppf: 'ppf',
+  'speed wrapping': 'speed-wrapping',
+  speedwrapping: 'speed-wrapping',
+  speed: 'speed-wrapping',
+  nar: 'nar',
+  shnext: 'next',
+  'sh next': 'next',
+  'ad pro': 'avery-adpro',
+  adpro: 'avery-adpro',
+  farol: 'nz-farol',
+  'pelicula de farol': 'nz-farol',
+  headlight: 'nz-farol',
 };
 
 const VERTICAL_SYNONYMS: Record<string, Vertical> = {

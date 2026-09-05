@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import styles from './Disponibilidade.module.css';
 
-type Nivel = 'em-estoque' | 'ultimas-unidades' | 'sob-encomenda';
+type Nivel = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
 
 interface Lpn {
   lpn: string;
@@ -44,7 +44,7 @@ interface Resposta {
 }
 
 const ROTULO: Record<Nivel, string> = {
-  'em-estoque': 'Em estoque',
+  'pronta-entrega': 'Pronta entrega · SP',
   'ultimas-unidades': 'Últimas unidades',
   'sob-encomenda': 'Sob encomenda',
 };

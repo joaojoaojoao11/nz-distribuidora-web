@@ -12,6 +12,7 @@
 import type { ColorFamilyId, ColorSubfamilyId } from './color/lexicon';
 import type { FinishId } from './finish/tree';
 import type { PatternFamilyId } from './pattern/taxonomy';
+import type { BrandKeyErp, LinhaErp } from './erp/mapa';
 
 /** As 4 linhas de negócio da NZ, espelhando as rotas /ppf /wrap /sign /decor. */
 export type Vertical = 'PPF' | 'WRAP' | 'SIGN' | 'DECOR';
@@ -38,16 +39,18 @@ export type SourceKey =
   | 'sh-wrapping'
   | 'avery'
   | 'md80'
-  | 'ppf';
+  | 'ppf'
+  /** Cadastro no banco do site (`produtos` ⨝ `erp_produtos`), espelhado do NZERP. */
+  | 'erp';
 
 /**
  * Chave da linha comercial, usada para resolver o perfil de embalagem na
  * logística (um perfil vale para todos os itens da mesma linha — os 92 M7 são
- * o mesmo filme físico, só muda a cor). Hoje coincide com `SourceKey`, mas é um
- * tipo separado de propósito: são conceitos distintos e podem divergir quando
- * uma fonte passar a carregar mais de uma linha.
+ * o mesmo filme físico, só muda a cor). Começou igual a `SourceKey`; com o
+ * espelho do ERP ganhou as linhas que só existem lá (Speed Wrapping, NAR…).
+ * A lista canônica vive em ./erp/mapa.ts.
  */
-export type LineKey = SourceKey;
+export type LineKey = LinhaErp;
 
 /**
  * Fabricante. Separado da LINHA de propósito: a SH fabrica duas linhas de
@@ -56,7 +59,13 @@ export type LineKey = SourceKey;
  * quem procura "metamark" quer as três linhas. Sem os dois eixos, um dos dois
  * comportamentos fica errado.
  */
-export type BrandKey = 'nz' | 'sh' | 'metamark' | 'orafol' | 'avery' | 'etherna';
+export type BrandKey = BrandKeyErp;
+
+/** Nível qualitativo de estoque — o único dado de estoque que é público. */
+export type NivelEstoque = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
+
+/** Como o produto do site se liga ao SKU físico do ERP. */
+export type TipoVinculo = 'proprio' | 'alias' | 'familia' | 'pendente';
 
 export interface ShopSpec {
   label: string;
@@ -115,6 +124,20 @@ export interface ShopItem {
 
   /** Texto normalizado (sem acento, minúsculo) para o fallback de busca textual. */
   searchText: string;
+
+  // --- campos que só existem quando o item vem do banco (source 'erp').
+  // Opcionais para os adapters estáticos continuarem válidos até serem
+  // aposentados pela migração do catálogo para `produtos`.
+
+  /** SKU físico no NZERP. Alias aponta para o SKU do produto original. */
+  erpSku?: string | null;
+  tipoVinculo?: TipoVinculo;
+  /** Slug do produto do qual este é alias (NZWRAP → SH Wrapping). */
+  aliasDeSlug?: string | null;
+  /** Vem pronto na view pública; nunca há número junto. */
+  nivelEstoque?: NivelEstoque | null;
+  larguraM?: number | null;
+  metragemPadrao?: number | null;
 }
 
 /** Prefixo de slug por fonte. Resolve as 3 colisões reais entre etherna e sh-decor. */
@@ -130,6 +153,8 @@ const SLUG_PREFIX: Record<SourceKey, string> = {
   avery: 'avery-',
   md80: 'md80-',
   ppf: 'ppf-',
+  // O slug de um produto do banco já é global: nunca recebe prefixo.
+  erp: '',
 };
 
 /**

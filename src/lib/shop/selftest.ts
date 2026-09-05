@@ -13,6 +13,13 @@ import {
   normalizeFinishString,
 } from './finish/normalizeFinish';
 import { finishDescendants, type FinishId } from './finish/tree';
+import {
+  LINHA_LABEL,
+  linhaDeMarca,
+  slugErp,
+  verticalDeCategoria,
+  type ErpSkuBasico,
+} from './erp/mapa';
 
 interface Failure {
   caso: string;
@@ -302,9 +309,84 @@ function checkFinishes(): Failure[] {
   return fails;
 }
 
+/**
+ * Mapa ERP → site. Casos tirados do master_catalog real (2026-09-05): a
+ * categoria decide a vertical, a marca (mais o prefixo do SKU na Metamark)
+ * decide a linha, e o slug é estável e único porque termina no SKU.
+ */
+function checkMapaErp(): Failure[] {
+  const fails: Failure[] = [];
+
+  const slugs: { nome: string; row: ErpSkuBasico; want: string }[] = [
+    {
+      nome: 'MCX10 (marca repetida no nome + dimensão)',
+      row: { sku: 'MCX10', nome: 'METAMARK MCX JET BLACK 1,525 X 15M', marca: 'METAMARK', categoria: 'ENVELOPAMENTO' },
+      want: 'metamark-mcx-jet-black-mcx10',
+    },
+    {
+      nome: 'SHDIP 413-12 (SKU com espaço e hífen)',
+      row: { sku: 'SHDIP 413-12', nome: 'SH DECOR IP 413-12 PEDRA CARRARA', marca: 'SH DECOR', categoria: 'DECORATIVO PREMIUM' },
+      want: 'sh-decor-ip-413-12-pedra-carrara-shdip-413-12',
+    },
+    {
+      nome: 'NZPJ1 (dimensão em CM)',
+      row: { sku: 'NZPJ1', nome: 'NZPPF HEADLIGHT LIGHT BLACK 30CM', marca: 'NZ', categoria: 'PPF FUME' },
+      want: 'nz-nzppf-headlight-light-black-nzpj1',
+    },
+    {
+      nome: 'ADFILM01 (dimensão 1,52 X 30M)',
+      row: { sku: 'ADFILM01', nome: 'AVERY AD PRO NEW GENERATION 05 1,52 X 30M', marca: 'AVERY', categoria: 'FILM' },
+      want: 'avery-ad-pro-new-generation-05-adfilm01',
+    },
+  ];
+  for (const c of slugs) {
+    const got = slugErp(c.row);
+    if (got !== c.want) fails.push({ caso: `slugErp ${c.nome}`, esperado: c.want, obtido: got });
+  }
+
+  const verticais: { cat: string; marca: string; want: string }[] = [
+    { cat: 'ENVELOPAMENTO', marca: 'SPEED WRAPPING', want: 'WRAP' },
+    { cat: 'PPF', marca: 'NAR', want: 'PPF' },
+    { cat: 'PPF FUME', marca: 'NZ', want: 'PPF' },
+    { cat: 'COMUNICAÇÃO VISUAL', marca: 'ORACAL 651', want: 'SIGN' },
+    { cat: 'FILM', marca: 'AVERY', want: 'SIGN' },
+    { cat: 'DECORATIVO ETHERNA', marca: 'ETHERNA', want: 'DECOR' },
+    { cat: 'DECORATIVO PREMIUM', marca: 'SH DECOR', want: 'DECOR' },
+    { cat: 'DIVERSOS', marca: 'ETHERNA', want: 'DECOR' },
+  ];
+  for (const c of verticais) {
+    const got = verticalDeCategoria(c.cat, c.marca);
+    if (got !== c.want) fails.push({ caso: `vertical ${c.cat}/${c.marca}`, esperado: c.want, obtido: got });
+  }
+
+  const linhas: { row: ErpSkuBasico; want: string }[] = [
+    { row: { sku: 'MCX10', nome: 'METAMARK MCX JET BLACK', marca: 'METAMARK', categoria: 'ENVELOPAMENTO' }, want: 'mcx' },
+    { row: { sku: 'M7108', nome: 'METAMARK M7 GOLD', marca: 'METAMARK', categoria: 'COMUNICAÇÃO VISUAL' }, want: 'm7' },
+    { row: { sku: 'SPWEBP001', nome: 'SPEED WRAPPING EBP 001', marca: 'SPEED WRAPPING', categoria: 'ENVELOPAMENTO' }, want: 'speed-wrapping' },
+    { row: { sku: 'NZWCG01', nome: 'NZWRAP GOLD CHROME GLOSS', marca: 'NZWRAP', categoria: 'ENVELOPAMENTO' }, want: 'nzwrap-import' },
+    { row: { sku: 'NZW08', nome: 'NZWRAP DARK GRAY AMG', marca: 'SH WRAPPING', categoria: 'ENVELOPAMENTO' }, want: 'sh-wrapping' },
+    { row: { sku: 'ORA6510', nome: 'VINIL ORACAL 6510', marca: 'ORACAL 6510', categoria: 'COMUNICAÇÃO VISUAL' }, want: 'oracal-651' },
+    { row: { sku: 'ADFILM01', nome: 'AVERY AD PRO', marca: 'AVERY', categoria: 'FILM' }, want: 'avery-adpro' },
+    { row: { sku: 'NZPJ5', nome: 'NZWRAP PELÍCULA DE FAROL', marca: 'NZ', categoria: 'PPF FUME' }, want: 'nz-farol' },
+    { row: { sku: '84565478', nome: 'PPF BLACK PIANO', marca: 'NZ', categoria: 'PPF' }, want: 'ppf' },
+    { row: { sku: 'FT3919', nome: 'FITA DE CORTE', marca: 'NZ', categoria: 'ferramentas' }, want: 'diversos' },
+  ];
+  for (const c of linhas) {
+    const got = linhaDeMarca(c.row).linha;
+    if (got !== c.want) fails.push({ caso: `linha ${c.row.sku}`, esperado: c.want, obtido: got });
+  }
+
+  // Toda linha do mapa tem rótulo — é o que a faceta e a logística exibem.
+  for (const l of Object.keys(LINHA_LABEL)) {
+    if (!LINHA_LABEL[l as keyof typeof LINHA_LABEL]) fails.push({ caso: `rótulo ${l}`, esperado: 'texto', obtido: 'vazio' });
+  }
+
+  return fails;
+}
+
 /** Roda tudo e loga no console. Devolve o número de falhas. */
 export function runShopSelfTest(): number {
-  const fails = [...checkColors(), ...checkFinishes()];
+  const fails = [...checkColors(), ...checkFinishes(), ...checkMapaErp()];
 
   if (fails.length === 0) {
     console.info('%c[shop] autoteste de taxonomia: OK', 'color:#4ade80');
