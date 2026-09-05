@@ -16,7 +16,7 @@ import type { ColorFamilyId } from '../color/lexicon';
 import type { FinishId } from '../finish/tree';
 import { finishDescendants } from '../finish/tree';
 import type { PatternFamilyId } from '../pattern/taxonomy';
-import { normalize, type BrandKey, type ItemKind, type LineKey, type ShopItem, type Vertical } from '../types';
+import { normalize, type BrandKey, type ItemKind, type LineKey, type NivelEstoque, type ShopItem, type Vertical } from '../types';
 
 export type SortMode = 'relevancia' | 'nome' | 'marca';
 
@@ -31,6 +31,8 @@ export interface FilterState {
   finishes: FinishId[];
   patterns: PatternFamilyId[];
   kinds: ItemKind[];
+  /** Nível público de estoque. Só 'pronta-entrega' faz sentido como filtro. */
+  estoque: NivelEstoque[];
   sort: SortMode;
 }
 
@@ -43,6 +45,7 @@ export const EMPTY_FILTERS: FilterState = {
   finishes: [],
   patterns: [],
   kinds: [],
+  estoque: [],
   sort: 'relevancia',
 };
 
@@ -55,7 +58,8 @@ export function hasActiveFilters(f: FilterState): boolean {
     f.colors.length > 0 ||
     f.finishes.length > 0 ||
     f.patterns.length > 0 ||
-    f.kinds.length > 0
+    f.kinds.length > 0 ||
+    f.estoque.length > 0
   );
 }
 
@@ -210,6 +214,9 @@ export function applyFilters(items: readonly ShopItem[], f: FilterState): ShopIt
 
   const scored: { item: ShopItem; score: number }[] = [];
   for (const item of items) {
+    // Estoque é corte, não pontuação: quem pediu pronta entrega não quer ver
+    // sob encomenda no fim da lista.
+    if (f.estoque.length && !f.estoque.includes(item.nivelEstoque ?? 'sob-encomenda')) continue;
     const score = scoreItem(item, pq, f.kinds, strictSubcolor);
     if (score !== null) scored.push({ item, score });
   }

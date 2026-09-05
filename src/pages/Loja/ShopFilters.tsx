@@ -125,6 +125,14 @@ function Body({ facets, filters, onToggle }: Pick<Props, 'facets' | 'filters' | 
         selected={filters.verticals}
         onToggle={onToggle}
       />
+      <Group
+        title="Disponibilidade"
+        options={facets.estoque}
+        group="estoque"
+        selected={filters.estoque}
+        onToggle={onToggle}
+      />
+
       <ColorGroup options={facets.colors} selected={filters.colors} onToggle={onToggle} />
       <Group
         title="Acabamento"

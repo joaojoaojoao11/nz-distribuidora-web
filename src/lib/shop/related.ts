@@ -5,10 +5,11 @@
 // um item sem cor e sem padrão (uma linha Avery) ainda cai na marca, e a loja
 // nunca mostra uma seção "Relacionados" vazia ou com 2 cards perdidos.
 
-import { SHOP_ITEMS } from './catalog';
+import { catalogoAtual } from './store';
 import type { ShopItem } from './types';
 
 export function relatedItems(item: ShopItem, limit = 8): ShopItem[] {
+  const SHOP_ITEMS = catalogoAtual();
   const out: ShopItem[] = [];
   const seen = new Set<string>([item.slug]);
 

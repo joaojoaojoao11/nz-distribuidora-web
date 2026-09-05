@@ -5,7 +5,7 @@ import { ethernaSlugs } from './_lib/ethernaSlugs.js';
 import { colorFamilies, colorTitle, colorDescription, cleanColorName, type ColorRow } from './_lib/colorCatalog.js';
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 import { ppfLines } from './_lib/ppfLines.js';
-import { getShopIndexItem } from './_lib/shopItems.js';
+import { getShopIndexItem, type ShopIndexItem } from './_lib/shopItems.js';
 import { organization, localBusiness, webSite, breadcrumb, product, faqPage, article, collectionPage, graphScript } from './_lib/jsonld.js';
 
 // Shell HTML com meta correta por rota, para TODOS os user-agents.
@@ -146,6 +146,50 @@ async function fetchBlogPostMeta(slug: string): Promise<ResolvedMeta | null> {
       description: post.meta_description || post.title,
       image: post.cover_image_url || undefined,
       schema,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Produto que só existe no banco (`loja_catalogo`): meta gerada da linha.
+ * Só descritivo — a view não tem preço, e este caminho não pede nada além.
+ */
+async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '';
+  const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
+  if (!supabaseUrl || !supabaseKey) return null;
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/loja_catalogo?slug=eq.${encodeURIComponent(slug.toLowerCase())}&select=slug,nome,marca_exibicao,vertical,codigo,imagem,linha_label,acabamento_label,descricao,seo_titulo,seo_descricao,legacy_path&limit=1`,
+      { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } },
+    );
+    if (!res.ok) return null;
+    const rows = (await res.json()) as {
+      slug: string; nome: string; marca_exibicao: string | null; vertical: string; codigo: string | null;
+      imagem: string | null; linha_label: string | null; acabamento_label: string | null;
+      descricao: string | null; seo_titulo: string | null; seo_descricao: string | null; legacy_path: string | null;
+    }[];
+    const r = rows?.[0];
+    if (!r) return null;
+    const brand = r.marca_exibicao ?? 'NZ';
+    const linha = r.linha_label ?? brand;
+    const title = r.seo_titulo ?? `${r.nome}${r.codigo ? ` · ${r.codigo}` : ''} — ${linha}`;
+    const description =
+      r.seo_descricao ??
+      r.descricao ??
+      `${r.nome}${r.codigo ? ` (${r.codigo})` : ''} — ${linha}${r.acabamento_label ? `, acabamento ${r.acabamento_label.toLowerCase()}` : ''}. Distribuição e consultoria técnica NZ Group.`;
+    return {
+      slug: r.slug,
+      name: r.nome,
+      brand,
+      vertical: r.vertical,
+      title,
+      description,
+      image: r.imagem,
+      selfCanonical: !r.legacy_path,
+      legacyPath: r.legacy_path,
     };
   } catch {
     return null;
@@ -318,7 +362,9 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
   // ?cor=<slug> dentro do catálogo, são auto-canônicos — e é onde a LOJA gera
   // páginas indexáveis novas em vez de duplicar as existentes.
   if (segments[0] === 'loja' && segments.length === 2) {
-    const item = getShopIndexItem(segments[1]);
+    // Primeiro o índice estático (rápido, cobre os 505 editoriais); depois o
+    // banco, para os produtos criados do ERP que não existem no bundle.
+    const item = getShopIndexItem(segments[1]) ?? (await fetchLojaItem(segments[1]));
     if (!item) return NOT_FOUND_META;
 
     const canonicalPath = item.selfCanonical ? path : item.legacyPath ?? path;

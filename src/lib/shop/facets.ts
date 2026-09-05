@@ -11,7 +11,7 @@ import { COLOR_LABEL, type ColorFamilyId } from './color/lexicon';
 import { FINISH_LABEL, FINISH_ORDER, FINISH_PARENT, type FinishId } from './finish/tree';
 import { PATTERN_LABEL, PATTERN_ORDER, type PatternFamilyId } from './pattern/taxonomy';
 import { SOURCE_LABEL, VERTICAL_LABEL, VERTICAL_ORDER } from './catalog';
-import type { BrandKey, ItemKind, LineKey, ShopItem, Vertical } from './types';
+import type { BrandKey, ItemKind, LineKey, NivelEstoque, ShopItem, Vertical } from './types';
 
 export interface FacetOption<T extends string = string> {
   id: T;
@@ -30,6 +30,7 @@ export interface Facets {
   brands: FacetOption<BrandKey>[];
   patterns: FacetOption<PatternFamilyId>[];
   kinds: FacetOption<ItemKind>[];
+  estoque: FacetOption<NivelEstoque>[];
 }
 
 /** Swatch de cada família, para o grid de cores da sidebar. */
@@ -51,6 +52,12 @@ export const COLOR_SWATCH: Record<ColorFamilyId, string> = {
   bronze: '#9a6b3f',
   transparente: 'transparent',
   multicolor: 'linear-gradient(135deg,#c0182b,#f0c000,#2e8b45,#1f63b8)',
+};
+
+export const ESTOQUE_LABEL: Record<NivelEstoque, string> = {
+  'pronta-entrega': 'Pronta entrega · SP',
+  'ultimas-unidades': 'Últimas unidades',
+  'sob-encomenda': 'Sob encomenda',
 };
 
 const KIND_LABEL: Record<ItemKind, string> = {
@@ -119,6 +126,7 @@ export function computeFacets(items: readonly ShopItem[], f: FilterState): Facet
   const withoutLine = { ...f, lines: [] };
   const withoutPattern = { ...f, patterns: [] };
   const withoutKind = { ...f, kinds: [] };
+  const withoutEstoque = { ...f, estoque: [] };
 
   const verticals = VERTICAL_ORDER.map((v) => ({
     id: v,
@@ -168,7 +176,17 @@ export function computeFacets(items: readonly ShopItem[], f: FilterState): Facet
     }))
     .filter((o) => o.count > 0);
 
-  return { verticals, colors, finishes, lines, brands, patterns, kinds };
+  // Só o nível que vale como filtro: "pronta entrega" é pergunta real do
+  // instalador; "sob encomenda" ninguém filtra para achar.
+  const estoque = (['pronta-entrega'] as NivelEstoque[])
+    .map((n) => ({
+      id: n,
+      label: ESTOQUE_LABEL[n],
+      count: countWith(items, { ...withoutEstoque, estoque: [n] }),
+    }))
+    .filter((o) => o.count > 0);
+
+  return { verticals, colors, finishes, lines, brands, patterns, kinds, estoque };
 }
 
 /** Rótulo público de cada linha e fabricante — usado nos chips de filtro ativo. */

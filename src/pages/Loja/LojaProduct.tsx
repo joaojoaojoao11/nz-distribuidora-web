@@ -10,7 +10,8 @@ import { useMemo, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
-import { getShopItem, VERTICAL_LABEL } from '../../lib/shop/catalog';
+import { VERTICAL_LABEL } from '../../lib/shop/catalog';
+import { getShopItem, useCatalogoEstado, useShopCatalog } from '../../lib/shop/store';
 import { buildShopItemSchema } from '../../lib/shop/schema';
 import { relatedItems } from '../../lib/shop/related';
 import { COLOR_LABEL, SUBFAMILY_LABEL } from '../../lib/shop/color/lexicon';
@@ -37,11 +38,20 @@ function whatsappUrl(item: ShopItem): string {
 export default function LojaProduct() {
   const { slug = '' } = useParams();
   const location = useLocation();
+  // Assina o store: quando o catálogo do banco chegar, o item (ou o 404) é
+  // recalculado. Sem isso um slug que só existe no ERP redirecionaria antes
+  // de o JSON responder.
+  useShopCatalog();
+  const estado = useCatalogoEstado();
   const item = getShopItem(slug);
 
   // Slug inexistente: o edge devolve 404 real para crawlers; aqui só levamos o
-  // visitante de volta à loja em vez de mostrar uma página quebrada.
-  if (!item) return <Navigate to="/loja" replace />;
+  // visitante de volta à loja em vez de mostrar uma página quebrada. Enquanto
+  // o banco não respondeu, não decide — o estático pode não ter o slug.
+  if (!item) {
+    if (estado === 'estatico' || estado === 'carregando') return null;
+    return <Navigate to="/loja" replace />;
+  }
 
   const from = (location.state as { from?: string } | null)?.from;
   return <ProductView item={item} backTo={from ?? '/loja'} viaHistorico={Boolean(from)} />;

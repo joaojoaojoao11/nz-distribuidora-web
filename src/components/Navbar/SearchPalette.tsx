@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { closeModal, useModalLock } from '../../hooks/useModalLock';
-import { SHOP_ITEMS, SOURCE_LABEL } from '../../lib/shop/catalog';
+import { SOURCE_LABEL } from '../../lib/shop/catalog';
+import { useShopCatalog } from '../../lib/shop/store';
 import { applyFilters, EMPTY_FILTERS } from '../../lib/shop/search/match';
 import { normalize } from '../../lib/shop/types';
 import styles from './SearchPalette.module.css';
@@ -60,6 +61,7 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const SHOP_ITEMS = useShopCatalog();
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -93,13 +95,13 @@ export default function SearchPalette({ open, onClose }: { open: boolean; onClos
       }));
 
     return [...pages.slice(0, MAX_PAGES).map((p) => p.item), ...products];
-  }, [query]);
+  }, [query, SHOP_ITEMS]);
 
   // Total real da busca, para oferecer "ver todos na loja".
   const totalProducts = useMemo(() => {
     if (!query.trim()) return 0;
     return applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, q: query }).length;
-  }, [query]);
+  }, [query, SHOP_ITEMS]);
 
   // Reset por comparação com o valor anterior, ajustado durante o render. O
   // efeito equivalente causaria um render extra a cada tecla digitada.

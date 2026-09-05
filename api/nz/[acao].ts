@@ -21,6 +21,7 @@ import testar from '../_lib/handlers/testar.js';
 import sync from '../_lib/handlers/sync.js';
 import webhook from '../_lib/handlers/webhook.js';
 import estoque from '../_lib/handlers/estoque.js';
+import catalogo from '../_lib/handlers/catalogo.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -35,6 +36,8 @@ const ROTAS: Record<string, Handler> = {
   webhook,
   // Disponibilidade por papel. Público, com tiers.
   estoque,
+  // Catálogo público da loja (view loja_catalogo). Cacheado na CDN.
+  catalogo,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

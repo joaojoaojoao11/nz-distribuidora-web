@@ -15,7 +15,7 @@ import { Link, useLocation, useNavigationType } from 'react-router-dom';
 import { SCROLL_KEY_PREFIX } from '../../components/ScrollToTop';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
-import { getShopItem, SHOP_ITEMS } from '../../lib/shop/catalog';
+import { getShopItem, useShopCatalog } from '../../lib/shop/store';
 import type { ShopItem } from '../../lib/shop/types';
 import { computeFacets } from '../../lib/shop/facets';
 import { applyFilters, hasActiveFilters, type SortMode } from '../../lib/shop/search/match';
@@ -124,15 +124,19 @@ export default function Loja() {
   // se aplicassem, o link deixaria de ser o que o vendedor aprovou.
   const emSelecao = selection.length > 0;
 
+  // Catálogo do banco (produtos ⨝ erp_produtos). Começa no estático e troca
+  // quando o JSON chega — ver src/lib/shop/store.ts.
+  const SHOP_ITEMS = useShopCatalog();
+
   const results = useMemo(() => {
     if (emSelecao) {
       return selection.map((slug) => getShopItem(slug)).filter((i): i is ShopItem => Boolean(i));
     }
     const base = applyFilters(SHOP_ITEMS, filters);
     return excluded.length ? base.filter((i) => !excluded.includes(i.slug)) : base;
-  }, [emSelecao, selection, filters, excluded]);
+  }, [emSelecao, selection, filters, excluded, SHOP_ITEMS]);
 
-  const facets = useMemo(() => computeFacets(SHOP_ITEMS, filters), [filters]);
+  const facets = useMemo(() => computeFacets(SHOP_ITEMS, filters), [filters, SHOP_ITEMS]);
   const filtering = hasActiveFilters(filters);
 
   // Itens removidos que ainda pertencem ao filtro atual — são os que dá para
@@ -144,7 +148,7 @@ export default function Loja() {
       .filter((slug) => noFiltro.has(slug))
       .map((slug) => getShopItem(slug))
       .filter((i): i is ShopItem => Boolean(i));
-  }, [emSelecao, excluded, filters]);
+  }, [emSelecao, excluded, filters, SHOP_ITEMS]);
 
   const copiarSelecao = async () => {
     const slugs = results.map((i) => i.slug);
@@ -272,7 +276,7 @@ export default function Loja() {
           })),
         },
       }),
-    []
+    [SHOP_ITEMS]
   );
 
   // Higiene de indexação: uma faceta é intenção legítima de busca

@@ -259,3 +259,30 @@
   outline: 2px solid var(--accent-red);
   outline-offset: 2px;
 }
+
+/* Badge de estoque — canto oposto ao código. Só aparece nos dois níveis que
+   ajudam a decidir; "sob encomenda" é o silêncio. */
+.estoque {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.16rem 0.45rem;
+  border-radius: 5px;
+  font-family: var(--font-tech);
+  font-size: 0.58rem;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.estoquePronta {
+  background: rgba(22, 163, 74, 0.82);
+  color: #fff;
+}
+
+.estoqueUltimas {
+  background: rgba(217, 119, 6, 0.85);
+  color: #fff;
+}

@@ -15,7 +15,8 @@ import { FINISH_LABEL } from '../../lib/shop/finish/tree';
 import { PATTERN_LABEL } from '../../lib/shop/pattern/taxonomy';
 import { isFinishId, type FinishId } from '../../lib/shop/finish/tree';
 import { isPatternFamilyId, type PatternFamilyId } from '../../lib/shop/pattern/taxonomy';
-import type { BrandKey, ItemKind, LineKey, Vertical } from '../../lib/shop/types';
+import type { BrandKey, ItemKind, LineKey, NivelEstoque, Vertical } from '../../lib/shop/types';
+import { ESTOQUE_LABEL } from '../../lib/shop/facets';
 import { LINHA_LABEL } from '../../lib/shop/erp/mapa';
 
 const PARAM = {
@@ -27,6 +28,7 @@ const PARAM = {
   line: 'linha',
   pattern: 'padrao',
   kind: 'tipo',
+  estoque: 'estoque',
   sort: 'sort',
   /** Slugs removidos à mão durante a curadoria. Some quando vira seleção. */
   out: 'fora',
@@ -85,7 +87,8 @@ export type FilterGroup =
   | 'lines'
   | 'brands'
   | 'patterns'
-  | 'kinds';
+  | 'kinds'
+  | 'estoque';
 
 export interface ActiveChip {
   group: FilterGroup | 'q';
@@ -120,6 +123,7 @@ export function useShopFilters(): UseShopFilters {
         isPatternFamilyId(p)
       ),
       kinds: readList(params, PARAM.kind).filter((k): k is ItemKind => KINDS.includes(k as ItemKind)),
+      estoque: readList(params, PARAM.estoque).filter((e): e is NivelEstoque => e in ESTOQUE_LABEL),
       sort: sortRaw && SORTS.includes(sortRaw) ? sortRaw : 'relevancia',
     };
   }, [params]);
@@ -135,6 +139,7 @@ export function useShopFilters(): UseShopFilters {
       if (next.lines.length) out.set(PARAM.line, next.lines.join(','));
       if (next.patterns.length) out.set(PARAM.pattern, next.patterns.join(','));
       if (next.kinds.length) out.set(PARAM.kind, next.kinds.join(','));
+      if (next.estoque.length) out.set(PARAM.estoque, next.estoque.join(','));
       if (next.sort !== 'relevancia') out.set(PARAM.sort, next.sort);
       // A curadoria sobrevive à troca de filtro: quem tirou um item continua
       // sem ele ao estreitar a busca.
@@ -215,6 +220,7 @@ export function useShopFilters(): UseShopFilters {
       chips.push({ group: 'patterns', id: p, label: PATTERN_LABEL[p] ?? p });
     }
     for (const k of filters.kinds) chips.push({ group: 'kinds', id: k, label: KIND_CHIP[k] });
+    for (const e of filters.estoque) chips.push({ group: 'estoque', id: e, label: ESTOQUE_LABEL[e] });
     return chips;
   }, [filters]);
 
@@ -225,7 +231,8 @@ export function useShopFilters(): UseShopFilters {
     filters.brands.length +
     filters.lines.length +
     filters.patterns.length +
-    filters.kinds.length;
+    filters.kinds.length +
+    filters.estoque.length;
 
   return {
     filters,

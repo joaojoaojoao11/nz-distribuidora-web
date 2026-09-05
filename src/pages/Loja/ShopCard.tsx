@@ -73,6 +73,14 @@ function ShopCardBase({ item, eager = false, onRemove, from }: Props) {
 
         {item.code && <span className={styles.code}>{item.code}</span>}
 
+        {/* Nível público de estoque, já embutido no catálogo — sem request. */}
+        {item.nivelEstoque === 'pronta-entrega' && (
+          <span className={`${styles.estoque} ${styles.estoquePronta}`}>Pronta entrega</span>
+        )}
+        {item.nivelEstoque === 'ultimas-unidades' && (
+          <span className={`${styles.estoque} ${styles.estoqueUltimas}`}>Últimas unidades</span>
+        )}
+
         {onRemove && (
           <button
             type="button"
