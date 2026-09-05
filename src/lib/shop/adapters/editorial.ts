@@ -60,7 +60,14 @@ export function md80ToShopItems(): ShopItem[] {
   return metamarkSkus.map((s) => {
     const finish = normalizeFinishString(s.finish);
     // 'MD-80 · Branco Brilho' — o nome carrega a cor, então o resolvedor pega.
-    const color = resolveColor({ name: s.name, finishes: finish.ids });
+    // Mas 'MD-80B · Branco Brilho · Adesivo Cinza' tem um segundo termo de cor
+    // que descreve a COLA, não o filme: sem cortá-lo, um filme branco entrava
+    // na busca por "cinza". O '·' é separador estrutural aqui.
+    const nomeDaCor = s.name
+      .split('·')
+      .filter((parte) => !/adesivo/i.test(parte))
+      .join(' ');
+    const color = resolveColor({ name: nomeDaCor, finishes: finish.ids });
 
     return {
       slug: shopSlug('md80', s.slug),

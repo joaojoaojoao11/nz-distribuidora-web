@@ -151,6 +151,13 @@ export interface LexEntry {
    * Entradas fracas não decidem sozinhas a família quando há hex disponível.
    */
   weak?: boolean;
+  /**
+   * Segunda família que o próprio NOME implica, e que é verdade sobre o
+   * produto: turquesa é azul-esverdeado, "Orange Red" é as duas coisas. É aqui
+   * que duplos legítimos são declarados — não no bucketing de hex, que erra
+   * por fronteira de matiz.
+   */
+  secondary?: ColorFamilyId;
 }
 
 // Ordem não importa para o matching (o parser indexa por token e resolve por
@@ -164,18 +171,22 @@ export const COLOR_LEXICON: LexEntry[] = [
   { tokens: ['azul petroleo', 'petrol blue'], family: 'azul', subfamily: 'azul-marinho', specificity: 3 },
   { tokens: ['navy', 'marinho'], family: 'azul', subfamily: 'azul-marinho', specificity: 2 },
   { tokens: ['cobalto', 'cobalt'], family: 'azul', subfamily: 'azul-royal', specificity: 2 },
-  { tokens: ['turquesa', 'turquoise', 'teal', 'ciano', 'cyan', 'aqua'], family: 'azul', subfamily: 'turquesa', specificity: 2 },
+  { tokens: ['turquesa', 'turquoise', 'teal', 'ciano', 'cyan', 'aqua', 'tiffany'], family: 'azul', subfamily: 'turquesa', specificity: 2, secondary: 'verde' },
+  { tokens: ['ice blue', 'azul gelo', 'glacial blue'], family: 'azul', subfamily: 'azul-claro', specificity: 3 },
+  { tokens: ['steel blue', 'azul aco'], family: 'azul', subfamily: 'azul-marinho', specificity: 3 },
   { tokens: ['celeste', 'cornflour', 'cornflower'], family: 'azul', subfamily: 'azul-claro', specificity: 2 },
   { tokens: ['azul', 'blue', 'bleu', 'abyss'], family: 'azul', specificity: 1 },
   { tokens: ['bavarian', 'santorini'], family: 'azul', specificity: 0, weak: true },
 
   // --------------------------------------------------------------- VERDE
-  { tokens: ['verde limao', 'lime green', 'sub lime'], family: 'verde', subfamily: 'verde-limao', specificity: 3 },
+  { tokens: ['verde limao', 'lime green', 'sub lime'], family: 'verde', subfamily: 'verde-limao', specificity: 3, secondary: 'amarelo' },
+  { tokens: ['yellow green', 'green yellow', 'verde amarelo'], family: 'verde', subfamily: 'verde-limao', specificity: 3, secondary: 'amarelo' },
   { tokens: ['verde militar', 'army green', 'military green'], family: 'verde', subfamily: 'verde-militar', specificity: 3 },
   { tokens: ['verde agua', 'water green', 'mint green'], family: 'verde', subfamily: 'verde-agua', specificity: 3 },
   { tokens: ['verde escuro', 'dark green', 'forest green'], family: 'verde', subfamily: 'verde-escuro', specificity: 3 },
   { tokens: ['lime', 'limao'], family: 'verde', subfamily: 'verde-limao', specificity: 2 },
-  { tokens: ['oliva', 'olive', 'khaki', 'caqui'], family: 'verde', subfamily: 'verde-militar', specificity: 2 },
+  { tokens: ['oliva', 'olive'], family: 'verde', subfamily: 'verde-militar', specificity: 2 },
+  { tokens: ['khaki', 'caqui'], family: 'verde', subfamily: 'verde-militar', specificity: 2, secondary: 'bege' },
   { tokens: ['menta', 'mint'], family: 'verde', subfamily: 'verde-agua', specificity: 2 },
   { tokens: ['esmeralda', 'emerald'], family: 'verde', subfamily: 'verde-escuro', specificity: 2 },
   { tokens: ['verde', 'green'], family: 'verde', specificity: 1 },
@@ -190,16 +201,18 @@ export const COLOR_LEXICON: LexEntry[] = [
 
   // -------------------------------------------------------------- LARANJA
   { tokens: ['laranja queimado', 'burnt orange'], family: 'laranja', specificity: 3 },
+  { tokens: ['orange red', 'red orange', 'laranja avermelhado'], family: 'laranja', specificity: 3, secondary: 'vermelho' },
   { tokens: ['pessego', 'peach'], family: 'laranja', subfamily: 'pessego', specificity: 2 },
   { tokens: ['tangerina', 'tangerine', 'terracota', 'terracotta'], family: 'laranja', specificity: 2 },
   { tokens: ['laranja', 'orange'], family: 'laranja', specificity: 1 },
 
   // -------------------------------------------------------------- AMARELO
-  { tokens: ['amarelo ouro', 'golden yellow'], family: 'amarelo', specificity: 3 },
+  { tokens: ['amarelo ouro', 'golden yellow'], family: 'amarelo', specificity: 3, secondary: 'dourado' },
   { tokens: ['mostarda', 'mustard', 'canario', 'canary'], family: 'amarelo', specificity: 2 },
   { tokens: ['amarelo', 'yellow', 'jaune'], family: 'amarelo', specificity: 1 },
 
   // ----------------------------------------------------------------- ROXO
+  { tokens: ['purple red', 'red purple'], family: 'roxo', subfamily: 'violeta', specificity: 3, secondary: 'vermelho' },
   { tokens: ['violeta', 'violet', 'purpura', 'purple'], family: 'roxo', subfamily: 'violeta', specificity: 2 },
   { tokens: ['lilas', 'lilac', 'lavanda', 'lavender'], family: 'roxo', subfamily: 'lilas', specificity: 2 },
   { tokens: ['ameixa', 'plum', 'berinjela', 'eggplant'], family: 'roxo', specificity: 2 },
@@ -212,6 +225,7 @@ export const COLOR_LEXICON: LexEntry[] = [
 
   // --------------------------------------------------------------- MARROM
   { tokens: ['marrom escuro', 'dark brown'], family: 'marrom', subfamily: 'chocolate', specificity: 3 },
+  { tokens: ['marrom claro', 'light brown'], family: 'marrom', subfamily: 'caramelo', specificity: 3 },
   { tokens: ['chocolate', 'cafe', 'coffee', 'expresso', 'espresso'], family: 'marrom', subfamily: 'chocolate', specificity: 2 },
   { tokens: ['caramelo', 'caramel', 'conhaque', 'cognac', 'tabaco', 'tobacco'], family: 'marrom', subfamily: 'caramelo', specificity: 2 },
   { tokens: ['marrom', 'brown', 'castanho', 'nogueira', 'walnut'], family: 'marrom', specificity: 1 },
@@ -238,10 +252,15 @@ export const COLOR_LEXICON: LexEntry[] = [
   { tokens: ['rose gold', 'ouro rosa'], family: 'dourado', specificity: 3 },
   { tokens: ['dourado', 'gold', 'golden', 'ouro', 'champagne'], family: 'dourado', specificity: 1 },
   { tokens: ['bronze', 'cobre', 'copper', 'latao', 'brass'], family: 'bronze', specificity: 1 },
+  { tokens: ['silver grey', 'silver gray', 'cinza prata'], family: 'prata', specificity: 3, secondary: 'cinza' },
   { tokens: ['prata', 'silver', 'aluminio', 'aluminium', 'aluminum'], family: 'prata', specificity: 1, weak: true },
 
   // --------------------------------------------------------- TRANSPARENTE
-  { tokens: ['transparente', 'transparent', 'clear', 'cristal', 'crystal'], family: 'transparente', specificity: 1 },
+  // 'cristal'/'crystal' FORA de propósito: a série "Crystal" da SH Wrapping é
+  // filme colorido (Crystal White, Crystal Yellow, Crystal Mamba Green), não
+  // filme transparente. Como token de transparência, ela marcava a série
+  // inteira como transparente e sujava a busca por cor.
+  { tokens: ['transparente', 'transparent', 'clear'], family: 'transparente', specificity: 1 },
 ];
 
 /**

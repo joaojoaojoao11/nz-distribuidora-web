@@ -4,6 +4,7 @@
 import { SHOP_ITEMS, shopCounts, SOURCE_LABEL } from './catalog';
 import { COLOR_LABEL, type ColorFamilyId } from './color/lexicon';
 import { runShopSelfTest } from './selftest';
+import { familiasDoNome, duploLegitimo } from './diag-cores';
 import { applyFilters, EMPTY_FILTERS } from './search/match';
 import { relatedItems } from './related';
 import { getShopItem } from './catalog';
@@ -80,6 +81,7 @@ export function runAudit(): number {
   failures += auditSearch();
   failures += auditProductPage();
   failures += auditMarcasELinhas();
+  failures += auditCorNome();
   failures += auditCuradoria();
   return failures;
 }
@@ -94,6 +96,75 @@ function search(q: string): ShopItem[] {
  *   azul ⊇ azul fosco ⊇ azul acetinado
  * e "azul fosco" tem que ser exatamente a união dos foscos com os acetinados.
  */
+/**
+ * A cor que o fabricante escreveu no nome manda.
+ *
+ * Existe porque um hex aproximado somando família fazia "LUXURY BRITISH PINK"
+ * entrar numa busca por vermelho e "Black" numa busca por azul — 34 itens
+ * assim. A regra que os corrigiu é frágil de manter na cabeça, então vira
+ * asserção: se o nome declara cor, nenhuma família pode vir de fora dele.
+ */
+function auditCorNome(): number {
+  let failures = 0;
+  const check = (nome: string, ok: boolean, detalhe: string) => {
+    if (ok) console.log(`  OK   ${nome}`);
+    else {
+      console.log(`  FALHA ${nome} — ${detalhe}`);
+      failures++;
+    }
+  };
+
+  console.log('');
+  console.log('=== COR: O NOME MANDA ===');
+  console.log('');
+
+  const violacoes = SHOP_ITEMS.filter((i) => {
+    const doNome = familiasDoNome(i);
+    if (!doNome.length || duploLegitimo(i)) return false;
+    return i.colorFamilies.some(
+      (f) => !doNome.includes(f) && f !== 'multicolor' && f !== 'transparente'
+    );
+  });
+
+  check(
+    'nenhuma família contradiz a palavra de cor do nome',
+    violacoes.length === 0,
+    `${violacoes.length}: ${violacoes.slice(0, 6).map((i) => `${i.code ?? i.slug}=${i.colorFamilies.join('+')}`).join(', ')}`
+  );
+
+  const multi = SHOP_ITEMS.filter((i) => i.colorFamilies.length > 1);
+  const suspeitos = multi.filter((i) => !duploLegitimo(i));
+  check(
+    'todo item com 2+ famílias tem a segunda declarada (nome, léxico ou camaleão)',
+    suspeitos.length === 0,
+    `${suspeitos.length}: ${suspeitos.slice(0, 6).map((i) => `${i.code ?? i.slug}=${i.colorFamilies.join('+')}`).join(', ')}`
+  );
+
+  console.log(`  (${multi.length} itens com 2+ famílias, todos justificados)`);
+
+  // Casos que o João reportou: a busca por uma cor não pode trazer a outra.
+  const busca = (q: string) => applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, q });
+  const nomes = (q: string) => busca(q).map((i) => i.name.toLowerCase());
+
+  check(
+    'buscar "vermelho" não traz o rosa nem o laranja do print',
+    !nomes('vermelho').some((n) => n.includes('british pink') || n.includes('spicy orange')),
+    'PINK ou SPICY ORANGE ainda aparecem em vermelho'
+  );
+  check(
+    'buscar "azul" não traz preto, branco nem transparente',
+    !busca('azul').some((i) => ['070', '010', '000'].includes(i.code ?? '')),
+    'Black/White/Transparent ainda aparecem em azul'
+  );
+  check(
+    'buscar "amarelo" traz os amarelos da Oracal',
+    ['019', '021', '022', '025'].every((c) => busca('amarelo').some((i) => i.code === c)),
+    'algum amarelo ficou fora'
+  );
+
+  return failures;
+}
+
 function auditSearch(): number {
   let failures = 0;
 

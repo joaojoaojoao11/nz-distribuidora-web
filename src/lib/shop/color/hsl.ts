@@ -74,8 +74,18 @@ export function hexToHsl(hex: string): Hsl | null {
   return rgb ? rgbToHsl(rgb[0], rgb[1], rgb[2]) : null;
 }
 
+/**
+ * Sem matiz utilizável.
+ *
+ * Usa CROMA (a distância real entre o canal mais alto e o mais baixo), não a
+ * saturação HSL. A saturação é normalizada pela luminosidade e explode nos
+ * extremos: #0D0E11 tem 4/255 de diferença entre canais — é preto a olho nu —
+ * mas s = 0,13, o que o fazia escapar daqui e virar "azul". O mesmo acontecia
+ * com #E6E9EE (branco) e #DAD9E1 (transparente).
+ */
 export function isAchromatic(s: number, l: number): boolean {
-  return s < 0.1 || l < 0.045 || l > 0.965;
+  const chroma = s * (1 - Math.abs(2 * l - 1));
+  return chroma < 0.08 || l < 0.045 || l > 0.965;
 }
 
 function toneOf(l: number): Tone {
@@ -118,8 +128,11 @@ export function bucketFromHsl(h: number, s: number, l: number): HslBucket {
     return bucket('bege', l > 0.85 ? 'creme' : null, l);
   }
 
-  // 4. Dourado: amarelo saturado de luminosidade média.
-  if (h >= 38 && h < 58 && s >= 0.35 && l >= 0.32 && l <= 0.68) {
+  // 4. Dourado: amarelo MÉDIO-saturado de luminosidade média. O teto de
+  //    saturação é o que separa ouro de amarelo puro — os dois vivem na mesma
+  //    faixa de matiz e luminosidade. Imitation Gold #c69b36 tem s=0,57;
+  //    Yellow #FEC500 tem s=1,0 e é amarelo, não ouro.
+  if (h >= 38 && h < 58 && s >= 0.35 && s <= 0.78 && l >= 0.32 && l <= 0.68) {
     return bucket('dourado', null, l);
   }
 
@@ -139,15 +152,18 @@ export function bucketFromHsl(h: number, s: number, l: number): HslBucket {
   if (h < 66) return bucket('amarelo', null, l);
   if (h < 86) return bucket('verde', 'verde-limao', l);
   if (h < 150) return bucket('verde', l < 0.28 ? 'verde-escuro' : null, l);
-  if (h < 176) return bucket('verde', 'verde-agua', l, ['azul']);
-  if (h < 200) return bucket('azul', 'turquesa', l, ['verde']);
+  // Fronteiras: a segunda família só entra nos ~6° colados ao limite. Antes a
+  // faixa inteira emitia duas, e um verde franco de 157° (Oracal "Green")
+  // aparecia também em "azul".
+  if (h < 176) return bucket('verde', 'verde-agua', l, h >= 170 ? ['azul'] : []);
+  if (h < 200) return bucket('azul', 'turquesa', l, h < 182 ? ['verde'] : []);
   if (h < 215) return bucket('azul', l > 0.7 ? 'azul-bebe' : 'azul-claro', l);
   if (h < 240) {
     if (l < 0.28) return bucket('azul', 'azul-marinho', l);
     if (l < 0.5) return bucket('azul', 'azul-royal', l);
     return bucket('azul', 'azul-claro', l);
   }
-  if (h < 262) return bucket('azul', 'azul-royal', l, ['roxo']);
+  if (h < 262) return bucket('azul', 'azul-royal', l, h >= 256 ? ['roxo'] : []);
   if (h < 290) return bucket('roxo', 'violeta', l);
   if (h < 320) return bucket('roxo', l > 0.72 ? 'lilas' : null, l);
 

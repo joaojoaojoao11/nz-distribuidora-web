@@ -122,8 +122,12 @@ export function scoreItem(
   if (pq.colors.length) {
     if (!intersects(pq.colors, item.colorFamilies)) return null;
     score += 40;
-    // A cor primária vale mais que uma secundária de fronteira.
+    // Primária x secundária. Os duplos que sobraram são legítimos ('Orange
+    // Red' é laranja E vermelho), mas quem busca "vermelho" quer os vermelhos
+    // primeiro: a diferença de 40 pontos joga os duplos para o fim da lista
+    // em vez de espalhá-los no meio dos primários.
     if (item.colorFamilies[0] && pq.colors.includes(item.colorFamilies[0])) score += 15;
+    else score -= 25;
     if (item.colorConfidence === 'declarada') score += 6;
     else if (item.colorConfidence === 'nome') score += 4;
     else if (item.colorConfidence === 'inferida') score -= 4;
