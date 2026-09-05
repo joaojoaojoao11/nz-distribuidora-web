@@ -453,18 +453,26 @@
     align-items: center;
     gap: 0;
 
-    /* Hidden by default */
+    /* Fechado: opacity 0 sozinho NÃO tira o overlay do caminho do dedo. Ele
+       cobre a tela inteira, e os links dos dropdowns (que no mobile recebem
+       pointer-events: all) continuavam tocáveis por cima da barra de busca da
+       loja — tocar em FILTROS ou no campo de busca abria /wrap/oracal-651.
+       visibility: hidden encerra o hit-test e tira os links do foco por
+       teclado; a transição atrasada mantém a animação de fechar. */
     opacity: 0;
     pointer-events: none;
+    visibility: hidden;
     transform: translateY(-20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s linear 0.3s;
     z-index: 200;
   }
 
   .linksOpen {
     opacity: 1;
     pointer-events: all;
+    visibility: visible;
     transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
   }
 
   .navLink {
@@ -509,7 +517,9 @@
     position: static;
     transform: none;
     opacity: 1;
-    pointer-events: all;
+    /* inherit, não all: `all` aqui furava o pointer-events:none do overlay
+       fechado e deixava estes links tocáveis com o menu invisível. */
+    pointer-events: inherit;
     background: none;
     border: none;
     backdrop-filter: none;

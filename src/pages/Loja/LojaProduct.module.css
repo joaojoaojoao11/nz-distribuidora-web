@@ -24,8 +24,8 @@
 /* Texto de 15px com ~40px de toque: padding empurra a área, margem negativa
    devolve o espaço. */
 .breadcrumb a {
-  padding: 0.6rem 0.3rem;
-  margin: -0.6rem -0.3rem;
+  padding: 0.8rem 0.4rem;
+  margin: -0.8rem -0.4rem;
 }
 
 @media (hover: hover) {

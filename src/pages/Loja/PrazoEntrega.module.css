@@ -90,7 +90,8 @@
 }
 
 .qtdBtn {
-  width: 2.2rem;
+  /* 44px: com 2.2rem (35px) a auditoria de toque reprovava os dois botões. */
+  width: 44px;
   color: var(--text-secondary);
   font-size: 1.05rem;
   line-height: 1;
