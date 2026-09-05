@@ -28,7 +28,7 @@ const OFF = [[0,0],[-16,0],[16,0],[0,-16],[0,16]];
 
 const AUDIT = `(() => {
   const sel = 'a,button,input,select,[role=button]';
-  const els = [...document.querySelectorAll(sel)].filter(el => el.getClientRects().length && el.offsetParent !== null);
+  const els = [...document.querySelectorAll(sel)].filter(el => el.getClientRects().length && el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden');
   const rects = els.map(el => el.getBoundingClientRect());
   const nome = el => (el.getAttribute('aria-label') || el.textContent || el.querySelector('img')?.alt || '').trim().replace(/\s+/g,' ').slice(0,26);
   const dist = (a,b) => Math.hypot(Math.max(0, Math.max(a.left,b.left)-Math.min(a.right,b.right)), Math.max(0, Math.max(a.top,b.top)-Math.min(a.bottom,b.bottom)));

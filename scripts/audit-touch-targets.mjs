@@ -24,7 +24,7 @@ const EXCECOES = ['breadcrumb', 'selecaoVerTudo', 'back', 'copyHex', 'closeBtn',
 const SNIPPET = String.raw`(() => {
   const MIN = 44, GAP = 8;
   const sel = 'a,button,input,select,[role=button]';
-  const els = [...document.querySelectorAll(sel)].filter((el) => el.getClientRects().length && el.offsetParent !== null);
+  const els = [...document.querySelectorAll(sel)].filter((el) => el.getClientRects().length && el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden');
   const rects = els.map((el) => el.getBoundingClientRect());
   const nome = (el) => (el.getAttribute('aria-label') || el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 30);
   const dist = (a, b) => {
