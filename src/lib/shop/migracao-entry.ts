@@ -97,13 +97,13 @@ const norm = (s: string | null | undefined) =>
     .replace(/[^A-Z0-9]/g, '');
 
 /** 'NZW204' → slug SH da foto ('bentley-pink'), quando toda a galeria vem de /sh/. */
-function shSlugDaFoto(sku: string): string | null {
+export function shSlugDaFoto(sku: string): string | null {
   const cor = NZWRAP_COLORS.find((c) => c.sku === sku);
   if (!cor) return null;
   const shImgs = cor.images.filter((i) => i.includes('/images/sh/'));
   const proprias = cor.images.filter((i) => i.includes('/images/nzwrap/'));
   if (!shImgs.length || proprias.length) return null;
-  const base = shImgs[0]!.split('/').pop()!.replace(/\.(png|webp|jpg)$/i, '');
+  const base = shImgs[0]!.split('/').pop()!.replace(/\.(png|webp|jpe?g)$/i, '');
   return base
     .replace(/_(morning|afternoon|sunset|night|v2|suv|sedan|supercar)$/g, '')
     .replace(/_(morning|afternoon|sunset|night|v2|suv|sedan|supercar)$/g, '')
@@ -115,7 +115,57 @@ const SH_FOTO_PARA_SLUG: Record<string, string> = {
   ag: 'amg-grey',
   'pm-sg': 'pearl-metal-space-grey',
   'glossy-nando-ash': 'glossy-nado-ash',
+  'candy-purple': 'candy-purple-gloss-aluminium',
+  'paprika-orange-gloss-metallic': 'paprika-orange',
+  'space-blue-gloss': 'space-blue-gloss-aluminium',
 };
+
+/**
+ * Marcas do ERP em que cada linha do site pode casar. Restringir o universo é
+ * o que torna o casamento por nome confiável: "Cerejeira Marfim" só pode ser a
+ * Etherna, então não precisa de código para ter certeza.
+ */
+const MARCAS_DA_LINHA: Record<string, string[]> = {
+  etherna: ['ETHERNA'],
+  'sh-decor': ['SH DECOR'],
+  m7: ['METAMARK'],
+  mcx: ['METAMARK'],
+  md80: ['METAMARK'],
+  'oracal-651': ['ORACAL 651', 'ORACAL 6510'],
+  'oracal-670': ['ORACAL 670'],
+  'sh-wrapping': ['SH WRAPPING'],
+  avery: ['AVERY'],
+  ppf: ['NZ', 'NAR', 'NEXT'],
+};
+
+/** Palavras que não identificam o produto dentro da marca. */
+const TOKENS_GENERICOS = new Set([
+  'VINIL', 'ORACAL', 'METAMARK', 'ETHERNA', 'SH', 'DECOR', 'WRAPPING', 'AVERY', 'NZ', 'M', 'X', 'MTS', 'METROS',
+]);
+
+/** Tokens do nome do ERP sem marca, sem dimensão, sem genéricos. */
+function tokensErp(nome: string | null): string[] {
+  const semDim = String(nome ?? '')
+    .replace(/[-–]?\s*\d+[.,]?\d*\s*[xX×]\s*\d+[.,]?\d*\s*M?\s*$/i, '')
+    .replace(/\s+\d+[.,]?\d*\s*(M|CM)\s*$/i, '');
+  return semDim
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toUpperCase()
+    .split(/[^A-Z0-9]+/)
+    .filter((t) => t && !TOKENS_GENERICOS.has(t) && !/^\d+[.,]?\d*$/.test(t) && !/^\d{3}[A-Z]?$/.test(t) && t !== '7');
+}
+
+function tokensSite(item: ShopItem): Set<string> {
+  return new Set(
+    `${item.name} ${item.code ?? ''} ${item.line ?? ''}`
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .toUpperCase()
+      .split(/[^A-Z0-9]+/)
+      .filter(Boolean)
+  );
+}
 
 export function planejarMigracao(erp: ErpSkuRef[]): PlanoMigracao {
   const erpBySku = new Map(erp.map((e) => [norm(e.sku), e] as const));
@@ -131,13 +181,53 @@ export function planejarMigracao(erp: ErpSkuRef[]): PlanoMigracao {
   function propor(item: ShopItem): Proposta | null {
     const code = norm(item.code);
     const nome = norm(item.name);
+    const marcas = MARCAS_DA_LINHA[item.lineKey];
+    const candidatos = marcas ? erp.filter((e) => marcas.includes((e.marca ?? '').trim().toUpperCase())) : erp;
+
+    // 1. Código do mostruário = SKU do ERP. 'MCX-10' ↔ 'MCX10', 'SHOP-105'.
     if (code && erpBySku.has(code)) return { sku: erpBySku.get(code)!.sku, confianca: 0.98, via: 'codigo-exato' };
-    if (nome && erpByNome.has(nome)) return { sku: erpByNome.get(nome)!.sku, confianca: 0.85, via: 'nome-exato' };
-    if (code.length >= 3) {
-      for (const [sku, row] of erpBySku) {
-        if (sku.endsWith(code) || sku.startsWith(code)) return { sku: row.sku, confianca: 0.7, via: 'codigo-parcial' };
+
+    // 2. Código dentro do SKU do ERP, dentro da marca. Variantes cobrem as
+    //    grafias conhecidas: 'M7-108' → 'META7108' (+ sufixo A/MA),
+    //    '670RA-010G' → 'ORA670010G', 'IT 307' → 'SHDIT307', '341' → 'ORA651341'.
+    //    Etherna fica de fora: o código do site é o do catálogo do fabricante
+    //    ('104', '4137-C') e o SKU do ERP é sequencial ('ETH104' é OUTRO
+    //    padrão) — casar por código ali produz falso positivo sistemático.
+    if (code.length >= 3 && item.lineKey !== 'etherna') {
+      const variantes = [...new Set([code, code.replace(/^M7/, 'META7'), code.replace(/^670RA/, '670')])];
+      const achados = candidatos.filter((e) => {
+        const s = norm(e.sku);
+        return variantes.some((v) => s.endsWith(v) || s.startsWith(v) || /^META7/.test(v) && s.replace(/[A-Z]+$/, '') === v);
+      });
+      if (achados.length === 1) return { sku: achados[0]!.sku, confianca: 0.85, via: 'codigo-parcial' };
+      if (achados.length > 1) {
+        // Prefere o SKU mais curto (sem sufixo de variante) e o ativo.
+        const melhor = [...achados].sort((a, b) => Number(b.ativo) - Number(a.ativo) || a.sku.length - b.sku.length)[0]!;
+        return { sku: melhor.sku, confianca: 0.7, via: 'codigo-parcial' };
       }
     }
+
+    // 3. Nome idêntico, ignorando acento, caixa e pontuação.
+    if (nome && erpByNome.has(nome)) return { sku: erpByNome.get(nome)!.sku, confianca: 0.85, via: 'nome-exato' };
+
+    // 4. Todas as palavras do nome do ERP (sem marca, dimensão e genéricos)
+    //    aparecem no nome do site, dentro da marca. Único → confiável.
+    if (marcas && nome.length >= 6) {
+      const meus = tokensSite(item);
+      const achados = candidatos
+        .map((e) => ({ e, toks: tokensErp(e.nome) }))
+        .filter(({ toks }) => toks.length >= 1 && toks.every((t) => meus.has(t)))
+        .sort((a, b) => b.toks.length - a.toks.length || Number(b.e.ativo) - Number(a.e.ativo));
+      if (achados.length === 1) return { sku: achados[0]!.e.sku, confianca: 0.8, via: 'nome-parcial' };
+      if (achados.length > 1) {
+        const [a, b] = achados;
+        // Só um com o máximo de palavras → ele; empate → baixa, vai para a fila.
+        if (a!.toks.length > b!.toks.length) return { sku: a!.e.sku, confianca: 0.75, via: 'nome-parcial' };
+        return { sku: a!.e.sku, confianca: 0.5, via: 'nome-parcial' };
+      }
+    }
+
+    // 5. Substring solta, qualquer marca. Só orienta a fila.
     if (nome.length >= 8) {
       for (const [n, row] of erpByNome) {
         if (n.includes(nome) || nome.includes(n)) return { sku: row.sku, confianca: 0.5, via: 'nome-parcial' };
