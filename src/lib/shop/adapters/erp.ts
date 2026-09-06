@@ -22,7 +22,7 @@ import type { ColorFamilyId } from '../color/lexicon';
 import { normalizeFinishString } from '../finish/normalizeFinish';
 import { isFinishId, type FinishId } from '../finish/tree';
 import { isPatternFamilyId, PATTERN_SYNONYMS, type PatternFamilyId } from '../pattern/taxonomy';
-import { genericImageForLine, isReviewedSlug } from '../generic';
+import { genericImageForLine, isReviewedSlug, MCX_ROLL_IMAGES } from '../generic';
 import {
   buildSearchText,
   normalize,
@@ -357,13 +357,41 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
   const fotoRevisada: string | undefined = reviewed
     ? SH_WRAPPING_IMAGES_ERP[row.slug]
     : undefined;
-  const imageResolvido = row.imagem ?? fotoRevisada ?? genericImageForLine(row.linha_key);
-  const galleryResolvida =
+  // MetaCast MCX e o unico caso em que a foto local VENCE `row.imagem`: o banco
+  // traz o chip de cor, e o chip nao mostra o material. O rolo passa a ser a
+  // capa e o chip desce para a galeria — mesma regra que `cores.ts` ja aplicava
+  // no catalogo estatico, e que sem isto nunca chegava ao ar.
+  const rolo: string | undefined = MCX_ROLL_IMAGES[row.slug];
+  const imageResolvido = rolo ?? row.imagem ?? fotoRevisada ?? genericImageForLine(row.linha_key);
+  const galleryBase =
     row.galeria && row.galeria.length > 0
       ? row.galeria
       : reviewed
         ? (SH_WRAPPING_GALLERY_ERP[row.slug] ?? [])
         : [];
+  // O rolo entra na frente; o resto (chip, foto de aplicacao) segue depois, sem
+  // duplicar caso o banco ja o tenha listado.
+  const galleryResolvida = rolo
+    ? [rolo, ...galleryBase.filter((u) => u !== rolo)]
+    : galleryBase;
+
+  // A pagina do produto le `media`, nao `gallery`. Como o banco ja preenche
+  // `midias` para a MCX (chip + aplicacao), o rolo precisa entrar aqui tambem —
+  // senao a capa da lista mostra o rolo e a da pagina continua mostrando o chip.
+  const semMeta = (url: string): MidiaPublica => ({
+    tipo: 'imagem',
+    url,
+    poster: null,
+    alt: null,
+    largura: null,
+    altura: null,
+    duracao: null,
+  });
+  const mediaBase: MidiaPublica[] =
+    row.midias && row.midias.length > 0 ? row.midias : galleryResolvida.map(semMeta);
+  const mediaResolvida: MidiaPublica[] = rolo
+    ? [semMeta(rolo), ...mediaBase.filter((m) => m.url !== rolo)]
+    : mediaBase;
 
   return {
     slug: row.slug,
@@ -383,10 +411,7 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     gallery: galleryResolvida,
     // `midias` só existe para quem já cadastrou pelo painel novo; o resto
     // continua com as URLs de sempre, sem alt nem dimensão.
-    media:
-      row.midias && row.midias.length > 0
-        ? row.midias
-        : galleryResolvida.map((url) => ({ tipo: 'imagem' as const, url, poster: null, alt: null, largura: null, altura: null, duracao: null })),
+    media: mediaResolvida,
     hex: row.hex,
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,
