@@ -1024,9 +1024,11 @@
     z-index: 120;
   }
   .sidebarAberta { transform: translateX(0); }
-  /* A regra de 768px escondia os rótulos; na gaveta eles voltam. */
+  /* A regra de 768px escondia os rótulos; na gaveta eles voltam. O logo é
+     bloco (título em cima, legenda embaixo) — inline juntaria os dois numa
+     linha só. */
   .sidebar .sidebarLogo h2,
-  .sidebar .sidebarLogo span,
+  .sidebar .sidebarLogo span { display: block; }
   .sidebar .navLink span,
   .sidebar .logoutBtn span { display: inline; }
   .sidebar .navLink { justify-content: flex-start; padding: 0.75rem 1rem; }
