@@ -93,8 +93,8 @@ export default function Navbar() {
               src="/assets/logos/logo-nzstore-branco.png"
               alt="NZSTORE"
               className={styles.navLogoStore}
-              width={713}
-              height={136}
+              width={836}
+              height={126}
             />
           </Link>
           <Link to="/ppf" className={`${styles.navLink} ${location.pathname === '/ppf' ? styles.navLinkActive : ''}`} onClick={closeMenu}>

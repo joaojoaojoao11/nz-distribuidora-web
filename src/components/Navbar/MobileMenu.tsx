@@ -62,8 +62,8 @@ export default function MobileMenu({ onClose, isAdmin, logado, contagens }: Prop
               src="/assets/logos/logo-nzstore-branco.png"
               alt="NZSTORE"
               className={styles.logoLoja}
-              width={713}
-              height={136}
+              width={836}
+              height={126}
             />
             <span className={styles.itemHint}>catálogo completo</span>
           </Link>

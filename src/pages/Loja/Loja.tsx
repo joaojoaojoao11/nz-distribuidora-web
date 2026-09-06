@@ -312,8 +312,8 @@ export default function Loja() {
               src="/assets/logos/logo-nzstore-branco.png"
               alt="NZSTORE — Loja NZ"
               className={styles.heroLogo}
-              width={713}
-              height={136}
+              width={836}
+              height={126}
             />
           </h1>
           <p className={styles.heroSubtitle}>
