@@ -60,6 +60,29 @@ function servicosDaConfig(config: unknown): string[] {
     .filter((s) => /^\d+$/.test(s));
 }
 
+/**
+ * Teto da dimensão DECLARADA na cotação, em cm (shipping_carriers.config).
+ *
+ * Existe por uma decisão comercial explícita do João: as transportadoras
+ * recusam o rolo de 1,52 m na tabela do Melhor Envio ("Dimensões do objeto
+ * ultrapassam o limite"), mas na prática levam — a NZ despacha por elas todo
+ * dia, pelos contratos diretos. Sem o teto, a loja só conseguiria mostrar
+ * Jadlog; com ele, a cotação volta de todas as que atendem o trecho.
+ *
+ * O que isso NÃO faz: mexer no cadastro. `shipping_profiles` continua com a
+ * medida real — que é o que a Jadlog recebe (via peso cubado) e o que o painel
+ * mostra. O teto vale só para o que é declarado a esta transportadora.
+ *
+ * Sobre o preço: praticamente não muda. Em todos os perfis da NZ o peso REAL
+ * (11 a 33 kg) supera o cubado com folga, e é ele que define a tarifa — a
+ * dimensão decide se o serviço aceita, não quanto cobra.
+ */
+function limiteDimensao(config: unknown): number | null {
+  const bruto = (config as { limite_dimensao_cm?: unknown } | null)?.limite_dimensao_cm;
+  const n = Number(bruto);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
 function num(valor: unknown): number | null {
   const n = Number(valor);
   return Number.isFinite(n) ? n : null;
@@ -92,17 +115,23 @@ export const melhorenvio: CarrierAdapter = {
 
     // Um volume por rolo. `shipping_profiles` já descreve UM volume físico —
     // é a mesma unidade, então não há empacotamento a inventar aqui.
+    const teto = limiteDimensao(input.config);
+    const cm = (valor: number) => Math.ceil(teto ? Math.min(valor, teto) : valor);
+    const limitado =
+      teto != null &&
+      Math.max(input.comprimentoCm, input.larguraCm, input.alturaCm) > teto;
+
     const volume = {
-      width: Math.ceil(input.larguraCm),
-      height: Math.ceil(input.alturaCm),
-      length: Math.ceil(input.comprimentoCm),
+      width: cm(input.larguraCm),
+      height: cm(input.alturaCm),
+      length: cm(input.comprimentoCm),
       // A especificação OpenAPI do Melhor Envio grafa `heigth`/`lenght` (com o
       // erro de digitação), enquanto os exemplos da mesma página usam
       // `height`/`length`. Mandamos as duas grafias: campos desconhecidos são
       // ignorados pelo validador, e assim a cotação não depende de qual das
       // duas o servidor realmente lê.
-      heigth: Math.ceil(input.alturaCm),
-      lenght: Math.ceil(input.comprimentoCm),
+      heigth: cm(input.alturaCm),
+      lenght: cm(input.comprimentoCm),
       weight: pesoPorVolume,
       insurance: seguroPorVolume,
       insurance_value: seguroPorVolume,
@@ -223,6 +252,14 @@ export const melhorenvio: CarrierAdapter = {
     // Quem foi recusado viaja junto com quem foi aceito: é o que responde
     // "por que a Buslog não apareceu?" no painel, sem precisar do payload cru.
     if (recusados.length) opcoes[0]!.recusados = recusados;
+    // E fica registrado quando a dimensão declarada foi limitada — para quem
+    // olhar o diagnóstico não achar que o cadastro está errado.
+    if (limitado) {
+      opcoes[0]!.recusados = [
+        `(dimensão declarada limitada a ${teto} cm — o volume real tem ${Math.ceil(input.comprimentoCm)} cm)`,
+        ...(opcoes[0]!.recusados ?? []),
+      ];
+    }
 
     return opcoes;
   },

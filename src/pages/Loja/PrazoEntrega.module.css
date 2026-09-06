@@ -25,16 +25,32 @@
   gap: 0.5rem;
 }
 
-/* O CEP ocupa a sobra; abaixo de ~8rem a linha quebra e o seletor de
-   quantidade desce inteiro, em vez de espremer os três controles. */
-.field {
-  flex: 1 1 8rem;
-  display: block;
+/* Campo com rótulo em cima. O CEP ocupa a sobra; abaixo de ~8rem a linha
+   quebra e o bloco de volumes desce inteiro, em vez de espremer os três
+   controles. Rótulo visível em vez de sr-only: sem ele o visitante via dois
+   campos numéricos lado a lado sem saber qual era qual. */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
   min-width: 0;
+}
+
+.campo:first-child {
+  flex: 1 1 9rem;
+}
+
+.rotulo {
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .input {
   width: 100%;
+  min-height: 44px;
   padding: 0.7rem 0.8rem;
   background: var(--bg-primary);
   border: 1px solid var(--border-light);
@@ -56,6 +72,10 @@
 }
 
 .submit {
+  /* Os campos ganharam rótulo em cima; o botão desce a mesma altura para
+     continuar alinhado com eles, e não com o rótulo. */
+  align-self: flex-end;
+  min-height: 44px;
   padding: 0.7rem 1rem;
   border: 1px solid var(--border-strong);
   border-radius: 8px;
@@ -83,6 +103,7 @@
   flex: 0 0 auto;
   display: flex;
   align-items: stretch;
+  min-height: 44px;
   border: 1px solid var(--border-light);
   border-radius: 8px;
   background: var(--bg-primary);
@@ -109,7 +130,8 @@
 }
 
 .qtdInput {
-  width: 2.8rem;
+  /* Cabe "50" com folga: com 2.8rem o segundo dígito encostava na borda. */
+  width: 3.2rem;
   border: none;
   border-left: 1px solid var(--border-light);
   border-right: 1px solid var(--border-light);
@@ -136,6 +158,16 @@
 .qtdInput {
   appearance: textfield;
   -moz-appearance: textfield;
+}
+
+.endereco {
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.endereco::before {
+  content: '📍 ';
 }
 
 .erro {

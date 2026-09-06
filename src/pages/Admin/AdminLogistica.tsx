@@ -51,7 +51,11 @@ interface Transportadora {
   modalidade: string | null;
   ordem: number;
   /** Ajustes de contrato editáveis sem deploy: fator de cubagem, serviços. */
-  config: { fator_cubagem?: number; servicos?: (string | number)[] } | null;
+  config: {
+    fator_cubagem?: number;
+    servicos?: (string | number)[];
+    limite_dimensao_cm?: number;
+  } | null;
 }
 
 interface StatusCredencial {
@@ -690,6 +694,40 @@ export default function AdminLogistica() {
                           >
                             Listar serviços
                           </button>
+                          {/* Teto da dimensão DECLARADA. As transportadoras
+                              recusam o rolo de 1,52 m na tabela do Melhor
+                              Envio, mas na prática levam; sem o teto só a
+                              Jadlog cota. O cadastro do perfil continua com a
+                              medida real. */}
+                          <div style={{ marginTop: '0.45rem' }}>
+                            <label
+                              style={{
+                                display: 'block',
+                                fontSize: '0.6rem',
+                                color: '#6b6b70',
+                                textTransform: 'uppercase',
+                                letterSpacing: '1px',
+                                marginBottom: '0.15rem',
+                              }}
+                            >
+                              Declarar no máx. (cm)
+                            </label>
+                            <input
+                              className={styles.adminInput}
+                              type="number"
+                              min={0}
+                              defaultValue={c.config?.limite_dimensao_cm ?? ''}
+                              placeholder="sem teto"
+                              onBlur={(e) => {
+                                const n = Number(e.target.value);
+                                const cfg = { ...(c.config ?? {}) } as Record<string, unknown>;
+                                if (Number.isFinite(n) && n > 0) cfg.limite_dimensao_cm = n;
+                                else delete cfg.limite_dimensao_cm;
+                                void atualizarCarrier(c, 'config', cfg);
+                              }}
+                              style={{ maxWidth: 140 }}
+                            />
+                          </div>
                         </>
                       ) : (
                         <span style={{ color: '#6b6b70', fontSize: '0.78rem' }}>

@@ -31,6 +31,13 @@ const DEBOUNCE_MS = 550;
 
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
+/** Cidade/UF do CEP digitado — confirma para o visitante que é o lugar certo. */
+interface Endereco {
+  localidade: string;
+  uf: string;
+  bairro?: string;
+}
+
 interface Prazo {
   carrier: string;
   nome: string;
@@ -51,6 +58,23 @@ interface Prazo {
 interface Formato {
   id: string;
   nome: string;
+}
+
+/**
+ * Consulta o ViaCEP só para EXIBIR onde fica o CEP. A cotação não depende
+ * disso: quem valida o CEP de verdade é a transportadora. Se o ViaCEP estiver
+ * fora do ar, o campo funciona igual, apenas sem a confirmação visual.
+ */
+async function buscarEndereco(cep: string, signal: AbortSignal): Promise<Endereco | null> {
+  try {
+    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`, { signal });
+    if (!res.ok) return null;
+    const json = (await res.json()) as Endereco & { erro?: boolean | string };
+    if (json.erro || !json.localidade) return null;
+    return { localidade: json.localidade, uf: json.uf, bairro: json.bairro };
+  } catch {
+    return null;
+  }
 }
 
 interface Resposta {
@@ -87,9 +111,15 @@ export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey:
     }
   });
   const [qtd, setQtd] = useState(QTD_MIN);
+  // Texto livre enquanto digita: com o número direto no estado não dava para
+  // apagar o campo para escrever "12" — o valor voltava para 1 a cada tecla.
+  const [qtdTexto, setQtdTexto] = useState(String(QTD_MIN));
+  const [endereco, setEndereco] = useState<Endereco | null>(null);
+  const [cepDesconhecido, setCepDesconhecido] = useState(false);
   const [estado, setEstado] = useState<Estado>({ tipo: 'inicial' });
   const [formatoId, setFormatoId] = useState<string | null>(null);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cepBusca = useRef<AbortController | null>(null);
 
   const consultar = useCallback(
     async (cepBruto: string, profileId: string | null, quantidade: number) => {
@@ -160,6 +190,7 @@ export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey:
   // Só limpa o timer pendente ao desmontar. Nenhum setState aqui.
   useEffect(() => () => {
     if (debounce.current) clearTimeout(debounce.current);
+    if (cepBusca.current) cepBusca.current.abort();
   }, []);
 
   /**
@@ -171,11 +202,46 @@ export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey:
   const mudarQtd = (proxima: number) => {
     const valor = Math.min(QTD_MAX, Math.max(QTD_MIN, Math.floor(proxima) || QTD_MIN));
     setQtd(valor);
+    setQtdTexto(String(valor));
     if (estado.tipo !== 'ok' && estado.tipo !== 'carregando') return;
     if (debounce.current) clearTimeout(debounce.current);
     debounce.current = setTimeout(() => {
       void consultar(cep, formatoId, valor);
     }, DEBOUNCE_MS);
+  };
+
+  /** Confirma o que foi digitado à mão: campo vazio ou fora da faixa volta ao válido. */
+  const confirmarQtdTexto = () => {
+    const n = Number(qtdTexto.replace(/\D/g, ''));
+    mudarQtd(Number.isFinite(n) && n > 0 ? n : QTD_MIN);
+  };
+
+  /**
+   * CEP digitado. Ao completar 8 dígitos: procura a cidade (só para exibir) e
+   * dispara a cotação sozinho — o visitante não precisa achar o botão. Antes
+   * disso, limpa o que estava na tela para não misturar CEP novo com resultado
+   * antigo.
+   */
+  const mudarCep = (bruto: string) => {
+    const formatado = formatarCep(bruto);
+    setCep(formatado);
+    const digits = formatado.replace(/\D/g, '');
+    setEndereco(null);
+    setCepDesconhecido(false);
+    if (cepBusca.current) cepBusca.current.abort();
+    if (debounce.current) clearTimeout(debounce.current);
+    if (digits.length !== 8) return;
+
+    const ctrl = new AbortController();
+    cepBusca.current = ctrl;
+    void buscarEndereco(digits, ctrl.signal).then((end) => {
+      if (ctrl.signal.aborted) return;
+      if (end) setEndereco(end);
+      else setCepDesconhecido(true);
+    });
+    debounce.current = setTimeout(() => {
+      void consultar(formatado, formatoId, qtd);
+    }, 250);
   };
 
   // Sem perfil cadastrado ou API fora do ar: o bloco inteiro desaparece.
@@ -196,56 +262,84 @@ export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey:
           void consultar(cep, formatoId, qtd);
         }}
       >
-        <label className={styles.field}>
-          <span className="sr-only">CEP de entrega</span>
+        <div className={styles.campo}>
+          <label className={styles.rotulo} htmlFor="prazo-cep">
+            CEP de entrega
+          </label>
           <input
+            id="prazo-cep"
             type="text"
             className={styles.input}
-            placeholder="Seu CEP"
+            placeholder="00000-000"
             value={cep}
-            onChange={(e) => setCep(formatarCep(e.target.value))}
+            onChange={(e) => mudarCep(e.target.value)}
             inputMode="numeric"
             autoComplete="postal-code"
+            enterKeyHint="search"
             maxLength={9}
-            aria-label="CEP de entrega"
           />
-        </label>
-
-        <div className={styles.qtdWrap}>
-          <button
-            type="button"
-            className={styles.qtdBtn}
-            onClick={() => mudarQtd(qtd - 1)}
-            disabled={qtd <= QTD_MIN}
-            aria-label="Diminuir quantidade"
-          >
-            −
-          </button>
-          <input
-            type="number"
-            className={styles.qtdInput}
-            value={qtd}
-            onChange={(e) => mudarQtd(Number(e.target.value))}
-            min={QTD_MIN}
-            max={QTD_MAX}
-            inputMode="numeric"
-            aria-label="Quantidade de volumes"
-          />
-          <button
-            type="button"
-            className={styles.qtdBtn}
-            onClick={() => mudarQtd(qtd + 1)}
-            disabled={qtd >= QTD_MAX}
-            aria-label="Aumentar quantidade"
-          >
-            +
-          </button>
         </div>
 
-        <button type="submit" className={styles.submit} disabled={estado.tipo === 'carregando'}>
+        <div className={styles.campo}>
+          <label className={styles.rotulo} htmlFor="prazo-qtd">
+            Volumes
+          </label>
+          <div className={styles.qtdWrap}>
+            <button
+              type="button"
+              className={styles.qtdBtn}
+              onClick={() => mudarQtd(qtd - 1)}
+              disabled={qtd <= QTD_MIN}
+              aria-label="Menos um volume"
+            >
+              −
+            </button>
+            <input
+              id="prazo-qtd"
+              type="text"
+              className={styles.qtdInput}
+              value={qtdTexto}
+              onChange={(e) => setQtdTexto(e.target.value.replace(/\D/g, '').slice(0, 2))}
+              onBlur={confirmarQtdTexto}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  confirmarQtdTexto();
+                }
+              }}
+              inputMode="numeric"
+              aria-label="Quantidade de volumes"
+            />
+            <button
+              type="button"
+              className={styles.qtdBtn}
+              onClick={() => mudarQtd(qtd + 1)}
+              disabled={qtd >= QTD_MAX}
+              aria-label="Mais um volume"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className={styles.submit}
+          disabled={estado.tipo === 'carregando' || cep.replace(/\D/g, '').length !== 8}
+        >
           {estado.tipo === 'carregando' ? 'CONSULTANDO…' : 'CONSULTAR'}
         </button>
       </form>
+
+      {/* Confirmação de onde fica o CEP: é o que evita cotar para a cidade
+          errada sem perceber. Some quando o CEP ainda está incompleto. */}
+      {endereco && (
+        <p className={styles.endereco}>
+          {endereco.bairro ? `${endereco.bairro}, ` : ''}
+          {endereco.localidade} · {endereco.uf}
+        </p>
+      )}
+      {cepDesconhecido && <p className={styles.erro}>CEP não encontrado. Confira o número.</p>}
 
       {estado.tipo === 'erro' && <p className={styles.erro}>{estado.mensagem}</p>}
 
