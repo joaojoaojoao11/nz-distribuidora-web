@@ -1,5 +1,8 @@
 # Processo de compra da NZSTORE — diagnóstico e execução
 
+> **IMPLANTADO em 2026-09-06** (commit `714cc4d`), verificado em produção.
+> Testes: `npm run carrinho:test` (26) e `scratchpad/pw/compra.mjs` (23 no navegador).
+
 > Pedido do João (2026-09-06), com a página do AD PRO NEW GENERATION 35 aberta:
 > *"o processo de compra na loja tem que ser melhorado… aparece o carrinho lá em
 > cima, vem sutil, tem que ter um processo de compra intuitivo e claro."*
