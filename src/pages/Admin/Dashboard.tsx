@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import WorldMap from '../../components/WorldMap';
 import styles from './Admin.module.css';
-import AdminProducts from './AdminProducts';
+import AdminProdutos from './AdminProdutos';
 import AdminWarranties from './AdminWarranties';
 import AdminSettings from './AdminSettings';
 import AdminBlog from './AdminBlog';
@@ -896,7 +896,7 @@ export default function Dashboard() {
         )}
 
         {/* ===== PRODUTOS ===== */}
-        {activeTab === 'produtos' && <AdminProducts />}
+        {activeTab === 'produtos' && <AdminProdutos />}
 
         {/* ===== BLOG ===== */}
         {activeTab === 'blog' && <AdminBlog />}

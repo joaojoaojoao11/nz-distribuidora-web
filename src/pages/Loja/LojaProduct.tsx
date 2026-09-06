@@ -263,7 +263,7 @@ function ProductView({
             </p>
           </div>
 
-          <Disponibilidade slug={item.slug} />
+          <Disponibilidade slug={item.slug} nome={item.name} />
 
           <PrazoEntrega slug={item.sourceId} lineKey={item.lineKey} />
 

@@ -140,7 +140,7 @@ const MARCAS_DA_LINHA: Record<string, string[]> = {
 
 /** Palavras que não identificam o produto dentro da marca. */
 const TOKENS_GENERICOS = new Set([
-  'VINIL', 'ORACAL', 'METAMARK', 'ETHERNA', 'SH', 'DECOR', 'WRAPPING', 'AVERY', 'NZ', 'M', 'X', 'MTS', 'METROS',
+  'VINIL', 'ADESIVO', 'FILME', 'PELICULA', 'ORACAL', 'METAMARK', 'ETHERNA', 'SH', 'DECOR', 'WRAPPING', 'AVERY', 'NZ', 'M', 'X', 'MTS', 'METROS',
 ]);
 
 /** Tokens do nome do ERP sem marca, sem dimensão, sem genéricos. */

@@ -144,3 +144,79 @@
   line-height: 1.5;
   color: var(--text-muted);
 }
+
+/* ---------------------------------------------- admin: comprar de uma vez */
+.compra {
+  margin-top: 0.9rem;
+  padding: 0.9rem;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.compraTitulo {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.compraTitulo span {
+  color: var(--text-muted);
+  letter-spacing: 0.6px;
+  text-transform: none;
+  margin-left: 0.5rem;
+}
+
+.compraLinha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.5rem;
+}
+
+.compraBtn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  min-height: 44px;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.compraBtn small {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.compraBtnAtivo {
+  border-color: var(--accent-red);
+  color: var(--text-primary);
+  background: rgba(209, 30, 30, 0.1);
+}
+
+.compraCta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 0.3rem;
+  padding: 0 1rem;
+  border-radius: 8px;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  text-decoration: none;
+}

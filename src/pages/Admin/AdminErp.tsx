@@ -5,7 +5,7 @@
 //
 // A fila é o coração desta aba. O site identifica produto por slug ou código de
 // mostruário; o NZERP usa master_catalog.sku em uppercase, com histórico de
-// importação do Tiny/Olist. O script propose-sku-map.mjs propõe os pares, mas
+// importação do Tiny/Olist. O migrador (scripts/migrar-catalogo-editorial.mjs) propõe os pares, mas
 // só uma pessoa conferindo transforma a proposta em verdade — um match errado
 // faz o site anunciar o estoque de outro produto.
 
@@ -85,6 +85,20 @@ export default function AdminErp() {
     void carregar();
   }, [carregar]);
 
+  /**
+   * Conferir é o que transforma proposta em verdade: além de carimbar a fila,
+   * grava produtos.erp_sku e publica. Sem isto o item continuaria 'pendente'
+   * e invisível na loja.
+   */
+  const vincularProduto = async (slug: string, sku: string) => {
+    const { error } = await supabase
+      .from('produtos')
+      .update({ erp_sku: sku, tipo_vinculo: 'proprio', publicado: true })
+      .eq('slug', slug)
+      .neq('tipo_vinculo', 'alias');
+    if (error) setErro(`produtos: ${error.message}`);
+  };
+
   const conferir = async (item: Mapa) => {
     const { data } = await supabase.auth.getUser();
     const { error } = await supabase
@@ -96,6 +110,7 @@ export default function AdminErp() {
       })
       .eq('id', item.id);
     if (error) setErro(error.message);
+    else await vincularProduto(item.shop_slug, item.erp_sku);
     await carregar();
   };
 
@@ -113,13 +128,21 @@ export default function AdminErp() {
       })
       .eq('id', item.id);
     if (error) setErro(error.message);
+    else await vincularProduto(item.shop_slug, sku);
     await carregar();
   };
 
   const descartar = async (item: Mapa) => {
-    if (!window.confirm(`Remover o vínculo de ${item.shop_slug}? O produto deixa de mostrar estoque.`))
+    if (!window.confirm(`Remover o vínculo de ${item.shop_slug}? O produto sai da loja até ganhar outro SKU.`))
       return;
     await supabase.from('erp_sku_map').delete().eq('id', item.id);
+    // Sem SKU não publica — é a regra do cadastro, e o check do banco a impõe.
+    const { error } = await supabase
+      .from('produtos')
+      .update({ erp_sku: null, tipo_vinculo: 'pendente', publicado: false })
+      .eq('slug', item.shop_slug)
+      .neq('tipo_vinculo', 'familia');
+    if (error) setErro(`produtos: ${error.message}`);
     await carregar();
   };
 

@@ -41,6 +41,9 @@ interface Resposta {
   };
   lpns?: Lpn[] | { erro: string };
   estoqueMinimo?: number | null;
+  /** Só admin: o mesmo rótulo da tabela de preço do ERP. */
+  rotuloErp?: 'ESTOQUE' | 'DROP';
+  erpSku?: string;
 }
 
 const ROTULO: Record<Nivel, string> = {
@@ -49,8 +52,13 @@ const ROTULO: Record<Nivel, string> = {
   'sob-encomenda': 'Sob encomenda',
 };
 
-export default function Disponibilidade({ slug }: { slug: string }) {
+export default function Disponibilidade({ slug, nome }: { slug: string; nome?: string }) {
   const [dados, setDados] = useState<Resposta | null>(null);
+  // Seleção do admin nos botões "comprar de uma vez": N rolos fechados e/ou
+  // pontas específicas. Vira o texto do pedido no WhatsApp até o carrinho
+  // (Fase 7) existir.
+  const [fechados, setFechados] = useState(0);
+  const [pontas, setPontas] = useState<string[]>([]);
 
   useEffect(() => {
     let cancelado = false;
@@ -81,9 +89,24 @@ export default function Disponibilidade({ slug }: { slug: string }) {
     };
   }, [slug]);
 
+  const lpnsOk = Array.isArray(dados?.lpns) ? dados.lpns : [];
+  const rolosFechados = lpnsOk.filter((l) => l.status_rolo === 'ROLO FECHADO');
+  const rolosAbertos = lpnsOk.filter((l) => l.status_rolo === 'ROLO ABERTO');
+
   if (!dados?.mapeado || dados.semDados || !dados.disponibilidade) return null;
 
   const nivel = dados.disponibilidade;
+  const metrosFechado = rolosFechados[0]?.quant_ml ?? dados.saldo?.metragemPadrao ?? 0;
+  const pedidoTexto = (() => {
+    const partes: string[] = [];
+    if (fechados > 0) partes.push(`${fechados} rolo(s) fechado(s) de ${metrosFechado} m`);
+    for (const lpn of pontas) {
+      const l = rolosAbertos.find((r) => r.lpn === lpn);
+      if (l) partes.push(`ponta ${l.lpn} (${formatarMetros(l.quant_ml)})`);
+    }
+    if (!partes.length) return null;
+    return `Pedido interno — ${nome ?? slug}${dados.erpSku ? ` (${dados.erpSku})` : ''}: ${partes.join(' + ')}.`;
+  })();
 
   return (
     <section className={styles.block} aria-labelledby="disp-titulo">
@@ -92,6 +115,14 @@ export default function Disponibilidade({ slug }: { slug: string }) {
       </h2>
 
       <span className={`${styles.badge} ${styles[nivel]}`}>{ROTULO[nivel]}</span>
+      {dados.rotuloErp && (
+        <span
+          className={`${styles.badge} ${dados.rotuloErp === 'ESTOQUE' ? styles['pronta-entrega'] : styles['sob-encomenda']}`}
+          title="Mesmo rótulo da tabela de preço do NZERP"
+        >
+          ERP · {dados.rotuloErp}
+        </span>
+      )}
 
       {/* Nível lojista: números reais. Só chega aqui se o servidor mandou. */}
       {dados.saldo && (
@@ -115,6 +146,54 @@ export default function Disponibilidade({ slug }: { slug: string }) {
             </div>
           )}
         </dl>
+      )}
+
+      {/* Nível admin: botões por quantidade. Sem reserva — é o que está no
+          pátio AGORA; quem fecha o pedido é o vendedor no ERP. */}
+      {dados.papel === 'admin' && (rolosFechados.length > 0 || rolosAbertos.length > 0) && (
+        <div className={styles.compra}>
+          <p className={styles.compraTitulo}>Comprar de uma vez <span>disponível agora · sem reserva</span></p>
+          {rolosFechados.length > 0 && (
+            <div className={styles.compraLinha}>
+              {Array.from({ length: rolosFechados.length }, (_, i) => i + 1).map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  className={`${styles.compraBtn} ${fechados === n ? styles.compraBtnAtivo : ''}`}
+                  onClick={() => setFechados(fechados === n ? 0 : n)}
+                >
+                  {n} rolo{n > 1 ? 's' : ''} fechado{n > 1 ? 's' : ''}
+                  <small>{formatarMetros(n * metrosFechado)}</small>
+                </button>
+              ))}
+            </div>
+          )}
+          {rolosAbertos.length > 0 && (
+            <div className={styles.compraLinha}>
+              {rolosAbertos.map((l) => (
+                <button
+                  key={l.lpn}
+                  type="button"
+                  className={`${styles.compraBtn} ${pontas.includes(l.lpn) ? styles.compraBtnAtivo : ''}`}
+                  onClick={() => setPontas(pontas.includes(l.lpn) ? pontas.filter((p) => p !== l.lpn) : [...pontas, l.lpn])}
+                >
+                  ponta {l.lpn}
+                  <small>{formatarMetros(l.quant_ml)}</small>
+                </button>
+              ))}
+            </div>
+          )}
+          {pedidoTexto && (
+            <a
+              className={styles.compraCta}
+              href={`https://wa.me/5511920707565?text=${encodeURIComponent(pedidoTexto)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Enviar pedido interno · WhatsApp
+            </a>
+          )}
+        </div>
       )}
 
       {/* Nível admin: detalhe por rolo físico, lido ao vivo no ERP. */}
