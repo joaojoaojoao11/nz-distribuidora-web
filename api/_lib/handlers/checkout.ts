@@ -22,8 +22,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado, type Db } from '../papel.js';
-import { asaasConfigurado, ipDoCliente } from '../asaas/cliente.js';
+import { asaasConfigurado, asaasEnv, criarWebhook, estornarCobranca, ipDoCliente, listarWebhooks } from '../asaas/cliente.js';
+import { manutencaoCheckout } from '../asaas/manutencao.js';
 import {
+  aplicarStatus,
   avisarErpPago,
   carregarConfig,
   criarPagamento,
@@ -88,6 +90,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (op === 'status') {
     await opStatus(site, userId, papel === 'admin', body, res);
+    return;
+  }
+  if (op === 'estornar' || op === 'webhook' || op === 'manutencao' || op === 'saude') {
+    if (papel !== 'admin') {
+      res.status(403).json({ error: 'so-admin' });
+      return;
+    }
+    try {
+      await opsAdmin(site, op, body, res);
+    } catch (err) {
+      console.error('[checkout] admin op falhou:', op, err instanceof Error ? err.message : err);
+      if (!res.headersSent) res.status(502).json({ error: 'asaas-falhou', message: err instanceof Error ? err.message : String(err) });
+    }
     return;
   }
 
@@ -546,6 +561,110 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
   }
   await site.from('pedidos').update({ forma_pagamento: escolha.forma, pagamento_status: cobranca.pagamento.status }).eq('id', pedido.id);
   res.status(200).json({ ok: true, numero: pedido.numero, pagamento: pagamentoPublico(cobranca.pagamento) });
+}
+
+// ================================================================= admin
+
+const WEBHOOK_NOME = 'NZSTORE';
+const WEBHOOK_URL = 'https://www.nzgroup.com.br/api/nz/asaas';
+const WEBHOOK_EVENTOS = [
+  'PAYMENT_CREATED',
+  'PAYMENT_AWAITING_RISK_ANALYSIS',
+  'PAYMENT_APPROVED_BY_RISK_ANALYSIS',
+  'PAYMENT_REPROVED_BY_RISK_ANALYSIS',
+  'PAYMENT_AUTHORIZED',
+  'PAYMENT_UPDATED',
+  'PAYMENT_CONFIRMED',
+  'PAYMENT_RECEIVED',
+  'PAYMENT_CREDIT_CARD_CAPTURE_REFUSED',
+  'PAYMENT_OVERDUE',
+  'PAYMENT_DELETED',
+  'PAYMENT_RESTORED',
+  'PAYMENT_REFUNDED',
+  'PAYMENT_PARTIALLY_REFUNDED',
+  'PAYMENT_REFUND_IN_PROGRESS',
+  'PAYMENT_CHARGEBACK_REQUESTED',
+  'PAYMENT_CHARGEBACK_DISPUTE',
+  'PAYMENT_AWAITING_CHARGEBACK_REVERSAL',
+  'PAYMENT_BANK_SLIP_CANCELLED',
+];
+
+async function opsAdmin(site: Db, op: string, body: Record<string, unknown>, res: VercelResponse) {
+  if (op === 'saude') {
+    // Nunca devolve a chave nem o token: só se existem e se o webhook está de pé.
+    const webhooks = await listarWebhooks().catch((e: Error) => ({ erro: e.message }));
+    const lista = Array.isArray(webhooks) ? webhooks : [];
+    const nosso = lista.find((w) => w.url === WEBHOOK_URL);
+    const { data: ultimo } = await site.from('asaas_eventos').select('id, evento, recebido_em, processado_em, erro').order('recebido_em', { ascending: false }).limit(1).maybeSingle();
+    const { count: comErro } = await site.from('asaas_eventos').select('id', { count: 'exact', head: true }).not('erro', 'is', null);
+    res.status(200).json({
+      ambiente: asaasEnv(),
+      hasAsaasKey: asaasConfigurado(),
+      hasWebhookToken: Boolean(process.env.ASAAS_WEBHOOK_TOKEN),
+      chaveOk: Array.isArray(webhooks),
+      chaveErro: Array.isArray(webhooks) ? null : (webhooks as { erro: string }).erro,
+      webhook: nosso ? { id: nosso.id, enabled: nosso.enabled, interrupted: nosso.interrupted, eventos: nosso.events.length } : null,
+      outrosWebhooks: lista.filter((w) => w.url !== WEBHOOK_URL).map((w) => ({ name: w.name, url: w.url, enabled: w.enabled, interrupted: w.interrupted })),
+      ultimoEvento: ultimo ?? null,
+      eventosComErro: Number(comErro ?? 0),
+    });
+    return;
+  }
+
+  if (op === 'webhook') {
+    const token = process.env.ASAAS_WEBHOOK_TOKEN;
+    if (!token) {
+      res.status(500).json({ error: 'ENV ausente', hasWebhookToken: false });
+      return;
+    }
+    const existentes = await listarWebhooks();
+    const nosso = existentes.find((w) => w.url === WEBHOOK_URL);
+    if (nosso) {
+      res.status(200).json({ ok: true, criado: false, webhook: { id: nosso.id, enabled: nosso.enabled, interrupted: nosso.interrupted, eventos: nosso.events.length } });
+      return;
+    }
+    const criado = await criarWebhook({ name: WEBHOOK_NOME, url: WEBHOOK_URL, email: 'joaovitor@nzdistribuidora.com.br', authToken: token, events: WEBHOOK_EVENTOS });
+    res.status(200).json({ ok: true, criado: true, webhook: { id: criado.id, enabled: criado.enabled, interrupted: criado.interrupted, eventos: criado.events?.length ?? WEBHOOK_EVENTOS.length } });
+    return;
+  }
+
+  if (op === 'manutencao') {
+    const r = await manutencaoCheckout(site);
+    res.status(200).json({ ok: true, ...r });
+    return;
+  }
+
+  if (op === 'estornar') {
+    const numero = Math.floor(Number(body.numero));
+    const valor = body.valor != null ? Number(body.valor) : undefined;
+    const { data: ped } = await site.from('pedidos').select('id, numero').eq('numero', numero).maybeSingle();
+    const pedido = ped as { id: string; numero: number } | null;
+    if (!pedido) {
+      res.status(404).json({ error: 'pedido-nao-encontrado' });
+      return;
+    }
+    const { data: pg } = await site.from('pagamentos').select('*').eq('pedido_id', pedido.id).eq('status', 'pago').order('atualizado_em', { ascending: false }).limit(1).maybeSingle();
+    const pagamento = pg as PagamentoRow | null;
+    if (!pagamento?.asaas_payment_id) {
+      res.status(409).json({ error: 'sem-pagamento-pago' });
+      return;
+    }
+    if (pagamento.forma === 'BOLETO') {
+      res.status(409).json({ error: 'boleto-nao-estorna-pela-api' });
+      return;
+    }
+    if (valor != null && (!Number.isFinite(valor) || valor <= 0 || valor > Number(pagamento.valor) - Number(pagamento.estornado_valor ?? 0) + 0.001)) {
+      res.status(400).json({ error: 'valor-invalido' });
+      return;
+    }
+    const r = await estornarCobranca(pagamento.asaas_payment_id, valor, `Estorno do pedido #${pedido.numero} pelo painel`);
+    const total = valor == null || Math.abs(valor - Number(pagamento.valor)) < 0.01;
+    if (total) await aplicarStatus(site, pagamento, 'estornado', 'estorno-admin', r);
+    else await site.from('pagamentos').update({ estornado_valor: Number(pagamento.estornado_valor ?? 0) + valor, ultimo_evento: 'estorno-parcial-admin', status_asaas: r.status, atualizado_em: new Date().toISOString() }).eq('id', pagamento.id);
+    await site.from('asaas_eventos').insert({ id: `admin-estorno-${pagamento.id}-${Date.now()}`, evento: total ? 'ADMIN_ESTORNO' : 'ADMIN_ESTORNO_PARCIAL', asaas_payment_id: pagamento.asaas_payment_id, pedido_id: pedido.id, processado_em: new Date().toISOString(), payload: { valor: valor ?? pagamento.valor, status: r.status } });
+    res.status(200).json({ ok: true, total, statusAsaas: r.status });
+    return;
+  }
 }
 
 export type { OpcaoFrete, Linha, Perfil };
