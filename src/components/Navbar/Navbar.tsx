@@ -236,10 +236,21 @@ export default function Navbar() {
           </button>
 
           {botaoCarrinho(`${styles.cartBtn} ${styles.cartBtnDesktop}`)}
+          {/* Dois destinos, dois botões. Antes era um só decidindo sozinho
+              (`isAdmin ? '/admin' : '/painel'`): quem é da equipe só tinha o
+              caminho do painel administrativo, e a própria conta de comprador
+              — pedidos, pagamentos, cadastro — ficava escondida. */}
           {user ? (
-            <Link to={isAdmin ? '/admin' : '/painel'} className={styles.loginBtn} onClick={closeMenu}>
-              {isAdmin ? '⚙ Admin' : '👤 Minha Conta'}
-            </Link>
+            <>
+              {isAdmin && (
+                <Link to="/admin" className={styles.loginBtn} onClick={closeMenu}>
+                  ⚙ Admin
+                </Link>
+              )}
+              <Link to="/painel" className={styles.loginBtn} onClick={closeMenu}>
+                👤 Minha Conta
+              </Link>
+            </>
           ) : (
             <Link to="/login" className={styles.loginBtn} onClick={closeMenu}>Entrar</Link>
           )}

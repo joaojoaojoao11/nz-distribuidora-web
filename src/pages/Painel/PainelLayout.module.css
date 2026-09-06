@@ -1,0 +1,210 @@
+/* Casca da área do cliente. Duas colunas no computador, uma no celular —
+   sem gaveta, de propósito (ver o comentário no PainelLayout.tsx). */
+
+.pagina {
+  padding: 100px 0 80px;
+}
+
+/* ------------------------------------------------------------- cabeçalho */
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.identidade {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.rotulo {
+  font-family: var(--font-tech);
+  font-size: 0.64rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.nome {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.chipAnalise {
+  align-self: flex-start;
+  margin-top: 0.2rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(217, 119, 6, 0.15);
+  color: #f5a623;
+  font-family: var(--font-tech);
+  font-size: 0.62rem;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.secundario {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+@media (hover: hover) {
+  .secundario:hover {
+    border-color: var(--accent-red);
+  }
+}
+
+/* ------------------------------------------------------------- estrutura */
+
+.voltar {
+  display: none;
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+
+.corpo {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 2.2rem;
+  margin-top: 1.6rem;
+  align-items: start;
+}
+
+/* ------------------------------------------------------------ menu lateral */
+
+.lateral {
+  position: sticky;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-bottom: 1rem;
+}
+
+.grupo {
+  display: block;
+  margin-top: 1.1rem;
+  padding: 0 0.7rem 0.3rem;
+  font-family: var(--font-tech);
+  font-size: 0.58rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.item,
+.itemAtivo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 40px;
+  padding: 0 0.7rem;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.itemAtivo {
+  background: rgba(209, 30, 30, 0.1);
+  box-shadow: inset 2px 0 0 var(--accent-red);
+  color: var(--text-primary);
+}
+
+@media (hover: hover) {
+  .item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+  }
+}
+
+.icone {
+  width: 1.1rem;
+  text-align: center;
+  opacity: 0.75;
+}
+
+.contador {
+  margin-left: auto;
+  font-family: var(--font-tech);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------- conteúdo */
+
+.conteudo {
+  min-width: 0;
+}
+
+.tituloTela {
+  margin: 0 0 1.1rem;
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ---------------------------------------------------------------- celular */
+
+@media (max-width: 900px) {
+  .pagina {
+    padding: 84px 0 64px;
+  }
+
+  /* O menu lateral some: quem faz o papel dele é a lista da tela inicial. */
+  .lateral {
+    display: none;
+  }
+
+  .corpo {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-top: 1.2rem;
+  }
+
+  .voltar {
+    display: inline-block;
+    min-height: 44px;
+    line-height: 44px;
+  }
+
+  .cabecalho {
+    align-items: flex-start;
+  }
+}

@@ -360,3 +360,311 @@
   height: 18px;
   accent-color: var(--accent-red);
 }
+
+/* =======================================================================
+   Telas da conta (fase 2026-09-10). O painel virou rotas; estas classes
+   servem as telas novas e são compartilhadas por todas elas.
+   ======================================================================= */
+
+.pendencia {
+  margin-bottom: 1rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  border-radius: 10px;
+  background: rgba(217, 119, 6, 0.07);
+  color: var(--text-secondary);
+}
+
+.pendencia p {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+}
+
+.vazio {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  max-width: 56ch;
+}
+
+.acoesTopo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.9rem;
+}
+
+/* ------------------------------------------------- cartão (pedido, pagamento) */
+
+.cartoes {
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+}
+
+.cartaoPedido {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.cartaoTopo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.cartaoNumero {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.cartaoData {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.cartaoStatus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.cartaoRodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.cartaoTotal {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.cartaoTotal small {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.cartaoAcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* --------------------------------------------------------------- definições */
+
+.definicoes {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.definicoes > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.definicoes dt {
+  font-family: var(--font-tech);
+  font-size: 0.64rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.definicoes dd {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+
+/* ------------------------------------------------------------------ cupons */
+
+.cupons {
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.cupom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+}
+
+.cupomMorto {
+  opacity: 0.55;
+}
+
+.cupomCodigo {
+  display: block;
+  font-family: var(--font-tech);
+  font-size: 0.95rem;
+  letter-spacing: 1.5px;
+  color: var(--text-primary);
+}
+
+.cupomRegra {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------- carrinho guardado */
+
+.itensCarrinho {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.itemCarrinho {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.itemFoto {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+}
+
+.itemFoto img,
+.itemFoto span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.itemNome {
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.itemMeta {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.itemAcoes {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.itemAcoes button {
+  min-width: 34px;
+  min-height: 34px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.itemRemover {
+  padding: 0 0.5rem;
+  font-family: var(--font-tech);
+  font-size: 0.6rem !important;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--text-muted) !important;
+}
+
+.carrinhoRodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.carrinhoTotal {
+  display: flex;
+  flex-direction: column;
+}
+
+.carrinhoTotal small {
+  font-family: var(--font-tech);
+  font-size: 0.62rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.carrinhoTotal strong {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@media (max-width: 560px) {
+  .itemCarrinho {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+  .itemFoto {
+    width: 48px;
+    height: 48px;
+  }
+  .itemAcoes {
+    grid-column: 2;
+  }
+}

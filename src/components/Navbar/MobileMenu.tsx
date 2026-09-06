@@ -107,12 +107,13 @@ export default function MobileMenu({ onClose, isAdmin, logado, contagens }: Prop
             Carrinho · {totalItensCarrinho(carrinho)} item{totalItensCarrinho(carrinho) > 1 ? 'ns' : ''}
           </Link>
         )}
-        <Link
-          to={logado ? (isAdmin ? '/admin' : '/painel') : '/login'}
-          onClick={onClose}
-          className={styles.conta}
-        >
-          {logado ? (isAdmin ? 'Painel administrativo' : 'Minha conta') : 'Entrar'}
+        {logado && isAdmin && (
+          <Link to="/admin" onClick={onClose} className={styles.conta}>
+            Painel administrativo
+          </Link>
+        )}
+        <Link to={logado ? '/painel' : '/login'} onClick={onClose} className={styles.conta}>
+          {logado ? 'Minha conta' : 'Entrar'}
         </Link>
         <a
           href={WHATSAPP_URL}

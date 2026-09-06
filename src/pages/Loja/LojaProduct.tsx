@@ -15,6 +15,7 @@ import { getShopItem, useCatalogoEstado, useShopCatalog } from '../../lib/shop/s
 import { buildShopItemSchema } from '../../lib/shop/schema';
 import { relatedItems } from '../../lib/shop/related';
 import { usePrecosMapa } from '../../lib/shop/precos';
+import { alternarFavorito, registrarVisto, useEhFavorito } from '../../lib/shop/listasPessoais';
 import { COLOR_LABEL, SUBFAMILY_LABEL } from '../../lib/shop/color/lexicon';
 import { FINISH_LABEL } from '../../lib/shop/finish/tree';
 import type { MidiaPublica, ShopItem } from '../../lib/shop/types';
@@ -84,6 +85,16 @@ function ProductView({
     estadoPreco === 'ok' &&
     Boolean(precoItem?.disponivel) &&
     (precoItem?.rolo != null || precoItem?.metro != null);
+
+  const favorito = useEhFavorito(item.slug);
+  const paraLembrar = { slug: item.slug, nome: item.name, codigo: item.code, imagem: item.image, hex: item.hex };
+
+  // Rastro de "vistos recentemente" (/painel/vistos). Fica no navegador: os
+  // eventos de analytics guardam a sessão, não o usuário, e não respondem
+  // "o que EU vi".
+  useEffect(() => {
+    registrarVisto({ slug: item.slug, nome: item.name, codigo: item.code, imagem: item.image, hex: item.hex });
+  }, [item.slug, item.name, item.code, item.image, item.hex]);
 
   const related = useMemo(() => relatedItems(item), [item]);
   const gallery = item.gallery.length ? item.gallery : item.image ? [item.image] : [];
@@ -321,7 +332,18 @@ function ProductView({
         <div className={styles.info}>
           <span className={styles.lineLabel}>{item.line ?? item.brand}</span>
           <h1 className={styles.title}>{item.name}</h1>
-          {item.code && <span className={styles.code}>{item.code}</span>}
+          <div className={styles.codeLinha}>
+            {item.code && <span className={styles.code}>{item.code}</span>}
+            <button
+              type="button"
+              className={favorito ? styles.favoritoAtivo : styles.favorito}
+              aria-pressed={favorito}
+              onClick={() => alternarFavorito(paraLembrar)}
+            >
+              <span aria-hidden="true">{favorito ? '♥' : '♡'}</span>
+              {favorito ? 'Salvo nos favoritos' : 'Salvar nos favoritos'}
+            </button>
+          </div>
 
           {renderChips()}
 

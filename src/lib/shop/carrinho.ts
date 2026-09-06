@@ -9,6 +9,10 @@
 // no computador do balcão, trocar de conta não mostra o carrinho do outro. O
 // visitante usa a chave sem sufixo, e o que ele montou antes de entrar é
 // migrado para a chave dele no login — ninguém perde carrinho por logar.
+//
+// A cópia DURÁVEL (para o cliente reencontrar noutro aparelho e para a NZ saber
+// quem desistiu) fica em `carrinhoServidor.ts`, que assina esta store. Aqui não
+// entra rede: somar um item não pode esperar o servidor.
 
 import { useSyncExternalStore } from 'react';
 import { supabase } from '../supabase';
@@ -139,6 +143,34 @@ export function removerDoCarrinho(slug: string, unidade: UnidadeCarrinho) {
 
 export function limparCarrinho() {
   publicar([]);
+}
+
+/** Troca a lista inteira — usado pela sincronia com o servidor. */
+export function substituirCarrinho(lista: readonly ItemCarrinho[]) {
+  publicar(lista.map((i) => ({ ...i })));
+}
+
+/** Junta uma lista de fora (a do servidor) com a que está na tela. */
+export function fundirNoCarrinho(outra: readonly ItemCarrinho[]) {
+  publicar(fundir(itens, outra));
+}
+
+/** Leitura fora de componente (a sincronia precisa do estado no momento certo). */
+export function itensDoCarrinho(): readonly ItemCarrinho[] {
+  return itens;
+}
+
+/** Assinar mudanças fora de componente. Devolve a função de cancelar. */
+export function assinarCarrinho(cb: () => void): () => void {
+  ouvintes.add(cb);
+  return () => {
+    ouvintes.delete(cb);
+  };
+}
+
+/** Há alguém logado? A chave com sufixo é a evidência. */
+export function carrinhoEhDeUsuario(): boolean {
+  return chaveAtual !== BASE;
 }
 
 const subscribe = (cb: () => void) => {

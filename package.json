@@ -18,6 +18,7 @@
     "conta:test": "node scripts/test-conta.mjs",
     "midia:test": "node scripts/test-midia.mjs",
     "carrinho:test": "node scripts/test-carrinho.mjs",
+    "painel:test": "node scripts/test-painel.mjs",
     "loja:alvos": "node scripts/audit-touch-targets.mjs",
     "loja:toque": "node scripts/test-touch-mobile.mjs",
     "shop:cores": "node scripts/diag-cores.mjs",

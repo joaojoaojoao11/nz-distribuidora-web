@@ -97,6 +97,19 @@ interface Saude {
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const dt = (s: string | null) => (s ? new Date(s).toLocaleString('pt-BR') : '—');
 
+/** Carrinho parado há N horas, sem pedido depois. O valor é recalculado no
+ *  servidor a partir do preço do ERP — não é um número mandado pelo navegador. */
+interface Abandonado {
+  user_id: string;
+  nome: string | null;
+  email: string | null;
+  telefone: string | null;
+  itens: number;
+  valor_estimado: number | null;
+  atualizado_em: string;
+  lembrado_em: string | null;
+}
+
 export default function AdminPedidos() {
   const [config, setConfig] = useState<Config | null>(null);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -109,6 +122,8 @@ export default function AdminPedidos() {
   const [filtro, setFiltro] = useState<'todos' | 'pagos' | 'aguardando' | 'problema' | 'orcamento'>('todos');
   const [aberto, setAberto] = useState<string | null>(null);
   const [ocupado, setOcupado] = useState(false);
+  const [abandonados, setAbandonados] = useState<Abandonado[]>([]);
+  const [horasAbandono, setHorasAbandono] = useState(24);
 
   const carregar = useCallback(async () => {
     const [c, p, g, e] = await Promise.all([
@@ -121,6 +136,10 @@ export default function AdminPedidos() {
       supabase.from('pagamentos').select('*').order('criado_em', { ascending: false }).limit(600),
       supabase.from('asaas_eventos').select('id, evento, asaas_payment_id, pedido_id, recebido_em, processado_em, erro').order('recebido_em', { ascending: false }).limit(100),
     ]);
+    // Carrinhos parados: RPC própria, porque o valor precisa ser somado com o
+    // preço do ERP e não pode vir do cliente.
+    const { data: ab } = await supabase.rpc('carrinhos_abandonados', { p_horas: horasAbandono });
+    setAbandonados((ab ?? []) as Abandonado[]);
     const err = c.error ?? p.error ?? g.error ?? e.error;
     setErro(err ? `${err.message} — a migration migrations/2026-09-07_checkout_asaas.sql já foi aplicada?` : '');
     if (c.data) setConfig(c.data as Config);
@@ -128,7 +147,7 @@ export default function AdminPedidos() {
     setPagamentos((g.data ?? []) as Pagamento[]);
     setEventos((e.data ?? []) as Evento[]);
     setLoading(false);
-  }, []);
+  }, [horasAbandono]);
 
   const carregarSaude = useCallback(async () => {
     try {
@@ -198,6 +217,61 @@ export default function AdminPedidos() {
       </p>
       {erro && <p style={{ color: '#ff6b6b' }}>{erro}</p>}
       {msg && <p style={{ color: '#a1a1a6' }}>{msg}</p>}
+
+      {/* --------------------------------------------- carrinhos parados */}
+      <div className={styles.tableSection}>
+        <h3 className={styles.tableSectionTitle}>
+          Carrinhos parados
+          {abandonados.length > 0 && (
+            <> — {abandonados.length} · {BRL.format(abandonados.reduce((t, a) => t + Number(a.valor_estimado ?? 0), 0))} em jogo</>
+          )}
+        </h3>
+        <p className={styles.tabDescription}>
+          Cliente que montou carrinho e não fechou pedido depois. O valor é somado aqui no servidor com o
+          preço do ERP. Passou a existir em 10/09/2026, quando o carrinho deixou de viver só no navegador —
+          antes disso não havia como saber quem desistia.
+        </p>
+        <div className={styles.createField} style={{ maxWidth: 260 }}>
+          <label>Parado há mais de (horas)</label>
+          <input
+            type="number"
+            min={0}
+            value={horasAbandono}
+            onChange={(e) => setHorasAbandono(Math.max(0, Number(e.target.value) || 0))}
+          />
+        </div>
+        {abandonados.length === 0 ? (
+          <p style={{ color: '#a1a1a6' }}>Nenhum carrinho parado nesse intervalo.</p>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Contato</th>
+                  <th>Itens</th>
+                  <th>Valor estimado</th>
+                  <th>Parado desde</th>
+                </tr>
+              </thead>
+              <tbody>
+                {abandonados.map((a) => (
+                  <tr key={a.user_id}>
+                    <td>{a.nome ?? '—'}</td>
+                    <td>
+                      {a.email ?? '—'}
+                      {a.telefone ? <><br />{a.telefone}</> : null}
+                    </td>
+                    <td>{a.itens}</td>
+                    <td>{BRL.format(Number(a.valor_estimado ?? 0))}</td>
+                    <td>{dt(a.atualizado_em)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* --------------------------------------------------------- saúde */}
       <div className={styles.tableSection}>

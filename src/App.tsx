@@ -9,13 +9,27 @@ import { AuthProvider } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import FloatingWhatsApp from './components/FloatingWhatsApp/FloatingWhatsApp';
 import './App.css';
+// Efeito colateral: liga a cópia do carrinho no servidor (uma linha por
+// usuário). Sem ela, carrinho abandonado não existe como dado.
+import './lib/shop/carrinhoServidor';
 
 // Code splitting por rota: a Home carrega no bundle inicial; o resto (admin com
 // recharts/jspdf, mapas leaflet, three.js do simulador, catálogos) só baixa
 // quando o visitante navega até lá. Corta o bundle inicial de ~3 MB.
 const Loja = lazy(() => import('./pages/Loja/Loja'));
 const LojaProduct = lazy(() => import('./pages/Loja/LojaProduct'));
-const Painel = lazy(() => import('./pages/Painel/Painel'));
+const PainelLayout = lazy(() => import('./pages/Painel/PainelLayout'));
+const PainelInicio = lazy(() => import('./pages/Painel/PainelInicio'));
+const PainelDados = lazy(() => import('./pages/Painel/PainelDados'));
+const PainelSeguranca = lazy(() => import('./pages/Painel/PainelSeguranca'));
+const PainelPedidos = lazy(() => import('./pages/Painel/PainelPedidos'));
+const PainelPagamentos = lazy(() => import('./pages/Painel/PainelPagamentos'));
+const PainelCarrinho = lazy(() => import('./pages/Painel/PainelCarrinho'));
+const PainelFavoritos = lazy(() => import('./pages/Painel/PainelFavoritos'));
+const PainelVistos = lazy(() => import('./pages/Painel/PainelVistos'));
+const PainelGarantias = lazy(() => import('./pages/Painel/PainelGarantias'));
+const PainelCupons = lazy(() => import('./pages/Painel/PainelCupons'));
+const PainelIndique = lazy(() => import('./pages/Painel/PainelIndique'));
 const Carrinho = lazy(() => import('./pages/Loja/Carrinho'));
 const Checkout = lazy(() => import('./pages/Loja/Checkout'));
 const PedidoDetalhe = lazy(() => import('./pages/Painel/PedidoDetalhe'));
@@ -153,7 +167,22 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/loja" element={<Loja />} />
                   <Route path="/loja/:slug" element={<LojaProduct />} />
-                  <Route path="/painel" element={<Painel />} />
+                  {/* Conta do cliente: uma rota por tela, como o admin. O
+                      detalhe do pedido fica FORA da casca — é uma página de
+                      acompanhamento, com o próprio cabeçalho. */}
+                  <Route path="/painel" element={<PainelLayout />}>
+                    <Route index element={<PainelInicio />} />
+                    <Route path="dados" element={<PainelDados />} />
+                    <Route path="seguranca" element={<PainelSeguranca />} />
+                    <Route path="pedidos" element={<PainelPedidos />} />
+                    <Route path="pagamentos" element={<PainelPagamentos />} />
+                    <Route path="carrinho" element={<PainelCarrinho />} />
+                    <Route path="favoritos" element={<PainelFavoritos />} />
+                    <Route path="vistos" element={<PainelVistos />} />
+                    <Route path="garantias" element={<PainelGarantias />} />
+                    <Route path="cupons" element={<PainelCupons />} />
+                    <Route path="indique" element={<PainelIndique />} />
+                  </Route>
                   <Route path="/carrinho" element={<Carrinho />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/painel/pedido/:numero" element={<PedidoDetalhe />} />
