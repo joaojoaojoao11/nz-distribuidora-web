@@ -1,5 +1,10 @@
 # Área do cliente ("Minha conta") — diagnóstico e plano
 
+> **IMPLANTADO em 2026-09-10.** Fase 0 em `67edca3` (segurança das garantias),
+> fases 1–7 em `cddc5bd`. Fase 8 (endereços múltiplos) segue fora, como
+> decidido. Testes: `npm run painel:test` (34), `scratchpad/pw/conta.mjs` (26 no
+> navegador) e `conta-prod.mjs` (24 em produção).
+
 > Pedido do João (2026-09-06), com `/painel` aberto: *"tem que ser criado um
 > botão no menu, de dados do usuário / para dados do usuário, senha e segurança
 > / pedidos / carrinhos abandonados / pagamentos / últimas compras / últimos
