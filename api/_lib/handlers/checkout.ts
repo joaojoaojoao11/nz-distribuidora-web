@@ -575,25 +575,47 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
  * cobrança no Asaas e marca cancelado. O dono pode (desistiu antes de pagar);
  * o admin também. Pagamento pago não passa por aqui — é estorno.
  */
+/**
+ * Cancelar um pedido que o cliente ainda não pagou.
+ *
+ * Duas coisas, nesta ordem, porque a segunda depende da primeira: derrubar a
+ * cobrança em aberto no Asaas (senão o Pix continuaria pagável depois de
+ * cancelado) e cancelar o ORÇAMENTO NO ERP.
+ *
+ * Por que o ERP e não só a linha do site: quem manda no status do pedido é o
+ * orçamento lá, e o sync espelha esse status a cada 5 minutos. Um "cancelado"
+ * gravado só aqui voltaria a ABERTO sozinho no ciclo seguinte.
+ *
+ * O ERP recusa cancelar o que já entrou na operação (APROVADO em diante) — a
+ * essa altura houve separação, nota ou coleta, e desfazer é decisão de vendedor.
+ */
 async function opCancelar(site: Db, userId: string, admin: boolean, body: Record<string, unknown>, res: VercelResponse) {
   const numero = Math.floor(Number(body.numero));
+  const motivo = typeof body.motivo === 'string' ? body.motivo.slice(0, 300) : '';
   const pedido = await carregarPedidoDoUsuario(site, userId, admin, numero);
   if (!pedido) {
     res.status(404).json({ error: 'pedido-nao-encontrado' });
     return;
   }
-  const { data } = await site.from('pagamentos').select('*').eq('pedido_id', pedido.id).in('status', ['aguardando']).order('criado_em', { ascending: false });
-  const abertos = (data ?? []) as PagamentoRow[];
-  if (!abertos.length) {
-    res.status(409).json({ error: 'sem-pagamento-em-aberto', pagamentoStatus: pedido.pagamento_status });
+  if (pedido.pagamento_status === 'pago') {
+    res.status(409).json({ error: 'ja-pago' });
     return;
   }
+
+  // ------------------------------------------------- 1. cobranças em aberto
+  const { data } = await site
+    .from('pagamentos')
+    .select('*')
+    .eq('pedido_id', pedido.id)
+    .in('status', ['aguardando'])
+    .order('criado_em', { ascending: false });
+  const abertos = (data ?? []) as PagamentoRow[];
   for (const p of abertos) {
     if (p.asaas_payment_id) {
       try {
         const atual = await consultarCobranca(p.asaas_payment_id);
         if (['CONFIRMED', 'RECEIVED', 'RECEIVED_IN_CASH'].includes(atual.status)) {
-          // Pagou no meio do caminho: não cancela, marca pago.
+          // Pagou no meio do caminho: não cancela nada, marca pago.
           await aplicarStatus(site, p, 'pago', 'cancelar-mas-pago', atual);
           res.status(409).json({ error: 'ja-pago' });
           return;
@@ -606,7 +628,55 @@ async function opCancelar(site: Db, userId: string, admin: boolean, body: Record
     }
     await aplicarStatus(site, p, 'cancelado', admin ? 'cancelado-admin' : 'cancelado-cliente');
   }
-  res.status(200).json({ ok: true, cancelados: abertos.length });
+
+  // Pedido só de orçamento (sem cobrança) também pode ser cancelado — é o caso
+  // mais comum enquanto o pagamento online está desligado.
+  if (!body.pedidoTambem && abertos.length === 0) {
+    res.status(409).json({ error: 'sem-pagamento-em-aberto', pagamentoStatus: pedido.pagamento_status });
+    return;
+  }
+  if (!body.pedidoTambem) {
+    res.status(200).json({ ok: true, cancelados: abertos.length });
+    return;
+  }
+
+  // ------------------------------------------------------- 2. pedido no ERP
+  const erpUrl = process.env.ERP_SUPABASE_URL;
+  const erpKey = process.env.ERP_SUPABASE_SERVICE_ROLE_KEY;
+  if (!erpUrl || !erpKey) {
+    res.status(503).json({ error: 'erp-indisponivel', cobrancasCanceladas: abertos.length });
+    return;
+  }
+  const erp = createClient(erpUrl, erpKey);
+  const { data: rpc, error: rpcErr } = await erp.rpc('site_cancelar_pedido', {
+    p_site_pedido_id: pedido.id,
+    p_motivo: motivo,
+  });
+  if (rpcErr) {
+    res.status(502).json({ error: 'erp-indisponivel', message: rpcErr.message, cobrancasCanceladas: abertos.length });
+    return;
+  }
+  const r = (rpc ?? {}) as { ok?: boolean; motivo?: string; status?: string };
+  if (!r.ok) {
+    // 'fase-avancada' = o vendedor já mexeu; 'nao-encontrado' = o orçamento
+    // nunca chegou ao ERP (envio falhou), e aí o site pode cancelar sozinho.
+    if (r.motivo === 'nao-encontrado') {
+      await site
+        .from('pedidos')
+        .update({ status: 'CANCELADO', status_atualizado_em: new Date().toISOString() })
+        .eq('id', pedido.id);
+      res.status(200).json({ ok: true, cancelados: abertos.length, pedido: 'CANCELADO', semErp: true });
+      return;
+    }
+    res.status(409).json({ error: r.motivo ?? 'nao-cancelavel', status: r.status, cobrancasCanceladas: abertos.length });
+    return;
+  }
+
+  await site
+    .from('pedidos')
+    .update({ status: 'CANCELADO', status_atualizado_em: new Date().toISOString() })
+    .eq('id', pedido.id);
+  res.status(200).json({ ok: true, cancelados: abertos.length, pedido: 'CANCELADO' });
 }
 
 // ================================================================= admin

@@ -53,6 +53,21 @@ export const FORMA_LABEL: Record<string, string> = {
 /** Um pedido ainda mexe? Serve para "em andamento" e para o "comprar de novo". */
 export const ENCERRADO = ['FATURADO', 'ENTREGUE', 'CANCELADO', 'NAO_APROVADO', 'NAO_ENTREGUE'];
 
+/**
+ * O cliente pode cancelar sozinho?
+ *
+ * A régua é a MESMA da função `site_cancelar_pedido` no ERP — o servidor é quem
+ * decide de verdade; aqui é só para não oferecer um botão que vai ser recusado.
+ * De APROVADO em diante houve separação, nota ou coleta: desfazer é decisão de
+ * vendedor. E pago nunca: aí é estorno, não cancelamento.
+ */
+const CANCELAVEIS = new Set(['RASCUNHO', 'ABERTO', 'AGUARDANDO', 'DADOS_INCOMPLETOS', 'NAO_APROVADO']);
+
+export function podeCancelar(pedido: { status: string; pagamento_status: string | null }): boolean {
+  if (pedido.pagamento_status === 'pago') return false;
+  return CANCELAVEIS.has(pedido.status);
+}
+
 /** Como o chip de pagamento deve ser pintado. */
 export function tomDoPagamento(status: string | null | undefined): 'ok' | 'pendente' | 'ruim' | null {
   if (!status || status === 'nenhum') return null;

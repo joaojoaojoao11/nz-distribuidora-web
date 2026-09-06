@@ -668,3 +668,70 @@
     grid-column: 2;
   }
 }
+
+/* --------------------------------------------------- miniaturas do pedido
+   Reconhecer o pedido sem abrir: "#5, #6, #7" não diz nada, a foto diz. */
+
+.miniaturas {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.mini {
+  display: block;
+  width: 36px;
+  height: 36px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  flex: none;
+}
+
+.mini img,
+.miniCor {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.miniTexto {
+  min-width: 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cancelar é destrutivo: vazado com a cor de alerta, nunca cheio — o botão
+   cheio da tela é sempre o passo adiante, não o de desfazer. */
+.botaoPerigo {
+  min-height: 40px;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(209, 30, 30, 0.45);
+  border-radius: 8px;
+  background: transparent;
+  color: #ff8f7f;
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.botaoPerigo:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (hover: hover) {
+  .botaoPerigo:hover:not(:disabled) {
+    border-color: var(--accent-red);
+    background: rgba(209, 30, 30, 0.1);
+  }
+}

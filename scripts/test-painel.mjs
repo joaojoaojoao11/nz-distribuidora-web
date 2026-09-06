@@ -164,6 +164,18 @@ ok('recusado é ruim', rotulos.tomDoPagamento('recusado') === 'ruim');
 ok('"nenhum" não pinta chip', rotulos.tomDoPagamento('nenhum') === null);
 ok('nulo não pinta chip', rotulos.tomDoPagamento(null) === null);
 
+console.log('\n=== PODE CANCELAR ===');
+const ped = (status, pagamento_status = null) => ({ status, pagamento_status });
+ok('pedido aberto e nao pago pode', rotulos.podeCancelar(ped('ABERTO')) === true);
+ok('rascunho pode', rotulos.podeCancelar(ped('RASCUNHO')) === true);
+ok('aguardando pagamento ainda pode', rotulos.podeCancelar(ped('ABERTO', 'aguardando')) === true);
+ok('Pix expirado ainda pode', rotulos.podeCancelar(ped('ABERTO', 'expirado')) === true);
+ok('PAGO nunca pode (isso e estorno)', rotulos.podeCancelar(ped('ABERTO', 'pago')) === false);
+ok('aprovado nao pode (ja separou)', rotulos.podeCancelar(ped('APROVADO')) === false);
+ok('faturado nao pode', rotulos.podeCancelar(ped('FATURADO')) === false);
+ok('enviado nao pode', rotulos.podeCancelar(ped('ENVIADO')) === false);
+ok('ja cancelado nao oferece de novo', rotulos.podeCancelar(ped('CANCELADO')) === false);
+
 rmSync(outDir, { recursive: true, force: true });
 console.log(`\n${falhas ? `${falhas} FALHA(S)` : 'tudo certo'}`);
 process.exit(falhas ? 1 : 0);
