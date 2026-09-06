@@ -67,6 +67,17 @@ export type NivelEstoque = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomend
 /** Como o produto do site se liga ao SKU físico do ERP. */
 export type TipoVinculo = 'proprio' | 'alias' | 'familia' | 'pendente';
 
+/** Uma foto ou vídeo do produto, como o catálogo entrega. */
+export interface MidiaPublica {
+  tipo: 'imagem' | 'video' | 'video-externo';
+  url: string;
+  poster: string | null;
+  alt: string | null;
+  largura: number | null;
+  altura: number | null;
+  duracao: number | null;
+}
+
 export interface ShopSpec {
   label: string;
   value: string;
@@ -99,6 +110,15 @@ export interface ShopItem {
   /** Imagem principal. `null` ⇒ o card renderiza swatch a partir de `hex`. */
   image: string | null;
   gallery: string[];
+  /**
+   * Mídia com metadado (alt, dimensão, vídeo). `gallery` continua sendo só as
+   * URLs das imagens, para o que já lia dela; `media` é o que a página do
+   * produto usa para montar galeria com vídeo e `<img width height>`.
+   *
+   * Opcional porque só o catálogo do banco preenche: as fontes estáticas
+   * (adapters editorial/cores/decor) continuam entregando apenas `gallery`.
+   */
+  media?: MidiaPublica[];
 
   hex: string | null;
   /** Famílias de cor; a primária é `[0]`. Vazio para padrões sem cor identificável. */

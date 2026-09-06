@@ -6,7 +6,7 @@
 // uma cor Oracal (hex, sem foto) e uma linha Avery (sem cor e sem foto) sem
 // nenhum buraco no layout.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
@@ -16,7 +16,7 @@ import { buildShopItemSchema } from '../../lib/shop/schema';
 import { relatedItems } from '../../lib/shop/related';
 import { COLOR_LABEL, SUBFAMILY_LABEL } from '../../lib/shop/color/lexicon';
 import { FINISH_LABEL } from '../../lib/shop/finish/tree';
-import type { ShopItem } from '../../lib/shop/types';
+import type { MidiaPublica, ShopItem } from '../../lib/shop/types';
 import Disponibilidade from './Disponibilidade';
 import Preco from './Preco';
 import PrazoEntrega from './PrazoEntrega';
@@ -70,10 +70,39 @@ function ProductView({
 }) {
   const navigate = useNavigate();
   const [activeImage, setActiveImage] = useState(0);
+  const [lightbox, setLightbox] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const related = useMemo(() => relatedItems(item), [item]);
   const gallery = item.gallery.length ? item.gallery : item.image ? [item.image] : [];
+  // `media` só vem do catálogo do banco; as fontes estáticas continuam com as
+  // URLs soltas de `gallery`. Um caminho só para renderizar os dois.
+  const midias: MidiaPublica[] = useMemo(
+    () =>
+      item.media && item.media.length > 0
+        ? item.media
+        : gallery.map((url) => ({ tipo: 'imagem' as const, url, poster: null, alt: null, largura: null, altura: null, duracao: null })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [item.media, item.gallery, item.image]
+  );
+
+  // Trocar de produto volta para a primeira mídia.
+  useEffect(() => {
+    setActiveImage(0);
+    setLightbox(false);
+  }, [item.slug]);
+
+  // Esc fecha a lupa; setas andam pela galeria.
+  useEffect(() => {
+    if (!lightbox) return;
+    const tecla = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightbox(false);
+      if (e.key === 'ArrowRight') setActiveImage((i) => Math.min(i + 1, midias.length - 1));
+      if (e.key === 'ArrowLeft') setActiveImage((i) => Math.max(i - 1, 0));
+    };
+    window.addEventListener('keydown', tecla);
+    return () => window.removeEventListener('keydown', tecla);
+  }, [lightbox, midias.length]);
 
   const copyHex = async () => {
     if (!item.hex) return;
@@ -88,28 +117,64 @@ function ProductView({
   };
 
   function renderMedia() {
-    if (gallery.length > 0) {
+    if (midias.length > 0) {
+      const atual = midias[Math.min(activeImage, midias.length - 1)];
       return (
         <div className={styles.mediaBlock}>
           <div className={styles.mainImageWrap}>
-            <img
-              src={gallery[Math.min(activeImage, gallery.length - 1)]}
-              alt={item.name}
-              className={styles.mainImage}
-              fetchPriority="high"
-            />
+            {atual.tipo === 'imagem' ? (
+              <button
+                type="button"
+                className={styles.ampliar}
+                onClick={() => setLightbox(true)}
+                aria-label="Ampliar imagem"
+              >
+                <img
+                  src={atual.url}
+                  alt={atual.alt ?? item.name}
+                  className={styles.mainImage}
+                  fetchPriority="high"
+                  {...(atual.largura && atual.altura ? { width: atual.largura, height: atual.altura } : {})}
+                />
+              </button>
+            ) : atual.tipo === 'video' ? (
+              /* Curto, mudo e em laço: é vitrine, não cinema. O usuário liga o
+                 som se quiser. */
+              <video
+                key={atual.url}
+                src={atual.url}
+                poster={atual.poster ?? undefined}
+                className={styles.mainImage}
+                controls
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
+            ) : (
+              <iframe
+                key={atual.url}
+                src={atual.url}
+                title={atual.alt ?? item.name}
+                className={styles.mainImage}
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                allowFullScreen
+              />
+            )}
           </div>
-          {gallery.length > 1 && (
+          {midias.length > 1 && (
             <div className={styles.thumbs}>
-              {gallery.map((src, i) => (
+              {midias.map((m, i) => (
                 <button
-                  key={src}
+                  key={m.url}
                   type="button"
                   className={`${styles.thumb} ${i === activeImage ? styles.thumbActive : ''}`}
                   onClick={() => setActiveImage(i)}
-                  aria-label={`Imagem ${i + 1} de ${gallery.length}`}
+                  aria-label={`${m.tipo === 'imagem' ? 'Imagem' : 'Vídeo'} ${i + 1} de ${midias.length}`}
                 >
-                  <img src={src} alt="" loading="lazy" />
+                  <img src={m.tipo === 'imagem' ? m.url : m.poster ?? m.url} alt="" loading="lazy" />
+                  {m.tipo !== 'imagem' && <span className={styles.thumbVideo}>▶</span>}
                 </button>
               ))}
             </div>
@@ -322,6 +387,39 @@ function ProductView({
           </Link>
         </div>
       </div>
+
+      {/* Lupa: a foto do rolo tem detalhe de textura que o card não mostra. */}
+      {lightbox && midias[activeImage]?.tipo === 'imagem' && (
+        <div className={styles.lightbox} role="dialog" aria-modal="true" onClick={() => setLightbox(false)}>
+          <button type="button" className={styles.lightboxFechar} onClick={() => setLightbox(false)} aria-label="Fechar">
+            ×
+          </button>
+          <img
+            src={midias[activeImage].url}
+            alt={midias[activeImage].alt ?? item.name}
+            className={styles.lightboxImg}
+            onClick={(e) => e.stopPropagation()}
+          />
+          {midias.length > 1 && (
+            <div className={styles.lightboxNav} onClick={(e) => e.stopPropagation()}>
+              <button type="button" onClick={() => setActiveImage((i) => Math.max(i - 1, 0))} disabled={activeImage === 0} aria-label="Anterior">
+                ‹
+              </button>
+              <span>
+                {activeImage + 1} / {midias.length}
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveImage((i) => Math.min(i + 1, midias.length - 1))}
+                disabled={activeImage >= midias.length - 1}
+                aria-label="Próxima"
+              >
+                ›
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

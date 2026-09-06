@@ -30,6 +30,7 @@ import {
   type BrandKey,
   type ItemKind,
   type LineKey,
+  type MidiaPublica,
   type NivelEstoque,
   type ShopItem,
   type ShopSpec,
@@ -57,6 +58,7 @@ export interface LojaCatalogoRow {
   codigo: string | null;
   imagem: string | null;
   galeria: string[] | null;
+  midias: MidiaPublica[] | null;
   hex: string | null;
   cor_declarada: string | null;
   transparente: boolean | null;
@@ -379,6 +381,12 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     aplicacoes,
     image: imageResolvido,
     gallery: galleryResolvida,
+    // `midias` só existe para quem já cadastrou pelo painel novo; o resto
+    // continua com as URLs de sempre, sem alt nem dimensão.
+    media:
+      row.midias && row.midias.length > 0
+        ? row.midias
+        : galleryResolvida.map((url) => ({ tipo: 'imagem' as const, url, poster: null, alt: null, largura: null, altura: null, duracao: null })),
     hex: row.hex,
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,
