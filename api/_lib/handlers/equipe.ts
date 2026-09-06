@@ -117,7 +117,10 @@ export function montarLista(erp: UsuarioErp[], perfis: PerfilEquipe[], convites:
     let status: StatusEquipe;
     if (!perfil) status = convite ? 'convidado' : 'sem-conta';
     else if (perfil.bloqueado || perfil.role !== 'admin') status = 'bloqueado';
-    else status = 'ativo';
+    // A conta existe desde o convite, mas quem nunca entrou ainda não definiu
+    // senha — dizer "com acesso" aí faria o admin achar que a pessoa já está
+    // dentro e parar de cobrar.
+    else status = perfil.last_sign_in_at ? 'ativo' : 'convidado';
     return {
       erpUserId: u.id,
       nome: u.nome || perfil?.full_name || u.email,

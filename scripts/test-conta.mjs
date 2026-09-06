@@ -279,6 +279,7 @@ const ERP_USERS = [
   const porEmail = Object.fromEntries(lista.map((l) => [l.email, l]));
   ok('quem já entrou aparece como ativo', porEmail['joaovitor@nzdistribuidora.com.br'].status === 'ativo');
   ok('quem tem convite aberto aparece como convidado', porEmail['elisa@nzdistribuidora.com.br'].status === 'convidado');
+  ok('conta criada pelo convite que nunca logou continua "convidado"', montarLista(ERP_USERS, [{ ...perfis[0], last_sign_in_at: null }], convites)[0].status !== 'ativo');
   ok('inativo no ERP aparece marcado', porEmail['exfuncionario@nzdistribuidora.com.br'].ativoErp === false);
   ok('a lista tem uma linha por pessoa do ERP', lista.length === 3);
 }
