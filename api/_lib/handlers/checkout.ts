@@ -22,7 +22,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado, type Db } from '../papel.js';
-import { asaasConfigurado, asaasEnv, criarWebhook, estornarCobranca, ipDoCliente, listarWebhooks } from '../asaas/cliente.js';
+import { asaasConfigurado, asaasEnv, consultarCobranca, criarWebhook, estornarCobranca, ipDoCliente, listarWebhooks, removerCobranca } from '../asaas/cliente.js';
 import { manutencaoCheckout } from '../asaas/manutencao.js';
 import {
   aplicarStatus,
@@ -92,7 +92,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await opStatus(site, userId, papel === 'admin', body, res);
     return;
   }
-  if (op === 'estornar' || op === 'webhook' || op === 'manutencao' || op === 'saude') {
+  if (op === 'cancelar') {
+    await opCancelar(site, userId, papel === 'admin', body, res);
+    return;
+  }
+  if (op === 'estornar' || op === 'webhook' || op === 'manutencao' || op === 'saude' || op === 'remover-cobranca') {
     if (papel !== 'admin') {
       res.status(403).json({ error: 'so-admin' });
       return;
@@ -563,6 +567,47 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
   res.status(200).json({ ok: true, numero: pedido.numero, pagamento: pagamentoPublico(cobranca.pagamento) });
 }
 
+// =============================================================== cancelar
+
+/**
+ * Cancela o pagamento EM ABERTO de um pedido (Pix/boleto aguardando): remove a
+ * cobrança no Asaas e marca cancelado. O dono pode (desistiu antes de pagar);
+ * o admin também. Pagamento pago não passa por aqui — é estorno.
+ */
+async function opCancelar(site: Db, userId: string, admin: boolean, body: Record<string, unknown>, res: VercelResponse) {
+  const numero = Math.floor(Number(body.numero));
+  const pedido = await carregarPedidoDoUsuario(site, userId, admin, numero);
+  if (!pedido) {
+    res.status(404).json({ error: 'pedido-nao-encontrado' });
+    return;
+  }
+  const { data } = await site.from('pagamentos').select('*').eq('pedido_id', pedido.id).in('status', ['aguardando']).order('criado_em', { ascending: false });
+  const abertos = (data ?? []) as PagamentoRow[];
+  if (!abertos.length) {
+    res.status(409).json({ error: 'sem-pagamento-em-aberto', pagamentoStatus: pedido.pagamento_status });
+    return;
+  }
+  for (const p of abertos) {
+    if (p.asaas_payment_id) {
+      try {
+        const atual = await consultarCobranca(p.asaas_payment_id);
+        if (['CONFIRMED', 'RECEIVED', 'RECEIVED_IN_CASH'].includes(atual.status)) {
+          // Pagou no meio do caminho: não cancela, marca pago.
+          await aplicarStatus(site, p, 'pago', 'cancelar-mas-pago', atual);
+          res.status(409).json({ error: 'ja-pago' });
+          return;
+        }
+        if (!atual.deleted) await removerCobranca(p.asaas_payment_id);
+      } catch (err) {
+        res.status(502).json({ error: 'asaas-falhou', message: err instanceof Error ? err.message : String(err) });
+        return;
+      }
+    }
+    await aplicarStatus(site, p, 'cancelado', admin ? 'cancelado-admin' : 'cancelado-cliente');
+  }
+  res.status(200).json({ ok: true, cancelados: abertos.length });
+}
+
 // ================================================================= admin
 
 const WEBHOOK_NOME = 'NZSTORE';
@@ -625,6 +670,30 @@ async function opsAdmin(site: Db, op: string, body: Record<string, unknown>, res
     }
     const criado = await criarWebhook({ name: WEBHOOK_NOME, url: WEBHOOK_URL, email: 'joaovitor@nzdistribuidora.com.br', authToken: token, events: WEBHOOK_EVENTOS });
     res.status(200).json({ ok: true, criado: true, webhook: { id: criado.id, enabled: criado.enabled, interrupted: criado.interrupted, eventos: criado.events?.length ?? WEBHOOK_EVENTOS.length } });
+    return;
+  }
+
+  if (op === 'remover-cobranca') {
+    // Cobrança órfã no Asaas (teste, pedido apagado): só remove se a loja não a
+    // conhece como paga.
+    const id = typeof body.asaasPaymentId === 'string' ? body.asaasPaymentId.trim() : '';
+    if (!/^pay_[a-z0-9]+$/i.test(id)) {
+      res.status(400).json({ error: 'id-invalido' });
+      return;
+    }
+    const { data: conhecida } = await site.from('pagamentos').select('status').eq('asaas_payment_id', id).maybeSingle();
+    if ((conhecida as { status?: string } | null)?.status === 'pago') {
+      res.status(409).json({ error: 'cobranca-paga-use-estorno' });
+      return;
+    }
+    const atual = await consultarCobranca(id);
+    if (['CONFIRMED', 'RECEIVED', 'RECEIVED_IN_CASH'].includes(atual.status)) {
+      res.status(409).json({ error: 'cobranca-paga-no-asaas', status: atual.status });
+      return;
+    }
+    if (!atual.deleted) await removerCobranca(id);
+    if (conhecida) await site.from('pagamentos').update({ status: 'cancelado', ultimo_evento: 'removida-admin', atualizado_em: new Date().toISOString() }).eq('asaas_payment_id', id);
+    res.status(200).json({ ok: true, removida: !atual.deleted, statusAntes: atual.status, valor: atual.value });
     return;
   }
 
