@@ -24,6 +24,21 @@ const SH_WRAPPING_IMAGES: Record<string, string> = {
   'paprika-orange': '/assets/images/shop/sh-wrapping/paprika-orange.webp',
   'glossy-black': '/assets/images/shop/sh-wrapping/glossy-black.webp',
   'pearl-white': '/assets/images/shop/sh-wrapping/pearl-white.webp',
+  'sao-paulo-yellow': '/assets/images/shop/sh-wrapping/sao-paulo-yellow.webp',
+};
+
+/**
+ * Galerias SH Wrapping. Quando existe, o card usa a galeria inteira
+ * (foto do rolo + 3 carros esportivos envelopados na cor). Cores sem
+ * galeria caem no `image` mainly (só o rolo).
+ */
+const SH_WRAPPING_GALLERY: Record<string, string[]> = {
+  'sao-paulo-yellow': [
+    '/assets/images/shop/sh-wrapping/sao-paulo-yellow.webp',
+    '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-1.webp',
+    '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-2.webp',
+    '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-3.webp',
+  ],
 };
 
 /**
@@ -118,7 +133,7 @@ function rowToShopItem(row: DbSnapshotRow): ShopItem {
     // SH Wrapping: foto de rolo por slug quando existe; senão swatch do hex.
     // Oracal 651/670: sempre swatch (não geramos fotos, hex chapado funciona).
     image: row.source === 'sh-wrapping' ? (SH_WRAPPING_IMAGES[row.slug] ?? null) : null,
-    gallery: [],
+    gallery: row.source === 'sh-wrapping' ? (SH_WRAPPING_GALLERY[row.slug] ?? []) : [],
     hex: row.hex,
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,

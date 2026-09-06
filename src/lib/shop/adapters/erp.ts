@@ -114,6 +114,21 @@ const SH_WRAPPING_IMAGES_ERP: Record<string, string> = {
   'sh-paprika-orange': '/assets/images/shop/sh-wrapping/paprika-orange.webp',
   'sh-glossy-black': '/assets/images/shop/sh-wrapping/glossy-black.webp',
   'sh-pearl-white': '/assets/images/shop/sh-wrapping/pearl-white.webp',
+  'sh-sao-paulo-yellow': '/assets/images/shop/sh-wrapping/sao-paulo-yellow.webp',
+};
+
+/**
+ * Galerias SH Wrapping (chave = slug já prefixado da ERP view).
+ * Rolo + 3 carros esportivos envelopados na cor. Cores sem galeria
+ * caem no `image` sozinho.
+ */
+const SH_WRAPPING_GALLERY_ERP: Record<string, string[]> = {
+  'sh-sao-paulo-yellow': [
+    '/assets/images/shop/sh-wrapping/sao-paulo-yellow.webp',
+    '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-1.webp',
+    '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-2.webp',
+    '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-3.webp',
+  ],
 };
 
 export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<string, string>): ShopItem {
@@ -151,7 +166,7 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     kind: row.kind,
     aplicacoes,
     image: row.imagem ?? SH_WRAPPING_IMAGES_ERP[row.slug] ?? null,
-    gallery: row.galeria ?? [],
+    gallery: row.galeria && row.galeria.length > 0 ? row.galeria : (SH_WRAPPING_GALLERY_ERP[row.slug] ?? []),
     hex: row.hex,
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,
