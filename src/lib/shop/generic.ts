@@ -84,6 +84,31 @@ export const REVIEWED_SLUGS: ReadonlySet<string> = new Set([
   'pearl-metal-sakura-pink',
   'pearl-metal-tiffany',
   'space-blue-gloss-aluminium',
+  // Oracal 670RA — Colors (24 cores, só rolo)
+  'white-g',
+  'yellow-g',
+  'brimstone-yellow-g',
+  'dark-red-g',
+  'red-g',
+  'light-red-g',
+  'pastel-orange-g',
+  'violet-m',
+  'orange-red-g',
+  'light-blue-g',
+  'mint-g',
+  'ice-blue-g',
+  'dark-green-m',
+  'yellow-green-g',
+  'turquoise-g',
+  'black-g',
+  'black-m',
+  'light-grey-g',
+  'dark-grey-g',
+  'dark-grey-m',
+  'telegrey-g',
+  'telegrey-m',
+  'sky-blue-m',
+  'deep-sea-blue-g',
 ]);
 
 /** Retorna o placeholder correto pra lineKey (ou o default). */
@@ -92,10 +117,16 @@ export function genericImageForLine(lineKey: string | null | undefined): string 
   return GENERIC_IMAGE_BY_LINE[lineKey as LinhaErp] ?? GENERIC_IMAGE_DEFAULT;
 }
 
-/** Slug revisado? Aceita raw (`paprika-orange`) ou prefixado (`sh-paprika-orange`). */
+/**
+ * Slug revisado? Aceita raw (`paprika-orange`) ou prefixado (`sh-paprika-orange`,
+ * `oracal-670-black-g`, etc). O adapter ERP e o `shopSlug()` do bundle estático
+ * usam prefixo por linha, então a gente aceita os dois formatos.
+ */
 export function isReviewedSlug(slug: string): boolean {
   if (REVIEWED_SLUGS.has(slug)) return true;
-  // ERP prefixa `sh-`, tira e tenta de novo.
-  if (slug.startsWith('sh-') && REVIEWED_SLUGS.has(slug.slice(3))) return true;
+  const PREFIXES = ['sh-', 'oracal-670-', 'oracal-651-'];
+  for (const p of PREFIXES) {
+    if (slug.startsWith(p) && REVIEWED_SLUGS.has(slug.slice(p.length))) return true;
+  }
   return false;
 }

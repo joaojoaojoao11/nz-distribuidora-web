@@ -55,6 +55,38 @@ const SH_WRAPPING_IMAGES: Record<string, string> = {
 };
 
 /**
+ * Fotos de rolo Oracal 670RA (24 cores). Padrão: tubete de papelão fino com
+ * label ORAFOL no interior, logo 'ORACAL 670RA' no canto superior esquerdo.
+ * Convenção: `public/assets/images/shop/oracal-670ra/{slug}.webp`.
+ */
+const ORACAL_670_IMAGES: Record<string, string> = {
+  'white-g': '/assets/images/shop/oracal-670ra/white-g.webp',
+  'yellow-g': '/assets/images/shop/oracal-670ra/yellow-g.webp',
+  'brimstone-yellow-g': '/assets/images/shop/oracal-670ra/brimstone-yellow-g.webp',
+  'dark-red-g': '/assets/images/shop/oracal-670ra/dark-red-g.webp',
+  'red-g': '/assets/images/shop/oracal-670ra/red-g.webp',
+  'light-red-g': '/assets/images/shop/oracal-670ra/light-red-g.webp',
+  'pastel-orange-g': '/assets/images/shop/oracal-670ra/pastel-orange-g.webp',
+  'violet-m': '/assets/images/shop/oracal-670ra/violet-m.webp',
+  'orange-red-g': '/assets/images/shop/oracal-670ra/orange-red-g.webp',
+  'light-blue-g': '/assets/images/shop/oracal-670ra/light-blue-g.webp',
+  'mint-g': '/assets/images/shop/oracal-670ra/mint-g.webp',
+  'ice-blue-g': '/assets/images/shop/oracal-670ra/ice-blue-g.webp',
+  'dark-green-m': '/assets/images/shop/oracal-670ra/dark-green-m.webp',
+  'yellow-green-g': '/assets/images/shop/oracal-670ra/yellow-green-g.webp',
+  'turquoise-g': '/assets/images/shop/oracal-670ra/turquoise-g.webp',
+  'black-g': '/assets/images/shop/oracal-670ra/black-g.webp',
+  'black-m': '/assets/images/shop/oracal-670ra/black-m.webp',
+  'light-grey-g': '/assets/images/shop/oracal-670ra/light-grey-g.webp',
+  'dark-grey-g': '/assets/images/shop/oracal-670ra/dark-grey-g.webp',
+  'dark-grey-m': '/assets/images/shop/oracal-670ra/dark-grey-m.webp',
+  'telegrey-g': '/assets/images/shop/oracal-670ra/telegrey-g.webp',
+  'telegrey-m': '/assets/images/shop/oracal-670ra/telegrey-m.webp',
+  'sky-blue-m': '/assets/images/shop/oracal-670ra/sky-blue-m.webp',
+  'deep-sea-blue-g': '/assets/images/shop/oracal-670ra/deep-sea-blue-g.webp',
+};
+
+/**
  * Galerias SH Wrapping. Quando existe, o card usa a galeria inteira
  * (foto do rolo + 3 carros esportivos envelopados na cor). Cores sem
  * galeria caem no `image` mainly (só o rolo).
@@ -231,14 +263,16 @@ function rowToShopItem(row: DbSnapshotRow): ShopItem {
     kind: 'cor',
     aplicacoes: [cfg.aplicacao],
     // Regra de imagem/galeria:
-    //  - slug ∈ REVIEWED_SLUGS  → foto customizada do mapa da linha
-    //  - senão                   → placeholder branded da linha (nunca vazio)
-    // Assim SH Wrapping revisadas mantêm rolo+3 carros; SH Wrapping sem
-    // revisão e todo o Oracal 651/670 ganham placeholder branded.
+    //  - SH Wrapping revisada  → foto customizada + galeria (rolo + 3 carros quando existe)
+    //  - Oracal 670RA revisada → foto de rolo customizada (sem galeria — só rolo por enquanto)
+    //  - Oracal 651            → placeholder branded (linha ainda sem fotos)
+    //  - qualquer outro sem foto → placeholder branded da linha (nunca vazio)
     image:
       row.source === 'sh-wrapping' && isReviewedSlug(row.slug)
         ? (SH_WRAPPING_IMAGES[row.slug] ?? genericImageForLine(row.source))
-        : genericImageForLine(row.source),
+        : row.source === 'oracal-670' && isReviewedSlug(row.slug)
+          ? (ORACAL_670_IMAGES[row.slug] ?? genericImageForLine(row.source))
+          : genericImageForLine(row.source),
     gallery:
       row.source === 'sh-wrapping' && isReviewedSlug(row.slug)
         ? (SH_WRAPPING_GALLERY[row.slug] ?? [])
