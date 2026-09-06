@@ -120,6 +120,7 @@ const SH_WRAPPING_IMAGES_ERP: Record<string, string> = {
   'sh-bentley-pink': '/assets/images/shop/sh-wrapping/bentley-pink.webp',
   'sh-crystal-mamba-green': '/assets/images/shop/sh-wrapping/crystal-mamba-green.webp',
   'sh-pearl-metal-black': '/assets/images/shop/sh-wrapping/pearl-metal-black.webp',
+  'sh-khaki-green': '/assets/images/shop/sh-wrapping/khaki-green.webp',
 };
 
 /**
@@ -163,6 +164,12 @@ const SH_WRAPPING_GALLERY_ERP: Record<string, string[]> = {
     '/assets/images/shop/sh-wrapping/pearl-metal-black-car-1.webp',
     '/assets/images/shop/sh-wrapping/pearl-metal-black-car-2.webp',
     '/assets/images/shop/sh-wrapping/pearl-metal-black-car-3.webp',
+  ],
+  'sh-khaki-green': [
+    '/assets/images/shop/sh-wrapping/khaki-green.webp',
+    '/assets/images/shop/sh-wrapping/khaki-green-car-1.webp',
+    '/assets/images/shop/sh-wrapping/khaki-green-car-2.webp',
+    '/assets/images/shop/sh-wrapping/khaki-green-car-3.webp',
   ],
 };
 
