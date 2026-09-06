@@ -29,6 +29,12 @@ const CACHE_DIAS = 7;
 /** Teto de volumes por cotação. Acima disso é pedido comercial, não vitrine. */
 const QTD_MAX = 50;
 
+/**
+ * Quantas linhas de prazo o visitante vê. O Melhor Envio devolve 14 opções
+ * para um mesmo CEP; sem valor para diferenciar, passar de meia dúzia é ruído.
+ */
+const LIMITE_PUBLICO = 5;
+
 /** Rate limit em memória. Some a cada cold start — é uma barreira, não uma trava. */
 const RATE_LIMIT = new Map<string, { count: number; resetAt: number }>();
 const RATE_JANELA_MS = 60_000;
@@ -201,15 +207,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Objeto montado campo a campo, nunca por spread do interno: é a garantia
     // de que um campo novo no servidor não vaza para o público por descuido.
-    const prazos = cotacoes
-      .sort(
-        (a, b) =>
-          a.dias - b.dias ||
-          // Mesmo prazo: o mais barato primeiro. Quem não devolve valor vai
-          // para o fim, senão um `null` pareceria a opção mais barata.
-          (a.valor ?? Number.POSITIVE_INFINITY) - (b.valor ?? Number.POSITIVE_INFINITY) ||
-          a.nome.localeCompare(b.nome, 'pt-BR')
-      )
+    const ordenadas = cotacoes.sort(
+      (a, b) =>
+        a.dias - b.dias ||
+        // Mesmo prazo: o mais barato primeiro. Quem não devolve valor vai
+        // para o fim, senão um `null` pareceria a opção mais barata.
+        (a.valor ?? Number.POSITIVE_INFINITY) - (b.valor ?? Number.POSITIVE_INFINITY) ||
+        a.nome.localeCompare(b.nome, 'pt-BR')
+    );
+
+    // Quem não vê valor não tem como escolher entre duas opções do mesmo dia —
+    // três linhas dizendo "3 dias úteis" são a mesma resposta repetida. Para o
+    // público fica uma por prazo (a mais barata, que a ordenação já pôs na
+    // frente), no máximo LIMITE_PUBLICO. O admin recebe tudo, que é o que
+    // permite comparar preço.
+    const visiveis = podeVerValor
+      ? ordenadas
+      : ordenadas
+          .filter((c, i, todas) => todas.findIndex((o) => o.dias === c.dias) === i)
+          .slice(0, LIMITE_PUBLICO);
+
+    const prazos = visiveis
       .map((c) => {
         const publico: Record<string, unknown> = {
           carrier: c.carrier,
