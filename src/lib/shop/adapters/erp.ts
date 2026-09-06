@@ -22,6 +22,7 @@ import type { ColorFamilyId } from '../color/lexicon';
 import { normalizeFinishString } from '../finish/normalizeFinish';
 import { isFinishId, type FinishId } from '../finish/tree';
 import { isPatternFamilyId, PATTERN_SYNONYMS, type PatternFamilyId } from '../pattern/taxonomy';
+import { genericImageForLine, isReviewedSlug } from '../generic';
 import {
   buildSearchText,
   normalize,
@@ -228,11 +229,36 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
   const brand = row.marca_exibicao ?? 'NZ';
   const line = row.linha_label ?? null;
 
+  // Caixa-alta total no nome exibido — decisão editorial, mesma regra do
+  // dbSnapshot. O `row.nome` cru vem do banco em qualquer capitalização
+  // (herança do ERP); aqui a gente normaliza sempre.
+  const displayName = (row.nome ?? '').toUpperCase();
+
+  // Regra de imagem/galeria (mesma do dbSnapshot):
+  //  - row.imagem publicada no banco vence tudo
+  //  - senão, se o slug está em REVIEWED, usa o mapa customizado
+  //  - senão, cai no placeholder branded da linha (nunca vazio)
+  const reviewed = isReviewedSlug(row.slug);
+  // `Record<string, string>` sem noUncheckedIndexedAccess indexa como `string`,
+  // nunca `string | undefined`; o encadeamento direto de `??` com o ternário
+  // aninhado por isso não compilava (TS2871). Separado, fica legível e o tipo
+  // do meio é honesto: pode não haver foto revisada para este slug.
+  const fotoRevisada: string | undefined = reviewed
+    ? SH_WRAPPING_IMAGES_ERP[row.slug]
+    : undefined;
+  const imageResolvido = row.imagem ?? fotoRevisada ?? genericImageForLine(row.linha_key);
+  const galleryResolvida =
+    row.galeria && row.galeria.length > 0
+      ? row.galeria
+      : reviewed
+        ? (SH_WRAPPING_GALLERY_ERP[row.slug] ?? [])
+        : [];
+
   return {
     slug: row.slug,
     source: 'erp',
     sourceId: row.slug,
-    name: row.nome,
+    name: displayName,
     code: row.codigo,
     subtitle: row.subtitulo,
     brand,
@@ -242,8 +268,8 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     vertical: row.vertical,
     kind: row.kind,
     aplicacoes,
-    image: row.imagem ?? SH_WRAPPING_IMAGES_ERP[row.slug] ?? null,
-    gallery: row.galeria && row.galeria.length > 0 ? row.galeria : (SH_WRAPPING_GALLERY_ERP[row.slug] ?? []),
+    image: imageResolvido,
+    gallery: galleryResolvida,
     hex: row.hex,
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,
@@ -258,7 +284,8 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     description: row.descricao,
     legacyPath: row.legacy_path,
     searchText: buildSearchText([
-      row.nome,
+      row.nome, // busca inclui o nome cru também, cobre buscas em minúsculas
+      displayName,
       row.codigo,
       row.erp_sku,
       brand,

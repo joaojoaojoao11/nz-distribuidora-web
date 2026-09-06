@@ -13,6 +13,7 @@
 import { DB_SNAPSHOT, type DbSnapshotRow, type DbSnapshotSource } from '../generated/dbSnapshot';
 import { resolveColor } from '../color/resolveColor';
 import { normalizeFinishString } from '../finish/normalizeFinish';
+import { genericImageForLine, isReviewedSlug } from '../generic';
 import { buildSearchText, shopSlug, type BrandKey, type ShopItem, type ShopSpec } from '../types';
 
 /**
@@ -160,13 +161,14 @@ const SOURCE_CFG: Record<
   },
 };
 
-/** 'NZWRAP FERRARI METALLIC RED' → 'Ferrari Metallic Red'. Mesma regra do edge. */
+/**
+ * 'NZWRAP FERRARI METALLIC RED' → 'FERRARI METALLIC RED'.
+ * Regra atual: caixa-alta total, sem o prefixo de linha. Mudou de title-case
+ * para caixa-alta por decisão editorial — assim card, página, breadcrumb, SEO
+ * e link do WhatsApp compartilham o mesmo formato.
+ */
 function cleanName(raw: string): string {
-  const noBrand = raw.replace(/^NZWRAP\s+/i, '').trim();
-  return noBrand
-    .split(/\s+/)
-    .map((w) => (/^[A-Z0-9-]{2,4}$/.test(w) ? w : (w[0]?.toUpperCase() ?? '') + w.slice(1).toLowerCase()))
-    .join(' ');
+  return raw.replace(/^NZWRAP\s+/i, '').trim().toUpperCase();
 }
 
 function rowToShopItem(row: DbSnapshotRow): ShopItem {
@@ -207,10 +209,19 @@ function rowToShopItem(row: DbSnapshotRow): ShopItem {
     vertical: 'WRAP',
     kind: 'cor',
     aplicacoes: [cfg.aplicacao],
-    // SH Wrapping: foto de rolo por slug quando existe; senão swatch do hex.
-    // Oracal 651/670: sempre swatch (não geramos fotos, hex chapado funciona).
-    image: row.source === 'sh-wrapping' ? (SH_WRAPPING_IMAGES[row.slug] ?? null) : null,
-    gallery: row.source === 'sh-wrapping' ? (SH_WRAPPING_GALLERY[row.slug] ?? []) : [],
+    // Regra de imagem/galeria:
+    //  - slug ∈ REVIEWED_SLUGS  → foto customizada do mapa da linha
+    //  - senão                   → placeholder branded da linha (nunca vazio)
+    // Assim SH Wrapping revisadas mantêm rolo+3 carros; SH Wrapping sem
+    // revisão e todo o Oracal 651/670 ganham placeholder branded.
+    image:
+      row.source === 'sh-wrapping' && isReviewedSlug(row.slug)
+        ? (SH_WRAPPING_IMAGES[row.slug] ?? genericImageForLine(row.source))
+        : genericImageForLine(row.source),
+    gallery:
+      row.source === 'sh-wrapping' && isReviewedSlug(row.slug)
+        ? (SH_WRAPPING_GALLERY[row.slug] ?? [])
+        : [],
     hex: row.hex,
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,
