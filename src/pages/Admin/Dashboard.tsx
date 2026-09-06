@@ -9,6 +9,7 @@ import {
 import WorldMap from '../../components/WorldMap';
 import styles from './Admin.module.css';
 import AdminProdutos from './AdminProdutos';
+import AdminAfiliados from './AdminAfiliados';
 import AdminWarranties from './AdminWarranties';
 import AdminSettings from './AdminSettings';
 import AdminBlog from './AdminBlog';
@@ -31,7 +32,7 @@ interface UserProfile {
   address_zip?: string | null; created_at: string;
 }
 
-type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'promo' | 'users' | 'clients' | 'garantias' | 'agencia' | 'agenda-social' | 'logistica' | 'erp' | 'settings';
+type TabType = 'dashboard' | 'produtos' | 'blog' | 'blog-ai' | 'leads' | 'promo' | 'users' | 'clients' | 'garantias' | 'agencia' | 'agenda-social' | 'logistica' | 'erp' | 'afiliados' | 'settings';
 type PeriodType = 'today' | '7d' | 'month' | 'quarter' | 'semester' | 'year';
 
 const PERIOD_LABELS: Record<PeriodType, string> = {
@@ -401,6 +402,7 @@ export default function Dashboard() {
     'agenda-social': 'Agenda Social Media',
     logistica: 'Logística & Transportadoras',
   erp: 'Integração NZERP',
+    afiliados: 'Afiliados & Cupons',
     settings: 'Configurações Globais'
   };
 
@@ -460,6 +462,9 @@ export default function Dashboard() {
           </button>
           <button className={`${styles.navLink} ${activeTab === 'erp' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('erp')}>
             <span>🔗</span> <span>Integração ERP</span>
+          </button>
+          <button className={`${styles.navLink} ${activeTab === 'afiliados' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('afiliados')}>
+            <span>🤝</span> <span>Afiliados & Cupons</span>
           </button>
           <button className={`${styles.navLink} ${activeTab === 'logistica' ? styles.navLinkActive : ''}`} onClick={() => setActiveTab('logistica')}>
             <span>📦</span> <span>Logística</span>
@@ -918,6 +923,7 @@ export default function Dashboard() {
         {/* ===== CONFIGURAÇÕES ===== */}
         {activeTab === 'logistica' && <AdminLogistica />}
         {activeTab === 'erp' && <AdminErp />}
+        {activeTab === 'afiliados' && <AdminAfiliados />}
         {activeTab === 'settings' && <AdminSettings />}
       </main>
     </div>
