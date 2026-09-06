@@ -29,6 +29,7 @@ const SH_WRAPPING_IMAGES: Record<string, string> = {
   'crystal-white': '/assets/images/shop/sh-wrapping/crystal-white.webp',
   'bentley-pink': '/assets/images/shop/sh-wrapping/bentley-pink.webp',
   'crystal-mamba-green': '/assets/images/shop/sh-wrapping/crystal-mamba-green.webp',
+  'pearl-metal-black': '/assets/images/shop/sh-wrapping/pearl-metal-black.webp',
 };
 
 /**
@@ -66,6 +67,12 @@ const SH_WRAPPING_GALLERY: Record<string, string[]> = {
     '/assets/images/shop/sh-wrapping/crystal-mamba-green-car-1.webp',
     '/assets/images/shop/sh-wrapping/crystal-mamba-green-car-2.webp',
     '/assets/images/shop/sh-wrapping/crystal-mamba-green-car-3.webp',
+  ],
+  'pearl-metal-black': [
+    '/assets/images/shop/sh-wrapping/pearl-metal-black.webp',
+    '/assets/images/shop/sh-wrapping/pearl-metal-black-car-1.webp',
+    '/assets/images/shop/sh-wrapping/pearl-metal-black-car-2.webp',
+    '/assets/images/shop/sh-wrapping/pearl-metal-black-car-3.webp',
   ],
 };
 
