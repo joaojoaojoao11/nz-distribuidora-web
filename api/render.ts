@@ -362,9 +362,9 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
   // ?cor=<slug> dentro do catálogo, são auto-canônicos — e é onde a LOJA gera
   // páginas indexáveis novas em vez de duplicar as existentes.
   if (segments[0] === 'loja' && segments.length === 2) {
-    // Primeiro o índice estático (rápido, cobre os 505 editoriais); depois o
-    // banco, para os produtos criados do ERP que não existem no bundle.
-    const item = getShopIndexItem(segments[1]) ?? (await fetchLojaItem(segments[1]));
+    // O banco é a verdade (foto, nome de exibição e SEO editáveis no admin);
+    // o índice estático fica como fallback se o Supabase não responder.
+    const item = (await fetchLojaItem(segments[1])) ?? getShopIndexItem(segments[1]);
     if (!item) return NOT_FOUND_META;
 
     const canonicalPath = item.selfCanonical ? path : item.legacyPath ?? path;
