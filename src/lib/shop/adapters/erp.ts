@@ -10,6 +10,12 @@
 // uma correção no léxico vale para o catálogo inteiro sem migrar dado.
 //
 // A view NÃO tem preço nem saldo numérico. Este adapter não sabe o que é preço.
+//
+// Fotos SH Wrapping: enquanto a coluna `imagem` da view ERP não estiver
+// preenchida para SH Wrapping, aplicamos um mapa local por slug (mesma fonte
+// que dbSnapshot). Quando o backend passar a devolver a URL, este fallback fica
+// dormente. O slug aqui já vem prefixado (`sh-glossy-black`), então o mapa
+// espelha isso.
 
 import { resolveColor } from '../color/resolveColor';
 import type { ColorFamilyId } from '../color/lexicon';
@@ -100,6 +106,16 @@ function patternDe(row: LojaCatalogoRow): PatternFamilyId | null {
   return null;
 }
 
+/**
+ * Fotos-de-rolo SH Wrapping (chave = slug já prefixado da ERP view).
+ * Enquanto o backend não devolver `imagem`, este mapa preenche o campo aqui.
+ */
+const SH_WRAPPING_IMAGES_ERP: Record<string, string> = {
+  'sh-paprika-orange': '/assets/images/shop/sh-wrapping/paprika-orange.webp',
+  'sh-glossy-black': '/assets/images/shop/sh-wrapping/glossy-black.webp',
+  'sh-pearl-white': '/assets/images/shop/sh-wrapping/pearl-white.webp',
+};
+
 export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<string, string>): ShopItem {
   const finish = finishesDe(row);
   const color = resolveColor({
@@ -134,7 +150,7 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     vertical: row.vertical,
     kind: row.kind,
     aplicacoes,
-    image: row.imagem,
+    image: row.imagem ?? SH_WRAPPING_IMAGES_ERP[row.slug] ?? null,
     gallery: row.galeria ?? [],
     hex: row.hex,
     colorFamilies: color.families,
