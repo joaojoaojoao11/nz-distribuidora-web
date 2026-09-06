@@ -22,6 +22,7 @@ import { buildSearchText, shopSlug, type BrandKey, type ShopItem, type ShopSpec 
  */
 const SH_WRAPPING_IMAGES: Record<string, string> = {
   'paprika-orange': '/assets/images/shop/sh-wrapping/paprika-orange.webp',
+  'glossy-black': '/assets/images/shop/sh-wrapping/glossy-black.webp',
 };
 
 /**
