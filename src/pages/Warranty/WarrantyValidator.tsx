@@ -5,9 +5,13 @@ import { ShieldCheck, ShieldAlert, Building2, Calendar, ChevronLeft } from 'luci
 import SEO from '../../components/SEO/SEO';
 import styles from './WarrantyValidator.module.css';
 
+// O que a função `validar_garantia` devolve. Antes isto era um `select('*')`
+// anônimo na tabela — que, com a policy que existia, deixava LISTAR todas as
+// garantias (CPF, e-mail, telefone e endereço de clientes reais). Agora a
+// consulta é por código, no servidor, e o CPF já chega mascarado: a máscara
+// daqui era cosmética, o número inteiro descia para o navegador.
 interface ValidatorWarrantyData {
-  id: string;
-  cliente_cpf: string;
+  cpf_mascarado: string;
   veiculo_modelo: string;
   veiculo_placa_chassi: string;
   aplicador_nome: string;
@@ -36,33 +40,16 @@ export default function WarrantyValidator() {
         return;
       }
 
-      const { data: result, error } = await supabase
-        .from('garantias_nz')
-        .select('*')
-        .eq('codigo_autenticacao', authCode)
-        .single();
+      const { data: result, error } = await supabase.rpc('validar_garantia', { p_codigo: authCode });
 
-      if (!error && result) {
-        setData(result);
+      const linha = Array.isArray(result) ? result[0] : result;
+      if (!error && linha) {
+        setData(linha as ValidatorWarrantyData);
       }
       setLoading(false);
     }
     verifyHash();
   }, [authCode]);
-
-  // Função para ofuscar CPF mantendo apenas últimos 2 dígitos finais visualizáveis e o resto trocado.
-  // Exemplo: 462.282.318-71 vira ***.***.***-71  ou ********71
-  const maskCpf = (cpfStr: string) => {
-    if (!cpfStr) return '***.***.***-**';
-    const clean = cpfStr.replace(/\D/g, '');
-    if (clean.length === 11) {
-      return `***.***.***-${clean.substring(9, 11)}`;
-    } else if (clean.length === 14) {
-      // CNPJ handling
-      return `**.***.***/****-${clean.substring(12, 14)}`;
-    }
-    return `***.***.***-**`;
-  };
 
   const getCardStyle = () => {
     if (loading) return styles.pendingBorder;
@@ -105,7 +92,7 @@ export default function WarrantyValidator() {
               <div className={styles.dataGrid}>
                 <div className={styles.dataRow}>
                   <div className={styles.dataLabel}>PROPRIETÁRIO OFUSCADO</div>
-                  <div className={styles.dataValue}>{maskCpf(data.cliente_cpf)}</div>
+                  <div className={styles.dataValue}>{data.cpf_mascarado}</div>
                 </div>
 
                 <div className={styles.dataRow}>
