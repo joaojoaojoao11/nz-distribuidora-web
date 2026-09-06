@@ -18,6 +18,7 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { useModalLock } from '../../hooks/useModalLock';
+import { useCarrinho } from '../../lib/shop/carrinho';
 import { buildNavItems } from './navItems';
 import styles from './MobileMenu.module.css';
 
@@ -34,6 +35,7 @@ interface Props {
 export default function MobileMenu({ onClose, isAdmin, logado, contagens }: Props) {
   const { pathname } = useLocation();
   const itens = buildNavItems(contagens);
+  const carrinho = useCarrinho();
 
   // Trava a rolagem do fundo (do jeito que o iOS respeita), faz o Voltar do
   // Android fechar o menu em vez de sair da página, e esconde o botão
@@ -100,6 +102,11 @@ export default function MobileMenu({ onClose, isAdmin, logado, contagens }: Prop
       </ul>
 
       <div className={styles.rodape}>
+        {carrinho.length > 0 && (
+          <Link to="/carrinho" onClick={onClose} className={styles.conta}>
+            Carrinho · {carrinho.length} item{carrinho.length > 1 ? 'ns' : ''}
+          </Link>
+        )}
         <Link
           to={logado ? (isAdmin ? '/admin' : '/painel') : '/login'}
           onClick={onClose}

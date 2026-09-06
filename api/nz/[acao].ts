@@ -24,6 +24,7 @@ import estoque from '../_lib/handlers/estoque.js';
 import catalogo from '../_lib/handlers/catalogo.js';
 import precos from '../_lib/handlers/precos.js';
 import afiliado from '../_lib/handlers/afiliado.js';
+import pedido from '../_lib/handlers/pedido.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -44,6 +45,8 @@ const ROTAS: Record<string, Handler> = {
   precos,
   // Link de indicação, cupom e comissões.
   afiliado,
+  // Pedido do site → orçamento no NZERP. Logado e aprovado.
+  pedido,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

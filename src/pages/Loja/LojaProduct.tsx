@@ -250,7 +250,13 @@ function ProductView({
 
           {item.description && <p className={styles.description}>{item.description}</p>}
 
-          {item.kind !== 'linha' && <Preco slug={item.slug} variante="pagina" />}
+          {item.kind !== 'linha' && (
+            <Preco
+              slug={item.slug}
+              variante="pagina"
+              produto={{ nome: item.name, codigo: item.code, imagem: item.image, hex: item.hex }}
+            />
+          )}
 
           <div className={styles.ctaBlock}>
             <a

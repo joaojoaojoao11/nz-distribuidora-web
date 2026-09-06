@@ -141,6 +141,12 @@ export function usePreco(slug: string): { estado: EstadoPrecos; papel: string | 
   return { estado: s.estado, papel: s.papel, item: s.itens.get(slug) };
 }
 
+/** O mapa inteiro de preços já carregados — para somar um carrinho sem hook em loop. */
+export function usePrecosMapa(): { estado: EstadoPrecos; itens: ReadonlyMap<string, PrecoItem> } {
+  const s = useSyncExternalStore(subscribe, () => store, () => store);
+  return { estado: s.estado, itens: s.itens };
+}
+
 /** Pede em lote (uma página de cards). Os cards leem com usePreco. */
 export function usePrecosLote(slugs: readonly string[]) {
   const chave = slugs.join('|');

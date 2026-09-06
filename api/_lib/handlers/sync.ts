@@ -157,6 +157,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     ]);
 
     const resultado = await espelhar(site, { catalogo, precos, estoque }, dry);
+    const pedidos = await espelharPedidos(site, erp, dry);
 
     if (logId) {
       await site
@@ -167,11 +168,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           atualizados: resultado.atualizados,
           desativados: resultado.removidos,
           produtos_criados: resultado.produtosCriados,
+          pedidos_atualizados: pedidos.atualizados,
         })
         .eq('id', logId);
     }
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);
@@ -186,13 +188,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 }
 
 /** PostgREST ignora .limit() acima de 1000: paginar é obrigatório. */
-async function lerTudo<T>(db: Db, view: string, colunas: string): Promise<T[]> {
+async function lerTudo<T>(db: Db, view: string, colunas: string, ordem = 'sku'): Promise<T[]> {
   const out: T[] = [];
   for (let from = 0; ; from += PAGE) {
     const { data, error } = await db
       .from(view)
       .select(colunas)
-      .order('sku', { ascending: true })
+      .order(ordem, { ascending: true })
       .range(from, from + PAGE - 1);
     if (error) throw new Error(`leitura de ${view} no ERP: ${error.message}`);
     const page = (data ?? []) as unknown as T[];
@@ -318,4 +320,92 @@ async function espelhar(
     inativos: linhas.length - ativos,
     ativos,
   };
+}
+
+// ---------------------------------------------------------------- pedidos
+//
+// O caminho de volta: status do orçamento no ERP → `pedidos` do site. E é aqui
+// que a comissão do afiliado nasce, quando o pedido chega a FATURADO (ou
+// além — o Tiny pode pular direto para ENVIADO/ENTREGUE). Uma comissão por
+// (pedido, afiliado), garantida pelo unique da tabela; CANCELADO/NAO_APROVADO
+// cancela a comissão que ainda não foi paga.
+
+interface PedidoErp {
+  id: string;
+  quote_number: number | null;
+  status: string;
+  total: number | null;
+  site_pedido_id: string;
+  tiny_order_number: string | null;
+  updated_at: string | null;
+}
+
+const FATURADO_OU_ALEM = new Set(['FATURADO', 'FATURADO_PARCIAL', 'PREPARANDO_ENVIO', 'PRONTO_ENVIO', 'ENVIADO', 'ENTREGUE']);
+const CANCELADOS = new Set(['CANCELADO', 'NAO_APROVADO']);
+
+async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos: number; atualizados: number; comissoes: number }> {
+  let lidos: PedidoErp[] = [];
+  try {
+    lidos = await lerTudo<PedidoErp>(erp, 'pedidos_site', 'id, quote_number, status, total, site_pedido_id, tiny_order_number, updated_at', 'id');
+  } catch (err) {
+    // A view nasce na Fase 7; um ERP sem ela não pode derrubar o sync do catálogo.
+    console.warn('[erp-sync] pedidos_site indisponível:', err instanceof Error ? err.message : err);
+    return { lidos: 0, atualizados: 0, comissoes: 0 };
+  }
+  if (!lidos.length || dry) return { lidos: lidos.length, atualizados: 0, comissoes: 0 };
+
+  const ids = lidos.map((p) => p.site_pedido_id);
+  const { data: locaisData } = await site
+    .from('pedidos')
+    .select('id, status, total_erp, afiliado_user_id, erp_quote_id')
+    .in('id', ids);
+  const locais = new Map(((locaisData ?? []) as { id: string; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null }[]).map((p) => [p.id, p]));
+
+  const { data: cfg } = await site.from('loja_config').select('percentual_afiliado_padrao').eq('id', 1).maybeSingle();
+  const pctPadrao = Number((cfg as { percentual_afiliado_padrao?: number } | null)?.percentual_afiliado_padrao ?? 0);
+
+  let atualizados = 0;
+  let comissoes = 0;
+  const agora = new Date().toISOString();
+
+  for (const p of lidos) {
+    const local = locais.get(p.site_pedido_id);
+    if (!local) continue;
+    const mudou = local.status !== p.status || Number(local.total_erp ?? -1) !== Number(p.total ?? -1) || local.erp_quote_id !== p.id;
+    if (mudou) {
+      const { error } = await site
+        .from('pedidos')
+        .update({ status: p.status, total_erp: p.total, erp_quote_id: p.id, erp_quote_number: p.quote_number, status_atualizado_em: agora })
+        .eq('id', p.site_pedido_id);
+      if (!error) atualizados++;
+    }
+
+    if (!local.afiliado_user_id) continue;
+
+    if (FATURADO_OU_ALEM.has(p.status)) {
+      const { data: af } = await site.from('afiliados').select('percentual, ativo').eq('user_id', local.afiliado_user_id).maybeSingle();
+      const a = af as { percentual: number | null; ativo: boolean } | null;
+      const pct = Number(a?.percentual ?? pctPadrao);
+      const base = Number(p.total ?? 0);
+      if (!a || !a.ativo || pct <= 0 || base <= 0) continue;
+      const valor = Math.round(base * (pct / 100) * 100) / 100;
+      // ignoreDuplicates: já existe → não recalcula (o valor pago é o apurado).
+      const { data: criada } = await site
+        .from('comissoes')
+        .upsert(
+          { pedido_id: p.site_pedido_id, afiliado_user_id: local.afiliado_user_id, base_valor: base, percentual: pct, valor, status: 'apurada', evento_erp: p.status, apurada_em: agora },
+          { onConflict: 'pedido_id,afiliado_user_id', ignoreDuplicates: true }
+        )
+        .select('id');
+      if ((criada ?? []).length) comissoes++;
+    } else if (CANCELADOS.has(p.status)) {
+      await site
+        .from('comissoes')
+        .update({ status: 'cancelada', observacao: `pedido ${p.status} no ERP` })
+        .eq('pedido_id', p.site_pedido_id)
+        .in('status', ['pendente', 'apurada']);
+    }
+  }
+
+  return { lidos: lidos.length, atualizados, comissoes };
 }

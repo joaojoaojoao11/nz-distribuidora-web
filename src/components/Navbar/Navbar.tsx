@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { closeModal } from '../../hooks/useModalLock';
+import { useCarrinho } from '../../lib/shop/carrinho';
 import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
 import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
 import styles from './Navbar.module.css';
@@ -24,6 +25,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const { user, isAdmin } = useAuth();
+  const carrinho = useCarrinho();
 
   const closeMenu = () => setIsOpen(false);
 
@@ -193,6 +195,11 @@ export default function Navbar() {
             <SearchIcon />
           </button>
 
+          {carrinho.length > 0 && (
+            <Link to="/carrinho" className={styles.loginBtn} onClick={closeMenu} aria-label={`Carrinho, ${carrinho.length} item(ns)`}>
+              🛒 {carrinho.length}
+            </Link>
+          )}
           {user ? (
             <Link to={isAdmin ? '/admin' : '/painel'} className={styles.loginBtn} onClick={closeMenu}>
               {isAdmin ? '⚙ Admin' : '👤 Minha Conta'}

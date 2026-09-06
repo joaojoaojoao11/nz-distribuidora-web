@@ -7,7 +7,9 @@
 //   admin               → também os mínimos, em cinza
 // Se o servidor não mandou o item (SKU sem preço, produto sem conexão), some.
 
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { adicionarAoCarrinho } from '../../lib/shop/carrinho';
 import { BRL, usePreco } from '../../lib/shop/precos';
 import styles from './Preco.module.css';
 
@@ -15,11 +17,23 @@ interface Props {
   slug: string;
   /** `card` = uma linha compacta; `pagina` = bloco completo com unidades. */
   variante: 'card' | 'pagina';
+  /** Só na página: o que o carrinho guarda para mostrar o item. */
+  produto?: { nome: string; codigo: string | null; imagem: string | null; hex: string | null };
 }
 
-export default function Preco({ slug, variante }: Props) {
+export default function Preco({ slug, variante, produto }: Props) {
   const { estado, item } = usePreco(slug);
   const location = useLocation();
+  const [rolos, setRolos] = useState(1);
+  const [metros, setMetros] = useState(1);
+  const [adicionado, setAdicionado] = useState<string | null>(null);
+
+  const adicionar = (unidade: 'rolo' | 'metro') => {
+    if (!produto) return;
+    adicionarAoCarrinho({ slug, nome: produto.nome, codigo: produto.codigo, imagem: produto.imagem, hex: produto.hex, unidade, qtd: unidade === 'rolo' ? rolos : metros });
+    setAdicionado(unidade);
+    setTimeout(() => setAdicionado(null), 1800);
+  };
   const next = encodeURIComponent(`${location.pathname}${location.search}`);
 
   if (estado === 'anonimo') {
@@ -81,6 +95,30 @@ export default function Preco({ slug, variante }: Props) {
         </div>
       )}
       {item.promocao && <span className={styles.promo}>Promoção</span>}
+
+      {produto && (rolo || metro) && (
+        <div className={styles.comprar}>
+          {rolo && (
+            <div className={styles.comprarLinha}>
+              <input type="number" min={1} max={50} step={1} value={rolos} onChange={(e) => setRolos(Math.max(1, Math.min(50, Number(e.target.value) || 1)))} aria-label="Rolos fechados" />
+              <button type="button" onClick={() => adicionar('rolo')}>
+                {adicionado === 'rolo' ? 'Adicionado ✓' : `Adicionar rolo${rolos > 1 ? 's' : ''} fechado${rolos > 1 ? 's' : ''}`}
+              </button>
+            </div>
+          )}
+          {metro && (
+            <div className={styles.comprarLinha}>
+              <input type="number" min={0.5} max={500} step={0.5} value={metros} onChange={(e) => setMetros(Math.max(0.5, Math.min(500, Number(e.target.value) || 0.5)))} aria-label="Metros" />
+              <button type="button" onClick={() => adicionar('metro')}>
+                {adicionado === 'metro' ? 'Adicionado ✓' : 'Adicionar metros'}
+              </button>
+            </div>
+          )}
+          <Link to="/carrinho" className={styles.verCarrinho}>
+            Ver carrinho
+          </Link>
+        </div>
+      )}
       <p className={styles.nota}>
         Preço de tabela, sincronizado do NZERP
         {item.atualizadoEm ? ` em ${new Date(item.atualizadoEm).toLocaleDateString('pt-BR')}` : ''}. Frete à parte.
