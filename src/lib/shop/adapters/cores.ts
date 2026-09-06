@@ -76,9 +76,9 @@ export function metamark7ToShopItems(): ShopItem[] {
       vertical: 'SIGN',
       kind: 'cor',
       aplicacoes: ['comunicacao-visual'],
-      // Mesma logica do MCX: foto customizada por slug quando existe, senao null
-      // (a UI cai no chip com base no hex). 86/92 cores tem foto; as 6 restantes
-      // (m7-105-clear, m7-111m, m7-112, m7-115, m7-118, m7-127) ainda vao entrar.
+      // Mesma logica do MCX: foto customizada por slug (todas as 92 cores
+      // oficiais tem foto de rolo). O `?? null` fica so por defensividade caso
+      // uma cor nova entre em M7_COLORS sem foto ainda.
       image: M7_ROLL_IMAGES[c.slug] ?? null,
       gallery: M7_ROLL_IMAGES[c.slug] ? [M7_ROLL_IMAGES[c.slug]] : [],
       hex: c.hex,

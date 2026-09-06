@@ -234,12 +234,13 @@ export const MCX_ROLL_IMAGES: Record<string, string> = {
  * Polymeric PVC Film · 70 micras · Polymeric PVC · 8 Year Durability") no interior
  * e logo METAMARK 7 SERIES no canto superior esquerdo.
  *
- * Slug = mesmo `c.slug` da tabela M7_COLORS (`m7-100-white-gloss` etc.).
- * Convenção de arquivo: `public/assets/images/shop/metamark-7/{slug}.webp`.
+ * Slug = mesmo `c.slug` da tabela M7_COLORS (`m7-100-white-gloss` etc.) OU
+ * slug do ERP (`metamark-7-almond-meta7172` etc.) para SKUs que existem so no
+ * banco (variantes de largura, cores legado do Metamark 5 renomeadas para 7).
  *
- * 86/92 mapeados. Os 6 sem foto ainda (m7-105-clear, m7-111m-black-matt,
- * m7-112-tangerine, m7-115-cornflour, m7-118-reflex-blue, m7-127-ash-grey) caem
- * no fallback null → chip default.
+ * 99 entradas: 92 cores oficiais + 7 SKUs adicionais do ERP.
+ * Cobre 100% dos 93 itens Metamark 7 Series da loja (m7-XXX estatico + 7 slugs
+ * de ERP; total > 93 porque alguns codigos aparecem em ambos caminhos).
  */
 export const M7_ROLL_IMAGES: Record<string, string> = {
   'm7-100-white-gloss': '/assets/images/shop/metamark-7/m7-100-white-gloss.webp',
@@ -247,14 +248,19 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
   'm7-102-grape': '/assets/images/shop/metamark-7/m7-102-grape.webp',
   'm7-103-clay': '/assets/images/shop/metamark-7/m7-103-clay.webp',
   'm7-104-azure-blue': '/assets/images/shop/metamark-7/m7-104-azure-blue.webp',
+  'm7-105-clear': '/assets/images/shop/metamark-7/m7-105-clear.webp',
   'm7-107-fire-orange': '/assets/images/shop/metamark-7/m7-107-fire-orange.webp',
   'm7-108-imitation-gold': '/assets/images/shop/metamark-7/m7-108-imitation-gold.webp',
   'm7-109-chiltern-white': '/assets/images/shop/metamark-7/m7-109-chiltern-white.webp',
   'm7-110-black-gloss': '/assets/images/shop/metamark-7/m7-110-black-gloss.webp',
+  'm7-111m-black-matt': '/assets/images/shop/metamark-7/m7-111m-black-matt.webp',
+  'm7-112-tangerine': '/assets/images/shop/metamark-7/m7-112-tangerine.webp',
   'm7-113-burnt-orange': '/assets/images/shop/metamark-7/m7-113-burnt-orange.webp',
   'm7-114-maroon': '/assets/images/shop/metamark-7/m7-114-maroon.webp',
+  'm7-115-cornflour': '/assets/images/shop/metamark-7/m7-115-cornflour.webp',
   'm7-116-admiral': '/assets/images/shop/metamark-7/m7-116-admiral.webp',
   'm7-117-oxford': '/assets/images/shop/metamark-7/m7-117-oxford.webp',
+  'm7-118-reflex-blue': '/assets/images/shop/metamark-7/m7-118-reflex-blue.webp',
   'm7-119-prussian': '/assets/images/shop/metamark-7/m7-119-prussian.webp',
   'm7-120-pewter': '/assets/images/shop/metamark-7/m7-120-pewter.webp',
   'm7-121-light-grey': '/assets/images/shop/metamark-7/m7-121-light-grey.webp',
@@ -263,6 +269,7 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
   'm7-124-dark-grey': '/assets/images/shop/metamark-7/m7-124-dark-grey.webp',
   'm7-125-nimbus-grey': '/assets/images/shop/metamark-7/m7-125-nimbus-grey.webp',
   'm7-126-storm-grey': '/assets/images/shop/metamark-7/m7-126-storm-grey.webp',
+  'm7-127-ash-grey': '/assets/images/shop/metamark-7/m7-127-ash-grey.webp',
   'm7-128-shadow': '/assets/images/shop/metamark-7/m7-128-shadow.webp',
   'm7-129-ochre': '/assets/images/shop/metamark-7/m7-129-ochre.webp',
   'm7-130-lemon': '/assets/images/shop/metamark-7/m7-130-lemon.webp',
@@ -328,6 +335,17 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
   'm7-197-grasshopper': '/assets/images/shop/metamark-7/m7-197-grasshopper.webp',
   'm7-198-nature': '/assets/images/shop/metamark-7/m7-198-nature.webp',
   'm7-199-apple': '/assets/images/shop/metamark-7/m7-199-apple.webp',
+  // SKUs adicionais do ERP (7 ALMOND, EGGSHELL, MARINA, MAUVE, MELON, NATURE,
+  // TRAFFIC) — codigos META7137/172/173/177/184/153A/198A que nao estao no
+  // color chart oficial das 92 cores, mas existem no cadastro do banco.
+  // Slug formato ERP: `metamark-7-<nome>-<sku>`.
+  'metamark-7-almond-meta7172': '/assets/images/shop/metamark-7/metamark-7-almond-meta7172.webp',
+  'metamark-7-eggshell-meta7177': '/assets/images/shop/metamark-7/metamark-7-eggshell-meta7177.webp',
+  'metamark-7-marina-meta7153a': '/assets/images/shop/metamark-7/metamark-7-marina-meta7153a.webp',
+  'metamark-7-mauve-meta7184': '/assets/images/shop/metamark-7/metamark-7-mauve-meta7184.webp',
+  'metamark-7-melon-meta7137': '/assets/images/shop/metamark-7/metamark-7-melon-meta7137.webp',
+  'metamark-7-nature-meta7198a': '/assets/images/shop/metamark-7/metamark-7-nature-meta7198a.webp',
+  'metamark-7-traffic-meta7173': '/assets/images/shop/metamark-7/metamark-7-traffic-meta7173.webp',
 };
 
 /**
