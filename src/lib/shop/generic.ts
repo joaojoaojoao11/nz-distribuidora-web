@@ -66,8 +66,24 @@ export const REVIEWED_SLUGS: ReadonlySet<string> = new Set([
   'combat-green',
   'crystal-glacial-blue',
   'mercury-silver',
-  'somato-blue',
+  'liquid-metal-somato-blue',
   'pearl-metal-white',
+  'pearl-metal-space-grey',
+  // SH Wrapping — Colors (só rolo, sem galeria ainda)
+  'amg-grey',
+  'amg-mountain-grey',
+  'blue-charm-green',
+  'candy-purple-gloss-aluminium',
+  'crystal-champagne-gold',
+  'crystal-silver',
+  'crystal-yellow',
+  'fantastic-green-grey',
+  'fantastic-purple',
+  'glossy-nado-ash',
+  'matt-dark-purple',
+  'pearl-metal-sakura-pink',
+  'pearl-metal-tiffany',
+  'space-blue-gloss-aluminium',
 ]);
 
 /** Retorna o placeholder correto pra lineKey (ou o default). */
