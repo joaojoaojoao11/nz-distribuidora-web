@@ -118,49 +118,10 @@
   text-transform: uppercase;
 }
 
-/* --------------------------------------------------------- comprar */
-.comprar {
-  display: grid;
-  gap: 0.5rem;
-  margin-top: 0.7rem;
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--border-light);
-}
-
-.comprarLinha {
-  display: grid;
-  grid-template-columns: 84px 1fr;
-  gap: 0.5rem;
-}
-
-.comprarLinha input {
-  min-height: 44px;
-  padding: 0 0.6rem;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.comprarLinha button {
-  min-height: 44px;
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--text-primary);
-  font-family: var(--font-tech);
+/* Mínimos do admin quando a tabela não é desenhada (o seletor já mostra o
+   preço cheio das duas unidades). */
+.minimoAdmin {
+  margin: 0;
   font-size: 0.68rem;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.verCarrinho {
-  justify-self: end;
-  font-size: 0.74rem;
-  color: var(--text-secondary);
-  text-decoration: underline;
+  color: var(--text-muted);
 }

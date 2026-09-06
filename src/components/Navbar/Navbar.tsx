@@ -2,7 +2,8 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { closeModal } from '../../hooks/useModalLock';
-import { useCarrinho } from '../../lib/shop/carrinho';
+import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
+import { abrirPainelCarrinho, usePainelCarrinho } from '../../lib/shop/painelCarrinho';
 import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
 import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
 import styles from './Navbar.module.css';
@@ -12,11 +13,21 @@ import styles from './Navbar.module.css';
 const SearchPalette = lazy(() => import('./SearchPalette'));
 // Só baixa quando o hambúrguer é tocado — e some do DOM ao fechar.
 const MobileMenu = lazy(() => import('./MobileMenu'));
+// Painel lateral do carrinho: montado só enquanto aberto, como o menu.
+const MiniCarrinho = lazy(() => import('../Loja/MiniCarrinho'));
 
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
     <circle cx="11" cy="11" r="7" />
     <line x1="21" y1="21" x2="16.5" y2="16.5" />
+  </svg>
+);
+
+const CartIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M3 4h2.2l2.2 11h9.6l2-8H6.2" />
+    <circle cx="9.5" cy="19" r="1.4" />
+    <circle cx="17" cy="19" r="1.4" />
   </svg>
 );
 
@@ -26,8 +37,35 @@ export default function Navbar() {
   const location = useLocation();
   const { user, isAdmin } = useAuth();
   const carrinho = useCarrinho();
+  const painelCarrinho = usePainelCarrinho();
+  const itensNoCarrinho = totalItensCarrinho(carrinho);
 
   const closeMenu = () => setIsOpen(false);
+
+  // Com itens, o clique abre o painel (rápido, sem trocar de página); vazio,
+  // leva para /carrinho, que explica como começar. O botão existe sempre: se
+  // ele só aparecesse quando tem coisa dentro, ninguém aprenderia onde fica.
+  const botaoCarrinho = (classe: string) =>
+    carrinho.length > 0 ? (
+      <button
+        type="button"
+        className={classe}
+        onClick={() => {
+          setIsOpen(false);
+          abrirPainelCarrinho();
+        }}
+        aria-label={`Carrinho, ${itensNoCarrinho} ${itensNoCarrinho > 1 ? 'itens' : 'item'}`}
+      >
+        <CartIcon />
+        <span key={itensNoCarrinho} className={styles.cartBadge}>
+          {itensNoCarrinho}
+        </span>
+      </button>
+    ) : (
+      <Link to="/carrinho" className={classe} onClick={closeMenu} aria-label="Carrinho, vazio">
+        <CartIcon />
+      </Link>
+    );
 
   const openSearch = () => {
     setIsOpen(false);
@@ -66,6 +104,8 @@ export default function Navbar() {
         >
           <SearchIcon />
         </button>
+
+        {botaoCarrinho(`${styles.cartBtn} ${styles.cartBtnMobile}`)}
 
         {/* Hamburger Button — mobile only */}
         <button
@@ -195,11 +235,7 @@ export default function Navbar() {
             <SearchIcon />
           </button>
 
-          {carrinho.length > 0 && (
-            <Link to="/carrinho" className={styles.loginBtn} onClick={closeMenu} aria-label={`Carrinho, ${carrinho.length} item(ns)`}>
-              🛒 {carrinho.length}
-            </Link>
-          )}
+          {botaoCarrinho(`${styles.cartBtn} ${styles.cartBtnDesktop}`)}
           {user ? (
             <Link to={isAdmin ? '/admin' : '/painel'} className={styles.loginBtn} onClick={closeMenu}>
               {isAdmin ? '⚙ Admin' : '👤 Minha Conta'}
@@ -218,6 +254,12 @@ export default function Navbar() {
 
       {/* Montado só quando aberto: fechado não existe no DOM, então não há
           link invisível para receber toque por cima da página. */}
+      {painelCarrinho && (
+        <Suspense fallback={null}>
+          <MiniCarrinho />
+        </Suspense>
+      )}
+
       {isOpen && (
         <Suspense fallback={null}>
           <MobileMenu

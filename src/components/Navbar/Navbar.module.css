@@ -346,6 +346,82 @@
   display: none;
 }
 
+/* ------------------------------------------------------------- carrinho
+   Sempre na barra, com ou sem itens: um carrinho que só aparece cheio nunca
+   ensina onde ele fica. Vazio é só o ícone; com itens ganha o crachá. */
+.cartBtn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-snappy);
+  touch-action: manipulation;
+}
+
+.cartBtn svg {
+  width: 19px;
+  height: 19px;
+}
+
+@media (hover: hover) {
+  .cartBtn:hover {
+    color: var(--accent-red);
+    border-color: var(--border-strong);
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.cartBadge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  font-weight: 600;
+  line-height: 1;
+  /* Remonta a cada mudança de contagem (key={n} no componente): o pulso é o
+     aviso de que alguma coisa entrou, para quem estava olhando o topo. */
+  animation: cartPulso 0.45s cubic-bezier(0.25, 1.4, 0.4, 1);
+}
+
+@keyframes cartPulso {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cartBtnMobile {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartBadge {
+    animation: none;
+  }
+}
+
 .loginBtn {
   /* Compacto de propósito: é botão utilitário (Entrar/Admin), não CTA.
      inline-flex + nowrap impedem o "⚙ Admin" de quebrar em duas linhas e
@@ -434,8 +510,17 @@
     height: 44px;
   }
 
-  .searchBtnDesktop {
+  .searchBtnDesktop,
+  .cartBtnDesktop {
     display: none;
+  }
+
+  /* carrinho entre a lupa e o hambúrguer */
+  .cartBtnMobile {
+    display: grid;
+    margin-right: 0.4rem;
+    width: 44px;
+    height: 44px;
   }
 
   /* O menu do celular é o componente MobileMenu, montado só quando aberto.

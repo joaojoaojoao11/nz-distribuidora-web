@@ -1,0 +1,220 @@
+/* Bloco de compra — uma decisão por linha, um botão primário no fim. */
+
+.bloco {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ------------------------------------------------- escolha da unidade */
+
+.semSeparador {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.unidades {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.unidade,
+.unidadeAtiva {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-snappy), background var(--transition-snappy);
+  touch-action: manipulation;
+}
+
+.unidadeAtiva {
+  border-color: var(--accent-red);
+  background: rgba(209, 30, 30, 0.08);
+  color: var(--text-primary);
+}
+
+@media (hover: hover) {
+  .unidade:hover {
+    border-color: var(--border-strong);
+  }
+}
+
+.unidadeNome {
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.unidadeDetalhe {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.unidadePreco {
+  margin-top: 0.15rem;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.unidadePreco small {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------- quantidade */
+
+.quantidade {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.rotulo {
+  flex: 1;
+  font-family: var(--font-tech);
+  font-size: 0.64rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.contador {
+  display: grid;
+  grid-template-columns: 44px 62px 44px;
+  border: 1px solid var(--border-light);
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+.contador button {
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.contador button:disabled {
+  color: var(--text-muted);
+  cursor: default;
+}
+
+.contador input {
+  min-height: 44px;
+  border: 0;
+  border-inline: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-primary);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* As setinhas nativas colidem com os botões +/−. */
+.contador input::-webkit-outer-spin-button,
+.contador input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.contador input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.unidadeTexto {
+  min-width: 6.5rem;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+/* ---------------------------------------------------------- subtotal */
+
+.subtotal {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 0.15rem;
+}
+
+.subtotal span {
+  font-family: var(--font-tech);
+  font-size: 0.64rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.subtotal strong {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ----------------------------------------------------------- ação */
+
+.adicionar {
+  min-height: 50px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition-snappy);
+  touch-action: manipulation;
+}
+
+@media (hover: hover) {
+  .adicionar:hover {
+    background: var(--accent-red-hover);
+  }
+}
+
+.nota {
+  margin: -0.35rem 0 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .quantidade {
+    flex-wrap: wrap;
+  }
+
+  .rotulo {
+    flex-basis: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unidade,
+  .unidadeAtiva,
+  .adicionar {
+    transition: none;
+  }
+}

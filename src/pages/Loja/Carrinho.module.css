@@ -256,6 +256,57 @@
   cursor: not-allowed;
 }
 
+/* O link para /checkout é <a>: sem `disabled`, o bloqueio de cadastro
+   incompleto é aria-disabled + preventDefault, e isto dá a pista visual. */
+.desabilitado {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Caminho alternativo: frase com um botão dentro, nunca um segundo botão do
+   mesmo peso brigando com o principal. */
+.alternativa {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.alternativa button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.alternativa button:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* "Continuar comprando" é saída, não ação: fica discreto. */
+.continuar {
+  justify-self: start;
+  padding: 0.4rem 0;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.vazio {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  max-width: 480px;
+}
+
 .limpar {
   min-height: 44px;
   border: 1px solid var(--border-light);
@@ -345,8 +396,4 @@
   }
 }
 
-.ouOrcamento summary {
-  cursor: pointer;
-  font-size: 0.76rem;
-  color: var(--text-muted);
-}
+

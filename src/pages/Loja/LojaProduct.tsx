@@ -14,6 +14,7 @@ import { VERTICAL_LABEL } from '../../lib/shop/catalog';
 import { getShopItem, useCatalogoEstado, useShopCatalog } from '../../lib/shop/store';
 import { buildShopItemSchema } from '../../lib/shop/schema';
 import { relatedItems } from '../../lib/shop/related';
+import { usePrecosMapa } from '../../lib/shop/precos';
 import { COLOR_LABEL, SUBFAMILY_LABEL } from '../../lib/shop/color/lexicon';
 import { FINISH_LABEL } from '../../lib/shop/finish/tree';
 import type { MidiaPublica, ShopItem } from '../../lib/shop/types';
@@ -72,6 +73,17 @@ function ProductView({
   const [activeImage, setActiveImage] = useState(0);
   const [lightbox, setLightbox] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Só lê o cache (quem registra o slug é o <Preco/> logo abaixo). Serve para
+  // uma coisa: quando a pessoa PODE comprar, o WhatsApp deixa de ser o botão
+  // vermelho da tela — o botão vermelho passa a ser "Adicionar ao carrinho".
+  const { estado: estadoPreco, itens: mapaPrecos } = usePrecosMapa();
+  const precoItem = mapaPrecos.get(item.slug);
+  const podeComprar =
+    item.kind !== 'linha' &&
+    estadoPreco === 'ok' &&
+    Boolean(precoItem?.disponivel) &&
+    (precoItem?.rolo != null || precoItem?.metro != null);
 
   const related = useMemo(() => relatedItems(item), [item]);
   const gallery = item.gallery.length ? item.gallery : item.image ? [item.image] : [];
@@ -328,12 +340,14 @@ function ProductView({
               href={whatsappUrl(item)}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.ctaPrimary}
+              className={podeComprar ? styles.ctaSecondary : styles.ctaPrimary}
             >
-              PEDIR ORÇAMENTO
+              {podeComprar ? 'Falar com um vendedor' : 'PEDIR ORÇAMENTO'}
             </a>
             <p className={styles.ctaNote}>
-              Atendemos instaladores e revendas em todo o Brasil.
+              {podeComprar
+                ? 'Dúvida de aplicação, quantidade ou prazo? Chame no WhatsApp.'
+                : 'Atendemos instaladores e revendas em todo o Brasil.'}
             </p>
           </div>
 

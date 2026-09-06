@@ -18,7 +18,7 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { useModalLock } from '../../hooks/useModalLock';
-import { useCarrinho } from '../../lib/shop/carrinho';
+import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { buildNavItems } from './navItems';
 import styles from './MobileMenu.module.css';
 
@@ -104,7 +104,7 @@ export default function MobileMenu({ onClose, isAdmin, logado, contagens }: Prop
       <div className={styles.rodape}>
         {carrinho.length > 0 && (
           <Link to="/carrinho" onClick={onClose} className={styles.conta}>
-            Carrinho · {carrinho.length} item{carrinho.length > 1 ? 'ns' : ''}
+            Carrinho · {totalItensCarrinho(carrinho)} item{totalItensCarrinho(carrinho) > 1 ? 'ns' : ''}
           </Link>
         )}
         <Link

@@ -1,0 +1,103 @@
+/* Trilha de etapas da compra. */
+
+.trilha {
+  margin-bottom: 1.4rem;
+}
+
+.lista {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.feito,
+.atual,
+.futuro {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+
+/* A seta entre os passos é decorativa: fica no ::before para não entrar no
+   nome acessível de nenhum item (o ponto das abas do admin já ensinou isso). */
+.feito + .feito::before,
+.feito + .atual::before,
+.feito + .futuro::before,
+.atual + .futuro::before,
+.futuro + .futuro::before {
+  content: '›';
+  margin-right: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.numero {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
+.feito {
+  color: var(--text-secondary);
+}
+
+.feito .numero {
+  border-color: transparent;
+  background: rgba(29, 122, 63, 0.9);
+  color: #fff;
+}
+
+.atual {
+  color: var(--text-primary);
+}
+
+.atual .numero {
+  border-color: transparent;
+  background: var(--accent-red);
+  color: #fff;
+}
+
+.futuro {
+  color: var(--text-muted);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .link:hover .rotulo {
+    color: var(--text-primary);
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 520px) {
+  .lista {
+    gap: 0.35rem 0.6rem;
+  }
+
+  .feito,
+  .atual,
+  .futuro {
+    font-size: 0.6rem;
+    letter-spacing: 0.8px;
+  }
+}

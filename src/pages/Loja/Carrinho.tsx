@@ -1,12 +1,19 @@
-// /carrinho — revisão e envio do pedido para o NZERP.
+// /carrinho — revisão e envio do pedido.
 //
 // O que a página faz: lista os itens (preço pelo mesmo endpoint da loja,
 // então respeita o papel), aceita cupom, mostra o endereço do cadastro (o
 // pedido vai com ele) e envia. O total é ESTIMADO — quem precifica e aprova
 // é o vendedor no ERP; o cliente acompanha o status em /painel.
+//
+// Ordem do resumo: total → cupom → entrega → observação → AÇÃO. A ação é a
+// última coisa da coluna de propósito, depois de tudo que ela confirma. E é
+// UMA: o caminho alternativo (fechar com um vendedor em vez de pagar agora)
+// é texto, não um segundo botão do mesmo tamanho. Nada de "NZERP" na tela do
+// cliente — o nome do sistema interno não significa nada para quem compra.
 
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import PassosCompra from '../../components/Loja/PassosCompra';
 import { useAuth } from '../../contexts/AuthContext';
 import { chamarCheckout } from '../../lib/shop/checkout';
 import { faltasDoCadastro } from '../../lib/shop/conta';
@@ -27,6 +34,12 @@ interface Endereco {
   cpf_cnpj: string | null;
   phone: string | null;
 }
+
+// Os dois caminhos possíveis. Qual aparece depende de `checkout_ativo` no
+// servidor — enquanto o pagamento online estiver fechado, prometer "entrega e
+// pagamento" na trilha seria mentira.
+const PASSOS_PAGAMENTO = [{ rotulo: 'Carrinho', para: '/carrinho' }, { rotulo: 'Entrega e pagamento' }, { rotulo: 'Confirmação' }];
+const PASSOS_ORCAMENTO = [{ rotulo: 'Carrinho', para: '/carrinho' }, { rotulo: 'Envio ao vendedor' }, { rotulo: 'Confirmação' }];
 
 export default function Carrinho() {
   const { user, loading, isApproved, isAdmin } = useAuth();
@@ -110,7 +123,7 @@ export default function Carrinho() {
         else if (j.error === 'cupom-invalido') setErro('Cupom inválido ou já usado.');
         else if (j.error === 'itens-invalidos') setErro(`Alguns itens não estão disponíveis: ${(j.invalidos ?? []).join(', ')}.`);
         else if (j.error === 'aguardando-aprovacao') setErro('Seu cadastro ainda está em análise.');
-        else if (j.error === 'erp-indisponivel') setErro(`O pedido #${j.numero} foi guardado, mas o NZERP não respondeu. Tente enviar de novo em instantes.`);
+        else if (j.error === 'erp-indisponivel') setErro(`Seu pedido #${j.numero} foi guardado, mas nosso sistema não respondeu agora. Tente enviar de novo em instantes.`);
         else setErro(j.message ?? 'Não foi possível enviar o pedido.');
         return;
       }
@@ -128,10 +141,11 @@ export default function Carrinho() {
   if (sucesso) {
     return (
       <div className={`container ${styles.pagina}`}>
+        <PassosCompra passos={PASSOS_ORCAMENTO} atual={2} />
         <section className={styles.sucesso}>
           <h1 className={styles.titulo}>Pedido #{sucesso.numero} enviado</h1>
           <p>
-            Ele já está no NZERP como orçamento nº {sucesso.erpQuoteNumber}. Um vendedor confere estoque, frete e
+            Recebemos seu pedido (orçamento nº {sucesso.erpQuoteNumber}). Um vendedor confere estoque, frete e
             condição de pagamento e entra em contato. Acompanhe o status em <Link to="/painel">Minha conta</Link>.
           </p>
           <Link to="/loja" className={styles.voltar}>
@@ -144,13 +158,19 @@ export default function Carrinho() {
 
   return (
     <div className={`container ${styles.pagina}`}>
+      {itens.length > 0 && <PassosCompra passos={checkoutAtivo ? PASSOS_PAGAMENTO : PASSOS_ORCAMENTO} atual={0} />}
       <h1 className={styles.titulo}>Carrinho</h1>
 
       {itens.length === 0 ? (
-        <p className={styles.mudo}>
-          Nada aqui ainda. Na página de um produto, escolha rolo fechado ou metros e adicione.{' '}
-          <Link to="/loja">Ir para a loja</Link>
-        </p>
+        <div className={styles.vazio}>
+          <p className={styles.mudo}>
+            Seu carrinho está vazio. Na página de um produto você escolhe rolo fechado ou metros, a quantidade, e
+            adiciona daqui.
+          </p>
+          <Link to="/loja" className={styles.voltar}>
+            Ver a loja
+          </Link>
+        </div>
       ) : (
         <div className={styles.layout}>
           <ul className={styles.lista}>
@@ -170,18 +190,6 @@ export default function Carrinho() {
               <p className={styles.aviso}>Seu cadastro está em análise. Assim que for aprovado, você envia o pedido daqui.</p>
             ) : (
               <>
-                {checkoutAtivo && (
-                  <>
-                    <Link to="/checkout" className={styles.enviar}>
-                      Fechar pedido e pagar
-                    </Link>
-                    <p className={styles.nota}>Pix, cartão em até 6x ou boleto. Frete calculado no checkout.</p>
-                    <details className={styles.ouOrcamento}>
-                      <summary>Prefere enviar como orçamento, sem pagar agora?</summary>
-                      <p className={styles.nota}>O vendedor confere estoque, frete e condição e fecha com você.</p>
-                    </details>
-                  </>
-                )}
                 <label className={styles.campo}>
                   <span>Cupom</span>
                   <div className={styles.cupomLinha}>
@@ -199,11 +207,6 @@ export default function Carrinho() {
                   )}
                 </label>
 
-                <label className={styles.campo}>
-                  <span>Observações para o vendedor</span>
-                  <textarea value={obs} onChange={(e) => setObs(e.target.value)} rows={3} maxLength={1000} />
-                </label>
-
                 <div className={styles.endereco}>
                   <span className={styles.rotulo}>Entrega</span>
                   {cadastroCompleto ? (
@@ -219,17 +222,47 @@ export default function Carrinho() {
                   )}
                 </div>
 
+                <label className={styles.campo}>
+                  <span>Observações para o vendedor</span>
+                  <textarea value={obs} onChange={(e) => setObs(e.target.value)} rows={3} maxLength={1000} />
+                </label>
+
                 {erro && <p className={styles.erro}>{erro}</p>}
 
-                <button type="button" className={checkoutAtivo ? styles.limpar : styles.enviar} onClick={enviar} disabled={enviando || !cadastroCompleto}>
-                  {enviando ? 'Enviando…' : checkoutAtivo ? 'Enviar como orçamento' : 'Enviar pedido ao NZERP'}
-                </button>
-                <p className={styles.nota}>
-                  Sem pagamento aqui: o vendedor confirma estoque, frete e condição e fecha com você. Frete à parte.
-                </p>
+                {/* Um botão vermelho por tela, e ele é o passo seguinte. */}
+                {checkoutAtivo ? (
+                  <>
+                    <Link
+                      to="/checkout"
+                      className={`${styles.enviar} ${cadastroCompleto ? '' : styles.desabilitado}`}
+                      aria-disabled={!cadastroCompleto}
+                      onClick={(e) => {
+                        if (!cadastroCompleto) e.preventDefault();
+                      }}
+                    >
+                      Ir para entrega e pagamento
+                    </Link>
+                    <p className={styles.nota}>Pix, cartão em até 6x ou boleto. O frete é calculado no passo seguinte.</p>
+                    <p className={styles.alternativa}>
+                      Prefere fechar com um vendedor, sem pagar agora?{' '}
+                      <button type="button" onClick={enviar} disabled={enviando || !cadastroCompleto}>
+                        {enviando ? 'Enviando…' : 'Enviar como orçamento'}
+                      </button>
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <button type="button" className={styles.enviar} onClick={enviar} disabled={enviando || !cadastroCompleto}>
+                      {enviando ? 'Enviando…' : 'Enviar pedido para um vendedor'}
+                    </button>
+                    <p className={styles.nota}>
+                      Sem pagamento aqui: um vendedor confirma estoque, frete e condição de pagamento e fecha com você.
+                    </p>
+                  </>
+                )}
               </>
             )}
-            <button type="button" className={styles.limpar} onClick={() => navigate('/loja')}>
+            <button type="button" className={styles.continuar} onClick={() => navigate('/loja')}>
               Continuar comprando
             </button>
           </aside>
