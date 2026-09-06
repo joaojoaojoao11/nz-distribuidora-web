@@ -1,5 +1,15 @@
 # Gestão de produtos e painel administrativo — diagnóstico, revisão e plano
 
+> **Status 2026-09-06: IMPLANTADO** (fases 4.1–4.7). Verificado em produção pelo smoke de
+> mídia (20 checagens), pelo teste de navegador com Playwright (upload real: PNG de 810 kB →
+> WebP de 146 kB, 1024×1024) e por `npm run midia:test` (32 checagens sem rede).
+>
+> **Fora do escopo entregue:** a fase 4.8 (tirar as ~230 MB de imagens estáticas do
+> repositório) não foi feita — depende do "pode" do João e não muda nada para quem usa.
+>
+> **Ajuste de rumo na 4.1:** a coluna `midias` entrou no FIM da view `loja_catalogo`;
+> `create or replace view` não aceita coluna nova no meio.
+>
 > Para o agente **Opus 5** executar. Diagnóstico feito em 2026-09-06 lendo o código do site
 > (`nz-distribuidora-web`: `src/pages/Admin/*`, `src/pages/Loja/*`, `src/lib/shop/*`,
 > `api/_lib/handlers/catalogo.ts`, `api/render.ts`), o banco do site (`uibjmvkvbthzypgozpcs`:
