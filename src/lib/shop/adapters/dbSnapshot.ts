@@ -13,7 +13,7 @@
 import { DB_SNAPSHOT, type DbSnapshotRow, type DbSnapshotSource } from '../generated/dbSnapshot';
 import { resolveColor } from '../color/resolveColor';
 import { normalizeFinishString } from '../finish/normalizeFinish';
-import { genericImageForLine, isReviewedSlug } from '../generic';
+import { genericImageForLine, isReviewedSlug, shVehiclePhotosFor } from '../generic';
 import { buildSearchText, shopSlug, type BrandKey, type ShopItem, type ShopSpec } from '../types';
 
 /**
@@ -296,6 +296,17 @@ function cleanName(raw: string): string {
   return raw.replace(/^NZWRAP\s+/i, '').trim().toUpperCase();
 }
 
+/** Galeria SH: capa (rolo) na frente, carros gerados, fotos oficiais, sem repetir. */
+function galeriaSh(slug: string): string[] {
+  const rolo = isReviewedSlug(slug) ? SH_WRAPPING_IMAGES[slug] : undefined;
+  const crua = [
+    ...(rolo ? [rolo] : []),
+    ...(isReviewedSlug(slug) ? (SH_WRAPPING_GALLERY[slug] ?? []) : []),
+    ...shVehiclePhotosFor(slug),
+  ];
+  return crua.filter((u, i) => crua.indexOf(u) === i);
+}
+
 function rowToShopItem(row: DbSnapshotRow): ShopItem {
   const cfg = SOURCE_CFG[row.source];
   const finish = normalizeFinishString(row.finishType);
@@ -347,10 +358,11 @@ function rowToShopItem(row: DbSnapshotRow): ShopItem {
           : row.source === 'oracal-651' && isReviewedSlug(row.slug)
             ? (ORACAL_651_IMAGES[row.slug] ?? genericImageForLine(row.source))
             : genericImageForLine(row.source),
-    gallery:
-      row.source === 'sh-wrapping' && isReviewedSlug(row.slug)
-        ? (SH_WRAPPING_GALLERY[row.slug] ?? [])
-        : [],
+    // Rolo e carros gerados primeiro, depois as fotos oficiais de veiculo da
+    // SH — as mesmas de /wrap/sh-wrapping, que a loja ignorava ate agora.
+    // A capa lidera: sem isso uma cor com foto de veiculo e sem galeria propria
+    // abriria no carro, e o rolo sumiria da pagina.
+    gallery: row.source === 'sh-wrapping' ? galeriaSh(row.slug) : [],
     hex: row.hex,
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,

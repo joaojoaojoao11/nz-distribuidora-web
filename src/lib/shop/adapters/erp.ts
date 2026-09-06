@@ -22,7 +22,7 @@ import type { ColorFamilyId } from '../color/lexicon';
 import { normalizeFinishString } from '../finish/normalizeFinish';
 import { isFinishId, type FinishId } from '../finish/tree';
 import { isPatternFamilyId, PATTERN_SYNONYMS, type PatternFamilyId } from '../pattern/taxonomy';
-import { genericImageForLine, isReviewedSlug, rollImageFor } from '../generic';
+import { genericImageForLine, isReviewedSlug, rollImageFor, shVehiclePhotosFor } from '../generic';
 import {
   buildSearchText,
   normalize,
@@ -362,18 +362,29 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
   // mostra o material. Onde o banco nao traz nada (Metamark 7 Series), sem isto
   // a linha ficaria no placeholder mesmo com foto em disco.
   const rolo: string | undefined = rollImageFor(row.slug);
-  const imageResolvido = rolo ?? row.imagem ?? fotoRevisada ?? genericImageForLine(row.linha_key);
+  // Separado do placeholder de proposito: `capa` e a foto de verdade, quando
+  // existe. Ela precisa liderar a galeria, e um placeholder nunca deve entrar
+  // no meio de fotos reais.
+  const capa: string | null = rolo ?? row.imagem ?? fotoRevisada ?? null;
+  const imageResolvido = capa ?? genericImageForLine(row.linha_key);
   const galleryBase =
     row.galeria && row.galeria.length > 0
       ? row.galeria
       : reviewed
         ? (SH_WRAPPING_GALLERY_ERP[row.slug] ?? [])
         : [];
-  // O rolo entra na frente; o resto (chip, foto de aplicacao) segue depois, sem
-  // duplicar caso o banco ja o tenha listado.
-  const galleryResolvida = rolo
-    ? [rolo, ...galleryBase.filter((u) => u !== rolo)]
-    : galleryBase;
+  // Fotos oficiais de veiculo da SH Wrapping (as de /wrap/sh-wrapping). Entram
+  // no fim, sem duplicar o que ja veio do banco ou do mapa de galeria.
+  const veiculos = shVehiclePhotosFor(row.slug);
+  // A CAPA E SEMPRE O PRIMEIRO ITEM. A pagina do produto renderiza a galeria,
+  // nao o campo `image`: sem esta linha, uma cor SH com foto de veiculo mas sem
+  // galeria propria abriria no carro e o rolo sumiria da pagina.
+  const galeriaCrua = [
+    ...(capa ? [capa] : []),
+    ...galleryBase,
+    ...veiculos,
+  ];
+  const galleryResolvida = galeriaCrua.filter((u, i) => galeriaCrua.indexOf(u) === i);
 
   // A pagina do produto le `media`, nao `gallery`. Como o banco ja preenche
   // `midias` para a MCX (chip + aplicacao), o rolo precisa entrar aqui tambem —
@@ -389,9 +400,20 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
   });
   const mediaBase: MidiaPublica[] =
     row.midias && row.midias.length > 0 ? row.midias : galleryResolvida.map(semMeta);
-  const mediaResolvida: MidiaPublica[] = rolo
-    ? [semMeta(rolo), ...mediaBase.filter((m) => m.url !== rolo)]
-    : mediaBase;
+  // Mesma regra da galeria: capa na frente, veiculos no fim, sem repetir. O
+  // banco pode ter `midias` proprias (MetaCast MCX tem), entao nao da para
+  // simplesmente derivar da galeria.
+  const midiasCruas: MidiaPublica[] = [
+    ...(capa ? [semMeta(capa)] : []),
+    ...mediaBase,
+    ...veiculos.map(semMeta),
+  ];
+  const vistos = new Set<string>();
+  const mediaResolvida: MidiaPublica[] = midiasCruas.filter((m) => {
+    if (vistos.has(m.url)) return false;
+    vistos.add(m.url);
+    return true;
+  });
 
   return {
     slug: row.slug,

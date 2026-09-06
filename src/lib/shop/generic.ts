@@ -15,6 +15,7 @@
 // no fallback nunca sobrescrevem uma revisada.
 
 import type { LinhaErp } from './erp/mapa';
+import { SH_COLORS_ASSETS } from '../data/shWrappingAssets';
 
 /**
  * Placeholder branded por linha. Uma imagem 1600x1200 com o nome da linha em
@@ -364,6 +365,21 @@ export function rollImageFor(slug: string): string | undefined {
     if (url) return url;
   }
   return undefined;
+}
+
+/**
+ * Fotos de veículo das cores SH Wrapping — as mesmas que a página
+ * /wrap/sh-wrapping já mostrava e que a loja ignorava. Ordem fixa (SUV, sedan,
+ * superesportivo, noite) para a galeria não embaralhar entre visitas.
+ *
+ * Aceita o slug cru (`paprika-orange`) ou o prefixado do ERP
+ * (`sh-paprika-orange`), como `isReviewedSlug`.
+ */
+export function shVehiclePhotosFor(slug: string): string[] {
+  const cru = slug.startsWith('sh-') ? slug.slice(3) : slug;
+  const g = (SH_COLORS_ASSETS[slug] ?? SH_COLORS_ASSETS[cru])?.gallery;
+  if (!g) return [];
+  return [g.suv, g.sedan, g.supercar, g.night].filter((u): u is string => Boolean(u));
 }
 
 /** Retorna o placeholder correto pra lineKey (ou o default). */
