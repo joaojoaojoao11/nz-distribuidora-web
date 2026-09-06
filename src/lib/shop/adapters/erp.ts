@@ -122,6 +122,7 @@ const SH_WRAPPING_IMAGES_ERP: Record<string, string> = {
   'sh-pearl-metal-black': '/assets/images/shop/sh-wrapping/pearl-metal-black.webp',
   'sh-khaki-green': '/assets/images/shop/sh-wrapping/khaki-green.webp',
   'sh-combat-green': '/assets/images/shop/sh-wrapping/combat-green.webp',
+  'sh-crystal-glacial-blue': '/assets/images/shop/sh-wrapping/crystal-glacial-blue.webp',
 };
 
 /**
@@ -177,6 +178,12 @@ const SH_WRAPPING_GALLERY_ERP: Record<string, string[]> = {
     '/assets/images/shop/sh-wrapping/combat-green-car-1.webp',
     '/assets/images/shop/sh-wrapping/combat-green-car-2.webp',
     '/assets/images/shop/sh-wrapping/combat-green-car-3.webp',
+  ],
+  'sh-crystal-glacial-blue': [
+    '/assets/images/shop/sh-wrapping/crystal-glacial-blue.webp',
+    '/assets/images/shop/sh-wrapping/crystal-glacial-blue-car-1.webp',
+    '/assets/images/shop/sh-wrapping/crystal-glacial-blue-car-2.webp',
+    '/assets/images/shop/sh-wrapping/crystal-glacial-blue-car-3.webp',
   ],
 };
 

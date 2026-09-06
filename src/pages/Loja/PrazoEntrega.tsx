@@ -126,6 +126,12 @@ export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey:
           setEstado({ tipo: 'erro', mensagem: 'Muitas consultas seguidas. Tente em um minuto.' });
           return;
         }
+        // O CEP passou na regex de 8 dígitos mas não existe: a transportadora é
+        // quem sabe disso. Dizer é melhor do que sumir com o bloco.
+        if (res.status === 422) {
+          setEstado({ tipo: 'erro', mensagem: 'CEP não encontrado. Confira o número.' });
+          return;
+        }
         if (!res.ok) {
           setEstado({ tipo: 'indisponivel' });
           return;

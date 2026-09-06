@@ -170,13 +170,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .filter((r): r is PromiseFulfilledResult<CotacaoInterna[]> => r.status === 'fulfilled')
       .flatMap((r) => r.value);
 
+    const motivos: string[] = [];
     for (const r of resultados) {
       if (r.status === 'rejected') {
-        console.warn('[logistica] cotação falhou:', r.reason?.message ?? r.reason);
+        const msg = String(r.reason?.message ?? r.reason);
+        motivos.push(msg);
+        console.warn('[logistica] cotação falhou:', msg);
       }
     }
 
     if (!cotacoes.length) {
+      // Transportadora recusando o CEP não é indisponibilidade nossa: é um CEP
+      // que não existe. Medido com o Melhor Envio — o CEP geral de uma cidade
+      // (69900-000) é recusado, o de rua (69918-108) cota normalmente. Sem esta
+      // distinção o bloco sumia em silêncio e o visitante não sabia por quê.
+      if (motivos.some((m) => /cep|postal/i.test(m))) {
+        res.status(422).json({
+          error: 'cep-nao-encontrado',
+          message: 'CEP não encontrado. Confira o número.',
+        });
+        return;
+      }
       res.status(502).json({ error: 'consulta-falhou', message: 'Não conseguimos consultar agora.' });
       return;
     }
