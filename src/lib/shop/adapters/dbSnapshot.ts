@@ -28,6 +28,7 @@ const SH_WRAPPING_IMAGES: Record<string, string> = {
   'soulmoving-red': '/assets/images/shop/sh-wrapping/soulmoving-red.webp',
   'crystal-white': '/assets/images/shop/sh-wrapping/crystal-white.webp',
   'bentley-pink': '/assets/images/shop/sh-wrapping/bentley-pink.webp',
+  'crystal-mamba-green': '/assets/images/shop/sh-wrapping/crystal-mamba-green.webp',
 };
 
 /**
@@ -59,6 +60,12 @@ const SH_WRAPPING_GALLERY: Record<string, string[]> = {
     '/assets/images/shop/sh-wrapping/bentley-pink-car-1.webp',
     '/assets/images/shop/sh-wrapping/bentley-pink-car-2.webp',
     '/assets/images/shop/sh-wrapping/bentley-pink-car-3.webp',
+  ],
+  'crystal-mamba-green': [
+    '/assets/images/shop/sh-wrapping/crystal-mamba-green.webp',
+    '/assets/images/shop/sh-wrapping/crystal-mamba-green-car-1.webp',
+    '/assets/images/shop/sh-wrapping/crystal-mamba-green-car-2.webp',
+    '/assets/images/shop/sh-wrapping/crystal-mamba-green-car-3.webp',
   ],
 };
 
