@@ -163,7 +163,7 @@ export default function Carrinho() {
               <Link to="/login?next=/carrinho" className={styles.enviar}>
                 Entrar para pedir
               </Link>
-            ) : !isApproved ? (
+            ) : !isApproved && !isAdmin ? (
               <p className={styles.aviso}>Seu cadastro está em análise. Assim que for aprovado, você envia o pedido daqui.</p>
             ) : (
               <>
