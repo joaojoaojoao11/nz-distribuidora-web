@@ -156,3 +156,128 @@
   letter-spacing: 1px;
 }
 .backToSite:hover { color: #888; }
+
+/* ------------------------------------------------ cadastro v2 / senha */
+.hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.74rem;
+  color: #777;
+  line-height: 1.45;
+}
+
+.erroCampo {
+  margin: 0.15rem 0 0;
+  font-size: 0.74rem;
+  color: #f87171;
+}
+
+.okMsg {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  border-radius: 8px;
+  background: rgba(74, 222, 128, 0.08);
+  color: #4ade80;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.avisoMsg {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  border-radius: 8px;
+  background: rgba(250, 204, 21, 0.07);
+  color: #facc15;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.senhaWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.senhaWrap .input {
+  padding-right: 4.4rem;
+}
+
+.verSenha {
+  position: absolute;
+  right: 0.55rem;
+  min-height: 32px;
+  padding: 0 0.5rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #888;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.verSenha:hover { color: #fff; }
+
+.linhaDupla {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: #131316;
+  color: #fff;
+  font-size: 16px;
+}
+
+.esqueci {
+  align-self: flex-end;
+  margin-top: -0.5rem;
+  font-size: 0.78rem;
+  color: #888;
+  text-decoration: underline;
+}
+
+.esqueci:hover { color: #fff; }
+
+.divisor {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0.2rem 0;
+  color: #555;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.divisor::before,
+.divisor::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.googleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: #fff;
+  color: #1f1f1f;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.googleBtn:hover { background: #f1f1f1; }

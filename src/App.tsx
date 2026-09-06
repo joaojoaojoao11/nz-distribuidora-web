@@ -51,6 +51,8 @@ const BlogList = lazy(() => import('./pages/Blog/BlogList'));
 const BlogPost = lazy(() => import('./pages/Blog/BlogPost'));
 const Login = lazy(() => import('./pages/Auth/Login'));
 const Register = lazy(() => import('./pages/Auth/Register'));
+const RecuperarSenha = lazy(() => import('./pages/Auth/RecuperarSenha'));
+const NovaSenha = lazy(() => import('./pages/Auth/NovaSenha'));
 const Dashboard = lazy(() => import('./pages/Admin/Dashboard'));
 const WarrantyRegistration = lazy(() => import('./pages/Warranty/WarrantyRegistration'));
 const WarrantyValidator = lazy(() => import('./pages/Warranty/WarrantyValidator'));
@@ -92,6 +94,8 @@ function App() {
         {/* Auth pages (without Footer, with Navbar) */}
         <Route path="/login" element={<><Navbar /><Suspense fallback={<RouteLoading />}><Login /></Suspense></>} />
         <Route path="/cadastro" element={<><Navbar /><Suspense fallback={<RouteLoading />}><Register /></Suspense></>} />
+        <Route path="/recuperar-senha" element={<><Navbar /><Suspense fallback={<RouteLoading />}><RecuperarSenha /></Suspense></>} />
+        <Route path="/nova-senha" element={<><Navbar /><Suspense fallback={<RouteLoading />}><NovaSenha /></Suspense></>} />
 
         {/* Hidden Linktree-style pages (no Navbar/Footer/Whatsapp) */}
         <Route path="/ppf-promo" element={<Suspense fallback={<RouteLoading />}><PpfPromo /></Suspense>} />

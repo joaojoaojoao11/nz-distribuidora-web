@@ -1,48 +1,56 @@
+// /cadastro — criar conta na NZ.
+//
+// O que mudou da v1 (e por quê):
+//   · TUDO vai num signUp só. Antes o telefone/documento/empresa iam num UPDATE
+//     depois da criação; quando esse segundo passo falhava o perfil ficava só
+//     com nome e e-mail — foi o que aconteceu com as contas de abril.
+//   · O usuário já sai logado (o projeto tem confirmação automática de e-mail),
+//     então vai para onde queria ir (?next=) em vez de voltar para o login.
+//   · Lojista cujo CNPJ já é cliente da NZ é reconhecido logo depois de criar a
+//     conta (op `pos-cadastro`, que precisa de sessão): o endereço vem do ERP e
+//     o cadastro nasce aprovado, sem esperar liberação manual.
+//   · Cliente final não precisa de documento aqui — pede-se no checkout.
+
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
+import { chamarConta, formatarTelefone, telefoneOk, textoDoErroAuth } from '../../lib/shop/conta';
+import { supabase } from '../../lib/supabase';
 import styles from './Auth.module.css';
+
+const GOOGLE_ATIVO = import.meta.env.VITE_GOOGLE_LOGIN === '1';
 
 export default function Register() {
   const { signUp } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const next = new URLSearchParams(location.search).get('next');
+  const destino = next && next.startsWith('/') && !next.startsWith('//') ? next : null;
+
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', role: 'client', company: '', documento: '', ie: '' });
+  const [verSenha, setVerSenha] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const update = (field: string, value: string) => setForm(p => ({ ...p, [field]: value }));
+  const lojista = form.role === 'reseller';
+  const update = (field: string, value: string) => setForm((p) => ({ ...p, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!form.name.trim() || form.name.trim().length < 3) return setError('Escreva seu nome completo.');
+    if (!telefoneOk(form.phone)) return setError('WhatsApp incompleto — com DDD, por favor.');
+    if (form.password.length < 8) return setError('A senha precisa de pelo menos 8 caracteres.');
+    if (lojista) {
+      if (!validarCpfCnpj(form.documento) || tipoDocumento(form.documento) !== 'cnpj') return setError('Lojista precisa de CNPJ válido.');
+      if (!form.company.trim()) return setError('Informe a razão social.');
+    } else if (form.documento && !validarCpfCnpj(form.documento)) {
+      return setError('CPF/CNPJ inválido — confira os dígitos.');
+    }
+
     setLoading(true);
-
-    if (form.password.length < 6) {
-      setError('A senha deve ter no mínimo 6 caracteres.');
-      setLoading(false);
-      return;
-    }
-
-    // Lojista compra com nota: CNPJ e razão social são obrigatórios. Cliente
-    // final pode cadastrar CPF agora ou no painel, antes do primeiro pedido.
-    const lojista = form.role === 'reseller';
-    if (form.documento && !validarCpfCnpj(form.documento)) {
-      setError('CPF/CNPJ inválido — confira os dígitos.');
-      setLoading(false);
-      return;
-    }
-    if (lojista && tipoDocumento(form.documento) !== 'cnpj') {
-      setError('Lojista precisa de CNPJ válido.');
-      setLoading(false);
-      return;
-    }
-    if (lojista && !form.company.trim()) {
-      setError('Informe a razão social.');
-      setLoading(false);
-      return;
-    }
-
     const { error: err } = await signUp(form.email, form.password, {
       full_name: form.name,
       phone: form.phone,
@@ -60,94 +68,172 @@ export default function Register() {
     });
 
     if (err) {
-      setError(err.includes('already registered') ? 'Este email já está cadastrado.' : err);
+      setError(textoDoErroAuth(err));
       setLoading(false);
       return;
     }
 
-    setSuccess(true);
-    setLoading(false);
+    // Agora existe sessão: procura o cliente no NZERP, copia o endereço que a
+    // NZ já tem e — lojista com CNPJ e e-mail conferindo — aprova na hora.
+    // Best-effort: falhar aqui não impede a conta de existir.
+    const vinculo = await chamarConta<{ aprovouAgora: boolean; jaCliente: boolean }>({ op: 'pos-cadastro' }).catch(() => null);
+    navigate(destino ?? (lojista ? '/painel' : '/loja'), {
+      replace: true,
+      state: { recemCadastrado: true, reconhecido: Boolean(vinculo?.jaCliente), aprovouAgora: Boolean(vinculo?.aprovouAgora) },
+    });
   };
 
-  if (success) {
-    return (
-      <div className={styles.authPage}>
-        <div className={styles.authCard}>
-          <div className={styles.successMsg}>
-            <h3>✅ Cadastro Enviado!</h3>
-            <p>Seu cadastro foi recebido com sucesso. Um administrador irá revisar e aprovar seu acesso em breve.</p>
-          </div>
-          <Link to="/login" className={styles.backToSite}>← Ir para Login</Link>
-        </div>
-      </div>
-    );
-  }
+  const entrarComGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}${destino ?? '/loja'}` },
+    });
+  };
 
   return (
     <div className={styles.authPage}>
       <div className={styles.authCard}>
         <h1 className={styles.authTitle}>Criar Conta</h1>
-        <p className={styles.authSub}>Cadastre-se para ver preços e pedir pelo site</p>
+        <p className={styles.authSub}>Cadastre-se para ver preços e comprar pelo site</p>
+
+        {GOOGLE_ATIVO && (
+          <>
+            <button type="button" className={styles.googleBtn} onClick={() => void entrarComGoogle()}>
+              Continuar com Google
+            </button>
+            <div className={styles.divisor}>ou</div>
+          </>
+        )}
 
         <form className={styles.form} onSubmit={handleSubmit}>
           {error && <div className={styles.errorMsg}>{error}</div>}
 
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Tipo de Conta</label>
+            <label className={styles.label}>Tipo de conta</label>
             <div className={styles.roleSelector}>
-              <button type="button" className={`${styles.roleBtn} ${form.role === 'client' ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'client')}>Cliente final</button>
-              <button type="button" className={`${styles.roleBtn} ${form.role === 'reseller' ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'reseller')}>Lojista</button>
+              <button type="button" className={`${styles.roleBtn} ${!lojista ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'client')}>
+                Cliente final
+              </button>
+              <button type="button" className={`${styles.roleBtn} ${lojista ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'reseller')}>
+                Lojista / aplicador
+              </button>
             </div>
+            <p className={styles.hint}>
+              {lojista
+                ? 'Compra com CNPJ e preço de revenda. A NZ confere o cadastro antes de liberar a tabela.'
+                : 'Compra para você, com preço de varejo. Liberado na hora.'}
+            </p>
           </div>
 
           <div className={styles.inputGroup}>
-            <label className={styles.label}>Nome Completo</label>
-            <input type="text" className={styles.input} placeholder="João da Silva" required value={form.name} onChange={(e) => update('name', e.target.value)} />
+            <label className={styles.label}>Nome completo</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="João da Silva"
+              required
+              autoComplete="name"
+              value={form.name}
+              onChange={(e) => update('name', e.target.value)}
+            />
           </div>
 
-          {form.role === 'reseller' && (
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>Razão social</label>
-              <input type="text" className={styles.input} placeholder="Sua Empresa LTDA" required value={form.company} onChange={(e) => update('company', e.target.value)} />
-            </div>
+          {lojista && (
+            <>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>CNPJ</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  className={styles.input}
+                  placeholder="00.000.000/0000-00"
+                  required
+                  value={formatarCpfCnpj(form.documento)}
+                  onChange={(e) => update('documento', e.target.value)}
+                />
+                <p className={styles.hint}>Se este CNPJ já compra na NZ, reconhecemos e liberamos o preço de revenda na hora.</p>
+              </div>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Razão social</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  placeholder="Sua Empresa LTDA"
+                  required
+                  autoComplete="organization"
+                  value={form.company}
+                  onChange={(e) => update('company', e.target.value)}
+                />
+              </div>
+              <div className={styles.inputGroup}>
+                <label className={styles.label}>Inscrição estadual</label>
+                <input type="text" className={styles.input} placeholder="ou ISENTO" value={form.ie} onChange={(e) => update('ie', e.target.value)} />
+              </div>
+            </>
           )}
 
           <div className={styles.inputGroup}>
-            <label className={styles.label}>{form.role === 'reseller' ? 'CNPJ' : 'CPF ou CNPJ (opcional agora)'}</label>
-            <input type="text" inputMode="numeric" className={styles.input} placeholder={form.role === 'reseller' ? '00.000.000/0000-00' : '000.000.000-00'} required={form.role === 'reseller'} value={formatarCpfCnpj(form.documento)} onChange={(e) => update('documento', e.target.value)} />
-          </div>
-
-          {form.role === 'reseller' && (
-            <div className={styles.inputGroup}>
-              <label className={styles.label}>Inscrição estadual</label>
-              <input type="text" className={styles.input} placeholder="ou ISENTO" value={form.ie} onChange={(e) => update('ie', e.target.value)} />
-            </div>
-          )}
-
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Email</label>
-            <input type="email" className={styles.input} placeholder="seu@email.com" required value={form.email} onChange={(e) => update('email', e.target.value)} />
+            <label className={styles.label}>E-mail</label>
+            <input
+              type="email"
+              className={styles.input}
+              placeholder="seu@email.com"
+              required
+              autoComplete="email"
+              value={form.email}
+              onChange={(e) => update('email', e.target.value)}
+            />
           </div>
 
           <div className={styles.inputGroup}>
             <label className={styles.label}>WhatsApp</label>
-            <input type="tel" className={styles.input} placeholder="(11) 99999-9999" required value={form.phone} onChange={(e) => update('phone', e.target.value)} />
+            <input
+              type="tel"
+              inputMode="tel"
+              className={styles.input}
+              placeholder="(11) 99999-9999"
+              required
+              autoComplete="tel"
+              maxLength={15}
+              value={form.phone}
+              onChange={(e) => update('phone', formatarTelefone(e.target.value))}
+            />
           </div>
 
           <div className={styles.inputGroup}>
             <label className={styles.label}>Senha</label>
-            <input type="password" className={styles.input} placeholder="Mínimo 6 caracteres" required value={form.password} onChange={(e) => update('password', e.target.value)} />
+            <div className={styles.senhaWrap}>
+              <input
+                type={verSenha ? 'text' : 'password'}
+                className={styles.input}
+                placeholder="Mínimo 8 caracteres"
+                required
+                minLength={8}
+                autoComplete="new-password"
+                value={form.password}
+                onChange={(e) => update('password', e.target.value)}
+              />
+              <button type="button" className={styles.verSenha} onClick={() => setVerSenha((v) => !v)}>
+                {verSenha ? 'ocultar' : 'mostrar'}
+              </button>
+            </div>
           </div>
 
+          <p className={styles.hint}>
+            Ao criar a conta você aceita os <Link to="/termos">termos de uso</Link> e a <Link to="/privacidade">política de privacidade</Link> da NZ.
+          </p>
+
           <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? 'Cadastrando...' : 'CRIAR MINHA CONTA'}
+            {loading ? 'Criando...' : 'CRIAR MINHA CONTA'}
           </button>
         </form>
 
         <div className={styles.linkRow}>
-          Já tem conta? <Link to="/login">Entrar</Link>
+          Já tem conta? <Link to={destino ? `/login?next=${encodeURIComponent(destino)}` : '/login'}>Entrar</Link>
         </div>
-        <Link to="/" className={styles.backToSite}>← Voltar ao site</Link>
+        <Link to="/" className={styles.backToSite}>
+          ← Voltar ao site
+        </Link>
       </div>
     </div>
   );

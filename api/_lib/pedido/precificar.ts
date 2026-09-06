@@ -9,6 +9,7 @@
 // preco_metro. É a régua do simulador da tabela de preço do NZERP.
 
 import type { Db } from '../papel.js';
+import { faltandoNoCadastro } from '../conta/completude.js';
 
 export interface ItemPedido {
   slug: string;
@@ -96,16 +97,9 @@ export async function carregarPerfil(site: Db, userId: string): Promise<{ perfil
     .eq('id', userId)
     .maybeSingle();
   const perfil = (data as Perfil | null) ?? null;
-  const faltando: string[] = [];
-  if (!perfil?.full_name) faltando.push('nome');
-  if (!perfil?.cpf_cnpj) faltando.push('cpf_cnpj');
-  if (!perfil?.phone) faltando.push('telefone');
-  if (!perfil?.address_street) faltando.push('endereco');
-  if (!perfil?.address_number) faltando.push('numero');
-  if (!perfil?.address_city) faltando.push('cidade');
-  if (!perfil?.address_state) faltando.push('uf');
-  if (!perfil?.address_zip || perfil.address_zip.replace(/\D/g, '').length !== 8) faltando.push('cep');
-  return { perfil, faltando };
+  // A lista mora em conta/completude.ts: o carrinho e o painel mostram o mesmo
+  // checklist antes de o usuário chegar no pagamento.
+  return { perfil, faltando: faltandoNoCadastro(perfil) };
 }
 
 /** slug → produto → SKU físico → preço de tabela. Itens sem tudo isso voltam em `invalidos`. */

@@ -140,6 +140,8 @@ export const routeMeta: Record<string, RouteMeta> = {
   '/painel': { title: 'Minha conta', description: 'Painel do cliente NZ.', noindex: true },
   '/carrinho': { title: 'Carrinho', description: 'Carrinho da loja NZ.', noindex: true },
   '/cadastro': { title: 'Cadastro', description: 'Cadastro no painel NZ.', noindex: true },
+  '/recuperar-senha': { title: 'Recuperar senha', description: 'Redefinição de senha da conta NZ.', noindex: true },
+  '/nova-senha': { title: 'Definir senha', description: 'Definição de senha da conta NZ.', noindex: true },
   '/ppf-promo': { title: 'NZPPF', description: 'Links NZPPF.', noindex: true },
   '/nzgroup-promo': { title: 'NZ Group', description: 'Links NZ Group.', noindex: true },
 };

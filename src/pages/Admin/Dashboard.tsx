@@ -11,6 +11,7 @@ import styles from './Admin.module.css';
 import AdminProdutos from './AdminProdutos';
 import AdminAfiliados from './AdminAfiliados';
 import AdminPedidos from './AdminPedidos';
+import AdminEquipe from './AdminEquipe';
 import AdminWarranties from './AdminWarranties';
 import AdminSettings from './AdminSettings';
 import AdminBlog from './AdminBlog';
@@ -67,10 +68,6 @@ export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
-  const [showCreateUser, setShowCreateUser] = useState(false);
-  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', phone: '' });
-  const [createError, setCreateError] = useState('');
-  const [creating, setCreating] = useState(false);
   const [pendingWarrantiesCount, setPendingWarrantiesCount] = useState(0);
   const [promoPendingCount, setPromoPendingCount] = useState(0);
 
@@ -341,38 +338,6 @@ export default function Dashboard() {
     loadData();
   };
 
-  const createUser = async () => {
-    setCreateError('');
-    if (!newUser.name || !newUser.email || !newUser.password) {
-      setCreateError('Preencha nome, email e senha.');
-      return;
-    }
-    if (newUser.password.length < 6) {
-      setCreateError('Senha deve ter no mínimo 6 caracteres.');
-      return;
-    }
-    setCreating(true);
-    const { error } = await supabase.auth.signUp({
-      email: newUser.email,
-      password: newUser.password,
-      options: { data: { full_name: newUser.name, role: 'admin' } }
-    });
-    if (error) {
-      setCreateError(error.message.includes('already registered') ? 'Este email já está cadastrado.' : error.message);
-      setCreating(false);
-      return;
-    }
-    const { data: found } = await supabase.from('user_profiles').select('id').eq('email', newUser.email).single();
-    if (found) {
-      await supabase.from('user_profiles').update({ role: 'admin', is_approved: true, phone: newUser.phone || null }).eq('id', found.id);
-    }
-    setShowCreateUser(false);
-    setNewUser({ name: '', email: '', password: '', phone: '' });
-    setCreating(false);
-    loadData();
-  };
-
-  const admins = users.filter(u => u.role === 'admin');
   const clients = users.filter(u => u.role !== 'admin');
   const pendingUsers = clients.filter(u => !u.is_approved);
 
@@ -850,60 +815,7 @@ export default function Dashboard() {
         )}
 
         {/* ===== USUÁRIOS DO SISTEMA ===== */}
-        {activeTab === 'users' && (
-          <div className={styles.tableSection}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <p className={styles.tabDescription} style={{ margin: 0 }}>Administradores com acesso ao painel de gestão.</p>
-              <button className={styles.createBtn} onClick={() => setShowCreateUser(true)}>+ Novo Usuário</button>
-            </div>
-
-            {showCreateUser && (
-              <div className={styles.createModal}>
-                <h4 className={styles.createModalTitle}>Cadastrar Administrador</h4>
-                {createError && <div className={styles.createError}>{createError}</div>}
-                <div className={styles.createGrid}>
-                  <div className={styles.createField}>
-                    <label>Nome Completo</label>
-                    <input type="text" placeholder="João da Silva" value={newUser.name} onChange={e => setNewUser(p => ({ ...p, name: e.target.value }))} />
-                  </div>
-                  <div className={styles.createField}>
-                    <label>Email</label>
-                    <input type="email" placeholder="email@empresa.com" value={newUser.email} onChange={e => setNewUser(p => ({ ...p, email: e.target.value }))} />
-                  </div>
-                  <div className={styles.createField}>
-                    <label>Senha</label>
-                    <input type="password" placeholder="Mínimo 6 caracteres" value={newUser.password} onChange={e => setNewUser(p => ({ ...p, password: e.target.value }))} />
-                  </div>
-                  <div className={styles.createField}>
-                    <label>Telefone</label>
-                    <input type="tel" placeholder="(11) 99999-9999" value={newUser.phone} onChange={e => setNewUser(p => ({ ...p, phone: e.target.value }))} />
-                  </div>
-                </div>
-                <div className={styles.createActions}>
-                  <button className={styles.createBtnCancel} onClick={() => { setShowCreateUser(false); setCreateError(''); }}>Cancelar</button>
-                  <button className={styles.createBtnConfirm} onClick={createUser} disabled={creating}>{creating ? 'Criando...' : 'Criar Administrador'}</button>
-                </div>
-              </div>
-            )}
-
-            <table className={styles.table}>
-              <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Tipo</th><th>Status</th><th>Data</th></tr></thead>
-              <tbody>
-                {admins.map(u => (
-                  <tr key={u.id}>
-                    <td>{u.full_name || '—'}</td>
-                    <td>{u.email || '—'}</td>
-                    <td>{u.phone || '—'}</td>
-                    <td>{getRoleBadge(u.role)}</td>
-                    <td><span className={`${styles.badge} ${styles.badgeApproved}`}>Ativo</span></td>
-                    <td>{formatDate(u.created_at)}</td>
-                  </tr>
-                ))}
-                {admins.length === 0 && <tr><td colSpan={6} className={styles.emptyState}>Nenhum administrador cadastrado.</td></tr>}
-              </tbody>
-            </table>
-          </div>
-        )}
+        {activeTab === 'users' && <AdminEquipe />}
 
         {/* ===== PRODUTOS ===== */}
         {activeTab === 'produtos' && <AdminProdutos />}

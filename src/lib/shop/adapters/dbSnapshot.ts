@@ -35,8 +35,23 @@ const SH_WRAPPING_IMAGES: Record<string, string> = {
   'combat-green': '/assets/images/shop/sh-wrapping/combat-green.webp',
   'crystal-glacial-blue': '/assets/images/shop/sh-wrapping/crystal-glacial-blue.webp',
   'mercury-silver': '/assets/images/shop/sh-wrapping/mercury-silver.webp',
-  'somato-blue': '/assets/images/shop/sh-wrapping/somato-blue.webp',
+  'liquid-metal-somato-blue': '/assets/images/shop/sh-wrapping/liquid-metal-somato-blue.webp',
   'pearl-metal-white': '/assets/images/shop/sh-wrapping/pearl-metal-white.webp',
+  'pearl-metal-space-grey': '/assets/images/shop/sh-wrapping/pearl-metal-space-grey.webp',
+  'amg-grey': '/assets/images/shop/sh-wrapping/amg-grey.webp',
+  'amg-mountain-grey': '/assets/images/shop/sh-wrapping/amg-mountain-grey.webp',
+  'blue-charm-green': '/assets/images/shop/sh-wrapping/blue-charm-green.webp',
+  'candy-purple-gloss-aluminium': '/assets/images/shop/sh-wrapping/candy-purple-gloss-aluminium.webp',
+  'crystal-champagne-gold': '/assets/images/shop/sh-wrapping/crystal-champagne-gold.webp',
+  'crystal-silver': '/assets/images/shop/sh-wrapping/crystal-silver.webp',
+  'crystal-yellow': '/assets/images/shop/sh-wrapping/crystal-yellow.webp',
+  'fantastic-green-grey': '/assets/images/shop/sh-wrapping/fantastic-green-grey.webp',
+  'fantastic-purple': '/assets/images/shop/sh-wrapping/fantastic-purple.webp',
+  'glossy-nado-ash': '/assets/images/shop/sh-wrapping/glossy-nado-ash.webp',
+  'matt-dark-purple': '/assets/images/shop/sh-wrapping/matt-dark-purple.webp',
+  'pearl-metal-sakura-pink': '/assets/images/shop/sh-wrapping/pearl-metal-sakura-pink.webp',
+  'pearl-metal-tiffany': '/assets/images/shop/sh-wrapping/pearl-metal-tiffany.webp',
+  'space-blue-gloss-aluminium': '/assets/images/shop/sh-wrapping/space-blue-gloss-aluminium.webp',
 };
 
 /**
@@ -105,17 +120,23 @@ const SH_WRAPPING_GALLERY: Record<string, string[]> = {
     '/assets/images/shop/sh-wrapping/mercury-silver-car-2.webp',
     '/assets/images/shop/sh-wrapping/mercury-silver-car-3.webp',
   ],
-  'somato-blue': [
-    '/assets/images/shop/sh-wrapping/somato-blue.webp',
-    '/assets/images/shop/sh-wrapping/somato-blue-car-1.webp',
-    '/assets/images/shop/sh-wrapping/somato-blue-car-2.webp',
-    '/assets/images/shop/sh-wrapping/somato-blue-car-3.webp',
+  'liquid-metal-somato-blue': [
+    '/assets/images/shop/sh-wrapping/liquid-metal-somato-blue.webp',
+    '/assets/images/shop/sh-wrapping/liquid-metal-somato-blue-car-1.webp',
+    '/assets/images/shop/sh-wrapping/liquid-metal-somato-blue-car-2.webp',
+    '/assets/images/shop/sh-wrapping/liquid-metal-somato-blue-car-3.webp',
   ],
   'pearl-metal-white': [
     '/assets/images/shop/sh-wrapping/pearl-metal-white.webp',
     '/assets/images/shop/sh-wrapping/pearl-metal-white-car-1.webp',
     '/assets/images/shop/sh-wrapping/pearl-metal-white-car-2.webp',
     '/assets/images/shop/sh-wrapping/pearl-metal-white-car-3.webp',
+  ],
+  'pearl-metal-space-grey': [
+    '/assets/images/shop/sh-wrapping/pearl-metal-space-grey.webp',
+    '/assets/images/shop/sh-wrapping/pearl-metal-space-grey-car-1.webp',
+    '/assets/images/shop/sh-wrapping/pearl-metal-space-grey-car-2.webp',
+    '/assets/images/shop/sh-wrapping/pearl-metal-space-grey-car-3.webp',
   ],
 };
 

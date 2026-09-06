@@ -27,6 +27,8 @@ import afiliado from '../_lib/handlers/afiliado.js';
 import pedido from '../_lib/handlers/pedido.js';
 import checkout from '../_lib/handlers/checkout.js';
 import asaas from '../_lib/handlers/asaas.js';
+import conta from '../_lib/handlers/conta.js';
+import equipe from '../_lib/handlers/equipe.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -53,6 +55,10 @@ const ROTAS: Record<string, Handler> = {
   checkout,
   // Webhook do Asaas. Token em cabeçalho.
   asaas,
+  // Cadastro do usuário: completude, vínculo com o ERP, recuperar senha.
+  conta,
+  // Equipe: usuários do NZERP viram admins do site. Admin.
+  equipe,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

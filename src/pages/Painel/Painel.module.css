@@ -279,3 +279,84 @@
   border-color: rgba(220, 38, 38, 0.6);
   color: #f87171;
 }
+
+/* ------------------------------------------------------- cadastro v2 */
+.campo select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.checklist {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.checklist li {
+  padding: 0.28rem 0.6rem;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: 999px;
+  background: rgba(248, 113, 113, 0.08);
+  font-size: 0.74rem;
+  color: #f87171;
+}
+
+.acoesBloco {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.botaoSecundario {
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.botaoSecundario:hover {
+  border-color: var(--accent-red);
+}
+
+.aviso {
+  margin: 0.4rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.chaveCobranca {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0.2rem;
+  grid-column: 1 / -1;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.chaveCobranca input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-red);
+}

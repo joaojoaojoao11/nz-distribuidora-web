@@ -1,4 +1,4 @@
-// /painel — a conta do cliente final e do lojista.
+// /painel — a conta de quem compra: cliente final, lojista e tambem o admin.
 //
 // Existia como destino do login e do menu, mas nunca teve rota (caía em 404).
 // Aqui vive o que o usuário precisa ver sobre si: o status do cadastro (a
@@ -6,12 +6,20 @@
 // os pedidos feitos pelo site e, na Fase 6, o link de afiliado e as comissões.
 //
 // Quem não está logado vai para o login e volta para cá.
+//
+// O admin também entra aqui (antes era redirecionado direto para /admin): ele
+// precisa de CPF, telefone e endereço para fechar um pedido de teste, e não
+// existia tela nenhuma onde preencher isso. O atalho para o painel
+// administrativo fica no cabeçalho.
 
-import { useCallback, useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
+import { buscarCep, formatarCep } from '../../lib/shop/checkout';
+import { faltasDoCadastro, formatarTelefone, telefoneOk, textoDoErroAuth, UFS } from '../../lib/shop/conta';
+import { SITE_WHATSAPP } from '../../lib/siteConfig';
 import styles from './Painel.module.css';
 
 interface Perfil {
@@ -27,6 +35,9 @@ interface Perfil {
   address_city: string | null;
   address_state: string | null;
   address_zip: string | null;
+  cobranca_igual_entrega?: boolean | null;
+  cobranca_cep?: string | null;
+  cobranca_numero?: string | null;
 }
 
 interface Afiliado {
@@ -84,6 +95,8 @@ const VAZIO: Perfil = {
   address_city: '',
   address_state: '',
   address_zip: '',
+  cobranca_cep: '',
+  cobranca_numero: '',
 };
 
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -106,7 +119,9 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default function Painel() {
-  const { user, profile, loading, isAdmin, isApproved, signOut } = useAuth();
+  const { user, profile, loading, isAdmin, isApproved, cadastroCompleto, signOut, recarregarPerfil } = useAuth();
+  const location = useLocation();
+  const chegada = (location.state ?? {}) as { recemCadastrado?: boolean; reconhecido?: boolean; aprovouAgora?: boolean };
   const [perfil, setPerfil] = useState<Perfil>(VAZIO);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -116,6 +131,11 @@ export default function Painel() {
   const [comissoes, setComissoes] = useState<Comissao[]>([]);
   const [totais, setTotais] = useState<{ pendente: number; apurada: number; paga: number } | null>(null);
   const [copiado, setCopiado] = useState(false);
+  const [cobrancaPropria, setCobrancaPropria] = useState(false);
+  const [trocandoSenha, setTrocandoSenha] = useState(false);
+  const [senhaNova, setSenhaNova] = useState('');
+  const [msgSenha, setMsgSenha] = useState<{ tipo: 'ok' | 'erro'; texto: string } | null>(null);
+  const cepBusca = useRef<AbortController | null>(null);
 
   const carregar = useCallback(async () => {
     if (!user) return;
@@ -123,7 +143,7 @@ export default function Painel() {
       supabase
         .from('user_profiles')
         .select(
-          'full_name, company_name, phone, cpf_cnpj, ie, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip'
+          'full_name, company_name, phone, cpf_cnpj, ie, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip, cobranca_cep, cobranca_numero, cobranca_igual_entrega'
         )
         .eq('id', user.id)
         .maybeSingle(),
@@ -135,9 +155,17 @@ export default function Painel() {
         .limit(50),
     ]);
     if (p) {
+      const bruto = p as Perfil;
       const limpo = { ...VAZIO };
-      for (const k of Object.keys(VAZIO) as (keyof Perfil)[]) limpo[k] = (p as Perfil)[k] ?? '';
+      for (const k of Object.keys(VAZIO) as (keyof Perfil)[]) {
+        const v = bruto[k];
+        (limpo as Record<string, unknown>)[k] = typeof v === 'string' ? v : '';
+      }
+      limpo.phone = formatarTelefone(limpo.phone ?? '');
+      limpo.address_zip = formatarCep(limpo.address_zip ?? '');
+      limpo.cobranca_cep = formatarCep(limpo.cobranca_cep ?? '');
       setPerfil(limpo);
+      setCobrancaPropria(bruto.cobranca_igual_entrega === false);
     }
     setPedidos((ped ?? []) as Pedido[]);
     setCarregando(false);
@@ -172,10 +200,11 @@ export default function Painel() {
 
   if (loading) return null;
   if (!user) return <Navigate to="/login?next=/painel" replace />;
-  if (isAdmin) return <Navigate to="/admin" replace />;
 
   const lojista = profile?.role === 'reseller';
   const doc = perfil.cpf_cnpj ?? '';
+  const faltando = faltasDoCadastro(perfil);
+  const WHATSAPP = SITE_WHATSAPP;
 
   const salvar = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,30 +217,99 @@ export default function Painel() {
       setMsg({ tipo: 'erro', texto: 'Lojista precisa de CNPJ.' });
       return;
     }
+    if (perfil.phone && !telefoneOk(perfil.phone)) {
+      setMsg({ tipo: 'erro', texto: 'WhatsApp incompleto — informe o DDD.' });
+      return;
+    }
     setSalvando(true);
-    const patch: Partial<Perfil> = { ...perfil, cpf_cnpj: doc ? somenteDigitos(doc) : null };
-    for (const k of Object.keys(patch) as (keyof Perfil)[]) if (patch[k] === '') patch[k] = null;
+    const patch: Record<string, unknown> = {
+      ...perfil,
+      cpf_cnpj: doc ? somenteDigitos(doc) : null,
+      address_zip: somenteDigitos(perfil.address_zip ?? '') || null,
+      address_state: (perfil.address_state ?? '').toUpperCase() || null,
+      cobranca_igual_entrega: !cobrancaPropria,
+      cobranca_cep: cobrancaPropria ? somenteDigitos(perfil.cobranca_cep ?? '') || null : null,
+      cobranca_numero: cobrancaPropria ? perfil.cobranca_numero || null : null,
+    };
+    for (const k of Object.keys(patch)) if (patch[k] === '') patch[k] = null;
     const { error } = await supabase.from('user_profiles').update(patch).eq('id', user.id);
     setSalvando(false);
+    if (!error) await recarregarPerfil();
     setMsg(error ? { tipo: 'erro', texto: error.message } : { tipo: 'ok', texto: 'Dados salvos.' });
   };
 
-  const set = (k: keyof Perfil) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const set = (k: keyof Perfil) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setPerfil((p) => ({ ...p, [k]: e.target.value }));
+
+  /** CEP completo preenche rua/bairro/cidade/UF (ViaCEP), como no checkout. */
+  const mudarCep = (bruto: string) => {
+    const cep = formatarCep(bruto);
+    setPerfil((p) => ({ ...p, address_zip: cep }));
+    if (cepBusca.current) cepBusca.current.abort();
+    const d = somenteDigitos(cep);
+    if (d.length !== 8) return;
+    const ctrl = new AbortController();
+    cepBusca.current = ctrl;
+    void buscarCep(d, ctrl.signal).then((r) => {
+      if (!r || ctrl.signal.aborted) return;
+      setPerfil((p) => ({
+        ...p,
+        address_street: r.logradouro || p.address_street,
+        address_neighborhood: r.bairro || p.address_neighborhood,
+        address_city: r.localidade,
+        address_state: r.uf,
+      }));
+    });
+  };
+
+  const trocarSenha = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMsgSenha(null);
+    if (senhaNova.length < 8) {
+      setMsgSenha({ tipo: 'erro', texto: 'A senha precisa de pelo menos 8 caracteres.' });
+      return;
+    }
+    const { error } = await supabase.auth.updateUser({ password: senhaNova });
+    if (error) {
+      setMsgSenha({ tipo: 'erro', texto: textoDoErroAuth(error.message) });
+      return;
+    }
+    setSenhaNova('');
+    setTrocandoSenha(false);
+    setMsgSenha({ tipo: 'ok', texto: 'Senha alterada.' });
+  };
 
   return (
     <div className={`container ${styles.pagina}`}>
       <header className={styles.cabecalho}>
         <div>
-          <span className={styles.rotulo}>{lojista ? 'Conta de lojista' : 'Conta de cliente'}</span>
+          <span className={styles.rotulo}>{isAdmin ? 'Conta da equipe NZ' : lojista ? 'Conta de lojista' : 'Conta de cliente'}</span>
           <h1 className={styles.titulo}>{perfil.full_name || user.email}</h1>
         </div>
-        <button type="button" className={styles.sair} onClick={() => void signOut()}>
-          Sair
-        </button>
+        <div className={styles.acoesBloco}>
+          {isAdmin && (
+            <Link to="/admin" className={styles.botaoSecundario}>
+              Painel administrativo
+            </Link>
+          )}
+          <button type="button" className={styles.sair} onClick={() => void signOut()}>
+            Sair
+          </button>
+        </div>
       </header>
 
       {/* ------------------------------------------------------ status */}
+      {chegada.recemCadastrado && (
+        <section className={`${styles.bloco} ${styles.blocoOk}`}>
+          <strong>Conta criada.</strong>{' '}
+          {chegada.aprovouAgora
+            ? 'Encontramos seu CNPJ na base da NZ e já liberamos o preço de revenda.'
+            : chegada.reconhecido
+              ? 'Encontramos seu cadastro na NZ e completamos o que já sabíamos.'
+              : 'Confira os dados abaixo antes do primeiro pedido.'}
+        </section>
+      )}
+
       <section className={`${styles.bloco} ${isApproved ? styles.blocoOk : styles.blocoPendente}`}>
         {isApproved ? (
           <>
@@ -224,6 +322,29 @@ export default function Painel() {
             levar um dia útil. Complete o cadastro abaixo para acelerar
             {lojista ? ' (CNPJ e inscrição estadual são obrigatórios para lojista)' : ''}.
           </>
+        )}
+        {!carregando && (
+          <>
+            {cadastroCompleto ? (
+              <p className={styles.aviso}>✓ Cadastro completo — pronto para fechar pedido pelo site.</p>
+            ) : (
+              <>
+                <p className={styles.aviso}>Para fechar um pedido pelo site ainda falta:</p>
+                <ul className={styles.checklist}>
+                  {faltando.map((f) => (
+                    <li key={f}>{f}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </>
+        )}
+        {!isApproved && (
+          <div className={styles.acoesBloco}>
+            <a className={styles.botaoSecundario} href={WHATSAPP} target="_blank" rel="noopener noreferrer">
+              Falar com a NZ
+            </a>
+          </div>
         )}
       </section>
 
@@ -240,7 +361,14 @@ export default function Painel() {
             </label>
             <label className={styles.campo}>
               <span>WhatsApp</span>
-              <input value={perfil.phone ?? ''} onChange={set('phone')} inputMode="tel" />
+              <input
+                value={perfil.phone ?? ''}
+                onChange={(e) => setPerfil((x) => ({ ...x, phone: formatarTelefone(e.target.value) }))}
+                inputMode="tel"
+                autoComplete="tel"
+                maxLength={15}
+                placeholder="(11) 99999-9999"
+              />
             </label>
             <label className={styles.campo}>
               <span>{lojista ? 'CNPJ' : 'CPF ou CNPJ'}</span>
@@ -268,7 +396,14 @@ export default function Painel() {
             <h3 className={styles.subsub}>Endereço de entrega</h3>
             <label className={styles.campo}>
               <span>CEP</span>
-              <input value={perfil.address_zip ?? ''} onChange={set('address_zip')} inputMode="numeric" />
+              <input
+                value={perfil.address_zip ?? ''}
+                onChange={(e) => mudarCep(e.target.value)}
+                inputMode="numeric"
+                autoComplete="postal-code"
+                maxLength={9}
+                placeholder="00000-000"
+              />
             </label>
             <label className={`${styles.campo} ${styles.campoLargo}`}>
               <span>Rua</span>
@@ -292,14 +427,77 @@ export default function Painel() {
             </label>
             <label className={styles.campo}>
               <span>UF</span>
-              <input value={perfil.address_state ?? ''} onChange={set('address_state')} maxLength={2} />
+              <select value={(perfil.address_state ?? '').toUpperCase()} onChange={set('address_state')}>
+                <option value="">—</option>
+                {UFS.map((uf) => (
+                  <option key={uf} value={uf}>
+                    {uf}
+                  </option>
+                ))}
+              </select>
             </label>
+
+            {/* Cartão de crédito confere o endereço do titular; às vezes ele é o
+                da fatura, não o da entrega. */}
+            <label className={styles.chaveCobranca}>
+              <input type="checkbox" checked={cobrancaPropria} onChange={(e) => setCobrancaPropria(e.target.checked)} />
+              <span>O endereço de cobrança do cartão é diferente</span>
+            </label>
+            {cobrancaPropria && (
+              <>
+                <label className={styles.campo}>
+                  <span>CEP de cobrança</span>
+                  <input
+                    value={perfil.cobranca_cep ?? ''}
+                    onChange={(e) => setPerfil((x) => ({ ...x, cobranca_cep: formatarCep(e.target.value) }))}
+                    inputMode="numeric"
+                    maxLength={9}
+                    placeholder="00000-000"
+                  />
+                </label>
+                <label className={styles.campo}>
+                  <span>Número de cobrança</span>
+                  <input value={perfil.cobranca_numero ?? ''} onChange={set('cobranca_numero')} />
+                </label>
+              </>
+            )}
 
             {msg && <p className={msg.tipo === 'ok' ? styles.ok : styles.erro}>{msg.texto}</p>}
             <button type="submit" className={styles.salvar} disabled={salvando}>
               {salvando ? 'Salvando…' : 'Salvar dados'}
             </button>
           </form>
+        )}
+      </section>
+
+      {/* ------------------------------------------------------- acesso */}
+      <section className={styles.bloco}>
+        <h2 className={styles.subtitulo}>Acesso</h2>
+        <p className={styles.mudo}>
+          E-mail: <strong>{user.email}</strong>
+        </p>
+        {msgSenha && <p className={msgSenha.tipo === 'ok' ? styles.ok : styles.erro}>{msgSenha.texto}</p>}
+        {trocandoSenha ? (
+          <form className={styles.form} onSubmit={trocarSenha}>
+            <label className={styles.campo}>
+              <span>Nova senha</span>
+              <input type="password" value={senhaNova} onChange={(e) => setSenhaNova(e.target.value)} minLength={8} autoComplete="new-password" />
+            </label>
+            <div className={styles.acoesBloco}>
+              <button type="submit" className={styles.salvar}>
+                Salvar senha
+              </button>
+              <button type="button" className={styles.botaoSecundario} onClick={() => setTrocandoSenha(false)}>
+                Cancelar
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className={styles.acoesBloco}>
+            <button type="button" className={styles.botaoSecundario} onClick={() => setTrocandoSenha(true)}>
+              Alterar senha
+            </button>
+          </div>
         )}
       </section>
 

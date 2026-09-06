@@ -35,6 +35,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { produtoAutoDeSku } from '../../../src/lib/shop/erp/mapa.js';
 import { manutencaoCheckout } from '../asaas/manutencao.js';
+import { sincronizarEquipe } from './equipe.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Db = SupabaseClient<any, any, any>;
@@ -162,6 +163,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Checkout: eventos do Asaas com erro, Pix expirado, ERP atrasado. Só no
     // cron e no botão — o webhook do ERP bate aqui a cada 5 min e não precisa.
     const checkout = !dry && gatilho !== 'webhook' ? await manutencaoCheckout(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // Quem entrou/saiu do NZERP ganha/perde acesso administrativo ao site.
+    const equipe = !dry && gatilho !== 'webhook' ? await sincronizarEquipe(site, null).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
 
     if (logId) {
       await site
@@ -177,7 +180,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .eq('id', logId);
     }
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);

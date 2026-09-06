@@ -29,6 +29,7 @@ const build = spawnSync(
     'api/_lib/asaas/pagamento.ts',
     'api/_lib/handlers/asaas.ts',
     'api/_lib/pedido/precificar.ts',
+    'api/_lib/conta/completude.ts',
     `--outdir=${outDir}`,
     '--format=esm',
     '--platform=node',
