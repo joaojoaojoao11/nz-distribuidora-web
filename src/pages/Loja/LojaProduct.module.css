@@ -58,18 +58,26 @@
   min-width: 0;
 }
 
+/* A moldura acompanha a proporção da imagem, sem corte. As fotos de rolo da
+   SH são 1:1 com o logotipo do fabricante no canto superior; os chips são 1:1;
+   as texturas Etherna 16:9; as aplicações 3:2. Um 4:3 fixo com `cover`
+   cortava todas — na SH, exatamente a faixa do logotipo. O teto em vh evita
+   que um quadrado ocupe a tela inteira no desktop; quando ele vale, `contain`
+   completa com o fundo da moldura em vez de recortar. */
 .mainImageWrap {
-  aspect-ratio: 4 / 3;
   border-radius: 14px;
   overflow: hidden;
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
+  /* Reserva de espaço enquanto a foto carrega; a imagem real manda no fim. */
+  min-height: 240px;
 }
 
 .mainImage {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  max-height: 78vh;
+  object-fit: contain;
   display: block;
 }
 
