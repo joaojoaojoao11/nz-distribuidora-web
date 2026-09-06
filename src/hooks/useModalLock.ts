@@ -60,6 +60,11 @@ export function useModalLock(open: boolean, onClose: () => void) {
  * aberto sem passar pelo hook), fecha direto.
  */
 export function closeModal(onClose: () => void) {
-  if ((window.history.state as { [MARK]?: boolean } | null)?.[MARK]) window.history.back();
+  if (temSentinela()) window.history.back();
   else onClose();
+}
+
+/** Há uma entrada sentinela nossa no topo do histórico? */
+export function temSentinela(): boolean {
+  return Boolean((window.history.state as { [MARK]?: boolean } | null)?.[MARK]);
 }

@@ -15,8 +15,8 @@
 
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
-import { closeModal, useModalLock } from '../../hooks/useModalLock';
+import { Link, useNavigate } from 'react-router-dom';
+import { closeModal, temSentinela, useModalLock } from '../../hooks/useModalLock';
 import { alterarQuantidade, removerDoCarrinho, totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { fecharPainelCarrinho, usePainelCarrinho } from '../../lib/shop/painelCarrinho';
 import { BRL, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
@@ -26,7 +26,20 @@ export default function MiniCarrinho() {
   const painel = usePainelCarrinho();
   const itens = useCarrinho();
   const { itens: precos } = usePrecosMapa();
+  const navegar = useNavigate();
   const fechar = () => closeModal(fecharPainelCarrinho);
+
+  // Link daqui de dentro NÃO pode passar por `closeModal`: o history.back() da
+  // sentinela chega depois do push do router e desfaz a navegação — foi o que
+  // deixou "Ir para o carrinho" sem efeito. Mesma saída da paleta de busca:
+  // fecha o estado e navega com `replace`, que consome a sentinela. Clique com
+  // modificador (nova aba, botão do meio) segue o comportamento normal do <a>.
+  const irPara = (e: React.MouseEvent, destino: string) => {
+    if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    fecharPainelCarrinho();
+    navegar(destino, { replace: temSentinela() });
+  };
   const primeiro = useRef<HTMLAnchorElement>(null);
 
   // Itens vindos de outras páginas podem não ter preço no cache desta sessão.
@@ -88,7 +101,7 @@ export default function MiniCarrinho() {
                     {i.imagem ? <img src={i.imagem} alt="" loading="lazy" /> : <span style={{ background: i.hex ?? '#222' }} />}
                   </span>
                   <span className={styles.info}>
-                    <Link to={`/loja/${i.slug}`} className={styles.nome} onClick={fechar}>
+                    <Link to={`/loja/${i.slug}`} className={styles.nome} onClick={(e) => irPara(e, `/loja/${i.slug}`)}>
                       {i.nome}
                     </Link>
                     <span className={styles.meta}>
@@ -131,7 +144,7 @@ export default function MiniCarrinho() {
               <strong>{total == null ? 'calculando…' : BRL.format(total)}</strong>
             </div>
           )}
-          <Link to="/carrinho" className={styles.principal} onClick={fechar} ref={primeiro}>
+          <Link to="/carrinho" className={styles.principal} onClick={(e) => irPara(e, '/carrinho')} ref={primeiro}>
             {itens.length > 0 ? 'Ir para o carrinho' : 'Abrir o carrinho'}
           </Link>
           <button type="button" className={styles.continuar} onClick={fechar}>
