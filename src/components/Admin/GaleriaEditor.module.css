@@ -1,0 +1,362 @@
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------------------------------------------------- entrada */
+.solta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.6rem 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  color: #888;
+  font-size: 0.85rem;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.soltaAtiva {
+  border-color: var(--accent-red, #ff4444);
+  background: rgba(255, 68, 68, 0.06);
+  color: #fff;
+}
+
+.botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.3rem;
+}
+
+.botao {
+  min-height: 38px;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 7px;
+  background: transparent;
+  color: #fff;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.botao:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.botao:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dica {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #666;
+}
+
+/* --------------------------------------------------------------- fila */
+.fila {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.filaItem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 7px;
+  font-size: 0.78rem;
+  color: #ccc;
+}
+
+.filaNome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barra {
+  grid-column: 1 / -1;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.barraInterna {
+  height: 100%;
+  background: var(--accent-red, #ff4444);
+  transition: width 0.2s;
+}
+
+.filaErro {
+  border-color: rgba(255, 68, 68, 0.4);
+  color: #ff8080;
+}
+
+/* ------------------------------------------------------------- grade */
+.grade {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 0.8rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.cardCapa {
+  border-color: rgba(37, 211, 102, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(37, 211, 102, 0.25);
+}
+
+.cardArrastando {
+  opacity: 0.4;
+}
+
+.cardAlvo {
+  border-color: var(--accent-red, #ff4444);
+}
+
+.thumbWrap {
+  position: relative;
+  aspect-ratio: 1;
+  background: #000;
+  cursor: grab;
+}
+
+.thumbWrap img,
+.thumbWrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.selo {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+  padding: 0.14rem 0.42rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.seloCapa {
+  background: #25d366;
+  color: #04210f;
+  font-weight: 700;
+}
+
+.seloTipo {
+  left: auto;
+  right: 0.4rem;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.55rem 0.6rem 0.65rem;
+}
+
+.corpo input {
+  width: 100%;
+  min-height: 34px;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  background: #131316;
+  color: #fff;
+  font-size: 0.76rem;
+}
+
+.corpo input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.meta {
+  font-size: 0.66rem;
+  color: #666;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.mini {
+  min-height: 30px;
+  padding: 0 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  background: transparent;
+  color: #bbb;
+  font-size: 0.66rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.mini:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.miniPerigo:hover {
+  color: #ff6b6b;
+  border-color: rgba(255, 68, 68, 0.5);
+}
+
+.miniAtiva {
+  color: #25d366;
+  border-color: rgba(37, 211, 102, 0.45);
+}
+
+.avisos {
+  list-style: none;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.avisos li {
+  font-size: 0.66rem;
+  line-height: 1.4;
+  color: #f5a623;
+}
+
+.avisoErro {
+  color: #ff6b6b !important;
+}
+
+.vazio {
+  margin: 1rem 0 0;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9px;
+  color: #777;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* -------------------------------------------------------- orientações */
+.guia {
+  position: sticky;
+  top: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.guia h4 {
+  margin: 0 0 0.6rem;
+  font-size: 0.66rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.guia dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.guia dt {
+  font-size: 0.7rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.guia dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #8a8a8f;
+}
+
+.guiaNao {
+  margin: 0.75rem 0 0;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: #777;
+}
+
+.erroCaixa {
+  margin: 0.7rem 0 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(255, 68, 68, 0.35);
+  border-radius: 7px;
+  background: rgba(255, 68, 68, 0.07);
+  color: #ff8080;
+  font-size: 0.78rem;
+}
+
+.linkBox {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
+.linkBox input {
+  flex: 1;
+  min-width: 0;
+  min-height: 38px;
+  padding: 0 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  background: #131316;
+  color: #fff;
+  font-size: 0.8rem;
+}

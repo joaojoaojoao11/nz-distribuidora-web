@@ -87,6 +87,78 @@ const ORACAL_670_IMAGES: Record<string, string> = {
 };
 
 /**
+ * Fotos de rolo Oracal 651 (62 cores). Padrão idêntico ao Oracal 670RA:
+ * tubete de papelão fino com label ORAFOL no interior, logo 'ORACAL 651'
+ * no canto superior esquerdo. Todos "Sólido Brilhante" (Gloss).
+ * Convenção: `public/assets/images/shop/oracal-651/{color}.webp`.
+ * Chave = slug completo do DB (`oracal-651-{color}`).
+ */
+const ORACAL_651_IMAGES: Record<string, string> = {
+  'oracal-651-transparent': '/assets/images/shop/oracal-651/transparent.webp',
+  'oracal-651-white': '/assets/images/shop/oracal-651/white.webp',
+  'oracal-651-signal-yellow': '/assets/images/shop/oracal-651/signal-yellow.webp',
+  'oracal-651-golden-yellow': '/assets/images/shop/oracal-651/golden-yellow.webp',
+  'oracal-651-yellow': '/assets/images/shop/oracal-651/yellow.webp',
+  'oracal-651-light-yellow': '/assets/images/shop/oracal-651/light-yellow.webp',
+  'oracal-651-cream': '/assets/images/shop/oracal-651/cream.webp',
+  'oracal-651-brimstone-yellow': '/assets/images/shop/oracal-651/brimstone-yellow.webp',
+  'oracal-651-purple-red': '/assets/images/shop/oracal-651/purple-red.webp',
+  'oracal-651-dark-red': '/assets/images/shop/oracal-651/dark-red.webp',
+  'oracal-651-red': '/assets/images/shop/oracal-651/red.webp',
+  'oracal-651-light-red': '/assets/images/shop/oracal-651/light-red.webp',
+  'oracal-651-orange': '/assets/images/shop/oracal-651/orange.webp',
+  'oracal-651-pastel-orange': '/assets/images/shop/oracal-651/pastel-orange.webp',
+  'oracal-651-light-orange': '/assets/images/shop/oracal-651/light-orange.webp',
+  'oracal-651-violet': '/assets/images/shop/oracal-651/violet.webp',
+  'oracal-651-pink': '/assets/images/shop/oracal-651/pink.webp',
+  'oracal-651-lilac': '/assets/images/shop/oracal-651/lilac.webp',
+  'oracal-651-lavender': '/assets/images/shop/oracal-651/lavender.webp',
+  'oracal-651-soft-pink': '/assets/images/shop/oracal-651/soft-pink.webp',
+  'oracal-651-orange-red': '/assets/images/shop/oracal-651/orange-red.webp',
+  'oracal-651-king-blue': '/assets/images/shop/oracal-651/king-blue.webp',
+  'oracal-651-dark-blue': '/assets/images/shop/oracal-651/dark-blue.webp',
+  'oracal-651-gentian-blue': '/assets/images/shop/oracal-651/gentian-blue.webp',
+  'oracal-651-azure-blue': '/assets/images/shop/oracal-651/azure-blue.webp',
+  'oracal-651-light-blue': '/assets/images/shop/oracal-651/light-blue.webp',
+  'oracal-651-turquoise': '/assets/images/shop/oracal-651/turquoise.webp',
+  'oracal-651-mint': '/assets/images/shop/oracal-651/mint.webp',
+  'oracal-651-ice-blue': '/assets/images/shop/oracal-651/ice-blue.webp',
+  'oracal-651-traffic-blue': '/assets/images/shop/oracal-651/traffic-blue.webp',
+  'oracal-651-dark-green': '/assets/images/shop/oracal-651/dark-green.webp',
+  'oracal-651-green': '/assets/images/shop/oracal-651/green.webp',
+  'oracal-651-light-green': '/assets/images/shop/oracal-651/light-green.webp',
+  'oracal-651-lime-tree-green': '/assets/images/shop/oracal-651/lime-tree-green.webp',
+  'oracal-651-yellow-green': '/assets/images/shop/oracal-651/yellow-green.webp',
+  'oracal-651-cobalt-blue': '/assets/images/shop/oracal-651/cobalt-blue.webp',
+  'oracal-651-turquoise-blue': '/assets/images/shop/oracal-651/turquoise-blue.webp',
+  'oracal-651-blue': '/assets/images/shop/oracal-651/blue.webp',
+  'oracal-651-grass-green': '/assets/images/shop/oracal-651/grass-green.webp',
+  'oracal-651-black': '/assets/images/shop/oracal-651/black.webp',
+  'oracal-651-grey': '/assets/images/shop/oracal-651/grey.webp',
+  'oracal-651-light-grey': '/assets/images/shop/oracal-651/light-grey.webp',
+  'oracal-651-dark-grey': '/assets/images/shop/oracal-651/dark-grey.webp',
+  'oracal-651-middle-grey': '/assets/images/shop/oracal-651/middle-grey.webp',
+  'oracal-651-telegrey': '/assets/images/shop/oracal-651/telegrey.webp',
+  'oracal-651-brown': '/assets/images/shop/oracal-651/brown.webp',
+  'oracal-651-light-brown': '/assets/images/shop/oracal-651/light-brown.webp',
+  'oracal-651-beige': '/assets/images/shop/oracal-651/beige.webp',
+  'oracal-651-nut-brown': '/assets/images/shop/oracal-651/nut-brown.webp',
+  'oracal-651-sky-blue': '/assets/images/shop/oracal-651/sky-blue.webp',
+  'oracal-651-brilliant-blue': '/assets/images/shop/oracal-651/brilliant-blue.webp',
+  'oracal-651-silver-grey': '/assets/images/shop/oracal-651/silver-grey.webp',
+  'oracal-651-gold': '/assets/images/shop/oracal-651/gold.webp',
+  'oracal-651-copper': '/assets/images/shop/oracal-651/copper.webp',
+  'oracal-651-gentian': '/assets/images/shop/oracal-651/gentian.webp',
+  'oracal-651-burgundy': '/assets/images/shop/oracal-651/burgundy.webp',
+  'oracal-651-coral': '/assets/images/shop/oracal-651/coral.webp',
+  'oracal-651-purple': '/assets/images/shop/oracal-651/purple.webp',
+  'oracal-651-steel-blue': '/assets/images/shop/oracal-651/steel-blue.webp',
+  'oracal-651-deep-sea-blue': '/assets/images/shop/oracal-651/deep-sea-blue.webp',
+  'oracal-651-forest-green': '/assets/images/shop/oracal-651/forest-green.webp',
+  'oracal-651-imitation-gold': '/assets/images/shop/oracal-651/imitation-gold.webp',
+};
+
+/**
  * Galerias SH Wrapping. Quando existe, o card usa a galeria inteira
  * (foto do rolo + 3 carros esportivos envelopados na cor). Cores sem
  * galeria caem no `image` mainly (só o rolo).
@@ -265,14 +337,16 @@ function rowToShopItem(row: DbSnapshotRow): ShopItem {
     // Regra de imagem/galeria:
     //  - SH Wrapping revisada  → foto customizada + galeria (rolo + 3 carros quando existe)
     //  - Oracal 670RA revisada → foto de rolo customizada (sem galeria — só rolo por enquanto)
-    //  - Oracal 651            → placeholder branded (linha ainda sem fotos)
+    //  - Oracal 651 revisada   → foto de rolo customizada (só rolo)
     //  - qualquer outro sem foto → placeholder branded da linha (nunca vazio)
     image:
       row.source === 'sh-wrapping' && isReviewedSlug(row.slug)
         ? (SH_WRAPPING_IMAGES[row.slug] ?? genericImageForLine(row.source))
         : row.source === 'oracal-670' && isReviewedSlug(row.slug)
           ? (ORACAL_670_IMAGES[row.slug] ?? genericImageForLine(row.source))
-          : genericImageForLine(row.source),
+          : row.source === 'oracal-651' && isReviewedSlug(row.slug)
+            ? (ORACAL_651_IMAGES[row.slug] ?? genericImageForLine(row.source))
+            : genericImageForLine(row.source),
     gallery:
       row.source === 'sh-wrapping' && isReviewedSlug(row.slug)
         ? (SH_WRAPPING_GALLERY[row.slug] ?? [])

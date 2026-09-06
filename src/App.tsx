@@ -53,7 +53,26 @@ const Login = lazy(() => import('./pages/Auth/Login'));
 const Register = lazy(() => import('./pages/Auth/Register'));
 const RecuperarSenha = lazy(() => import('./pages/Auth/RecuperarSenha'));
 const NovaSenha = lazy(() => import('./pages/Auth/NovaSenha'));
-const Dashboard = lazy(() => import('./pages/Admin/Dashboard'));
+// Painel administrativo: casca com rotas aninhadas (AdminLayout) + uma página
+// por aba. Antes era um componente só com as abas em `useState`.
+const AdminLayout = lazy(() => import('./pages/Admin/AdminLayout'));
+const AdminHome = lazy(() => import('./pages/Admin/AdminHome'));
+const AdminLeads = lazy(() => import('./pages/Admin/AdminLeads'));
+const AdminProdutos = lazy(() => import('./pages/Admin/AdminProdutos'));
+const AdminProdutoEditor = lazy(() => import('./pages/Admin/AdminProdutoEditor'));
+const AdminPedidos = lazy(() => import('./pages/Admin/AdminPedidos'));
+const AdminLogistica = lazy(() => import('./pages/Admin/AdminLogistica'));
+const AdminErp = lazy(() => import('./pages/Admin/AdminErp'));
+const AdminAfiliados = lazy(() => import('./pages/Admin/AdminAfiliados'));
+const AdminBlog = lazy(() => import('./pages/Admin/AdminBlog'));
+const AdminAIBlog = lazy(() => import('./pages/Admin/AdminAIBlog'));
+const AdminPromoPages = lazy(() => import('./pages/Admin/AdminPromoPages'));
+const AdminAgenciaNZ = lazy(() => import('./pages/Admin/AdminAgenciaNZ'));
+const AdminAgendaSocial = lazy(() => import('./pages/Admin/AdminAgendaSocial'));
+const AdminClientes = lazy(() => import('./pages/Admin/AdminClientes'));
+const AdminWarranties = lazy(() => import('./pages/Admin/AdminWarranties'));
+const AdminEquipe = lazy(() => import('./pages/Admin/AdminEquipe'));
+const AdminSettings = lazy(() => import('./pages/Admin/AdminSettings'));
 const WarrantyRegistration = lazy(() => import('./pages/Warranty/WarrantyRegistration'));
 const WarrantyValidator = lazy(() => import('./pages/Warranty/WarrantyValidator'));
 const Interlagos = lazy(() => import('./pages/Interlagos/Interlagos'));
@@ -83,13 +102,35 @@ function App() {
       <ScrollToTop />
       <Routes>
         {/* Admin (without Navbar/Footer) */}
-        <Route path="/admin" element={
-          <ProtectedRoute allowedRoles={['admin']}>
-            <Suspense fallback={<RouteLoading />}>
-              <Dashboard />
-            </Suspense>
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <Suspense fallback={<RouteLoading />}>
+                <AdminLayout />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Suspense fallback={<RouteLoading />}><AdminHome /></Suspense>} />
+          <Route path="produtos" element={<Suspense fallback={<RouteLoading />}><AdminProdutos /></Suspense>} />
+          <Route path="produtos/novo" element={<Suspense fallback={<RouteLoading />}><AdminProdutoEditor /></Suspense>} />
+          <Route path="produtos/:slug" element={<Suspense fallback={<RouteLoading />}><AdminProdutoEditor /></Suspense>} />
+          <Route path="pedidos" element={<Suspense fallback={<RouteLoading />}><AdminPedidos /></Suspense>} />
+          <Route path="logistica" element={<Suspense fallback={<RouteLoading />}><AdminLogistica /></Suspense>} />
+          <Route path="erp" element={<Suspense fallback={<RouteLoading />}><AdminErp /></Suspense>} />
+          <Route path="afiliados" element={<Suspense fallback={<RouteLoading />}><AdminAfiliados /></Suspense>} />
+          <Route path="blog" element={<Suspense fallback={<RouteLoading />}><AdminBlog /></Suspense>} />
+          <Route path="blog-ia" element={<Suspense fallback={<RouteLoading />}><AdminAIBlog /></Suspense>} />
+          <Route path="promo" element={<Suspense fallback={<RouteLoading />}><AdminPromoPages /></Suspense>} />
+          <Route path="agencia" element={<Suspense fallback={<RouteLoading />}><AdminAgenciaNZ /></Suspense>} />
+          <Route path="agenda-social" element={<Suspense fallback={<RouteLoading />}><AdminAgendaSocial /></Suspense>} />
+          <Route path="leads" element={<Suspense fallback={<RouteLoading />}><AdminLeads /></Suspense>} />
+          <Route path="clientes" element={<Suspense fallback={<RouteLoading />}><AdminClientes /></Suspense>} />
+          <Route path="garantias" element={<Suspense fallback={<RouteLoading />}><AdminWarranties /></Suspense>} />
+          <Route path="usuarios" element={<Suspense fallback={<RouteLoading />}><AdminEquipe /></Suspense>} />
+          <Route path="configuracoes" element={<Suspense fallback={<RouteLoading />}><AdminSettings /></Suspense>} />
+        </Route>
 
         {/* Auth pages (without Footer, with Navbar) */}
         <Route path="/login" element={<><Navbar /><Suspense fallback={<RouteLoading />}><Login /></Suspense></>} />

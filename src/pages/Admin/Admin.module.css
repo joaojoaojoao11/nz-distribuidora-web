@@ -841,3 +841,201 @@
   .promoGrid { grid-template-columns: 1fr; }
   .promoToolbar .adminInput { min-width: 100%; }
 }
+
+/* ============================================================
+   LAYOUT v2 — barra lateral agrupada, gaveta no celular,
+   cabeçalho com busca global.
+   ============================================================ */
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.5rem;
+}
+
+.grupoTitulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.4rem 1rem 0.3rem;
+  border: none;
+  background: transparent;
+  color: #5c5c62;
+  font-family: var(--font-tech, monospace);
+  font-size: 0.6rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+}
+
+.grupoTitulo:hover { color: #999; }
+.grupoTitulo span:first-child { flex: 1; }
+.grupoSeta { font-size: 0.8rem; line-height: 1; }
+
+.gavetaFundo {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+}
+
+.headerEsquerda,
+.headerDireita {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.menuBtn {
+  display: none;
+  min-width: 40px;
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.buscaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 38px;
+  padding: 0 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  color: #888;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.buscaBtn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+
+.buscaBtn kbd {
+  padding: 0.1rem 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  font-family: var(--font-tech, monospace);
+  font-size: 0.62rem;
+  color: #777;
+}
+
+/* ------------------------------------------------- busca global */
+.buscaOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 600;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8vh 1rem 1rem;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.buscaCaixa {
+  width: min(620px, 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: #0f0f12;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+.buscaCampo {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 1rem;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.buscaCampo:focus { outline: none; }
+
+.buscaLista {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.buscaItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #ddd;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.buscaItem:hover,
+.buscaItemAtivo {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.buscaTitulo {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buscaDetalhe {
+  font-size: 0.7rem;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 45%;
+}
+
+.buscaVazio {
+  margin: 0;
+  padding: 1.1rem;
+  color: #777;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 250px;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    z-index: 120;
+  }
+  .sidebarAberta { transform: translateX(0); }
+  /* A regra de 768px escondia os rótulos; na gaveta eles voltam. */
+  .sidebar .sidebarLogo h2,
+  .sidebar .sidebarLogo span,
+  .sidebar .navLink span,
+  .sidebar .logoutBtn span { display: inline; }
+  .sidebar .navLink { justify-content: flex-start; padding: 0.75rem 1rem; }
+  .sidebar .navBadge { display: inline-flex; }
+  .gavetaFundo { display: block; }
+  .mainContent { margin-left: 0; padding: 1rem; }
+  .menuBtn { display: inline-flex; align-items: center; justify-content: center; }
+  .header { flex-wrap: wrap; gap: 0.6rem; }
+  .headerTitle { font-size: 1.1rem; }
+  .buscaBtnTexto, .buscaBtn kbd { display: none; }
+  .headerUser { display: none; }
+}
