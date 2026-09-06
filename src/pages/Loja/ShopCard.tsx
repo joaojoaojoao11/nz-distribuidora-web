@@ -71,8 +71,6 @@ function ShopCardBase({ item, eager = false, onRemove, from }: Props) {
           </span>
         )}
 
-        {item.code && <span className={styles.code}>{item.code}</span>}
-
         {/* Nível público de estoque, já embutido no catálogo — sem request. */}
         {item.nivelEstoque === 'pronta-entrega' && (
           <span className={`${styles.estoque} ${styles.estoquePronta}`}>Pronta entrega</span>
@@ -108,6 +106,9 @@ function ShopCardBase({ item, eager = false, onRemove, from }: Props) {
       <div className={styles.info}>
         <span className={styles.line}>{item.line ?? item.brand}</span>
         <h3 className={styles.name}>{item.name}</h3>
+        {/* SKU fica fora da foto: a capa é o que vende o produto, e o chip sobre
+            a imagem cobria justamente o canto onde o rolo aparece. */}
+        {item.code && <span className={styles.code}>{item.code}</span>}
         <span className={styles.meta}>{item.finishLabel ?? item.subtitle ?? item.brand}</span>
       </div>
     </Link>
