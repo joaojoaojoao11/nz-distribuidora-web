@@ -183,6 +183,20 @@
   white-space: nowrap;
 }
 
+.verMais {
+  width: 100%;
+  min-height: 44px;
+  border: 1px dashed var(--border-light);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 /* ---------------------------------------------------------- revisão */
 .aceite {
   display: flex;

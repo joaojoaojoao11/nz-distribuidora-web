@@ -1,5 +1,7 @@
 # Checkout da NZSTORE com Asaas — Pix, cartão e boleto pelo site
 
+> **Status 2026-09-07: IMPLANTADO** (fases 1–7). `loja_config.checkout_ativo` começa desligado; ligar em Admin → Pedidos & Pagamentos depois do teste real de Pix. Pendente: push do ERP (commits `0d0c789`, `2562a55`) e baixa automática do título em contas_receber (seção 4.3, deixada para depois).
+>
 > Estudo feito em 2026-09-06 sobre a documentação oficial (docs.asaas.com, API v3) e sobre o
 > código atual da loja. Nada foi alterado ainda. Este arquivo é o roteiro que o agente vai
 > executar fase a fase; a seção 2 é a lista do que o João precisa fazer/passar.

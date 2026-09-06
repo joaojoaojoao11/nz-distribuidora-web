@@ -81,6 +81,9 @@ export default function Checkout() {
   const [obs, setObs] = useState('');
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
+  // 13 opções de frete com valor é lista demais para escolher: as 5 mais
+  // baratas (retirada incluída) e um "ver mais" para o resto.
+  const [todasFretes, setTodasFretes] = useState(false);
   const cepBusca = useRef<AbortController | null>(null);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -359,7 +362,7 @@ export default function Checkout() {
               </p>
             ) : (
               <ul className={styles.fretes}>
-                {resumo.fretes.map((f) => (
+                {(todasFretes ? resumo.fretes : resumo.fretes.slice(0, 5)).map((f) => (
                   <li key={f.id}>
                     <label className={`${styles.frete} ${freteId === f.id ? styles.freteAtivo : ''}`}>
                       <input type="radio" name="frete" value={f.id} checked={freteId === f.id} onChange={() => setFreteId(f.id)} />
@@ -372,6 +375,13 @@ export default function Checkout() {
                     </label>
                   </li>
                 ))}
+                {resumo.fretes.length > 5 && (
+                  <li>
+                    <button type="button" className={styles.verMais} onClick={() => setTodasFretes((v) => !v)}>
+                      {todasFretes ? 'Ver menos' : `Ver mais ${resumo.fretes.length - 5} opções de entrega`}
+                    </button>
+                  </li>
+                )}
               </ul>
             )}
             {cotando && resumo && <p className={styles.mudoPequeno}>Atualizando…</p>}
