@@ -20,7 +20,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { getAdapter } from '../carriers/index.js';
 import { fatorCubagem, pesoTaxavel } from '../carriers/cubagem.js';
-import { CarrierError } from '../carriers/types.js';
+import { CarrierError, normalizarResultados } from '../carriers/types.js';
 import { resolverPapel, type Db } from '../papel.js';
 
 const CEP_RE = /^[0-9]{8}$/;
@@ -65,13 +65,33 @@ interface Carrier {
   config: unknown;
 }
 
-/** Cotação como o servidor a conhece — com valor. O que sai daqui é filtrado. */
+/**
+ * Cotação como o servidor a conhece — com valor. O que sai daqui é filtrado.
+ *
+ * Uma transportadora pode gerar VÁRIAS destas: o Melhor Envio devolve um
+ * serviço por linha (Jadlog .Package, Correios PAC…) numa chamada só.
+ */
 interface CotacaoInterna {
   carrier: string;
+  /** Rótulo público já composto: 'Melhor Envio · Jadlog .Package'. */
   nome: string;
   dias: number;
   modalidade?: string;
+  servico?: string;
+  servicoNome?: string;
+  transportadora?: string;
   valor: number | null;
+}
+
+/**
+ * Nome que o visitante lê. Para quem cota uma modalidade só, é o nome da
+ * transportadora. Para o Melhor Envio, quem entrega de fato importa mais do que
+ * o intermediador — mas esconder o intermediador confundiria o admin, que vê a
+ * Jadlog direta e a Jadlog via ME lado a lado com preços diferentes.
+ */
+function rotulo(carrierNome: string, r: { transportadora?: string; servicoNome?: string }): string {
+  const detalhe = [r.transportadora, r.servicoNome].filter(Boolean).join(' ');
+  return detalhe ? `${carrierNome} · ${detalhe}` : carrierNome;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -147,8 +167,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     );
 
     const cotacoes = resultados
-      .filter((r): r is PromiseFulfilledResult<CotacaoInterna> => r.status === 'fulfilled')
-      .map((r) => r.value);
+      .filter((r): r is PromiseFulfilledResult<CotacaoInterna[]> => r.status === 'fulfilled')
+      .flatMap((r) => r.value);
 
     for (const r of resultados) {
       if (r.status === 'rejected') {
@@ -168,13 +188,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Objeto montado campo a campo, nunca por spread do interno: é a garantia
     // de que um campo novo no servidor não vaza para o público por descuido.
     const prazos = cotacoes
-      .sort((a, b) => a.dias - b.dias)
+      .sort(
+        (a, b) =>
+          a.dias - b.dias ||
+          // Mesmo prazo: o mais barato primeiro. Quem não devolve valor vai
+          // para o fim, senão um `null` pareceria a opção mais barata.
+          (a.valor ?? Number.POSITIVE_INFINITY) - (b.valor ?? Number.POSITIVE_INFINITY) ||
+          a.nome.localeCompare(b.nome, 'pt-BR')
+      )
       .map((c) => {
         const publico: Record<string, unknown> = {
           carrier: c.carrier,
           nome: c.nome,
           dias: c.dias,
         };
+        if (c.servico) publico.servico = c.servico;
+        if (c.servicoNome) publico.servicoNome = c.servicoNome;
+        if (c.transportadora) publico.transportadora = c.transportadora;
         if (c.modalidade) publico.modalidade = c.modalidade;
         if (podeVerValor && c.valor != null) publico.valor = c.valor;
         return publico;
@@ -307,30 +337,53 @@ async function cotar(
   profile: ShippingProfile,
   cep: string,
   qtd: number
-): Promise<CotacaoInterna> {
+): Promise<CotacaoInterna[]> {
   // Cache primeiro: prazo e valor por CEP mudam muito pouco. A quantidade entra
-  // na chave — a cotação de 1 volume não vale para 10.
+  // na chave — a cotação de 1 volume não vale para 10. O serviço também: o
+  // Melhor Envio grava uma linha por opção, e todas voltam juntas.
   const { data: cached } = await supabase
     .from('shipping_quote_cache')
-    .select('prazo_dias, valor_frete, expires_at')
+    .select('prazo_dias, valor_frete, expires_at, servico, servico_nome, transportadora')
     .eq('carrier_slug', carrier.slug)
     .eq('profile_id', profile.id)
     .eq('cep_destino', cep)
-    .eq('quantidade', qtd)
-    .maybeSingle();
+    .eq('quantidade', qtd);
 
-  const hit = cached as { prazo_dias: number; valor_frete: number | null; expires_at: string } | null;
-  if (hit && new Date(hit.expires_at) > new Date()) {
-    return {
+  type Linha = {
+    prazo_dias: number;
+    valor_frete: number | null;
+    expires_at: string;
+    servico: string | null;
+    servico_nome: string | null;
+    transportadora: string | null;
+  };
+  const linhas = (cached ?? []) as unknown as Linha[];
+  const agora = new Date();
+  // Só vale como acerto se TODAS as linhas ainda valem: uma expirada significa
+  // que a cotação inteira precisa ser refeita — o conjunto de serviços
+  // disponíveis pode ter mudado.
+  const valido = linhas.length > 0 && linhas.every((l) => new Date(l.expires_at) > agora);
+
+  if (valido) {
+    return linhas.map((l) => ({
       carrier: carrier.slug,
-      nome: carrier.nome,
-      dias: hit.prazo_dias + carrier.dias_manuseio,
-      // O cache não guarda a modalidade; a da transportadora é a mesma coisa,
-      // e sem isso a resposta mudava de formato entre o primeiro visitante
-      // (com modalidade) e todos os seguintes (sem).
-      modalidade: carrier.modalidade ?? undefined,
-      valor: hit.valor_frete != null ? Number(hit.valor_frete) : null,
-    };
+      nome: rotulo(carrier.nome, {
+        transportadora: l.transportadora ?? undefined,
+        servicoNome: l.servico_nome ?? undefined,
+      }),
+      dias: l.prazo_dias + carrier.dias_manuseio,
+      // O cache não guarda a modalidade da transportadora simples; a do
+      // cadastro é a mesma coisa, e sem isso a resposta mudava de formato
+      // entre o primeiro visitante (com modalidade) e todos os seguintes.
+      modalidade:
+        [l.transportadora, l.servico_nome].filter(Boolean).join(' ') ||
+        carrier.modalidade ||
+        undefined,
+      servico: l.servico || undefined,
+      servicoNome: l.servico_nome ?? undefined,
+      transportadora: l.transportadora ?? undefined,
+      valor: l.valor_frete != null ? Number(l.valor_frete) : null,
+    }));
   }
 
   const adapter = getAdapter(carrier.slug);
@@ -340,41 +393,65 @@ async function cotar(
   const peso = pesoTaxavel(profile, qtd, fatorCubagem(carrier.config));
   const valorDeclarado = Number(profile.valor_declarado ?? 100) * qtd;
 
-  const cotacao = await adapter.quoteDeadline({
-    cepOrigem: carrier.cep_origem,
-    cepDestino: cep,
-    pesoKg: peso.pesoKg,
-    quantidade: qtd,
-    comprimentoCm: Number(profile.comprimento_cm),
-    larguraCm: Number(profile.largura_cm),
-    alturaCm: Number(profile.altura_cm),
-    valorDeclarado,
-  });
+  const cotacoes = normalizarResultados(
+    await adapter.quoteDeadline({
+      cepOrigem: carrier.cep_origem,
+      cepDestino: cep,
+      // Peso já cubado por nós, para quem não aceita dimensão (Jadlog).
+      pesoKg: peso.pesoKg,
+      // Peso real, para quem recebe as dimensões e cuba do lado de lá (ME).
+      pesoRealKg: peso.pesoReal,
+      quantidade: qtd,
+      comprimentoCm: Number(profile.comprimento_cm),
+      larguraCm: Number(profile.largura_cm),
+      alturaCm: Number(profile.altura_cm),
+      valorDeclarado,
+      config: carrier.config,
+    })
+  );
 
   const expiresAt = new Date(Date.now() + CACHE_DIAS * 86_400_000).toISOString();
   // `raw` guardado só para diagnóstico no painel; nunca sai por este endpoint.
   // Falha de escrita não derruba a cotação: cache é otimização, não requisito —
   // e essa é justamente a janela em que a migration pode não ter sido aplicada.
+  //
+  // A cotação anterior é apagada antes de gravar: um serviço que sumiu da
+  // resposta (transportadora desabilitada na conta) não pode sobreviver no
+  // cache só porque ninguém o sobrescreveu.
+  await supabase
+    .from('shipping_quote_cache')
+    .delete()
+    .eq('carrier_slug', carrier.slug)
+    .eq('profile_id', profile.id)
+    .eq('cep_destino', cep)
+    .eq('quantidade', qtd);
+
   const { error: cacheErr } = await supabase.from('shipping_quote_cache').upsert(
-    {
+    cotacoes.map((c) => ({
       carrier_slug: carrier.slug,
       profile_id: profile.id,
       cep_destino: cep,
       quantidade: qtd,
-      prazo_dias: cotacao.dias,
-      valor_frete: cotacao.valorTotal,
-      raw: cotacao.raw,
+      servico: c.servico ?? '',
+      servico_nome: c.servicoNome ?? null,
+      transportadora: c.transportadora ?? null,
+      prazo_dias: c.dias,
+      valor_frete: c.valorTotal,
+      raw: c.raw,
       expires_at: expiresAt,
-    },
-    { onConflict: 'carrier_slug,profile_id,cep_destino,quantidade' }
+    })),
+    { onConflict: 'carrier_slug,profile_id,cep_destino,quantidade,servico' }
   );
   if (cacheErr) console.warn('[logistica] cache não gravado:', cacheErr.message);
 
-  return {
+  return cotacoes.map((c) => ({
     carrier: carrier.slug,
-    nome: carrier.nome,
-    dias: cotacao.dias + carrier.dias_manuseio,
-    modalidade: cotacao.modalidade,
-    valor: cotacao.valorTotal,
-  };
+    nome: rotulo(carrier.nome, c),
+    dias: c.dias + carrier.dias_manuseio,
+    modalidade: c.modalidade,
+    servico: c.servico,
+    servicoNome: c.servicoNome,
+    transportadora: c.transportadora,
+    valor: c.valorTotal,
+  }));
 }

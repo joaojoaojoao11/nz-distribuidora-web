@@ -117,6 +117,7 @@ const SH_WRAPPING_IMAGES_ERP: Record<string, string> = {
   'sh-sao-paulo-yellow': '/assets/images/shop/sh-wrapping/sao-paulo-yellow.webp',
   'sh-soulmoving-red': '/assets/images/shop/sh-wrapping/soulmoving-red.webp',
   'sh-crystal-white': '/assets/images/shop/sh-wrapping/crystal-white.webp',
+  'sh-bentley-pink': '/assets/images/shop/sh-wrapping/bentley-pink.webp',
 };
 
 /**
@@ -142,6 +143,12 @@ const SH_WRAPPING_GALLERY_ERP: Record<string, string[]> = {
     '/assets/images/shop/sh-wrapping/crystal-white-car-1.webp',
     '/assets/images/shop/sh-wrapping/crystal-white-car-2.webp',
     '/assets/images/shop/sh-wrapping/crystal-white-car-3.webp',
+  ],
+  'sh-bentley-pink': [
+    '/assets/images/shop/sh-wrapping/bentley-pink.webp',
+    '/assets/images/shop/sh-wrapping/bentley-pink-car-1.webp',
+    '/assets/images/shop/sh-wrapping/bentley-pink-car-2.webp',
+    '/assets/images/shop/sh-wrapping/bentley-pink-car-3.webp',
   ],
 };
 

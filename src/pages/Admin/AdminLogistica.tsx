@@ -50,12 +50,59 @@ interface Transportadora {
   dias_manuseio: number;
   modalidade: string | null;
   ordem: number;
+  /** Ajustes de contrato editáveis sem deploy: fator de cubagem, serviços. */
+  config: { fator_cubagem?: number; servicos?: (string | number)[] } | null;
 }
 
 interface StatusCredencial {
   slug: string;
   configurada: boolean;
   modo: string;
+  /** Só Melhor Envio: validade do token pessoal, lida do próprio JWT. */
+  tokenExpiraEm?: string | null;
+}
+
+/** Uma linha do resultado do teste: uma opção de frete. */
+interface TesteOpcao {
+  servico: string;
+  servicoNome: string;
+  transportadora: string;
+  diasTransporte: number;
+  diasTotal: number;
+  valorFrete: number | null;
+  modalidade?: string;
+}
+
+interface TesteResultado {
+  carrier: string;
+  nome?: string;
+  ok: boolean;
+  erro?: string;
+  opcoes?: TesteOpcao[];
+  pesoEnviadoKg?: number;
+  pesoRealKg?: number;
+  pesoCubadoKg?: number;
+  fatorCubagem?: number;
+  ms?: number;
+}
+
+interface TesteResposta {
+  modo?: string;
+  perfil?: { id: string; nome: string };
+  cep?: string;
+  quantidade?: number;
+  resultados?: TesteResultado[];
+  erro?: string;
+}
+
+const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+/** Dias até a data, para o aviso de token perto de vencer. */
+function diasAte(iso: string | null | undefined): number | null {
+  if (!iso) return null;
+  const ms = new Date(iso).getTime() - Date.now();
+  if (!Number.isFinite(ms)) return null;
+  return Math.floor(ms / 86_400_000);
 }
 
 const FORM_VAZIO = {
@@ -91,6 +138,10 @@ export default function AdminLogistica() {
   const [testando, setTestando] = useState(false);
   const [limpandoCache, setLimpandoCache] = useState(false);
   const [cacheMsg, setCacheMsg] = useState('');
+  const [servicosMe, setServicosMe] = useState<
+    { id: string; nome: string; transportadora: string }[] | null
+  >(null);
+  const [servicosMsg, setServicosMsg] = useState('');
 
   // Nenhum setState antes do primeiro await: `loading` já nasce true e é
   // desligado no fim. Recarregar depois de uma alteração acontece em silêncio,
@@ -241,9 +292,53 @@ export default function AdminLogistica() {
     await carregar();
   };
 
-  const atualizarCarrier = async (c: Transportadora, campo: string, valor: string | number) => {
+  // `valor` aceita objeto porque `config` é jsonb — é como a lista de serviços
+  // do Melhor Envio é gravada.
+  const atualizarCarrier = async (c: Transportadora, campo: string, valor: unknown) => {
     await supabase.from('shipping_carriers').update({ [campo]: valor }).eq('id', c.id);
     await carregar();
+  };
+
+  /**
+   * Catálogo de serviços do Melhor Envio. A doc é explícita: identificar
+   * serviço pelo `id`, nunca pelo nome — então o admin precisa ver a lista
+   * antes de restringir. O servidor busca; aqui só exibimos.
+   */
+  const listarServicos = async () => {
+    setServicosMsg('Consultando…');
+    setServicosMe(null);
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) return;
+      const res = await fetch('/api/nz/testar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ listarServicos: true }),
+      });
+      const json = (await res.json()) as {
+        ok: boolean;
+        servicos?: { id: string; nome: string; transportadora: string }[];
+        erro?: string;
+      };
+      if (json.ok && json.servicos) {
+        setServicosMe(json.servicos);
+        setServicosMsg(`${json.servicos.length} serviço(s) disponíveis na conta.`);
+      } else {
+        setServicosMsg(json.erro ?? 'Não foi possível listar.');
+      }
+    } catch (err) {
+      setServicosMsg(err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  /** Lista de ids em `config.servicos`. Vazio = todos os serviços da conta. */
+  const salvarServicos = async (c: Transportadora, texto: string) => {
+    const ids = texto
+      .split(/[,\s]+/)
+      .map((x) => x.trim())
+      .filter((x) => /^\d+$/.test(x));
+    await atualizarCarrier(c, 'config', { ...(c.config ?? {}), servicos: ids });
   };
 
   const testar = async () => {
@@ -467,6 +562,48 @@ export default function AdminLogistica() {
           </ol>
         </details>
 
+        <details style={{ marginBottom: '1rem', fontSize: '0.82rem', color: '#a1a1a6' }}>
+          <summary style={{ cursor: 'pointer', color: '#f5f5f7', marginBottom: '0.5rem' }}>
+            Como habilitar o Melhor Envio
+          </summary>
+          <p style={{ lineHeight: 1.7 }}>
+            O Melhor Envio não é transportadora: é intermediador. Uma cotação devolve{' '}
+            <strong>várias opções de uma vez</strong> (Jadlog, Azul, Buslog, Correios…), com preço
+            já negociado por eles e sem contrato próprio com cada uma.
+          </p>
+          <ol style={{ paddingLeft: '1.2rem', lineHeight: 1.7 }}>
+            <li>
+              Criar conta em <code>melhorenvio.com.br</code> com o CNPJ da NZ (cadastro é
+              self-service e gratuito — não há taxa de uso da API).
+            </li>
+            <li>
+              No painel: <strong>Integrações → Permissões de Acesso → Gerar novo token</strong>.
+              Nomear <code>NZSTORE</code> e marcar <code>shipping-calculate</code> e{' '}
+              <code>shipping-companies</code>. O token aparece <strong>uma única vez</strong> —
+              copiar na hora.
+            </li>
+            <li>
+              Na Vercel, em Environment Variables de Production:{' '}
+              <code>MELHORENVIO_TOKEN</code> e <code>MELHORENVIO_UA_EMAIL</code> (e-mail de contato
+              técnico, exigido pela API no header User-Agent). Nunca com prefixo{' '}
+              <code>VITE_</code>. Para testar sem custo, apontar{' '}
+              <code>MELHORENVIO_ENDPOINT</code> para <code>https://sandbox.melhorenvio.com.br</code>{' '}
+              (conta e token do sandbox são separados).
+            </li>
+            <li>Redeploy — variável de ambiente só vale no próximo deploy.</li>
+            <li>
+              Voltar aqui: rodar o teste abaixo <strong>com a transportadora ainda inativa</strong>,
+              conferir as opções, então ativar e <strong>limpar o cache</strong>.
+            </li>
+          </ol>
+          <p style={{ lineHeight: 1.7 }}>
+            <strong>Sobre os rolos:</strong> os Correios limitam o maior lado a 100 cm e nossos
+            rolos têm 152 cm — PAC e SEDEX vão voltar recusados por dimensão, e é o esperado. Quem
+            atende rolo é Jadlog, Azul Cargo e afins. O token vale 30 dias e{' '}
+            <strong>não se renova sozinho</strong>: a coluna Credencial avisa a validade.
+          </p>
+        </details>
+
         <div className={styles.tableScroll}>
           <table className={styles.table}>
             <thead>
@@ -475,6 +612,7 @@ export default function AdminLogistica() {
                 <th>Credencial</th>
                 <th>CEP origem</th>
                 <th>Dias de manuseio</th>
+                <th>Serviços</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -488,6 +626,26 @@ export default function AdminLogistica() {
                       <span className={styles.badge}>
                         {cred ? (cred.configurada ? '✓ configurada' : '✗ ausente') : '—'}
                       </span>
+                      {/* O token do Melhor Envio vale 30 dias e não se renova
+                          sozinho. Avisar antes de quebrar é o ponto. */}
+                      {cred?.tokenExpiraEm != null &&
+                        (() => {
+                          const d = diasAte(cred.tokenExpiraEm);
+                          if (d == null) return null;
+                          return (
+                            <>
+                              <br />
+                              <span
+                                style={{
+                                  fontSize: '0.7rem',
+                                  color: d < 0 ? '#ff4444' : d <= 7 ? '#f5a623' : '#6b6b70',
+                                }}
+                              >
+                                {d < 0 ? 'token expirado' : `token expira em ${d} dia(s)`}
+                              </span>
+                            </>
+                          );
+                        })()}
                     </td>
                     <td>
                       <input
@@ -510,6 +668,32 @@ export default function AdminLogistica() {
                         }
                         style={{ maxWidth: 80 }}
                       />
+                    </td>
+                    <td>
+                      {c.slug === 'melhorenvio' ? (
+                        <>
+                          <input
+                            className={styles.adminInput}
+                            defaultValue={(c.config?.servicos ?? []).join(', ')}
+                            placeholder="todos"
+                            onBlur={(e) => salvarServicos(c, e.target.value)}
+                            style={{ maxWidth: 140 }}
+                          />
+                          <br />
+                          <button
+                            type="button"
+                            className={styles.actionBtn}
+                            style={{ marginTop: '0.3rem', fontSize: '0.68rem' }}
+                            onClick={listarServicos}
+                          >
+                            Listar serviços
+                          </button>
+                        </>
+                      ) : (
+                        <span style={{ color: '#6b6b70', fontSize: '0.78rem' }}>
+                          {c.modalidade ?? '—'}
+                        </span>
+                      )}
                     </td>
                     <td>
                       <button
@@ -599,20 +783,114 @@ export default function AdminLogistica() {
           </div>
         </div>
 
+        {servicosMsg && (
+          <p style={{ color: '#a1a1a6', fontSize: '0.8rem', marginTop: '0.8rem' }}>{servicosMsg}</p>
+        )}
+        {servicosMe && servicosMe.length > 0 && (
+          <div className={styles.tableScroll} style={{ marginTop: '0.5rem' }}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>Serviço</th>
+                  <th>Transportadora</th>
+                </tr>
+              </thead>
+              <tbody>
+                {servicosMe.map((s) => (
+                  <tr key={s.id}>
+                    <td>
+                      <code>{s.id}</code>
+                    </td>
+                    <td>{s.nome}</td>
+                    <td>{s.transportadora}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         {testeResultado != null && (
-          <pre
-            style={{
-              marginTop: '1rem',
-              padding: '1rem',
-              background: '#0a0a0c',
-              borderRadius: 8,
-              color: '#a1a1a6',
-              fontSize: '0.75rem',
-              overflowX: 'auto',
-            }}
-          >
-            {JSON.stringify(testeResultado, null, 2)}
-          </pre>
+          <>
+            {/* Tabela primeiro: é o que responde "quanto custa e em quantos
+                dias". O JSON cru fica ao lado, para conferir a integração. */}
+            {(testeResultado as TesteResposta).resultados?.map((r) => (
+              <div key={r.carrier} style={{ marginTop: '1rem' }}>
+                <h4
+                  style={{
+                    color: '#f5f5f7',
+                    fontSize: '0.85rem',
+                    margin: '0 0 0.4rem',
+                    display: 'flex',
+                    gap: '0.6rem',
+                    alignItems: 'baseline',
+                  }}
+                >
+                  {r.nome ?? r.carrier}
+                  {r.ok ? (
+                    <span style={{ color: '#6b6b70', fontSize: '0.72rem', fontWeight: 400 }}>
+                      peso enviado {r.pesoEnviadoKg} kg (real {r.pesoRealKg} · cubado{' '}
+                      {r.pesoCubadoKg}, fator {r.fatorCubagem}) · {r.ms} ms
+                    </span>
+                  ) : (
+                    <span style={{ color: '#ff4444', fontSize: '0.75rem', fontWeight: 400 }}>
+                      {r.erro}
+                    </span>
+                  )}
+                </h4>
+                {r.ok && r.opcoes && (
+                  <div className={styles.tableScroll}>
+                    <table className={styles.table}>
+                      <thead>
+                        <tr>
+                          <th>Serviço</th>
+                          <th>Transportadora</th>
+                          <th>Transporte</th>
+                          <th>Com manuseio</th>
+                          <th>Valor</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {r.opcoes.map((o) => (
+                          <tr key={`${r.carrier}:${o.servico}`}>
+                            <td>
+                              {o.servicoNome}
+                              {o.servico && (
+                                <span style={{ color: '#6b6b70' }}> (id {o.servico})</span>
+                              )}
+                            </td>
+                            <td>{o.transportadora}</td>
+                            <td>{o.diasTransporte} d</td>
+                            <td>{o.diasTotal} d</td>
+                            <td>{o.valorFrete != null ? BRL.format(o.valorFrete) : '—'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            ))}
+            <details style={{ marginTop: '1rem' }}>
+              <summary style={{ cursor: 'pointer', color: '#a1a1a6', fontSize: '0.8rem' }}>
+                Resposta crua
+              </summary>
+              <pre
+                style={{
+                  marginTop: '0.5rem',
+                  padding: '1rem',
+                  background: '#0a0a0c',
+                  borderRadius: 8,
+                  color: '#a1a1a6',
+                  fontSize: '0.75rem',
+                  overflowX: 'auto',
+                }}
+              >
+                {JSON.stringify(testeResultado, null, 2)}
+              </pre>
+            </details>
+          </>
         )}
       </div>
 

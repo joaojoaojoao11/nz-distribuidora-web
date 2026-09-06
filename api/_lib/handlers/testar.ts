@@ -11,6 +11,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { carrierConfigStatus, getAdapter, isRealMode } from '../carriers/index.js';
 import { fatorCubagem, pesoTaxavel } from '../carriers/cubagem.js';
+import { normalizarResultados } from '../carriers/types.js';
 
 const CEP_RE = /^[0-9]{8}$/;
 const QTD_MAX = 50;
@@ -60,6 +61,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const body = (typeof req.body === 'string' ? safeJson(req.body) : req.body) || {};
+
+  // Catálogo de serviços do Melhor Envio, para o admin saber quais ids existem
+  // antes de restringir a lista em shipping_carriers.config.servicos.
+  if (body.listarServicos) {
+    res.status(200).json(await listarServicosMelhorEnvio());
+    return;
+  }
 
   // Sem corpo, devolve só o status de configuração — é o que o painel usa para
   // exibir "credencial configurada ✓/✗" sem nunca ver o valor.
@@ -137,25 +145,43 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const inicio = Date.now();
       try {
-        const cotacao = await adapter.quoteDeadline({
-          cepOrigem: c.cep_origem,
-          cepDestino: cep,
-          pesoKg: peso.pesoKg,
-          quantidade: qtd,
-          comprimentoCm: Number(p.comprimento_cm),
-          larguraCm: Number(p.largura_cm),
-          alturaCm: Number(p.altura_cm),
-          valorDeclarado,
-        });
+        const cotacoes = normalizarResultados(
+          await adapter.quoteDeadline({
+            cepOrigem: c.cep_origem,
+            cepDestino: cep,
+            pesoKg: peso.pesoKg,
+            pesoRealKg: peso.pesoReal,
+            quantidade: qtd,
+            comprimentoCm: Number(p.comprimento_cm),
+            larguraCm: Number(p.largura_cm),
+            alturaCm: Number(p.altura_cm),
+            valorDeclarado,
+            config: c.config,
+          })
+        );
+        const primeira = cotacoes[0];
         return {
           carrier: c.slug,
           nome: c.nome,
           ok: true,
-          diasTransporte: cotacao.dias,
+          // Uma linha por serviço. Jadlog/Gollog cotam uma modalidade só e
+          // trazem um item; o Melhor Envio traz um por transportadora×serviço.
+          opcoes: cotacoes.map((q) => ({
+            servico: q.servico ?? '',
+            servicoNome: q.servicoNome ?? q.modalidade ?? c.nome,
+            transportadora: q.transportadora ?? c.nome,
+            diasTransporte: q.dias,
+            diasTotal: q.dias + c.dias_manuseio,
+            valorFrete: q.valorTotal,
+            modalidade: q.modalidade,
+          })),
+          // Campos de compatibilidade: a primeira opção (a que o cache antigo
+          // guardava). Mantidos para não quebrar leitura de fora.
+          diasTransporte: primeira.dias,
           diasManuseio: c.dias_manuseio,
-          diasTotal: cotacao.dias + c.dias_manuseio,
-          valorFrete: cotacao.valorTotal,
-          modalidade: cotacao.modalidade,
+          diasTotal: primeira.dias + c.dias_manuseio,
+          valorFrete: primeira.valorTotal,
+          modalidade: primeira.modalidade,
           // Os dois pesos lado a lado: qual venceu explica o valor cobrado.
           pesoEnviadoKg: peso.pesoKg,
           pesoRealKg: peso.pesoReal,
@@ -164,7 +190,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           valorDeclarado,
           ms: Date.now() - inicio,
           // Só aqui: o payload cru, para conferir a integração.
-          raw: cotacao.raw,
+          raw: cotacoes.map((q) => q.raw),
         };
       } catch (err) {
         return {
@@ -195,5 +221,56 @@ function safeJson(raw: string): Record<string, unknown> {
     return JSON.parse(raw);
   } catch {
     return {};
+  }
+}
+
+/**
+ * GET /api/v2/me/shipment/services no Melhor Envio — o catálogo de serviços com
+ * seus ids. Exige a permissão `shipping-companies` no token.
+ *
+ * Existe porque a doc é explícita: os ids não seguem ordem fixa entre versões e
+ * os nomes podem mudar, então o admin precisa VER a lista antes de restringir
+ * `config.servicos`. Nada de segredo sai daqui — só id, nome e transportadora.
+ */
+async function listarServicosMelhorEnvio(): Promise<{
+  ok: boolean;
+  servicos?: { id: string; nome: string; transportadora: string }[];
+  erro?: string;
+}> {
+  const token = process.env.MELHORENVIO_TOKEN;
+  const email = process.env.MELHORENVIO_UA_EMAIL;
+  if (!token || !email) {
+    return { ok: false, erro: 'MELHORENVIO_TOKEN / MELHORENVIO_UA_EMAIL não configurados.' };
+  }
+  const base = (process.env.MELHORENVIO_ENDPOINT || 'https://melhorenvio.com.br').replace(/\/+$/, '');
+  try {
+    const res = await fetch(`${base}/api/v2/me/shipment/services`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+        'User-Agent': `NZSTORE (${email})`,
+      },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (res.status === 401 || res.status === 403) {
+      return { ok: false, erro: 'Token inválido ou sem a permissão shipping-companies.' };
+    }
+    if (!res.ok) return { ok: false, erro: `HTTP ${res.status}` };
+    const json = (await res.json()) as {
+      id?: number | string;
+      name?: string;
+      company?: { name?: string };
+    }[];
+    if (!Array.isArray(json)) return { ok: false, erro: 'Resposta inesperada.' };
+    return {
+      ok: true,
+      servicos: json.map((s) => ({
+        id: String(s.id ?? ''),
+        nome: s.name ?? '',
+        transportadora: s.company?.name ?? '',
+      })),
+    };
+  } catch (err) {
+    return { ok: false, erro: err instanceof Error ? err.message : String(err) };
   }
 }

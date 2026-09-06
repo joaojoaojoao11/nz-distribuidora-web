@@ -36,6 +36,14 @@ interface Prazo {
   nome: string;
   dias: number;
   modalidade?: string;
+  /**
+   * Id do serviço dentro da transportadora. O Melhor Envio devolve várias
+   * opções (Jadlog .Package, Correios PAC…), então `carrier` sozinho não
+   * identifica a linha — a chave do React é o par.
+   */
+  servico?: string;
+  servicoNome?: string;
+  transportadora?: string;
   /** Só chega para admin. Ausente para qualquer outro papel. */
   valor?: number;
 }
@@ -260,8 +268,13 @@ export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey:
           )}
 
           <ul className={styles.prazos}>
-            {estado.dados.prazos.map((p) => (
-              <li key={p.carrier} className={styles.prazo}>
+            {estado.dados.prazos.map((p, i) => (
+              // A lista já vem ordenada pelo servidor (prazo, depois valor):
+              // a primeira linha é a entrega mais rápida e ganha destaque.
+              <li
+                key={`${p.carrier}:${p.servico ?? ''}`}
+                className={`${styles.prazo} ${i === 0 ? styles.prazoDestaque : ''}`}
+              >
                 <span className={styles.prazoCarrier}>{p.nome}</span>
                 <span className={styles.prazoInfo}>
                   {p.valor != null && <strong className={styles.prazoValor}>{BRL.format(p.valor)}</strong>}

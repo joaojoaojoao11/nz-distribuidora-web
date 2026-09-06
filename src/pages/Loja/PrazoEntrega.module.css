@@ -194,6 +194,13 @@
   border-bottom: none;
 }
 
+/* Primeira linha = entrega mais rápida. Com o Melhor Envio a lista passou de
+   uma ou duas linhas para várias; sem destaque, todas parecem equivalentes. */
+.prazoDestaque .prazoCarrier {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 .prazoCarrier {
   font-size: 0.85rem;
   color: var(--text-secondary);
