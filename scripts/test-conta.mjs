@@ -310,11 +310,11 @@ const ERP_USERS = [
     user_profiles: [{ id: 'p1' }, { id: 'p7' }],
   });
   const r = await sincronizarEquipe(db, null);
-  ok('cria convite para cada ativo do ERP', r.convitesCriados === 2, `criados=${r.convitesCriados}`);
+  ok('conta quem do ERP ainda não tem acesso', r.semAcesso === 1, `semAcesso=${r.semAcesso}`);
+  ok('sincronização NÃO cria convite sozinha (e-mail é autoconfirmado)', (db.tabelas.equipe_convites ?? []).length === 0);
   ok('promove a admin quem já tem conta', r.perfisAtualizados === 1 && db.tabelas.user_profiles.find((p) => p.id === 'p1').role === 'admin');
   ok('bloqueia quem saiu do ERP', r.bloqueados === 1 && db.bans.some((b) => b.id === 'p7' && b.ban_duration !== 'none'));
   ok('quem saiu vira cliente comum', db.tabelas.user_profiles.find((p) => p.id === 'p7').role === 'client');
-  ok('não convida quem está inativo no ERP', !db.tabelas.equipe_convites.some((c) => c.email === 'exfuncionario@nzdistribuidora.com.br'));
   ok('sincronização sem erros', r.erros.length === 0, r.erros.join('; '));
 }
 {

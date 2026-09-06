@@ -16,6 +16,12 @@
 // public.users, com RLS aberta). O acesso nasce aqui, com senha própria, pelo
 // fluxo de convite do Supabase Auth.
 //
+// Quem promove alguém a admin é SEMPRE este arquivo, com um admin autenticado
+// do outro lado e o id do usuário em mãos. O trigger do banco nunca cria admin:
+// como o projeto confirma e-mail automaticamente, qualquer regra baseada em
+// "existe convite para este e-mail" deixaria um estranho se cadastrar com
+// `fulano@nzdistribuidora.com.br` e nascer com o painel na mão.
+//
 // Sem SMTP configurado o Supabase entrega no máximo 2 e-mails por hora, o que
 // não serve para convidar a equipe. Por isso o padrão é GERAR o link e deixar o
 // admin copiar (WhatsApp); com `enviarEmail: true` o convite sai por e-mail.
@@ -166,8 +172,10 @@ async function anotarConvite(site: Db, u: UsuarioErp, quem: string | null): Prom
 }
 
 /**
- * Já existe conta com este e-mail? Então não é convite: é promoção. Vale para o
- * João, que criou a conta do site antes de tudo isso existir.
+ * Torna a conta administrador do site com o papel e as permissões do NZERP.
+ * Único caminho para `role = 'admin'` — tanto para quem já tinha conta (o João,
+ * que criou a dele antes de tudo isso existir) quanto para o usuário recém-criado
+ * pelo convite.
  */
 async function promover(site: Db, perfilId: string, u: UsuarioErp): Promise<void> {
   await site
@@ -239,12 +247,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const enviarEmail = body.enviarEmail === true;
     const dados = { full_name: u.nome, origem: 'convite' };
+
     if (enviarEmail) {
-      const { error } = await site.auth.admin.inviteUserByEmail(u.email, { data: dados, redirectTo: `${SITE_URL}/nova-senha` });
-      if (error) {
-        res.status(502).json({ error: 'convite-nao-enviado', detalhe: error.message });
+      const { data, error } = await site.auth.admin.inviteUserByEmail(u.email, { data: dados, redirectTo: `${SITE_URL}/nova-senha` });
+      if (error || !data?.user) {
+        res.status(502).json({ error: 'convite-nao-enviado', detalhe: error?.message ?? 'sem usuário na resposta' });
         return;
       }
+      // O trigger criou o perfil como cliente; a promoção é aqui.
+      await promover(site, data.user.id, u);
       await registrarLog(site, 'convidar-email', u.email, { erp_user_id: u.id }, userId);
       res.status(200).json({ status: 'convidado', email: u.email, porEmail: true });
       return;
@@ -255,13 +266,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       email: u.email,
       options: { data: dados, redirectTo: `${SITE_URL}/nova-senha` },
     });
-    if (error) {
-      res.status(502).json({ error: 'link-nao-gerado', detalhe: error.message });
+    if (error || !data?.user) {
+      res.status(502).json({ error: 'link-nao-gerado', detalhe: error?.message ?? 'sem usuário na resposta' });
       return;
     }
+    await promover(site, data.user.id, u);
     await registrarLog(site, 'convidar-link', u.email, { erp_user_id: u.id }, userId);
     // O link é segredo de uso único: vai para a tela do admin e some. Nunca logar.
-    res.status(200).json({ status: 'convidado', email: u.email, link: data?.properties?.action_link ?? null });
+    res.status(200).json({ status: 'convidado', email: u.email, link: data.properties?.action_link ?? null });
     return;
   }
 
@@ -310,7 +322,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 }
 
 export interface ResultadoSincronia {
-  convitesCriados: number;
+  /** Gente do ERP que ainda não tem acesso ao site (o admin precisa convidar). */
+  semAcesso: number;
   perfisAtualizados: number;
   bloqueados: number;
   erros: string[];
@@ -318,28 +331,25 @@ export interface ResultadoSincronia {
 
 /**
  * Alinha o site com o ERP. Chamada pelo cron (api/nz/sync) e pelo botão do
- * painel. Não envia e-mail: cria o convite (que é o que autoriza a pessoa a
- * nascer admin quando entrar) e atualiza papel/permissões de quem já entrou.
+ * painel. Promove quem já tem conta, atualiza papel/permissões e tira o acesso
+ * de quem saiu do ERP. Convite é ação de admin, não de rotina.
  */
 export async function sincronizarEquipe(site: Db, quem: string | null): Promise<ResultadoSincronia> {
-  const r: ResultadoSincronia = { convitesCriados: 0, perfisAtualizados: 0, bloqueados: 0, erros: [] };
+  const r: ResultadoSincronia = { semAcesso: 0, perfisAtualizados: 0, bloqueados: 0, erros: [] };
   try {
     const { erp, perfis, convites } = await carregar(site);
     if (!erp.length) {
       r.erros.push('ERP sem usuários (ou credencial ausente)');
       return r;
     }
-    const conviteDe = new Map(convites.map((c) => [c.email, c]));
     const perfilPorEmail = new Map(perfis.map((p) => [normalizarEmail(p.email), p]));
 
     for (const u of erp.filter((x) => x.ativo)) {
-      const convite = conviteDe.get(u.email);
-      if (!convite || convite.revogado_em) {
-        await anotarConvite(site, u, quem);
-        r.convitesCriados++;
-      }
       const perfil = perfilPorEmail.get(u.email);
-      if (!perfil) continue;
+      if (!perfil) {
+        r.semAcesso++;
+        continue;
+      }
       const mudou =
         perfil.role !== 'admin' ||
         perfil.erp_user_id !== u.id ||
