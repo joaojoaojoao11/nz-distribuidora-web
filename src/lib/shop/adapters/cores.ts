@@ -16,7 +16,7 @@ import { finishFromM7, finishFromMcx, normalizeFinishString } from '../finish/no
 import { buildSearchText, shopSlug, type ShopItem, type ShopSpec } from '../types';
 // O mapa vive em `generic.ts` porque o adapter do ERP — que e o caminho de
 // producao — precisa do mesmo dado. Duas copias divergiriam na primeira cor nova.
-import { MCX_ROLL_IMAGES } from '../generic';
+import { M7_ROLL_IMAGES, MCX_ROLL_IMAGES } from '../generic';
 
 /** Família publicada pela Metamark → nosso enum. */
 const M7_FAMILY_MAP: Record<M7Family, ColorFamilyId> = {
@@ -76,8 +76,11 @@ export function metamark7ToShopItems(): ShopItem[] {
       vertical: 'SIGN',
       kind: 'cor',
       aplicacoes: ['comunicacao-visual'],
-      image: null,
-      gallery: [],
+      // Mesma logica do MCX: foto customizada por slug quando existe, senao null
+      // (a UI cai no chip com base no hex). 86/92 cores tem foto; as 6 restantes
+      // (m7-105-clear, m7-111m, m7-112, m7-115, m7-118, m7-127) ainda vao entrar.
+      image: M7_ROLL_IMAGES[c.slug] ?? null,
+      gallery: M7_ROLL_IMAGES[c.slug] ? [M7_ROLL_IMAGES[c.slug]] : [],
       hex: c.hex,
       colorFamilies: color.families,
       colorSubfamilies: color.subfamilies,

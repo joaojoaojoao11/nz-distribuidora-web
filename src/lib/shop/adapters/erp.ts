@@ -22,7 +22,7 @@ import type { ColorFamilyId } from '../color/lexicon';
 import { normalizeFinishString } from '../finish/normalizeFinish';
 import { isFinishId, type FinishId } from '../finish/tree';
 import { isPatternFamilyId, PATTERN_SYNONYMS, type PatternFamilyId } from '../pattern/taxonomy';
-import { genericImageForLine, isReviewedSlug, MCX_ROLL_IMAGES } from '../generic';
+import { genericImageForLine, isReviewedSlug, rollImageFor } from '../generic';
 import {
   buildSearchText,
   normalize,
@@ -357,11 +357,11 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
   const fotoRevisada: string | undefined = reviewed
     ? SH_WRAPPING_IMAGES_ERP[row.slug]
     : undefined;
-  // MetaCast MCX e o unico caso em que a foto local VENCE `row.imagem`: o banco
-  // traz o chip de cor, e o chip nao mostra o material. O rolo passa a ser a
-  // capa e o chip desce para a galeria — mesma regra que `cores.ts` ja aplicava
-  // no catalogo estatico, e que sem isto nunca chegava ao ar.
-  const rolo: string | undefined = MCX_ROLL_IMAGES[row.slug];
+  // A foto de rolo VENCE `row.imagem`. E a unica excecao a "banco manda", e por
+  // um motivo concreto: onde o banco traz chip de cor (MetaCast MCX), o chip nao
+  // mostra o material. Onde o banco nao traz nada (Metamark 7 Series), sem isto
+  // a linha ficaria no placeholder mesmo com foto em disco.
+  const rolo: string | undefined = rollImageFor(row.slug);
   const imageResolvido = rolo ?? row.imagem ?? fotoRevisada ?? genericImageForLine(row.linha_key);
   const galleryBase =
     row.galeria && row.galeria.length > 0
