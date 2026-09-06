@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
 import styles from './Auth.module.css';
 
 export default function Register() {
   const { signUp } = useAuth();
-  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', role: 'client', company: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', role: 'client', company: '', documento: '', ie: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,11 +24,39 @@ export default function Register() {
       return;
     }
 
+    // Lojista compra com nota: CNPJ e razão social são obrigatórios. Cliente
+    // final pode cadastrar CPF agora ou no painel, antes do primeiro pedido.
+    const lojista = form.role === 'reseller';
+    if (form.documento && !validarCpfCnpj(form.documento)) {
+      setError('CPF/CNPJ inválido — confira os dígitos.');
+      setLoading(false);
+      return;
+    }
+    if (lojista && tipoDocumento(form.documento) !== 'cnpj') {
+      setError('Lojista precisa de CNPJ válido.');
+      setLoading(false);
+      return;
+    }
+    if (lojista && !form.company.trim()) {
+      setError('Informe a razão social.');
+      setLoading(false);
+      return;
+    }
+
     const { error: err } = await signUp(form.email, form.password, {
       full_name: form.name,
       phone: form.phone,
       role: form.role,
-      company_name: form.company || undefined
+      company_name: form.company || undefined,
+      cpf_cnpj: form.documento ? somenteDigitos(form.documento) : undefined,
+      ie: form.ie || undefined,
+      indicado_por: (() => {
+        try {
+          return window.localStorage.getItem('nz:ref');
+        } catch {
+          return null;
+        }
+      })(),
     });
 
     if (err) {
@@ -58,7 +87,7 @@ export default function Register() {
     <div className={styles.authPage}>
       <div className={styles.authCard}>
         <h1 className={styles.authTitle}>Criar Conta</h1>
-        <p className={styles.authSub}>Cadastre-se para acessar a NZ Distribuidora</p>
+        <p className={styles.authSub}>Cadastre-se para ver preços e pedir pelo site</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           {error && <div className={styles.errorMsg}>{error}</div>}
@@ -66,8 +95,8 @@ export default function Register() {
           <div className={styles.inputGroup}>
             <label className={styles.label}>Tipo de Conta</label>
             <div className={styles.roleSelector}>
-              <button type="button" className={`${styles.roleBtn} ${form.role === 'client' ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'client')}>Cliente Final</button>
-              <button type="button" className={`${styles.roleBtn} ${form.role === 'reseller' ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'reseller')}>Revendedor</button>
+              <button type="button" className={`${styles.roleBtn} ${form.role === 'client' ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'client')}>Cliente final</button>
+              <button type="button" className={`${styles.roleBtn} ${form.role === 'reseller' ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'reseller')}>Lojista</button>
             </div>
           </div>
 
@@ -78,8 +107,20 @@ export default function Register() {
 
           {form.role === 'reseller' && (
             <div className={styles.inputGroup}>
-              <label className={styles.label}>Nome da Empresa</label>
-              <input type="text" className={styles.input} placeholder="Sua Empresa LTDA" value={form.company} onChange={(e) => update('company', e.target.value)} />
+              <label className={styles.label}>Razão social</label>
+              <input type="text" className={styles.input} placeholder="Sua Empresa LTDA" required value={form.company} onChange={(e) => update('company', e.target.value)} />
+            </div>
+          )}
+
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>{form.role === 'reseller' ? 'CNPJ' : 'CPF ou CNPJ (opcional agora)'}</label>
+            <input type="text" inputMode="numeric" className={styles.input} placeholder={form.role === 'reseller' ? '00.000.000/0000-00' : '000.000.000-00'} required={form.role === 'reseller'} value={formatarCpfCnpj(form.documento)} onChange={(e) => update('documento', e.target.value)} />
+          </div>
+
+          {form.role === 'reseller' && (
+            <div className={styles.inputGroup}>
+              <label className={styles.label}>Inscrição estadual</label>
+              <input type="text" className={styles.input} placeholder="ou ISENTO" value={form.ie} onChange={(e) => update('ie', e.target.value)} />
             </div>
           )}
 

@@ -21,8 +21,19 @@ interface AuthContextType {
   isClient: boolean;
   isApproved: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string, meta: { full_name: string; phone: string; role: string; company_name?: string }) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string, meta: SignUpMeta) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+}
+
+export interface SignUpMeta {
+  full_name: string;
+  phone: string;
+  role: string;
+  company_name?: string;
+  cpf_cnpj?: string;
+  ie?: string;
+  /** Código do afiliado que trouxe este cadastro (?ref=). */
+  indicado_por?: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -66,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null };
   };
 
-  const signUp = async (email: string, password: string, meta: { full_name: string; phone: string; role: string; company_name?: string }) => {
+  const signUp = async (email: string, password: string, meta: SignUpMeta) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -79,7 +90,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (newUser) {
       await supabase.from('user_profiles').update({
         phone: meta.phone,
-        company_name: meta.company_name || null
+        company_name: meta.company_name || null,
+        cpf_cnpj: meta.cpf_cnpj || null,
+        ie: meta.ie || null,
+        indicado_por: meta.indicado_por || null,
+        aceite_termos_em: new Date().toISOString(),
       }).eq('id', newUser.id);
     }
 

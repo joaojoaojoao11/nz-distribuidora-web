@@ -15,6 +15,7 @@ import './App.css';
 // quando o visitante navega até lá. Corta o bundle inicial de ~3 MB.
 const Loja = lazy(() => import('./pages/Loja/Loja'));
 const LojaProduct = lazy(() => import('./pages/Loja/LojaProduct'));
+const Painel = lazy(() => import('./pages/Painel/Painel'));
 const Ppf = lazy(() => import('./pages/Ppf/Ppf'));
 const LuxuryGloss = lazy(() => import('./pages/Ppf/LuxuryGloss'));
 const PrimeGloss = lazy(() => import('./pages/Ppf/PrimeGloss'));
@@ -104,6 +105,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/loja" element={<Loja />} />
                   <Route path="/loja/:slug" element={<LojaProduct />} />
+                  <Route path="/painel" element={<Painel />} />
                   <Route path="/ppf" element={<Ppf />} />
                   <Route path="/ppf/luxury-gloss" element={<LuxuryGloss />} />
                   <Route path="/ppf/prime-gloss" element={<PrimeGloss />} />
