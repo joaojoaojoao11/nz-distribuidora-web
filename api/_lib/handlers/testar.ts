@@ -175,6 +175,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             valorFrete: q.valorTotal,
             modalidade: q.modalidade,
           })),
+          // Serviços que a transportadora recusou, com o motivo. É o que
+          // explica uma lista de opções mais curta do que o esperado.
+          recusados: cotacoes.flatMap((q) => q.recusados ?? []),
           // Campos de compatibilidade: a primeira opção (a que o cache antigo
           // guardava). Mantidos para não quebrar leitura de fora.
           diasTransporte: primeira.dias,

@@ -70,6 +70,14 @@ export interface QuoteResult {
   servicoNome?: string;
   /** Quem transporta de fato — no ME, a transportadora por trás do serviço. */
   transportadora?: string;
+  /**
+   * Serviços que a transportadora RECUSOU nesta mesma consulta, com o motivo
+   * ("Azul Cargo Expresso: comprimento acima do limite"). Preenchido só no
+   * primeiro item da lista. Existe porque a pergunta que o admin faz não é "o
+   * que apareceu" e sim "por que a Buslog não apareceu" — e sem isso a resposta
+   * se perdia dentro do adapter.
+   */
+  recusados?: string[];
   /** Resposta crua da transportadora. SÓ para o painel de diagnóstico. */
   raw: unknown;
 }

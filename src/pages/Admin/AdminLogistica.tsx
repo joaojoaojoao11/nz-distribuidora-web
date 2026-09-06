@@ -79,6 +79,8 @@ interface TesteResultado {
   ok: boolean;
   erro?: string;
   opcoes?: TesteOpcao[];
+  /** Serviços recusados nesta consulta, com o motivo. */
+  recusados?: string[];
   pesoEnviadoKg?: number;
   pesoRealKg?: number;
   pesoCubadoKg?: number;
@@ -839,6 +841,18 @@ export default function AdminLogistica() {
                     </span>
                   )}
                 </h4>
+                {r.ok && r.recusados && r.recusados.length > 0 && (
+                  <details style={{ margin: '0 0 0.5rem', fontSize: '0.78rem', color: '#f5a623' }}>
+                    <summary style={{ cursor: 'pointer' }}>
+                      {r.recusados.length} serviço(s) recusado(s) neste volume — ver motivo
+                    </summary>
+                    <ul style={{ paddingLeft: '1.2rem', margin: '0.4rem 0 0', lineHeight: 1.7, color: '#a1a1a6' }}>
+                      {r.recusados.map((m) => (
+                        <li key={m}>{m}</li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
                 {r.ok && r.opcoes && (
                   <div className={styles.tableScroll}>
                     <table className={styles.table}>

@@ -220,6 +220,10 @@ export const melhorenvio: CarrierAdapter = {
       );
     }
 
+    // Quem foi recusado viaja junto com quem foi aceito: é o que responde
+    // "por que a Buslog não apareceu?" no painel, sem precisar do payload cru.
+    if (recusados.length) opcoes[0]!.recusados = recusados;
+
     return opcoes;
   },
 };
