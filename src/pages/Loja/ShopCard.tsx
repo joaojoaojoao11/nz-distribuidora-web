@@ -12,6 +12,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import type { ShopItem } from '../../lib/shop/types';
+import Preco from './Preco';
 import styles from './ShopCard.module.css';
 
 interface Props {
@@ -110,6 +111,8 @@ function ShopCardBase({ item, eager = false, onRemove, from }: Props) {
             a imagem cobria justamente o canto onde o rolo aparece. */}
         {item.code && <span className={styles.code}>{item.code}</span>}
         <span className={styles.meta}>{item.finishLabel ?? item.subtitle ?? item.brand}</span>
+        {/* Preço por papel: o servidor decide o que este card pode mostrar. */}
+        {item.kind !== 'linha' && <Preco slug={item.slug} variante="card" />}
       </div>
     </Link>
   );

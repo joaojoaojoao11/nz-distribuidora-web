@@ -16,6 +16,7 @@ import { SCROLL_KEY_PREFIX } from '../../components/ScrollToTop';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { getShopItem, useShopCatalog } from '../../lib/shop/store';
+import { usePrecosLote } from '../../lib/shop/precos';
 import type { ShopItem } from '../../lib/shop/types';
 import { computeFacets } from '../../lib/shop/facets';
 import { applyFilters, hasActiveFilters, type SortMode } from '../../lib/shop/search/match';
@@ -254,6 +255,8 @@ export default function Loja() {
   }, []);
 
   const shown = results.slice(0, visible);
+  // Uma requisição de preço por página de cards, não uma por card.
+  usePrecosLote(shown.map((i) => i.slug));
 
   const schema = useMemo(
     () =>

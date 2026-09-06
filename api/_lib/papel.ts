@@ -19,14 +19,27 @@ export type Db = SupabaseClient<any, any, any>;
 
 export type Papel = 'anonimo' | 'client' | 'reseller' | 'admin';
 
-export async function resolverPapel(site: Db, authHeader: string | undefined): Promise<Papel> {
-  if (!authHeader?.startsWith('Bearer ')) return 'anonimo';
+export interface PapelDetalhado {
+  papel: Papel;
+  /** `is_approved` do perfil. Admin conta como aprovado. Anônimo, false. */
+  aprovado: boolean;
+  userId: string | null;
+}
+
+/**
+ * Versão completa: além do papel, diz se o cadastro foi aprovado. O preço
+ * (api/nz/precos) exige aprovação para cliente E lojista; o estoque e o frete
+ * só olham o papel.
+ */
+export async function resolverPapelDetalhado(site: Db, authHeader: string | undefined): Promise<PapelDetalhado> {
+  const anonimo: PapelDetalhado = { papel: 'anonimo', aprovado: false, userId: null };
+  if (!authHeader?.startsWith('Bearer ')) return anonimo;
 
   try {
     const {
       data: { user },
     } = await site.auth.getUser(authHeader.slice(7));
-    if (!user) return 'anonimo';
+    if (!user) return anonimo;
 
     const { data } = await site
       .from('user_profiles')
@@ -35,15 +48,22 @@ export async function resolverPapel(site: Db, authHeader: string | undefined): P
       .maybeSingle();
 
     const profile = data as { role?: string; is_approved?: boolean } | null;
-    if (!profile) return 'anonimo';
-    if (profile.role === 'admin') return 'admin';
+    if (!profile) return anonimo;
+    if (profile.role === 'admin' || profile.role === 'superadmin') {
+      return { papel: 'admin', aprovado: true, userId: user.id };
+    }
+    const aprovado = Boolean(profile.is_approved);
     // Lojista não aprovado é tratado como cliente final: a aprovação é o que
     // libera o dado comercial.
-    if (profile.role === 'reseller' && profile.is_approved) return 'reseller';
-    return 'client';
+    if (profile.role === 'reseller' && aprovado) return { papel: 'reseller', aprovado, userId: user.id };
+    return { papel: 'client', aprovado, userId: user.id };
   } catch {
     // Falha ao validar o token (rede, Supabase fora) é ausência de permissão,
     // nunca elevação: cai para anônimo em vez de derrubar a requisição.
-    return 'anonimo';
+    return anonimo;
   }
+}
+
+export async function resolverPapel(site: Db, authHeader: string | undefined): Promise<Papel> {
+  return (await resolverPapelDetalhado(site, authHeader)).papel;
 }

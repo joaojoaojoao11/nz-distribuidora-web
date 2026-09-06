@@ -1,0 +1,119 @@
+/* Preço — card (uma linha) e página (bloco). */
+
+.card {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.74rem;
+  line-height: 1.3;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card strong {
+  font-weight: 600;
+}
+
+.sep {
+  margin: 0 0.35rem;
+  color: var(--text-muted);
+}
+
+.mudo {
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  letter-spacing: 0.3px;
+}
+
+/* --------------------------------------------------------------- página */
+
+.bloco {
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.linha {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  padding: 0.35rem 0;
+}
+
+.linha + .linha {
+  border-top: 1px solid var(--border-light);
+}
+
+.rotulo {
+  font-family: var(--font-tech);
+  font-size: 0.64rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.valor {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.minimo {
+  grid-column: 2;
+  justify-self: end;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.promo {
+  display: inline-block;
+  margin-top: 0.4rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 5px;
+  background: rgba(209, 30, 30, 0.14);
+  color: var(--accent-red);
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.nota {
+  margin: 0.5rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.entrar {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.analise {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  background: rgba(217, 119, 6, 0.15);
+  color: #f5a623;
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}

@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './Auth.module.css';
 
 export default function Login() {
   const { signIn, profile, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  // ?next=/loja/x — quem veio de "entre para ver o preço" volta para o produto.
+  const next = new URLSearchParams(location.search).get('next');
+  const destinoSeguro = next && next.startsWith('/') && !next.startsWith('//') ? next : null;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,12 +19,13 @@ export default function Login() {
   // Reage à mudança de profile após o login (resolve o bug de closure stale)
   useEffect(() => {
     if (waitingProfile && user && profile) {
-      if (profile.role === 'admin') navigate('/admin');
+      if (destinoSeguro) navigate(destinoSeguro);
+      else if (profile.role === 'admin') navigate('/admin');
       else navigate('/painel');
       setLoading(false);
       setWaitingProfile(false);
     }
-  }, [waitingProfile, user, profile, navigate]);
+  }, [waitingProfile, user, profile, navigate, destinoSeguro]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

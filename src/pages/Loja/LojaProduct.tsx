@@ -18,6 +18,7 @@ import { COLOR_LABEL, SUBFAMILY_LABEL } from '../../lib/shop/color/lexicon';
 import { FINISH_LABEL } from '../../lib/shop/finish/tree';
 import type { ShopItem } from '../../lib/shop/types';
 import Disponibilidade from './Disponibilidade';
+import Preco from './Preco';
 import PrazoEntrega from './PrazoEntrega';
 import { ShopCard } from './ShopCard';
 import styles from './LojaProduct.module.css';
@@ -249,6 +250,8 @@ function ProductView({
 
           {item.description && <p className={styles.description}>{item.description}</p>}
 
+          {item.kind !== 'linha' && <Preco slug={item.slug} variante="pagina" />}
+
           <div className={styles.ctaBlock}>
             <a
               href={whatsappUrl(item)}
@@ -259,7 +262,7 @@ function ProductView({
               PEDIR ORÇAMENTO
             </a>
             <p className={styles.ctaNote}>
-              Valores sob consulta. Atendemos instaladores e revendas em todo o Brasil.
+              Atendemos instaladores e revendas em todo o Brasil.
             </p>
           </div>
 
