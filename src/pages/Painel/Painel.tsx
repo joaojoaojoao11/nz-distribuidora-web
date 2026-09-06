@@ -52,10 +52,24 @@ interface Pedido {
   id: string;
   numero: number;
   status: string;
+  pagamento_status: string | null;
+  forma_pagamento: string | null;
   total_estimado: number | null;
+  total_final: number | null;
   criado_em: string;
   erp_quote_number: number | null;
 }
+
+const PAGAMENTO_LABEL: Record<string, string> = {
+  aguardando: 'Aguardando pagamento',
+  em_analise: 'Pagamento em análise',
+  pago: 'Pago',
+  recusado: 'Cartão recusado',
+  expirado: 'Pix expirado',
+  vencido: 'Boleto vencido',
+  estornado: 'Estornado',
+  cancelado: 'Pagamento cancelado',
+};
 
 const VAZIO: Perfil = {
   full_name: '',
@@ -115,7 +129,7 @@ export default function Painel() {
         .maybeSingle(),
       supabase
         .from('pedidos')
-        .select('id, numero, status, total_estimado, criado_em, erp_quote_number')
+        .select('id, numero, status, pagamento_status, forma_pagamento, total_estimado, total_final, criado_em, erp_quote_number')
         .eq('user_id', user.id)
         .order('criado_em', { ascending: false })
         .limit(50),
@@ -349,11 +363,20 @@ export default function Painel() {
           <ul className={styles.pedidos}>
             {pedidos.map((p) => (
               <li key={p.id} className={styles.pedido}>
-                <span className={styles.pedidoNumero}>#{p.numero}</span>
-                <span className={styles.pedidoStatus}>{STATUS_LABEL[p.status] ?? p.status}</span>
+                <Link to={`/painel/pedido/${p.numero}`} className={styles.pedidoNumero}>
+                  #{p.numero}
+                </Link>
+                <span className={styles.pedidoStatus}>
+                  {p.pagamento_status && p.pagamento_status !== 'nenhum' && (
+                    <span className={`${styles.pagChip} ${p.pagamento_status === 'pago' ? styles.pagOk : ['aguardando', 'em_analise'].includes(p.pagamento_status) ? styles.pagPendente : styles.pagRuim}`}>
+                      {PAGAMENTO_LABEL[p.pagamento_status] ?? p.pagamento_status}
+                    </span>
+                  )}
+                  {STATUS_LABEL[p.status] ?? p.status}
+                </span>
                 <span className={styles.pedidoData}>{new Date(p.criado_em).toLocaleDateString('pt-BR')}</span>
                 <span className={styles.pedidoTotal}>
-                  {p.total_estimado != null ? BRL.format(Number(p.total_estimado)) : '—'}
+                  {p.total_final != null ? BRL.format(Number(p.total_final)) : p.total_estimado != null ? BRL.format(Number(p.total_estimado)) : '—'}
                 </span>
               </li>
             ))}

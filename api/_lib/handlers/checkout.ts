@@ -1,0 +1,551 @@
+// POST /api/nz/checkout — pagamento online do pedido (Pix, boleto, cartão) via Asaas.
+//
+// Ops (campo `op` do corpo), todas exigem login e cadastro aprovado:
+//   resumo         itens + cupom + cep → subtotal, desconto, opções de frete
+//                  (COM valor: é o checkout), parcelas e o que falta no cadastro.
+//   pagar          fecha o pedido: reprecifica, recota o frete escolhido, grava
+//                  pedido + itens, cria a cobrança no Asaas, manda ao NZERP.
+//   status         estado do pedido e do pagamento (a página faz polling).
+//   novo-pagamento pedido com Pix expirado / cartão recusado / boleto vencido
+//                  ganha outra cobrança, possivelmente de outra forma.
+//
+// Segurança:
+//   · valor nunca vem do cliente — subtotal, desconto e frete são recalculados
+//     no `pagar`, mesmo que o `resumo` tenha acabado de mostrar;
+//   · dados de cartão entram aqui, vão ao Asaas e morrem; não são gravados,
+//     não são logados; a resposta é no-store;
+//   · 3 tentativas de cartão por usuário a cada 15 min e 10 por IP por hora
+//     (checkout_tentativas) — contra teste de cartão roubado;
+//   · checkout desligado (loja_config.checkout_ativo) só o admin usa, para
+//     testar antes de abrir.
+
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { createClient } from '@supabase/supabase-js';
+import { resolverPapelDetalhado, type Db } from '../papel.js';
+import { asaasConfigurado, ipDoCliente } from '../asaas/cliente.js';
+import {
+  avisarErpPago,
+  carregarConfig,
+  criarPagamento,
+  expirarSeVencido,
+  garantirClienteAsaas,
+  pagamentoPublico,
+  parcelasDisponiveis,
+  sincronizarComAsaas,
+  type ConfigCheckout,
+  type DadosCartao,
+  type PagamentoRow,
+} from '../asaas/pagamento.js';
+import { cotarCarrinho, type OpcaoFrete } from '../frete/carrinho.js';
+import {
+  carregarPerfil,
+  codigoDoAfiliado,
+  enderecoJson,
+  itensParaGravar,
+  montarPayloadErp,
+  normalizarItens,
+  precificar,
+  resolverAfiliado,
+  resolverCupom,
+  safeJson,
+  type Linha,
+  type Perfil,
+} from '../pedido/precificar.js';
+
+const FORMAS = new Set(['PIX', 'BOLETO', 'CREDIT_CARD']);
+const r2 = (n: number) => Math.round(n * 100) / 100;
+
+const FORMA_LABEL: Record<string, string> = { PIX: 'Pix', BOLETO: 'boleto', CREDIT_CARD: 'cartão de crédito' };
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Cache-Control', 'no-store');
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Método não permitido.' });
+    return;
+  }
+
+  const siteUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const siteKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!siteUrl || !siteKey) {
+    res.status(500).json({ error: 'ENV ausente', hasSiteUrl: !!siteUrl, hasSiteKey: !!siteKey });
+    return;
+  }
+  const site = createClient(siteUrl, siteKey);
+
+  const { papel, aprovado, userId } = await resolverPapelDetalhado(site, req.headers.authorization);
+  if (papel === 'anonimo' || !userId) {
+    res.status(401).json({ error: 'login-necessario' });
+    return;
+  }
+  if (!aprovado) {
+    res.status(403).json({ error: 'aguardando-aprovacao' });
+    return;
+  }
+
+  const body = (typeof req.body === 'string' ? safeJson(req.body) : req.body) || {};
+  const op = typeof body.op === 'string' ? body.op : '';
+  const cfg = await carregarConfig(site);
+
+  if (op === 'status') {
+    await opStatus(site, userId, papel === 'admin', body, res);
+    return;
+  }
+
+  if (!cfg.checkout_ativo && papel !== 'admin') {
+    res.status(403).json({ error: 'checkout-desligado' });
+    return;
+  }
+  if (!asaasConfigurado()) {
+    res.status(503).json({ error: 'pagamento-indisponivel', hasAsaasKey: false });
+    return;
+  }
+
+  try {
+    if (op === 'resumo') await opResumo(site, userId, body, cfg, res);
+    else if (op === 'pagar') await opPagar(site, userId, body, cfg, req, res);
+    else if (op === 'novo-pagamento') await opNovoPagamento(site, userId, body, cfg, req, res);
+    else res.status(400).json({ error: 'op-desconhecida', disponiveis: ['resumo', 'pagar', 'status', 'novo-pagamento'] });
+  } catch (err) {
+    console.error('[checkout] erro:', op, err instanceof Error ? err.message : err);
+    if (!res.headersSent) res.status(500).json({ error: 'erro-interno' });
+  }
+}
+
+// ================================================================ resumo
+
+async function opResumo(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, res: VercelResponse) {
+  const itens = normalizarItens(body.itens);
+  if (!itens.length) {
+    res.status(400).json({ error: 'sem-itens' });
+    return;
+  }
+  const { perfil, faltando } = await carregarPerfil(site, userId);
+  const { linhas, invalidos, subtotal } = await precificar(site, itens);
+  const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotal, userId);
+  const cepBruto = typeof body.cep === 'string' ? body.cep : perfil?.address_zip ?? '';
+  const cep = cepBruto.replace(/\D/g, '');
+
+  const frete = linhas.length ? await cotarCarrinho(site, linhas, cep, subtotal - cupom.desconto, cfg) : { opcoes: [], semPerfil: [], motivos: [] };
+  const totalSemFrete = r2(Math.max(0, subtotal - cupom.desconto));
+
+  res.status(200).json({
+    checkoutAtivo: cfg.checkout_ativo,
+    itens: linhas.map((l) => ({ slug: l.produto.slug, nome: l.produto.nome, unidade: l.item.unidade, qtd: l.item.qtd, unit: l.item.unidade === 'rolo' ? Number(l.e.preco_rolo) : l.unitPrice, total: l.total, metragem: l.e.metragem_padrao })),
+    invalidos,
+    subtotal,
+    desconto: cupom.desconto,
+    cupom: { codigo: cupom.codigo, invalido: cupom.invalido },
+    fretes: frete.opcoes,
+    freteSemPerfil: frete.semPerfil,
+    parcelas: parcelasDisponiveis(totalSemFrete, cfg).map((p) => ({ n: p.n, valor: p.valor })),
+    config: {
+      pixExpiraMin: cfg.pix_expira_min,
+      boletoVencimentoDias: cfg.boleto_vencimento_dias,
+      boletoMinimo: cfg.boleto_minimo,
+      cartaoMaxParcelas: cfg.cartao_max_parcelas,
+      cartaoParcelaMinima: cfg.cartao_parcela_minima,
+      retiradaEndereco: cfg.retirada_endereco,
+      pedidoMinimo: cfg.pedido_minimo,
+      freteGratisAcima: cfg.frete_gratis_acima,
+    },
+    faltando,
+    endereco: perfil ? enderecoJson(perfil) : null,
+  });
+}
+
+// ================================================================= pagar
+
+interface Escolha {
+  forma: 'PIX' | 'BOLETO' | 'CREDIT_CARD';
+  parcelas: number;
+  cartao?: DadosCartao;
+}
+
+function lerEscolha(body: Record<string, unknown>): Escolha | { erro: string } {
+  const forma = typeof body.forma === 'string' ? body.forma : '';
+  if (!FORMAS.has(forma)) return { erro: 'forma-invalida' };
+  const parcelas = forma === 'CREDIT_CARD' ? Math.max(1, Math.floor(Number(body.parcelas ?? 1)) || 1) : 1;
+  let cartao: DadosCartao | undefined;
+  if (forma === 'CREDIT_CARD') {
+    const c = body.cartao && typeof body.cartao === 'object' ? (body.cartao as Record<string, unknown>) : null;
+    const numero = String(c?.numero ?? '').replace(/\D/g, '');
+    const nome = String(c?.nome ?? '').trim().slice(0, 80);
+    const mes = String(c?.mes ?? '').replace(/\D/g, '').padStart(2, '0');
+    let ano = String(c?.ano ?? '').replace(/\D/g, '');
+    if (ano.length === 2) ano = `20${ano}`;
+    const cvv = String(c?.cvv ?? '').replace(/\D/g, '');
+    const cpf = String(c?.cpf ?? '').replace(/\D/g, '');
+    if (numero.length < 13 || numero.length > 19 || !nome || !/^(0[1-9]|1[0-2])$/.test(mes) || ano.length !== 4 || cvv.length < 3 || cvv.length > 4 || ![11, 14].includes(cpf.length)) {
+      return { erro: 'cartao-invalido' };
+    }
+    cartao = { numero, nome, mes, ano, cvv, cpf };
+  }
+  return { forma: forma as Escolha['forma'], parcelas, cartao };
+}
+
+async function limiteCartao(site: Db, userId: string, ip: string): Promise<boolean> {
+  const quinze = new Date(Date.now() - 15 * 60_000).toISOString();
+  const hora = new Date(Date.now() - 60 * 60_000).toISOString();
+  const [{ count: porUser }, { count: porIp }] = await Promise.all([
+    site.from('checkout_tentativas').select('id', { count: 'exact', head: true }).eq('user_id', userId).eq('forma', 'CREDIT_CARD').gte('criado_em', quinze),
+    site.from('checkout_tentativas').select('id', { count: 'exact', head: true }).eq('ip', ip).eq('forma', 'CREDIT_CARD').gte('criado_em', hora),
+  ]);
+  return Number(porUser ?? 0) >= 3 || Number(porIp ?? 0) >= 10;
+}
+
+async function opPagar(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, req: VercelRequest, res: VercelResponse) {
+  const itens = normalizarItens(body.itens);
+  if (!itens.length) {
+    res.status(400).json({ error: 'sem-itens' });
+    return;
+  }
+  const escolha = lerEscolha(body);
+  if ('erro' in escolha) {
+    res.status(400).json({ error: escolha.erro });
+    return;
+  }
+  if (body.aceite !== true) {
+    res.status(400).json({ error: 'aceite-necessario' });
+    return;
+  }
+  const ip = ipDoCliente(req.headers as Record<string, string | string[] | undefined>);
+
+  const { perfil, faltando } = await carregarPerfil(site, userId);
+  if (!perfil || faltando.length) {
+    res.status(400).json({ error: 'cadastro-incompleto', faltando });
+    return;
+  }
+
+  const { linhas, invalidos, subtotal } = await precificar(site, itens);
+  if (invalidos.length) {
+    res.status(400).json({ error: 'itens-invalidos', invalidos });
+    return;
+  }
+  const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotal, userId);
+  if (cupom.invalido) {
+    res.status(400).json({ error: 'cupom-invalido' });
+    return;
+  }
+
+  // ---------------------------------------------------------------- frete
+  const freteId = typeof body.freteId === 'string' ? body.freteId : '';
+  const cep = (perfil.address_zip ?? '').replace(/\D/g, '');
+  const cotacao = await cotarCarrinho(site, linhas, cep, subtotal - cupom.desconto, cfg);
+  const frete = cotacao.opcoes.find((o) => o.id === freteId);
+  if (!frete) {
+    res.status(409).json({ error: 'frete-indisponivel', fretes: cotacao.opcoes, semPerfil: cotacao.semPerfil });
+    return;
+  }
+
+  const total = r2(Math.max(0, subtotal - cupom.desconto) + frete.valor);
+  if (total < Math.max(0.01, cfg.pedido_minimo)) {
+    res.status(400).json({ error: 'pedido-minimo', minimo: cfg.pedido_minimo });
+    return;
+  }
+  if (escolha.forma === 'BOLETO' && total < cfg.boleto_minimo) {
+    res.status(400).json({ error: 'boleto-minimo', minimo: cfg.boleto_minimo });
+    return;
+  }
+  if (escolha.forma === 'CREDIT_CARD') {
+    const ok = parcelasDisponiveis(total, cfg).some((p) => p.n === escolha.parcelas);
+    if (!ok) {
+      res.status(400).json({ error: 'parcelas-invalidas' });
+      return;
+    }
+    if (await limiteCartao(site, userId, ip)) {
+      res.status(429).json({ error: 'muitas-tentativas' });
+      return;
+    }
+  }
+
+  // ------------------------------------------------------------- afiliado
+  let afiliadoUserId = cupom.afiliadoUserId;
+  if (!afiliadoUserId) {
+    afiliadoUserId = await resolverAfiliado(site, userId, perfil.indicado_por, typeof body.visitante === 'string' ? body.visitante.slice(0, 80) : '');
+  }
+  const afiliadoCodigo = await codigoDoAfiliado(site, afiliadoUserId);
+  const observacoes = typeof body.observacoes === 'string' ? body.observacoes.trim().slice(0, 1000) : '';
+
+  // ------------------------------------------------------ cliente no Asaas
+  let asaasCustomerId: string;
+  try {
+    asaasCustomerId = await garantirClienteAsaas(site, userId, perfil);
+  } catch (err) {
+    console.error('[checkout] cliente Asaas:', err instanceof Error ? err.message : err);
+    res.status(502).json({ error: 'pagamento-indisponivel', message: err instanceof Error ? err.message : 'Asaas indisponível' });
+    return;
+  }
+
+  // --------------------------------------------------------- grava pedido
+  const { data: pedidoRow, error: pedErr } = await site
+    .from('pedidos')
+    .insert({
+      user_id: userId,
+      status: 'RASCUNHO',
+      pagamento_status: 'aguardando',
+      forma_pagamento: escolha.forma,
+      cupom: cupom.codigo,
+      afiliado_user_id: afiliadoUserId,
+      frete: { id: frete.id, nome: frete.nome, dias: frete.dias, valor: frete.valor, retirada: Boolean(frete.retirada), transportadora: frete.transportadora ?? null, servico: frete.servico ?? null },
+      valor_frete: frete.valor,
+      desconto: cupom.desconto,
+      total_estimado: r2(subtotal - cupom.desconto),
+      total_final: total,
+      endereco: enderecoJson(perfil),
+      observacoes: observacoes || null,
+    })
+    .select('id, numero')
+    .single();
+  if (pedErr || !pedidoRow) {
+    res.status(500).json({ error: 'nao-gravou-pedido', message: pedErr?.message });
+    return;
+  }
+  const pedido = pedidoRow as { id: string; numero: number };
+  const { error: itensErr } = await site.from('pedido_itens').insert(itensParaGravar(pedido.id, linhas));
+  if (itensErr) {
+    await site.from('pedidos').delete().eq('id', pedido.id);
+    res.status(500).json({ error: 'nao-gravou-itens', message: itensErr.message });
+    return;
+  }
+
+  // ------------------------------------------------------------ cobrança
+  if (escolha.forma === 'CREDIT_CARD') {
+    await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'tentativa' });
+  }
+  const cobranca = await criarPagamento(site, {
+    pedido,
+    perfil,
+    asaasCustomerId,
+    forma: escolha.forma,
+    total,
+    parcelas: escolha.parcelas,
+    cartao: escolha.cartao,
+    ip,
+    cfg,
+  });
+  if (!cobranca.ok) {
+    await site.from('pedidos').delete().eq('id', pedido.id);
+    if (cobranca.erro === 'cartao-recusado') {
+      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado' });
+      res.status(402).json({ error: 'cartao-recusado', message: cobranca.mensagem });
+    } else {
+      res.status(502).json({ error: 'pagamento-indisponivel', message: cobranca.mensagem });
+    }
+    return;
+  }
+  if (escolha.forma === 'CREDIT_CARD') {
+    await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: cobranca.pagamento.status });
+  }
+
+  // ------------------------------------------------------------------ ERP
+  const notas = [
+    `Pedido #${pedido.numero} feito no site nzgroup.com.br por ${perfil.email ?? ''}.`,
+    `PAGAMENTO ONLINE (Asaas): ${FORMA_LABEL[escolha.forma]}${escolha.parcelas > 1 ? ` em ${escolha.parcelas}x` : ''} — ${cobranca.pagamento.status === 'pago' ? 'PAGO' : 'aguardando pagamento'}. Total R$ ${total.toFixed(2)}.`,
+    frete.retirada ? 'Entrega: RETIRADA em São Paulo.' : `Frete: ${frete.nome} — ${frete.dias} dias úteis — R$ ${frete.valor.toFixed(2)} (cobrado do cliente).`,
+    cupom.codigo ? `Cupom ${cupom.codigo}${cupom.desconto ? ` (desconto R$ ${cupom.desconto.toFixed(2)})` : ''}.` : null,
+    afiliadoCodigo ? `Indicado por ${afiliadoCodigo}.` : null,
+    ...linhas.filter((l) => l.item.lpns?.length).map((l) => `${l.e.sku}: rolos pedidos ${l.item.lpns!.join(', ')}.`),
+    observacoes ? `Obs. do cliente: ${observacoes}` : null,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const payloadErp = montarPayloadErp({
+    pedidoId: pedido.id,
+    perfil,
+    linhas,
+    total,
+    notas,
+    cupom: cupom.codigo,
+    afiliadoCodigo,
+    frete: { tipo: frete.retirada ? 'RETIRADA' : 'CIF', valor: frete.valor, transportadora: frete.nome, prazoDias: frete.dias },
+  });
+  await site.from('pedidos').update({ erp_payload: payloadErp }).eq('id', pedido.id);
+
+  let erpQuoteNumber: number | null = null;
+  let erpErro: string | null = null;
+  try {
+    await avisarErpPago(site, pedido.id);
+    const { data: p } = await site.from('pedidos').select('erp_quote_number').eq('id', pedido.id).maybeSingle();
+    erpQuoteNumber = (p as { erp_quote_number?: number | null } | null)?.erp_quote_number ?? null;
+  } catch (err) {
+    // A cobrança já existe: o pedido NÃO pode falhar por causa do ERP. O cron
+    // (e o próximo `status`) reenviam com o payload guardado.
+    erpErro = err instanceof Error ? err.message : String(err);
+    console.warn('[checkout] ERP não recebeu o pedido agora:', erpErro);
+  }
+
+  res.status(200).json({
+    ok: true,
+    numero: pedido.numero,
+    total,
+    subtotal,
+    desconto: cupom.desconto,
+    frete: { id: frete.id, nome: frete.nome, dias: frete.dias, valor: frete.valor, retirada: Boolean(frete.retirada) },
+    erpQuoteNumber,
+    erpPendente: Boolean(erpErro),
+    pagamento: pagamentoPublico(cobranca.pagamento),
+  });
+}
+
+// ================================================================ status
+
+async function carregarPedidoDoUsuario(site: Db, userId: string, admin: boolean, numero: number) {
+  let q = site
+    .from('pedidos')
+    .select('id, numero, user_id, status, pagamento_status, forma_pagamento, cupom, frete, endereco, observacoes, valor_frete, desconto, total_estimado, total_final, total_erp, erp_quote_number, erp_quote_id, erp_payload, erp_pago_em, pago_em, criado_em')
+    .eq('numero', numero);
+  if (!admin) q = q.eq('user_id', userId);
+  const { data } = await q.maybeSingle();
+  return data as {
+    id: string;
+    numero: number;
+    user_id: string;
+    status: string;
+    pagamento_status: string;
+    forma_pagamento: string | null;
+    cupom: string | null;
+    frete: Record<string, unknown> | null;
+    endereco: Record<string, unknown> | null;
+    observacoes: string | null;
+    valor_frete: number;
+    desconto: number;
+    total_estimado: number | null;
+    total_final: number | null;
+    total_erp: number | null;
+    erp_quote_number: number | null;
+    erp_quote_id: string | null;
+    erp_payload: unknown;
+    erp_pago_em: string | null;
+    pago_em: string | null;
+    criado_em: string;
+  } | null;
+}
+
+async function opStatus(site: Db, userId: string, admin: boolean, body: Record<string, unknown>, res: VercelResponse) {
+  const numero = Math.floor(Number(body.numero));
+  if (!Number.isFinite(numero) || numero <= 0) {
+    res.status(400).json({ error: 'numero-invalido' });
+    return;
+  }
+  const pedido = await carregarPedidoDoUsuario(site, userId, admin, numero);
+  if (!pedido) {
+    res.status(404).json({ error: 'pedido-nao-encontrado' });
+    return;
+  }
+
+  const { data: pagsData } = await site.from('pagamentos').select('*').eq('pedido_id', pedido.id).order('criado_em', { ascending: false });
+  let pagamentos = (pagsData ?? []) as PagamentoRow[];
+  if (pagamentos.length) {
+    // O mais recente é o que vale; os outros ficam no histórico.
+    let atual = pagamentos[0];
+    atual = await expirarSeVencido(site, atual);
+    atual = await sincronizarComAsaas(site, atual);
+    pagamentos = [atual, ...pagamentos.slice(1)];
+    pedido.pagamento_status = atual.status === 'pago' || pedido.pagamento_status === 'pago' ? 'pago' : atual.status;
+  }
+
+  // ERP ficou para trás (estava fora no checkout)? Tenta agora, em silêncio.
+  if ((!pedido.erp_quote_id && pedido.erp_payload) || (pedido.pagamento_status === 'pago' && !pedido.erp_pago_em)) {
+    await avisarErpPago(site, pedido.id).catch(() => undefined);
+    const de = await carregarPedidoDoUsuario(site, userId, admin, numero);
+    if (de) {
+      pedido.erp_quote_number = de.erp_quote_number;
+      pedido.status = de.status;
+    }
+  }
+
+  const { data: itensData } = await site
+    .from('pedido_itens')
+    .select('qtd, unidade, preco_unit_estimado, erp_sku, produtos(slug, nome, codigo, imagem, hex)')
+    .eq('pedido_id', pedido.id);
+  type ItemRow = { qtd: number; unidade: string; preco_unit_estimado: number | null; erp_sku: string; produtos: { slug: string; nome: string; codigo: string | null; imagem: string | null; hex: string | null } | null };
+  const itens = ((itensData ?? []) as unknown as ItemRow[]).map((i) => ({
+    slug: i.produtos?.slug ?? null,
+    nome: i.produtos?.nome ?? i.erp_sku,
+    codigo: i.produtos?.codigo ?? null,
+    imagem: i.produtos?.imagem ?? null,
+    hex: i.produtos?.hex ?? null,
+    qtd: Number(i.qtd),
+    unidade: i.unidade,
+    unit: i.preco_unit_estimado != null ? Number(i.preco_unit_estimado) : null,
+  }));
+
+  res.status(200).json({
+    pedido: {
+      numero: pedido.numero,
+      status: pedido.status,
+      pagamentoStatus: pedido.pagamento_status,
+      forma: pedido.forma_pagamento,
+      cupom: pedido.cupom,
+      frete: pedido.frete,
+      endereco: pedido.endereco,
+      valorFrete: Number(pedido.valor_frete ?? 0),
+      desconto: Number(pedido.desconto ?? 0),
+      total: pedido.total_final != null ? Number(pedido.total_final) : pedido.total_estimado != null ? Number(pedido.total_estimado) : null,
+      erpQuoteNumber: pedido.erp_quote_number,
+      pagoEm: pedido.pago_em,
+      criadoEm: pedido.criado_em,
+      itens,
+    },
+    pagamento: pagamentos.length ? pagamentoPublico(pagamentos[0]) : null,
+    historico: pagamentos.slice(1).map(pagamentoPublico),
+    agora: new Date().toISOString(),
+  });
+}
+
+// ======================================================== novo-pagamento
+
+async function opNovoPagamento(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, req: VercelRequest, res: VercelResponse) {
+  const numero = Math.floor(Number(body.numero));
+  const pedido = await carregarPedidoDoUsuario(site, userId, false, numero);
+  if (!pedido) {
+    res.status(404).json({ error: 'pedido-nao-encontrado' });
+    return;
+  }
+  if (!['expirado', 'recusado', 'vencido', 'cancelado'].includes(pedido.pagamento_status) || pedido.total_final == null) {
+    res.status(409).json({ error: 'pedido-nao-aceita-novo-pagamento', pagamentoStatus: pedido.pagamento_status });
+    return;
+  }
+  const escolha = lerEscolha(body);
+  if ('erro' in escolha) {
+    res.status(400).json({ error: escolha.erro });
+    return;
+  }
+  const total = Number(pedido.total_final);
+  const ip = ipDoCliente(req.headers as Record<string, string | string[] | undefined>);
+  if (escolha.forma === 'BOLETO' && total < cfg.boleto_minimo) {
+    res.status(400).json({ error: 'boleto-minimo', minimo: cfg.boleto_minimo });
+    return;
+  }
+  if (escolha.forma === 'CREDIT_CARD') {
+    if (!parcelasDisponiveis(total, cfg).some((p) => p.n === escolha.parcelas)) {
+      res.status(400).json({ error: 'parcelas-invalidas' });
+      return;
+    }
+    if (await limiteCartao(site, userId, ip)) {
+      res.status(429).json({ error: 'muitas-tentativas' });
+      return;
+    }
+  }
+  const { perfil, faltando } = await carregarPerfil(site, userId);
+  if (!perfil || faltando.length) {
+    res.status(400).json({ error: 'cadastro-incompleto', faltando });
+    return;
+  }
+  const asaasCustomerId = await garantirClienteAsaas(site, userId, perfil);
+
+  if (escolha.forma === 'CREDIT_CARD') await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'tentativa' });
+  const cobranca = await criarPagamento(site, { pedido: { id: pedido.id, numero: pedido.numero }, perfil, asaasCustomerId, forma: escolha.forma, total, parcelas: escolha.parcelas, cartao: escolha.cartao, ip, cfg });
+  if (!cobranca.ok) {
+    if (cobranca.erro === 'cartao-recusado') {
+      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado' });
+      res.status(402).json({ error: 'cartao-recusado', message: cobranca.mensagem });
+    } else res.status(502).json({ error: 'pagamento-indisponivel', message: cobranca.mensagem });
+    return;
+  }
+  await site.from('pedidos').update({ forma_pagamento: escolha.forma, pagamento_status: cobranca.pagamento.status }).eq('id', pedido.id);
+  res.status(200).json({ ok: true, numero: pedido.numero, pagamento: pagamentoPublico(cobranca.pagamento) });
+}
+
+export type { OpcaoFrete, Linha, Perfil };

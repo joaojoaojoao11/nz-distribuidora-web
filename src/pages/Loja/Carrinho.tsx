@@ -8,6 +8,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { chamarCheckout } from '../../lib/shop/checkout';
 import { supabase } from '../../lib/supabase';
 import { visitanteId } from '../../lib/afiliado';
 import { alterarQuantidade, limparCarrinho, removerDoCarrinho, useCarrinho } from '../../lib/shop/carrinho';
@@ -26,7 +27,7 @@ interface Endereco {
 }
 
 export default function Carrinho() {
-  const { user, loading, isApproved } = useAuth();
+  const { user, loading, isApproved, isAdmin } = useAuth();
   const itens = useCarrinho();
   const navigate = useNavigate();
   usePrecosLote(itens.map((i) => i.slug));
@@ -38,6 +39,9 @@ export default function Carrinho() {
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState<{ numero: number; erpQuoteNumber: number } | null>(null);
+  // Pagamento online aberto? Decidido no servidor (loja_config.checkout_ativo);
+  // o admin vê o botão sempre, para testar antes de abrir.
+  const [checkoutAtivo, setCheckoutAtivo] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -48,6 +52,23 @@ export default function Carrinho() {
       .maybeSingle()
       .then(({ data }) => setEndereco((data as Endereco | null) ?? null));
   }, [user]);
+
+  useEffect(() => {
+    if (!user || !(isApproved || isAdmin) || !itens.length) return;
+    let vivo = true;
+    chamarCheckout<{ checkoutAtivo: boolean }>({ op: 'resumo', itens: itens.slice(0, 1).map((i) => ({ slug: i.slug, qtd: i.qtd, unidade: i.unidade })) })
+      .then((r) => {
+        if (vivo) setCheckoutAtivo(Boolean(r.checkoutAtivo) || isAdmin);
+      })
+      .catch(() => {
+        if (vivo) setCheckoutAtivo(isAdmin);
+      });
+    return () => {
+      vivo = false;
+    };
+    // Só precisa saber se está ligado; um item basta.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isApproved, isAdmin, itens.length > 0]);
 
   const cadastroCompleto = Boolean(
     endereco?.address_street && endereco.address_city && endereco.address_state && endereco.address_zip && endereco.cpf_cnpj && endereco.phone
@@ -146,6 +167,18 @@ export default function Carrinho() {
               <p className={styles.aviso}>Seu cadastro está em análise. Assim que for aprovado, você envia o pedido daqui.</p>
             ) : (
               <>
+                {checkoutAtivo && (
+                  <>
+                    <Link to="/checkout" className={styles.enviar}>
+                      Fechar pedido e pagar
+                    </Link>
+                    <p className={styles.nota}>Pix, cartão em até 6x ou boleto. Frete calculado no checkout.</p>
+                    <details className={styles.ouOrcamento}>
+                      <summary>Prefere enviar como orçamento, sem pagar agora?</summary>
+                      <p className={styles.nota}>O vendedor confere estoque, frete e condição e fecha com você.</p>
+                    </details>
+                  </>
+                )}
                 <label className={styles.campo}>
                   <span>Cupom</span>
                   <div className={styles.cupomLinha}>
@@ -185,8 +218,8 @@ export default function Carrinho() {
 
                 {erro && <p className={styles.erro}>{erro}</p>}
 
-                <button type="button" className={styles.enviar} onClick={enviar} disabled={enviando || !cadastroCompleto}>
-                  {enviando ? 'Enviando…' : 'Enviar pedido ao NZERP'}
+                <button type="button" className={checkoutAtivo ? styles.limpar : styles.enviar} onClick={enviar} disabled={enviando || !cadastroCompleto}>
+                  {enviando ? 'Enviando…' : checkoutAtivo ? 'Enviar como orçamento' : 'Enviar pedido ao NZERP'}
                 </button>
                 <p className={styles.nota}>
                   Sem pagamento aqui: o vendedor confirma estoque, frete e condição e fecha com você. Frete à parte.

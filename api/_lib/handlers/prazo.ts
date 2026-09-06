@@ -51,7 +51,7 @@ function rateLimited(ip: string): boolean {
   return entry.count > RATE_MAX;
 }
 
-interface ShippingProfile {
+export interface ShippingProfile {
   id: string;
   nome: string;
   peso_kg: number;
@@ -61,7 +61,7 @@ interface ShippingProfile {
   valor_declarado?: number;
 }
 
-interface Carrier {
+export interface Carrier {
   slug: string;
   nome: string;
   cep_origem: string;
@@ -77,7 +77,7 @@ interface Carrier {
  * Uma transportadora pode gerar VÁRIAS destas: o Melhor Envio devolve um
  * serviço por linha (Jadlog .Package, Correios PAC…) numa chamada só.
  */
-interface CotacaoInterna {
+export interface CotacaoInterna {
   carrier: string;
   /** Rótulo público já composto: 'Melhor Envio · Jadlog .Package'. */
   nome: string;
@@ -363,7 +363,7 @@ async function formatosDaLinha(
     .map((r) => ({ id: r.shipping_profiles!.id, nome: r.shipping_profiles!.nome }));
 }
 
-async function cotar(
+export async function cotar(
   supabase: Db,
   carrier: Carrier,
   profile: ShippingProfile,

@@ -17,6 +17,8 @@ const Loja = lazy(() => import('./pages/Loja/Loja'));
 const LojaProduct = lazy(() => import('./pages/Loja/LojaProduct'));
 const Painel = lazy(() => import('./pages/Painel/Painel'));
 const Carrinho = lazy(() => import('./pages/Loja/Carrinho'));
+const Checkout = lazy(() => import('./pages/Loja/Checkout'));
+const PedidoDetalhe = lazy(() => import('./pages/Painel/PedidoDetalhe'));
 const Ppf = lazy(() => import('./pages/Ppf/Ppf'));
 const LuxuryGloss = lazy(() => import('./pages/Ppf/LuxuryGloss'));
 const PrimeGloss = lazy(() => import('./pages/Ppf/PrimeGloss'));
@@ -108,6 +110,8 @@ function App() {
                   <Route path="/loja/:slug" element={<LojaProduct />} />
                   <Route path="/painel" element={<Painel />} />
                   <Route path="/carrinho" element={<Carrinho />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/painel/pedido/:numero" element={<PedidoDetalhe />} />
                   <Route path="/ppf" element={<Ppf />} />
                   <Route path="/ppf/luxury-gloss" element={<LuxuryGloss />} />
                   <Route path="/ppf/prime-gloss" element={<PrimeGloss />} />

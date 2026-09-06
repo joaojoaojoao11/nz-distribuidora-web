@@ -1,0 +1,142 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.abas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.aba {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-height: 64px;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color var(--transition-snappy), color var(--transition-snappy);
+}
+
+.aba:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.aba:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.abaAtiva {
+  border-color: var(--accent-red);
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px var(--accent-red);
+}
+
+.abaTitulo {
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.abaLinha {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.nota,
+.seguro {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.seguro {
+  grid-column: 1 / -1;
+}
+
+.cartao {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  padding: 0.9rem;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-primary);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.campoLargo {
+  grid-column: 1 / -1;
+}
+
+.campo span {
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 0.8rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  /* 16px: abaixo disso o iOS dá zoom ao focar. */
+  font-size: 16px;
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+
+.campo small {
+  font-size: 0.7rem;
+  color: #f87171;
+}
+
+.inputErro {
+  border-color: #f87171 !important;
+}
+
+@media (max-width: 560px) {
+  .abas {
+    grid-template-columns: 1fr;
+  }
+  .aba {
+    min-height: 52px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+  .abaLinha {
+    text-align: right;
+  }
+}

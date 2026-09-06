@@ -14,6 +14,7 @@
     "shop:audit": "node scripts/audit-shop.mjs",
     "shop:index": "node scripts/generate-shop-index.mjs",
     "frete:test": "node scripts/test-frete.mjs",
+    "checkout:test": "node scripts/test-checkout.mjs",
     "loja:alvos": "node scripts/audit-touch-targets.mjs",
     "loja:toque": "node scripts/test-touch-mobile.mjs",
     "shop:cores": "node scripts/diag-cores.mjs",

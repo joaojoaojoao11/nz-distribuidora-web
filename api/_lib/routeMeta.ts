@@ -136,6 +136,9 @@ export const routeMeta: Record<string, RouteMeta> = {
   // Rotas internas: servem o app normalmente, mas sinalizam noindex.
   '/admin': { title: 'Painel Administrativo', description: 'Área interna NZ.', noindex: true },
   '/login': { title: 'Login', description: 'Acesso ao painel NZ.', noindex: true },
+  '/checkout': { title: 'Checkout', description: 'Pagamento do pedido na loja NZ.', noindex: true },
+  '/painel': { title: 'Minha conta', description: 'Painel do cliente NZ.', noindex: true },
+  '/carrinho': { title: 'Carrinho', description: 'Carrinho da loja NZ.', noindex: true },
   '/cadastro': { title: 'Cadastro', description: 'Cadastro no painel NZ.', noindex: true },
   '/ppf-promo': { title: 'NZPPF', description: 'Links NZPPF.', noindex: true },
   '/nzgroup-promo': { title: 'NZ Group', description: 'Links NZ Group.', noindex: true },

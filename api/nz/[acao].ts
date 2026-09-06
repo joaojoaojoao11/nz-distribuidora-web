@@ -25,6 +25,8 @@ import catalogo from '../_lib/handlers/catalogo.js';
 import precos from '../_lib/handlers/precos.js';
 import afiliado from '../_lib/handlers/afiliado.js';
 import pedido from '../_lib/handlers/pedido.js';
+import checkout from '../_lib/handlers/checkout.js';
+import asaas from '../_lib/handlers/asaas.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -47,6 +49,10 @@ const ROTAS: Record<string, Handler> = {
   afiliado,
   // Pedido do site → orçamento no NZERP. Logado e aprovado.
   pedido,
+  // Checkout com pagamento online (Pix, boleto, cartão) via Asaas. Logado e aprovado.
+  checkout,
+  // Webhook do Asaas. Token em cabeçalho.
+  asaas,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
