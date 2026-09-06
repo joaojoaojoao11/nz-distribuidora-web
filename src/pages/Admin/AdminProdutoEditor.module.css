@@ -101,8 +101,7 @@
   border-bottom-color: var(--accent-red, #ff4444);
 }
 
-.abaAviso::after {
-  content: '•';
+.abaPonto {
   margin-left: 0.3rem;
   color: #f5a623;
 }

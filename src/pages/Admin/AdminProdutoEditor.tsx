@@ -481,18 +481,20 @@ export default function AdminProdutoEditor() {
           ['ficha', 'Ficha'],
           ['erp', 'ERP'],
           ['seo', 'SEO'],
-        ] as [Aba, string][]).map(([id, rotulo]) => (
-          <button
-            key={id}
-            type="button"
-            className={`${styles.aba} ${aba === id ? styles.abaAtiva : ''} ${
-              (id === 'midia' && avisosMidia.length > 0) || (id === 'seo' && !p.seo_titulo) ? styles.abaAviso : ''
-            }`}
-            onClick={() => setAba(id)}
-          >
-            {rotulo}
-          </button>
-        ))}
+        ] as [Aba, string][]).map(([id, rotulo]) => {
+          const pendente = (id === 'midia' && avisosMidia.length > 0) || (id === 'seo' && !p.seo_titulo);
+          return (
+            <button key={id} type="button" className={`${styles.aba} ${aba === id ? styles.abaAtiva : ''}`} onClick={() => setAba(id)}>
+              {rotulo}
+              {/* Decorativo: fora do nome acessível da aba. */}
+              {pendente && (
+                <span className={styles.abaPonto} aria-hidden="true">
+                  •
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <div className={styles.pagina}>
