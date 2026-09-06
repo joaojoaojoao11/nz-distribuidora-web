@@ -195,10 +195,14 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
+/* Sem o min-width:0 o input estoura a largura dos outros campos no celular. */
 .senhaWrap .input {
-  padding-right: 4.4rem;
+  flex: 1;
+  min-width: 0;
+  padding-right: 5.6rem;
 }
 
 .verSenha {

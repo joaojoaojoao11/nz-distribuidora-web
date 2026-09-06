@@ -37,7 +37,9 @@ const STATUS_LABEL: Record<StatusEquipe, string> = {
   convidado: 'Convidado',
   ativo: 'Com acesso',
   bloqueado: 'Bloqueado',
-  'fora-do-erp': 'Fora do ERP',
+  // Admin do site que não tem usuário no NZERP. Não é erro (a conta pessoal do
+  // João é assim), só precisa ficar visível.
+  'fora-do-erp': 'Sem vínculo no ERP',
 };
 
 const STATUS_CLASSE: Record<StatusEquipe, string> = {
@@ -45,7 +47,7 @@ const STATUS_CLASSE: Record<StatusEquipe, string> = {
   convidado: styles.badgeReseller,
   ativo: styles.badgeApproved,
   bloqueado: styles.badgeAdmin,
-  'fora-do-erp': styles.badgeAdmin,
+  'fora-do-erp': styles.badgeReseller,
 };
 
 function data(v: string | null): string {

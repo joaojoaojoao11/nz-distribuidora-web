@@ -1,5 +1,23 @@
 # Cadastro, base de clientes e processo de compra — diagnóstico e plano
 
+> **Status 2026-09-06: IMPLANTADO** (fases 4.1–4.7), com duas exceções documentadas no fim
+> desta caixa. Verificado em produção pelo smoke de conta/equipe e por `npm run conta:test`.
+>
+> **Mudança de rumo na 4.1/4.4 (vale mais que o texto original):** o trigger do banco NÃO cria
+> administradores. A ideia inicial — promover quem tivesse linha em `equipe_convites` — é
+> insegura com `mailer_autoconfirm = true`: bastaria alguém se cadastrar com o e-mail de um
+> funcionário para nascer admin. Exigir `auth.users.invited_at` também não serve: o GoTrue
+> grava esse campo depois do INSERT que dispara o trigger. A regra final é
+> `migrations/2026-09-08c_admin_so_por_acao.sql`: toda conta nasce cliente ou lojista, e a
+> promoção acontece no servidor, na op `convidar` de `/api/nz/equipe`, com admin autenticado e
+> o id do usuário em mãos.
+>
+> **Não feito (falta credencial do João):** SMTP próprio (Resend) — sem ele o convite sai por
+> link copiado e a recuperação de senha usa o mailer do Supabase, limitado a 2 e-mails por
+> hora; login com Google e captcha Turnstile ficam atrás de flags desligadas
+> (`VITE_GOOGLE_LOGIN`, `VITE_TURNSTILE_SITE_KEY`); e os e-mails transacionais de pedido
+> (4.6) dependem do mesmo Resend.
+>
 > Para o agente **Opus 5** executar. Diagnóstico feito em 2026-09-06 lendo o código do site
 > (`nz-distribuidora-web`), o banco do site (`uibjmvkvbthzypgozpcs`), o banco e o código do NZERP
 > (`2NZERPUPDATE30`, `ipehorttsrvjynnhyzhu`) e a configuração de Auth dos dois projetos via
