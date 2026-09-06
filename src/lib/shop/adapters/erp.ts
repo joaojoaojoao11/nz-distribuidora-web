@@ -115,6 +115,7 @@ const SH_WRAPPING_IMAGES_ERP: Record<string, string> = {
   'sh-glossy-black': '/assets/images/shop/sh-wrapping/glossy-black.webp',
   'sh-pearl-white': '/assets/images/shop/sh-wrapping/pearl-white.webp',
   'sh-sao-paulo-yellow': '/assets/images/shop/sh-wrapping/sao-paulo-yellow.webp',
+  'sh-soulmoving-red': '/assets/images/shop/sh-wrapping/soulmoving-red.webp',
 };
 
 /**
@@ -128,6 +129,12 @@ const SH_WRAPPING_GALLERY_ERP: Record<string, string[]> = {
     '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-1.webp',
     '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-2.webp',
     '/assets/images/shop/sh-wrapping/sao-paulo-yellow-car-3.webp',
+  ],
+  'sh-soulmoving-red': [
+    '/assets/images/shop/sh-wrapping/soulmoving-red.webp',
+    '/assets/images/shop/sh-wrapping/soulmoving-red-car-1.webp',
+    '/assets/images/shop/sh-wrapping/soulmoving-red-car-2.webp',
+    '/assets/images/shop/sh-wrapping/soulmoving-red-car-3.webp',
   ],
 };
 
