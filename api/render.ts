@@ -257,6 +257,16 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
 
   const segments = path.split('/').filter(Boolean);
 
+  // Áreas privadas: o React resolve as subrotas (/admin/produtos/:slug,
+  // /painel/pedido/:numero). Sem isto o servidor devolvia 404 para qualquer
+  // caminho abaixo delas — a tela abria pelo roteador do navegador, mas o
+  // status HTTP mentia, e um F5 ou um link compartilhado voltava 404.
+  // Todas são noindex, então não há SEO a perder.
+  if (segments[0] === 'admin' || segments[0] === 'painel') {
+    const base = routeMeta[`/${segments[0]}`];
+    if (base) return { ...base, status: 200, canonicalPath: `/${segments[0]}`, type: 'website', schema: [] };
+  }
+
   // /blog/:slug — valida no Supabase; post inexistente = 404 real
   if (segments[0] === 'blog' && segments.length === 2) {
     const meta = await fetchBlogPostMeta(segments[1]);
