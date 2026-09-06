@@ -136,6 +136,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const payload = montarPayloadErp({
     pedidoId: pedido.id,
+    siteUserId: userId,
     perfil,
     linhas,
     total: totalEstimado,
@@ -153,12 +154,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(502).json({ error: 'erp-indisponivel', numero: pedido.numero, message: rpcErr.message });
     return;
   }
-  const r = rpc as { quote_id: string; quote_number: number };
+  const r = rpc as { quote_id: string; quote_number: number; client_id?: string | null };
 
   await site
     .from('pedidos')
     .update({ status: 'ABERTO', erp_quote_id: r.quote_id, erp_quote_number: r.quote_number, enviado_em: new Date().toISOString(), status_atualizado_em: new Date().toISOString() })
     .eq('id', pedido.id);
+  // Guarda a qual cliente do ERP esta conta corresponde (só na primeira vez).
+  if (r.client_id) await site.from('user_profiles').update({ erp_client_id: r.client_id }).eq('id', userId).is('erp_client_id', null);
   if (cupom.codigo) await site.rpc('cupom_consumir', { p_codigo: cupom.codigo });
 
   res.status(200).json({ ok: true, numero: pedido.numero, erpQuoteNumber: r.quote_number, totalEstimado, desconto: cupom.desconto, afiliado: afiliadoCodigo });

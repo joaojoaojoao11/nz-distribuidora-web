@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { chamarCheckout } from '../../lib/shop/checkout';
+import { faltasDoCadastro } from '../../lib/shop/conta';
 import { supabase } from '../../lib/supabase';
 import { visitanteId } from '../../lib/afiliado';
 import { alterarQuantidade, limparCarrinho, removerDoCarrinho, useCarrinho } from '../../lib/shop/carrinho';
@@ -17,6 +18,7 @@ import type { ItemCarrinho } from '../../lib/shop/carrinho';
 import styles from './Carrinho.module.css';
 
 interface Endereco {
+  full_name: string | null;
   address_street: string | null;
   address_number: string | null;
   address_city: string | null;
@@ -47,7 +49,7 @@ export default function Carrinho() {
     if (!user) return;
     void supabase
       .from('user_profiles')
-      .select('address_street, address_number, address_city, address_state, address_zip, cpf_cnpj, phone')
+      .select('full_name, address_street, address_number, address_city, address_state, address_zip, cpf_cnpj, phone')
       .eq('id', user.id)
       .maybeSingle()
       .then(({ data }) => setEndereco((data as Endereco | null) ?? null));
@@ -70,9 +72,10 @@ export default function Carrinho() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isApproved, isAdmin, itens.length > 0]);
 
-  const cadastroCompleto = Boolean(
-    endereco?.address_street && endereco.address_city && endereco.address_state && endereco.address_zip && endereco.cpf_cnpj && endereco.phone
-  );
+  // Mesma lista do servidor (api/_lib/conta/completude.ts): assim o carrinho
+  // diz o que falta ANTES de o cliente descobrir no meio do pagamento.
+  const faltas = endereco ? faltasDoCadastro(endereco) : [];
+  const cadastroCompleto = Boolean(endereco) && faltas.length === 0;
 
   const validarCupom = async () => {
     const codigo = cupom.trim().toUpperCase();
@@ -211,7 +214,7 @@ export default function Carrinho() {
                     </p>
                   ) : (
                     <p className={styles.erro}>
-                      Falta completar documento, telefone ou endereço. <Link to="/painel">Completar cadastro</Link>
+                      Falta no cadastro: {faltas.join(', ')}. <Link to="/painel">Completar agora</Link>
                     </p>
                   )}
                 </div>

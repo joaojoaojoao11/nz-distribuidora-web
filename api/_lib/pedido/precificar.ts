@@ -56,6 +56,10 @@ export interface Perfil {
   address_zip: string | null;
   asaas_customer_id: string | null;
   asaas_customer_env: string | null;
+  /** Cobrança do cartão, quando o titular usa outro endereço. */
+  cobranca_igual_entrega?: boolean | null;
+  cobranca_cep?: string | null;
+  cobranca_numero?: string | null;
 }
 
 export interface Linha {
@@ -92,7 +96,7 @@ export async function carregarPerfil(site: Db, userId: string): Promise<{ perfil
   const { data } = await site
     .from('user_profiles')
     .select(
-      'full_name, company_name, phone, email, cpf_cnpj, ie, indicado_por, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip, asaas_customer_id, asaas_customer_env'
+      'full_name, company_name, phone, email, cpf_cnpj, ie, indicado_por, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, address_zip, asaas_customer_id, asaas_customer_env, cobranca_igual_entrega, cobranca_cep, cobranca_numero'
     )
     .eq('id', userId)
     .maybeSingle();
@@ -252,6 +256,8 @@ export interface FreteErp {
 /** Corpo da RPC site_criar_pedido, igual para os dois caminhos. */
 export function montarPayloadErp(args: {
   pedidoId: string;
+  /** Dono da conta no site — o ERP grava em clients.site_user_id. */
+  siteUserId?: string | null;
   perfil: Perfil;
   linhas: Linha[];
   total: number;
@@ -263,6 +269,7 @@ export function montarPayloadErp(args: {
   const { perfil, linhas } = args;
   return {
     site_pedido_id: args.pedidoId,
+    site_user_id: args.siteUserId ?? null,
     nome: perfil.full_name,
     empresa: perfil.company_name ?? '',
     cpf_cnpj: perfil.cpf_cnpj,

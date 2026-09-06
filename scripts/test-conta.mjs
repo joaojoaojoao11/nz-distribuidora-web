@@ -152,31 +152,49 @@ const CLIENTE_ERP_BRUTO = {
 
 process.env.ERP_SUPABASE_URL = 'https://erp.example.com';
 process.env.ERP_SUPABASE_SERVICE_ROLE_KEY = 'chave-de-teste';
-let colunasPedidas = '';
+
+// A RPC site_consultar_cliente já devolve a lista branca (o SQL é a fronteira).
+// Aqui o duplo devolve a linha CRUA de propósito: se algum dia o JS voltar a
+// repassar o objeto inteiro, os testes de vazamento pegam.
+const RPC_PUBLICO = (c) => ({
+  id: c.id, nome: c.nome, fantasia: c.fantasia, tipo_pessoa: c.tipo_pessoa, email: c.email,
+  telefone: c.celular || c.telefone, cep: c.cep, endereco: c.endereco, numero: c.numero,
+  complemento: c.complemento, bairro: c.bairro, cidade: c.cidade, estado: c.estado,
+  inscricao_estadual: c.inscricao_estadual, ativo: String(c.situacao).toLowerCase() === 'ativo',
+  site_user_id: null,
+  // ruído que a RPC real NÃO manda — o mapeamento do site tem de ignorar
+  limite_de_credito: c.limite_de_credito, lista_de_preco: c.lista_de_preco,
+  vendedor: c.vendedor, observacoes: c.observacoes,
+});
 let linhasErp = [CLIENTE_ERP_BRUTO];
+let rpcsChamadas = [];
+let tabelasLidas = [];
 globalThis.__erpFake = {
-  from: () => ({
-    select: (cols) => {
-      colunasPedidas = cols;
-      const q = {
-        ilike: () => q,
-        limit: () => Promise.resolve({ data: linhasErp, error: null }),
-        then: (res) => Promise.resolve({ data: linhasErp, error: null }).then(res),
-      };
-      return q;
-    },
-  }),
+  from: (t) => {
+    tabelasLidas.push(t);
+    return { select: () => Promise.resolve({ data: [], error: null }) };
+  },
+  rpc: (nome, args) => {
+    rpcsChamadas.push({ nome, args });
+    const doc = String(args?.p_doc ?? '').replace(/\D/g, '');
+    const email = String(args?.p_email ?? '').toLowerCase();
+    const achado = linhasErp.find(
+      (c) => (doc && String(c.cpf_cnpj).replace(/\D/g, '') === doc) || (email && String(c.email).toLowerCase() === email)
+    );
+    return Promise.resolve({ data: achado ? RPC_PUBLICO(achado) : null, error: null });
+  },
 };
 const erpMod = await import(pathToFileURL(join(outDir, 'conta/erpClientes.js')).href);
 
 const achado = await erpMod.clienteErpPorDocumento('11222333000181');
 const serializado = JSON.stringify(achado ?? {});
 ok('acha o cliente pelo documento com máscara', achado?.id === 'cli-1');
-ok('select pede colunas explícitas (sem *)', !colunasPedidas.includes('*') && colunasPedidas.includes('cpf_cnpj'));
+ok('lê pela RPC, nunca pela tabela clients', rpcsChamadas.at(-1)?.nome === 'site_consultar_cliente' && !tabelasLidas.includes('clients'));
 ok('não vaza limite de crédito', !serializado.includes('50000') && !serializado.includes('limite'));
 ok('não vaza lista de preço', !serializado.includes('REVENDA'));
 ok('não vaza vendedor nem observações', !serializado.includes('ERICK') && !serializado.includes('problemático'));
 ok('telefone preferido é o celular', achado?.telefone === '11999998888');
+ok('campo desconhecido na resposta não é repassado', !Object.keys(achado ?? {}).some((k) => ['limite_de_credito', 'lista_de_preco', 'vendedor', 'observacoes'].includes(k)));
 ok('situação Ativo vira ativo=true', achado?.ativo === true);
 
 linhasErp = [{ ...CLIENTE_ERP_BRUTO, cpf_cnpj: '11.222.333/0001-99' }];

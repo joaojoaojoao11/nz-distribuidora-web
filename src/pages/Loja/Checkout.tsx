@@ -18,6 +18,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { visitanteId } from '../../lib/afiliado';
 import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
+import { formatarTelefone, telefoneOk, UFS } from '../../lib/shop/conta';
 import { limparCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { BRL } from '../../lib/shop/precos';
 import {
@@ -84,6 +85,9 @@ export default function Checkout() {
   // 13 opções de frete com valor é lista demais para escolher: as 5 mais
   // baratas (retirada incluída) e um "ver mais" para o resto.
   const [todasFretes, setTodasFretes] = useState(false);
+  // Cadastro completo abre recolhido: quem já comprou não reescreve o endereço
+  // toda vez. Expande sozinho quando falta alguma coisa (ver o efeito abaixo).
+  const [editandoEndereco, setEditandoEndereco] = useState(false);
   const cepBusca = useRef<AbortController | null>(null);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -100,6 +104,7 @@ export default function Checkout() {
         const limpo = { ...VAZIO };
         for (const k of Object.keys(VAZIO) as (keyof Endereco)[]) limpo[k] = p[k] ?? '';
         limpo.address_zip = formatarCep(limpo.address_zip);
+        limpo.phone = formatarTelefone(limpo.phone);
         setEnd(limpo);
         setEndCarregado(true);
       });
@@ -144,7 +149,7 @@ export default function Checkout() {
     }
   }, [resumo, freteId]);
 
-  const set = (k: keyof Endereco) => (e: React.ChangeEvent<HTMLInputElement>) => setEnd((p) => ({ ...p, [k]: e.target.value }));
+  const set = (k: keyof Endereco) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setEnd((p) => ({ ...p, [k]: e.target.value }));
 
   const mudarCep = (bruto: string) => {
     const cep = formatarCep(bruto);
@@ -186,7 +191,7 @@ export default function Checkout() {
   const lojista = profile?.role === 'reseller';
   const enderecoOk =
     end.full_name.trim().length >= 3 &&
-    somenteDigitos(end.phone).length >= 10 &&
+    telefoneOk(end.phone) &&
     validarCpfCnpj(end.cpf_cnpj) &&
     (!lojista || tipoDocumento(end.cpf_cnpj) === 'cnpj') &&
     cepDigits.length === 8 &&
@@ -194,6 +199,8 @@ export default function Checkout() {
     end.address_number.trim() &&
     end.address_city.trim() &&
     end.address_state.trim().length === 2;
+  // Cadastro já pronto: o passo 1 abre como resumo, com "Alterar" ao lado.
+  const enderecoPronto = endCarregado && Boolean(enderecoOk);
   const cartaoOk = pag.forma !== 'CREDIT_CARD' || Object.keys(errosDoCartao(pag.cartao)).length === 0;
   const podePagar = Boolean(resumo && !resumo.invalidos.length && frete && enderecoOk && cartaoOk && aceite && !enviando && !cotando && total > 0);
 
@@ -293,14 +300,39 @@ export default function Checkout() {
             <h2 className={styles.subtitulo}>
               <span className={styles.num}>1</span> Entrega
             </h2>
-            <div className={styles.form}>
+            {enderecoPronto && !editandoEndereco ? (
+              <div className={styles.enderecoResumo}>
+                <p>
+                  <strong>{end.full_name}</strong>
+                  <br />
+                  {end.address_street}, {end.address_number}
+                  {end.address_complement ? ` — ${end.address_complement}` : ''}
+                  <br />
+                  {end.address_neighborhood ? `${end.address_neighborhood} · ` : ''}
+                  {end.address_city}/{end.address_state} · CEP {end.address_zip}
+                  <br />
+                  {end.phone} · {formatarCpfCnpj(end.cpf_cnpj)}
+                </p>
+                <button type="button" className={styles.alterar} onClick={() => setEditandoEndereco(true)}>
+                  Alterar
+                </button>
+              </div>
+            ) : null}
+            <div className={styles.form} hidden={enderecoPronto && !editandoEndereco}>
               <label className={styles.campo}>
                 <span>Nome completo</span>
                 <input value={end.full_name} onChange={set('full_name')} autoComplete="name" />
               </label>
               <label className={styles.campo}>
                 <span>WhatsApp</span>
-                <input value={end.phone} onChange={set('phone')} inputMode="tel" autoComplete="tel" placeholder="(11) 99999-9999" />
+                <input
+                  value={end.phone}
+                  onChange={(e) => setEnd((p) => ({ ...p, phone: formatarTelefone(e.target.value) }))}
+                  inputMode="tel"
+                  autoComplete="tel"
+                  maxLength={15}
+                  placeholder="(11) 99999-9999"
+                />
               </label>
               <label className={styles.campo}>
                 <span>{lojista ? 'CNPJ' : 'CPF ou CNPJ'}</span>
@@ -344,7 +376,14 @@ export default function Checkout() {
               </label>
               <label className={styles.campo}>
                 <span>UF</span>
-                <input value={end.address_state} onChange={set('address_state')} maxLength={2} autoComplete="address-level1" />
+                <select value={end.address_state.toUpperCase()} onChange={set('address_state')} autoComplete="address-level1">
+                  <option value="">—</option>
+                  {UFS.map((uf) => (
+                    <option key={uf} value={uf}>
+                      {uf}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
 

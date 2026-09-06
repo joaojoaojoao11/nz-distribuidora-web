@@ -229,13 +229,18 @@ export async function criarPagamento(site: Db, a: CriarPagamentoArgs): Promise<R
       expiryYear: a.cartao.ano,
       ccv: a.cartao.cvv,
     };
+    // O emissor confere o endereço do TITULAR, que nem sempre é o da entrega
+    // (presente, obra, endereço da empresa). Quando o cliente marcou "cobrança
+    // diferente" no cadastro, é esse CEP/número que vai — e só ele; o resto do
+    // endereço o Asaas não pede.
+    const cobrancaPropria = a.perfil.cobranca_igual_entrega === false && Boolean(a.perfil.cobranca_cep);
     corpo.creditCardHolderInfo = {
       name: a.cartao.nome,
       email: a.perfil.email ?? '',
       cpfCnpj: a.cartao.cpf,
-      postalCode: (a.perfil.address_zip ?? '').replace(/\D/g, ''),
-      addressNumber: a.perfil.address_number ?? 's/n',
-      addressComplement: a.perfil.address_complement ?? undefined,
+      postalCode: ((cobrancaPropria ? a.perfil.cobranca_cep : a.perfil.address_zip) ?? '').replace(/\D/g, ''),
+      addressNumber: (cobrancaPropria ? a.perfil.cobranca_numero : a.perfil.address_number) || 's/n',
+      addressComplement: cobrancaPropria ? undefined : a.perfil.address_complement ?? undefined,
       phone: (a.perfil.phone ?? '').replace(/\D/g, ''),
       mobilePhone: (a.perfil.phone ?? '').replace(/\D/g, ''),
     };
@@ -429,6 +434,16 @@ export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dado
  * chama site_confirmar_pagamento. Idempotente; chamada pelo checkout, pelo
  * webhook e pelo cron.
  */
+/**
+ * Guarda no perfil qual cliente do ERP corresponde a esta conta. É o que
+ * permite, depois, o painel do admin mostrar "vinculado ao cliente X" e o
+ * cadastro reaproveitar o endereço que a NZ já tinha.
+ */
+async function guardarClienteErp(site: Db, userId: string | null, clientId: string | null | undefined): Promise<void> {
+  if (!userId || !clientId) return;
+  await site.from('user_profiles').update({ erp_client_id: clientId }).eq('id', userId).is('erp_client_id', null);
+}
+
 export async function avisarErpPago(site: Db, pedidoId: string): Promise<void> {
   const erpUrl = process.env.ERP_SUPABASE_URL;
   const erpKey = process.env.ERP_SUPABASE_SERVICE_ROLE_KEY;
@@ -438,12 +453,13 @@ export async function avisarErpPago(site: Db, pedidoId: string): Promise<void> {
 
   const { data } = await site
     .from('pedidos')
-    .select('id, numero, erp_quote_id, erp_payload, pagamento_status, erp_pago_em, forma_pagamento, total_final, valor_frete, pago_em')
+    .select('id, numero, user_id, erp_quote_id, erp_payload, pagamento_status, erp_pago_em, forma_pagamento, total_final, valor_frete, pago_em')
     .eq('id', pedidoId)
     .maybeSingle();
   const ped = data as {
     id: string;
     numero: number;
+    user_id: string | null;
     erp_quote_id: string | null;
     erp_payload: Record<string, unknown> | null;
     pagamento_status: string;
@@ -458,12 +474,13 @@ export async function avisarErpPago(site: Db, pedidoId: string): Promise<void> {
   if (!ped.erp_quote_id && ped.erp_payload) {
     const { data: rpc, error } = await erp.rpc('site_criar_pedido', { p: ped.erp_payload });
     if (error) throw new Error(`site_criar_pedido: ${error.message}`);
-    const r = rpc as { quote_id: string; quote_number: number };
+    const r = rpc as { quote_id: string; quote_number: number; client_id?: string | null };
     await site
       .from('pedidos')
       .update({ status: 'ABERTO', erp_quote_id: r.quote_id, erp_quote_number: r.quote_number, enviado_em: new Date().toISOString(), status_atualizado_em: new Date().toISOString() })
       .eq('id', ped.id);
     ped.erp_quote_id = r.quote_id;
+    await guardarClienteErp(site, ped.user_id, r.client_id);
   }
 
   if (ped.pagamento_status === 'pago' && !ped.erp_pago_em && ped.erp_quote_id) {

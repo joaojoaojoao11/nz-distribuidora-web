@@ -12,6 +12,7 @@ import AdminProdutos from './AdminProdutos';
 import AdminAfiliados from './AdminAfiliados';
 import AdminPedidos from './AdminPedidos';
 import AdminEquipe from './AdminEquipe';
+import AdminClientes from './AdminClientes';
 import AdminWarranties from './AdminWarranties';
 import AdminSettings from './AdminSettings';
 import AdminBlog from './AdminBlog';
@@ -347,11 +348,6 @@ export default function Dashboard() {
     if (role === 'admin') return <span className={`${styles.badge} ${styles.badgeAdmin}`}>Admin</span>;
     if (role === 'reseller') return <span className={`${styles.badge} ${styles.badgeReseller}`}>Revendedor</span>;
     return <span className={styles.badge}>Cliente</span>;
-  };
-
-  const formatAddress = (u: UserProfile) => {
-    const parts = [u.address_street, u.address_number, u.address_complement, u.address_neighborhood, u.address_city, u.address_state].filter(Boolean);
-    return parts.length > 0 ? parts.join(', ') : '—';
   };
 
   const tabLabels: Record<TabType, string> = {
@@ -772,49 +768,8 @@ export default function Dashboard() {
         )}
 
         {/* ===== CLIENTES & REVENDEDORES ===== */}
-        {activeTab === 'clients' && (
-          <div className={styles.tableSection}>
-            <p className={styles.tabDescription}>Cadastros realizados via site. Schema pronto para e-commerce.</p>
-            <div className={styles.tableScroll}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Nome</th><th>Email</th><th>Telefone</th><th>Empresa</th>
-                    <th>CPF/CNPJ</th><th>IE</th><th>Endereço</th><th>CEP</th>
-                    <th>Tipo</th><th>Status</th><th>Data</th><th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {clients.map(u => (
-                    <tr key={u.id}>
-                      <td>{u.full_name || '—'}</td>
-                      <td>{u.email || '—'}</td>
-                      <td>{u.phone || '—'}</td>
-                      <td>{u.company_name || '—'}</td>
-                      <td>{u.cpf_cnpj || '—'}</td>
-                      <td>{u.ie || '—'}</td>
-                      <td style={{ maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{formatAddress(u)}</td>
-                      <td>{u.address_zip || '—'}</td>
-                      <td>{getRoleBadge(u.role)}</td>
-                      <td>{u.is_approved ? <span className={`${styles.badge} ${styles.badgeApproved}`}>Aprovado</span> : <span className={`${styles.badge} ${styles.badgePending}`}>Pendente</span>}</td>
-                      <td>{formatDate(u.created_at)}</td>
-                      <td>
-                        {!u.is_approved ? (
-                          <button className={`${styles.actionBtn} ${styles.actionBtnApprove}`} onClick={() => approveUser(u.id)}>✅ Aprovar</button>
-                        ) : (
-                          <button className={`${styles.actionBtn} ${styles.actionBtnDeny}`} onClick={() => denyUser(u.id)}>🔒 Revogar</button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                  {clients.length === 0 && <tr><td colSpan={12} className={styles.emptyState}>Nenhum cliente ou revendedor cadastrado ainda.</td></tr>}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        {activeTab === 'clients' && <AdminClientes />}
 
-        {/* ===== USUÁRIOS DO SISTEMA ===== */}
         {activeTab === 'users' && <AdminEquipe />}
 
         {/* ===== PRODUTOS ===== */}

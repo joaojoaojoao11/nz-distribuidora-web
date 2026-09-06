@@ -371,6 +371,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
 
   const payloadErp = montarPayloadErp({
     pedidoId: pedido.id,
+    siteUserId: userId,
     perfil,
     linhas,
     total,
