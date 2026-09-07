@@ -222,6 +222,26 @@ console.log('\n=== 8. procedência ===');
   ok('conteúdo de linha sem fonte registrada não entrou', !/conferido_em.*current_date/i.test(seed));
 }
 
+// ------------------------------------- 9. a view entrega o que o cliente lê
+console.log('\n=== 9. view x tipo do cliente ===');
+{
+  // Este teste nasceu de um bug real: `nome_prefixos` foi acrescentada à tabela
+  // DEPOIS de a view ser criada, e a view seleciona coluna a coluna. O campo
+  // existia no banco, existia no tipo e nunca chegava ao site — a família
+  // NZPPF Luxury caía na ficha genérica da linha, sem erro nenhum em lugar
+  // nenhum. Um campo que o cliente lê e a view não entrega é sempre isso:
+  // silencioso.
+  const tipo = readFileSync(join(ROOT, 'src/lib/shop/linhas.ts'), 'utf8');
+  const corpo = tipo.slice(tipo.indexOf('export interface LojaLinhaRow'));
+  const campos = [...corpo.slice(0, corpo.indexOf('\n}')).matchAll(/^\s{2}(\w+)[?]?:/gm)].map((m) => m[1]);
+  ok('o tipo tem campos para conferir', campos.length >= 15, `${campos.length} campos`);
+
+  const sql = readFileSync(join(ROOT, 'migrations/2026-09-07_ficha_por_linha.sql'), 'utf8');
+  const view = sql.slice(sql.indexOf('create or replace view public.loja_linhas'), sql.indexOf('comment on view public.loja_linhas'));
+  const faltando = campos.filter((c) => !new RegExp(`(\\b|\\.)${c}\\b`).test(view));
+  ok('a view loja_linhas entrega todos eles', faltando.length === 0, faltando.join(', '));
+}
+
 rmSync(outDir, { recursive: true, force: true });
 console.log(falhas ? `\n${falhas} FALHA(S)` : '\ntudo certo');
 process.exit(falhas ? 1 : 0);

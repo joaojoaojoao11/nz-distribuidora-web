@@ -91,6 +91,11 @@ create table if not exists public.linha_familias (
   -- (SPWECH antes de SPW), para uma família específica ganhar da genérica.
   prefixos text[] not null default '{}',
 
+  -- Prefixos do NOME do produto. Existe porque em `avery` o prefixo do SKU NÃO
+  -- discrimina: AAT cobre MPI, SLP, DOL e SW900 igualmente. Lá a família está
+  -- no nome ("Mpi 1105 Gls…", "Slp 3900 White…").
+  nome_prefixos text[] not null default '{}',
+
   ficha jsonb not null default '[]'::jsonb,
   chamada text,
   descricao text,
@@ -153,7 +158,8 @@ select
   l.conferido_em,
   '{}'::text[] as prefixos,
   l.ordem,
-  l.atualizado_em
+  l.atualizado_em,
+  '{}'::text[] as nome_prefixos
 from public.linhas l
 where l.publicado
 union all
@@ -174,7 +180,8 @@ select
   f.conferido_em,
   f.prefixos,
   f.ordem,
-  f.atualizado_em
+  f.atualizado_em,
+  f.nome_prefixos
 from public.linha_familias f
 join public.linhas l on l.linha_key = f.linha_key
 where f.publicado and l.publicado;
