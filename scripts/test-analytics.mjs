@@ -159,6 +159,39 @@ ok('e min-height: 0 (senão o overflow não vale)', /min-height:\s*0/.test(bloco
 ok('o rodapé não encolhe', /\.sidebarFooter\s*\{[^}]*flex:\s*0 0 auto/.test(css));
 ok('o logo não encolhe', /\.sidebarLogo\s*\{[^}]*flex:\s*0 0 auto/.test(css));
 
+// ================================================== o mapa de acessos
+console.log('\n=== MAPA DE ACESSOS ===');
+const mapa = readFileSync(join(ROOT, 'src/components/WorldMap.tsx'), 'utf8');
+
+// O CARTO passou a exigir chave: devolve o ladrilho com "API KEY REQUIRED"
+// carimbado por cima. O mapa aparecia — e aparecia quebrado.
+ok('não usa mais os ladrilhos do CARTO', !mapa.includes('cartocdn'));
+ok('usa OpenStreetMap (livre, sem chave)', mapa.includes('tile.openstreetmap.org'));
+ok('e credita o OSM, como a licença pede', mapa.includes('openstreetmap.org/copyright'));
+
+// Rolar a página passando por cima do mapa não pode dar zoom: o mapa engolia a
+// rolagem, a página travava e o mapa saía do lugar sozinho.
+const opcoes = /L\.map\([\s\S]{0,700}?\}\);/.exec(mapa)?.[0] ?? '';
+ok('achei o bloco de opções do mapa', opcoes.length > 0);
+for (const chave of ['scrollWheelZoom', 'dragging', 'touchZoom', 'doubleClickZoom']) {
+  ok(`${chave} nasce desligado`, new RegExp(`${chave}:\\s*false`).test(opcoes));
+}
+ok('o clique no mapa liga a interação', /map\.on\('click'/.test(mapa));
+ok('e sair com o cursor desliga', mapa.includes('mouseleave'));
+ok('a tela avisa em que estado o mapa está', mapa.includes('Clique no mapa para mover') && mapa.includes('Mapa ativo'));
+
+// Foco grande demais junta cidades vizinhas numa bolha só.
+const raio = /const radius = ([\d.]+) \+ intensity \* ([\d.]+);/.exec(mapa);
+ok('achei a fórmula do raio do foco', Boolean(raio));
+if (raio) {
+  const menor = Number(raio[1]);
+  const maior = menor + Number(raio[2]);
+  ok('o menor foco cabe em 6px', menor <= 6, `${menor}px`);
+  ok('o maior foco cabe em 12px', maior <= 12, `${maior}px`);
+  ok('mas ainda há diferença de tamanho entre eles', maior > menor + 2, `${menor}..${maior}px`);
+}
+ok('as cidades também aparecem por escrito', mapa.includes('cidades.map'));
+
 rmSync(outDir, { recursive: true, force: true });
 console.log(`\n${falhas ? `${falhas} FALHA(S)` : 'tudo certo'}`);
 process.exit(falhas ? 1 : 0);

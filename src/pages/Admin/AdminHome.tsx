@@ -228,13 +228,18 @@ export default function AdminHome() {
       setHeatmapData(heatPoints);
 
       // Geo map data
+      // `latitude`/`longitude` são `numeric` no banco, e nem todo caminho do
+      // PostgREST os entrega como número — texto aqui viraria marcador torto no
+      // Leaflet. Converte e descarta o que não for coordenada de verdade.
       const geoMap: Record<string, { lat: number; lng: number; city: string; country: string; sessions: Set<string> }> = {};
       allEvents.forEach(e => {
-        if (e.latitude && e.longitude && e.country) {
-          const key = `${e.country}_${e.city || 'unknown'}`;
-          if (!geoMap[key]) geoMap[key] = { lat: e.latitude, lng: e.longitude, city: e.city || '', country: e.country, sessions: new Set() };
-          geoMap[key].sessions.add(e.session_id);
-        }
+        if (e.latitude == null || e.longitude == null || !e.country) return;
+        const lat = Number(e.latitude);
+        const lng = Number(e.longitude);
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+        const key = `${e.country}_${e.city || 'unknown'}`;
+        if (!geoMap[key]) geoMap[key] = { lat, lng, city: e.city || '', country: e.country, sessions: new Set() };
+        geoMap[key].sessions.add(e.session_id);
       });
       setGeoData(Object.values(geoMap).map(g => ({
         latitude: g.lat, longitude: g.lng, city: g.city, country: g.country, sessions: g.sessions.size,
