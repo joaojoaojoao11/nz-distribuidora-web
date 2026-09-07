@@ -916,6 +916,13 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
   // voltou 403 no CDN. Sem entrada aqui o card cai no placeholder da linha,
   // que é melhor do que apontar para um arquivo que não subiu.
 
+  // Fechamento da Speed Wrapping: EGF-005 (a URL do lote anterior expirou com
+  // 403) e TC4001, que nao pertence a nenhuma das 19 familias de cor — e o
+  // adesivo holografico para impressao.
+  'speed-wrapping-egf-005-carbon-gloss-3d-spwegf005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-005-carbon-gloss-3d-spwegf005.webp',
+  'speed-wrapping-tc4001-holographic-printing-adhesive-spwtc4001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-tc4001-holographic-printing-adhesive-spwtc4001.webp',
 };
 
 /**
