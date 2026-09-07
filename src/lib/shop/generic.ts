@@ -223,6 +223,23 @@ export const REVIEWED_SLUGS: ReadonlySet<string> = new Set([
   'nz-nzppf-headlight-light-black-nzpj6',
   'nz-nzppf-headlight-dark-black-nzpj7',
   'nz-nzppf-headlight-light-gray-nzpj8',
+  // NZ PPF (16): fotos existentes das paginas da linha, mapeadas em ERP_ROLL_IMAGES.
+  'nz-nzppf-flow-clear-gloss-nzp01',
+  'nz-nzppf-flow-clear-matte-nzp02',
+  'nz-nzppf-flow-black-gloss-nzp03',
+  'nz-nzppf-flow-black-matte-nzp04',
+  'nz-nzppf-prime-clear-gloss-nzp05',
+  'nz-nzppf-prime-clear-matte-nzp06',
+  'nz-nzppf-prime-black-gloss-nzp07',
+  'nz-nzppf-luxury-clear-gloss-nzp08',
+  'nz-nzppf-luxury-clear-matte-nzp09',
+  'nz-nzppf-luxury-black-gloss-nzp10',
+  'nz-nzppf-core-clear-matte-nzp11',
+  'nz-nzppf-core-clear-gloss-nzp12',
+  'nz-nzppf-core-black-gloss-nzp13',
+  'nz-nzppf-core-black-matte-nzp14',
+  'nz-nzppf-windshield-nzp16',
+  'nz-ppf-black-piano-de-uma-bobina-84565478',
 ]);
 
 /**
@@ -1170,6 +1187,27 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/nz-farol/nz-nzppf-headlight-dark-black-nzpj2.webp',
   'nz-nzppf-headlight-light-gray-nzpj8':
     '/assets/images/shop/nz-farol/nz-nzppf-headlight-light-gray-nzpj4.webp',
+  // NZ PPF (16): fotos ja existem em /assets/images/ como assets das paginas
+  // da linha (flow_*, core_*, nzppf_prime_*, luxury_*). Flow e Core tem foto
+  // por variante (clear/black × gloss/matte). Prime usa 3 heros da linha
+  // (brilho/matte/black). Luxury reusa assets do hero da linha. Windshield e
+  // Piano reusam seus heros correspondentes.
+  'nz-nzppf-flow-clear-gloss-nzp01': '/assets/images/flow_clear_gloss.png',
+  'nz-nzppf-flow-clear-matte-nzp02': '/assets/images/flow_clear_matte.png',
+  'nz-nzppf-flow-black-gloss-nzp03': '/assets/images/flow_black_gloss.png',
+  'nz-nzppf-flow-black-matte-nzp04': '/assets/images/flow_black_matte.png',
+  'nz-nzppf-prime-clear-gloss-nzp05': '/assets/images/nzppf_prime_brilho.png',
+  'nz-nzppf-prime-clear-matte-nzp06': '/assets/images/nzppf_prime_matte.jpg',
+  'nz-nzppf-prime-black-gloss-nzp07': '/assets/images/nzppf_prime_black.jpg',
+  'nz-nzppf-luxury-clear-gloss-nzp08': '/assets/images/luxury_lambo.png',
+  'nz-nzppf-luxury-clear-matte-nzp09': '/assets/images/luxury-water-beading.jpg',
+  'nz-nzppf-luxury-black-gloss-nzp10': '/assets/images/hero-luxury-car.jpg',
+  'nz-nzppf-core-clear-matte-nzp11': '/assets/images/core_clear_matte.png',
+  'nz-nzppf-core-clear-gloss-nzp12': '/assets/images/core_clear_gloss.png',
+  'nz-nzppf-core-black-gloss-nzp13': '/assets/images/core_black_gloss.png',
+  'nz-nzppf-core-black-matte-nzp14': '/assets/images/core_black_matte.png',
+  'nz-nzppf-windshield-nzp16': '/assets/images/nzppf_windshield_hero.png',
+  'nz-ppf-black-piano-de-uma-bobina-84565478': '/assets/images/nzppf_black.png',
 };
 
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
