@@ -10,6 +10,10 @@
 -- (Speed Wrapping, NZWRAP Import, NAR, AD Pro, SHNext, SW900, UWF, Ad Color)
 -- ficam de fora deste arquivo, de propósito.
 --
+-- Nenhuma ficha de LINHA repete dimensão de rolo (largura, metragem, "rolo
+-- 1,52 × 15 m"): quem sabe a medida do que está sendo vendido é o ERP, por SKU.
+-- A ficha da linha diz o que a LINHA oferece; o ERP diz o que este rolo é.
+--
 -- `conferido_em` fica NULO em quase tudo: conferido significa batido contra o
 -- fabricante, e o que fiz aqui foi mover conteúdo do próprio site. A única
 -- exceção é a MD-80, cuja conferência está registrada no cabeçalho de
@@ -31,7 +35,6 @@ values
 -- ---------------------------------------------------------------- etherna
 ('etherna', 'Etherna Decor', 'etherna', 10,
  '[{"label":"Adesivo","value":"Cola acrílica aquosa permanente de alta adesão"},
-   {"label":"Dimensões do rolo","value":"1,22 m × 25 m"},
    {"label":"Liner","value":"Papel couché 120 g/m² siliconado"},
    {"label":"Proteção","value":"Sistema Shield® — antifúngico, bactericida, não propaga fogo"},
    {"label":"Fabricação","value":"Indústria nacional — Etherna, São Paulo, desde 1984"}]'::jsonb,
@@ -74,8 +77,8 @@ Espessura, durabilidade, largura e metragem variam por coleção e estão na fic
  '[{"label":"Face film","value":"70μ PVC polimérico"},
    {"label":"Adesivo","value":"Apex permanente"},
    {"label":"Liner","value":"Kraft layflat clay coated"},
-   {"label":"Durabilidade","value":"8 anos (cores sólidas) · 7 anos · 5 anos, conforme a cor"},
-   {"label":"Larguras de bobina","value":"380, 610, 760, 1.220 e 1.600 mm"}]'::jsonb,
+   {"label":"Durabilidade","value":"8 anos (cores sólidas) · 7 anos · 5 anos, conforme a cor"}
+]'::jsonb,
  'Vinil polimérico de recorte da Metamark, com 92 cores e valores CMYK e Pantone® publicados pelo fabricante.',
  'A 7 Series é o vinil de recorte da Metamark: 70 micras de PVC polimérico com adesivo Apex permanente. É a linha em que o fabricante publica RGB, CMYK e referência Pantone® de cada cor — o que permite fechar aprovação de arte antes de cortar.',
  'A Metamark é fabricante inglesa, e a 7 Series é a linha de recorte dela: filme polimérico de 70 micras, adesivo permanente, liner kraft.
@@ -95,7 +98,6 @@ Cada cor está disponível em bobinas de 380 a 1.600 mm — a largura de 1.600 m
    {"label":"Adesivo","value":"MetaGlide® micro canal"},
    {"label":"Liner","value":"PE Layflat 140 g/m²"},
    {"label":"Durabilidade","value":"12 anos (vertical) · 10 anos · 5 anos, conforme o acabamento"},
-   {"label":"Rolo","value":"1.525 mm × 15 m ou 30 m"},
    {"label":"Proteção de superfície","value":"MetaSure™"}]'::jsonb,
  'Filme cast de envelopamento da Metamark, 100 micras, com adesivo de micro canal MetaGlide®.',
  'MetaCast MCX é a linha cast de envelopamento da Metamark: 100 micras fundidas, adesivo MetaGlide® com micro canais para saída de ar e proteção de superfície MetaSure™. Parte da paleta é Inspire Colours™, desenvolvida para reproduzir tons de pintura de fábrica.',
@@ -139,8 +141,6 @@ O documento técnico oficial da ORAFOL está disponível para download nesta pá
 ('oracal-670', 'Oracal 670RA', 'orafol', 60,
  '[{"label":"Espessura","value":"70μ (0,07 mm)"},
    {"label":"Material","value":"PVC polimérico super calandrado"},
-   {"label":"Largura","value":"1,52 m"},
-   {"label":"Rolo","value":"1,52 m × 20 m"},
    {"label":"Tecnologia","value":"RapidAir® — microcanais anti-bolha no adesivo"},
    {"label":"Cores","value":"18 sólidas: 15 brilho e 3 foscas"},
    {"label":"Durabilidade externa","value":"Até 5 anos (vertical)"}]'::jsonb,
@@ -161,7 +161,6 @@ A segunda diferença é o adesivo. O RapidAir® tem microcanais que permitem a s
 ('sh-wrapping', 'SH Wrapping', 'sh', 70,
  '[{"label":"Espessura","value":"165–180μ"},
    {"label":"Material","value":"PVC multidirecional"},
-   {"label":"Rolo","value":"1,52 m × 15 m"},
    {"label":"Adesivo","value":"Solvente anti-bolhas, permanente reposicionável"},
    {"label":"Acabamentos","value":"Gloss, Matte e Color Shift"},
    {"label":"Garantia","value":"3 anos contra descoloração"}]'::jsonb,
@@ -182,7 +181,6 @@ A garantia de fábrica é de 3 anos contra descoloração.',
 ('nzwrap', 'NZWRAP Premium', 'nzwrap', 80,
  '[{"label":"Material","value":"PVC premium com laminação híbrida"},
    {"label":"Acabamento","value":"Ultra Gloss e Deep Pearl"},
-   {"label":"Largura","value":"1,52 m"},
    {"label":"Adesivo","value":"Permanente air-free reposicionável"},
    {"label":"Garantia","value":"3 anos"}]'::jsonb,
  'Linha proprietária da NZ: PVC de alto brilho com curadoria própria de cores e 3 anos de garantia.',

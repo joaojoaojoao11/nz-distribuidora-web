@@ -130,6 +130,12 @@ const nf = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
 /**
  * Camada D — o que vem do ERP e nunca deve ser digitado.
  *
+ * "Largura do rolo", e não "Largura", porque a ficha da cor pode trazer
+ * "Larguras: até 1.220 mm" (o que existe naquela cor) e as duas convivem na
+ * mesma lista. Sem o rótulo distinto, viram duas linhas que parecem se
+ * contradizer. Pela mesma razão, nenhuma ficha de LINHA repete dimensão de
+ * rolo: quem sabe a medida real do que está sendo vendido é o ERP.
+ *
  * A armadilha aqui é real: quando `unidade` é 'M2', o campo `metragem_padrao`
  * guarda ÁREA, não comprimento. São 64 SKUs com 1,52 × 22,86 M2, e 22,86 é m²
  * (1,524 × 15). Rotular isso como "metragem do rolo: 22,86 m" publicaria um
@@ -138,7 +144,7 @@ const nf = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
 export function fichaDoRolo(item: ShopItem): ShopSpec[] {
   const linhas: ShopSpec[] = [];
   if (item.larguraM && item.larguraM > 0) {
-    linhas.push({ label: 'Largura', value: `${nf.format(item.larguraM)} m` });
+    linhas.push({ label: 'Largura do rolo', value: `${nf.format(item.larguraM)} m` });
   }
   if (item.metragemPadrao && item.metragemPadrao > 0) {
     const areaM2 = (item.unidadeVenda ?? '').toUpperCase() === 'M2';
