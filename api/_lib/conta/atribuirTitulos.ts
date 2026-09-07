@@ -33,7 +33,6 @@ export function normalizarNome(raw: unknown): string {
   if (typeof raw !== 'string') return '';
   return raw
     .normalize('NFD') // separa a letra do acento; a linha abaixo joga fora U+0300–U+036F
-
     .replace(/[̀-ͯ]/g, '')
     .toLowerCase()
     .replace(/[^a-z0-9 ]+/g, ' ')
@@ -74,6 +73,40 @@ interface TituloErp {
 
 const LOTE = 500;
 
+/** O pedaço do builder do PostgREST que o `lerTudo` usa. */
+interface Consulta {
+  eq(coluna: string, valor: unknown): Consulta;
+  is(coluna: string, valor: null): Consulta;
+  order(coluna: string, opcoes: { ascending: boolean }): Consulta;
+  range(de: number, ate: number): Promise<{ data: unknown[] | null; error: { message: string } | null }>;
+}
+
+/**
+ * Lê uma tabela INTEIRA, paginando.
+ *
+ * Os dois PostgREST (site e ERP) têm `db-max-rows = 1000`: um `select()` sem
+ * paginação devolve no máximo mil linhas **sem erro nenhum**, e `.limit(2000)`
+ * ou o cabeçalho `Range` não passam por cima disso. Quem conta o que voltou
+ * acha que leu tudo. É silencioso e é o tipo de bug que só aparece quando a
+ * tabela cresce — `quotes` está em 855 hoje.
+ *
+ * Conferido em produção (10/09/2026): `contas_receber` com `limit=3000`
+ * devolveu 1000 de 2.319.
+ */
+export async function lerTudo<T>(db: Db, tabela: string, colunas: string, ordem: string, filtro?: (q: Consulta) => Consulta): Promise<{ linhas: T[]; erro?: string }> {
+  const PAGINA = 1000;
+  const linhas: T[] = [];
+  for (let de = 0; ; de += PAGINA) {
+    const base = db.from(tabela).select(colunas) as unknown as Consulta;
+    const q = filtro ? filtro(base) : base;
+    const { data, error } = await q.order(ordem, { ascending: true }).range(de, de + PAGINA - 1);
+    if (error) return { linhas, erro: `${tabela}: ${error.message}` };
+    const pagina = (data ?? []) as T[];
+    linhas.push(...pagina);
+    if (pagina.length < PAGINA) return { linhas };
+  }
+}
+
 export async function atribuirTitulos(site: Db): Promise<ResumoAtribuicao> {
   const t0 = Date.now();
   const vazio: ResumoAtribuicao = { titulosLidos: 0, porDocumento: 0, porOrcamento: 0, porNome: 0, semDono: 0, ambiguos: 0, duracaoMs: 0 };
@@ -81,9 +114,8 @@ export async function atribuirTitulos(site: Db): Promise<ResumoAtribuicao> {
   if (!erp) return { ...vazio, erro: 'sem-erp' };
 
   // ------------------------------------------------------------- clientes
-  const { data: clientesData, error: cErr } = await erp.from('clients').select('id, nome, name, cpf_cnpj, document');
-  if (cErr) return { ...vazio, duracaoMs: Date.now() - t0, erro: `clients: ${cErr.message}` };
-  const clientes = (clientesData ?? []) as ClienteErp[];
+  const { linhas: clientes, erro: cErr } = await lerTudo<ClienteErp>(erp as unknown as Db, 'clients', 'id, nome, name, cpf_cnpj, document', 'id');
+  if (cErr) return { ...vazio, duracaoMs: Date.now() - t0, erro: cErr };
 
   const porDocumento = new Map<string, string>();
   const porNome = new Map<string, string | null>(); // null = nome ambíguo, não usar
@@ -105,21 +137,26 @@ export async function atribuirTitulos(site: Db): Promise<ResumoAtribuicao> {
   // -------------------------------------------------- orçamentos por cliente
   // `quotes` não guarda client_id; guarda o documento. É o mesmo caminho da
   // chave 1, um passo depois.
-  const { data: quotesData } = await erp.from('quotes').select('id, cpf_cnpj, client_name');
+  const { linhas: quotes, erro: qErr } = await lerTudo<{ id: string; cpf_cnpj: string | null; client_name: string | null }>(
+    erp as unknown as Db,
+    'quotes',
+    'id, cpf_cnpj, client_name',
+    'id'
+  );
+  if (qErr) return { ...vazio, duracaoMs: Date.now() - t0, erro: qErr };
   const quoteDono = new Map<string, string>();
-  for (const q of (quotesData ?? []) as { id: string; cpf_cnpj: string | null; client_name: string | null }[]) {
+  for (const q of quotes) {
     const doc = somenteDigitos(q.cpf_cnpj);
     const alvo = (doc.length >= 11 ? porDocumento.get(doc) : undefined) ?? porNome.get(normalizarNome(q.client_name)) ?? undefined;
     if (alvo) quoteDono.set(q.id, alvo);
   }
 
   // ----------------------------------------------------- o que já é manual
-  const { data: manuaisData } = await site.from('erp_titulo_dono').select('titulo_id').eq('chave', 'manual');
-  const manuais = new Set(((manuaisData ?? []) as { titulo_id: string }[]).map((m) => m.titulo_id));
+  const { linhas: manuaisData } = await lerTudo<{ titulo_id: string }>(site, 'erp_titulo_dono', 'titulo_id', 'titulo_id', (q) => q.eq('chave', 'manual'));
+  const manuais = new Set(manuaisData.map((m) => m.titulo_id));
 
   // --------------------------------------------------------------- títulos
   const r: ResumoAtribuicao = { ...vazio };
-  const ambiguosVistos = new Set<string>();
   let de = 0;
   for (;;) {
     const { data: titulosData, error: tErr } = await erp
@@ -153,7 +190,6 @@ export async function atribuirTitulos(site: Db): Promise<ResumoAtribuicao> {
         const n = normalizarNome(t.cliente_nome);
         if (n && nomesAmbiguos.has(n)) {
           r.ambiguos++;
-          ambiguosVistos.add(n);
         } else if (n) {
           const achou = porNome.get(n);
           if (achou) {
@@ -208,22 +244,32 @@ export async function atribuirTitulos(site: Db): Promise<ResumoAtribuicao> {
  * Os títulos que sobraram, para o relatório do admin — nome, valor e
  * vencimento, o bastante para escolher o dono sem abrir o ERP.
  */
+/** Exportado só para o autoteste conferir a paginação. */
+export { lerTudo as lerTudoParaTeste };
+
 export async function titulosSemDono(site: Db, limite = 200): Promise<{ id: string; nome: string | null; valor: number | null; vencimento: string | null; documento: boolean }[]> {
   const erp = await clienteErp();
   if (!erp) return [];
-  const { data: donos } = await site.from('erp_titulo_dono').select('titulo_id');
-  const temDono = new Set(((donos ?? []) as { titulo_id: string }[]).map((d) => d.titulo_id));
-  const { data } = await erp
-    .from('contas_receber')
-    .select('id, cliente_nome, cliente_cpf_cnpj, valor, vencimento')
-    .is('deleted_at', null)
-    .order('vencimento', { ascending: false })
-    .limit(2000);
-  const fora: { id: string; nome: string | null; valor: number | null; vencimento: string | null; documento: boolean }[] = [];
-  for (const t of (data ?? []) as TituloErp[]) {
-    if (temDono.has(t.id)) continue;
-    fora.push({ id: t.id, nome: t.cliente_nome, valor: t.valor, vencimento: t.vencimento, documento: somenteDigitos(t.cliente_cpf_cnpj).length >= 11 });
-    if (fora.length >= limite) break;
-  }
-  return fora;
+
+  // As duas leituras precisam ser INTEIRAS. Ler só as primeiras mil linhas de
+  // `erp_titulo_dono` faria o painel acusar como "sem dono" mais de mil títulos
+  // que têm dono sim — foi exatamente o que aconteceu na conferência de
+  // 10/09/2026, com 500 falsos positivos numa base de 118 reais.
+  const { linhas: donos } = await lerTudo<{ titulo_id: string }>(site, 'erp_titulo_dono', 'titulo_id', 'titulo_id');
+  const temDono = new Set(donos.map((d) => d.titulo_id));
+
+  const { linhas: titulos } = await lerTudo<TituloErp>(
+    erp as unknown as Db,
+    'contas_receber',
+    'id, cliente_nome, cliente_cpf_cnpj, valor, vencimento',
+    'id',
+    (q) => q.is('deleted_at', null)
+  );
+
+  const fora = titulos
+    .filter((t) => !temDono.has(t.id))
+    .map((t) => ({ id: t.id, nome: t.cliente_nome, valor: t.valor, vencimento: t.vencimento, documento: somenteDigitos(t.cliente_cpf_cnpj).length >= 11 }));
+  // Mais recente primeiro: é o que o admin quer resolver antes.
+  fora.sort((a, b) => String(b.vencimento ?? '').localeCompare(String(a.vencimento ?? '')));
+  return fora.slice(0, limite);
 }

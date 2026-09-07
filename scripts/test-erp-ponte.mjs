@@ -168,7 +168,7 @@ process.env.ERP_SUPABASE_SERVICE_ROLE_KEY = 'chave-de-teste';
 
 const { despacharAoErp, dispensarDoErp } = await import(pathToFileURL(arqDespacho).href);
 const falso = await import(pathToFileURL(join(outDir, 'supabase-falso.js')).href);
-const { normalizarNome } = await import(pathToFileURL(join(outDir, 'conta/atribuirTitulos.js')).href);
+const { normalizarNome, lerTudoParaTeste } = await import(pathToFileURL(join(outDir, 'conta/atribuirTitulos.js')).href);
 
 // -------------------------------------------------- banco do site, em memória
 // Só o que o módulo usa. `update().eq().or().select()` é o compare-and-swap: é
@@ -359,6 +359,120 @@ console.log('\n=== A TRAVA CONTRA DUPLICIDADE ===');
   await dispensarDoErp(bancoFalso([p]), 'p1');
   ok('cancelar antes de pagar tira da fila', p.erp_envio === 'dispensado', p.erp_envio);
 }
+
+console.log('\n=== TETO DE 1000 LINHAS DO POSTGREST ===');
+// Os dois bancos têm `db-max-rows = 1000`: um select sem paginação devolve mil
+// linhas SEM ERRO, e `.limit(2000)` não passa por cima. Um módulo que confia na
+// contagem do que voltou acha que leu tudo. Aconteceu de verdade em 10/09/2026:
+// o relatório do admin acusou 500 títulos "sem dono" numa base de 118.
+const fonteAtrib = readFileSync(join(ROOT, 'api/_lib/conta/atribuirTitulos.ts'), 'utf8')
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/^[ \t]*\/\/.*$/gm, '');
+
+const limitesGrandes = [...fonteAtrib.matchAll(/\.limit\((\d+)\)/g)].map((m) => Number(m[1])).filter((n) => n > 1000);
+ok('nenhum .limit() acima de 1000 (o servidor ignora)', limitesGrandes.length === 0, limitesGrandes.join(', '));
+
+
+// Toda LEITURA de tabela que pode passar de mil linhas tem que paginar: ou vai
+// pelo `lerTudo`, ou tem `.range()` na própria cadeia. Escrita (upsert/insert)
+// não entra na conta.
+const umaLinha = fonteAtrib.replace(/\s+/g, ' ');
+const viaLerTudo = new Set([...umaLinha.matchAll(/lerTudo(?:ParaTeste)?(?:<.*?>)?\( *[^,]+, *'([a-z_]+)'/g)].map((m) => m[1]));
+const leiturasDiretas = [...umaLinha.matchAll(/\.from\('([a-z_]+)'\) *\.select\(([\s\S]{0,220})/g)].map((m) => ({
+  tabela: m[1],
+  paginada: m[2].includes('.range('),
+}));
+
+for (const tabela of ['contas_receber', 'quotes', 'clients', 'erp_titulo_dono']) {
+  const diretas = leiturasDiretas.filter((l) => l.tabela === tabela);
+  const coberta = viaLerTudo.has(tabela) || diretas.length > 0;
+  const todasPaginam = diretas.every((l) => l.paginada);
+  ok(
+    `leitura de ${tabela} pagina`,
+    coberta && todasPaginam,
+    `lerTudo=${viaLerTudo.has(tabela)} diretas=${diretas.length} sem_range=${diretas.filter((l) => !l.paginada).length}`
+  );
+}
+
+// E o comportamento: um banco que devolve exatamente 1000 por página tem que ser
+// lido inteiro, não só a primeira.
+{
+  const TOTAL = 2319;
+  let paginas = 0;
+  const bancoPaginado = {
+    from: () => {
+      const q = {
+        select: () => q,
+        eq: () => q,
+        is: () => q,
+        order: () => q,
+        range: async (de, ate) => {
+          paginas++;
+          const tam = Math.max(0, Math.min(ate, TOTAL - 1) - de + 1);
+          return { data: Array.from({ length: tam }, (_, i) => ({ id: `t${de + i}` })), error: null };
+        },
+      };
+      return q;
+    },
+  };
+  const r = await lerTudoParaTeste(bancoPaginado, 'contas_receber', 'id', 'id');
+  ok('paginando, lê as 2.319 linhas e não 1.000', r.linhas.length === TOTAL, `${r.linhas.length} em ${paginas} páginas`);
+  ok('e para sozinho na página incompleta', paginas === 3, `${paginas} páginas`);
+}
+
+
+// A mesma armadilha no repositório inteiro, não só neste módulo.
+//
+// Estas tabelas já passam (ou vão passar) de mil linhas. Ler qualquer uma delas
+// sem paginar e sem filtro devolve mil linhas em silêncio. Foi o que fazia o
+// painel do admin mostrar 296 visitas em 7 dias quando o número real era 1.227.
+//
+// Uma leitura é aceitável quando pagina (`.range`), quando é limitada por
+// filtro (`.eq`, `.in`, `.single`), quando só conta (`head: true`) ou quando
+// tem um `.limit()` de no máximo mil.
+const GRANDES = ['analytics_events', 'erp_titulo_dono', 'produtos', 'erp_produtos', 'contas_receber', 'quotes', 'clients'];
+const SEGURO = /\.range\(|\.eq\(|\.in\(|\.maybeSingle\(|\.single\(|head:\s*true/;
+
+const fontes = spawnSync(process.execPath, ['-e', `
+  const { readdirSync, statSync } = require('node:fs');
+  const { join } = require('node:path');
+  const saida = [];
+  (function anda(d) {
+    for (const f of readdirSync(d)) {
+      if (f === 'node_modules' || f === 'dist') continue;
+      const p = join(d, f);
+      if (statSync(p).isDirectory()) anda(p);
+      else if (/\\.(ts|tsx)$/.test(p)) saida.push(p);
+    }
+  })(${JSON.stringify(join(ROOT, 'src'))});
+  (function anda(d) {
+    for (const f of readdirSync(d)) {
+      const p = join(d, f);
+      if (statSync(p).isDirectory()) anda(p);
+      else if (p.endsWith('.ts')) saida.push(p);
+    }
+  })(${JSON.stringify(join(ROOT, 'api'))});
+  console.log(saida.join('\\n'));
+`], { encoding: 'utf8' }).stdout.trim().split('\n');
+
+const suspeitas = [];
+for (const arq of fontes) {
+  const txt = readFileSync(arq, 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^[ \t]*\/\/.*$/gm, '')
+    .replace(/\s+/g, ' ');
+  for (const tabela of GRANDES) {
+    const re = new RegExp("\\.from\\('" + tabela + "'\\) *\\.select\\(([\\s\\S]{0,260})", 'g');
+    for (const m of txt.matchAll(re)) {
+      const cauda = m[1];
+      const limite = /\.limit\((\d+)\)/.exec(cauda);
+      const ok = SEGURO.test(cauda) || (limite && Number(limite[1]) <= 1000);
+      if (!ok) suspeitas.push(`${arq.replace(ROOT, '').replace(/\\/g, '/')} → ${tabela}`);
+    }
+  }
+}
+ok('nenhuma leitura de tabela grande sem paginar no repo', suspeitas.length === 0, suspeitas.join(' | '));
+
 
 console.log('\n=== ATRIBUIÇÃO POR NOME ===');
 ok('acento não separa', normalizarNome('Comércio SÃO JOÃO') === 'comercio sao joao', normalizarNome('Comércio SÃO JOÃO'));

@@ -26,6 +26,28 @@ const PERIOD_LABELS: Record<PeriodType, string> = {
 
 const CHART_COLORS = ['#D4A853', '#25D366', '#4A90D9', '#ff4444', '#f5a623', '#00C9A7', '#845EC2', '#FF6F91'];
 
+/**
+ * Só os campos que este painel lê de `analytics_events`.
+ *
+ * Os quatro primeiros são anuláveis no banco, mas o painel sempre os tratou
+ * como texto (a consulta vinha sem tipo). Manter assim é de propósito: aqui a
+ * mudança é só a paginação; endurecer o tratamento de nulo é outra conversa.
+ */
+interface EventoAnalytics {
+  event_type: string;
+  session_id: string;
+  page: string;
+  from: string;
+  created_at: string;
+  session_duration: number | null;
+  city: string | null;
+  country: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  x_percent: number | null;
+  y_percent: number | null;
+}
+
 function getPeriodStart(period: PeriodType): string {
   const now = new Date();
   switch (period) {
@@ -93,14 +115,27 @@ export default function AdminHome() {
     const since = getPeriodStart(period);
 
     try {
-      // Fetch all analytics events for the period
-      const { data: events } = await supabase
-        .from('analytics_events')
-        .select('*')
-        .gte('created_at', since)
-        .order('created_at', { ascending: true });
-
-      const allEvents = events || [];
+      // Todos os eventos do período — PAGINANDO.
+      //
+      // O PostgREST tem `db-max-rows = 1000`: um select sem paginação devolve
+      // mil linhas sem erro nenhum, e `.limit(5000)` não passa por cima. Sem
+      // isto o painel mentia em TODOS os períodos, inclusive "24 horas", que
+      // já tem 1.198 eventos (conferido em 10/09/2026, com 16.982 no total):
+      // visitas, sessões e rejeição saíam todas subcontadas.
+      const PAGINA = 1000;
+      const allEvents: EventoAnalytics[] = [];
+      for (let de = 0; ; de += PAGINA) {
+        const { data, error } = await supabase
+          .from('analytics_events')
+          .select('*')
+          .gte('created_at', since)
+          .order('created_at', { ascending: true })
+          .range(de, de + PAGINA - 1);
+        if (error) break;
+        const pagina = (data ?? []) as EventoAnalytics[];
+        allEvents.push(...pagina);
+        if (pagina.length < PAGINA) break;
+      }
 
       // KPIs
       const pageViews = allEvents.filter(e => e.event_type === 'page_view');
