@@ -652,6 +652,270 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/speed-wrapping/speed-wrapping-edg-025-mettalic-paint-mettalic-solar-gold-pet-spwedg025.webp',
   'speed-wrapping-edg-027-metallic-paint-metallic-midnight-pluple-pet-spwedg027':
     '/assets/images/shop/speed-wrapping/speed-wrapping-edg-027-metallic-paint-metallic-midnight-pluple-pet-spwedg027.webp',
+
+  // EMG — Satin Metallic Glossy (17)
+  // EMT — Satin Metallic Matte (25)
+  // ECG — Candy Gold (7)
+  // EHM — Chrome Metallic (12)
+  // ELS — Laser Chrome (7)
+  // ECC — Chameleon Chrome (11)
+  // EFG — Magic Flip / Crystal / Matte (15)
+  // EGH — Phantom Shadow (5)
+  // EGF — Carbon Fiber (9)
+  // ERW — Rainbow (6)
+  // EBP — Body Protect (3)
+
+  // ---- EMG (17) ----
+  'speed-wrapping-emg-001-satin-metallic-glossy-white-pet-spwemg001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-001-satin-metallic-glossy-white-pet-spwemg001.webp',
+  'speed-wrapping-emg-002-satin-metallic-glossy-black-pet-spwemg002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-002-satin-metallic-glossy-black-pet-spwemg002.webp',
+  'speed-wrapping-emg-003-satin-metallic-glossy-coal-grey-pet-spwemg003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-003-satin-metallic-glossy-coal-grey-pet-spwemg003.webp',
+  'speed-wrapping-emg-004-satin-metallic-glossy-grey-pet-spwemg004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-004-satin-metallic-glossy-grey-pet-spwemg004.webp',
+  'speed-wrapping-emg-005-satin-metallic-glossy-fire-red-pet-spwemg005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-005-satin-metallic-glossy-fire-red-pet-spwemg005.webp',
+  'speed-wrapping-emg-006-satin-metallic-glossy-orange-pet-spwemg006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-006-satin-metallic-glossy-orange-pet-spwemg006.webp',
+  'speed-wrapping-emg-007-satin-metallic-glossy-maple-leaf-yellow-spwemg007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-007-satin-metallic-glossy-maple-leaf-yellow-spwemg007.webp',
+  'speed-wrapping-emg-008-satin-metallic-glossy-champagne-pet-spwemg008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-008-satin-metallic-glossy-champagne-pet-spwemg008.webp',
+  'speed-wrapping-emg-009-satin-metallic-glossy-roes-pink-pet-spwemg009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-009-satin-metallic-glossy-roes-pink-pet-spwemg009.webp',
+  'speed-wrapping-emg-010-satin-metallic-glossy-grape-purple-pet-spwemg010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-010-satin-metallic-glossy-grape-purple-pet-spwemg010.webp',
+  'speed-wrapping-emg-011-satin-metallic-glossy-royal-green-pet-spwemg011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-011-satin-metallic-glossy-royal-green-pet-spwemg011.webp',
+  'speed-wrapping-emg-012-satin-metallic-glossy-emerald-pet-spwemg012':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-012-satin-metallic-glossy-emerald-pet-spwemg012.webp',
+  'speed-wrapping-emg-013-satin-metallic-glossy-blueberry-pet-spwemg013':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-013-satin-metallic-glossy-blueberry-pet-spwemg013.webp',
+  'speed-wrapping-emg-014-satin-metallic-glossy-sapphire-pet-spwemg014':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-014-satin-metallic-glossy-sapphire-pet-spwemg014.webp',
+  'speed-wrapping-emg-015-satin-metallic-glossy-magic-blue-pet-spwemg015':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-015-satin-metallic-glossy-magic-blue-pet-spwemg015.webp',
+  'speed-wrapping-emg-016-satin-metallic-glossy-seablue-pet-spwemg016':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-016-satin-metallic-glossy-seablue-pet-spwemg016.webp',
+  'speed-wrapping-emg-017-satin-metallic-glossy-mistblue-pet-spwemg017':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emg-017-satin-metallic-glossy-mistblue-pet-spwemg017.webp',
+  // ---- EMT (25) ----
+  'speed-wrapping-emt-001-satin-metallic-matt-white-spwemt001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-001-satin-metallic-matt-white-spwemt001.webp',
+  'speed-wrapping-emt-002-satin-metallic-matt-black-spwemt002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-002-satin-metallic-matt-black-spwemt002.webp',
+  'speed-wrapping-emt-003-satin-metallic-matt-carbon-grey-spwemt003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-003-satin-metallic-matt-carbon-grey-spwemt003.webp',
+  'speed-wrapping-emt-004-satin-metallic-matt-titanium-grey-spwemt004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-004-satin-metallic-matt-titanium-grey-spwemt004.webp',
+  'speed-wrapping-emt-005-satin-metallic-matt-coal-grey-spwemt005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-005-satin-metallic-matt-coal-grey-spwemt005.webp',
+  'speed-wrapping-emt-006-satin-metallic-matt-grey-spwemt006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-006-satin-metallic-matt-grey-spwemt006.webp',
+  'speed-wrapping-emt-007-satin-metallic-matt-fire-red-spwemt007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-007-satin-metallic-matt-fire-red-spwemt007.webp',
+  'speed-wrapping-emt-008-satin-metallic-matt-orange-spwemt008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-008-satin-metallic-matt-orange-spwemt008.webp',
+  'speed-wrapping-emt-009-satin-metallic-matt-maple-leaf-yellow-spwemt009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-009-satin-metallic-matt-maple-leaf-yellow-spwemt009.webp',
+  'speed-wrapping-emt-010-satin-metallic-matt-rose-gold-spwemt010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-010-satin-metallic-matt-rose-gold-spwemt010.webp',
+  'speed-wrapping-emt-011-satin-metallic-matt-grape-purple-spwemt011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-011-satin-metallic-matt-grape-purple-spwemt011.webp',
+  'speed-wrapping-emt-012-satin-metallic-matt-royal-green-spwemt012':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-012-satin-metallic-matt-royal-green-spwemt012.webp',
+  'speed-wrapping-emt-013-satin-metallic-matt-emerald-spwemt013':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-013-satin-metallic-matt-emerald-spwemt013.webp',
+  'speed-wrapping-emt-014-satin-metallic-matt-new-grass-green-spwemt014':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-014-satin-metallic-matt-new-grass-green-spwemt014.webp',
+  'speed-wrapping-emt-015-satin-metallic-matt-lime-spwemt015':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-015-satin-metallic-matt-lime-spwemt015.webp',
+  'speed-wrapping-emt-016-satin-metallic-matt-lake-green-spwemt016':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-016-satin-metallic-matt-lake-green-spwemt016.webp',
+  'speed-wrapping-emt-017-satin-metallic-matt-sea-blue-spwemt017':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-017-satin-metallic-matt-sea-blue-spwemt017.webp',
+  'speed-wrapping-emt-018-satin-metallic-matt-lake-blue-spwemt018':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-018-satin-metallic-matt-lake-blue-spwemt018.webp',
+  'speed-wrapping-emt-019-satin-metallic-matt-sky-blue-spwemt019':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-019-satin-metallic-matt-sky-blue-spwemt019.webp',
+  'speed-wrapping-emt-020-satin-metallic-matt-mist-blue-spwemt020':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-020-satin-metallic-matt-mist-blue-spwemt020.webp',
+  'speed-wrapping-emt-021-satin-metallic-matt-matt-gunsmoke-grey-spwemt021':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-021-satin-metallic-matt-matt-gunsmoke-grey-spwemt021.webp',
+  'speed-wrapping-emt-022-satin-metallic-matt-titanium-metal-grey-spwemt022':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-022-satin-metallic-matt-titanium-metal-grey-spwemt022.webp',
+  'speed-wrapping-emt-023-satin-metallic-matt-sakura-pink-spwemt023':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-023-satin-metallic-matt-sakura-pink-spwemt023.webp',
+  'speed-wrapping-emt-025-satin-metallic-matt-deep-blue-spwemt025':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-025-satin-metallic-matt-deep-blue-spwemt025.webp',
+  'speed-wrapping-emt-026-satin-ceramic-black-pet-spwemt026':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emt-026-satin-ceramic-black-pet-spwemt026.webp',
+  // ---- ECG (7) ----
+  'speed-wrapping-ecg-001-candy-gold-green-pet-spwecg001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecg-001-candy-gold-green-pet-spwecg001.webp',
+  'speed-wrapping-ecg-002-candy-gold-violet-pet-spwecg002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecg-002-candy-gold-violet-pet-spwecg002.webp',
+  'speed-wrapping-ecg-003-candy-gold-lemon-yellow-pet-spwecg003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecg-003-candy-gold-lemon-yellow-pet-spwecg003.webp',
+  'speed-wrapping-ecg-004-candy-gold-sky-blue-pet-spwecg004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecg-004-candy-gold-sky-blue-pet-spwecg004.webp',
+  'speed-wrapping-ecg-005-candy-gold-racing-orange-pet-spwecg005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecg-005-candy-gold-racing-orange-pet-spwecg005.webp',
+  'speed-wrapping-ecg-006-candy-gold-pink-purple-pet-spwecg006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecg-006-candy-gold-pink-purple-pet-spwecg006.webp',
+  'speed-wrapping-ecg-007-candy-gold-blue-chameleon-pet-spwecg007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecg-007-candy-gold-blue-chameleon-pet-spwecg007.webp',
+  // ---- EHM (12) ----
+  'speed-wrapping-ehm-001-chrome-metallic-gold-pet-spwehm001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-001-chrome-metallic-gold-pet-spwehm001.webp',
+  'speed-wrapping-ehm-002-chrome-metallic-rose-red-pet-spwehm002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-002-chrome-metallic-rose-red-pet-spwehm002.webp',
+  'speed-wrapping-ehm-003-chrome-metallic-red-pet-spwehm003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-003-chrome-metallic-red-pet-spwehm003.webp',
+  'speed-wrapping-ehm-004-chrome-metallic-orange-pet-spwehm004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-004-chrome-metallic-orange-pet-spwehm004.webp',
+  'speed-wrapping-ehm-005-chrome-metallic-light-blue-pet-spwehm005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-005-chrome-metallic-light-blue-pet-spwehm005.webp',
+  'speed-wrapping-ehm-006-chrome-metallic-king-blue-pet-spwehm006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-006-chrome-metallic-king-blue-pet-spwehm006.webp',
+  'speed-wrapping-ehm-007-chrome-metallic-green-pet-spwehm007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-007-chrome-metallic-green-pet-spwehm007.webp',
+  'speed-wrapping-ehm-008-chrome-metallic-purple-pet-spwehm008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-008-chrome-metallic-purple-pet-spwehm008.webp',
+  'speed-wrapping-ehm-009-chrome-metallic-romani-red-pet-spwehm009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-009-chrome-metallic-romani-red-pet-spwehm009.webp',
+  'speed-wrapping-ehm-010-chrome-metallic-dark-gold-pet-spwehm010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-010-chrome-metallic-dark-gold-pet-spwehm010.webp',
+  'speed-wrapping-ehm-011-chrome-metallic-grey-pet-spwehm011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-011-chrome-metallic-grey-pet-spwehm011.webp',
+  'speed-wrapping-ehm-012-chrome-metallic-silver-pet-spwehm012':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ehm-012-chrome-metallic-silver-pet-spwehm012.webp',
+  // ---- ELS (7) ----
+  'speed-wrapping-els-001-laser-chrome-black-pet-spwels001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-els-001-laser-chrome-black-pet-spwels001.webp',
+  'speed-wrapping-els-002-laser-chrome-silver-pet-spwels002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-els-002-laser-chrome-silver-pet-spwels002.webp',
+  'speed-wrapping-els-003-laser-chrome-blue-pet-spwels003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-els-003-laser-chrome-blue-pet-spwels003.webp',
+  'speed-wrapping-els-004-laser-chrome-gold-pet-spwels004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-els-004-laser-chrome-gold-pet-spwels004.webp',
+  'speed-wrapping-els-005-laser-chrome-purple-pet-spwels005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-els-005-laser-chrome-purple-pet-spwels005.webp',
+  'speed-wrapping-els-006-laser-chrome-red-pet-spwels006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-els-006-laser-chrome-red-pet-spwels006.webp',
+  'speed-wrapping-els-007-laser-chrome-green-pet-spwels007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-els-007-laser-chrome-green-pet-spwels007.webp',
+  // ---- ECC (11) ----
+  'speed-wrapping-ecc-001-chameleon-chrome-silver-spwecc001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-001-chameleon-chrome-silver-spwecc001.webp',
+  'speed-wrapping-ecc-002-chameleon-chrome-green-spwecc002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-002-chameleon-chrome-green-spwecc002.webp',
+  'speed-wrapping-ecc-003-chameleon-chrome-blue-spwecc003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-003-chameleon-chrome-blue-spwecc003.webp',
+  'speed-wrapping-ecc-004-chameleon-chrome-sapphire-blue-spwecc004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-004-chameleon-chrome-sapphire-blue-spwecc004.webp',
+  'speed-wrapping-ecc-005-chameleon-blue-purple-pet-spwecc005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-005-chameleon-blue-purple-pet-spwecc005.webp',
+  'speed-wrapping-ecc-006-chameleon-purple-red-pet-spwecc006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-006-chameleon-purple-red-pet-spwecc006.webp',
+  'speed-wrapping-ecc-007-chameleon-purple-blue-pet-spwecc007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-007-chameleon-purple-blue-pet-spwecc007.webp',
+  'speed-wrapping-ecc-008-chameleon-green-gold-pet-spwecc008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-008-chameleon-green-gold-pet-spwecc008.webp',
+  'speed-wrapping-ecc-009-chameleon-green-purple-pet-spwecc009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-009-chameleon-green-purple-pet-spwecc009.webp',
+  'speed-wrapping-ecc-010-chameleon-galaxy-pet-spwecc010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-010-chameleon-galaxy-pet-spwecc010.webp',
+  'speed-wrapping-ecc-011-chameleon-fancy-galatic-sparkling-pet-spwecc011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ecc-011-chameleon-fancy-galatic-sparkling-pet-spwecc011.webp',
+  // ---- EFG (15) ----
+  'speed-wrapping-efg-001-magic-flip-grey-green-pet-spwefg001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-001-magic-flip-grey-green-pet-spwefg001.webp',
+  'speed-wrapping-efg-002-magic-flip-grey-purple-pet-spwefg002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-002-magic-flip-grey-purple-pet-spwefg002.webp',
+  'speed-wrapping-efg-003-magic-flip-volcano-grey-pet-spwefg003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-003-magic-flip-volcano-grey-pet-spwefg003.webp',
+  'speed-wrapping-efg-004-magic-flip-grey-blue-pet-spwefg004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-004-magic-flip-grey-blue-pet-spwefg004.webp',
+  'speed-wrapping-efg-005-magic-crystal-white-green-pet-spwefg005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-005-magic-crystal-white-green-pet-spwefg005.webp',
+  'speed-wrapping-efg-006-magic-crystal-white-gold-pet-spwefg006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-006-magic-crystal-white-gold-pet-spwefg006.webp',
+  'speed-wrapping-efg-007-magic-crystal-white-red-pet-spwefg007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-007-magic-crystal-white-red-pet-spwefg007.webp',
+  'speed-wrapping-efg-008-magic-crystal-white-blue-pet-spwefg008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-008-magic-crystal-white-blue-pet-spwefg008.webp',
+  'speed-wrapping-efg-009-magic-racing-tiffany-pet-spwefg009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-009-magic-racing-tiffany-pet-spwefg009.webp',
+  'speed-wrapping-efg-010-magic-flip-glacial-frost-blue-pet-spwefg010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-010-magic-flip-glacial-frost-blue-pet-spwefg010.webp',
+  'speed-wrapping-efg-011-magic-blue-white-gold-pet-spwefg011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-011-magic-blue-white-gold-pet-spwefg011.webp',
+  'speed-wrapping-efg-012-magic-blue-white-green-pet-spwefg012':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-012-magic-blue-white-green-pet-spwefg012.webp',
+  'speed-wrapping-efg-013-magic-matte-grey-blue-pet-spwefg013':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-013-magic-matte-grey-blue-pet-spwefg013.webp',
+  'speed-wrapping-efg-014-magic-matte-grey-red-pet-spwefg014':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-014-magic-matte-grey-red-pet-spwefg014.webp',
+  'speed-wrapping-efg-015-magic-matte-grey-purple-pet-spwefg015':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-efg-015-magic-matte-grey-purple-pet-spwefg015.webp',
+  // ---- EGH (5) ----
+  'speed-wrapping-egh-001-phontom-shadow-black-purple-spwegh001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egh-001-phontom-shadow-black-purple-spwegh001.webp',
+  'speed-wrapping-egh-002-phontom-shadow-jazz-blue-spwegh002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egh-002-phontom-shadow-jazz-blue-spwegh002.webp',
+  'speed-wrapping-egh-003-phontom-shadow-olive-green-spwegh003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egh-003-phontom-shadow-olive-green-spwegh003.webp',
+  'speed-wrapping-egh-004-phontom-shadow-black-blue-spwegh004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egh-004-phontom-shadow-black-blue-spwegh004.webp',
+  'speed-wrapping-egh-005-phontom-shadow-black-gold-spwegh005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egh-005-phontom-shadow-black-gold-spwegh005.webp',
+  // ---- EGF (9) ----
+  'speed-wrapping-egf-001-gloss-carbon-red-pet-spwegf001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-001-gloss-carbon-red-pet-spwegf001.webp',
+  'speed-wrapping-egf-002-gloss-carbon-black-pet-spwegf002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-002-gloss-carbon-black-pet-spwegf002.webp',
+  'speed-wrapping-egf-003-matte-carbon-red-pet-spwegf003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-003-matte-carbon-red-pet-spwegf003.webp',
+  'speed-wrapping-egf-004-matte-carbon-black-pet-spwegf004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-004-matte-carbon-black-pet-spwegf004.webp',
+  'speed-wrapping-egf-006-carbon-gloss-5d-spwegf006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-006-carbon-gloss-5d-spwegf006.webp',
+  'speed-wrapping-egf-007-frosted-black-pet-spwegf007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-007-frosted-black-pet-spwegf007.webp',
+  'speed-wrapping-egf-017-shadow-black-spwegf017':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-017-shadow-black-spwegf017.webp',
+  'speed-wrapping-egf-018-forged-carbon-spwegf018':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egf-018-forged-carbon-spwegf018.webp',
+  // ---- ERW (5) ----
+  'speed-wrapping-erw-001-rainbow-grey-pet-spwerw001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-erw-001-rainbow-grey-pet-spwerw001.webp',
+  'speed-wrapping-erw-002-rainbow-silver-pet-spwerw002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-erw-002-rainbow-silver-pet-spwerw002.webp',
+  'speed-wrapping-erw-003-rainbow-white-pet-spwerw003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-erw-003-rainbow-white-pet-spwerw003.webp',
+  'speed-wrapping-erw-004-rainbow-matte-grey-spwerw004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-erw-004-rainbow-matte-grey-spwerw004.webp',
+  'speed-wrapping-erw-005-rainbow-matte-silver-spwerw005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-erw-005-rainbow-matte-silver-spwerw005.webp',
+  // ---- EBP (3) ----
+  'speed-wrapping-ebp-001-gloss-black-sunroof-12c-spwebp001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ebp-001-gloss-black-sunroof-12c-spwebp001.webp',
+  'speed-wrapping-ebp-002-gloss-black-sunroof-18c-spwebp002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ebp-002-gloss-black-sunroof-18c-spwebp002.webp',
+  'speed-wrapping-ebp-003-matte-black-pet-spwebp003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ebp-003-matte-black-pet-spwebp003.webp',
+
+  // ---- Extras (EMA-004 regerado, EBP-SW PPF Black) ----
+  'speed-wrapping-ema-004-matt-yellow-spwema004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-004-matt-yellow-spwema004.webp',
+  'speed-wrapping-ppf-black-58892722':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ppf-black-58892722.webp',
+  // EGF-005 (Carbon Gloss 3D) fica de fora até a foto existir: a geração
+  // voltou 403 no CDN. Sem entrada aqui o card cai no placeholder da linha,
+  // que é melhor do que apontar para um arquivo que não subiu.
+
 };
 
 /**
