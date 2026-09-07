@@ -983,6 +983,35 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/decor/etherna/madeira-cerejeira-marrom/texture.jpg',
   'etherna-concreto-cinza-claro-eth158':
     '/assets/images/decor/etherna/concreto-cinza-claro/texture.jpg',
+  // SH Wrapping tecnicos (9): PPF em TPH e TPU, tres cores fora do color
+  // chart e o leque de amostras. Nao sao cores da linha, entao ficam aqui e
+  // nao no SH_WRAPPING_IMAGES_ERP, que e indexado pelo slug curto `sh-<cor>`.
+  // Clear Gloss aparece duas vezes de proposito: TPH e TPU sao materiais
+  // diferentes com a MESMA aparencia de filme transparente brilhante.
+  'sh-wrapping-nzwrap-dark-gray-amg-nzw08':
+    '/assets/images/shop/sh-wrapping/dark-gray-amg.webp',
+  'sh-wrapping-leque-redondo-de-cores-shcat01':
+    '/assets/images/shop/sh-wrapping/leque-redondo.webp',
+  'sh-wrapping-ps-103-glossy-black-with-coating-protecao-de-pu-shps-103':
+    '/assets/images/shop/sh-wrapping/glossy-black-ps103.webp',
+  'sh-wrapping-sm-115-deep-blue-gloss-metallic-shsm-115':
+    '/assets/images/shop/sh-wrapping/deep-blue-metallic.webp',
+  'sh-wrapping-tph-black-gloss-sh-wrapping-shtphsh-ph165bg':
+    '/assets/images/shop/sh-wrapping/ppf-black-gloss.webp',
+  'sh-wrapping-tph-black-matte-sh-wrapping-shtphsh-ph165bm':
+    '/assets/images/shop/sh-wrapping/ppf-black-matte.webp',
+  'sh-wrapping-tph-clear-gloss-sh-wrapping-shtphsh-ph165g':
+    '/assets/images/shop/sh-wrapping/ppf-clear-gloss.webp',
+  'sh-wrapping-tph-clear-matte-sh-wrapping-shtphsh-ph165m':
+    '/assets/images/shop/sh-wrapping/ppf-clear-matte.webp',
+  'sh-wrapping-tpu-clear-gloss-sh-wrapping-shtpush-pu180g':
+    '/assets/images/shop/sh-wrapping/ppf-clear-gloss.webp',
+  // SHNext PPF (2): mesmo filme, marca propria — reusa as duas imagens de
+  // Clear acima em vez de duplicar arquivo identico.
+  'next-tpu-shnext-ppf-clear-matte-007886':
+    '/assets/images/shop/sh-wrapping/ppf-clear-matte.webp',
+  'next-tpu-shnext-ppf-clear-gloss-0078861':
+    '/assets/images/shop/sh-wrapping/ppf-clear-gloss.webp',
 };
 
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
