@@ -735,3 +735,56 @@
     background: rgba(209, 30, 30, 0.1);
   }
 }
+
+/* ------------------------------------------------ histórico vindo do NZERP */
+/* Duas listas na mesma tela (site e NZ) precisam de uma divisa clara, senão o
+   cliente lê tudo como se fosse do site — e aí cobra do site uma parcela que a
+   NZ emitiu no balcão. */
+
+.secaoTitulo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 2rem 0 0.75rem;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.secaoTitulo:first-of-type {
+  margin-top: 0;
+}
+
+.secaoTitulo small {
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+/* O selo de origem. Discreto de propósito: informa, não decora. */
+.selo {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  font-family: var(--font-tech);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  vertical-align: middle;
+  color: var(--text-muted);
+}
+
+.itensErp {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}

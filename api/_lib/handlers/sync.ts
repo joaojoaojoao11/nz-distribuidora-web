@@ -11,7 +11,10 @@
 //   3. marca `removido_no_erp` quem sumiu da view (apagado no ERP);
 //   4. cria em `produtos` uma linha 'erp-auto' para todo SKU que ainda não tem
 //      produto no site — é o "todo produto do NZERP tem cadastro no site";
-//   5. espelha status dos pedidos (Fase 7; hoje é no-op sem pedidos enviados).
+//   5. espelha status dos pedidos do site;
+//   6. no cron (não no webhook): manutenção do checkout, equipe e a atribuição
+//      dos títulos do contas a receber — esta última lê o NZERP e grava só no
+//      banco do site (`erp_titulo_dono`).
 //
 // Upsert completo e idempotente de ~1.200 linhas: não depende de updated_at,
 // não tem estado. Rodar duas vezes seguidas dá o mesmo resultado.
@@ -36,6 +39,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { produtoAutoDeSku } from '../../../src/lib/shop/erp/mapa.js';
 import { manutencaoCheckout } from '../asaas/manutencao.js';
 import { sincronizarEquipe } from './equipe.js';
+import { atribuirTitulos } from '../conta/atribuirTitulos.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Db = SupabaseClient<any, any, any>;
@@ -165,6 +169,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const checkout = !dry && gatilho !== 'webhook' ? await manutencaoCheckout(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // Quem entrou/saiu do NZERP ganha/perde acesso administrativo ao site.
     const equipe = !dry && gatilho !== 'webhook' ? await sincronizarEquipe(site, null).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // De quem é cada título do contas a receber. Lê o ERP, grava só no site.
+    // Uma vez por dia basta: título novo nasce com nota, e nota não é de minuto.
+    const titulos = !dry && gatilho !== 'webhook' ? await atribuirTitulos(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
 
     if (logId) {
       await site
@@ -180,7 +187,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .eq('id', logId);
     }
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);

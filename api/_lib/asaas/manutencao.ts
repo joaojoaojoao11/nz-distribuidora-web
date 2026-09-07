@@ -7,11 +7,13 @@
 //      (o cliente que não voltou à página nunca disparou a expiração);
 //   3. pagamentos "aguardando"/"em_analise" com mais de 1 h: reconsulta o
 //      Asaas — cobre webhook perdido (boleto compensado, análise concluída);
-//   4. pedidos pagos que o ERP ainda não sabe, ou sem orçamento no ERP: reenvia.
+//   4. pedidos PAGOS que o ERP ainda não sabe: despacha. Pedido não pago
+//      nunca entra nesta fila — o ERP só recebe o que foi aprovado.
 
 import type { Db } from '../papel.js';
 import { asaasConfigurado, type AsaasPayment } from './cliente.js';
-import { avisarErpPago, expirarSeVencido, sincronizarComAsaas, type PagamentoRow } from './pagamento.js';
+import { expirarSeVencido, sincronizarComAsaas, type PagamentoRow } from './pagamento.js';
+import { despacharAoErp } from '../pedido/despachoErp.js';
 import { processar } from '../handlers/asaas.js';
 
 export interface ResultadoManutencao {
@@ -62,16 +64,20 @@ export async function manutencaoCheckout(site: Db): Promise<ResultadoManutencao>
     }
   }
 
-  // 4. ERP atrasado
+  // 4. ERP atrasado — SÓ pedido pago. Um Pix gerado e nunca pago não vira
+  //    orçamento nem aqui: a fila é "pago e o ERP ainda não sabe".
   const { data: pendentesErp } = await site
     .from('pedidos')
     .select('id')
-    .or('and(erp_quote_id.is.null,erp_payload.not.is.null),and(pagamento_status.eq.pago,erp_pago_em.is.null)')
+    .eq('pagamento_status', 'pago')
+    .neq('status', 'CANCELADO')
+    .or('erp_envio.neq.enviado,erp_pago_em.is.null')
     .limit(100);
   for (const ped of (pendentesErp ?? []) as { id: string }[]) {
     try {
-      await avisarErpPago(site, ped.id);
-      r.erpReenviados++;
+      const d = await despacharAoErp(site, ped.id, 'pago');
+      if (d.ok) r.erpReenviados++;
+      else if (d.estado === 'erro') r.erros.push(`erp ${ped.id}: ${d.message ?? 'falhou'}`);
     } catch (err) {
       r.erros.push(`erp ${ped.id}: ${err instanceof Error ? err.message : String(err)}`);
     }

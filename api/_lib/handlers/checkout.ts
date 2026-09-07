@@ -26,7 +26,6 @@ import { asaasConfigurado, asaasEnv, consultarCobranca, criarWebhook, estornarCo
 import { manutencaoCheckout } from '../asaas/manutencao.js';
 import {
   aplicarStatus,
-  avisarErpPago,
   carregarConfig,
   criarPagamento,
   expirarSeVencido,
@@ -38,6 +37,7 @@ import {
   type DadosCartao,
   type PagamentoRow,
 } from '../asaas/pagamento.js';
+import { despacharAoErp, dispensarDoErp } from '../pedido/despachoErp.js';
 import { cotarCarrinho, type OpcaoFrete } from '../frete/carrinho.js';
 import {
   carregarPerfil,
@@ -96,7 +96,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await opCancelar(site, userId, papel === 'admin', body, res);
     return;
   }
-  if (op === 'estornar' || op === 'webhook' || op === 'manutencao' || op === 'saude' || op === 'remover-cobranca') {
+  if (op === 'estornar' || op === 'webhook' || op === 'manutencao' || op === 'saude' || op === 'remover-cobranca' || op === 'enviar-erp' || op === 'fila-erp') {
     if (papel !== 'admin') {
       res.status(403).json({ error: 'so-admin' });
       return;
@@ -382,18 +382,21 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
   });
   await site.from('pedidos').update({ erp_payload: payloadErp }).eq('id', pedido.id);
 
+  // O ERP só é chamado se a cobrança JÁ nasceu paga (cartão aprovado na hora).
+  // Pix e boleto saem daqui com `nao-pago`, de propósito: o orçamento nasce no
+  // webhook, quando o dinheiro entra. O payload fica guardado esperando.
   let erpQuoteNumber: number | null = null;
   let erpErro: string | null = null;
   try {
-    await avisarErpPago(site, pedido.id);
-    const { data: p } = await site.from('pedidos').select('erp_quote_number').eq('id', pedido.id).maybeSingle();
-    erpQuoteNumber = (p as { erp_quote_number?: number | null } | null)?.erp_quote_number ?? null;
+    const d = await despacharAoErp(site, pedido.id, 'pago');
+    erpQuoteNumber = d.quoteNumber ?? null;
+    if (!d.ok && d.estado === 'erro') erpErro = d.message ?? 'erp-falhou';
   } catch (err) {
     // A cobrança já existe: o pedido NÃO pode falhar por causa do ERP. O cron
     // (e o próximo `status`) reenviam com o payload guardado.
     erpErro = err instanceof Error ? err.message : String(err);
-    console.warn('[checkout] ERP não recebeu o pedido agora:', erpErro);
   }
+  if (erpErro) console.warn('[checkout] ERP não recebeu o pedido agora:', erpErro);
 
   res.status(200).json({
     ok: true,
@@ -465,9 +468,10 @@ async function opStatus(site: Db, userId: string, admin: boolean, body: Record<s
     pedido.pagamento_status = atual.status === 'pago' || pedido.pagamento_status === 'pago' ? 'pago' : atual.status;
   }
 
-  // ERP ficou para trás (estava fora no checkout)? Tenta agora, em silêncio.
-  if ((!pedido.erp_quote_id && pedido.erp_payload) || (pedido.pagamento_status === 'pago' && !pedido.erp_pago_em)) {
-    await avisarErpPago(site, pedido.id).catch(() => undefined);
+  // ERP ficou para trás (estava fora quando o pagamento entrou)? Tenta agora,
+  // em silêncio. Só para pedido PAGO: é a regra do projeto.
+  if (pedido.pagamento_status === 'pago' && (!pedido.erp_quote_id || !pedido.erp_pago_em)) {
+    await despacharAoErp(site, pedido.id, 'pago').catch(() => undefined);
     const de = await carregarPedidoDoUsuario(site, userId, admin, numero);
     if (de) {
       pedido.erp_quote_number = de.erp_quote_number;
@@ -665,6 +669,8 @@ async function opCancelar(site: Db, userId: string, admin: boolean, body: Record
         .from('pedidos')
         .update({ status: 'CANCELADO', status_atualizado_em: new Date().toISOString() })
         .eq('id', pedido.id);
+      // Nunca chegou ao ERP e não vai mais: sai da fila do cron.
+      await dispensarDoErp(site, pedido.id);
       res.status(200).json({ ok: true, cancelados: abertos.length, pedido: 'CANCELADO', semErp: true });
       return;
     }
@@ -676,6 +682,7 @@ async function opCancelar(site: Db, userId: string, admin: boolean, body: Record
     .from('pedidos')
     .update({ status: 'CANCELADO', status_atualizado_em: new Date().toISOString() })
     .eq('id', pedido.id);
+  await dispensarDoErp(site, pedido.id);
   res.status(200).json({ ok: true, cancelados: abertos.length, pedido: 'CANCELADO' });
 }
 
@@ -771,6 +778,71 @@ async function opsAdmin(site: Db, op: string, body: Record<string, unknown>, res
   if (op === 'manutencao') {
     const r = await manutencaoCheckout(site);
     res.status(200).json({ ok: true, ...r });
+    return;
+  }
+
+  // A fila do vendedor: o que está esperando para ir ao NZERP e por quê.
+  if (op === 'fila-erp') {
+    const { data } = await site
+      .from('pedidos')
+      .select('id, numero, status, pagamento_status, total_estimado, total_final, criado_em, erp_envio, erp_envio_em, erp_envio_erro, erp_quote_number, user_id')
+      .neq('erp_envio', 'enviado')
+      .neq('erp_envio', 'dispensado')
+      .not('erp_payload', 'is', null)
+      .neq('status', 'CANCELADO')
+      .order('criado_em', { ascending: false })
+      .limit(100);
+    const linhas = (data ?? []) as { user_id: string | null }[];
+    const ids = [...new Set(linhas.map((l) => l.user_id).filter(Boolean))] as string[];
+    const { data: perfis } = ids.length
+      ? await site.from('user_profiles').select('id, full_name, company_name, email').in('id', ids)
+      : { data: [] };
+    const porId = new Map((perfis ?? []).map((p) => [(p as { id: string }).id, p as { full_name?: string; company_name?: string; email?: string }]));
+    res.status(200).json({
+      ok: true,
+      pedidos: (data ?? []).map((p) => {
+        const d = p as Record<string, unknown>;
+        const u = d.user_id ? porId.get(String(d.user_id)) : undefined;
+        return {
+          id: d.id,
+          numero: d.numero,
+          status: d.status,
+          pagamentoStatus: d.pagamento_status,
+          total: d.total_final ?? d.total_estimado,
+          criadoEm: d.criado_em,
+          erpEnvio: d.erp_envio,
+          erpEnvioEm: d.erp_envio_em,
+          erpErro: d.erp_envio_erro,
+          cliente: u?.company_name || u?.full_name || u?.email || null,
+        };
+      }),
+    });
+    return;
+  }
+
+  // "Enviar ao NZERP": o vendedor assume um pedido que não foi pago online
+  // (SOLICITADO) ou um pago que ficou para trás. É a única porta por onde um
+  // pedido não pago chega ao ERP, e ela tem nome e dono.
+  if (op === 'enviar-erp') {
+    const numero = Math.floor(Number(body.numero));
+    if (!Number.isFinite(numero) || numero <= 0) {
+      res.status(400).json({ error: 'numero-invalido' });
+      return;
+    }
+    const { data: ped } = await site.from('pedidos').select('id, numero, status, erp_quote_number').eq('numero', numero).maybeSingle();
+    const pedido = ped as { id: string; numero: number; status: string; erp_quote_number: number | null } | null;
+    if (!pedido) {
+      res.status(404).json({ error: 'pedido-nao-encontrado' });
+      return;
+    }
+    const d = await despacharAoErp(site, pedido.id, 'admin');
+    if (!d.ok) {
+      const CODIGO: Partial<Record<typeof d.estado, number>> = { 'sem-erp': 503, erro: 502 };
+      const codigo = CODIGO[d.estado] ?? 409;
+      res.status(codigo).json({ error: d.estado, message: d.message });
+      return;
+    }
+    res.status(200).json({ ok: true, estado: d.estado, erpQuoteNumber: d.quoteNumber, pagamentoConfirmado: d.pagamentoConfirmado });
     return;
   }
 

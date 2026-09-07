@@ -110,6 +110,27 @@ interface Abandonado {
   lembrado_em: string | null;
 }
 
+/**
+ * Pedido que ainda não virou orçamento no NZERP.
+ *
+ * Desde 10/09/2026 o ERP só recebe pedido PAGO. Então esta fila é, quase
+ * sempre, de duas coisas: solicitações do lojista que negocia antes (status
+ * SOLICITADO, esperando o vendedor mandar) e pagos que o ERP recusou na hora
+ * (fica o erro, e o cron tenta de novo sozinho).
+ */
+interface FilaErp {
+  id: string;
+  numero: number;
+  status: string;
+  pagamentoStatus: string;
+  total: number | null;
+  criadoEm: string;
+  erpEnvio: string;
+  erpEnvioEm: string | null;
+  erpErro: string | null;
+  cliente: string | null;
+}
+
 export default function AdminPedidos() {
   const [config, setConfig] = useState<Config | null>(null);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -124,6 +145,7 @@ export default function AdminPedidos() {
   const [ocupado, setOcupado] = useState(false);
   const [abandonados, setAbandonados] = useState<Abandonado[]>([]);
   const [horasAbandono, setHorasAbandono] = useState(24);
+  const [fila, setFila] = useState<FilaErp[]>([]);
 
   const carregar = useCallback(async () => {
     const [c, p, g, e] = await Promise.all([
@@ -163,6 +185,19 @@ export default function AdminPedidos() {
     void carregarSaude();
   }, [carregar, carregarSaude]);
 
+  const carregarFila = useCallback(async () => {
+    try {
+      const r = await chamarCheckout<{ pedidos: FilaErp[] }>({ op: 'fila-erp' });
+      setFila(r.pedidos ?? []);
+    } catch {
+      setFila([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    void carregarFila();
+  }, [carregarFila]);
+
   const salvarConfig = async (patch: Partial<Config>) => {
     const { error } = await supabase.from('loja_config').update({ ...patch, atualizado_em: new Date().toISOString() }).eq('id', 1);
     if (error) setErro(error.message);
@@ -175,7 +210,7 @@ export default function AdminPedidos() {
     try {
       const r = await chamarCheckout<Record<string, unknown>>(body);
       setMsg(okMsg(r));
-      await Promise.all([carregar(), carregarSaude()]);
+      await Promise.all([carregar(), carregarSaude(), carregarFila()]);
     } catch (e) {
       setMsg(textoDoErro(e));
     } finally {
@@ -217,6 +252,69 @@ export default function AdminPedidos() {
       </p>
       {erro && <p style={{ color: '#ff6b6b' }}>{erro}</p>}
       {msg && <p style={{ color: '#a1a1a6' }}>{msg}</p>}
+
+      {/* -------------------------------------------------- fila do NZERP */}
+      <div className={styles.tableSection}>
+        <h3 className={styles.tableSectionTitle}>
+          Esperando para ir ao NZERP
+          {fila.length > 0 && <> — {fila.length}</>}
+        </h3>
+        <p className={styles.tabDescription}>
+          Desde 10/09/2026 o NZERP <strong>só recebe pedido pago</strong>. Um Pix gerado e não pago não vira
+          orçamento lá. O que cai aqui é, quase sempre, solicitação de lojista que quer negociar antes
+          (<strong>SOLICITADO</strong>) — o orçamento nasce quando você clicar. Pago com erro o cron reenvia
+          sozinho; o botão só adianta.
+        </p>
+        {fila.length === 0 ? (
+          <p style={{ color: '#a1a1a6' }}>Nada esperando. Tudo que foi pago já está no NZERP.</p>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Pedido</th>
+                  <th>Cliente</th>
+                  <th>Situação</th>
+                  <th>Valor</th>
+                  <th>Desde</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {fila.map((f) => (
+                  <tr key={f.id}>
+                    <td>#{f.numero}</td>
+                    <td>{f.cliente ?? '—'}</td>
+                    <td>
+                      {f.status}
+                      {f.pagamentoStatus !== 'nenhum' ? ` · ${STATUS_PAGAMENTO_LABEL[f.pagamentoStatus as StatusPagamento] ?? f.pagamentoStatus}` : ''}
+                      {f.erpErro ? <><br /><span style={{ color: '#ff6b6b' }}>{f.erpErro}</span></> : null}
+                    </td>
+                    <td>{f.total != null ? BRL.format(Number(f.total)) : '—'}</td>
+                    <td>{dt(f.criadoEm)}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className={styles.actionBtn}
+                        disabled={ocupado}
+                        onClick={() =>
+                          void acao({ op: 'enviar-erp', numero: f.numero }, (r) =>
+                            r.estado === 'enviado'
+                              ? `Pedido #${f.numero} virou o orçamento ${r.erpQuoteNumber ?? ''} no NZERP.`
+                              : `Pedido #${f.numero} já estava no NZERP.`
+                          )
+                        }
+                      >
+                        Enviar ao NZERP
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* --------------------------------------------- carrinhos parados */}
       <div className={styles.tableSection}>

@@ -5,12 +5,19 @@
 // `linha_digitavel`, `pix_payload`, `invoice_url`, `recibo_url`, `cartao_final`
 // e `vencimento` desde o checkout — só não existia tela que mostrasse. O Pix
 // só aparece enquanto vale: um QR expirado copiado por engano vira suporte.
+//
+// Abaixo delas vêm as PARCELAS que o cliente tem na NZ — boletos e carnês que
+// nasceram no NZERP, não no site. Aparecem com data e valor, vencidas
+// inclusive, e sem nenhuma palavra de cobrança: quem cobra é a NZ, pelo canal
+// dela. Só chegam aqui os títulos que a atribuição deu com segurança a este
+// cliente (erp_titulo_dono); título sem dono não aparece para ninguém.
 
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { BRL } from '../../lib/shop/precos';
+import { carregarHistoricoErp, type TituloErp } from '../../lib/shop/historicoErp';
 import { FORMA_LABEL, PAGAMENTO_LABEL, tomDoPagamento } from './pedidoRotulos';
 import styles from './Painel.module.css';
 
@@ -43,6 +50,7 @@ export default function PainelPagamentos() {
   // função impura e torna o resultado instável entre redesenhos (regra do
   // React 19). Um Pix que vence com a página aberta some no próximo F5.
   const [agora] = useState(() => Date.now());
+  const [titulos, setTitulos] = useState<TituloErp[]>([]);
 
   useEffect(() => {
     if (!user) return;
@@ -64,6 +72,18 @@ export default function PainelPagamentos() {
     };
   }, [user]);
 
+  useEffect(() => {
+    // As parcelas do NZERP vêm por fora: atravessam duas bases e não podem
+    // segurar o desenho das cobranças do site.
+    let vivo = true;
+    void carregarHistoricoErp(user?.id).then((h) => {
+      if (vivo) setTitulos(h.titulos);
+    });
+    return () => {
+      vivo = false;
+    };
+  }, [user?.id]);
+
   const copiar = async (id: string, texto: string) => {
     try {
       await navigator.clipboard.writeText(texto);
@@ -76,7 +96,7 @@ export default function PainelPagamentos() {
 
   if (carregando) return <p className={styles.mudo}>Carregando…</p>;
 
-  if (lista.length === 0) {
+  if (lista.length === 0 && titulos.length === 0) {
     return (
       <div className={styles.vazio}>
         <p className={styles.mudo}>
@@ -93,7 +113,9 @@ export default function PainelPagamentos() {
   const data = (v: string | null) => (v ? new Date(v).toLocaleDateString('pt-BR') : null);
 
   return (
-    <ul className={styles.cartoes}>
+    <>
+      {lista.length > 0 && titulos.length > 0 && <h3 className={styles.secaoTitulo}>Cobranças do site</h3>}
+      <ul className={styles.cartoes}>
       {lista.map((p) => {
         const tom = tomDoPagamento(p.status);
         // Pix vencido não é oferecido: copiar um QR morto vira chamado.
@@ -165,6 +187,58 @@ export default function PainelPagamentos() {
           </li>
         );
       })}
-    </ul>
+      </ul>
+
+      {titulos.length > 0 && (
+        <>
+          <h3 className={styles.secaoTitulo}>
+            Suas parcelas na NZ
+            <small>Boletos e carnês do sistema da NZ, fora do site</small>
+          </h3>
+          <ul className={styles.cartoes}>
+            {titulos.map((t) => (
+              <li key={t.id} className={styles.cartaoPedido}>
+                <div className={styles.cartaoTopo}>
+                  <span className={styles.cartaoNumero}>
+                    {t.documento ? `Documento ${t.documento}` : 'Parcela'}
+                    {t.parcela ? ` · ${t.parcela}` : ''}
+                    <span className={styles.selo}>NZ</span>
+                  </span>
+                  <span className={styles.cartaoData}>{data(t.vencimento) ?? '—'}</span>
+                </div>
+
+                <div className={styles.cartaoStatus}>
+                  <span
+                    className={`${styles.pagChip} ${t.status === 'pago' ? styles.pagOk : t.vencido ? styles.pagRuim : styles.pagPendente}`}
+                  >
+                    {t.statusRotulo}
+                  </span>
+                  <span>
+                    {t.pagoEm ? `pago em ${data(t.pagoEm)}` : t.vencimento ? `vence ${data(t.vencimento)}` : ''}
+                    {t.notaFiscal ? ` · NF ${t.notaFiscal}` : ''}
+                  </span>
+                </div>
+
+                <div className={styles.cartaoRodape}>
+                  <span className={styles.cartaoTotal}>{t.valor != null ? BRL.format(Number(t.valor)) : '—'}</span>
+                  <div className={styles.cartaoAcoes}>
+                    {t.boletoUrl && (
+                      <a className={styles.botaoSecundario} href={t.boletoUrl} target="_blank" rel="noopener noreferrer">
+                        2ª via do boleto
+                      </a>
+                    )}
+                    {!t.boletoUrl && t.faturaUrl && (
+                      <a className={styles.botaoSecundario} href={t.faturaUrl} target="_blank" rel="noopener noreferrer">
+                        Ver cobrança
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </>
   );
 }

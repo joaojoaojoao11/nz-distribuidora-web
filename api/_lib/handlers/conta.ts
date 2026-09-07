@@ -7,6 +7,11 @@
 //                                 dados para pré-preencher SÓ se o e-mail bater
 //   pos-cadastro        logado  — vincula ao cliente do ERP e aplica a
 //                                 aprovação automática do lojista
+//   historico-erp       logado  — pedidos, notas e parcelas que o cliente já
+//                                 tinha no NZERP (lista branca de colunas)
+//   atribuir-titulos    admin   — roda o job que decide de quem é cada título
+//   titulos-sem-dono    admin   — o que sobrou, para atribuir à mão
+//   atribuir-titulo     admin   — atribui um título a um cliente
 //   recuperar-senha     público — envia o e-mail de redefinição
 //
 // Por que `recuperar-senha` passa pelo servidor em vez de o front chamar o
@@ -20,6 +25,8 @@ import { ipDoCliente } from '../asaas/cliente.js';
 import { completude } from '../conta/completude.js';
 import { normalizarEmail, validarCpfCnpj } from '../conta/documento.js';
 import { consultarDocumento, registrarLog, vincularComErp, type PerfilVinculo } from '../conta/vinculo.js';
+import { clienteDoUsuario, pedidosDoCliente, titulosDoCliente } from '../conta/erpHistorico.js';
+import { atribuirTitulos, titulosSemDono } from '../conta/atribuirTitulos.js';
 
 export const SITE_URL = 'https://www.nzgroup.com.br';
 
@@ -131,6 +138,49 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (op === 'pos-cadastro') {
     const r = await vincularComErp(site, perfil);
     res.status(200).json(r);
+    return;
+  }
+
+  // O histórico que o cliente já tinha na NZ antes do site existir: pedidos de
+  // balcão, notas fiscais e parcelas. Tudo lido pelo módulo com lista branca —
+  // preço de custo, margem, limite de crédito e vendedor nunca saem do ERP.
+  if (op === 'historico-erp') {
+    const cliente = await clienteDoUsuario(site, userId);
+    if (!cliente) {
+      res.status(200).json({ vinculado: false, cliente: null, pedidos: [], titulos: [] });
+      return;
+    }
+    const [pedidos, titulos] = await Promise.all([pedidosDoCliente(site, userId), titulosDoCliente(site, userId)]);
+    res.status(200).json({ vinculado: true, cliente, pedidos, titulos });
+    return;
+  }
+
+  if (op === 'atribuir-titulos' || op === 'titulos-sem-dono' || op === 'atribuir-titulo') {
+    if (papel !== 'admin') {
+      res.status(403).json({ error: 'apenas-admin' });
+      return;
+    }
+    if (op === 'atribuir-titulos') {
+      const r = await atribuirTitulos(site);
+      res.status(r.erro ? 502 : 200).json({ ok: !r.erro, ...r });
+      return;
+    }
+    if (op === 'titulos-sem-dono') {
+      const { data: log } = await site.from('erp_atribuicao_log').select('*').order('rodou_em', { ascending: false }).limit(1).maybeSingle();
+      res.status(200).json({ ok: true, ultimaRodada: log ?? null, titulos: await titulosSemDono(site) });
+      return;
+    }
+    // Atribuição à mão: o admin diz de quem é. Nunca é sobrescrita pelo job.
+    const tituloId = typeof body.tituloId === 'string' ? body.tituloId : '';
+    const clientId = typeof body.erpClientId === 'string' ? body.erpClientId : '';
+    if (!tituloId || !clientId) {
+      res.status(400).json({ error: 'faltam-ids' });
+      return;
+    }
+    const { error } = await site
+      .from('erp_titulo_dono')
+      .upsert({ titulo_id: tituloId, erp_client_id: clientId, chave: 'manual', confianca: 'manual', confirmado_por: userId, atualizado_em: new Date().toISOString() }, { onConflict: 'titulo_id' });
+    res.status(error ? 500 : 200).json(error ? { error: 'nao-gravou', message: error.message } : { ok: true });
     return;
   }
 

@@ -23,7 +23,8 @@
     "loja:toque": "node scripts/test-touch-mobile.mjs",
     "shop:cores": "node scripts/diag-cores.mjs",
     "loja:migrar": "node scripts/migrar-catalogo-editorial.mjs",
-    "shop:selftest": "node scripts/audit-shop.mjs"
+    "shop:selftest": "node scripts/audit-shop.mjs",
+    "erp:test": "node scripts/test-erp-ponte.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",

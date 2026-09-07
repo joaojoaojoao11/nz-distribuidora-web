@@ -11,11 +11,13 @@
 //      resolvido) → preço de tabela do canal. O cliente nunca manda preço;
 //   4. cupom e afiliado são resolvidos aqui (cupom > indicado_por > último
 //      clique), nunca em benefício do próprio usuário;
-//   5. grava `pedidos` + `pedido_itens` como RASCUNHO, chama a RPC
-//      site_criar_pedido no ERP (service role) e, com a resposta, passa a
-//      ABERTO com o número do orçamento. Se o ERP falhar, o rascunho fica e o
-//      cliente vê "tente de novo" — nada é perdido nem duplicado (a RPC é
-//      idempotente por site_pedido_id).
+//   5. grava `pedidos` + `pedido_itens` e para em SOLICITADO, com o payload do
+//      ERP congelado.
+//
+// O NZERP NÃO é chamado aqui. Quem despacha é o vendedor, em Admin → Pedidos
+// (op `enviar-erp` do checkout). Sem isso, um pedido que o cliente só quis
+// cotar viraria orçamento de verdade lá dentro — e é exatamente o que o João
+// mandou parar de acontecer.
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
@@ -147,22 +149,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   });
   await site.from('pedidos').update({ erp_payload: payload }).eq('id', pedido.id);
 
-  const erp = createClient(erpUrl, erpKey);
-  const { data: rpc, error: rpcErr } = await erp.rpc('site_criar_pedido', { p: payload });
-  if (rpcErr) {
-    await site.from('pedidos').update({ observacoes: `${observacoes ? observacoes + '\n' : ''}[erro ao enviar ao ERP: ${rpcErr.message}]` }).eq('id', pedido.id);
-    res.status(502).json({ error: 'erp-indisponivel', numero: pedido.numero, message: rpcErr.message });
-    return;
-  }
-  const r = rpc as { quote_id: string; quote_number: number; client_id?: string | null };
-
+  // O pedido PARA AQUI. Ele não vai ao NZERP sozinho: fica SOLICITADO, com o
+  // payload congelado, esperando o vendedor abrir Admin → Pedidos e clicar
+  // "Enviar ao NZERP" (op `enviar-erp`). É o que impede o ERP de encher de
+  // orçamento que ninguém confirmou — a mesma regra do pagamento, pelo outro
+  // caminho.
   await site
     .from('pedidos')
-    .update({ status: 'ABERTO', erp_quote_id: r.quote_id, erp_quote_number: r.quote_number, enviado_em: new Date().toISOString(), status_atualizado_em: new Date().toISOString() })
+    .update({ status: 'SOLICITADO', erp_envio: 'pendente', status_atualizado_em: new Date().toISOString() })
     .eq('id', pedido.id);
-  // Guarda a qual cliente do ERP esta conta corresponde (só na primeira vez).
-  if (r.client_id) await site.from('user_profiles').update({ erp_client_id: r.client_id }).eq('id', userId).is('erp_client_id', null);
   if (cupom.codigo) await site.rpc('cupom_consumir', { p_codigo: cupom.codigo });
 
-  res.status(200).json({ ok: true, numero: pedido.numero, erpQuoteNumber: r.quote_number, totalEstimado, desconto: cupom.desconto, afiliado: afiliadoCodigo });
+  res.status(200).json({ ok: true, numero: pedido.numero, status: 'SOLICITADO', totalEstimado, desconto: cupom.desconto, afiliado: afiliadoCodigo });
 }

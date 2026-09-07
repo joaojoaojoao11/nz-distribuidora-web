@@ -15,6 +15,7 @@
 // e consome o cupom. Nunca há dado de cartão neste módulo.
 
 import type { Db } from '../papel.js';
+import { despacharAoErp } from '../pedido/despachoErp.js';
 import {
   asaasEnv,
   AsaasError,
@@ -425,90 +426,11 @@ export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dado
     await site.from('pedidos').update({ pagamento_status: 'pago', pago_em: patch.pago_em, forma_pagamento: p.forma }).eq('id', pedido.id);
     if (pedido.cupom) await site.rpc('cupom_consumir', { p_codigo: pedido.cupom });
   }
-  await avisarErpPago(site, p.pedido_id).catch((err) => console.warn('[pagamento] ERP não avisado (cron tenta de novo):', err instanceof Error ? err.message : err));
+  // Só AGORA o ERP fica sabendo: o pagamento foi aprovado. Se falhar, o cron
+  // tenta de novo — o pedido não pode quebrar por causa disso.
+  const d = await despacharAoErp(site, p.pedido_id, 'pago');
+  if (!d.ok && d.estado === 'erro') console.warn('[pagamento] ERP não avisado (cron tenta de novo):', d.message);
   return { ...p, ...patch };
-}
-
-/**
- * ERP: garante o orçamento (se o checkout não conseguiu criar) e, se pago,
- * chama site_confirmar_pagamento. Idempotente; chamada pelo checkout, pelo
- * webhook e pelo cron.
- */
-/**
- * Guarda no perfil qual cliente do ERP corresponde a esta conta. É o que
- * permite, depois, o painel do admin mostrar "vinculado ao cliente X" e o
- * cadastro reaproveitar o endereço que a NZ já tinha.
- */
-async function guardarClienteErp(site: Db, userId: string | null, clientId: string | null | undefined): Promise<void> {
-  if (!userId || !clientId) return;
-  await site.from('user_profiles').update({ erp_client_id: clientId }).eq('id', userId).is('erp_client_id', null);
-}
-
-export async function avisarErpPago(site: Db, pedidoId: string): Promise<void> {
-  const erpUrl = process.env.ERP_SUPABASE_URL;
-  const erpKey = process.env.ERP_SUPABASE_SERVICE_ROLE_KEY;
-  if (!erpUrl || !erpKey) return;
-  const { createClient } = await import('@supabase/supabase-js');
-  const erp = createClient(erpUrl, erpKey);
-
-  const { data } = await site
-    .from('pedidos')
-    .select('id, numero, user_id, erp_quote_id, erp_payload, pagamento_status, erp_pago_em, forma_pagamento, total_final, valor_frete, pago_em')
-    .eq('id', pedidoId)
-    .maybeSingle();
-  const ped = data as {
-    id: string;
-    numero: number;
-    user_id: string | null;
-    erp_quote_id: string | null;
-    erp_payload: Record<string, unknown> | null;
-    pagamento_status: string;
-    erp_pago_em: string | null;
-    forma_pagamento: string | null;
-    total_final: number | null;
-    valor_frete: number;
-    pago_em: string | null;
-  } | null;
-  if (!ped) return;
-
-  if (!ped.erp_quote_id && ped.erp_payload) {
-    const { data: rpc, error } = await erp.rpc('site_criar_pedido', { p: ped.erp_payload });
-    if (error) throw new Error(`site_criar_pedido: ${error.message}`);
-    const r = rpc as { quote_id: string; quote_number: number; client_id?: string | null };
-    await site
-      .from('pedidos')
-      .update({ status: 'ABERTO', erp_quote_id: r.quote_id, erp_quote_number: r.quote_number, enviado_em: new Date().toISOString(), status_atualizado_em: new Date().toISOString() })
-      .eq('id', ped.id);
-    ped.erp_quote_id = r.quote_id;
-    await guardarClienteErp(site, ped.user_id, r.client_id);
-  }
-
-  if (ped.pagamento_status === 'pago' && !ped.erp_pago_em && ped.erp_quote_id) {
-    const { data: pg } = await site
-      .from('pagamentos')
-      .select('asaas_payment_id, forma, parcelas, valor, valor_liquido, cartao_bandeira, cartao_final, pago_em')
-      .eq('pedido_id', ped.id)
-      .eq('status', 'pago')
-      .order('atualizado_em', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    const { error } = await erp.rpc('site_confirmar_pagamento', {
-      p: {
-        site_pedido_id: ped.id,
-        site_numero: ped.numero,
-        forma: ped.forma_pagamento,
-        parcelas: (pg as { parcelas?: number } | null)?.parcelas ?? 1,
-        valor: ped.total_final,
-        valor_frete: ped.valor_frete,
-        valor_liquido: (pg as { valor_liquido?: number } | null)?.valor_liquido ?? null,
-        asaas_payment_id: (pg as { asaas_payment_id?: string } | null)?.asaas_payment_id ?? null,
-        cartao: pg ? `${(pg as { cartao_bandeira?: string }).cartao_bandeira ?? ''} ${(pg as { cartao_final?: string }).cartao_final ?? ''}`.trim() : '',
-        pago_em: ped.pago_em,
-      },
-    });
-    if (error) throw new Error(`site_confirmar_pagamento: ${error.message}`);
-    await site.from('pedidos').update({ erp_pago_em: new Date().toISOString() }).eq('id', ped.id);
-  }
 }
 
 /**

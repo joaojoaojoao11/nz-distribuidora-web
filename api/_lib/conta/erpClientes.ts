@@ -105,14 +105,11 @@ export async function clienteErpPorEmail(email: unknown): Promise<ClienteErp | n
   return consultar(null, e);
 }
 
-/** Cria (ou completa) o cliente no ERP a partir do cadastro do site. */
-export async function vincularClienteNoErp(siteUserId: string, dados: Record<string, unknown>): Promise<string | null> {
-  const erp = await abrirErp();
-  if (!erp) return null;
-  const { data, error } = await erp.rpc('site_vincular_cliente', { p_site_user_id: siteUserId, p: dados });
-  if (error || !data) return null;
-  return (data as { client_id?: string }).client_id ?? null;
-}
+// `site_vincular_cliente` (grava `clients.site_user_id` no ERP) foi REMOVIDA
+// daqui de propósito. O NZERP é somente leitura para este projeto, e o vínculo
+// que decide o que o cliente vê é o do site: `user_profiles.erp_client_id`,
+// com índice único desde 2026-09-10. Uma escrita a menos lá dentro, nada
+// perdido aqui. Não reintroduzir sem falar com o João.
 
 /** Colaboradores do NZERP (view sem a coluna de senha). */
 export interface UsuarioErp {

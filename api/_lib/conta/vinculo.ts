@@ -75,6 +75,15 @@ export async function vincularComErp(site: Db, perfil: PerfilVinculo): Promise<R
   if (!cliente && emailSite) cliente = await clienteErpPorEmail(emailSite);
   if (!cliente) return vazio;
 
+  // Um cliente do ERP responde por uma conta só (índice único em
+  // `user_profiles.erp_client_id`). Se outra conta já pegou este cliente, o
+  // vínculo não acontece — e o caso vira trabalho de admin, não erro de tela.
+  const { data: jaDe } = await site.from('user_profiles').select('id').eq('erp_client_id', cliente.id).neq('id', perfil.id).maybeSingle();
+  if (jaDe) {
+    await registrarLog(site, 'vinculo-erp-disputado', emailSite || null, { erp_client_id: cliente.id, ja_de: (jaDe as { id: string }).id }, null);
+    return { ...vazio, motivo: 'cliente-ja-vinculado' };
+  }
+
   const mesmoEmail = Boolean(emailSite) && normalizarEmail(cliente.email) === emailSite;
   const patch: Record<string, unknown> = { erp_client_id: cliente.id };
 

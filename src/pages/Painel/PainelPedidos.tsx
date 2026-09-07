@@ -13,6 +13,11 @@
 // As miniaturas existem para reconhecer o pedido sem abrir: quem comprou três
 // vezes no mês não distingue "#5, #6, #7" por número nenhum.
 //
+// A tela tem duas listas: os pedidos feitos aqui e, abaixo, as compras que o
+// cliente já fazia na NZ por balcão, telefone ou vendedor — lidas do NZERP pelo
+// servidor. Pedido que nasceu no site NÃO aparece duas vezes: o servidor tira
+// da segunda lista tudo que tem `site_pedido_id`.
+//
 // Cancelar: só aparece enquanto o pedido não foi pago nem entrou na operação.
 // Quem decide de verdade é o servidor (e, no fim, o ERP) — o botão aqui só
 // evita oferecer o que seria recusado.
@@ -24,6 +29,7 @@ import { supabase } from '../../lib/supabase';
 import { adicionarAoCarrinho, type UnidadeCarrinho } from '../../lib/shop/carrinho';
 import { abrirPainelCarrinho } from '../../lib/shop/painelCarrinho';
 import { chamarCheckout, textoDoErro } from '../../lib/shop/checkout';
+import { carregarHistoricoErp, esquecerHistoricoErp, type PedidoErp } from '../../lib/shop/historicoErp';
 import { BRL } from '../../lib/shop/precos';
 import { PAGAMENTO_LABEL, STATUS_LABEL, podeCancelar, tomDoPagamento, type PedidoResumo } from './pedidoRotulos';
 import styles from './Painel.module.css';
@@ -49,6 +55,7 @@ export default function PainelPedidos() {
   const [aviso, setAviso] = useState<string | null>(null);
   const [itens, setItens] = useState<Map<number, ItemDoPedido[]>>(new Map());
   const [cancelando, setCancelando] = useState<number | null>(null);
+  const [naErp, setNaErp] = useState<PedidoErp[]>([]);
 
   const carregar = useCallback(async () => {
     if (!user) return;
@@ -78,6 +85,18 @@ export default function PainelPedidos() {
     // Carga da lista.
     void carregar();
   }, [carregar]);
+
+  useEffect(() => {
+    // O que o cliente já comprava na NZ antes do site. Vem depois e sozinho:
+    // atravessa duas bases, e a lista do site não pode esperar por isso.
+    let vivo = true;
+    void carregarHistoricoErp(user?.id).then((h) => {
+      if (vivo) setNaErp(h.pedidos);
+    });
+    return () => {
+      vivo = false;
+    };
+  }, [user?.id]);
 
   const comprarDeNovo = (numero: number) => {
     setAviso(null);
@@ -118,6 +137,7 @@ export default function PainelPedidos() {
     setCancelando(numero);
     try {
       await chamarCheckout({ op: 'cancelar', numero, pedidoTambem: true });
+      esquecerHistoricoErp();
       await carregar();
       setAviso(`Pedido #${numero} cancelado.`);
     } catch (e) {
@@ -136,7 +156,7 @@ export default function PainelPedidos() {
 
   if (carregando) return <p className={styles.mudo}>Carregando…</p>;
 
-  if (pedidos.length === 0) {
+  if (pedidos.length === 0 && naErp.length === 0) {
     return (
       <div className={styles.vazio}>
         <p className={styles.mudo}>
@@ -153,6 +173,7 @@ export default function PainelPedidos() {
   return (
     <>
       {aviso && <p className={styles.aviso}>{aviso}</p>}
+      {pedidos.length > 0 && naErp.length > 0 && <h3 className={styles.secaoTitulo}>Pedidos feitos no site</h3>}
       <ul className={styles.cartoes}>
         {pedidos.map((p) => {
           const tom = tomDoPagamento(p.pagamento_status);
@@ -235,6 +256,47 @@ export default function PainelPedidos() {
           );
         })}
       </ul>
+
+      {naErp.length > 0 && (
+        <>
+          <h3 className={styles.secaoTitulo}>
+            Compras anteriores na NZ
+            <small>Balcão, telefone ou vendedor — trazidas do sistema da NZ</small>
+          </h3>
+          <ul className={styles.cartoes}>
+            {naErp.map((p) => (
+              <li key={p.quoteId} className={styles.cartaoPedido}>
+                <div className={styles.cartaoTopo}>
+                  <span className={styles.cartaoNumero}>
+                    Pedido {p.numero != null ? `#${p.numero}` : ''}
+                    <span className={styles.selo}>NZ</span>
+                  </span>
+                  <span className={styles.cartaoData}>{p.criadoEm ? new Date(p.criadoEm).toLocaleDateString('pt-BR') : '—'}</span>
+                </div>
+
+                <div className={styles.cartaoStatus}>
+                  <span>{STATUS_LABEL[p.status] ?? p.status}</span>
+                  {p.notas.length > 0 && <span className={styles.mudo}>NF {p.notas.map((n) => n.numero).filter(Boolean).join(', ')}</span>}
+                </div>
+
+                {p.itens.length > 0 && (
+                  <p className={styles.itensErp}>
+                    {p.itens
+                      .slice(0, 4)
+                      .map((i) => [i.qtd ? `${i.qtd}×` : null, i.nome ?? i.sku].filter(Boolean).join(' '))
+                      .join(' · ')}
+                    {p.itens.length > 4 ? ` e mais ${p.itens.length - 4}` : ''}
+                  </p>
+                )}
+
+                <div className={styles.cartaoRodape}>
+                  <span className={styles.cartaoTotal}>{p.total != null ? BRL.format(Number(p.total)) : '—'}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </>
   );
 }

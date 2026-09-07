@@ -17,6 +17,7 @@ export interface PedidoResumo {
 
 export const STATUS_LABEL: Record<string, string> = {
   RASCUNHO: 'Rascunho',
+  SOLICITADO: 'Solicitado — o vendedor vai montar o orçamento',
   ABERTO: 'Enviado — aguardando o vendedor',
   AGUARDANDO: 'Aguardando',
   APROVADO: 'Aprovado',
@@ -58,10 +59,12 @@ export const ENCERRADO = ['FATURADO', 'ENTREGUE', 'CANCELADO', 'NAO_APROVADO', '
  *
  * A régua é a MESMA da função `site_cancelar_pedido` no ERP — o servidor é quem
  * decide de verdade; aqui é só para não oferecer um botão que vai ser recusado.
+ * SOLICITADO é a exceção que confirma: esse pedido nem chegou ao ERP, então
+ * quem cancela é só o site.
  * De APROVADO em diante houve separação, nota ou coleta: desfazer é decisão de
  * vendedor. E pago nunca: aí é estorno, não cancelamento.
  */
-const CANCELAVEIS = new Set(['RASCUNHO', 'ABERTO', 'AGUARDANDO', 'DADOS_INCOMPLETOS', 'NAO_APROVADO']);
+const CANCELAVEIS = new Set(['RASCUNHO', 'SOLICITADO', 'ABERTO', 'AGUARDANDO', 'DADOS_INCOMPLETOS', 'NAO_APROVADO']);
 
 export function podeCancelar(pedido: { status: string; pagamento_status: string | null }): boolean {
   if (pedido.pagamento_status === 'pago') return false;

@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { chamarConta, faltasDoCadastro, textoDoErroConta } from '../../lib/shop/conta';
 import { formatarCpfCnpj } from '../../lib/documento';
+import AdminTitulosErp from './AdminTitulosErp';
 import styles from './Admin.module.css';
 
 interface Cliente {
@@ -160,7 +161,8 @@ export default function AdminClientes() {
   const pendentes = clientes.filter((c) => !c.is_approved).length;
 
   return (
-    <div className={styles.tableSection}>
+    <>
+      <div className={styles.tableSection}>
       <p className={styles.tabDescription}>
         Contas criadas no site. Cliente final é liberado automaticamente; lojista precisa de aprovação — ou é reconhecido sozinho quando o CNPJ e o e-mail
         batem com um cliente ativo do NZERP.
@@ -295,6 +297,9 @@ export default function AdminClientes() {
           </tbody>
         </table>
       </div>
-    </div>
+      </div>
+
+      <AdminTitulosErp contas={clientes} />
+    </>
   );
 }
