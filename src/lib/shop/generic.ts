@@ -365,6 +365,10 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
  * Linha ESG (Super Gloss PET) — 37 cores. Material: PVC polimérico dupla camada,
  * liner PET transparente, superfície resinada lisa (sem casca de laranja), ultra
  * gloss mirror wet-look. Cores da 001 a 037.
+ *
+ * Linha EMA (Super Matte) — 17 cores. Material: PVC polimérico, acabamento
+ * fosco velvet non-reflective simples (matte puro, sem wet-look, sem
+ * reflexos especulares). Cores 001 a 017.
  */
 export const SW_ROLL_IMAGES: Record<string, string> = {
   // ESG — Super Gloss (37 cores)
@@ -447,6 +451,43 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/speed-wrapping/speed-wrapping-esg-036-super-gloss-armor-green-pet-spwesg036.webp',
   'speed-wrapping-esg-037-super-gloss-khaki-grey-pet-spwesg037':
     '/assets/images/shop/speed-wrapping/speed-wrapping-esg-037-super-gloss-khaki-grey-pet-spwesg037.webp',
+  // EMA — Super Matte (17 cores) — sem sufixo -pet (paper liner)
+  'speed-wrapping-ema-001-matt-white-spwema001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-001-matt-white-spwema001.webp',
+  'speed-wrapping-ema-002-matt-black-spwema002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-002-matt-black-spwema002.webp',
+  'speed-wrapping-ema-003-matt-orange-spwema003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-003-matt-orange-spwema003.webp',
+  // ema-004 (Matt Yellow) fora: o arquivo gerado veio corrompido — nao tem
+  // assinatura RIFF/WEBP e nenhum decodificador abre. Com a entrada aqui, o
+  // card mostraria imagem quebrada; sem ela, cai no placeholder da linha.
+  // Regerar a foto e reativar esta chave.
+  'speed-wrapping-ema-005-matt-lemon-green-spwema005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-005-matt-lemon-green-spwema005.webp',
+  'speed-wrapping-ema-006-matt-apple-green-spwema006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-006-matt-apple-green-spwema006.webp',
+  'speed-wrapping-ema-007-matt-army-green-spwema007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-007-matt-army-green-spwema007.webp',
+  'speed-wrapping-ema-008-matt-tiffany-spwema008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-008-matt-tiffany-spwema008.webp',
+  'speed-wrapping-ema-009-matt-purple-spwema009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-009-matt-purple-spwema009.webp',
+  'speed-wrapping-ema-010-matt-light-blue-spwema010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-010-matt-light-blue-spwema010.webp',
+  'speed-wrapping-ema-011-matt-medium-blue-spwema011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-011-matt-medium-blue-spwema011.webp',
+  'speed-wrapping-ema-012-matt-pearl-blue-spwema012':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-012-matt-pearl-blue-spwema012.webp',
+  'speed-wrapping-ema-013-matt-pink-spwema013':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-013-matt-pink-spwema013.webp',
+  'speed-wrapping-ema-014-matt-rose-red-spwema014':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-014-matt-rose-red-spwema014.webp',
+  'speed-wrapping-ema-015-matt-red-spwema015':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-015-matt-red-spwema015.webp',
+  'speed-wrapping-ema-016-matt-gray-spwema016':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-016-matt-gray-spwema016.webp',
+  'speed-wrapping-ema-017-matt-cement-gray-spwema017':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ema-017-matt-cement-gray-spwema017.webp',
 };
 
 /**
