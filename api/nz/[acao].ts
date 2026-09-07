@@ -30,6 +30,7 @@ import asaas from '../_lib/handlers/asaas.js';
 import conta from '../_lib/handlers/conta.js';
 import equipe from '../_lib/handlers/equipe.js';
 import geo from '../_lib/handlers/geo.js';
+import avaliacoes from '../_lib/handlers/avaliacoes.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -62,6 +63,9 @@ const ROTAS: Record<string, Handler> = {
   equipe,
   // De onde o visitante acessa, pelos cabeçalhos da Vercel. Público, no-store.
   geo,
+  // Avaliação de produto, pontos por avaliar e cashback. Leitura pública;
+  // escrita só pelo servidor, que confere a compra.
+  avaliacoes,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

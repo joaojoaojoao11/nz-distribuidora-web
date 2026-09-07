@@ -29,6 +29,8 @@ const PainelFavoritos = lazy(() => import('./pages/Painel/PainelFavoritos'));
 const PainelVistos = lazy(() => import('./pages/Painel/PainelVistos'));
 const PainelGarantias = lazy(() => import('./pages/Painel/PainelGarantias'));
 const PainelCupons = lazy(() => import('./pages/Painel/PainelCupons'));
+const PainelPontos = lazy(() => import('./pages/Painel/PainelPontos'));
+const PainelAvaliacoes = lazy(() => import('./pages/Painel/PainelAvaliacoes'));
 const PainelIndique = lazy(() => import('./pages/Painel/PainelIndique'));
 const Carrinho = lazy(() => import('./pages/Loja/Carrinho'));
 const Checkout = lazy(() => import('./pages/Loja/Checkout'));
@@ -78,6 +80,7 @@ const AdminPedidos = lazy(() => import('./pages/Admin/AdminPedidos'));
 const AdminLogistica = lazy(() => import('./pages/Admin/AdminLogistica'));
 const AdminErp = lazy(() => import('./pages/Admin/AdminErp'));
 const AdminAfiliados = lazy(() => import('./pages/Admin/AdminAfiliados'));
+const AdminAvaliacoes = lazy(() => import('./pages/Admin/AdminAvaliacoes'));
 const AdminBlog = lazy(() => import('./pages/Admin/AdminBlog'));
 const AdminAIBlog = lazy(() => import('./pages/Admin/AdminAIBlog'));
 const AdminPromoPages = lazy(() => import('./pages/Admin/AdminPromoPages'));
@@ -134,6 +137,7 @@ function App() {
           <Route path="logistica" element={<Suspense fallback={<RouteLoading />}><AdminLogistica /></Suspense>} />
           <Route path="erp" element={<Suspense fallback={<RouteLoading />}><AdminErp /></Suspense>} />
           <Route path="afiliados" element={<Suspense fallback={<RouteLoading />}><AdminAfiliados /></Suspense>} />
+          <Route path="avaliacoes" element={<Suspense fallback={<RouteLoading />}><AdminAvaliacoes /></Suspense>} />
           <Route path="blog" element={<Suspense fallback={<RouteLoading />}><AdminBlog /></Suspense>} />
           <Route path="blog-ia" element={<Suspense fallback={<RouteLoading />}><AdminAIBlog /></Suspense>} />
           <Route path="promo" element={<Suspense fallback={<RouteLoading />}><AdminPromoPages /></Suspense>} />
@@ -181,6 +185,8 @@ function App() {
                     <Route path="vistos" element={<PainelVistos />} />
                     <Route path="garantias" element={<PainelGarantias />} />
                     <Route path="cupons" element={<PainelCupons />} />
+                    <Route path="pontos" element={<PainelPontos />} />
+                    <Route path="avaliacoes" element={<PainelAvaliacoes />} />
                     <Route path="indique" element={<PainelIndique />} />
                   </Route>
                   <Route path="/carrinho" element={<Carrinho />} />

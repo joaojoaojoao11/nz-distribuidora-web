@@ -788,3 +788,155 @@
   line-height: 1.45;
   color: var(--text-secondary);
 }
+
+/* ------------------------------------------------- avaliações e pontos */
+
+.botaoPrincipal {
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--accent-red);
+  border-radius: 8px;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.botaoPrincipal:hover { filter: brightness(1.12); }
+.botaoPrincipal:disabled { opacity: 0.55; cursor: default; }
+
+/* --------------------------------------------------- entrada de estrelas */
+.estrelasEntrada { display: inline-flex; gap: 0.15rem; }
+
+.estrelaBtn {
+  background: none;
+  border: none;
+  padding: 0.1rem 0.15rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--border-strong);
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.estrelaBtn:disabled { cursor: default; }
+.estrelaBtn:not(:disabled):hover { transform: scale(1.12); }
+.estrelaAcesa { color: #d9a441; }
+
+/* ------------------------------------------------------------ formulário */
+.formAvaliacao { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.campoRotulo {
+  font-family: var(--font-tech);
+  font-size: 0.64rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+.campo,
+.campoTexto {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.campoTexto { resize: vertical; min-height: 110px; }
+
+.campo:focus,
+.campoTexto:focus {
+  outline: none;
+  border-color: var(--accent-red);
+}
+
+.contadorTexto {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----------------------------------------------------------- saldo */
+.saldoPontos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  margin-bottom: 1.5rem;
+}
+
+.saldoNumero {
+  font-family: var(--font-heading);
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.saldoRotulo {
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.convitePontos {
+  margin: 0 0 1.5rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.linkForte { color: var(--accent-red); font-weight: 600; text-decoration: none; }
+.linkForte:hover { text-decoration: underline; }
+
+/* ---------------------------------------------------------- extrato */
+.linhaExtrato {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.extratoQuando {
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.extratoQue { color: var(--text-secondary); }
+
+.extratoPontos {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.extratoMais { color: #6bbf94; }
+.extratoMenos { color: var(--text-muted); }
+
+@media (max-width: 560px) {
+  .linhaExtrato { grid-template-columns: 4.5rem 1fr auto; gap: 0.5rem; }
+  .saldoNumero { font-size: 2.1rem; }
+}

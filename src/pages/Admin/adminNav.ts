@@ -27,6 +27,7 @@ export const GRUPOS: Grupo[] = [
       { para: '/admin/logistica', icone: '📦', rotulo: 'Logística', titulo: 'Logística & Transportadoras' },
       { para: '/admin/erp', icone: '🔗', rotulo: 'Integração ERP', titulo: 'Integração NZERP' },
       { para: '/admin/afiliados', icone: '🤝', rotulo: 'Afiliados & Cupons', titulo: 'Afiliados & Cupons' },
+      { para: '/admin/avaliacoes', icone: '★', rotulo: 'Avaliações', titulo: 'Avaliações & Cashback' },
     ],
   },
   {

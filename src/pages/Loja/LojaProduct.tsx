@@ -22,6 +22,7 @@ import type { MidiaPublica, ShopItem } from '../../lib/shop/types';
 import Disponibilidade from './Disponibilidade';
 import Preco from './Preco';
 import PrazoEntrega from './PrazoEntrega';
+import Avaliacoes from './Avaliacoes';
 import { ShopCard } from './ShopCard';
 import styles from './LojaProduct.module.css';
 
@@ -391,6 +392,10 @@ function ProductView({
 
       <div className={`container ${styles.body}`}>
         {renderSpecs()}
+
+        {/* Depois da ficha e antes dos relacionados: quem chegou até aqui já
+            decidiu que o produto interessa e agora quer saber de quem usou. */}
+        <Avaliacoes slug={item.slug} />
 
         {related.length > 0 && (
           <section className={styles.section}>

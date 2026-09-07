@@ -25,7 +25,8 @@
     "loja:migrar": "node scripts/migrar-catalogo-editorial.mjs",
     "shop:selftest": "node scripts/audit-shop.mjs",
     "erp:test": "node scripts/test-erp-ponte.mjs",
-    "analytics:test": "node scripts/test-analytics.mjs"
+    "analytics:test": "node scripts/test-analytics.mjs",
+    "avaliacoes:test": "node scripts/test-avaliacoes.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",

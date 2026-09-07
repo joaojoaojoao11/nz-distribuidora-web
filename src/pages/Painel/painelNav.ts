@@ -109,6 +109,20 @@ export const GRUPOS: GrupoPainel[] = [
     nome: 'Vantagens',
     itens: [
       {
+        para: '/painel/pontos',
+        icone: '◆',
+        rotulo: 'Pontos e cashback',
+        titulo: 'Pontos e cashback',
+        dica: 'Seu saldo e as trocas por crédito',
+      },
+      {
+        para: '/painel/avaliacoes',
+        icone: '★',
+        rotulo: 'Minhas avaliações',
+        titulo: 'Minhas avaliações',
+        dica: 'Avalie o que comprou e ganhe pontos',
+      },
+      {
         para: '/painel/indique',
         icone: '⇄',
         rotulo: 'Indique e ganhe',
