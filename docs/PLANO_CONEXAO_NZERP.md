@@ -287,6 +287,29 @@ a corrida de três processos na trava, a retomada depois de 5 min, o erro do ERP
 que devolve a trava, e lê o fonte para reprovar `select('*')`, coluna proibida e
 RPC de escrita nova no ERP.
 
+### Conferência de 10/09/2026 (depois de implantar)
+
+Rodei os módulos reais contra os dois bancos de produção. O job atribuiu os
+2.201 títulos em 3,9 s, e o histórico do cliente vinculado voltou com os campos
+certos e nenhum campo proibido. Mas a conferência achou **um defeito de
+verdade**, e ele valeu por três:
+
+> Os dois PostgREST têm `db-max-rows = 1000`. Um `select()` sem paginação
+> devolve mil linhas **sem erro nenhum**, e `.limit(2000)` não passa por cima.
+
+- `titulosSemDono` lia só as primeiras mil linhas de `erp_titulo_dono` (2.201) e
+  acusava **500 falsos positivos** no relatório do admin. Corrigido: agora dá
+  118, batendo com a contagem do próprio job.
+- Fora deste projeto: o painel do admin lia `analytics_events` (16.982) sem
+  paginar. Em 7 dias mostrava **296 visitas e 130 sessões** quando o real é
+  **1.227 e 283**. Corrigido junto.
+- E duas bombas-relógio: `quotes` (855) e `clients` (389) são lidos inteiros
+  pelo job; ao passar de mil, títulos parariam de ser atribuídos em silêncio.
+
+Entrou um `lerTudo` que pagina, e três travas no autoteste — incluindo uma
+varredura do repositório inteiro. As três foram conferidas quebrando o código de
+propósito.
+
 **Números reais da atribuição** (conferidos em produção, 10/09/2026):
 
 | Chave | Títulos |
