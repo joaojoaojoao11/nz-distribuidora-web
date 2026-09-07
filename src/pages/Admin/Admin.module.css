@@ -19,6 +19,7 @@
 }
 
 .sidebarLogo {
+  flex: 0 0 auto;
   padding: 1.5rem;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
@@ -38,12 +39,44 @@
   letter-spacing: 2px;
 }
 
+/* O menu rola sozinho.
+ *
+ * São 16 telas em 5 grupos, mais o Dashboard e o "Ver site": passa de 1000px de
+ * altura. A barra é `position: fixed` de topo a rodapé, então o que não coubesse
+ * ficava inalcançável — só dava para clicar em Configurações diminuindo o zoom.
+ *
+ * `min-height: 0` é a parte que não é óbvia: item de flex nasce com
+ * `min-height: auto`, que o proíbe de encolher abaixo do próprio conteúdo. Sem
+ * isso o `overflow-y` nunca chega a valer, o nav empurra o rodapé para fora da
+ * barra e o "Sair" some junto. */
 .sidebarNav {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain; /* chegou ao fim do menu, não arrasta a página */
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   padding: 1rem 0.75rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+.sidebarNav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebarNav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 3px;
+}
+
+.sidebarNav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.sidebarNav::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .navLink {
@@ -69,7 +102,9 @@
   border-color: rgba(255,255,255,0.08);
 }
 
+/* Fica sempre visível, embaixo: é a saída. Não pode ser empurrado pelo menu. */
 .sidebarFooter {
+  flex: 0 0 auto;
   padding: 1rem 0.75rem;
   border-top: 1px solid rgba(255,255,255,0.06);
 }

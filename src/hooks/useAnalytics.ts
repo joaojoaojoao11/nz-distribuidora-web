@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 
 const generateSessionId = (): string => {
@@ -10,23 +10,70 @@ const generateSessionId = (): string => {
 };
 
 let lastClickTime = 0;
-let geoCache: { country?: string; city?: string; latitude?: number; longitude?: number } | null = null;
 
-async function fetchGeo() {
+type Geo = { country?: string; city?: string; latitude?: number; longitude?: number };
+
+const CHAVE_GEO = 'nz_geo';
+let geoCache: Geo | null = null;
+let geoEmVoo: Promise<Geo> | null = null;
+
+/**
+ * De onde o visitante está acessando.
+ *
+ * Antes isto chamava `https://ip-api.com/json/` direto do navegador. O plano
+ * gratuito do ip-api **não atende HTTPS**: devolvia 403 em toda visita, e o
+ * mapa do painel ficou 17.004 eventos sem um único ponto. Agora quem responde é
+ * `/api/nz/geo`, lendo os cabeçalhos que a Vercel já manda de graça — sem
+ * chave, sem terceiro e sem expor o IP do visitante para fora.
+ *
+ * Uma chamada por sessão: o resultado fica em `sessionStorage`, então nem
+ * recarregar a página repete. Falhou, fica sem geo — analytics nunca pode
+ * atrapalhar o site.
+ */
+async function fetchGeo(): Promise<Geo> {
   if (geoCache) return geoCache;
   try {
-    const res = await fetch('https://ip-api.com/json/?fields=status,country,city,lat,lon', { signal: AbortSignal.timeout(3000) });
-    const data = await res.json();
-    if (data.status === 'success') {
-      geoCache = { country: data.country, city: data.city, latitude: data.lat, longitude: data.lon };
+    const guardado = sessionStorage.getItem(CHAVE_GEO);
+    if (guardado) {
+      geoCache = JSON.parse(guardado) as Geo;
+      return geoCache;
     }
-  } catch { /* silent */ }
-  return geoCache || {};
+  } catch { /* sessionStorage bloqueado: segue sem cache */ }
+
+  // Duas páginas abrindo juntas não devem virar duas chamadas.
+  geoEmVoo ??= (async () => {
+    try {
+      const res = await fetch('/api/nz/geo', { signal: AbortSignal.timeout(3000) });
+      if (!res.ok) return {};
+      const d = (await res.json()) as { disponivel?: boolean; country?: string | null; city?: string | null; latitude?: number | null; longitude?: number | null };
+      if (!d.disponivel) return {};
+      const geo: Geo = {
+        country: d.country ?? undefined,
+        city: d.city ?? undefined,
+        latitude: d.latitude ?? undefined,
+        longitude: d.longitude ?? undefined,
+      };
+      try {
+        sessionStorage.setItem(CHAVE_GEO, JSON.stringify(geo));
+      } catch { /* idem */ }
+      return geo;
+    } catch {
+      return {};
+    }
+  })();
+
+  geoCache = await geoEmVoo;
+  geoEmVoo = null;
+  return geoCache;
 }
 
 export function useAnalytics() {
   const sessionId = useRef(generateSessionId());
-  const sessionStart = useRef(Date.now());
+  // `useRef(Date.now())` chamaria uma função impura durante o render, o que o
+  // React 19 proíbe: o valor mudaria a cada redesenho antes de o ref pegar.
+  // O inicializador do useState roda uma vez só.
+  const [inicioDaSessao] = useState(() => Date.now());
+  const sessionStart = useRef(inicioDaSessao);
   const pagesViewed = useRef(new Set<string>());
 
   const trackEvent = useCallback(async (

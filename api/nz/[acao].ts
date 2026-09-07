@@ -29,6 +29,7 @@ import checkout from '../_lib/handlers/checkout.js';
 import asaas from '../_lib/handlers/asaas.js';
 import conta from '../_lib/handlers/conta.js';
 import equipe from '../_lib/handlers/equipe.js';
+import geo from '../_lib/handlers/geo.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -59,6 +60,8 @@ const ROTAS: Record<string, Handler> = {
   conta,
   // Equipe: usuários do NZERP viram admins do site. Admin.
   equipe,
+  // De onde o visitante acessa, pelos cabeçalhos da Vercel. Público, no-store.
+  geo,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
