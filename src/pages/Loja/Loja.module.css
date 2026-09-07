@@ -239,8 +239,22 @@
   font-weight: 600;
 }
 
+/* A ordenação só existe no desktop — no celular ela mora no bottom-sheet. */
 .sortWrap {
   display: none;
+}
+
+/* O rótulo usava a classe global `sr-only`, que nunca chegou a existir em
+   nenhum CSS do projeto: em vez de sumir para o leitor de tela, ele aparecia
+   como texto solto e empurrava a barra sticky para uma segunda linha. Agora é
+   um rótulo assumido, no mesmo tratamento tech do resto da barra. */
+.sortLabel {
+  font-family: var(--font-tech);
+  font-size: 0.6rem;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .sortSelect {
@@ -497,8 +511,20 @@
   .filterBtn {
     display: none;
   }
+  /* Uma coluna por controle. Com as duas colunas antigas os três controles
+     visíveis no desktop quebravam em duas linhas: a barra sticky ia a 123px e,
+     somada aos 80px do menu, comia 203px de altura em toda rolagem. Numa linha
+     só ela fica em ~70px. */
+  .searchInner {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
   .sortWrap {
-    display: block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* Separa o par rótulo+select do MONTAR SELEÇÃO: com só o gap do grid os
+       dois grupos de controle encostavam e liam como um bloco só. */
+    margin-left: 0.5rem;
   }
   .chips {
     flex-wrap: wrap;

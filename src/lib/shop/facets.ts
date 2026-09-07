@@ -11,6 +11,8 @@ import { COLOR_LABEL, type ColorFamilyId } from './color/lexicon';
 import { FINISH_LABEL, FINISH_ORDER, FINISH_PARENT, type FinishId } from './finish/tree';
 import { PATTERN_LABEL, PATTERN_ORDER, type PatternFamilyId } from './pattern/taxonomy';
 import { SOURCE_LABEL, VERTICAL_LABEL, VERTICAL_ORDER } from './catalog';
+import { BRAND_ORDER, LINE_ORDER } from './search/ordem';
+import { LINHA_LABEL } from './erp/mapa';
 import type { BrandKey, ItemKind, LineKey, NivelEstoque, ShopItem, Vertical } from './types';
 
 export interface FacetOption<T extends string = string> {
@@ -70,17 +72,24 @@ const KIND_LABEL: Record<ItemKind, string> = {
  * FABRICANTE. Deliberadamente curto: agrupa quem faz, não o que é.
  * Quem quer "SH Decor" e não "SH Wrapping" usa a faceta Linha, abaixo.
  */
-const BRAND_OPTIONS: { id: BrandKey; label: string }[] = [
-  { id: 'nz', label: 'NZ Group' },
-  { id: 'metamark', label: 'Metamark' },
-  { id: 'orafol', label: 'Orafol / Oracal' },
-  { id: 'sh', label: 'SH' },
-  { id: 'etherna', label: 'Etherna' },
-  { id: 'avery', label: 'Avery Dennison' },
-  { id: 'speed', label: 'Speed Wrapping' },
-  { id: 'nar', label: 'NAR' },
-  { id: 'outro', label: 'Outras' },
-];
+const BRAND_TEXT: Record<BrandKey, string> = {
+  nz: 'NZ Group',
+  metamark: 'Metamark',
+  orafol: 'Orafol / Oracal',
+  sh: 'SH',
+  etherna: 'Etherna',
+  avery: 'Avery Dennison',
+  speed: 'Speed Wrapping',
+  nar: 'NAR',
+  outro: 'Outras',
+};
+
+// A ORDEM vem de ./search/ordem, não daqui: é a mesma lista que ordena o
+// catálogo. Duas listas paralelas divergiriam na primeira marca nova.
+const BRAND_OPTIONS: { id: BrandKey; label: string }[] = BRAND_ORDER.map((id) => ({
+  id,
+  label: BRAND_TEXT[id],
+}));
 
 /**
  * LINHA comercial. Esta é a faceta precisa: a SH fabrica duas linhas de
@@ -88,27 +97,10 @@ const BRAND_OPTIONS: { id: BrandKey; label: string }[] = [
  * três. Agrupar tudo sob a marca misturava vinil de carro com revestimento de
  * parede na mesma lista.
  */
-const LINE_OPTIONS: { id: LineKey; label: string }[] = [
-  { id: 'nzwrap', label: 'NZWRAP Premium' },
-  { id: 'sh-wrapping', label: 'SH Wrapping' },
-  { id: 'mcx', label: 'MetaCast MCX' },
-  { id: 'oracal-651', label: 'Oracal 651' },
-  { id: 'oracal-670', label: 'Oracal 670RA' },
-  { id: 'etherna', label: 'Etherna Decor' },
-  { id: 'sh-decor', label: 'SH Decor' },
-  { id: 'm7', label: 'Metamark 7 Series' },
-  { id: 'md80', label: 'Metamark MD-80' },
-  { id: 'avery', label: 'Avery Dennison' },
-  { id: 'ppf', label: 'NZPPF' },
-  // Linhas que só existem no ERP — chegam com o espelho (src/lib/shop/erp/mapa.ts).
-  { id: 'speed-wrapping', label: 'Speed Wrapping' },
-  { id: 'nzwrap-import', label: 'NZWRAP Import' },
-  { id: 'nar', label: 'NAR PPF' },
-  { id: 'next', label: 'SHNext PPF' },
-  { id: 'avery-adpro', label: 'Avery AD Pro' },
-  { id: 'nz-farol', label: 'NZ Película de Farol' },
-  { id: 'diversos', label: 'Diversos' },
-];
+const LINE_OPTIONS: { id: LineKey; label: string }[] = LINE_ORDER.map((id) => ({
+  id,
+  label: LINHA_LABEL[id],
+}));
 
 function countWith(items: readonly ShopItem[], filters: FilterState): number {
   return applyFilters(items, filters).length;

@@ -47,7 +47,15 @@ const VERTICALS: Vertical[] = ['PPF', 'WRAP', 'SIGN', 'DECOR'];
 const BRAND_KEYS: BrandKey[] = ['nz', 'sh', 'metamark', 'orafol', 'avery', 'etherna', 'speed', 'nar', 'outro'];
 const LINE_KEYS = Object.keys(LINHA_LABEL) as LineKey[];
 const KINDS: ItemKind[] = ['cor', 'padrao', 'linha'];
-const SORTS: SortMode[] = ['relevancia', 'nome', 'marca'];
+const SORTS: SortMode[] = [
+  'relevancia',
+  'marca',
+  'nome',
+  'nome-desc',
+  'codigo',
+  'cor',
+  'estoque',
+];
 
 function readList(params: URLSearchParams, key: string): string[] {
   const raw = params.get(key);

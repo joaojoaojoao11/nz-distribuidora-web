@@ -17,8 +17,28 @@ import type { FinishId } from '../finish/tree';
 import { finishDescendants } from '../finish/tree';
 import type { PatternFamilyId } from '../pattern/taxonomy';
 import { normalize, type BrandKey, type ItemKind, type LineKey, type NivelEstoque, type ShopItem, type Vertical } from '../types';
+import {
+  COLLATOR,
+  compareCatalogo,
+  compareCodigo,
+  compareCor,
+  coverRank,
+  estoqueRank,
+} from './ordem';
 
-export type SortMode = 'relevancia' | 'nome' | 'marca';
+/**
+ * Modos de ordenação da vitrine. Os identificadores vão para a URL (`?sort=`),
+ * então 'nome' e 'marca' ficaram como estavam — links antigos continuam
+ * abrindo a mesma lista.
+ */
+export type SortMode =
+  | 'relevancia'
+  | 'marca'
+  | 'nome'
+  | 'nome-desc'
+  | 'codigo'
+  | 'cor'
+  | 'estoque';
 
 export interface FilterState {
   q: string;
@@ -195,13 +215,20 @@ export function scoreItem(
   }
 
   // ---- desempate estável
-  if (item.image) score += 3;
+  // A capa saiu daqui: virou critério de ordenação em applyFilters, para poder
+  // mandar quem não tem foto para o fim da lista em vez de só descê-lo 3
+  // pontos.
   if (item.legacyPath) score += 1;
 
   return score;
 }
 
-const COLLATOR = new Intl.Collator('pt-BR', { sensitivity: 'base', numeric: true });
+interface Scored {
+  item: ShopItem;
+  score: number;
+  /** 0 foto · 1 swatch · 2 nada. Ver coverRank em ./ordem. */
+  cover: number;
+}
 
 export function applyFilters(items: readonly ShopItem[], f: FilterState): ShopItem[] {
   const pq = toParsedQuery(f);
@@ -212,29 +239,56 @@ export function applyFilters(items: readonly ShopItem[], f: FilterState): ShopIt
     pq.subcolors.length > 0 &&
     items.some((i) => pq.subcolors.some((s) => i.colorSubfamilies.includes(s)));
 
-  const scored: { item: ShopItem; score: number }[] = [];
+  const scored: Scored[] = [];
   for (const item of items) {
     // Estoque é corte, não pontuação: quem pediu pronta entrega não quer ver
     // sob encomenda no fim da lista.
     if (f.estoque.length && !f.estoque.includes(item.nivelEstoque ?? 'sob-encomenda')) continue;
     const score = scoreItem(item, pq, f.kinds, strictSubcolor);
-    if (score !== null) scored.push({ item, score });
+    if (score !== null) scored.push({ item, score, cover: coverRank(item) });
   }
+
+  // Item sem capa vai para o fim em TODOS os modos: é regra do catálogo, não
+  // de um critério. A única exceção é a busca por texto — quem digitou '651
+  // white' quer o 651 White, e não os produtos fotografados que sobraram do
+  // mesmo termo.
+  const buscaTextual = pq.free.length > 0 || pq.codes.length > 0;
+  const capa = (a: Scored, b: Scored) => a.cover - b.cover;
 
   switch (f.sort) {
     case 'nome':
-      scored.sort((a, b) => COLLATOR.compare(a.item.name, b.item.name));
+      scored.sort((a, b) => capa(a, b) || COLLATOR.compare(a.item.name, b.item.name));
+      break;
+    case 'nome-desc':
+      scored.sort((a, b) => capa(a, b) || COLLATOR.compare(b.item.name, a.item.name));
       break;
     case 'marca':
+      scored.sort((a, b) => capa(a, b) || compareCatalogo(a.item, b.item));
+      break;
+    case 'codigo':
+      scored.sort((a, b) => capa(a, b) || compareCodigo(a.item, b.item));
+      break;
+    case 'cor':
+      scored.sort((a, b) => capa(a, b) || compareCor(a.item, b.item));
+      break;
+    case 'estoque':
       scored.sort(
         (a, b) =>
-          COLLATOR.compare(a.item.brand, b.item.brand) ||
-          COLLATOR.compare(a.item.line ?? '', b.item.line ?? '') ||
-          COLLATOR.compare(a.item.name, b.item.name)
+          capa(a, b) ||
+          estoqueRank(a.item) - estoqueRank(b.item) ||
+          compareCatalogo(a.item, b.item)
       );
       break;
     default:
-      scored.sort((a, b) => b.score - a.score || COLLATOR.compare(a.item.name, b.item.name));
+      // Relevância. Sem texto digitado — catálogo puro ou só facetas marcadas —
+      // todo mundo empata em pontos e o que aparece é a ordem do mostruário:
+      // capa, marca, linha, código. Com texto, a pontuação manda e a capa
+      // volta a ser só desempate.
+      scored.sort((a, b) =>
+        buscaTextual
+          ? b.score - a.score || capa(a, b) || compareCatalogo(a.item, b.item)
+          : capa(a, b) || b.score - a.score || compareCatalogo(a.item, b.item)
+      );
   }
 
   return scored.map((s) => s.item);

@@ -1,20 +1,34 @@
 /* Filtros — sidebar (>=1024px) e bottom-sheet (<1024px). */
 
+/* A pilha sticky do desktop tem dois andares: a navbar (80px, fixa) e a barra
+   de busca, que gruda logo abaixo dela. A sidebar é o terceiro — precisa parar
+   abaixo dos dois. Com o `top: 92px` antigo ela parava DENTRO da barra de
+   busca: os ~58px de cima (o título SEGMENTO e a primeira opção) ficavam
+   cobertos e não havia rolagem que os trouxesse de volta.
+
+   A altura da barra não é fixa (o botão MONTAR SELEÇÃO aparece e some, o zoom
+   e a fonte do sistema mudam a linha), então Loja.tsx mede a barra e publica
+   `--shop-search-h`. O fallback de 72px é a altura medida no layout padrão,
+   caso o efeito ainda não tenha rodado. */
 .sidebar {
   display: none;
+  --shop-nav-h: 80px;
+  --shop-stack: calc(var(--shop-nav-h) + var(--shop-search-h, 72px));
 }
 
 @media (min-width: 1024px) {
   .sidebar {
     display: block;
     position: sticky;
-    /* Navbar (76px) + folga, para o painel não colar no menu. */
-    top: 92px;
-    max-height: calc(100vh - 112px);
+    top: calc(var(--shop-stack) + 1rem);
+    max-height: calc(100vh - var(--shop-stack) - 2rem);
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
     scrollbar-color: var(--border-strong) transparent;
+    /* Reserva a calha do scrollbar: sem isso as opções pulavam 8px para o lado
+       no instante em que a lista passava a caber (ou deixava de caber). */
+    scrollbar-gutter: stable;
     padding-right: 0.4rem;
   }
 }
@@ -26,6 +40,20 @@
   padding-bottom: 0.9rem;
   margin-bottom: 0.4rem;
   border-bottom: 1px solid var(--border-light);
+}
+
+/* O cabeçalho acompanha a rolagem interna da sidebar: com 8 grupos de filtros,
+   o "limpar" ficava a uma tela de distância justamente quando havia mais o que
+   limpar. O fundo opaco é obrigatório — é o que impede as opções de aparecerem
+   por trás dele. */
+@media (min-width: 1024px) {
+  .sidebarHead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--bg-primary);
+    padding-top: 0.15rem;
+  }
 }
 
 .sidebarTitle {

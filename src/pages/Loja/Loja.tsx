@@ -39,10 +39,19 @@ const EAGER_COUNT = 8;
 const WHATSAPP_URL =
   'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20estou%20na%20loja%20do%20site%20da%20NZ%20e%20quero%20um%20or%C3%A7amento.';
 
+/**
+ * Ordem do <select>. É a ordem em que aparecem, não a do tipo: 'Marca e linha'
+ * logo abaixo de 'Relevância' porque é a que o vendedor usa para percorrer o
+ * mostruário linha por linha.
+ */
 const SORT_LABEL: Record<SortMode, string> = {
   relevancia: 'Relevância',
-  nome: 'Nome',
-  marca: 'Marca',
+  marca: 'Marca e linha',
+  nome: 'Nome (A–Z)',
+  'nome-desc': 'Nome (Z–A)',
+  codigo: 'Código',
+  cor: 'Cor',
+  estoque: 'Disponibilidade',
 };
 
 /** Pausa entre a última tecla e a atualização da URL/lista. */
@@ -113,6 +122,8 @@ export default function Loja() {
   // já estão no DOM e o content-visibility cobre o custo de pintar.
   const [visible, setVisible] = useState(() => Math.max(PAGE_SIZE, restauro?.visible ?? 0));
   const searchRef = useRef<HTMLInputElement>(null);
+  const searchBarRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const chaveAoAbrir = useRef('');
@@ -241,6 +252,29 @@ export default function Loja() {
     return () => observer.disconnect();
   }, [visible, results.length]);
 
+  // A barra de busca é sticky logo abaixo do menu e a sidebar de filtros gruda
+  // abaixo dela. A altura da barra não é constante — o botão MONTAR SELEÇÃO
+  // aparece/some, o zoom do navegador e a fonte do sistema mudam a linha — e
+  // com um offset fixo o primeiro grupo de filtros ficava embaixo da barra e
+  // era impossível chegar nele rolando. Medindo a barra, `--shop-search-h`
+  // mantém a sidebar sempre encostada no limite certo.
+  useLayoutEffect(() => {
+    const barra = searchBarRef.current;
+    const raiz = pageRef.current;
+    if (!raiz) return;
+    if (!barra) {
+      raiz.style.removeProperty('--shop-search-h');
+      return;
+    }
+    const medir = () => {
+      raiz.style.setProperty('--shop-search-h', `${Math.round(barra.offsetHeight)}px`);
+    };
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(barra);
+    return () => ro.disconnect();
+  }, [emSelecao]);
+
   // Atalho "/" foca a busca, igual aos catálogos existentes.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -287,7 +321,7 @@ export default function Loja() {
   const noindex = activeCount >= 2 || filters.q.trim().length > 0;
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} ref={pageRef}>
       <SEO
         title="Loja — Catálogo Completo"
         description="Todo o portfólio NZ num só lugar: cores de envelopamento, padrões decorativos, vinil de comunicação visual e linhas PPF. Filtre por cor, acabamento e marca."
@@ -349,7 +383,7 @@ export default function Loja() {
       )}
 
       {!emSelecao && (
-      <div className={styles.searchBar}>
+      <div className={styles.searchBar} ref={searchBarRef}>
         <div className={`container ${styles.searchInner}`}>
           <div className={styles.searchWrap}>
             <svg
@@ -423,7 +457,7 @@ export default function Loja() {
           </button>
 
           <label className={styles.sortWrap}>
-            <span className="sr-only">Ordenar por</span>
+            <span className={styles.sortLabel}>Ordenar por</span>
             <select
               className={styles.sortSelect}
               value={filters.sort}
