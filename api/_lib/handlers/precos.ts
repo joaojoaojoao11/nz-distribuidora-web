@@ -100,10 +100,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       itens[slug] = { disponivel: false };
       continue;
     }
+    // Preco zero no espelho e' cadastro incompleto do ERP, nao promocao: SKU que
+    // entrou sem passar pelo pricing_engineering. Zero tem que virar ausente,
+    // senao o card anuncia "R$ 0,00" e o checkout aceita o pedido de graca.
+    const rolo = Number(e.preco_rolo) > 0 ? e.preco_rolo : null;
+    const metro = Number(e.preco_metro) > 0 ? e.preco_metro : null;
     const item: Record<string, unknown> = {
-      disponivel: e.preco_rolo != null || e.preco_metro != null,
-      rolo: e.preco_rolo,
-      metro: e.preco_metro,
+      disponivel: rolo != null || metro != null,
+      rolo,
+      metro,
       metragemPadrao: e.metragem_padrao,
       larguraM: e.largura_m,
       unidade: e.unidade ?? 'ML',

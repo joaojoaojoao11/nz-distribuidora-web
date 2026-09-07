@@ -131,7 +131,9 @@ export async function precificar(site: Db, itens: ItemPedido[]): Promise<{ linha
     }
     const metragem = Number(e.metragem_padrao) || 0;
     if (item.unidade === 'rolo') {
-      if (e.preco_rolo == null || metragem <= 0) {
+      // `> 0`, nao `!= null`: preco zero e' cadastro incompleto do ERP e nao
+      // pode virar linha de pedido. Mesma regra do /api/nz/precos.
+      if (!(Number(e.preco_rolo) > 0) || metragem <= 0) {
         invalidos.push(item.slug);
         continue;
       }
@@ -139,7 +141,7 @@ export async function precificar(site: Db, itens: ItemPedido[]): Promise<{ linha
       const qtyMt = r2(item.qtd * metragem);
       linhas.push({ produto: p, e, item, unitPrice, qtyMt, total: r2(unitPrice * qtyMt) });
     } else {
-      if (e.preco_metro == null) {
+      if (!(Number(e.preco_metro) > 0)) {
         invalidos.push(item.slug);
         continue;
       }
