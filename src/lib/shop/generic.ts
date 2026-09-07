@@ -369,6 +369,16 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
  * Linha EMA (Super Matte) — 17 cores. Material: PVC polimérico, acabamento
  * fosco velvet non-reflective simples (matte puro, sem wet-look, sem
  * reflexos especulares). Cores 001 a 017.
+ *
+ * Linha EGL (Chrome Gloss) — 12 cores. Material: PVC polimérico com paper
+ * liner (kraft), superfície com textura casca de laranja (orange peel), tint
+ * candy gloss translúcido brilhante (NÃO é chrome espelhado, apesar do nome
+ * da linha; é candy paint look). Cores 001 a 012.
+ *
+ * Linha EGB (Gloss Básico) — 7 cores. Material: PVC polimérico entry-level
+ * com paper liner (kraft), textura casca de laranja, cor sólida opaca
+ * brilhante (solid gloss simples, sem candy translúcido, sem wet-look premium,
+ * sem chrome). Versão econômica do ESG. Cores 001 a 007.
  */
 export const SW_ROLL_IMAGES: Record<string, string> = {
   // ESG — Super Gloss (37 cores)
@@ -488,6 +498,46 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/speed-wrapping/speed-wrapping-ema-016-matt-gray-spwema016.webp',
   'speed-wrapping-ema-017-matt-cement-gray-spwema017':
     '/assets/images/shop/speed-wrapping/speed-wrapping-ema-017-matt-cement-gray-spwema017.webp',
+  // EGL — Chrome Gloss (12 cores) — paper liner + orange peel + candy gloss
+  'speed-wrapping-egl-001-chrome-gloss-silver-spwegl001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-001-chrome-gloss-silver-spwegl001.webp',
+  'speed-wrapping-egl-002-chrome-gloss-grey-spwegl002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-002-chrome-gloss-grey-spwegl002.webp',
+  'speed-wrapping-egl-003-chrome-gloss-red-spwegl003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-003-chrome-gloss-red-spwegl003.webp',
+  'speed-wrapping-egl-004-chrome-gloss-rose-red-spwegl004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-004-chrome-gloss-rose-red-spwegl004.webp',
+  'speed-wrapping-egl-005-chrome-gloss-pink-spwegl005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-005-chrome-gloss-pink-spwegl005.webp',
+  'speed-wrapping-egl-006-chrome-gloss-purple-spwegl006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-006-chrome-gloss-purple-spwegl006.webp',
+  'speed-wrapping-egl-007-chrome-gloss-orange-spwegl007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-007-chrome-gloss-orange-spwegl007.webp',
+  'speed-wrapping-egl-008-chrome-gloss-gold-spwegl008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-008-chrome-gloss-gold-spwegl008.webp',
+  'speed-wrapping-egl-009-chrome-gloss-green-spwegl009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-009-chrome-gloss-green-spwegl009.webp',
+  'speed-wrapping-egl-010-chrome-gloss-tiffany-spwegl010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-010-chrome-gloss-tiffany-spwegl010.webp',
+  'speed-wrapping-egl-011-chrome-gloss-blue-spwegl011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-011-chrome-gloss-blue-spwegl011.webp',
+  'speed-wrapping-egl-012-chrome-gloss-light-blue-spwegl012':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egl-012-chrome-gloss-light-blue-spwegl012.webp',
+  // EGB — Gloss Basico (7 cores) — paper liner + orange peel + solid gloss opaco
+  'speed-wrapping-egb-001-gloss-black-spwegb001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egb-001-gloss-black-spwegb001.webp',
+  'speed-wrapping-egb-002-gloss-white-spwegb002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egb-002-gloss-white-spwegb002.webp',
+  'speed-wrapping-egb-003-gloss-red-spwegb003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egb-003-gloss-red-spwegb003.webp',
+  'speed-wrapping-egb-004-gloss-orange-spwegb004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egb-004-gloss-orange-spwegb004.webp',
+  'speed-wrapping-egb-005-gloss-maize-yellow-spwegb005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egb-005-gloss-maize-yellow-spwegb005.webp',
+  'speed-wrapping-egb-006-gloss-green-spwegb006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egb-006-gloss-green-spwegb006.webp',
+  'speed-wrapping-egb-007-gloss-blue-spwegb007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-egb-007-gloss-blue-spwegb007.webp',
 };
 
 /**
