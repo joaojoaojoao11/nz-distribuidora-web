@@ -1012,6 +1012,26 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/sh-wrapping/ppf-clear-matte.webp',
   'next-tpu-shnext-ppf-clear-gloss-0078861':
     '/assets/images/shop/sh-wrapping/ppf-clear-gloss.webp',
+  // Avery AD Pro (9): pelicula de janela — New Generation, Neo Metallic e
+  // Nano Ceramic Studio, cada uma nos seus percentuais de transmissao.
+  'avery-ad-pro-new-generation-05-adfilm01':
+    '/assets/images/shop/avery-adpro/adfilm01-new-generation-05.webp',
+  'avery-ad-pro-new-generation-15-adfilm02':
+    '/assets/images/shop/avery-adpro/adfilm02-new-generation-15.webp',
+  'avery-ad-pro-new-generation-35-adfilm03':
+    '/assets/images/shop/avery-adpro/adfilm03-new-generation-35.webp',
+  'avery-ad-pro-new-generation-75-adfilm04':
+    '/assets/images/shop/avery-adpro/adfilm04-new-generation-75.webp',
+  'avery-ad-pro-neo-metallic-05-adfilm05':
+    '/assets/images/shop/avery-adpro/adfilm05-neo-metallic-05.webp',
+  'avery-ad-pro-neo-metallic-15-adfilm06':
+    '/assets/images/shop/avery-adpro/adfilm06-neo-metallic-15.webp',
+  'avery-ad-pro-nano-ceramic-studio-05-adfilm07':
+    '/assets/images/shop/avery-adpro/adfilm07-nano-ceramic-studio-05.webp',
+  'avery-ad-pro-nano-ceramic-studio-35-adfilm08':
+    '/assets/images/shop/avery-adpro/adfilm08-nano-ceramic-studio-35.webp',
+  'avery-ad-pro-nano-ceramic-studio-70-adfilm09':
+    '/assets/images/shop/avery-adpro/adfilm09-nano-ceramic-studio-70.webp',
 };
 
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
