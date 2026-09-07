@@ -552,10 +552,8 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/speed-wrapping/speed-wrapping-emr-002-chrome-mirror-red-spwemr002.webp',
   'speed-wrapping-emr-003-chrome-mirror-blue-spwemr003':
     '/assets/images/shop/speed-wrapping/speed-wrapping-emr-003-chrome-mirror-blue-spwemr003.webp',
-  // emr-004 (Chrome Mirror Purple) fora pelo mesmo motivo do ema-004: arquivo
-  // gerado sem assinatura RIFF/WEBP, ilegivel para qualquer decodificador.
-  // Com a chave aqui o card mostraria imagem quebrada; sem ela, cai no
-  // placeholder da linha. Regerar a foto e reativar.
+  'speed-wrapping-emr-004-chrome-mirror-purple-spwemr004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-004-chrome-mirror-purple-spwemr004.webp',
   'speed-wrapping-emr-005-chrome-mirror-orange-spwemr005':
     '/assets/images/shop/speed-wrapping/speed-wrapping-emr-005-chrome-mirror-orange-spwemr005.webp',
   'speed-wrapping-emr-006-chrome-mirror-gold-spwemr006':
