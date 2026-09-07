@@ -103,25 +103,126 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ------------------------------------------------------------ convite */
-.convite {
+/* ------------------------------------------------------ chamada e formulário */
+/* O convite era um link para /painel/avaliacoes: o cliente saía da página do
+   produto e tinha que achar o mesmo produto numa lista. Isso é apontar o
+   caminho, não oferecer. Agora o formulário abre aqui. */
+.chamada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
   margin: 0 0 1.5rem;
-  padding: 0.8rem 1rem;
+  padding: 0.9rem 1.1rem;
   border: 1px solid var(--border-light);
   background: rgba(255, 255, 255, 0.02);
+}
+
+.chamadaTexto {
+  margin: 0;
+  flex: 1 1 240px;
   font-size: 0.85rem;
+  line-height: 1.5;
   color: var(--text-secondary);
+}
+
+.recibo {
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid rgba(90, 170, 130, 0.35);
+  background: rgba(90, 170, 130, 0.06);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0 0 1.75rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.rotulo {
+  font-family: var(--font-tech, monospace);
+  font-size: 0.64rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+.campo,
+.campoTexto {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
   line-height: 1.5;
 }
 
-.linkConvite {
-  color: var(--accent-red);
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
+.campoTexto { resize: vertical; min-height: 120px; }
+
+.campo:focus,
+.campoTexto:focus { outline: none; border-color: var(--accent-red); }
+
+.estrelasEntrada { display: inline-flex; gap: 0.15rem; }
+
+.estrelaBtn {
+  background: none;
+  border: none;
+  padding: 0.1rem 0.15rem;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--border-strong);
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
 }
 
-.linkConvite:hover { text-decoration: underline; }
+.estrelaBtn:hover { transform: scale(1.12); }
+.estrelaAcesa { color: #d9a441; }
+
+.contador {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.erro {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #ff8577;
+}
+
+.enviar {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0 1.2rem;
+  border: 1px solid var(--accent-red);
+  border-radius: 8px;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.2s;
+}
+
+.enviar:hover { filter: brightness(1.12); }
+.enviar:disabled { opacity: 0.55; cursor: default; }
 
 /* -------------------------------------------------------------- lista */
 .lista {

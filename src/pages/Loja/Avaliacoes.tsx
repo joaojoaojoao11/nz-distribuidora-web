@@ -4,15 +4,25 @@
 //
 //   · **Sem avaliação, o bloco some.** Não existe "seja o primeiro a avaliar"
 //     com cinco estrelas vazias fingindo conteúdo — o vazio honesto é melhor
-//     que o enfeite. Só quem PODE avaliar vê um convite, e ele é discreto.
+//     que o enfeite. Quem não comprou e não há o que ler não vê nada.
+//   · **Mas quem PODE comentar comenta aqui mesmo.** O formulário abre na
+//     própria página do produto. Mandar o cliente para outra tela procurar o
+//     produto numa lista é o mesmo que não oferecer.
 //   · **Nota baixa fica.** Catálogo só com cinco estrelas é o sinal de fraude
 //     mais óbvio que existe. A distribuição inteira aparece.
 //   · **"Avaliação incentivada" é dito, não escondido.** Quem avalia ganha
 //     pontos; a lei permite o incentivo e exige a informação.
 
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { listarAvaliacoes, possoAvaliarSlug, type AvaliacaoPublica, type ResumoAvaliacoes } from '../../lib/shop/avaliacoes';
+import {
+  enviarAvaliacao,
+  esquecerAvaliaveis,
+  listarAvaliacoes,
+  possoAvaliarSlug,
+  textoDoErro,
+  type AvaliacaoPublica,
+  type ResumoAvaliacoes,
+} from '../../lib/shop/avaliacoes';
 import styles from './Avaliacoes.module.css';
 
 function Estrelas({ nota, tamanho = 1 }: { nota: number; tamanho?: number }) {
@@ -27,6 +37,89 @@ function Estrelas({ nota, tamanho = 1 }: { nota: number; tamanho?: number }) {
   );
 }
 
+
+/** O formulário de avaliação, na própria página do produto. */
+function Formulario({ slug, aoEnviar }: { slug: string; aoEnviar: () => void }) {
+  const [nota, setNota] = useState(0);
+  const [titulo, setTitulo] = useState('');
+  const [texto, setTexto] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+
+  const enviar = async () => {
+    if (nota < 1) {
+      setErro('Escolha uma nota de 1 a 5.');
+      return;
+    }
+    if (texto.trim().length < 20) {
+      setErro('Escreva um pouco mais — pelo menos 20 caracteres.');
+      return;
+    }
+    setEnviando(true);
+    setErro(null);
+    try {
+      await enviarAvaliacao({ slug, nota, titulo: titulo.trim() || undefined, texto: texto.trim() });
+      // A lista de "posso avaliar" mudou; o cache da sessão precisa cair.
+      esquecerAvaliaveis();
+      aoEnviar();
+    } catch (e) {
+      setErro(textoDoErro(e));
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  return (
+    <div className={styles.formulario}>
+      <label className={styles.rotulo}>Sua nota</label>
+      <span className={styles.estrelasEntrada}>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <button
+            key={i}
+            type="button"
+            className={`${styles.estrelaBtn} ${i <= nota ? styles.estrelaAcesa : ''}`}
+            onClick={() => setNota(i)}
+            aria-label={`${i} ${i === 1 ? 'estrela' : 'estrelas'}`}
+            aria-pressed={i === nota}
+          >
+            ★
+          </button>
+        ))}
+      </span>
+
+      <label className={styles.rotulo} htmlFor={`tit-${slug}`}>
+        Título <span className={styles.mudo}>(opcional)</span>
+      </label>
+      <input id={`tit-${slug}`} className={styles.campo} value={titulo} maxLength={120} onChange={(e) => setTitulo(e.target.value)} placeholder="Resumo em uma linha" />
+
+      <label className={styles.rotulo} htmlFor={`txt-${slug}`}>
+        Como foi usar
+      </label>
+      <textarea
+        id={`txt-${slug}`}
+        className={styles.campoTexto}
+        value={texto}
+        maxLength={3000}
+        rows={5}
+        onChange={(e) => setTexto(e.target.value)}
+        placeholder="Em que aplicou, como se comportou na instalação, o que você diria para quem está pensando em comprar."
+      />
+      <p className={styles.contador}>{texto.trim().length} caracteres</p>
+
+      {erro && <p className={styles.erro}>{erro}</p>}
+
+      <p className={styles.mudo}>
+        Sua avaliação passa por conferência antes de aparecer aqui. Nota baixa é publicada do mesmo jeito, e os pontos
+        que você ganha não dependem da nota que der.
+      </p>
+
+      <button type="button" className={styles.enviar} disabled={enviando} onClick={() => void enviar()}>
+        {enviando ? 'Enviando…' : 'Enviar avaliação'}
+      </button>
+    </div>
+  );
+}
+
 const data = (s: string) => new Date(s).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
 export default function Avaliacoes({ slug }: { slug: string }) {
@@ -35,6 +128,8 @@ export default function Avaliacoes({ slug }: { slug: string }) {
   const [resumo, setResumo] = useState<ResumoAvaliacoes | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [todas, setTodas] = useState(false);
+  const [escrevendo, setEscrevendo] = useState(false);
+  const [enviada, setEnviada] = useState(false);
 
   useEffect(() => {
     // Só pergunta se o visitante está logado; a função devolve false na hora
@@ -66,19 +161,42 @@ export default function Avaliacoes({ slug }: { slug: string }) {
 
   if (carregando) return null;
 
-  // Sem avaliação nenhuma: só aparece se ESTE visitante pode escrever a
-  // primeira. Para todo mundo, o bloco não existe.
+  // Confirmação de envio: vale para os dois estados abaixo.
+  const recibo = (
+    <p className={styles.recibo}>
+      Avaliação enviada. Ela aparece aqui assim que for conferida — e os pontos entram na sua conta junto.
+    </p>
+  );
+
+  // Sem avaliação nenhuma: quem não pode comentar não vê NADA. Nem título, nem
+  // estrela vazia, nem "seja o primeiro" — não há o que ler, então não há bloco.
   if (!resumo || resumo.total === 0) {
-    if (!podeAvaliar) return null;
+    if (!podeAvaliar && !enviada) return null;
     return (
       <section className={styles.bloco}>
-        <h2 className={styles.titulo}>Avaliações</h2>
-        <p className={styles.convite}>
-          Você comprou este produto. Ninguém avaliou ainda — sua avaliação é a primeira que quem chegar aqui vai ler.{' '}
-          <Link to="/painel/avaliacoes" className={styles.linkConvite}>
-            Avaliar e ganhar pontos
-          </Link>
-        </p>
+        {enviada ? (
+          recibo
+        ) : escrevendo ? (
+          <>
+            <h2 className={styles.titulo}>Avaliar este produto</h2>
+            <Formulario
+              slug={slug}
+              aoEnviar={() => {
+                setEscrevendo(false);
+                setEnviada(true);
+              }}
+            />
+          </>
+        ) : (
+          <div className={styles.chamada}>
+            <p className={styles.chamadaTexto}>
+              Você comprou este produto. Ninguém avaliou ainda — a sua é a primeira que quem chegar aqui vai ler.
+            </p>
+            <button type="button" className={styles.enviar} onClick={() => setEscrevendo(true)}>
+              Avaliar este produto
+            </button>
+          </div>
+        )}
       </section>
     );
   }
@@ -122,13 +240,25 @@ export default function Avaliacoes({ slug }: { slug: string }) {
         </div>
       </div>
 
-      {podeAvaliar && (
-        <p className={styles.convite}>
-          Você comprou este produto.{' '}
-          <Link to="/painel/avaliacoes" className={styles.linkConvite}>
-            Avaliar e ganhar pontos
-          </Link>
-        </p>
+      {enviada && recibo}
+
+      {podeAvaliar && !enviada && (
+        escrevendo ? (
+          <Formulario
+            slug={slug}
+            aoEnviar={() => {
+              setEscrevendo(false);
+              setEnviada(true);
+            }}
+          />
+        ) : (
+          <div className={styles.chamada}>
+            <p className={styles.chamadaTexto}>Você comprou este produto e ainda não avaliou.</p>
+            <button type="button" className={styles.enviar} onClick={() => setEscrevendo(true)}>
+              Avaliar este produto
+            </button>
+          </div>
+        )
       )}
 
       <ul className={styles.lista}>

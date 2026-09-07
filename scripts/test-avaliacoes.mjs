@@ -232,6 +232,14 @@ console.log('\n=== RESGATE ===');
 console.log('\n=== A TELA DIZ O QUE PRECISA DIZER ===');
 const blocoProduto = readFileSync(join(ROOT, 'src/pages/Loja/Avaliacoes.tsx'), 'utf8');
 ok('a página marca a avaliação como incentivada', blocoProduto.includes('avaliação incentivada'));
+
+// O estado vazio: sem avaliação e sem direito de comentar, o bloco não existe —
+// nem título, nem estrela vazia, nem "seja o primeiro".
+ok('sem avaliação e sem direito, não renderiza nada', /if \(!podeAvaliar && !enviada\) return null;/.test(blocoProduto));
+// E quem PODE comentar comenta ali mesmo: mandar para outra tela procurar o
+// produto numa lista é apontar o caminho, não oferecer.
+ok('o formulário abre na própria página do produto', blocoProduto.includes('function Formulario') && blocoProduto.includes('enviarAvaliacao'));
+ok('e não empurra o cliente para o painel', !blocoProduto.includes('/painel/avaliacoes'));
 ok('e mostra o selo de compra verificada', blocoProduto.includes('compra verificada'));
 ok('mostra a distribuição inteira, não só a média', /n1|barras/.test(blocoProduto));
 
