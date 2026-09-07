@@ -22,6 +22,7 @@ import { computeFacets } from '../../lib/shop/facets';
 import { applyFilters, hasActiveFilters, type SortMode } from '../../lib/shop/search/match';
 import { ShopCard } from './ShopCard';
 import ShopFilters from './ShopFilters';
+import { useLimiteNome } from './useLimiteNome';
 import { useShopFilters, type FilterGroup } from './useShopFilters';
 import styles from './Loja.module.css';
 
@@ -126,6 +127,7 @@ export default function Loja() {
   const pageRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
   const chaveAoAbrir = useRef('');
   const rolarAoTopoDosResultados = useRef(false);
   const timerBusca = useRef<number | undefined>(undefined);
@@ -274,6 +276,11 @@ export default function Loja() {
     ro.observe(barra);
     return () => ro.disconnect();
   }, [emSelecao]);
+
+  // Quantos caracteres do nome cabem numa coluna do grid. Um número só para
+  // todos os cards da tela — é o que dá o corte no mesmo ponto em toda a
+  // fileira, em vez de um ponto por largura de glifo.
+  const limiteNome = useLimiteNome(gridRef);
 
   // Atalho "/" foca a busca, igual aos catálogos existentes.
   useEffect(() => {
@@ -625,6 +632,7 @@ export default function Loja() {
                   já tinha. Sobrescrita a cada clique e lida só em POP — não
                   precisa apagar. */}
               <div
+                ref={gridRef}
                 className={styles.grid}
                 onClickCapture={() => gravarScroll(chaveScroll, { y: window.scrollY, visible })}
               >
@@ -635,6 +643,7 @@ export default function Loja() {
                     eager={i < EAGER_COUNT}
                     onRemove={curando && !emSelecao ? removeItem : undefined}
                     from={`${location.pathname}${location.search}`}
+                    limiteNome={limiteNome}
                   />
                 ))}
               </div>

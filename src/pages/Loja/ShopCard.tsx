@@ -1,9 +1,9 @@
 // Card de produto da LOJA.
 //
 // A exigência de "todos os produtos do mesmo tamanho" é resolvida por duas
-// travas no CSS, sem altura fixa em px: mídia em `aspect-ratio: 1/1` e nome com
-// `line-clamp: 2` num bloco de altura fixa. Assim o card tem exatamente a mesma
-// altura em qualquer viewport, e o CLS fica em zero.
+// travas no CSS, sem altura fixa em px: mídia em `aspect-ratio: 1/1` e rodapé
+// de altura fixa. Assim o card tem exatamente a mesma altura em qualquer
+// viewport, e o CLS fica em zero.
 //
 // Metade do catálogo é cor sem foto (as 116 do banco e as 92 da M7 não têm
 // imagem), então o mesmo quadrado ora recebe uma textura fotografada, ora um
@@ -13,10 +13,16 @@ import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import type { ShopItem } from '../../lib/shop/types';
 import Preco from './Preco';
+import { cortarNome } from './useLimiteNome';
 import styles from './ShopCard.module.css';
 
 interface Props {
   item: ShopItem;
+  /**
+   * Máximo de caracteres do nome, medido a partir da largura real da coluna
+   * (ver `useLimiteNome`). Sem ele o nome vai inteiro e quem corta é o CSS.
+   */
+  limiteNome?: number | null;
   /** As primeiras imagens carregam sem lazy, para o LCP do mobile. */
   eager?: boolean;
   /**
@@ -40,8 +46,21 @@ function swatchBackground(hex: string): string {
   return `linear-gradient(145deg, ${hex} 0%, ${hex} 55%, color-mix(in srgb, ${hex} 78%, #000) 100%)`;
 }
 
-function ShopCardBase({ item, eager = false, onRemove, from }: Props) {
+/** Compara os dois rótulos ignorando caixa e espaço: a linha de cima é
+ *  maiúscula só por CSS, então "Speed Wrapping" e "SPEED WRAPPING" são o mesmo
+ *  texto para o visitante. */
+const mesmoRotulo = (a: string, b: string) =>
+  a.trim().replace(/\s+/g, ' ').toLowerCase() === b.trim().replace(/\s+/g, ' ').toLowerCase();
+
+function ShopCardBase({ item, eager = false, onRemove, from, limiteNome }: Props) {
   const hasImage = Boolean(item.image);
+
+  // Boa parte do catálogo não tem acabamento nem subtítulo próprios, e as duas
+  // linhas caíam no mesmo `brand`: o card repetia "Speed Wrapping" embaixo de
+  // "SPEED WRAPPING". Sem a repetição sobra a folga que o nome precisa.
+  const linha = item.line ?? item.brand;
+  const rotuloMeta = item.finishLabel ?? item.subtitle ?? item.brand;
+  const meta = rotuloMeta && !mesmoRotulo(rotuloMeta, linha) ? rotuloMeta : null;
 
   return (
     <Link
@@ -105,12 +124,18 @@ function ShopCardBase({ item, eager = false, onRemove, from }: Props) {
       </div>
 
       <div className={styles.info}>
-        <span className={styles.line}>{item.line ?? item.brand}</span>
-        <h3 className={styles.name}>{item.name}</h3>
+        <span className={styles.line}>{linha}</span>
+        {/* Cortado na contagem de caracteres da coluna, para todos os cards
+            caírem no mesmo comprimento. O `white-space: nowrap` do CSS segue
+            como rede para um nome de letras largas demais. O texto inteiro
+            continua no `title` e no `aria-label` do card. */}
+        <h3 className={styles.name} title={item.name}>
+          {cortarNome(item.name, limiteNome ?? null)}
+        </h3>
         {/* SKU fica fora da foto: a capa é o que vende o produto, e o chip sobre
             a imagem cobria justamente o canto onde o rolo aparece. */}
         {item.code && <span className={styles.code}>{item.code}</span>}
-        <span className={styles.meta}>{item.finishLabel ?? item.subtitle ?? item.brand}</span>
+        {meta && <span className={styles.meta}>{meta}</span>}
         {/* Preço por papel: o servidor decide o que este card pode mostrar. */}
         {item.kind !== 'linha' && <Preco slug={item.slug} variante="card" />}
       </div>

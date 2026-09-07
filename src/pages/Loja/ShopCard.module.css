@@ -4,7 +4,11 @@
 
 .card {
   display: grid;
-  grid-template-rows: auto 106px;
+  /* 108px é a soma exata do rodapé no pior caso (padding 22,4 + 4 gaps 8,96 +
+     linha 11,65 + nome 18,4 + SKU 11,65 + acabamento 14,56 + preço 18,59 =
+     106,2). Com os 106px antigos faltava fração de pixel e o flex encolhia
+     TODAS as linhas — era daí que vinha o texto fatiado ao meio. */
+  grid-template-rows: auto 108px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
   border-radius: 12px;
@@ -13,7 +17,7 @@
   /* Pula layout e paint dos cards fora da viewport. É o que permite manter
      centenas de nós no DOM sem virtualização. */
   content-visibility: auto;
-  contain-intrinsic-size: auto 318px;
+  contain-intrinsic-size: auto 320px;
   /* Toque longo selecionava o nome do produto e abria o balão do iOS; o toque
      seguinte, para dispensar, caía no card vizinho. */
   -webkit-user-select: none;
@@ -120,6 +124,18 @@
   overflow: hidden;
 }
 
+/* A regra que conserta o texto cortado ao meio.
+   Num flex column de altura fixa todo filho encolhe por padrão. Quando o texto
+   não cabia, o navegador espremia cada linha ABAIXO da própria altura de linha
+   — o <h3> recebia 25,8px para 2 linhas de 17px (1,52 linha) e a segunda saía
+   fatiada na horizontal, junto com o SKU e o preço. Nenhum `line-clamp` age
+   nesse ponto: o corte acontece antes, na caixa.
+   Com `flex-shrink: 0` nada é espremido: ou a linha aparece inteira, ou não
+   aparece. O que não couber é responsabilidade das reticências de cada rótulo. */
+.info > * {
+  flex-shrink: 0;
+}
+
 .line {
   font-family: var(--font-tech);
   font-size: 0.56rem;
@@ -132,22 +148,36 @@
   text-overflow: ellipsis;
 }
 
+/* Uma linha, sempre inteira, com reticências no que sobrar. O nome do produto
+   começa pelo código ("ECC 010 CHAMELEON GALAXY PET"), então cortar o fim não
+   atrapalha a identificação — e é infinitamente melhor que a linha serrada ao
+   meio que o `line-clamp: 2` produzia num rodapé que nunca teve altura para
+   duas linhas. O nome completo continua no `aria-label` do card e no `title`. */
 .name {
   font-family: var(--font-heading);
   font-size: 0.92rem;
   font-weight: 600;
   line-height: 1.25;
   color: var(--text-primary);
-  /* Trava a altura do bloco de texto: 1 ou 2 linhas ocupam o mesmo espaço. */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* O SKU absorve a folga: assim o acabamento e o preço encostam no rodapé do
+   card e ficam na mesma altura em toda a fileira, exista ou não a linha de
+   acabamento (ela some quando repete a linha de cima). Antes esse papel era do
+   `margin-top: auto` do .meta, que sumia junto com ele. */
+.code {
+  margin-bottom: auto;
+}
+
+/* Os poucos itens sem SKU: quem absorve a folga é o nome. */
+.info:not(:has(.code)) .name {
+  margin-bottom: auto;
 }
 
 .meta {
-  margin-top: auto;
   font-size: 0.7rem;
   line-height: 1.3;
   color: var(--text-secondary);
@@ -167,14 +197,15 @@
 
 @media (max-width: 1023px) {
   .card {
-    grid-template-rows: auto 100px;
+    /* Mesma conta do desktop com as fontes menores: 104px no pior caso. */
+    grid-template-rows: auto 106px;
     border-radius: 10px;
     /* Placeholder = altura real do card (coluna + 100 + 2 de borda). O `auto`
        só memoriza o tamanho DEPOIS de renderizar; nos cards ainda fora da
        tela é este número que segura a barra de rolagem. Com 260 fixo a lista
        derivava até 13px por linha na primeira rolagem — e o dedo caía no card
-       de baixo. 421–1023px varia de 2 a 5 colunas: 278 é o meio da faixa. */
-    contain-intrinsic-size: auto 278px;
+       de baixo. 421–1023px varia de 2 a 5 colunas: 284 é o meio da faixa. */
+    contain-intrinsic-size: auto 284px;
   }
   .name {
     font-size: 0.85rem;
@@ -193,9 +224,9 @@
 
 @media (max-width: 420px) {
   .card {
-    /* 2 colunas fixas com gap 10: coluna ≈ 45vw − 5px → 45vw + 97px de altura
-       (rodapé de 100 + 2 de borda − 5 da coluna). */
-    contain-intrinsic-size: auto calc(45vw + 97px);
+    /* 2 colunas fixas com gap 10: coluna ≈ 45vw − 5px → 45vw + 103px de altura
+       (rodapé de 106 + 2 de borda − 5 da coluna). */
+    contain-intrinsic-size: auto calc(45vw + 103px);
   }
 }
 
