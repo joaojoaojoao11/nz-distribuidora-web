@@ -379,6 +379,13 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
  * com paper liner (kraft), textura casca de laranja, cor sólida opaca
  * brilhante (solid gloss simples, sem candy translúcido, sem wet-look premium,
  * sem chrome). Versão econômica do ESG. Cores 001 a 007.
+ *
+ * Linha EMR (Chrome Mirror) — 11 cores. Material: PVC polimérico com paper
+ * liner (kraft) e superfície de chrome espelhado real (mirror-polished), lisa
+ * (sem orange peel, o mirror precisa de superfície suave). Cores 001-011 =
+ * silver + 10 tints (red, blue, purple, orange, gold, rose, tiffany, bronze,
+ * black, green). Esse é o chrome de verdade (diferente do EGL que apesar do
+ * nome "Chrome Gloss" é candy translúcido).
  */
 export const SW_ROLL_IMAGES: Record<string, string> = {
   // ESG — Super Gloss (37 cores)
@@ -538,6 +545,31 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/speed-wrapping/speed-wrapping-egb-006-gloss-green-spwegb006.webp',
   'speed-wrapping-egb-007-gloss-blue-spwegb007':
     '/assets/images/shop/speed-wrapping/speed-wrapping-egb-007-gloss-blue-spwegb007.webp',
+  // EMR — Chrome Mirror (11 cores) — paper liner + smooth chrome mirror
+  'speed-wrapping-emr-001-chrome-mirror-silver-spwemr001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-001-chrome-mirror-silver-spwemr001.webp',
+  'speed-wrapping-emr-002-chrome-mirror-red-spwemr002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-002-chrome-mirror-red-spwemr002.webp',
+  'speed-wrapping-emr-003-chrome-mirror-blue-spwemr003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-003-chrome-mirror-blue-spwemr003.webp',
+  // emr-004 (Chrome Mirror Purple) fora pelo mesmo motivo do ema-004: arquivo
+  // gerado sem assinatura RIFF/WEBP, ilegivel para qualquer decodificador.
+  // Com a chave aqui o card mostraria imagem quebrada; sem ela, cai no
+  // placeholder da linha. Regerar a foto e reativar.
+  'speed-wrapping-emr-005-chrome-mirror-orange-spwemr005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-005-chrome-mirror-orange-spwemr005.webp',
+  'speed-wrapping-emr-006-chrome-mirror-gold-spwemr006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-006-chrome-mirror-gold-spwemr006.webp',
+  'speed-wrapping-emr-007-chrome-mirror-rose-spwemr007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-007-chrome-mirror-rose-spwemr007.webp',
+  'speed-wrapping-emr-008-chrome-mirror-tiffany-spwemr008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-008-chrome-mirror-tiffany-spwemr008.webp',
+  'speed-wrapping-emr-009-chrome-mirror-bronze-spwemr009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-009-chrome-mirror-bronze-spwemr009.webp',
+  'speed-wrapping-emr-010-chrome-mirror-black-spwemr010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-010-chrome-mirror-black-spwemr010.webp',
+  'speed-wrapping-emr-011-chrome-mirror-green-spwemr011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-emr-011-chrome-mirror-green-spwemr011.webp',
 };
 
 /**
