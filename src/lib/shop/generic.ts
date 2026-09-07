@@ -240,6 +240,8 @@ export const REVIEWED_SLUGS: ReadonlySet<string> = new Set([
   'nz-nzppf-core-black-matte-nzp14',
   'nz-nzppf-windshield-nzp16',
   'nz-ppf-black-piano-de-uma-bobina-84565478',
+  'nz-nzppf-prime-clear-gloss-1-82-nzp010',
+  'nz-ppf-cortado-l200-ppfl200',
 ]);
 
 /**
@@ -1200,14 +1202,21 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
   'nz-nzppf-prime-clear-matte-nzp06': '/assets/images/nzppf_prime_matte.jpg',
   'nz-nzppf-prime-black-gloss-nzp07': '/assets/images/nzppf_prime_black.jpg',
   'nz-nzppf-luxury-clear-gloss-nzp08': '/assets/images/luxury_lambo.png',
-  'nz-nzppf-luxury-clear-matte-nzp09': '/assets/images/luxury-water-beading.jpg',
-  'nz-nzppf-luxury-black-gloss-nzp10': '/assets/images/hero-luxury-car.jpg',
+  // NZP09 e NZP10 estavam trocadas: o water-beading e' um carro preto espelhado
+  // (gloss) e o hero-luxury-car e' uma Aventador preta fosca (matte). Cada uma
+  // foi pro acabamento que a foto realmente mostra.
+  'nz-nzppf-luxury-clear-matte-nzp09': '/assets/images/hero-luxury-car.jpg',
+  'nz-nzppf-luxury-black-gloss-nzp10': '/assets/images/luxury-water-beading.jpg',
   'nz-nzppf-core-clear-matte-nzp11': '/assets/images/core_clear_matte.png',
   'nz-nzppf-core-clear-gloss-nzp12': '/assets/images/core_clear_gloss.png',
   'nz-nzppf-core-black-gloss-nzp13': '/assets/images/core_black_gloss.png',
   'nz-nzppf-core-black-matte-nzp14': '/assets/images/core_black_matte.png',
   'nz-nzppf-windshield-nzp16': '/assets/images/nzppf_windshield_hero.png',
   'nz-ppf-black-piano-de-uma-bobina-84565478': '/assets/images/nzppf_black.png',
+  // NZP010 e' o mesmo filme do NZP05 em 1,82 m — reusa o hero brilhante da Prime.
+  'nz-nzppf-prime-clear-gloss-1-82-nzp010': '/assets/images/nzppf_prime_brilho.png',
+  // Kit cortado pra L200: picape brilhante da Core, unica foto de picape gloss.
+  'nz-ppf-cortado-l200-ppfl200': '/assets/images/core_clear_gloss.png',
 };
 
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
