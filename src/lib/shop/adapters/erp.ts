@@ -350,22 +350,7 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
   //  - senão, se o slug está em REVIEWED, usa o mapa customizado
   //  - senão, cai no placeholder branded da linha (nunca vazio)
   const reviewed = isReviewedSlug(row.slug);
-  // `Record<string, string>` sem noUncheckedIndexedAccess indexa como `string`,
-  // nunca `string | undefined`; o encadeamento direto de `??` com o ternário
-  // aninhado por isso não compilava (TS2871). Separado, fica legível e o tipo
-  // do meio é honesto: pode não haver foto revisada para este slug.
-  const fotoRevisada: string | undefined = reviewed
-    ? SH_WRAPPING_IMAGES_ERP[row.slug]
-    : undefined;
-  // A foto de rolo VENCE `row.imagem`. E a unica excecao a "banco manda", e por
-  // um motivo concreto: onde o banco traz chip de cor (MetaCast MCX), o chip nao
-  // mostra o material. Onde o banco nao traz nada (Metamark 7 Series), sem isto
-  // a linha ficaria no placeholder mesmo com foto em disco.
-  const rolo: string | undefined = rollImageFor(row.slug);
-  // Separado do placeholder de proposito: `capa` e a foto de verdade, quando
-  // existe. Ela precisa liderar a galeria, e um placeholder nunca deve entrar
-  // no meio de fotos reais.
-  const capa: string | null = rolo ?? row.imagem ?? fotoRevisada ?? null;
+  const capa = capaDe(row);
   const imageResolvido = capa ?? genericImageForLine(row.linha_key);
   const galleryBase =
     row.galeria && row.galeria.length > 0
@@ -468,8 +453,38 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
   };
 }
 
+/**
+ * A foto DE VERDADE do produto, ou null quando só existe o placeholder da
+ * linha. Uma função só, porque duas coisas dependem dela e precisam concordar:
+ * qual imagem lidera a galeria, e se o produto aparece na loja.
+ *
+ * A foto de rolo VENCE `row.imagem`. É a única exceção a "banco manda", e por
+ * um motivo concreto: onde o banco traz chip de cor (MetaCast MCX), o chip não
+ * mostra o material. Onde o banco não traz nada (Metamark 7 Series), sem isto
+ * a linha ficaria no placeholder mesmo com foto em disco.
+ *
+ * `Record<string, string>` sem noUncheckedIndexedAccess indexa como `string`,
+ * nunca `string | undefined`; o encadeamento direto de `??` com o ternário
+ * aninhado por isso não compilava (TS2871). Separado, fica legível e o tipo do
+ * meio é honesto: pode não haver foto revisada para este slug.
+ */
+function capaDe(row: LojaCatalogoRow): string | null {
+  const fotoRevisada: string | undefined = isReviewedSlug(row.slug)
+    ? SH_WRAPPING_IMAGES_ERP[row.slug]
+    : undefined;
+  return rollImageFor(row.slug) ?? row.imagem ?? fotoRevisada ?? null;
+}
+
 /** Converte a view inteira, resolvendo `alias_de` (id) → slug. */
 export function lojaRowsToShopItems(rows: LojaCatalogoRow[]): ShopItem[] {
+  // O mapa de id→slug é montado com TODAS as linhas, inclusive as que não vão
+  // para a vitrine: um alias precisa continuar resolvendo o alvo mesmo quando
+  // o alvo está inativo.
   const slugPorId = new Map(rows.map((r) => [r.id, r.slug] as const));
-  return rows.map((r) => lojaRowToShopItem(r, slugPorId));
+  // PRODUTO SEM FOTO NÃO ENTRA NA LOJA. O placeholder da linha continua
+  // existindo — é o que segura o layout de quem já está numa página — mas um
+  // card que só mostra a marca genérica não vende, então some da vitrine, da
+  // busca e das facetas. Não há lista de slugs a manter aqui: no dia em que a
+  // foto for mapeada, o produto volta sozinho.
+  return rows.filter((r) => capaDe(r) !== null).map((r) => lojaRowToShopItem(r, slugPorId));
 }
