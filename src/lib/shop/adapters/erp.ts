@@ -455,8 +455,12 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
 
 /**
  * A foto DE VERDADE do produto, ou null quando só existe o placeholder da
- * linha. Uma função só, porque duas coisas dependem dela e precisam concordar:
- * qual imagem lidera a galeria, e se o produto aparece na loja.
+ * linha. Separada do placeholder de propósito: `capa` precisa liderar a
+ * galeria, e um placeholder nunca deve entrar no meio de fotos reais.
+ *
+ * Quem decide se o produto APARECE é o cadastro (`produtos.oculto_manual`),
+ * não esta função: a loja não esconde nada por conta própria, senão o painel
+ * mostraria um produto publicado que a vitrine teima em não listar.
  *
  * A foto de rolo VENCE `row.imagem`. É a única exceção a "banco manda", e por
  * um motivo concreto: onde o banco traz chip de cor (MetaCast MCX), o chip não
@@ -477,14 +481,6 @@ function capaDe(row: LojaCatalogoRow): string | null {
 
 /** Converte a view inteira, resolvendo `alias_de` (id) → slug. */
 export function lojaRowsToShopItems(rows: LojaCatalogoRow[]): ShopItem[] {
-  // O mapa de id→slug é montado com TODAS as linhas, inclusive as que não vão
-  // para a vitrine: um alias precisa continuar resolvendo o alvo mesmo quando
-  // o alvo está inativo.
   const slugPorId = new Map(rows.map((r) => [r.id, r.slug] as const));
-  // PRODUTO SEM FOTO NÃO ENTRA NA LOJA. O placeholder da linha continua
-  // existindo — é o que segura o layout de quem já está numa página — mas um
-  // card que só mostra a marca genérica não vende, então some da vitrine, da
-  // busca e das facetas. Não há lista de slugs a manter aqui: no dia em que a
-  // foto for mapeada, o produto volta sozinho.
-  return rows.filter((r) => capaDe(r) !== null).map((r) => lojaRowToShopItem(r, slugPorId));
+  return rows.map((r) => lojaRowToShopItem(r, slugPorId));
 }

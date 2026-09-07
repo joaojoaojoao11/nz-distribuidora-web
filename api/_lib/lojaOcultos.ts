@@ -1,9 +1,13 @@
 // Linhas comerciais que NÃO devem aparecer na loja.
 //
-// A trava fica aqui, no servidor, e não num filtro de tela: os produtos do ERP
-// são recriados a cada sync (5 min), então esconder no banco duraria até a
-// próxima passada. Filtrando na leitura, a linha some do catálogo, da busca,
-// das facetas e do SSR de uma vez só — e volta apagando uma linha desta lista.
+// Trava de LINHA INTEIRA, para o caso em que a marca sai do portfólio e nem
+// os produtos que o ERP criar amanhã devem aparecer. Esconder produto a
+// produto é trabalho do cadastro (`produtos.oculto_manual`, editável no
+// painel); esta lista é a exceção que também vale para o que ainda não existe.
+//
+// Correção de um comentário anterior meu: o sync NÃO sobrescreve produtos já
+// cadastrados (`upsert ... ignoreDuplicates: true`), então a flag do banco é
+// durável. O que ela não cobre é o SKU novo que o sync criar depois.
 
 export const LINHAS_OCULTAS: ReadonlySet<string> = new Set([
   // NAR PPF — retirada da loja a pedido da NZ em 2026-09-07.
