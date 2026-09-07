@@ -3,12 +3,16 @@
 
 .painel {
   position: fixed;
-  /* Abaixo da barra: o hambúrguer continua visível e vira o botão de fechar. */
-  top: 64px;
+  /* Abaixo da barra: o hambúrguer continua visível e vira o botão de fechar.
+     A barra tem 80px e só encolhe para 64px no telefone (Navbar.module.css), e
+     o menu agora aparece até 1199px — com 64px fixo ele cobria os últimos 16px
+     da própria barra em tablet e notebook. */
+  --alturaDaBarra: 80px;
+  top: var(--alturaDaBarra);
   left: 0;
   right: 0;
-  height: calc(100vh - 64px);
-  height: calc(100dvh - 64px);
+  height: calc(100vh - var(--alturaDaBarra));
+  height: calc(100dvh - var(--alturaDaBarra));
   z-index: 200;
 
   /* Opaco, sem blur. O fundo translúcido deixava o texto da página aparecer
@@ -166,9 +170,20 @@
   }
 }
 
-/* Acima de 768px quem manda é o menu de logotipos do desktop. */
-@media (min-width: 769px) {
+/* Acima de 1199px quem manda é o menu de logotipos do desktop.
+ *
+ * Tem que casar com o ponto de quebra da Navbar. Enquanto este ficou em 769px e
+ * o hambúrguer passou a aparecer até 1199px, o botão abria o nada: o painel
+ * existia no DOM e estava `display: none`. */
+@media (min-width: 1200px) {
   .painel {
     display: none;
+  }
+}
+
+/* No telefone a barra encolhe, e o menu sobe junto. */
+@media (max-width: 768px) {
+  .painel {
+    --alturaDaBarra: 64px;
   }
 }

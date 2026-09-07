@@ -20,6 +20,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  /* A `.container` global reserva 5% de cada lado — em 1280px são 128px que a
+     barra não tem para dar. Aqui a margem vira fixa e modesta. */
+  padding-left: clamp(1rem, 2.5vw, 3rem);
+  padding-right: clamp(1rem, 2.5vw, 3rem);
+  gap: clamp(0.6rem, 1.2vw, 1.5rem);
 }
 
 .logo {
@@ -33,9 +38,13 @@
 .links {
   display: flex;
   align-items: center;
-  /* 1.6rem em vez de 2rem: com a aba LOJA o menu passou a ter 10 itens mais a
-     lupa e o botão Entrar, e 2rem já estourava a barra em telas de 1280px. */
-  gap: 1.6rem;
+  /* Espaçamento FLUIDO, não fixo.
+     Já foi 2rem, depois 1.6rem, e as duas vezes voltou a estourar assim que a
+     barra ganhou um item. Com `clamp` o menu se aperta sozinho conforme a tela
+     encolhe — 1.6rem sobrando espaço, até 0.75rem quando aperta — em vez de
+     empurrar os botões da direita para fora da tela. */
+  gap: clamp(0.75rem, 1.15vw, 1.6rem);
+  min-width: 0;
 }
 
 /* Aba LOJA — pílula contornada. Distinta o bastante para ler como novidade,
@@ -491,11 +500,22 @@
 /* ==========================================
    MOBILE RESPONSIVE
    ========================================== */
+
+/* Só o telefone encolhe a barra. */
 @media (max-width: 768px) {
   .navbar {
     height: 64px;
   }
+}
 
+/* O menu escrito vira hambúrguer em 1199px, não em 768px.
+ *
+ * São 11 itens de primeiro nível mais a lupa, o carrinho e a conta: por baixo
+ * dão uns 1.170px. Num notebook de 1024px isso não cabe por compressão
+ * nenhuma — e não cabia mesmo antes, a barra é que saía da tela em silêncio,
+ * levando junto o botão de entrar. Melhor um hambúrguer honesto do que um menu
+ * cortado. */
+@media (max-width: 1199px) {
   .hamburger {
     display: flex;
   }
@@ -532,4 +552,40 @@
   .links {
     display: none;
   }
+}
+
+/* ------------------------------------------------- conta na barra do topo */
+/* Gatilho compacto: só o ícone e a seta. Os dois destinos (conta e painel
+   administrativo) vivem no submenu — escritos por extenso lá dentro, onde não
+   custam largura de barra. */
+.contaBtn {
+  gap: 0.15rem;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  background: transparent;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.contaBtn .dropdownCaret {
+  font-size: 0.6rem;
+}
+
+/* Alinhado à direita: centralizado, o submenu de um gatilho tão estreito
+   escaparia da borda da tela. */
+.dropdownConta {
+  left: auto;
+  right: 0;
+  min-width: 190px;
+  transform: translate(0, 10px);
+}
+
+.dropdownWrap:hover .dropdownConta,
+.dropdownWrap:focus-within .dropdownConta {
+  transform: translate(0, 0);
+}
+
+.dropdownConta .dropdownTextItem {
+  text-align: left;
+  letter-spacing: 1px;
 }

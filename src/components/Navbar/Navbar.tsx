@@ -236,21 +236,42 @@ export default function Navbar() {
           </button>
 
           {botaoCarrinho(`${styles.cartBtn} ${styles.cartBtnDesktop}`)}
-          {/* Dois destinos, dois botões. Antes era um só decidindo sozinho
-              (`isAdmin ? '/admin' : '/painel'`): quem é da equipe só tinha o
-              caminho do painel administrativo, e a própria conta de comprador
-              — pedidos, pagamentos, cadastro — ficava escondida. */}
+          {/*
+            Os dois destinos continuam existindo — o painel administrativo e a
+            conta de comprador —, mas agora atrás de UM gatilho compacto.
+
+            Como dois botões escritos ("⚙ Admin" e "👤 Minha Conta") eles somavam
+            cerca de 200px e empurravam a barra para fora da tela: em 1366px o
+            último botão terminava a 1557px, ou seja, 191px fora. E não era só
+            problema de admin — no visitante anônimo o "Entrar" já saía da tela
+            em 1366px, que é resolução de notebook comum.
+
+            O submenu segue o mesmo padrão do NZWRAP/NZDECOR aqui do lado (abre
+            no hover e no foco), então não é interação nova para aprender.
+          */}
           {user ? (
-            <>
-              {isAdmin && (
-                <Link to="/admin" className={styles.loginBtn} onClick={closeMenu}>
-                  ⚙ Admin
+            <div className={styles.dropdownWrap}>
+              <button
+                type="button"
+                className={`${styles.loginBtn} ${styles.contaBtn}`}
+                aria-haspopup="true"
+                aria-label="Minha conta"
+                title="Minha conta"
+              >
+                <span aria-hidden="true">👤</span>
+                <span className={styles.dropdownCaret} aria-hidden="true">▾</span>
+              </button>
+              <div className={`${styles.dropdown} ${styles.dropdownConta}`}>
+                <Link to="/painel" className={styles.dropdownTextItem} onClick={closeMenu}>
+                  Minha conta
                 </Link>
-              )}
-              <Link to="/painel" className={styles.loginBtn} onClick={closeMenu}>
-                👤 Minha Conta
-              </Link>
-            </>
+                {isAdmin && (
+                  <Link to="/admin" className={styles.dropdownTextItem} onClick={closeMenu}>
+                    Painel administrativo
+                  </Link>
+                )}
+              </div>
+            </div>
           ) : (
             <Link to="/login" className={styles.loginBtn} onClick={closeMenu}>Entrar</Link>
           )}

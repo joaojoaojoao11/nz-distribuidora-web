@@ -163,6 +163,32 @@ ok('abre sem destaque quando vem do ícone da barra', painel.usePainelCarrinho()
 painel.fecharPainelCarrinho();
 ok('fecha', painel.usePainelCarrinho() === null);
 
+// ================================================ a barra não pode estourar
+console.log('\n=== BARRA DO TOPO CABE NA TELA ===');
+//
+// Já estourou duas vezes: o espaçamento era fixo (2rem, depois 1.6rem) e cada
+// item novo empurrava os botões da direita para fora. Em 1366px — notebook
+// comum — o último botão terminava a 1557px, e no visitante anônimo era o
+// "Entrar" que sumia.
+const navCss = readFileSync(join(ROOT, 'src/components/Navbar/Navbar.module.css'), 'utf8');
+const menuCss = readFileSync(join(ROOT, 'src/components/Navbar/MobileMenu.module.css'), 'utf8');
+const navTsx = readFileSync(join(ROOT, 'src/components/Navbar/Navbar.tsx'), 'utf8');
+
+const blocoLinks = /\.links \{([^}]*)\}/.exec(navCss)?.[1] ?? '';
+ok('o espaçamento do menu é fluido (clamp), não fixo', /gap:\s*clamp\(/.test(blocoLinks), blocoLinks.trim().slice(0, 50));
+
+// Os dois arquivos precisam concordar: enquanto a barra virava hambúrguer em
+// 1199px e o painel só aparecia até 768px, o botão abria o nada.
+const doHamburguer = /@media \(max-width: (\d+)px\)[^{]*\{[^@]*?\.hamburger \{\s*display: flex/s.exec(navCss)?.[1];
+const doPainel = /@media \(min-width: (\d+)px\)\s*\{\s*\.painel/s.exec(menuCss)?.[1];
+ok('achei os dois pontos de quebra', Boolean(doHamburguer && doPainel), `navbar=${doHamburguer} painel=${doPainel}`);
+ok('e eles casam (um acaba onde o outro começa)', Number(doHamburguer) + 1 === Number(doPainel), `${doHamburguer} + 1 === ${doPainel}`);
+ok('o hambúrguer entra bem antes de 768px', Number(doHamburguer) >= 1000, `${doHamburguer}px`);
+
+// Duas etiquetas escritas na barra somavam ~200px; viraram um gatilho de ícone.
+ok('a conta é um gatilho compacto com submenu', navTsx.includes('dropdownConta') && navTsx.includes('Painel administrativo'));
+ok('e não sobrou botão escrito de admin na barra', !/>\s*⚙ Admin\s*</.test(navTsx));
+
 rmSync(outDir, { recursive: true, force: true });
 console.log(`\n${falhas ? `${falhas} FALHA(S)` : 'tudo certo'}`);
 process.exit(falhas ? 1 : 0);
