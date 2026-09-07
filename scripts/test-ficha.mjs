@@ -14,7 +14,7 @@
 // Uso: npm run ficha:test
 
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -89,6 +89,10 @@ const linha = (over = {}) => ({
   conferido_em: null,
   prefixos: [],
   nome_prefixos: [],
+  pagina_url: null,
+  catalogo_slug: null,
+  catalogo_url: null,
+  galeria: [],
   ordem: 0,
   atualizado_em: null,
   ...over,
@@ -236,10 +240,69 @@ console.log('\n=== 9. view x tipo do cliente ===');
   const campos = [...corpo.slice(0, corpo.indexOf('\n}')).matchAll(/^\s{2}(\w+)[?]?:/gm)].map((m) => m[1]);
   ok('o tipo tem campos para conferir', campos.length >= 15, `${campos.length} campos`);
 
-  const sql = readFileSync(join(ROOT, 'migrations/2026-09-07_ficha_por_linha.sql'), 'utf8');
-  const view = sql.slice(sql.indexOf('create or replace view public.loja_linhas'), sql.indexOf('comment on view public.loja_linhas'));
+  // A view é recriada por migrações posteriores: vale a ÚLTIMA definição, não
+  // a primeira. Ler o arquivo errado aqui daria um teste que passa enquanto o
+  // banco diverge — exatamente o buraco que este teste existe para tapar.
+  const migracoes = readdirSync(join(ROOT, 'migrations')).filter((f) => f.endsWith('.sql')).sort();
+  let view = '';
+  let arquivo = '';
+  for (const f of migracoes) {
+    const sql = readFileSync(join(ROOT, 'migrations', f), 'utf8');
+    const i = sql.indexOf('create or replace view public.loja_linhas');
+    if (i >= 0) {
+      view = sql.slice(i);
+      arquivo = f;
+    }
+  }
+  ok('achou a definição mais recente da view', Boolean(view), arquivo);
   const faltando = campos.filter((c) => !new RegExp(`(\\b|\\.)${c}\\b`).test(view));
   ok('a view loja_linhas entrega todos eles', faltando.length === 0, faltando.join(', '));
+}
+
+// ------------------------------------------- 10. materiais da linha própria
+console.log('\n=== 10. página, catálogo e fotos da linha ===');
+{
+  const comMaterial = indexarLinhas([
+    linha({
+      linha_key: 'ppf',
+      marca_key: 'nzppf',
+      familia_key: 'luxury',
+      label: 'NZPPF Luxury Gloss',
+      nome_prefixos: ['nzppf luxury'],
+      pagina_url: '/ppf/luxury-gloss',
+      catalogo_slug: 'luxury-gloss',
+      galeria: [{ url: '/a.png', titulo: 'Capa', sub: null }],
+    }),
+    linha({ linha_key: 'ppf', marca_key: 'nzppf', label: 'NZPPF' }),
+  ]);
+  const f = fichaDoItem(item({ lineKey: 'ppf', name: 'Nzppf Luxury Clear Gloss' }), comMaterial);
+  ok('a família leva a página da linha', f.paginaUrl === '/ppf/luxury-gloss', f.paginaUrl);
+  ok('e o catálogo dela', f.catalogoSlug === 'luxury-gloss', f.catalogoSlug);
+  ok('e as fotos', f.galeria.length === 1);
+  ok('marca própria é reconhecida', f.marcaPropria === true);
+
+  // Linha de terceiro não ganha o bloco: o material é do fabricante.
+  const terceiro = indexarLinhas([linha({ linha_key: 'oracal-651', marca_key: 'orafol', label: 'Oracal 651' })]);
+  const g = fichaDoItem(item({ lineKey: 'oracal-651' }), terceiro);
+  ok('linha de terceiro não vira marca própria', g.marcaPropria === false);
+  ok('e não inventa página nem catálogo', g.paginaUrl === null && g.catalogoSlug === null && g.galeria.length === 0);
+
+  // O catálogo tem de existir no registro do portfólio, senão o botão quebra
+  // só quando alguém clica.
+  const registro = readFileSync(join(ROOT, 'src/pages/Ppf/ppfPortfolioConfig.ts'), 'utf8');
+  const seed = readFileSync(join(ROOT, 'migrations/2026-09-07d_seed_nzppf_materiais.sql'), 'utf8');
+  const slugs = [...seed.matchAll(/catalogo_slug = '([a-z-]+)'/g)].map((m) => m[1]);
+  ok('o seed aponta catálogos', slugs.length >= 6, slugs.join(', '));
+  // Chave com hífen vem entre aspas ('luxury-gloss'); sem hífen vem nua
+  // (headlight, windshield). O objeto aceita as duas formas.
+  const orfaos = slugs.filter((s) => !new RegExp(`(^|\\s)'?${s}'?: \\{`, 'm').test(registro));
+  ok('todos existem no portfólio NZPPF', orfaos.length === 0, orfaos.join(', '));
+
+  // E as páginas apontadas têm de ser rotas reais.
+  const app = readFileSync(join(ROOT, 'src/App.tsx'), 'utf8');
+  const rotas = [...seed.matchAll(/pagina_url = '([^']+)'/g)].map((m) => m[1]);
+  const quebradas = rotas.filter((r) => r !== '/ppf' && !app.includes(`path="${r}"`));
+  ok('as páginas apontadas existem em App.tsx', quebradas.length === 0, quebradas.join(', '));
 }
 
 rmSync(outDir, { recursive: true, force: true });

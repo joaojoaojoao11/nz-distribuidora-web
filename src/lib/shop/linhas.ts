@@ -39,9 +39,31 @@ export interface LojaLinhaRow {
   prefixos: string[] | null;
   /** Prefixos do NOME. Em avery o SKU não discrimina: AAT cobre MPI, SLP e SW900. */
   nome_prefixos: string[] | null;
+  /** Página de apresentação da linha no próprio site ('/ppf/luxury-gloss'). */
+  pagina_url: string | null;
+  /** Chave no gerador de portfólio NZPPF, quando a linha tem catálogo gerado. */
+  catalogo_slug: string | null;
+  /** PDF pronto e hospedado, para catálogo que não geramos. */
+  catalogo_url: string | null;
+  /** Fotos da linha: a primeira é a capa, as demais são acabamentos. */
+  galeria: FotoDaLinha[] | null;
   ordem: number | null;
   atualizado_em: string | null;
 }
+
+export interface FotoDaLinha {
+  url: string;
+  titulo: string | null;
+  sub: string | null;
+}
+
+/**
+ * Marcas fabricadas para a NZ. Só elas ganham o bloco de linha na página do
+ * produto — nas outras, o material de apoio é do fabricante e mora no site
+ * dele. A lista é curta e explícita de propósito: é uma afirmação sobre o
+ * negócio, não algo para inferir de um prefixo.
+ */
+const MARCAS_PROPRIAS = new Set(['nzppf', 'nzwrap']);
 
 export interface FichaDoProduto {
   /**
@@ -64,6 +86,12 @@ export interface FichaDoProduto {
   tds: { url: string; titulo: string } | null;
   fonteUrl: string | null;
   conferidoEm: string | null;
+  /** Materiais da linha. Ver BlocoDaLinha.tsx. */
+  paginaUrl: string | null;
+  catalogoSlug: string | null;
+  catalogoUrl: string | null;
+  galeria: FotoDaLinha[];
+  marcaPropria: boolean;
 }
 
 /** Índice por linha_key, com a linha e as famílias dela juntas. */
@@ -203,6 +231,11 @@ export function fichaDoItem(item: ShopItem, indice: IndiceDeLinhas): FichaDoProd
     tds: tdsUrl ? { url: tdsUrl, titulo: tdsTitulo ?? 'Ficha técnica do fabricante (PDF)' } : null,
     fonteUrl: fonte?.fonte_url ?? null,
     conferidoEm: fonte?.conferido_em ?? null,
+    paginaUrl: familia?.pagina_url ?? linha?.pagina_url ?? null,
+    catalogoSlug: familia?.catalogo_slug ?? linha?.catalogo_slug ?? null,
+    catalogoUrl: familia?.catalogo_url ?? linha?.catalogo_url ?? null,
+    galeria: (familia?.galeria?.length ? familia.galeria : linha?.galeria) ?? [],
+    marcaPropria: MARCAS_PROPRIAS.has((familia?.marca_key ?? linha?.marca_key ?? '').toLowerCase()),
   };
 
   ficha.temFicha =

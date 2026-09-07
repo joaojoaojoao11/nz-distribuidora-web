@@ -1,0 +1,160 @@
+/* Bloco de materiais da linha. Mesmo ritmo de seção da ficha técnica —
+   é a mesma página, não pode ter dois espaçamentos no mesmo scroll. */
+
+.bloco {
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-light);
+  margin-bottom: 2rem;
+}
+
+.titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.selo {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  padding: 0.2rem 0.5rem;
+}
+
+/* A capa é a foto de apresentação da linha: carro aplicado, não amostra de
+   rolo. Proporção fixa para não empurrar o resto da página enquanto carrega. */
+.capa {
+  margin: 0 0 1rem;
+  position: relative;
+}
+
+.capa img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: var(--surface-2, #111);
+}
+
+.capa figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.7rem 0 0;
+}
+
+.capa figcaption strong {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.capa figcaption span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.acabamentos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+}
+
+.acabamentos li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.acabamentos img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--surface-2, #111);
+}
+
+.acabamentos strong {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  margin-bottom: 0.15rem;
+}
+
+.acabamentos span {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* O catálogo é o material de venda da linha própria — é ele que o aplicador
+   manda para o cliente final. Ganha o peso visual; a página da linha fica
+   como caminho secundário. */
+.acaoPrincipal {
+  flex: 1 1 auto;
+  min-height: 44px;
+  padding: 0.75rem 1.15rem;
+  border: 1px solid var(--text-primary);
+  background: var(--text-primary);
+  color: var(--bg-primary, #0a0a0a);
+  font-family: var(--font-heading);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.acaoPrincipal:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.acaoSecundaria {
+  flex: 0 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.75rem 1.15rem;
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.acaoSecundaria:hover {
+  border-color: var(--text-primary);
+}
+
+@media (min-width: 768px) {
+  .acabamentos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .acaoPrincipal {
+    flex: 0 1 auto;
+  }
+}

@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { useLinhas } from '../../lib/shop/store';
 import { fichaDoItem } from '../../lib/shop/linhas';
 import type { ShopItem, ShopSpec } from '../../lib/shop/types';
+import BlocoDaLinha from './BlocoDaLinha';
 import styles from './FichaTecnica.module.css';
 
 /** Acima disto, a ficha da linha vem recolhida: 16 itens empurram tudo. */
@@ -65,7 +66,10 @@ export default function FichaTecnica({ item }: { item: ShopItem }) {
 
   const base = item.specs.length ? item : { ...item, specs: varianteSintetica(item) };
   const ficha = fichaDoItem(base, indice);
-  if (!ficha.temFicha) return null;
+  // O bloco de materiais da linha existe independentemente da ficha: uma linha
+  // pode ter catálogo e fotos e nenhuma linha de ficha.
+  const materiais = <BlocoDaLinha ficha={ficha} />;
+  if (!ficha.temFicha) return materiais;
 
   const daLinha = ficha.linha;
   const recolher = daLinha.length > VISIVEIS;
@@ -133,6 +137,8 @@ export default function FichaTecnica({ item }: { item: ShopItem }) {
           </ul>
         </section>
       )}
+
+      {materiais}
 
       {ficha.textoVenda && (
         <section className={styles.section}>
