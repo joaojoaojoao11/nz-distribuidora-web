@@ -932,10 +932,41 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
  * exclusivamente no adapter estático. Linha nova entra nesta lista e vale nos
  * dois caminhos de uma vez.
  */
+/**
+ * Fotos de rolo com slug do ERP, fora das familias acima.
+ *
+ * Oracal 6510 — as 7 fluorescentes. Linha propria no cadastro, mas o arquivo
+ * mora junto do 651 porque e a mesma familia de material.
+ *
+ * Oracal 670 light blue — o cadastro tem DOIS produtos para a mesma cor: o
+ * slug curto (`oracal-670-light-blue-g`, ja no mapa do dbSnapshot) e este,
+ * longo, vindo do ERP. Aponta para o MESMO arquivo de propósito: e a mesma
+ * foto do mesmo rolo, e sem esta entrada o duplicado cai no placeholder.
+ */
+export const ERP_ROLL_IMAGES: Record<string, string> = {
+  'oracal-6510-vinil-oracal-6510-029-yellow-fluorescent-ora6510029f':
+    '/assets/images/shop/oracal-651/fluor-029-yellow.webp',
+  'oracal-6510-vinil-oracal-6510-037-orange-fluorescent-ora6510037f':
+    '/assets/images/shop/oracal-651/fluor-037-orange.webp',
+  'oracal-6510-vinil-oracal-6510-038-red-orange-fluorescent-ora6510038f':
+    '/assets/images/shop/oracal-651/fluor-038-red-orange.webp',
+  'oracal-6510-vinil-oracal-6510-039-red-fluorescent-ora6510039f':
+    '/assets/images/shop/oracal-651/fluor-039-red.webp',
+  'oracal-6510-vinil-oracal-6510-046-pink-fluorescent-ora6510046f':
+    '/assets/images/shop/oracal-651/fluor-046-pink.webp',
+  'oracal-6510-vinil-oracal-6510-069-green-fluorescent-ora6510069f':
+    '/assets/images/shop/oracal-651/fluor-069-green.webp',
+  'oracal-6510-vinil-oracal-6510-357-orange-red-fluorescent-ora6510357f':
+    '/assets/images/shop/oracal-651/fluor-357-orange-red.webp',
+  'oracal-670-vinil-oracal-670-light-blue-g-053g-ora670053':
+    '/assets/images/shop/oracal-670ra/light-blue-g.webp',
+};
+
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
   MCX_ROLL_IMAGES,
   M7_ROLL_IMAGES,
   SW_ROLL_IMAGES,
+  ERP_ROLL_IMAGES,
 ];
 
 /** Foto de rolo para o slug, se alguma linha tiver. */
