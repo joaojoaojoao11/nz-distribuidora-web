@@ -350,13 +350,117 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
 };
 
 /**
+ * Fotos de rolo Speed Wrapping geradas por IA (Nano Banana 2, img2img a partir
+ * do template Speed Wrapping aprovado). Um webp 1200x1200 por slug — tubete PET
+ * liso preto polido, logo SPEED WRAPPING oficial (vermelho+branco) no canto
+ * superior esquerdo, fundo branco.
+ *
+ * Slug = mesmo `slug` do banco (produtos.slug), sempre no formato
+ * `speed-wrapping-<linha>-<num>-<nome>-spw<linha><num>`.
+ *
+ * Metadata por linha SW (material/liner/textura) fica em
+ * `src/lib/data/speedWrappingLines.ts` — usar de referência quando gerar novas
+ * linhas.
+ *
+ * Linha ESG (Super Gloss PET) — 37 cores. Material: PVC polimérico dupla camada,
+ * liner PET transparente, superfície resinada lisa (sem casca de laranja), ultra
+ * gloss mirror wet-look. Cores da 001 a 037.
+ */
+export const SW_ROLL_IMAGES: Record<string, string> = {
+  // ESG — Super Gloss (37 cores)
+  'speed-wrapping-esg-001-super-gloss-piano-black-pet-spwesg001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-001-super-gloss-piano-black-pet-spwesg001.webp',
+  'speed-wrapping-esg-002-super-gloss-piano-white-pet-spwesg002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-002-super-gloss-piano-white-pet-spwesg002.webp',
+  'speed-wrapping-esg-003-super-gloss-porsche-rouge-red-pet-spwesg003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-003-super-gloss-porsche-rouge-red-pet-spwesg003.webp',
+  'speed-wrapping-esg-004-super-gloss-ferrari-red-pet-spwesg004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-004-super-gloss-ferrari-red-pet-spwesg004.webp',
+  'speed-wrapping-esg-005-super-gloss-viper-green-pet-spwesg005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-005-super-gloss-viper-green-pet-spwesg005.webp',
+  'speed-wrapping-esg-006-super-gloss-apple-green-pet-spwesg006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-006-super-gloss-apple-green-pet-spwesg006.webp',
+  'speed-wrapping-esg-007-super-gloss-acid-green-pet-spwesg007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-007-super-gloss-acid-green-pet-spwesg007.webp',
+  'speed-wrapping-esg-008-super-gloss-light-lime-green-pet-spwesg008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-008-super-gloss-light-lime-green-pet-spwesg008.webp',
+  // ESG 009 tem typo no cadastro do banco ("saspphire") — preservamos o slug
+  // exatamente como está pra que o lookup bata; renomear no banco seria trabalho
+  // de correção do cadastro, não da foto.
+  'speed-wrapping-esg-009-super-gloss-saspphire-pet-spwesg009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-009-super-gloss-saspphire-pet-spwesg009.webp',
+  'speed-wrapping-esg-010-super-gloss-denim-blue-pet-spwesg010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-010-super-gloss-denim-blue-pet-spwesg010.webp',
+  'speed-wrapping-esg-011-super-gloss-miami-blue-pet-spwesg011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-011-super-gloss-miami-blue-pet-spwesg011.webp',
+  'speed-wrapping-esg-012-super-gloss-ice-cream-blue-pet-spwesg012':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-012-super-gloss-ice-cream-blue-pet-spwesg012.webp',
+  'speed-wrapping-esg-013-super-gloss-sky-blue-pet-spwesg013':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-013-super-gloss-sky-blue-pet-spwesg013.webp',
+  'speed-wrapping-esg-014-super-gloss-tiffany-pet-spwesg014':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-014-super-gloss-tiffany-pet-spwesg014.webp',
+  'speed-wrapping-esg-015-super-gloss-shark-blue-pet-spwesg015':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-015-super-gloss-shark-blue-pet-spwesg015.webp',
+  'speed-wrapping-esg-016-super-gloss-sunflower-yellow-pet-spwesg016':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-016-super-gloss-sunflower-yellow-pet-spwesg016.webp',
+  'speed-wrapping-esg-017-super-gloss-maize-yellow-pet-spwesg017':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-017-super-gloss-maize-yellow-pet-spwesg017.webp',
+  'speed-wrapping-esg-018-super-gloss-lemon-yellow-pet-spwesg018':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-018-super-gloss-lemon-yellow-pet-spwesg018.webp',
+  'speed-wrapping-esg-019-super-gloss-bright-orange-pet-spwesg019':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-019-super-gloss-bright-orange-pet-spwesg019.webp',
+  'speed-wrapping-esg-020-super-gloss-mclaren-orange-pet-spwesg020':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-020-super-gloss-mclaren-orange-pet-spwesg020.webp',
+  'speed-wrapping-esg-021-super-gloss-beetroot-red-pet-spwesg021':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-021-super-gloss-beetroot-red-pet-spwesg021.webp',
+  'speed-wrapping-esg-022-super-gloss-coral-orange-pet-spwesg022':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-022-super-gloss-coral-orange-pet-spwesg022.webp',
+  'speed-wrapping-esg-023-super-gloss-peach-pink-pet-spwesg023':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-023-super-gloss-peach-pink-pet-spwesg023.webp',
+  'speed-wrapping-esg-024-super-gloss-rouge-pink-pet-spwesg024':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-024-super-gloss-rouge-pink-pet-spwesg024.webp',
+  'speed-wrapping-esg-025-super-gloss-lavender-pet-spwesg025':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-025-super-gloss-lavender-pet-spwesg025.webp',
+  'speed-wrapping-esg-026-super-gloss-mist-blue-pet-spwesg026':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-026-super-gloss-mist-blue-pet-spwesg026.webp',
+  'speed-wrapping-esg-027-super-gloss-nardo-grey-pet-spwesg027':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-027-super-gloss-nardo-grey-pet-spwesg027.webp',
+  'speed-wrapping-esg-028-super-gloss-brooklyn-grey-pet-spwesg028':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-028-super-gloss-brooklyn-grey-pet-spwesg028.webp',
+  'speed-wrapping-esg-029-super-gloss-volcano-grey-pet-spwesg029':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-029-super-gloss-volcano-grey-pet-spwesg029.webp',
+  // ESG 030-032 e 034 nao tem sufixo "pet" no nome cadastrado.
+  'speed-wrapping-esg-030-super-gloss-black-gem-red-spwesg030':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-030-super-gloss-black-gem-red-spwesg030.webp',
+  'speed-wrapping-esg-031-super-gloss-plum-magenta-spwesg031':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-031-super-gloss-plum-magenta-spwesg031.webp',
+  'speed-wrapping-esg-032-super-gloss-morganite-gem-red-spwesg032':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-032-super-gloss-morganite-gem-red-spwesg032.webp',
+  // ESG 033 tem typo no banco ("prosche" em vez de "porsche") — preservamos.
+  'speed-wrapping-esg-033-super-gloss-prosche-spwesg033':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-033-super-gloss-prosche-spwesg033.webp',
+  'speed-wrapping-esg-034-super-gloss-piano-china-blue-spwesg034':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-034-super-gloss-piano-china-blue-spwesg034.webp',
+  'speed-wrapping-esg-035-super-gloss-racing-green-pet-spwesg035':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-035-super-gloss-racing-green-pet-spwesg035.webp',
+  'speed-wrapping-esg-036-super-gloss-armor-green-pet-spwesg036':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-036-super-gloss-armor-green-pet-spwesg036.webp',
+  'speed-wrapping-esg-037-super-gloss-khaki-grey-pet-spwesg037':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-esg-037-super-gloss-khaki-grey-pet-spwesg037.webp',
+};
+
+/**
  * Fotos de rolo por slug, de todas as linhas que já têm. O adapter do ERP — que
  * é o caminho de produção — consulta por aqui, e não mapa a mapa: foi assim que
  * a MetaCast MCX ficou semanas com a foto só em dev, porque o mapa vivia
  * exclusivamente no adapter estático. Linha nova entra nesta lista e vale nos
  * dois caminhos de uma vez.
  */
-const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [MCX_ROLL_IMAGES, M7_ROLL_IMAGES];
+const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
+  MCX_ROLL_IMAGES,
+  M7_ROLL_IMAGES,
+  SW_ROLL_IMAGES,
+];
 
 /** Foto de rolo para o slug, se alguma linha tiver. */
 export function rollImageFor(slug: string): string | undefined {
