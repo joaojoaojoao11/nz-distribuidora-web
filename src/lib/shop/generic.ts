@@ -960,6 +960,11 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/oracal-651/fluor-357-orange-red.webp',
   'oracal-670-vinil-oracal-670-light-blue-g-053g-ora670053':
     '/assets/images/shop/oracal-670ra/light-blue-g.webp',
+  // SH Decor: as outras 50 texturas vem preenchidas em `produtos.imagem` no
+  // banco; so esta faltava. Entra aqui em vez de no banco para o arquivo e a
+  // referencia viajarem no mesmo commit.
+  'sh-decor-ip-415-pedra-carrara-brilho-shdip-415':
+    '/assets/images/decor/sh/carrara-brilho/texture.jpg',
 };
 
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
