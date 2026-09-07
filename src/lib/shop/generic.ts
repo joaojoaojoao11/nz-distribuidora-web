@@ -1032,6 +1032,77 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/avery-adpro/adfilm08-nano-ceramic-studio-35.webp',
   'avery-ad-pro-nano-ceramic-studio-70-adfilm09':
     '/assets/images/shop/avery-adpro/adfilm09-nano-ceramic-studio-70.webp',
+  // NZWrap Import (34 de 38): glitter diamante, chameleon candy, chrome gloss,
+  // electro metallic/matte/gloss e super gloss candy. O nome do arquivo e o
+  // proprio slug, entao chave e caminho nunca divergem nesta linha.
+  'nzwrap-black-gloss-electro-nzwge02':
+    '/assets/images/shop/nzwrap-import/nzwrap-black-gloss-electro-nzwge02.webp',
+  'nzwrap-black-purple-matte-electro-nzwem43':
+    '/assets/images/shop/nzwrap-import/nzwrap-black-purple-matte-electro-nzwem43.webp',
+  'nzwrap-black-rose-gloss-electro-nzwge08':
+    '/assets/images/shop/nzwrap-import/nzwrap-black-rose-gloss-electro-nzwge08.webp',
+  'nzwrap-brown-diamond-glitter-nzwgd02':
+    '/assets/images/shop/nzwrap-import/nzwrap-brown-diamond-glitter-nzwgd02.webp',
+  'nzwrap-dark-yellow-gloss-electro-nzwge17':
+    '/assets/images/shop/nzwrap-import/nzwrap-dark-yellow-gloss-electro-nzwge17.webp',
+  'nzwrap-fantasy-blue-chameleon-candy-nzwcc08':
+    '/assets/images/shop/nzwrap-import/nzwrap-fantasy-blue-chameleon-candy-nzwcc08.webp',
+  'nzwrap-ghost-grey-gloss-electro-nzwge05':
+    '/assets/images/shop/nzwrap-import/nzwrap-ghost-grey-gloss-electro-nzwge05.webp',
+  'nzwrap-ghost-grey-super-gloss-candy-nzwgc01':
+    '/assets/images/shop/nzwrap-import/nzwrap-ghost-grey-super-gloss-candy-nzwgc01.webp',
+  'nzwrap-gold-chrome-gloss-nzwcg01':
+    '/assets/images/shop/nzwrap-import/nzwrap-gold-chrome-gloss-nzwcg01.webp',
+  'nzwrap-grass-gren-matte-electro-nzwem20':
+    '/assets/images/shop/nzwrap-import/nzwrap-grass-gren-matte-electro-nzwem20.webp',
+  'nzwrap-grey-blue-chameleon-candy-nzwcc01':
+    '/assets/images/shop/nzwrap-import/nzwrap-grey-blue-chameleon-candy-nzwcc01.webp',
+  'nzwrap-grey-chrome-gloss-nzwcg08':
+    '/assets/images/shop/nzwrap-import/nzwrap-grey-chrome-gloss-nzwcg08.webp',
+  'nzwrap-lake-blue-electro-metallic-nzwem24':
+    '/assets/images/shop/nzwrap-import/nzwrap-lake-blue-electro-metallic-nzwem24.webp',
+  'nzwrap-lake-blue-gloss-electro-nzwge21':
+    '/assets/images/shop/nzwrap-import/nzwrap-lake-blue-gloss-electro-nzwge21.webp',
+  'nzwrap-lemon-green-diamond-glitter-nzwgd16':
+    '/assets/images/shop/nzwrap-import/nzwrap-lemon-green-diamond-glitter-nzwgd16.webp',
+  'nzwrap-light-sky-blue-matte-electro-nzwem26':
+    '/assets/images/shop/nzwrap-import/nzwrap-light-sky-blue-matte-electro-nzwem26.webp',
+  'nzwrap-medium-blue-gloss-electro-nzwge22':
+    '/assets/images/shop/nzwrap-import/nzwrap-medium-blue-gloss-electro-nzwge22.webp',
+  'nzwrap-mint-blue-matte-electro-nzwem23':
+    '/assets/images/shop/nzwrap-import/nzwrap-mint-blue-matte-electro-nzwem23.webp',
+  'nzwrap-mint-green-gloss-electro-nzwge20':
+    '/assets/images/shop/nzwrap-import/nzwrap-mint-green-gloss-electro-nzwge20.webp',
+  'nzwrap-mint-green-matte-electro-nzwem17':
+    '/assets/images/shop/nzwrap-import/nzwrap-mint-green-matte-electro-nzwem17.webp',
+  'nzwrap-navy-blue-matte-electro-nzwem36':
+    '/assets/images/shop/nzwrap-import/nzwrap-navy-blue-matte-electro-nzwem36.webp',
+  'nzwrap-orange-diamond-glitter-nzwgd06':
+    '/assets/images/shop/nzwrap-import/nzwrap-orange-diamond-glitter-nzwgd06.webp',
+  'nzwrap-orange-matte-electro-nzwem35':
+    '/assets/images/shop/nzwrap-import/nzwrap-orange-matte-electro-nzwem35.webp',
+  'nzwrap-red-diamond-glitter-nzwgd07':
+    '/assets/images/shop/nzwrap-import/nzwrap-red-diamond-glitter-nzwgd07.webp',
+  'nzwrap-red-electro-metallic-nzwem12':
+    '/assets/images/shop/nzwrap-import/nzwrap-red-electro-metallic-nzwem12.webp',
+  'nzwrap-red-gloss-electro-nzwge10':
+    '/assets/images/shop/nzwrap-import/nzwrap-red-gloss-electro-nzwge10.webp',
+  'nzwrap-red-gloss-electro-pet-nzwge10p':
+    '/assets/images/shop/nzwrap-import/nzwrap-red-gloss-electro-pet-nzwge10p.webp',
+  'nzwrap-silver-chrome-gloss-nzwcg02':
+    '/assets/images/shop/nzwrap-import/nzwrap-silver-chrome-gloss-nzwcg02.webp',
+  'nzwrap-silver-diamond-glitter-nzwgd05':
+    '/assets/images/shop/nzwrap-import/nzwrap-silver-diamond-glitter-nzwgd05.webp',
+  'nzwrap-silver-super-gloss-candy-nzwgc02':
+    '/assets/images/shop/nzwrap-import/nzwrap-silver-super-gloss-candy-nzwgc02.webp',
+  'nzwrap-steel-grey-gloss-electro-nzwge06':
+    '/assets/images/shop/nzwrap-import/nzwrap-steel-grey-gloss-electro-nzwge06.webp',
+  'nzwrap-titanium-grey-electro-metallic-nzwem06':
+    '/assets/images/shop/nzwrap-import/nzwrap-titanium-grey-electro-metallic-nzwem06.webp',
+  'nzwrap-yellow-diamond-glitter-nzwgd03':
+    '/assets/images/shop/nzwrap-import/nzwrap-yellow-diamond-glitter-nzwgd03.webp',
+  'nzwrap-yellow-super-gloss-candy-nzwgc03':
+    '/assets/images/shop/nzwrap-import/nzwrap-yellow-super-gloss-candy-nzwgc03.webp',
 };
 
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
