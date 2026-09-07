@@ -33,7 +33,7 @@ export const GENERIC_IMAGE_BY_LINE: Record<LinhaErp, string> = {
   avery: '/assets/images/shop/generic/avery.webp',
   md80: '/assets/images/shop/generic/md80.webp',
   ppf: '/assets/images/shop/generic/ppf.webp',
-  'speed-wrapping': '/assets/images/shop/generic/speed-wrapping.webp',
+  'speed-wrapping': '/assets/images/shop/generic/speed-wrapping.png',
   'nzwrap-import': '/assets/images/shop/generic/nzwrap-import.webp',
   nar: '/assets/images/shop/generic/nar.webp',
   next: '/assets/images/shop/generic/next.webp',
@@ -177,6 +177,52 @@ export const REVIEWED_SLUGS: ReadonlySet<string> = new Set([
   // Adicionamos abaixo, sabendo que não colidem com nenhum slug SH/Oracal 670:
   'white',
   'light-blue',
+  // NZWrap Import (35): slug completo do DB, sem prefixo curto — o SKU no final
+  // (nzwXX##) faz cada chave ser única. Foto está em NZWRAP_ROLL_IMAGES abaixo.
+  'nzwrap-grey-diamond-glitter-nzwgd01',
+  'nzwrap-brown-diamond-glitter-nzwgd02',
+  'nzwrap-yellow-diamond-glitter-nzwgd03',
+  'nzwrap-silver-diamond-glitter-nzwgd05',
+  'nzwrap-orange-diamond-glitter-nzwgd06',
+  'nzwrap-red-diamond-glitter-nzwgd07',
+  'nzwrap-lemon-green-diamond-glitter-nzwgd16',
+  'nzwrap-grey-blue-chameleon-candy-nzwcc01',
+  'nzwrap-fantasy-blue-chameleon-candy-nzwcc08',
+  'nzwrap-gold-chrome-gloss-nzwcg01',
+  'nzwrap-silver-chrome-gloss-nzwcg02',
+  'nzwrap-grey-chrome-gloss-nzwcg08',
+  'nzwrap-titanium-grey-electro-metallic-nzwem06',
+  'nzwrap-red-electro-metallic-nzwem12',
+  'nzwrap-lake-blue-electro-metallic-nzwem24',
+  'nzwrap-mint-green-matte-electro-nzwem17',
+  'nzwrap-grass-gren-matte-electro-nzwem20',
+  'nzwrap-mint-blue-matte-electro-nzwem23',
+  'nzwrap-light-sky-blue-matte-electro-nzwem26',
+  'nzwrap-orange-matte-electro-nzwem35',
+  'nzwrap-navy-blue-matte-electro-nzwem36',
+  'nzwrap-black-purple-matte-electro-nzwem43',
+  'nzwrap-ghost-grey-super-gloss-candy-nzwgc01',
+  'nzwrap-silver-super-gloss-candy-nzwgc02',
+  'nzwrap-yellow-super-gloss-candy-nzwgc03',
+  'nzwrap-black-gloss-electro-nzwge02',
+  'nzwrap-ghost-grey-gloss-electro-nzwge05',
+  'nzwrap-steel-grey-gloss-electro-nzwge06',
+  'nzwrap-black-rose-gloss-electro-nzwge08',
+  'nzwrap-red-gloss-electro-nzwge10',
+  'nzwrap-red-gloss-electro-pet-nzwge10p',
+  'nzwrap-dark-yellow-gloss-electro-nzwge17',
+  'nzwrap-mint-green-gloss-electro-nzwge20',
+  'nzwrap-lake-blue-gloss-electro-nzwge21',
+  'nzwrap-medium-blue-gloss-electro-nzwge22',
+  // NZ Farol (8): pelicula de farol NZPPF (1-4, 6-8) e NZWrap (5).
+  'nz-nzppf-headlight-light-black-nzpj1',
+  'nz-nzppf-headlight-dark-black-nzpj2',
+  'nz-nzppf-headlight-eclipse-pro-nzpj3',
+  'nz-nzppf-headlight-light-gray-nzpj4',
+  'nz-nzwrap-pelicula-de-farol-nzpj5',
+  'nz-nzppf-headlight-light-black-nzpj6',
+  'nz-nzppf-headlight-dark-black-nzpj7',
+  'nz-nzppf-headlight-light-gray-nzpj8',
 ]);
 
 /**
@@ -1032,7 +1078,7 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/avery-adpro/adfilm08-nano-ceramic-studio-35.webp',
   'avery-ad-pro-nano-ceramic-studio-70-adfilm09':
     '/assets/images/shop/avery-adpro/adfilm09-nano-ceramic-studio-70.webp',
-  // NZWrap Import (34 de 38): glitter diamante, chameleon candy, chrome gloss,
+  // NZWrap Import (35): glitter diamante, chameleon candy, chrome gloss,
   // electro metallic/matte/gloss e super gloss candy. O nome do arquivo e o
   // proprio slug, entao chave e caminho nunca divergem nesta linha.
   'nzwrap-black-gloss-electro-nzwge02':
@@ -1103,6 +1149,27 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/nzwrap-import/nzwrap-yellow-diamond-glitter-nzwgd03.webp',
   'nzwrap-yellow-super-gloss-candy-nzwgc03':
     '/assets/images/shop/nzwrap-import/nzwrap-yellow-super-gloss-candy-nzwgc03.webp',
+  // nzwrap-grey-diamond-glitter-nzwgd01 fora: a URL da geracao voltou 403 (era
+  // a mais antiga do lote) e o arquivo nunca chegou. Com a chave aqui o card
+  // mostraria imagem quebrada; sem ela, cai no placeholder. Regerar e reativar.
+  // NZ Farol (8): pelicula de farol NZPPF + NZWrap. NZPJ6/7/8 sao as mesmas
+  // cores dos NZPJ1/2/4 em outra medida, entao apontam pro mesmo arquivo.
+  'nz-nzppf-headlight-light-black-nzpj1':
+    '/assets/images/shop/nz-farol/nz-nzppf-headlight-light-black-nzpj1.webp',
+  'nz-nzppf-headlight-dark-black-nzpj2':
+    '/assets/images/shop/nz-farol/nz-nzppf-headlight-dark-black-nzpj2.webp',
+  'nz-nzppf-headlight-eclipse-pro-nzpj3':
+    '/assets/images/shop/nz-farol/nz-nzppf-headlight-eclipse-pro-nzpj3.webp',
+  'nz-nzppf-headlight-light-gray-nzpj4':
+    '/assets/images/shop/nz-farol/nz-nzppf-headlight-light-gray-nzpj4.webp',
+  'nz-nzwrap-pelicula-de-farol-nzpj5':
+    '/assets/images/shop/nz-farol/nz-nzwrap-pelicula-de-farol-nzpj5.webp',
+  'nz-nzppf-headlight-light-black-nzpj6':
+    '/assets/images/shop/nz-farol/nz-nzppf-headlight-light-black-nzpj1.webp',
+  'nz-nzppf-headlight-dark-black-nzpj7':
+    '/assets/images/shop/nz-farol/nz-nzppf-headlight-dark-black-nzpj2.webp',
+  'nz-nzppf-headlight-light-gray-nzpj8':
+    '/assets/images/shop/nz-farol/nz-nzppf-headlight-light-gray-nzpj4.webp',
 };
 
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
