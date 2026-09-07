@@ -593,7 +593,11 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
   'speed-wrapping-ech-011-chrome-matte-black-spwech011':
     '/assets/images/shop/speed-wrapping/speed-wrapping-ech-011-chrome-matte-black-spwech011.webp',
   // EOX — Oxide (4 cores) — PET liner + matte solid com carater oxidado/patinado
-  'speed-wrapping-eox-001-oxide-chrome-silver-pet-spweox001':
+  // A CHAVE termina em `spwerw006`, nao `spweox001`: e o slug real do produto no
+  // banco (o codigo do cadastro saiu de outra linha). O ARQUIVO segue com o nome
+  // da geracao — chave e nome de arquivo nao precisam coincidir, e a chave e que
+  // tem de bater com produtos.slug, senao a cor cai no placeholder.
+  'speed-wrapping-eox-001-oxide-chrome-silver-pet-spwerw006':
     '/assets/images/shop/speed-wrapping/speed-wrapping-eox-001-oxide-chrome-silver-pet-spweox001.webp',
   'speed-wrapping-eox-002-oxide-red-pet-spweox002':
     '/assets/images/shop/speed-wrapping/speed-wrapping-eox-002-oxide-red-pet-spweox002.webp',
@@ -601,6 +605,53 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/speed-wrapping/speed-wrapping-eox-003-oxide-ghost-venom-green-spweox003.webp',
   'speed-wrapping-eox-004-oxide-dusk-purple-spweox004':
     '/assets/images/shop/speed-wrapping/speed-wrapping-eox-004-oxide-dusk-purple-spweox004.webp',
+  // EDG — Metallic (23 cores) — PET liner + pigmento metalico solido gloss wet-look
+  'speed-wrapping-edg-001-metallic-agate-grey-pet-spwedg001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-001-metallic-agate-grey-pet-spwedg001.webp',
+  'speed-wrapping-edg-002-metallic-soul-red-pet-spwedg002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-002-metallic-soul-red-pet-spwedg002.webp',
+  'speed-wrapping-edg-003-metallic-mountain-green-pet-spwedg003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-003-metallic-mountain-green-pet-spwedg003.webp',
+  'speed-wrapping-edg-004-metallic-isle-of-man-green-pet-spwedg004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-004-metallic-isle-of-man-green-pet-spwedg004.webp',
+  'speed-wrapping-edg-005-metallic-indigo-blue-flip-purple-green-spwedg005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-005-metallic-indigo-blue-flip-purple-green-spwedg005.webp',
+  'speed-wrapping-edg-006-metallic-porshe-urban-green-pet-spwedg006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-006-metallic-porshe-urban-green-pet-spwedg006.webp',
+  'speed-wrapping-edg-007-metallic-ice-crystal-blue-pet-spwedg007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-007-metallic-ice-crystal-blue-pet-spwedg007.webp',
+  'speed-wrapping-edg-008-metallic-lamborghini-blue-blast-purple-spwedg008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-008-metallic-lamborghini-blue-blast-purple-spwedg008.webp',
+  'speed-wrapping-edg-009-metallic-violet-pet-spwedg009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-009-metallic-violet-pet-spwedg009.webp',
+  'speed-wrapping-edg-010-metallic-gentian-blue-pet-spwedg010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-010-metallic-gentian-blue-pet-spwedg010.webp',
+  'speed-wrapping-edg-011-metallic-grey-pet-spwedg011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-011-metallic-grey-pet-spwedg011.webp',
+  'speed-wrapping-edg-012-metallic-brown-grey-pet-spwedg012':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-012-metallic-brown-grey-pet-spwedg012.webp',
+  'speed-wrapping-edg-013-metallic-byron-bay-blue-pet-spwedg013':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-013-metallic-byron-bay-blue-pet-spwedg013.webp',
+  'speed-wrapping-edg-014-metallic-champane-pet-spwedg014':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-014-metallic-champane-pet-spwedg014.webp',
+  'speed-wrapping-edg-015-metallic-passion-pink-pet-spwedg015':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-015-metallic-passion-pink-pet-spwedg015.webp',
+  'speed-wrapping-edg-016-metal-space-silver-pet-spwedg016':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-016-metal-space-silver-pet-spwedg016.webp',
+  'speed-wrapping-edg-017-metal-midnigth-plurple-spwedg017':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-017-metal-midnigth-plurple-spwedg017.webp',
+  'speed-wrapping-edg-018-metal-agate-green-spwedg018':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-018-metal-agate-green-spwedg018.webp',
+  'speed-wrapping-edg-019-metal-austin-gold-pet-spwedg019':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-019-metal-austin-gold-pet-spwedg019.webp',
+  'speed-wrapping-edg-020-metal-ruby-red-pet-spwedg020':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-020-metal-ruby-red-pet-spwedg020.webp',
+  'speed-wrapping-edg-021-metal-blue-berry-pet-spwedg021':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-021-metal-blue-berry-pet-spwedg021.webp',
+  'speed-wrapping-edg-025-mettalic-paint-mettalic-solar-gold-pet-spwedg025':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-025-mettalic-paint-mettalic-solar-gold-pet-spwedg025.webp',
+  'speed-wrapping-edg-027-metallic-paint-metallic-midnight-pluple-pet-spwedg027':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-edg-027-metallic-paint-metallic-midnight-pluple-pet-spwedg027.webp',
 };
 
 /**
