@@ -16,6 +16,7 @@
 import { useSyncExternalStore } from 'react';
 import { SHOP_ITEMS } from './catalog';
 import { lojaRowsToShopItems, type LojaCatalogoRow } from './adapters/erp';
+import { indexarLinhas, INDICE_VAZIO, type IndiceDeLinhas, type LojaLinhaRow } from './linhas';
 import type { ShopItem } from './types';
 
 type Estado = 'estatico' | 'carregando' | 'banco' | 'falhou';
@@ -25,6 +26,10 @@ let porSlug: ReadonlyMap<string, ShopItem> = new Map(SHOP_ITEMS.map((i) => [i.sl
 let porLegacy: ReadonlyMap<string, ShopItem> = new Map(
   SHOP_ITEMS.flatMap((i) => (i.legacyPath ? [[i.legacyPath.toLowerCase(), i] as const] : []))
 );
+// Fichas de linha e sub-familia, do mesmo JSON do catalogo. Comeca vazio: sem
+// API (npm run dev, rede caida) a pagina do produto mostra so a ficha da
+// variante, que e o comportamento de antes.
+let indiceLinhas: IndiceDeLinhas = INDICE_VAZIO;
 let estado: Estado = 'estatico';
 let promessa: Promise<void> | null = null;
 const ouvintes = new Set<() => void>();
@@ -46,8 +51,9 @@ export function carregarCatalogo(): Promise<void> {
     try {
       const res = await fetch('/api/nz/catalogo', { headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = (await res.json()) as { itens?: LojaCatalogoRow[] };
+      const json = (await res.json()) as { itens?: LojaCatalogoRow[]; linhas?: LojaLinhaRow[] };
       if (!Array.isArray(json.itens) || json.itens.length === 0) throw new Error('catálogo vazio');
+      if (Array.isArray(json.linhas)) indiceLinhas = indexarLinhas(json.linhas);
       publicar(lojaRowsToShopItems(json.itens), 'banco');
     } catch (err) {
       if (import.meta.env.DEV) console.info('[shop] catálogo do banco indisponível, usando o estático:', err);
@@ -73,6 +79,11 @@ export function useShopCatalog(): ShopItem[] {
 /** 'banco' quando o JSON já chegou; 'falhou' quando ficou no estático de vez. */
 export function useCatalogoEstado(): Estado {
   return useSyncExternalStore(subscribe, () => estado, () => estado);
+}
+
+/** As fichas de linha e sub-familia que ja chegaram. Vazio antes da carga. */
+export function useLinhas(): IndiceDeLinhas {
+  return useSyncExternalStore(subscribe, () => indiceLinhas, () => indiceLinhas);
 }
 
 export function catalogoAtual(): ShopItem[] {

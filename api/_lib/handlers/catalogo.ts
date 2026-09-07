@@ -46,10 +46,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if ((data ?? []).length < PAGE) break;
   }
 
+  // Fichas de linha e de sub-família. Vêm no MESMO JSON de propósito: são ~45
+  // linhas para 1.292 produtos, e repeti-las dentro de cada item multiplicaria
+  // a ficha da Avery por 288. Aqui é uma lista à parte, e o cliente cruza.
+  // Se a consulta falhar, o catálogo vai sem ficha de linha em vez de a loja
+  // inteira cair — a ficha é enriquecimento, não requisito.
+  const { data: linhas, error: erroLinhas } = await site
+    .from('loja_linhas')
+    .select('*')
+    .order('ordem', { ascending: true })
+    .order('linha_key', { ascending: true });
+
   const nocache = req.query.nocache === '1';
   res.setHeader(
     'Cache-Control',
     nocache ? 'no-store' : 'public, s-maxage=300, stale-while-revalidate=3600, max-age=60'
   );
-  res.status(200).json({ geradoEm: new Date().toISOString(), total: itens.length, itens });
+  res.status(200).json({
+    geradoEm: new Date().toISOString(),
+    total: itens.length,
+    itens,
+    linhas: erroLinhas ? [] : (linhas ?? []),
+  });
 }

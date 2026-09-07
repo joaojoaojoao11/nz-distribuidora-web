@@ -158,6 +158,13 @@ export interface ShopItem {
   nivelEstoque?: NivelEstoque | null;
   larguraM?: number | null;
   metragemPadrao?: number | null;
+  /**
+   * Unidade de venda do ERP ('ML', 'M2'…). Existe por um motivo só, e é
+   * importante: quando é 'M2', `metragemPadrao` guarda ÁREA, não comprimento.
+   * São 64 SKUs com 1,52 × 22,86 M2 — e 22,86 é m² (1,524 × 15). Sem este
+   * campo, a ficha rotularia isso como "metragem do rolo: 22,86 m".
+   */
+  unidadeVenda?: string | null;
 }
 
 /** Prefixo de slug por fonte. Resolve as 3 colisões reais entre etherna e sh-decor. */

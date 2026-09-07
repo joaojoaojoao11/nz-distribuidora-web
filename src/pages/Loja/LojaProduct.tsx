@@ -6,7 +6,7 @@
 // uma cor Oracal (hex, sem foto) e uma linha Avery (sem cor e sem foto) sem
 // nenhum buraco no layout.
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
@@ -23,7 +23,9 @@ import Disponibilidade from './Disponibilidade';
 import Preco from './Preco';
 import PrazoEntrega from './PrazoEntrega';
 import Avaliacoes from './Avaliacoes';
+import FichaTecnica, { DescricaoDoProduto } from './FichaTecnica';
 import { ShopCard } from './ShopCard';
+import { useLimiteNome } from './useLimiteNome';
 import styles from './LojaProduct.module.css';
 
 const VERTICAL_PATH: Record<string, string> = {
@@ -72,6 +74,10 @@ function ProductView({
   viaHistorico: boolean;
 }) {
   const navigate = useNavigate();
+  // Mesmo corte de nome da listagem: os relacionados usam os mesmos cards e
+  // têm de cortar no mesmo ponto.
+  const relacionadosRef = useRef<HTMLDivElement>(null);
+  const limiteNome = useLimiteNome(relacionadosRef);
   const [activeImage, setActiveImage] = useState(0);
   const [lightbox, setLightbox] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -269,38 +275,10 @@ function ProductView({
     );
   }
 
-  function renderSpecs() {
-    // Fontes sem `specs` (as 116 cores do banco) ganham ficha sintética do que
-    // existir. Só some se não sobrar nenhuma linha.
-    const specs = item.specs.length
-      ? item.specs
-      : [
-          ...(item.code ? [{ label: 'Código', value: item.code }] : []),
-          ...(item.finishLabel ? [{ label: 'Acabamento', value: item.finishLabel }] : []),
-          ...(item.hex ? [{ label: 'Hex aproximado', value: item.hex.toUpperCase() }] : []),
-          ...(item.durabilidadeAnos
-            ? [{ label: 'Durabilidade', value: `${item.durabilidadeAnos} anos` }]
-            : []),
-          ...(item.garantiaAnos ? [{ label: 'Garantia', value: `${item.garantiaAnos} anos` }] : []),
-          { label: 'Marca', value: item.brand },
-        ];
-
-    if (!specs.length) return null;
-
-    return (
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Ficha técnica</h2>
-        <dl className={styles.specs}>
-          {specs.map((s) => (
-            <div key={`${s.label}-${s.value}`} className={styles.specRow}>
-              <dt className={styles.specLabel}>{s.label}</dt>
-              <dd className={styles.specValue}>{s.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-    );
-  }
+  // A ficha saiu daqui para <FichaTecnica/>: deixou de ser uma lista só e
+  // passou a ser quatro camadas (variante, rolo, sub-família e linha), com a
+  // precedência resolvida em src/lib/shop/linhas.ts. A ficha sintética das
+  // cores sem `specs` foi junto — continua existindo, agora como camada A.
 
   const descricao =
     item.description?.slice(0, 155) ||
@@ -348,7 +326,7 @@ function ProductView({
 
           {renderChips()}
 
-          {item.description && <p className={styles.description}>{item.description}</p>}
+          <DescricaoDoProduto item={item} className={styles.description} />
 
           {item.kind !== 'linha' && (
             <Preco
@@ -391,7 +369,7 @@ function ProductView({
       </div>
 
       <div className={`container ${styles.body}`}>
-        {renderSpecs()}
+        <FichaTecnica item={item} />
 
         {/* Depois da ficha e antes dos relacionados: quem chegou até aqui já
             decidiu que o produto interessa e agora quer saber de quem usou. */}
@@ -400,9 +378,9 @@ function ProductView({
         {related.length > 0 && (
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Relacionados</h2>
-            <div className={styles.relatedGrid}>
+            <div className={styles.relatedGrid} ref={relacionadosRef}>
               {related.map((r) => (
-                <ShopCard key={r.slug} item={r} />
+                <ShopCard key={r.slug} item={r} limiteNome={limiteNome} />
               ))}
             </div>
           </section>

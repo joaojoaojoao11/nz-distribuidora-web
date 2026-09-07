@@ -464,6 +464,7 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     nivelEstoque: row.nivel_estoque,
     larguraM: row.largura_m,
     metragemPadrao: row.metragem_padrao,
+    unidadeVenda: row.unidade,
   };
 }
 

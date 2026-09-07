@@ -1,0 +1,144 @@
+/* Ficha técnica em camadas. As classes de seção e de linha espelham
+   LojaProduct.module.css de propósito: é a mesma página, não pode haver dois
+   ritmos de espaçamento no mesmo scroll. */
+
+.section {
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-light);
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.specs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.specRow {
+  display: grid;
+  grid-template-columns: minmax(0, 40%) minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.specLabel {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.specValue {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  /* Valor longo ("Coextrusão em 4 camadas: liner, adesivo PSA…") quebra dentro
+     da própria coluna em vez de esticar a linha. */
+  overflow-wrap: anywhere;
+}
+
+/* Fronteira entre o que é deste item e o que é da linha. Precisa ser lida como
+   legenda, não como mais uma linha da tabela. */
+.divisor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 1.25rem 0 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.divisorLinha {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+
+.divisorNota {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.verMais {
+  margin-top: 0.9rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.verMais:hover {
+  color: var(--nz-red, #c8102e);
+}
+
+.tds {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--border-light);
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.tds:hover {
+  border-color: var(--text-primary);
+}
+
+.fonte {
+  margin-top: 0.9rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.fonte a {
+  color: inherit;
+  text-underline-offset: 2px;
+}
+
+.aplicacoes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.4rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.texto {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 62ch;
+}
+
+.texto p {
+  margin: 0 0 0.9rem;
+}
+
+.texto p:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .aplicacoes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.5rem;
+  }
+}
