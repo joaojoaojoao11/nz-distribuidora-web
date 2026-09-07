@@ -965,6 +965,24 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
   // referencia viajarem no mesmo commit.
   'sh-decor-ip-415-pedra-carrara-brilho-shdip-415':
     '/assets/images/decor/sh/carrara-brilho/texture.jpg',
+  // Etherna: as outras 137 texturas vem do banco em `produtos.imagem`; estas 8
+  // vinham nulas. Mesma razao da SH Decor — arquivo e referencia no mesmo commit.
+  'etherna-calacatta-black-preto-eth001':
+    '/assets/images/decor/etherna/calacatta-black-preto/texture.jpg',
+  'etherna-calacatta-brilho-gold-eth002':
+    '/assets/images/decor/etherna/calacatta-brilho-gold/texture.jpg',
+  'etherna-calacatta-brilho-silver-eth003':
+    '/assets/images/decor/etherna/calacatta-brilho-silver/texture.jpg',
+  'etherna-texturizado-cinza-claro-eth036':
+    '/assets/images/decor/etherna/texturizado-cinza-claro/texture.jpg',
+  'etherna-linem-gelo-eth057':
+    '/assets/images/decor/etherna/linem-gelo/texture.jpg',
+  'etherna-travertino-premium-fosco-bege-eth058':
+    '/assets/images/decor/etherna/travertino-premium-fosco-bege/texture.jpg',
+  'etherna-madeira-cerejeira-marrom-eth109':
+    '/assets/images/decor/etherna/madeira-cerejeira-marrom/texture.jpg',
+  'etherna-concreto-cinza-claro-eth158':
+    '/assets/images/decor/etherna/concreto-cinza-claro/texture.jpg',
 };
 
 const ROLL_IMAGE_MAPS: ReadonlyArray<Record<string, string>> = [
