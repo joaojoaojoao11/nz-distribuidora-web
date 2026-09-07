@@ -568,6 +568,39 @@ export const SW_ROLL_IMAGES: Record<string, string> = {
     '/assets/images/shop/speed-wrapping/speed-wrapping-emr-010-chrome-mirror-black-spwemr010.webp',
   'speed-wrapping-emr-011-chrome-mirror-green-spwemr011':
     '/assets/images/shop/speed-wrapping/speed-wrapping-emr-011-chrome-mirror-green-spwemr011.webp',
+  // ECH — Chrome Matte (11 cores) — paper liner + chrome com acabamento matte
+  // (pigmento metalico mas superficie difusa, sem espelho, similar a metal escovado)
+  'speed-wrapping-ech-001-chrome-matte-gold-spwech001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-001-chrome-matte-gold-spwech001.webp',
+  'speed-wrapping-ech-002-chrome-matte-orange-spwech002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-002-chrome-matte-orange-spwech002.webp',
+  'speed-wrapping-ech-003-chrome-matte-red-spwech003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-003-chrome-matte-red-spwech003.webp',
+  'speed-wrapping-ech-004-chrome-matte-rose-red-spwech004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-004-chrome-matte-rose-red-spwech004.webp',
+  'speed-wrapping-ech-005-chrome-matte-brown-spwech005':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-005-chrome-matte-brown-spwech005.webp',
+  'speed-wrapping-ech-006-chrome-matte-tiffany-spwech006':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-006-chrome-matte-tiffany-spwech006.webp',
+  'speed-wrapping-ech-007-chrome-matte-blue-spwech007':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-007-chrome-matte-blue-spwech007.webp',
+  'speed-wrapping-ech-008-chrome-matte-light-blue-spwech008':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-008-chrome-matte-light-blue-spwech008.webp',
+  'speed-wrapping-ech-009-chrome-matte-green-spwech009':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-009-chrome-matte-green-spwech009.webp',
+  'speed-wrapping-ech-010-chrome-matte-purple-spwech010':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-010-chrome-matte-purple-spwech010.webp',
+  'speed-wrapping-ech-011-chrome-matte-black-spwech011':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-ech-011-chrome-matte-black-spwech011.webp',
+  // EOX — Oxide (4 cores) — PET liner + matte solid com carater oxidado/patinado
+  'speed-wrapping-eox-001-oxide-chrome-silver-pet-spweox001':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-eox-001-oxide-chrome-silver-pet-spweox001.webp',
+  'speed-wrapping-eox-002-oxide-red-pet-spweox002':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-eox-002-oxide-red-pet-spweox002.webp',
+  'speed-wrapping-eox-003-oxide-ghost-venom-green-spweox003':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-eox-003-oxide-ghost-venom-green-spweox003.webp',
+  'speed-wrapping-eox-004-oxide-dusk-purple-spweox004':
+    '/assets/images/shop/speed-wrapping/speed-wrapping-eox-004-oxide-dusk-purple-spweox004.webp',
 };
 
 /**
