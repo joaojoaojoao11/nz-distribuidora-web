@@ -6,6 +6,7 @@ import { colorFamilies, colorTitle, colorDescription, cleanColorName, type Color
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 import { ppfLines } from './_lib/ppfLines.js';
 import { getShopIndexItem, type ShopIndexItem } from './_lib/shopItems.js';
+import { ehLinhaOculta } from './_lib/lojaOcultos.js';
 import { organization, localBusiness, webSite, breadcrumb, product, faqPage, article, collectionPage, graphScript } from './_lib/jsonld.js';
 
 // Shell HTML com meta correta por rota, para TODOS os user-agents.
@@ -162,17 +163,20 @@ async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
   if (!supabaseUrl || !supabaseKey) return null;
   try {
     const res = await fetch(
-      `${supabaseUrl}/rest/v1/loja_catalogo?slug=eq.${encodeURIComponent(slug.toLowerCase())}&select=slug,nome,marca_exibicao,vertical,codigo,imagem,linha_label,acabamento_label,descricao,seo_titulo,seo_descricao,legacy_path&limit=1`,
+      `${supabaseUrl}/rest/v1/loja_catalogo?slug=eq.${encodeURIComponent(slug.toLowerCase())}&select=slug,linha_key,nome,marca_exibicao,vertical,codigo,imagem,linha_label,acabamento_label,descricao,seo_titulo,seo_descricao,legacy_path&limit=1`,
       { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } },
     );
     if (!res.ok) return null;
     const rows = (await res.json()) as {
       slug: string; nome: string; marca_exibicao: string | null; vertical: string; codigo: string | null;
-      imagem: string | null; linha_label: string | null; acabamento_label: string | null;
+      linha_key: string; imagem: string | null; linha_label: string | null; acabamento_label: string | null;
       descricao: string | null; seo_titulo: string | null; seo_descricao: string | null; legacy_path: string | null;
     }[];
     const r = rows?.[0];
     if (!r) return null;
+    // Linha retirada da loja: sem meta própria, para não indexar produto que
+    // o catálogo não mostra mais.
+    if (ehLinhaOculta(r.linha_key)) return null;
     const brand = r.marca_exibicao ?? 'NZ';
     const linha = r.linha_label ?? brand;
     const title = r.seo_titulo ?? `${r.nome}${r.codigo ? ` · ${r.codigo}` : ''} — ${linha}`;

@@ -13,6 +13,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import { ehLinhaOculta } from '../lojaOcultos.js';
 
 const PAGE = 1000;
 
@@ -42,7 +43,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(502).json({ error: 'catalogo-indisponivel', message: error.message });
       return;
     }
-    itens.push(...(data ?? []));
+    // Linhas retiradas da loja saem AQUI, na leitura: o sync do ERP recria os
+    // produtos a cada 5 min, então esconder no banco não pararia de pé.
+    // A paginação continua contando a página cheia — o filtro é depois do
+    // `range`, senão uma página só de itens ocultos encerraria o laço cedo.
+    itens.push(...(data ?? []).filter((r) => !ehLinhaOculta((r as { linha_key?: string }).linha_key)));
     if ((data ?? []).length < PAGE) break;
   }
 
@@ -66,6 +71,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     geradoEm: new Date().toISOString(),
     total: itens.length,
     itens,
-    linhas: erroLinhas ? [] : (linhas ?? []),
+    linhas: erroLinhas
+      ? []
+      : (linhas ?? []).filter((l) => !ehLinhaOculta((l as { linha_key?: string }).linha_key)),
   });
 }
