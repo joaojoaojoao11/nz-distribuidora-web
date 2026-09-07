@@ -130,13 +130,28 @@ console.log('\n=== 2. precedência ===');
   ok('e diz de quem é a ficha', f.linhaLabel === 'Etherna Decor');
 }
 
-// ------------------------------------------------ 3. o rolo ganha da linha
-console.log('\n=== 3. o ERP ganha da linha ===');
+// --------------------------------------- 3. o rolo e a linha nao se misturam
+console.log('\n=== 3. o que ESTE rolo e x o que a linha oferece ===');
 {
-  const indice = indexarLinhas([linha({ ficha: [{ label: 'Largura', value: '1,22 m e 1,52 m' }] })]);
+  // Na página do M7-108 apareciam três linhas sobre largura, uma embaixo da
+  // outra. A regra que ficou: o ERP diz o que ESTE rolo é ("Largura do rolo"),
+  // a linha diz o que a linha oferece. Rótulos distintos, sem contradição.
+  const indice = indexarLinhas([linha({ ficha: [{ label: 'Larguras', value: '1,22 m e 1,52 m' }] })]);
   const f = fichaDoItem(item({ larguraM: 1.52, unidadeVenda: 'ML' }), indice);
-  ok('largura medida no SKU vence a genérica da linha', f.variante.some((s) => s.value === '1,52 m'));
-  ok('e a genérica não aparece duas vezes', !f.linha.some((s) => s.label === 'Largura'));
+  const doRolo = f.variante.find((s) => s.value === '1,52 m');
+  ok('o rolo real vem do ERP', doRolo?.label === 'Largura do rolo', doRolo?.label);
+  ok('e não se chama só "Largura"', !f.variante.some((s) => s.label === 'Largura'));
+  ok('o que a linha oferece continua aparecendo', f.linha.some((s) => s.label === 'Larguras'));
+
+  // Quando o rótulo é o mesmo, aí sim o mais específico cala o outro.
+  const mesmo = indexarLinhas([linha({ ficha: [{ label: 'Largura do rolo', value: '1,22 m' }] })]);
+  const g = fichaDoItem(item({ larguraM: 1.52, unidadeVenda: 'ML' }), mesmo);
+  ok('rótulo igual: o ERP ganha e a linha não repete', !g.linha.some((s) => s.label === 'Largura do rolo'));
+
+  // O seed não pode voltar a trazer dimensão de rolo na ficha de linha.
+  const seed = readFileSync(join(ROOT, 'migrations/2026-09-07b_seed_linhas.sql'), 'utf8');
+  ok('o seed não reintroduz "Dimensões do rolo"', !/"label":"Dimensões do rolo"/.test(seed));
+  ok('nem um rótulo "Rolo" solto', !/"label":"Rolo"/.test(seed));
 }
 
 // ------------------------------------------------------- 4. sub-família
