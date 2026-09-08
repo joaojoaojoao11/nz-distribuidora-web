@@ -8,7 +8,7 @@ export interface ItemNav {
   icone: string;
   rotulo: string;
   titulo: string;
-  badge?: 'clientes' | 'garantias' | 'promo';
+  badge?: 'clientes' | 'garantias' | 'promo' | 'central';
 }
 
 interface Grupo {
@@ -60,6 +60,8 @@ export const GRUPOS: Grupo[] = [
     id: 'sistema',
     nome: 'Sistema',
     itens: [
+      // Primeiro do grupo de propósito: é a caixa de entrada do que deu errado.
+      { para: '/admin/central', icone: '🚨', rotulo: 'Central', titulo: 'Central de erros e mudanças', badge: 'central' },
       { para: '/admin/usuarios', icone: '🔐', rotulo: 'Usuários', titulo: 'Usuários do sistema' },
       { para: '/admin/configuracoes', icone: '⛭', rotulo: 'Configurações', titulo: 'Configurações globais' },
     ],

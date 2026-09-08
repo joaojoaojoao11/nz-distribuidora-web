@@ -5,6 +5,7 @@
 // só carrega quando alguém abre o dashboard, e não a cada visita ao painel.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -92,15 +93,20 @@ export default function AdminHome() {
   const [geoData, setGeoData] = useState<{ latitude: number; longitude: number; city: string; country: string; sessions: number }[]>([]);
 
   const [pendingUsers, setPendingUsers] = useState<UserProfile[]>([]);
+  const [ocorrenciasAbertas, setOcorrenciasAbertas] = useState(0);
 
   const carregarPendentes = useCallback(async () => {
-    const { data } = await supabase
-      .from('user_profiles')
-      .select('id, full_name, email, role, phone, is_approved, created_at')
-      .neq('role', 'admin')
-      .eq('is_approved', false)
-      .order('created_at', { ascending: false });
+    const [{ data }, { count: abertas }] = await Promise.all([
+      supabase
+        .from('user_profiles')
+        .select('id, full_name, email, role, phone, is_approved, created_at')
+        .neq('role', 'admin')
+        .eq('is_approved', false)
+        .order('created_at', { ascending: false }),
+      supabase.from('ocorrencias').select('id', { count: 'exact', head: true }).eq('status', 'aberta'),
+    ]);
     setPendingUsers((data ?? []) as UserProfile[]);
+    setOcorrenciasAbertas(abertas ?? 0);
   }, []);
 
   useEffect(() => {
@@ -360,6 +366,34 @@ export default function AdminHome() {
 
   return (
     <>
+        {/* O que está aberto na Central. Fica antes do analytics de propósito:
+            preço zerado e produto com foto errada são mais urgentes do que
+            bounce rate. Some quando não há nada aberto. */}
+        {ocorrenciasAbertas > 0 && (
+          <Link
+            to="/admin/central"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.85rem 1rem',
+              marginBottom: '1.25rem',
+              border: '1px solid rgba(255,68,68,0.35)',
+              background: 'rgba(255,68,68,0.07)',
+              color: '#fff',
+              textDecoration: 'none',
+              fontSize: '0.85rem',
+            }}
+          >
+            <span aria-hidden="true">🚨</span>
+            <strong>
+              {ocorrenciasAbertas} {ocorrenciasAbertas === 1 ? 'ocorrência aberta' : 'ocorrências abertas'}
+            </strong>
+            <span style={{ color: '#a1a1a6' }}>na Central de erros e mudanças</span>
+            <span style={{ marginLeft: 'auto', color: '#d4a853' }}>abrir →</span>
+          </Link>
+        )}
+
         {/* Period Filters */}
         <div className={styles.periodFilters}>
           {(Object.keys(PERIOD_LABELS) as PeriodType[]).map(p => (

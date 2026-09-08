@@ -90,6 +90,7 @@ const AdminClientes = lazy(() => import('./pages/Admin/AdminClientes'));
 const AdminWarranties = lazy(() => import('./pages/Admin/AdminWarranties'));
 const AdminEquipe = lazy(() => import('./pages/Admin/AdminEquipe'));
 const AdminSettings = lazy(() => import('./pages/Admin/AdminSettings'));
+const AdminCentral = lazy(() => import('./pages/Admin/AdminCentral'));
 const WarrantyRegistration = lazy(() => import('./pages/Warranty/WarrantyRegistration'));
 const WarrantyValidator = lazy(() => import('./pages/Warranty/WarrantyValidator'));
 const Interlagos = lazy(() => import('./pages/Interlagos/Interlagos'));
@@ -146,6 +147,7 @@ function App() {
           <Route path="leads" element={<Suspense fallback={<RouteLoading />}><AdminLeads /></Suspense>} />
           <Route path="clientes" element={<Suspense fallback={<RouteLoading />}><AdminClientes /></Suspense>} />
           <Route path="garantias" element={<Suspense fallback={<RouteLoading />}><AdminWarranties /></Suspense>} />
+          <Route path="central" element={<Suspense fallback={<RouteLoading />}><AdminCentral /></Suspense>} />
           <Route path="usuarios" element={<Suspense fallback={<RouteLoading />}><AdminEquipe /></Suspense>} />
           <Route path="configuracoes" element={<Suspense fallback={<RouteLoading />}><AdminSettings /></Suspense>} />
         </Route>

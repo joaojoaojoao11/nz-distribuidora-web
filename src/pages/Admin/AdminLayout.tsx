@@ -35,12 +35,13 @@ export default function AdminLayout() {
       return [];
     }
   });
-  const [contagens, setContagens] = useState({ clientes: 0, garantias: 0, promo: 0 });
+  const [contagens, setContagens] = useState({ clientes: 0, garantias: 0, promo: 0, central: 0 });
 
   const carregarBadges = useCallback(async () => {
-    const [{ count: clientes }, { count: garantias }] = await Promise.all([
+    const [{ count: clientes }, { count: garantias }, { count: central }] = await Promise.all([
       supabase.from('user_profiles').select('id', { count: 'exact', head: true }).neq('role', 'admin').eq('is_approved', false),
       supabase.from('garantias_nz').select('id', { count: 'exact', head: true }).eq('certificado_gerado', false),
+      supabase.from('ocorrencias').select('id', { count: 'exact', head: true }).eq('status', 'aberta'),
     ]);
     let promo = 0;
     for (const p of PROMO_PAGES) {
@@ -48,7 +49,7 @@ export default function AdminLayout() {
       const { count } = await supabase.from(p.tabela).select('id', { count: 'exact', head: true }).eq(p.statusColuna, 'pendente');
       promo += count ?? 0;
     }
-    setContagens({ clientes: clientes ?? 0, garantias: garantias ?? 0, promo });
+    setContagens({ clientes: clientes ?? 0, garantias: garantias ?? 0, promo, central: central ?? 0 });
   }, []);
 
   useEffect(() => {

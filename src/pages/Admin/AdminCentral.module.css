@@ -1,0 +1,277 @@
+/* Central de erros e mudanças. Segue a régua do Admin.module.css: fundo preto,
+   cantos retos, borda de 1px translúcida. O que é próprio daqui é a faixa
+   colorida na lateral do item — é o que deixa varrer a lista sem ler. */
+
+.resumo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-width: 7rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cartao:hover { background: rgba(255, 255, 255, 0.05); }
+.cartaoAtivo { border-color: rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.06); }
+
+.cartaoNumero {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.cartaoRotulo {
+  font-size: 0.7rem;
+  color: #a1a1a6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.aba {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #a1a1a6;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.aba:hover { color: #fff; }
+.abaAtiva { color: #fff; border-bottom-color: #fff; }
+
+.abaContador {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0.05rem 0.4rem;
+  font-size: 0.7rem;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.filtros input[type='search'] { flex: 1 1 16rem; max-width: 24rem; }
+.filtros select { flex: 0 1 14rem; }
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.item {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left-width: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.9rem 1rem;
+}
+
+/* A cor da faixa é a categoria: vermelho quebra, azul é aviso, dourado é gente
+   falando com a gente. */
+.cat_erro { border-left-color: #ff4444; }
+.cat_mudanca { border-left-color: #4a90d9; }
+.cat_problema { border-left-color: #d4a853; }
+
+.itemTopo {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.itemIcone { font-size: 1.05rem; line-height: 1.3; }
+
+.itemCabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.itemTitulo {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.itemMeta {
+  font-size: 0.72rem;
+  color: #6e6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.detalhe {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.detalheTexto {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  color: #a1a1a6;
+  font-family: var(--font-mono, monospace);
+  overflow-wrap: anywhere;
+}
+
+.par {
+  font-size: 0.78rem;
+  color: #a1a1a6;
+}
+
+.par strong { color: #fff; }
+
+.chipRuim,
+.chipAtencao,
+.chipInfo {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.chipRuim { color: #ff4444; border-color: rgba(255, 68, 68, 0.4); background: rgba(255, 68, 68, 0.08); }
+.chipAtencao { color: #f5a623; border-color: rgba(245, 166, 35, 0.4); background: rgba(245, 166, 35, 0.08); }
+.chipInfo { color: #4a90d9; border-color: rgba(74, 144, 217, 0.4); background: rgba(74, 144, 217, 0.08); }
+
+.mensagem {
+  margin: 0.65rem 0 0;
+  padding-left: 0.75rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.85rem;
+  color: #e5e5e7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.miniatura {
+  display: inline-block;
+  margin-top: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  line-height: 0;
+}
+
+.miniatura img {
+  max-width: 220px;
+  max-height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.linkBtn {
+  margin-top: 0.65rem;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: #a1a1a6;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.linkBtn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.65rem;
+}
+
+.link {
+  font-size: 0.75rem;
+  color: #d4a853;
+  text-decoration: none;
+}
+
+.link:hover { text-decoration: underline; }
+
+.linkFraco {
+  font-size: 0.72rem;
+  color: #6e6e73;
+  text-decoration: none;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.acoes input[type='text'] {
+  flex: 1 1 14rem;
+  max-width: 26rem;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.78rem;
+}
+
+.acoes button { margin-right: 0; }
+
+.resolvida {
+  flex: 1 1 auto;
+  font-size: 0.75rem;
+  color: #25d366;
+}
+
+.aviso {
+  font-size: 0.8rem;
+  color: #a1a1a6;
+  margin: 0.5rem 0;
+}
+
+.erro {
+  font-size: 0.8rem;
+  color: #ff4444;
+  margin: 0.5rem 0;
+}
+
+.vazio {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #555;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .cartao { flex: 1 1 5rem; min-width: 0; }
+  .filtros input[type='search'] { flex-basis: 100%; max-width: none; }
+}
