@@ -33,6 +33,8 @@ export interface PrecoItem {
   metroVarejo?: number | null;
   usandoVarejo?: boolean;
   erpSku?: string;
+  /** Contagem de rolos no pátio — as bolinhas do card. Só admin. */
+  estoque?: { rolosFechados: number; rolosAbertos: number };
 }
 
 export type EstadoPrecos = 'anonimo' | 'aguardando-aprovacao' | 'ok' | 'erro' | 'carregando';

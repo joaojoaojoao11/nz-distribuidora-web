@@ -17,6 +17,11 @@
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 0.7rem;
+  /* Flex por causa das bolinhas de estoque (só admin): elas encostam no título
+     em vez de herdarem o letter-spacing de 2px como se fossem letras. */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .badge {

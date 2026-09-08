@@ -504,8 +504,12 @@ async function registrarOcorrencias(
     }
     if (jaAbertas.has(chave)) continue;
 
-    // Sem atacado E sem varejo: o produto aparece na loja sem preço nenhum.
-    const semPreco = l.preco_rolo == null && l.preco_metro == null;
+    // Sem atacado E sem varejo: o produto aparece na loja sem preço NENHUM, que
+    // é bem pior do que aparecer caro. `> 0` e não `!= null` porque o ERP grava
+    // zero, não nulo, quando o SKU não passou pelo pricing — a mesma régua de
+    // /api/nz/precos, que transforma zero em ausente para o card não anunciar
+    // "R$ 0,00".
+    const semPreco = !(Number(l.preco_rolo) > 0) && !(Number(l.preco_metro) > 0);
     const aberta = await abrirOcorrencia(site, {
       categoria: 'erro',
       tipo: 'preco-zerado',
@@ -549,7 +553,7 @@ async function registrarOcorrencias(
       categoria: 'mudanca',
       tipo: 'sku-removido',
       titulo: `SKU sumiu do ERP: ${sku}`,
-      detalhe: { nome: args.antes.get(sku) ? undefined : null },
+      detalhe: { efeito: 'o produto sai da loja pela view loja_catalogo' },
       erpSku: sku,
       chaveDedupe: `sku-removido:${sku}`,
     });

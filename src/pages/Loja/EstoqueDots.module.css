@@ -1,0 +1,26 @@
+/* Duas bolinhas de 8px. Pequenas de propósito: são para o vendedor varrer a
+   grade com o olho, não para competir com o nome do produto. */
+
+.grupo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.bolinha {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  /* O halo garante contraste tanto sobre o card escuro quanto sobre uma foto
+     clara, sem precisar de borda que engorde a bolinha. */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 6px currentColor;
+  color: currentColor;
+}
+
+/* Verde: rolo fechado, o que sai inteiro. */
+.fechado { background: #22c55e; color: #22c55e; }
+
+/* Laranja: ponta, o que sai fracionado. */
+.aberto { background: #f59e0b; color: #f59e0b; }

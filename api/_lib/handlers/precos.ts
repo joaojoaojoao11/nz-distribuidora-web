@@ -45,6 +45,9 @@ interface Espelho {
   /** VAREJO (tabela publicada). Só admin recebe. */
   preco_rolo_varejo: number | null;
   preco_metro_varejo: number | null;
+  /** Contagem de rolos no pátio. Só admin recebe (as bolinhas do card). */
+  rolos_fechados: number;
+  rolos_abertos: number;
   promocao: boolean;
   preco_atualizado_em: string | null;
   sincronizado_em: string;
@@ -99,7 +102,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: espelhoData } = skus.length
     ? await site
         .from('erp_produtos')
-        .select('sku, ativo, unidade, largura_m, metragem_padrao, preco_rolo, preco_metro, preco_rolo_min, preco_metro_min, preco_rolo_varejo, preco_metro_varejo, promocao, preco_atualizado_em, sincronizado_em')
+        .select('sku, ativo, unidade, largura_m, metragem_padrao, preco_rolo, preco_metro, preco_rolo_min, preco_metro_min, preco_rolo_varejo, preco_metro_varejo, rolos_fechados, rolos_abertos, promocao, preco_atualizado_em, sincronizado_em')
         .in('sku', skus)
     : { data: [] };
   const porSku = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
@@ -135,6 +138,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // A Central já tem a ocorrência; aqui é o aviso na própria tela.
       item.usandoVarejo = !(Number(e.preco_rolo_min) > 0) || !(Number(e.preco_metro_min) > 0);
       item.erpSku = p.erp_sku;
+      // As bolinhas do card: verde = tem rolo fechado, laranja = tem ponta.
+      // Vem por aqui, e não por /api/nz/estoque, porque este endpoint já é
+      // chamado UMA vez por página de cards; o de estoque consulta o ERP ao
+      // vivo por SKU e derrubaria a vitrine com 60 requisições.
+      item.estoque = { rolosFechados: Number(e.rolos_fechados ?? 0), rolosAbertos: Number(e.rolos_abertos ?? 0) };
     }
     itens[slug] = item;
   }

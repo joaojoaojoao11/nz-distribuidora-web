@@ -12,6 +12,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import type { ShopItem } from '../../lib/shop/types';
+import EstoqueDots from './EstoqueDots';
 import Preco from './Preco';
 import { cortarNome } from './useLimiteNome';
 import styles from './ShopCard.module.css';
@@ -133,8 +134,22 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome }: Props
           {cortarNome(item.name, limiteNome ?? null)}
         </h3>
         {/* SKU fica fora da foto: a capa é o que vende o produto, e o chip sobre
-            a imagem cobria justamente o canto onde o rolo aparece. */}
-        {item.code && <span className={styles.code}>{item.code}</span>}
+            a imagem cobria justamente o canto onde o rolo aparece. As bolinhas
+            de estoque dividem esta linha — sobre a foto elas sumiriam no meio
+            do badge de disponibilidade e do × da curadoria. Só admin as recebe
+            (a decisão é do servidor, ver EstoqueDots). */}
+        {item.code ? (
+          <span className={styles.codeLinha}>
+            <span className={styles.code}>{item.code}</span>
+            {item.kind !== 'linha' && <EstoqueDots slug={item.slug} />}
+          </span>
+        ) : (
+          item.kind !== 'linha' && (
+            <span className={styles.codeLinha}>
+              <EstoqueDots slug={item.slug} />
+            </span>
+          )
+        )}
         {meta && <span className={styles.meta}>{meta}</span>}
         {/* Preço por papel: o servidor decide o que este card pode mostrar. */}
         {item.kind !== 'linha' && <Preco slug={item.slug} variante="card" />}

@@ -164,16 +164,31 @@
   text-overflow: ellipsis;
 }
 
-/* O SKU absorve a folga: assim o acabamento e o preço encostam no rodapé do
-   card e ficam na mesma altura em toda a fileira, exista ou não a linha de
-   acabamento (ela some quando repete a linha de cima). Antes esse papel era do
-   `margin-top: auto` do .meta, que sumia junto com ele. */
-.code {
+/* A linha do SKU absorve a folga: assim o acabamento e o preço encostam no
+   rodapé do card e ficam na mesma altura em toda a fileira, exista ou não a
+   linha de acabamento (ela some quando repete a linha de cima). Antes esse
+   papel era do `margin-top: auto` do .meta, que sumia junto com ele.
+   Quem absorve é a LINHA, não o .code: as bolinhas de estoque dividem a linha
+   com ele, e o auto num dos dois filhos não empurraria o outro. */
+.codeLinha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  min-width: 0;
   margin-bottom: auto;
 }
 
+/* O SKU cede espaço para a bolinha e corta com reticências, não ao contrário:
+   duas bolinhas de 8px valem mais para o vendedor do que os dois últimos
+   caracteres de um código que ele já reconhece pelo começo. */
+.codeLinha .code {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
 /* Os poucos itens sem SKU: quem absorve a folga é o nome. */
-.info:not(:has(.code)) .name {
+.info:not(:has(.codeLinha)) .name {
   margin-bottom: auto;
 }
 

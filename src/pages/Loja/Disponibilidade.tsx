@@ -11,6 +11,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { BolinhasDeEstoque } from './EstoqueDots';
 import styles from './Disponibilidade.module.css';
 
 type Nivel = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
@@ -112,6 +113,14 @@ export default function Disponibilidade({ slug, nome }: { slug: string; nome?: s
     <section className={styles.block} aria-labelledby="disp-titulo">
       <h2 id="disp-titulo" className={styles.title}>
         Disponibilidade
+        {/* As mesmas bolinhas do card, para o vendedor não precisar reaprender o
+            código de cores ao abrir o produto. Aqui os números já vieram do
+            endpoint de estoque, que só os manda para lojista e admin. */}
+        {dados.papel === 'admin' && dados.saldo && (
+          <BolinhasDeEstoque
+            estoque={{ rolosFechados: dados.saldo.rolosFechados, rolosAbertos: dados.saldo.rolosAbertos }}
+          />
+        )}
       </h2>
 
       <span className={`${styles.badge} ${styles[nivel]}`}>{ROTULO[nivel]}</span>
