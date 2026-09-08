@@ -87,6 +87,8 @@ const APLICACOES: { id: string; label: string }[] = [
 ];
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const CHAVE_FILA = 'nz:admin:fila-produtos';
+/** Recado que atravessa a navegacao do "Salvar e proximo". */
+const CHAVE_RECADO = 'nz:admin:produto-salvo';
 
 const VAZIO = (): Produto => ({
   id: '',
@@ -146,6 +148,8 @@ export default function AdminProdutoEditor() {
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
   const [aviso, setAviso] = useState('');
+  /** Pop-up de confirmacao. Some sozinho; ver o efeito logo abaixo. */
+  const [recado, setRecado] = useState('');
   const [midias, setMidias] = useState<Midia[]>([]);
   const [buscaSku, setBuscaSku] = useState('');
   const [skus, setSkus] = useState<Erp[]>([]);
@@ -305,17 +309,39 @@ export default function AdminProdutoEditor() {
     }
   }, [p, criando, user]);
 
+  /**
+   * Pop-up curto de "deu certo".
+   *
+   * A barra de baixo ja dizia "Salvo." num canto, e ninguem via: quem acabou de
+   * clicar esta olhando para o botao, nao para a legenda do outro lado da tela.
+   */
+  const mostrarRecado = useCallback((texto: string) => {
+    setRecado(texto);
+    setTimeout(() => setRecado(''), 2600);
+  }, []);
+
   const salvarEFicar = useCallback(async () => {
     const s = await salvar();
     if (!s) return;
     if (criando) {
+      // O recado atravessa a troca de URL: a tela que abre e outra instancia.
+      sessionStorage.setItem(CHAVE_RECADO, 'Produto criado.');
       navigate(`/admin/produtos/${s}`, { replace: true });
       return;
     }
     await carregar();
     setAviso('Salvo.');
     setTimeout(() => setAviso(''), 2500);
-  }, [salvar, criando, navigate, carregar]);
+    mostrarRecado('Produto salvo.');
+  }, [salvar, criando, navigate, carregar, mostrarRecado]);
+
+  // Recado deixado pela tela anterior ("Salvar e proximo" e a criacao).
+  useEffect(() => {
+    const texto = sessionStorage.getItem(CHAVE_RECADO);
+    if (!texto) return;
+    sessionStorage.removeItem(CHAVE_RECADO);
+    mostrarRecado(texto);
+  }, [slug, mostrarRecado]);
 
   // Ctrl+S salva sem tirar a mão do teclado (cadastro em série).
   useEffect(() => {
@@ -344,6 +370,9 @@ export default function AdminProdutoEditor() {
     const s = await salvar();
     if (!s) return;
     const prox = proximoDaFila();
+    // Quem cadastra em serie sai desta tela no mesmo instante em que salva: o
+    // "deu certo" tem que aparecer na PROXIMA, senao ninguem chega a ler.
+    sessionStorage.setItem(CHAVE_RECADO, `${p.nome || 'Produto'} salvo.`);
     navigate(prox ? `/admin/produtos/${prox}` : '/admin/produtos');
   };
 
@@ -923,10 +952,23 @@ export default function AdminProdutoEditor() {
             Salvar e próximo
           </button>
         )}
-        <button type="button" className={styles.salvar} onClick={() => void salvarEFicar()} disabled={salvando || (!mudou && !criando)}>
+        {/*
+          Sem trava de "nada mudou". A foto e a ficha tecnica gravam sozinhas,
+          em outras tabelas — quem subia uma capa via o botao morto e a legenda
+          "Tudo salvo" e concluia que a foto tinha se perdido. Salvar de novo um
+          produto sem alteracao nao custa nada e devolve a confirmacao que a
+          pessoa foi buscar.
+        */}
+        <button type="button" className={styles.salvar} onClick={() => void salvarEFicar()} disabled={salvando}>
           {salvando ? 'Salvando…' : criando ? 'Criar produto' : 'Salvar'}
         </button>
       </div>
+
+      {recado && (
+        <div className={styles.recado} role="status" aria-live="polite">
+          <span aria-hidden="true">✓</span> {recado}
+        </div>
+      )}
     </div>
   );
 }

@@ -520,6 +520,53 @@
   color: #25d366;
 }
 
+/* Pop-up de "deu certo". Sobe a barra de salvar em vez de cobri-la, e some
+   sozinho em 2,6 s. `pointer-events: none` para nao roubar o clique de quem ja
+   seguiu para o proximo campo. */
+.recado {
+  position: fixed;
+  right: 2rem;
+  bottom: 5.2rem;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid rgba(37, 211, 102, 0.45);
+  border-radius: 10px;
+  background: rgba(12, 12, 15, 0.97);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  color: #25d366;
+  font-family: var(--font-tech, monospace);
+  font-size: 0.74rem;
+  letter-spacing: 0.6px;
+  pointer-events: none;
+  animation: recadoEntra 0.18s ease-out;
+}
+
+@keyframes recadoEntra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recado {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .recado {
+    right: 1rem;
+    left: 1rem;
+    bottom: calc(5rem + env(safe-area-inset-bottom));
+    justify-content: center;
+  }
+}
+
 .interruptores {
   display: flex;
   flex-wrap: wrap;
