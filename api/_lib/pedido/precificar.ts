@@ -10,6 +10,7 @@
 
 import type { Db } from '../papel.js';
 import { faltandoNoCadastro } from '../conta/completude.js';
+import { r2 } from './dinheiro.js';
 
 export interface ItemPedido {
   slug: string;
@@ -75,7 +76,8 @@ export interface Linha {
 
 export const MAX_ITENS = 40;
 
-const r2 = (n: number) => Math.round(n * 100) / 100;
+// Mora em dinheiro.ts desde que as seleções passaram a precisar da mesma régua.
+export { r2 };
 
 /** Sanitiza a lista vinda do cliente. Devolve [] se nada prestar. */
 export function normalizarItens(bruto: unknown): ItemPedido[] {

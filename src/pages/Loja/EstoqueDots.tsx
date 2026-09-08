@@ -53,7 +53,7 @@ export function BolinhasDeEstoque({ estoque }: { estoque: Contagem | undefined }
 }
 
 /** Versão do card: lê o mesmo cache de preço que o card já usa. */
-export default function EstoqueDots({ slug }: { slug: string }) {
-  const { item } = usePreco(slug);
+export default function EstoqueDots({ slug, selecao }: { slug: string; selecao?: string }) {
+  const { item } = usePreco(slug, selecao);
   return <BolinhasDeEstoque estoque={item?.estoque} />;
 }

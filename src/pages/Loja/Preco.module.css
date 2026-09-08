@@ -133,3 +133,24 @@
   font-size: 0.68rem;
   color: #f5a623;
 }
+
+/* Dentro de uma seleção este é o botão da vez: o carrinho some porque cobraria
+   a tabela, e quem fecha o preço negociado é o vendedor. */
+.pedirSelecao {
+  display: block;
+  margin-top: 0.4rem;
+  padding: 0.85rem 1rem;
+  background: var(--accent-red);
+  color: #fff;
+  font-family: var(--font-tech);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-align: center;
+  border-radius: 2px;
+  transition: background var(--transition-snappy);
+}
+
+@media (hover: hover) {
+  .pedirSelecao:hover { background: var(--accent-red-hover); }
+}

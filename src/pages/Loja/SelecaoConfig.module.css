@@ -1,0 +1,241 @@
+/* Telinha de configuração da seleção.
+   Um botão vermelho por tela (a regra do processo de compra da loja): aqui ele
+   é GERAR LINK antes, e ENVIAR NO WHATSAPP depois. Cancelar e "Minhas seleções"
+   são vazados. */
+
+.veu {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  /* O backdrop-filter fica no véu, não na caixa: na caixa ele criaria um
+     contexto de composição que borra a própria sombra. */
+  backdrop-filter: blur(6px);
+}
+
+.caixa {
+  width: min(30rem, 100%);
+  max-height: min(90vh, 46rem);
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-strong);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  outline: none;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.tituloTela {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.contagem {
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fechar {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.35rem;
+}
+
+.fechar:hover { color: var(--text-primary); }
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Acréscimo sem preço na tela não quer dizer nada; o campo continua visível
+   para a pessoa entender que ele existe, mas apagado. */
+.campoDesligado { opacity: 0.42; }
+
+.rotulo {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ajuda {
+  display: block;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.entrada {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition-snappy);
+}
+
+.entrada:focus { border-color: var(--text-primary); }
+.entrada:disabled { cursor: not-allowed; }
+
+.toggleLinha {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.toggle {
+  /* 18px numa caixa de 44 de alvo: o rótulo inteiro é clicável (é um <label>),
+     então a caixa não precisa crescer para o dedo alcançar. */
+  width: 18px;
+  height: 18px;
+  margin-top: 0.1rem;
+  accent-color: var(--accent-red);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.resumo {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid var(--accent-red);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.pronto {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.aviso {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #f5a623;
+}
+
+.erro {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--accent-red);
+}
+
+.erroCampo {
+  font-size: 0.72rem;
+  color: var(--accent-red);
+}
+
+.linkCaixa {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.link {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  padding: 0.6rem 0.7rem;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  outline: none;
+}
+
+.copiar {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 0 0.9rem;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background var(--transition-snappy);
+}
+
+.copiar:hover { background: rgba(255, 255, 255, 0.06); }
+
+.acoes {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.cancelar {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: color var(--transition-snappy);
+}
+
+.cancelar:hover { color: var(--text-primary); }
+
+.principal {
+  flex: 1 1 auto;
+  background: var(--accent-red);
+  border: 1px solid var(--accent-red);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--transition-snappy);
+}
+
+.principal:hover { background: var(--accent-red-hover); }
+.principal:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 480px) {
+  .caixa { padding: 1.15rem; gap: 1rem; }
+  .acoes { flex-wrap: wrap; }
+  .cancelar, .principal { flex: 1 1 100%; }
+}

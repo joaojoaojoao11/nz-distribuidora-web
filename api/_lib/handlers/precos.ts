@@ -10,6 +10,13 @@
 // sem custo nem margem). Unidades: `rolo` é R$ por rolo fechado de
 // `metragemPadrao` metros; `metro` é R$ por metro linear fracionado.
 //
+// SELEÇÃO. O corpo aceita `selecao: <token>`. Uma seleção ATIVA que mostra
+// preço é a ÚNICA porta por onde alguém sem cadastro vê valor no site — e ela
+// abre só os slugs daquela lista, com o acréscimo em % aplicado AQUI, no
+// servidor. O percentual jamais volta para o cliente; volta o preço final.
+// Token expirado, encerrado, inexistente ou de seleção sem preço é tratado
+// como se não tivesse vindo: a porta fecha de novo em 401/403.
+//
 // ATACADO x VAREJO (decisão do João, 2026-09-08): `preco_rolo`/`preco_metro`
 // no espelho já são o ATACADO — quem escolhe é o sync, ver api/_lib/handlers/sync.ts.
 // O varejo (a tabela publicada) vem em `preco_*_varejo` e só o admin recebe:
@@ -23,6 +30,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado } from '../papel.js';
+import { lerSelecaoPorToken, selecaoAtiva } from './selecoes.js';
+import { aplicarAcrescimo } from '../pedido/dinheiro.js';
 
 interface Produto {
   slug: string;
@@ -83,14 +92,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const site = createClient(siteUrl, siteKey);
   const { papel, aprovado } = await resolverPapelDetalhado(site, req.headers.authorization);
 
-  if (papel === 'anonimo') {
+  // Uma seleção ATIVA que mostra preço é a única forma de alguém sem cadastro
+  // ver valor no site. Ela não abre o catálogo: libera exatamente os slugs que
+  // o vendedor escolheu, e só enquanto o link vive. Token inválido, expirado,
+  // encerrado ou de uma seleção sem preço é o mesmo que não ter mandado token.
+  const tokenSel = typeof body.selecao === 'string' ? body.selecao.trim().slice(0, 32) : '';
+  const sel = tokenSel ? await lerSelecaoPorToken(site, tokenSel) : null;
+  const selValida = sel && sel.mostrar_preco && selecaoAtiva(sel) ? sel : null;
+  const naSelecao = new Set(selValida?.slugs ?? []);
+
+  if (papel === 'anonimo' && !selValida) {
     res.status(401).json({ error: 'login-necessario', papel });
     return;
   }
-  if (!aprovado) {
+  if (!aprovado && papel !== 'anonimo' && !selValida) {
     res.status(403).json({ error: 'aguardando-aprovacao', papel });
     return;
   }
+  /** Quem não passaria pela porta acima só enxerga o que está na seleção. */
+  const soPelaSelecao = papel === 'anonimo' || !aprovado;
 
   const { data: produtosData } = await site
     .from('produtos')
@@ -109,6 +129,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const itens: Record<string, unknown> = {};
   for (const slug of slugs) {
+    const dentroDaSelecao = Boolean(selValida) && naSelecao.has(slug);
+
+    // Quem só tem acesso por causa do link não pode usá-lo como chave-mestra do
+    // catálogo: pedir um slug de fora da lista devolve ausência, não preço.
+    if (soPelaSelecao && !dentroDaSelecao) {
+      itens[slug] = { disponivel: false, foraDaSelecao: true };
+      continue;
+    }
+
     const p = produtos.find((x) => x.slug === slug);
     const e = p?.erp_sku ? porSku.get(p.erp_sku) : undefined;
     if (!p || !e || !e.ativo) {
@@ -118,8 +147,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Preco zero no espelho e' cadastro incompleto do ERP, nao promocao: SKU que
     // entrou sem passar pelo pricing_engineering. Zero tem que virar ausente,
     // senao o card anuncia "R$ 0,00" e o checkout aceita o pedido de graca.
-    const rolo = Number(e.preco_rolo) > 0 ? e.preco_rolo : null;
-    const metro = Number(e.preco_metro) > 0 ? e.preco_metro : null;
+    const baseRolo = Number(e.preco_rolo) > 0 ? e.preco_rolo : null;
+    const baseMetro = Number(e.preco_metro) > 0 ? e.preco_metro : null;
+
+    // O acréscimo é aplicado AQUI, no servidor. O cliente recebe o número
+    // final e nunca o percentual — no navegador não há como recalcular a base.
+    const pct = dentroDaSelecao ? Number(selValida?.acrescimo_pct ?? 0) : 0;
+    const rolo = pct > 0 ? aplicarAcrescimo(baseRolo, pct) : baseRolo;
+    const metro = pct > 0 ? aplicarAcrescimo(baseMetro, pct) : baseMetro;
+
     const item: Record<string, unknown> = {
       disponivel: rolo != null || metro != null,
       rolo,
@@ -130,6 +166,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       promocao: Boolean(e.promocao),
       atualizadoEm: e.preco_atualizado_em ?? e.sincronizado_em,
     };
+    // O cliente precisa saber que aquele valor é o daquela seleção, não a
+    // tabela do site — é o que a legenda da tela diz. O percentual não vai.
+    if (dentroDaSelecao) item.viaSelecao = true;
+
     // Só admin. Construído campo a campo: o que não entra aqui não sai.
     if (papel === 'admin') {
       item.roloVarejo = e.preco_rolo_varejo;
@@ -143,11 +183,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // chamado UMA vez por página de cards; o de estoque consulta o ERP ao
       // vivo por SKU e derrubaria a vitrine com 60 requisições.
       item.estoque = { rolosFechados: Number(e.rolos_fechados ?? 0), rolosAbertos: Number(e.rolos_abertos ?? 0) };
+      // Dentro de uma seleção o admin vê a conta que o cliente não vê: de onde
+      // saiu o número e de quanto foi o aumento.
+      if (dentroDaSelecao && pct > 0) {
+        item.base = { rolo: baseRolo, metro: baseMetro };
+        item.acrescimoPct = pct;
+      }
     }
     itens[slug] = item;
   }
 
-  res.status(200).json({ papel, itens });
+  res.status(200).json({ papel, selecao: selValida?.token ?? null, itens });
 }
 
 function safeJson(raw: string): Record<string, unknown> {

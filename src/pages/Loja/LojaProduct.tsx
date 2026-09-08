@@ -60,18 +60,27 @@ export default function LojaProduct() {
   }
 
   const from = (location.state as { from?: string } | null)?.from;
-  return <ProductView item={item} backTo={from ?? '/loja'} viaHistorico={Boolean(from)} />;
+  // `?s=<token>`: veio de uma seleção. Fica na URL (e não no state do Link)
+  // para o preço sobreviver a um F5 e para o link do produto ser compartilhável
+  // dentro da conversa com o cliente.
+  const selecao = new URLSearchParams(location.search).get('s') || undefined;
+  return (
+    <ProductView item={item} backTo={from ?? '/loja'} viaHistorico={Boolean(from)} selecao={selecao} />
+  );
 }
 
 function ProductView({
   item,
   backTo,
   viaHistorico,
+  selecao,
 }: {
   item: ShopItem;
   backTo: string;
   /** Veio de um card da lista: voltar pelo histórico restaura posição e filtros. */
   viaHistorico: boolean;
+  /** Token da seleção que trouxe o visitante até aqui, se houver. */
+  selecao?: string;
 }) {
   const navigate = useNavigate();
   // Mesmo corte de nome da listagem: os relacionados usam os mesmos cards e
@@ -85,13 +94,17 @@ function ProductView({
   // Só lê o cache (quem registra o slug é o <Preco/> logo abaixo). Serve para
   // uma coisa: quando a pessoa PODE comprar, o WhatsApp deixa de ser o botão
   // vermelho da tela — o botão vermelho passa a ser "Adicionar ao carrinho".
-  const { estado: estadoPreco, itens: mapaPrecos } = usePrecosMapa();
+  const { estado: estadoPreco, itens: mapaPrecos } = usePrecosMapa(selecao);
   const precoItem = mapaPrecos.get(item.slug);
   const podeComprar =
     item.kind !== 'linha' &&
     estadoPreco === 'ok' &&
     Boolean(precoItem?.disponivel) &&
-    (precoItem?.rolo != null || precoItem?.metro != null);
+    (precoItem?.rolo != null || precoItem?.metro != null) &&
+    // Dentro de uma seleção o preço é negociado e o botão de compra vira
+    // WhatsApp (ver Preco.tsx). O CTA vermelho da página tem que continuar
+    // sendo o WhatsApp, senão sobram dois botões dizendo a mesma coisa.
+    !precoItem?.viaSelecao;
 
   const favorito = useEhFavorito(item.slug);
   const paraLembrar = { slug: item.slug, nome: item.name, codigo: item.code, imagem: item.image, hex: item.hex };
@@ -293,6 +306,10 @@ function ProductView({
         type="product"
         schema={buildShopItemSchema(item)}
         imageUrl={item.image ? `${SITE_URL}${item.image}` : undefined}
+        // A página com `?s=` mostra preço de uma seleção, com prazo e às vezes
+        // com acréscimo. O canônico continua sendo /loja/<slug>, mas esta
+        // variante não pode ser indexada.
+        noindex={Boolean(selecao)}
       />
 
       <div className={`container ${styles.head}`}>
@@ -333,6 +350,7 @@ function ProductView({
               slug={item.slug}
               variante="pagina"
               produto={{ nome: item.name, codigo: item.code, imagem: item.image, hex: item.hex }}
+              selecao={selecao}
             />
           )}
 
@@ -380,7 +398,7 @@ function ProductView({
             <h2 className={styles.sectionTitle}>Relacionados</h2>
             <div className={styles.relatedGrid} ref={relacionadosRef}>
               {related.map((r) => (
-                <ShopCard key={r.slug} item={r} limiteNome={limiteNome} />
+                <ShopCard key={r.slug} item={r} limiteNome={limiteNome} selecao={selecao} />
               ))}
             </div>
           </section>

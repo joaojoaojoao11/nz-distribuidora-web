@@ -39,6 +39,12 @@ interface Props {
    * usuário à mesma posição, com os mesmos filtros.
    */
   from?: string;
+  /**
+   * Token da seleção que liberou o preço. Vai para o `usePreco` (que sem ele
+   * leria o preço da loja) e para a URL do produto, para o preço continuar
+   * aparecendo depois do clique.
+   */
+  selecao?: string;
 }
 
 function swatchBackground(hex: string): string {
@@ -53,7 +59,7 @@ function swatchBackground(hex: string): string {
 const mesmoRotulo = (a: string, b: string) =>
   a.trim().replace(/\s+/g, ' ').toLowerCase() === b.trim().replace(/\s+/g, ' ').toLowerCase();
 
-function ShopCardBase({ item, eager = false, onRemove, from, limiteNome }: Props) {
+function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao }: Props) {
   const hasImage = Boolean(item.image);
 
   // Boa parte do catálogo não tem acabamento nem subtítulo próprios, e as duas
@@ -65,7 +71,9 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome }: Props
 
   return (
     <Link
-      to={`/loja/${item.slug}`}
+      // `?s=` na URL, não no `state` do Link: um F5 na página do produto perde
+      // o state e o preço da seleção sumiria no meio da conversa.
+      to={`/loja/${item.slug}${selecao ? `?s=${selecao}` : ''}`}
       state={from ? { from } : undefined}
       className={styles.card}
       aria-label={item.name}
@@ -141,18 +149,18 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome }: Props
         {item.code ? (
           <span className={styles.codeLinha}>
             <span className={styles.code}>{item.code}</span>
-            {item.kind !== 'linha' && <EstoqueDots slug={item.slug} />}
+            {item.kind !== 'linha' && <EstoqueDots slug={item.slug} selecao={selecao} />}
           </span>
         ) : (
           item.kind !== 'linha' && (
             <span className={styles.codeLinha}>
-              <EstoqueDots slug={item.slug} />
+              <EstoqueDots slug={item.slug} selecao={selecao} />
             </span>
           )
         )}
         {meta && <span className={styles.meta}>{meta}</span>}
         {/* Preço por papel: o servidor decide o que este card pode mostrar. */}
-        {item.kind !== 'linha' && <Preco slug={item.slug} variante="card" />}
+        {item.kind !== 'linha' && <Preco slug={item.slug} variante="card" selecao={selecao} />}
       </div>
     </Link>
   );

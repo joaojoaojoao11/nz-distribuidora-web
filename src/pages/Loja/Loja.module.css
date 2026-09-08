@@ -796,6 +796,67 @@
   color: var(--text-secondary);
 }
 
+/* O prazo é informação do cliente, não letra miúda: é o que faz ele responder
+   hoje em vez de semana que vem. */
+.selecaoValidade {
+  margin-top: 0.35rem;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+/* Link morto. Mesma caixa do banner, sem a lista: o que sobra é o caminho
+   adiante. */
+.selecaoExpirada {
+  margin-top: 7rem;
+  margin-bottom: 1.4rem;
+  padding: 1.6rem 1.3rem;
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--text-muted);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.selecaoExpiradaTitulo {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.selecaoExpiradaTexto {
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 44ch;
+}
+
+.selecaoExpiradaAcoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 1.1rem;
+}
+
+.selecaoExpiradaWhats {
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1.3px;
+  color: #fff;
+  background: var(--accent-red);
+  padding: 0.8rem 1.15rem;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .selecaoExpiradaWhats:hover { background: var(--accent-red-hover); }
+}
+
 .selecaoVerTudo {
   font-family: var(--font-tech);
   font-size: 0.66rem;
@@ -821,7 +882,8 @@
 }
 
 @media (max-width: 768px) {
-  .selecaoBanner {
+  .selecaoBanner,
+  .selecaoExpirada {
     margin-top: 5.5rem;
   }
   .curadoria {

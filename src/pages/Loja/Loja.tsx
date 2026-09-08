@@ -11,12 +11,16 @@
 // scroll ao voltar de um produto.
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useNavigationType } from 'react-router-dom';
+import { Link, useLocation, useNavigationType, useParams } from 'react-router-dom';
 import { SCROLL_KEY_PREFIX } from '../../components/ScrollToTop';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
+import { useAuth } from '../../contexts/AuthContext';
 import { getShopItem, useShopCatalog } from '../../lib/shop/store';
 import { usePrecosLote } from '../../lib/shop/precos';
+import { useSelecaoRemota } from '../../lib/shop/selecoes';
+import { MAX_SELECAO } from '../../lib/shop/selecoes/regras';
+import SelecaoConfig from './SelecaoConfig';
 import type { ShopItem } from '../../lib/shop/types';
 import { computeFacets } from '../../lib/shop/facets';
 import { applyFilters, hasActiveFilters, type SortMode } from '../../lib/shop/search/match';
@@ -27,13 +31,6 @@ import { useShopFilters, type FilterGroup } from './useShopFilters';
 import styles from './Loja.module.css';
 
 const PAGE_SIZE = 60;
-/** Nome do parâmetro da seleção congelada — espelha PARAM.selection do hook. */
-const PARAM_SEL = 'sel';
-/**
- * Acima disso o link fica longo demais para colar em WhatsApp e e-mail sem
- * quebrar. Quem passa daqui não curou — filtrou.
- */
-const MAX_SELECAO = 120;
 /** Cards com imagem prioritária — o suficiente para preencher a primeira dobra. */
 const EAGER_COUNT = 8;
 
@@ -107,9 +104,20 @@ export default function Loja() {
 
   const location = useLocation();
   const navType = useNavigationType();
+  const { token } = useParams<{ token: string }>();
+  const { isAdmin } = useAuth();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [curando, setCurando] = useState(false);
-  const [copiado, setCopiado] = useState<'ok' | 'erro' | null>(null);
+  const [configAberta, setConfigAberta] = useState(false);
+
+  // Seleção enviada a um cliente (/loja/s/<token>). Diferente do `?sel=` antigo
+  // em duas coisas: a lista mora no banco (então cabe título, validade e
+  // acréscimo) e ela pode LIBERAR PREÇO para quem não tem cadastro.
+  const { estado: estadoSel, dados: selRemota, titulo: tituloSel } = useSelecaoRemota(token);
+  // O token só vai para o pedido de preços quando a seleção realmente mostra
+  // preço — mandá-lo numa seleção sem preço faria a API decidir o mesmo, mas
+  // criaria um contexto de cache a mais para nada.
+  const tokenDePreco = selRemota?.mostrarPreco ? selRemota.token : undefined;
 
   // Voltar de um produto (POP) devolve o usuário ao mesmo ponto da lista, com
   // os mesmos lotes carregados. Lido UMA vez, no inicializador: é decisão de
@@ -133,22 +141,29 @@ export default function Loja() {
   const timerBusca = useRef<number | undefined>(undefined);
   const pointerX = useRef(0);
 
-  // Uma seleção congelada (?sel=) manda em tudo: é exatamente a lista que foi
-  // enviada ao cliente, na ordem em que foi montada. Filtros não se aplicam —
-  // se aplicassem, o link deixaria de ser o que o vendedor aprovou.
-  const emSelecao = selection.length > 0;
+  // Uma seleção manda em tudo: é exatamente a lista que foi enviada ao cliente,
+  // na ordem em que foi montada. Filtros não se aplicam — se aplicassem, o link
+  // deixaria de ser o que o vendedor aprovou.
+  //
+  // Duas gerações convivem: `?sel=slug,slug` (links antigos, que continuam
+  // valendo e nunca mostram preço) e `/loja/s/<token>` (a de agora).
+  const emSelecao = selection.length > 0 || Boolean(token);
 
   // Catálogo do banco (produtos ⨝ erp_produtos). Começa no estático e troca
   // quando o JSON chega — ver src/lib/shop/store.ts.
   const SHOP_ITEMS = useShopCatalog();
 
   const results = useMemo(() => {
+    // A ordem é a do servidor / a da URL: foi a que o vendedor montou.
+    if (token) {
+      return (selRemota?.slugs ?? []).map((slug) => getShopItem(slug)).filter((i): i is ShopItem => Boolean(i));
+    }
     if (emSelecao) {
       return selection.map((slug) => getShopItem(slug)).filter((i): i is ShopItem => Boolean(i));
     }
     const base = applyFilters(SHOP_ITEMS, filters);
     return excluded.length ? base.filter((i) => !excluded.includes(i.slug)) : base;
-  }, [emSelecao, selection, filters, excluded, SHOP_ITEMS]);
+  }, [token, selRemota, emSelecao, selection, filters, excluded, SHOP_ITEMS]);
 
   const facets = useMemo(() => computeFacets(SHOP_ITEMS, filters), [filters, SHOP_ITEMS]);
   const filtering = hasActiveFilters(filters);
@@ -163,18 +178,6 @@ export default function Loja() {
       .map((slug) => getShopItem(slug))
       .filter((i): i is ShopItem => Boolean(i));
   }, [emSelecao, excluded, filters, SHOP_ITEMS]);
-
-  const copiarSelecao = async () => {
-    const slugs = results.map((i) => i.slug);
-    const url = `${window.location.origin}/loja?${PARAM_SEL}=${slugs.join(',')}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopiado('ok');
-    } catch {
-      setCopiado('erro');
-    }
-    setTimeout(() => setCopiado(null), 2600);
-  };
 
   const chaveFiltros = JSON.stringify(filters);
 
@@ -296,8 +299,13 @@ export default function Loja() {
   }, []);
 
   const shown = results.slice(0, visible);
-  // Uma requisição de preço por página de cards, não uma por card.
-  usePrecosLote(shown.map((i) => i.slug));
+  // Uma requisição de preço por página de cards, não uma por card. Dentro de
+  // uma seleção com preço, o token vai junto: é ele que libera o valor para
+  // quem não tem cadastro e aplica o acréscimo, tudo decidido no servidor.
+  usePrecosLote(
+    shown.map((i) => i.slug),
+    tokenDePreco
+  );
 
   const schema = useMemo(
     () =>
@@ -325,7 +333,9 @@ export default function Loja() {
 
   // Higiene de indexação: uma faceta é intenção legítima de busca
   // (/loja?cor=azul); duas ou mais, ou qualquer texto, é combinação infinita.
-  const noindex = activeCount >= 2 || filters.q.trim().length > 0;
+  // Seleção nunca entra no índice: é uma lista feita para UMA pessoa, com prazo
+  // e às vezes com preço — o Google não tem o que fazer com ela.
+  const noindex = emSelecao || activeCount >= 2 || filters.q.trim().length > 0;
 
   return (
     <div className={styles.page} ref={pageRef}>
@@ -374,14 +384,55 @@ export default function Loja() {
       </header>
       )}
 
-      {emSelecao && (
+      {/* Link morto não é vitrine: quem chega tarde vê o que aconteceu e um
+          caminho adiante, não uma lista de produtos com preço vencido. */}
+      {token && (estadoSel === 'expirada' || estadoSel === 'inexistente' || estadoSel === 'erro') && (
+        <div className={`container ${styles.selecaoExpirada}`}>
+          <span className={styles.selecaoExpiradaTitulo}>
+            {estadoSel === 'expirada'
+              ? 'Esta seleção expirou'
+              : estadoSel === 'inexistente'
+                ? 'Esta seleção não existe mais'
+                : 'Não consegui abrir esta seleção'}
+          </span>
+          <p className={styles.selecaoExpiradaTexto}>
+            {estadoSel === 'erro'
+              ? 'Tente de novo em instantes ou fale com a gente.'
+              : `${tituloSel ? `“${tituloSel}” ` : 'A lista '}foi montada para você e tinha prazo. Peça uma nova para quem te enviou, ou fale com a NZ.`}
+          </p>
+          <div className={styles.selecaoExpiradaAcoes}>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={styles.selecaoExpiradaWhats}>
+              FALAR COM A NZ →
+            </a>
+            <Link to="/loja" className={styles.selecaoVerTudo}>
+              VER O CATÁLOGO COMPLETO →
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {emSelecao && (!token || estadoSel === 'ok') && (
         <div className={`container ${styles.selecaoBanner}`}>
           <div>
-            <span className={styles.selecaoTitulo}>Seleção da NZ para você</span>
+            <span className={styles.selecaoTitulo}>{tituloSel || 'Seleção da NZ para você'}</span>
             <p className={styles.selecaoTexto}>
               {results.length} {results.length === 1 ? 'produto escolhido' : 'produtos escolhidos'} pela
-              nossa equipe. Valores sob consulta.
+              nossa equipe.{' '}
+              {selRemota?.mostrarPreco
+                ? 'Valores exclusivos desta seleção — fale com a gente para fechar.'
+                : 'Valores sob consulta.'}
             </p>
+            {selRemota && (
+              <p className={styles.selecaoValidade}>
+                Válida até{' '}
+                {new Date(selRemota.expiraEm).toLocaleString('pt-BR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+            )}
           </div>
           <Link to="/loja" className={styles.selecaoVerTudo}>
             VER O CATÁLOGO COMPLETO →
@@ -444,24 +495,35 @@ export default function Loja() {
             {activeCount > 0 && <span className={styles.filterBadge}>{activeCount}</span>}
           </button>
 
-          <button
-            type="button"
-            className={`${styles.curarBtn} ${curando ? styles.curarBtnAtivo : ''} ${
-              excluded.length > 0 ? styles.curarBtnAlerta : ''
-            }`}
-            onClick={() => setCurando((v) => !v)}
-            aria-pressed={curando}
-            title={
-              excluded.length > 0
-                ? `${excluded.length} item(ns) oculto(s) da lista`
-                : 'Monte uma lista para enviar ao cliente'
-            }
-          >
-            {curando ? 'CONCLUIR' : 'MONTAR SELEÇÃO'}
-            {excluded.length > 0 && (
-              <span className={styles.curarBadge}>{excluded.length}</span>
-            )}
-          </button>
+          {/* Só a equipe NZ monta seleção: liberar preço para quem não tem
+              cadastro é decisão comercial da NZ, não de um visitante. Links
+              antigos (?sel=) continuam abrindo para qualquer um, sem preço. */}
+          {isAdmin && (
+            <button
+              type="button"
+              className={`${styles.curarBtn} ${curando ? styles.curarBtnAtivo : ''} ${
+                excluded.length > 0 ? styles.curarBtnAlerta : ''
+              }`}
+              onClick={() => {
+                // CONCLUIR com itens na lista abre a configuração — é o passo
+                // que o vendedor espera do botão. Com a lista vazia, só sai do
+                // modo.
+                if (curando && results.length > 0 && results.length <= MAX_SELECAO) setConfigAberta(true);
+                else setCurando((v) => !v);
+              }}
+              aria-pressed={curando}
+              title={
+                excluded.length > 0
+                  ? `${excluded.length} item(ns) oculto(s) da lista`
+                  : 'Monte uma lista para enviar ao cliente'
+              }
+            >
+              {curando ? 'CONCLUIR' : 'MONTAR SELEÇÃO'}
+              {excluded.length > 0 && (
+                <span className={styles.curarBadge}>{excluded.length}</span>
+              )}
+            </button>
+          )}
 
           <label className={styles.sortWrap}>
             <span className={styles.sortLabel}>Ordenar por</span>
@@ -573,14 +635,10 @@ export default function Loja() {
                   <button
                     type="button"
                     className={styles.curadoriaCopiar}
-                    onClick={copiarSelecao}
+                    onClick={() => setConfigAberta(true)}
                     disabled={results.length === 0}
                   >
-                    {copiado === 'ok'
-                      ? 'LINK COPIADO ✓'
-                      : copiado === 'erro'
-                        ? 'NÃO CONSEGUI COPIAR'
-                        : `COPIAR LINK DA SELEÇÃO (${results.length})`}
+                    CONFIGURAR E GERAR LINK ({results.length})
                   </button>
                 )}
               </div>
@@ -644,6 +702,7 @@ export default function Loja() {
                     onRemove={curando && !emSelecao ? removeItem : undefined}
                     from={`${location.pathname}${location.search}`}
                     limiteNome={limiteNome}
+                    selecao={tokenDePreco}
                   />
                 ))}
               </div>
@@ -699,6 +758,19 @@ export default function Loja() {
         open={sheetOpen}
         onClose={fecharSheet}
       />
+      )}
+
+      {configAberta && (
+        <SelecaoConfig
+          slugs={results.map((i) => i.slug)}
+          onFechar={() => setConfigAberta(false)}
+          onConcluir={() => {
+            // A seleção virou link: o modo curadoria já cumpriu o papel, e os
+            // itens tirados não devem seguir escondendo a próxima navegação.
+            setCurando(false);
+            clearExcluded();
+          }}
+        />
       )}
     </div>
   );

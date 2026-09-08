@@ -11,7 +11,7 @@
 // quem escolhe isso é o sync, não este módulo. Aqui nunca se calcula preço:
 // desenha-se o que o servidor mandou.
 
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { supabase } from '../supabase';
 
 export interface PrecoItem {
@@ -35,32 +35,87 @@ export interface PrecoItem {
   erpSku?: string;
   /** Contagem de rolos no pátio — as bolinhas do card. Só admin. */
   estoque?: { rolosFechados: number; rolosAbertos: number };
+
+  /**
+   * O preço acima é o desta seleção, com o acréscimo já aplicado no servidor.
+   * O percentual em si só vem para admin (`acrescimoPct` e `base`).
+   */
+  viaSelecao?: boolean;
+  acrescimoPct?: number;
+  base?: { rolo: number | null; metro: number | null };
+  /** Pediram o preço de um slug que não está na seleção que abriu a porta. */
+  foraDaSelecao?: boolean;
 }
 
 export type EstadoPrecos = 'anonimo' | 'aguardando-aprovacao' | 'ok' | 'erro' | 'carregando';
 
-interface Store {
+/**
+ * CONTEXTO. O mesmo slug tem preços diferentes conforme a porta por onde se
+ * entra: pela loja, é o atacado; por um link de seleção com acréscimo, é o
+ * atacado mais o percentual daquela seleção. E o estado global também muda —
+ * um anônimo NÃO tem preço na loja, mas TEM dentro de uma seleção que mostra
+ * preço.
+ *
+ * Por isso o cache é chaveado por (seleção, slug) e o estado é por seleção. O
+ * contexto vazio ('') é a loja normal.
+ */
+const chaveDoContexto = (selecao?: string) => selecao ?? '';
+export const chavePreco = (slug: string, selecao?: string) => `${chaveDoContexto(selecao)}|${slug}`;
+
+interface Contexto {
   estado: EstadoPrecos;
   papel: string | null;
+  pendentes: Set<string>;
+  emVoo: Set<string>;
+  timer: ReturnType<typeof setTimeout> | null;
+}
+
+interface Store {
+  /** Estado por contexto de seleção. */
+  contextos: Map<string, Contexto>;
+  /** Preços de todos os contextos, chaveados por `chavePreco`. */
   itens: Map<string, PrecoItem>;
 }
 
-let store: Store = { estado: 'carregando', papel: null, itens: new Map() };
+const novoContexto = (): Contexto => ({
+  estado: 'carregando',
+  papel: null,
+  pendentes: new Set(),
+  emVoo: new Set(),
+  timer: null,
+});
+
+let store: Store = { contextos: new Map(), itens: new Map() };
 let usuarioAtual: string | null | undefined; // undefined = ainda não checado
-const pendentes = new Set<string>();
-const emVoo = new Set<string>();
-let timer: ReturnType<typeof setTimeout> | null = null;
 const ouvintes = new Set<() => void>();
 
-function publicar(patch: Partial<Store>) {
-  store = { ...store, ...patch };
+/** O contexto vive fora do objeto imutável: ele guarda timers e filas. */
+function contextoDe(selecao?: string): Contexto {
+  const k = chaveDoContexto(selecao);
+  let c = store.contextos.get(k);
+  if (!c) {
+    c = novoContexto();
+    store.contextos.set(k, c);
+  }
+  return c;
+}
+
+/** Troca a identidade do store para o useSyncExternalStore perceber. */
+function avisar() {
+  store = { contextos: store.contextos, itens: store.itens };
   for (const cb of ouvintes) cb();
 }
 
+function marcarEstado(selecao: string | undefined, estado: EstadoPrecos, papel?: string | null) {
+  const c = contextoDe(selecao);
+  c.estado = estado;
+  if (papel !== undefined) c.papel = papel;
+  avisar();
+}
+
 function limpar() {
-  store = { estado: 'carregando', papel: null, itens: new Map() };
-  pendentes.clear();
-  emVoo.clear();
+  for (const c of store.contextos.values()) if (c.timer) clearTimeout(c.timer);
+  store = { contextos: new Map(), itens: new Map() };
   for (const cb of ouvintes) cb();
 }
 
@@ -76,65 +131,74 @@ function assinarAuth() {
   });
 }
 
-async function despachar() {
-  timer = null;
-  const lote = [...pendentes].filter((s) => !emVoo.has(s) && !store.itens.has(s)).slice(0, 80);
-  pendentes.clear();
+async function despachar(selecao?: string) {
+  const c = contextoDe(selecao);
+  c.timer = null;
+  const lote = [...c.pendentes]
+    .filter((s) => !c.emVoo.has(s) && !store.itens.has(chavePreco(s, selecao)))
+    .slice(0, 80);
+  c.pendentes.clear();
   if (!lote.length) return;
-  for (const s of lote) emVoo.add(s);
+  for (const s of lote) c.emVoo.add(s);
 
   try {
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
     usuarioAtual = data.session?.user?.id ?? null;
-    if (!token) {
-      publicar({ estado: 'anonimo', papel: 'anonimo' });
+
+    // Sem sessão E sem seleção não há o que perguntar: o servidor responderia
+    // 401. Com seleção, a requisição VAI mesmo sem token — é exatamente o caso
+    // do cliente que recebeu o link e não tem cadastro.
+    if (!token && !selecao) {
+      marcarEstado(selecao, 'anonimo', 'anonimo');
       return;
     }
+
     const res = await fetch('/api/nz/precos', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ slugs: lote }),
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      body: JSON.stringify(selecao ? { slugs: lote, selecao } : { slugs: lote }),
     });
     if (res.status === 401) {
-      publicar({ estado: 'anonimo', papel: 'anonimo' });
+      marcarEstado(selecao, 'anonimo', 'anonimo');
       return;
     }
     if (res.status === 403) {
-      publicar({ estado: 'aguardando-aprovacao' });
+      marcarEstado(selecao, 'aguardando-aprovacao');
       return;
     }
     if (!res.ok) {
-      publicar({ estado: 'erro' });
+      marcarEstado(selecao, 'erro');
       return;
     }
     const json = (await res.json()) as { papel: string; itens: Record<string, PrecoItem> };
-    const itens = new Map(store.itens);
-    for (const [slug, item] of Object.entries(json.itens)) itens.set(slug, item);
-    publicar({ estado: 'ok', papel: json.papel, itens });
+    for (const [slug, item] of Object.entries(json.itens)) store.itens.set(chavePreco(slug, selecao), item);
+    marcarEstado(selecao, 'ok', json.papel);
   } catch {
-    publicar({ estado: 'erro' });
+    marcarEstado(selecao, 'erro');
   } finally {
-    for (const s of lote) emVoo.delete(s);
-    if (pendentes.size) agendar();
+    for (const s of lote) c.emVoo.delete(s);
+    if (c.pendentes.size) agendar(selecao);
   }
 }
 
-function agendar() {
-  if (timer) return;
-  timer = setTimeout(despachar, 40);
+function agendar(selecao?: string) {
+  const c = contextoDe(selecao);
+  if (c.timer) return;
+  c.timer = setTimeout(() => void despachar(selecao), 40);
 }
 
-export function pedirPrecos(slugs: readonly string[]) {
+export function pedirPrecos(slugs: readonly string[], selecao?: string) {
   assinarAuth();
+  const c = contextoDe(selecao);
   let novo = false;
   for (const s of slugs) {
-    if (!store.itens.has(s) && !emVoo.has(s)) {
-      pendentes.add(s);
+    if (!store.itens.has(chavePreco(s, selecao)) && !c.emVoo.has(s)) {
+      c.pendentes.add(s);
       novo = true;
     }
   }
-  if (novo) agendar();
+  if (novo) agendar(selecao);
 }
 
 const subscribe = (cb: () => void) => {
@@ -144,27 +208,63 @@ const subscribe = (cb: () => void) => {
   };
 };
 
-/** Estado global (anônimo / aguardando / ok) + o item de um slug. */
-export function usePreco(slug: string): { estado: EstadoPrecos; papel: string | null; item: PrecoItem | undefined } {
+/**
+ * Estado do contexto + o item de um slug.
+ *
+ * `selecao` é o token de `/loja/s/<token>`. Passar o token errado (ou esquecer
+ * de passar) não vaza nada — só mostra o preço da loja no lugar do preço da
+ * seleção. Quem decide o que cada papel pode ver é o servidor.
+ */
+export function usePreco(
+  slug: string,
+  selecao?: string
+): { estado: EstadoPrecos; papel: string | null; item: PrecoItem | undefined } {
   const s = useSyncExternalStore(subscribe, () => store, () => store);
   useEffect(() => {
-    pedirPrecos([slug]);
-  }, [slug]);
-  return { estado: s.estado, papel: s.papel, item: s.itens.get(slug) };
+    pedirPrecos([slug], selecao);
+  }, [slug, selecao]);
+  const c = s.contextos.get(chaveDoContexto(selecao));
+  return {
+    estado: c?.estado ?? 'carregando',
+    papel: c?.papel ?? null,
+    item: s.itens.get(chavePreco(slug, selecao)),
+  };
 }
 
-/** O mapa inteiro de preços já carregados — para somar um carrinho sem hook em loop. */
-export function usePrecosMapa(): { estado: EstadoPrecos; itens: ReadonlyMap<string, PrecoItem> } {
+/**
+ * Os preços já carregados NO CONTEXTO pedido, chaveados por slug — para somar
+ * um carrinho sem hook em loop.
+ *
+ * Devolve o mapa recortado, e não o cache cru, de propósito: assim quem chama
+ * continua escrevendo `mapa.get(slug)` e quem esquecer de passar a seleção lê o
+ * contexto da loja em vez de pescar, por acidente, o preço de uma seleção com
+ * acréscimo que outra tela carregou.
+ */
+export function usePrecosMapa(selecao?: string): {
+  estado: EstadoPrecos;
+  itens: ReadonlyMap<string, PrecoItem>;
+} {
   const s = useSyncExternalStore(subscribe, () => store, () => store);
-  return { estado: s.estado, itens: s.itens };
+  const ctx = chaveDoContexto(selecao);
+  // `s` troca de identidade a cada resposta, então o recorte só é refeito
+  // quando algo realmente chegou.
+  const itens = useMemo(() => {
+    const prefixo = `${ctx}|`;
+    const m = new Map<string, PrecoItem>();
+    for (const [chave, item] of s.itens) {
+      if (chave.startsWith(prefixo)) m.set(chave.slice(prefixo.length), item);
+    }
+    return m;
+  }, [s, ctx]);
+  return { estado: s.contextos.get(ctx)?.estado ?? 'carregando', itens };
 }
 
 /** Pede em lote (uma página de cards). Os cards leem com usePreco. */
-export function usePrecosLote(slugs: readonly string[]) {
+export function usePrecosLote(slugs: readonly string[], selecao?: string) {
   const chave = slugs.join('|');
   useEffect(() => {
-    if (chave) pedirPrecos(chave.split('|'));
-  }, [chave]);
+    if (chave) pedirPrecos(chave.split('|'), selecao);
+  }, [chave, selecao]);
 }
 
 export const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });

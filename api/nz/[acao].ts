@@ -31,6 +31,7 @@ import conta from '../_lib/handlers/conta.js';
 import equipe from '../_lib/handlers/equipe.js';
 import geo from '../_lib/handlers/geo.js';
 import avaliacoes from '../_lib/handlers/avaliacoes.js';
+import selecoes from '../_lib/handlers/selecoes.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -66,6 +67,9 @@ const ROTAS: Record<string, Handler> = {
   // Avaliação de produto, pontos por avaliar e cashback. Leitura pública;
   // escrita só pelo servidor, que confere a compra.
   avaliacoes,
+  // Seleções enviadas a clientes. `criar`/`renovar`/`encerrar` são de admin;
+  // `abrir` é público — é o que a página /loja/s/<token> chama.
+  selecoes,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

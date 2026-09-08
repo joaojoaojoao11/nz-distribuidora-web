@@ -172,6 +172,9 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/loja" element={<Loja />} />
+                  {/* Seleção enviada a um cliente. Vem ANTES de /loja/:slug,
+                      senão "s" seria lido como o slug de um produto. */}
+                  <Route path="/loja/s/:token" element={<Loja />} />
                   <Route path="/loja/:slug" element={<LojaProduct />} />
                   {/* Conta do cliente: uma rota por tela, como o admin. O
                       detalhe do pedido fica FORA da casca — é uma página de
