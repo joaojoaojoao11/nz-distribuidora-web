@@ -1,7 +1,28 @@
 # Seleções configuráveis, preço de atacado, Central de ocorrências e bolinhas de estoque — NZSTORE
 
-> **STATUS: PLANO REVISADO PELO JOÃO EM 2026-09-08 — LIBERADO PARA EXECUÇÃO.**
-> Planejado pelo Fable, para execução pelo Opus. Nada foi alterado no código ainda.
+> **STATUS: IMPLANTADO em 2026-09-08.** Planejado pelo Fable, executado pelo Opus.
+> Commits: `c854802` (Central), `4a6d9f9` (atacado), `f94ebcd` (bolinhas),
+> `0041a6e` (seleções), `8dc3ee2` (autoteste), `b8fb635` (Minhas seleções),
+> `743a2cf` (informar problema).
+>
+> **O que mudou em relação ao plano, e por quê:**
+> * A Fase 5 original (carrinho e checkout honrando o preço da seleção) foi
+>   **descartada pelo João** na revisão — o manejo de preço é manual, na
+>   negociação. Consequência de desenho: dentro de uma seleção com preço, o botão
+>   de compra vira "Pedir pelo WhatsApp", senão o cliente veria +X % no card e a
+>   tabela no checkout.
+> * A **Central de ocorrências** e o botão **"Informar um problema"** entraram na
+>   mesma revisão e viraram as Fases 1 e 6.
+> * O contador de visitas virou uma função SQL (`selecao_registrar_visita`):
+>   ler e regravar `visitas + 1` no Node perde contagem com duas pessoas abrindo
+>   o link no mesmo segundo.
+> * `usePrecosMapa(selecao?)` devolve o mapa **já recortado** pelo contexto, em
+>   vez de expor as chaves compostas. Foi a forma de evitar o risco 6.3: um
+>   chamador esquecido lê o preço da loja em vez de pescar, por acidente, o preço
+>   com acréscimo que outra tela carregou.
+> * Durante a Fase 2 o sync ficou **desligado por ~4 minutos** (`sync_ativo`), do
+>   backfill até o deploy sair. Sem isso o webhook do ERP (a cada 5 min, com o
+>   código antigo) teria reescrito `preco_rolo` com o varejo. Está religado.
 >
 > Pedido do João (2026-09-08), com a `/loja` aberta em modo MONTAR SELEÇÃO:
 > *"quero que seja possível, na seleção montada, abrir uma telinha de configuração
@@ -555,6 +576,54 @@ Convenções: um commit por fase (mensagem no padrão `loja: …` / `admin: …`
 8. **Ruído na Central.** `sku-novo` pode chegar aos cem de uma vez num cadastro em massa no ERP: a tela precisa de "Marcar todos como vistos" na aba Mudanças (adicionar; é um `update … where categoria='mudanca' and status='aberta'`).
 9. **Abuso do "informar problema".** Sem login, o freio é honeypot + 5/hora/IP. Se aparecer spam, subir o Turnstile (já previsto na memória do cadastro) — fora desta rodada.
 10. **`carrinhos_abandonados`** passa a estimar pelo atacado automaticamente (lê `preco_rolo`). Nada a fazer.
+
+---
+
+## 6.1. O que foi verificado em produção (2026-09-08)
+
+Feito por API e por SQL contra o banco real. O que depende de olhar a tela
+(layout da Central, das duas telinhas e do cartão de seleção no painel) **não**
+foi verificado — precisa de uma sessão de admin no navegador.
+
+**Preço de atacado**
+- `preco_rolo = preco_rolo_min` em todos os 803 ativos com atacado; nenhum caso
+  de `preco_rolo > preco_rolo_varejo`; nenhum ativo sem varejo gravado.
+- Etherna Texturizado saiu de 1.225,00 / 52,00 (varejo) para **1.088,63 / 44,90**
+  (atacado) — os números do caderno de preços.
+- Backfill re-executado devolve zero linhas (idempotente).
+- 17 rodadas do sync depois, o espelho segue com o atacado.
+
+**Central**
+- Uma única ocorrência `preco-zerado`, para o SKU `84565478` (PPF Black Piano),
+  que está sem atacado **e** sem varejo. As 17 rodadas do sync **não**
+  duplicaram: o índice parcial segura.
+- Insert repetido com a mesma chave devolve 23505; depois de resolvida, uma nova
+  pode nascer. RLS: só SELECT e UPDATE para `authenticated`, nenhum INSERT.
+- Bucket `ocorrencias` nasceu privado.
+
+**Seleções**
+- `abrir` de seleção ativa devolve token, título, slugs, `mostrarPreco` e
+  `expiraEm` — e **nunca** `acrescimo_pct` nem `criado_por`.
+- Anônimo com token válido recebe preço só dos slugs da lista, com o acréscimo
+  aplicado (1.694,16 → **1.863,58** com 10%); slug de fora volta
+  `foraDaSelecao: true`. Sem token, 401.
+- Expirada: `abrir` devolve `expirada: true` **sem** a lista, e o preço volta a
+  401. Token inexistente, 404.
+- `criar`/`renovar`/`encerrar` devolvem 403 sem admin. Visita contada só para
+  quem não é admin.
+
+**Informar um problema**
+- Relato anônimo grava título com o nome do produto, mensagem, contato, URL e
+  motivo, sem `user_id` e com `ip_hash` de 64 caracteres (nunca o IP).
+- Mensagem curta → 400; motivo inválido → 400; produto inexistente → 404.
+- Honeypot preenchido → 200 **sem gravar linha**.
+- Imagem sobe para o bucket privado; a URL pública dá 404 e a chave anônima do
+  site também. Sexto envio na mesma hora → 429.
+
+**Autotestes:** `selecoes:test` (48), `carrinho:test`, `checkout:test`,
+`painel:test`, `conta:test`, `erp:test`, `ficha:test`, `midia:test`,
+`avaliacoes:test` — todos verdes. `lint` e `build` sem erro novo (os de
+`useLimiteNome.ts`, `SceneEnvironment.tsx` e `sanitize.ts` já existiam).
 
 ---
 

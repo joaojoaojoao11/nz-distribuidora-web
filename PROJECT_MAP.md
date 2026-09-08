@@ -60,6 +60,39 @@ Cada subdiretório em `pages/` representa uma etapa completa injetada no `App.ts
 * **`/Wrap` (Linha Wrap)**: Landing page arquitetada para exibir as pilastras logísticas: >250 Cores a pronta entrega, >500 Exclusivas, e a seção rubra de Consultoria.
 * **`/Company` (Sobre Nós)**: O Quartel General. Exibe a carta do fundador João Soares e dados físicos em Barueri.
 
+### Rotas da LOJA e da conta que não são óbvias pelo nome da pasta
+
+* **`/loja/s/:token`** — uma SELEÇÃO enviada a um cliente. Mesmo componente da
+  `/loja`, mas a lista vem do banco (`selecoes`), na ordem em que o vendedor
+  montou, e o link expira em 24 h. Quando a seleção libera preço, é a única
+  porta por onde alguém **sem cadastro** vê valor no site — e só nos itens
+  daquela lista. Ver `docs/PLANO_SELECOES_PRECO_ATACADO.md`.
+* **`/loja/:slug?s=<token>`** — a página do produto aberta a partir de uma
+  seleção. O token vai na URL (e não no `state` do Link) para o preço
+  sobreviver a um F5. Ambas com `noindex`.
+* **`/painel/selecoes`** — "Minhas seleções" (ativas / expiradas). Só admin: o
+  item some do menu **e** a rota redireciona.
+* **`/admin/central`** — Central de erros e mudanças. A caixa de entrada da
+  equipe: preço que o ERP não precificou, SKU novo ou removido, preço que deu um
+  salto, e o que clientes informaram pelo botão "Informar um problema" da página
+  do produto.
+
+### API — tudo em `/api/nz/<acao>`
+
+O plano Hobby da Vercel permite 12 funções por deployment. Por isso **todo**
+endpoint novo entra no roteador `api/nz/[acao].ts`, que conta como uma função,
+com o handler em `api/_lib/handlers/`. Nunca crie um arquivo novo em `api/`.
+Os dois mais recentes: `selecoes` (criar/abrir/renovar/encerrar) e `ocorrencias`
+(informar um problema, público, com honeypot e limite por IP).
+
+### Preço: ATACADO, não varejo
+
+`erp_produtos.preco_rolo` e `preco_metro` são o preço de **atacado** — é o que o
+site mostra e cobra. O varejo (a tabela publicada) fica em `preco_*_varejo` e só
+o papel admin recebe. Os nomes na view do ERP enganam: lá `ideal_*` é o varejo e
+`min_*` é o atacado. Quem faz essa escolha é `api/_lib/handlers/sync.ts`
+(`precoDeVenda`), num ponto só.
+
 ---
 
 ## 5. Notas Finais para Agentes (Machine Learning Memory)

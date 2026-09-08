@@ -18,7 +18,7 @@
 -- para `authenticated`, de propósito: ocorrência nasce do sync ou do endpoint,
 -- nunca do navegador.
 --
--- Aplicada em produção em: (preencher)
+-- Aplicada em produção em: 2026-09-08
 
 create table if not exists public.ocorrencias (
   id            uuid primary key default gen_random_uuid(),

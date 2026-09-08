@@ -24,7 +24,7 @@
 --   · deploy antes da migração → o sync novo tenta gravar colunas que não
 --     existem e FALHA. Por isso: aplicar isto primeiro.
 --
--- Aplicada em produção em: (preencher)
+-- Aplicada em produção em: 2026-09-08
 
 alter table public.erp_produtos
   add column if not exists preco_rolo_varejo  numeric(12,2),

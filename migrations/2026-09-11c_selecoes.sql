@@ -17,7 +17,7 @@
 -- `acrescimo_pct = 0` na seleção de outra pessoa, ou renovar sozinho um link
 -- que deveria ter morrido. Quem escreve é /api/nz/selecoes, com service role.
 --
--- Aplicada em produção em: (preencher)
+-- Aplicada em produção em: 2026-09-08
 
 create table if not exists public.selecoes (
   id            uuid primary key default gen_random_uuid(),

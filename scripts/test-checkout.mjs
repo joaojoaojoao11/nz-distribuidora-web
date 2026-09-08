@@ -30,6 +30,9 @@ const build = spawnSync(
     'api/_lib/handlers/asaas.ts',
     'api/_lib/pedido/precificar.ts',
     'api/_lib/pedido/despachoErp.ts',
+    // `precificar` importa daqui desde que as seleções passaram a precisar da
+    // mesma régua de arredondamento.
+    'api/_lib/pedido/dinheiro.ts',
     'api/_lib/conta/completude.ts',
     `--outdir=${outDir}`,
     '--format=esm',
