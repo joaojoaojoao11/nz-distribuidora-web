@@ -42,14 +42,27 @@ function publicar(novos: ShopItem[], novoEstado: Estado) {
   for (const cb of ouvintes) cb();
 }
 
-/** Busca o catálogo do banco uma vez. Idempotente. */
-export function carregarCatalogo(): Promise<void> {
+/**
+ * Busca o catálogo do banco uma vez. Idempotente.
+ *
+ * `semCache` pede a versão de origem (`?nocache=1`), pulando a CDN. É o que o
+ * painel usa depois de salvar: a resposta normal fica até 5 min fresca na borda
+ * e ainda pode ser servida "stale" depois disso, então quem acabou de apagar uma
+ * foto recarregava a página e via a foto de volta — parecia que não tinha
+ * salvado. Visitante continua na versão cacheada; só quem editou fura a fila.
+ */
+export function carregarCatalogo(semCache = false): Promise<void> {
   if (promessa) return promessa;
   if (typeof window === 'undefined') return Promise.resolve();
   estado = 'carregando';
   promessa = (async () => {
     try {
-      const res = await fetch('/api/nz/catalogo', { headers: { Accept: 'application/json' } });
+      const url = semCache ? `/api/nz/catalogo?nocache=1&t=${Date.now()}` : '/api/nz/catalogo';
+      const res = await fetch(url, {
+        headers: { Accept: 'application/json' },
+        // Sem isto o cache do NAVEGADOR (max-age=60) responde antes da rede.
+        cache: semCache ? 'no-store' : 'default',
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = (await res.json()) as { itens?: LojaCatalogoRow[]; linhas?: LojaLinhaRow[] };
       if (!Array.isArray(json.itens) || json.itens.length === 0) throw new Error('catálogo vazio');
@@ -98,8 +111,11 @@ export function getShopItemByLegacyPath(path: string): ShopItem | undefined {
   return porLegacy.get(path.toLowerCase());
 }
 
-/** Força nova carga (depois de um "Sincronizar agora" no admin, por exemplo). */
+/**
+ * Força nova carga, pulando CDN e cache do navegador. É o que o painel chama
+ * depois de salvar — ver a nota em `carregarCatalogo`.
+ */
 export function recarregarCatalogo(): Promise<void> {
   promessa = null;
-  return carregarCatalogo();
+  return carregarCatalogo(true);
 }

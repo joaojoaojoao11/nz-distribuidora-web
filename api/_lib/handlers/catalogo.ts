@@ -63,9 +63,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     .order('linha_key', { ascending: true });
 
   const nocache = req.query.nocache === '1';
+  // A JANELA DE DESATUALIZACAO E' UMA DECISAO DE PRODUTO, NAO DE PERFORMANCE.
+  //
+  // Era `s-maxage=300, stale-while-revalidate=3600`: a borda podia servir uma
+  // copia de ate UMA HORA enquanto revalidava por tras. Quem apagava uma foto no
+  // painel recarregava a loja, via a foto de volta e concluia que nao tinha
+  // salvado (aconteceu com o NZW204 em 11/09/2026). Sessenta segundos frescos e
+  // dois minutos de tolerancia deixam o pior caso em ~3 min, e a funcao de
+  // origem roda no maximo uma vez por minuto por regiao — nao e' custo.
+  //
+  // `?nocache=1` pula tudo: e' o que o painel usa depois de salvar.
   res.setHeader(
     'Cache-Control',
-    nocache ? 'no-store' : 'public, s-maxage=300, stale-while-revalidate=3600, max-age=60'
+    nocache ? 'no-store' : 'public, s-maxage=60, stale-while-revalidate=120, max-age=30'
   );
   res.status(200).json({
     geradoEm: new Date().toISOString(),
