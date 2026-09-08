@@ -64,6 +64,28 @@ export type BrandKey = BrandKeyErp;
 /** Nível qualitativo de estoque — o único dado de estoque que é público. */
 export type NivelEstoque = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
 
+/**
+ * O que existe FISICAMENTE no pátio, por trás das duas bolinhas do card:
+ * verde = rolo fechado (sai inteiro), laranja = ponta (sai fracionado).
+ *
+ * Não confundir com `NivelEstoque`, que é o rótulo público e vem no catálogo.
+ * Isto aqui é contagem de rolo e SÓ ADMIN recebe — quem decide é o servidor
+ * (api/_lib/handlers/patio.ts), nunca a interface.
+ */
+export type SinalPatio = 'rolo-fechado' | 'ponta-aberta';
+
+/**
+ * Quais slugs têm cada sinal, no catálogo inteiro. Vem de /api/nz/patio.
+ *
+ * Mora aqui, e não no módulo que busca, porque `search/match.ts` precisa do
+ * tipo para filtrar e é código puro: não pode importar um módulo que puxa React
+ * e o cliente do Supabase junto.
+ */
+export interface MapaPatio {
+  fechados: ReadonlySet<string>;
+  abertos: ReadonlySet<string>;
+}
+
 /** Como o produto do site se liga ao SKU físico do ERP. */
 export type TipoVinculo = 'proprio' | 'alias' | 'familia' | 'pendente';
 

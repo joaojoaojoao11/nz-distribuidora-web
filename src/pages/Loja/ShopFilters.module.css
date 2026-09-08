@@ -171,6 +171,35 @@
   white-space: nowrap;
 }
 
+/* Bolinha do pátio dentro da opção — mesmo tamanho e mesmas cores das do card
+   (ver EstoqueDots.module.css), para o filtro e a grade falarem a mesma língua. */
+.patioDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.4rem;
+  vertical-align: 1px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.patioFechado {
+  background: #22c55e;
+}
+
+.patioAberto {
+  background: #f59e0b;
+}
+
+/* Legenda curta do bloco do pátio. Existe para o admin não achar que o cliente
+   está vendo o mesmo painel que ele. */
+.groupNota {
+  margin: 0.5rem 0 0;
+  font-size: 0.65rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
 .optionCount {
   flex: none;
   font-family: var(--font-tech);

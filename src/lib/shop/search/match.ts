@@ -16,13 +16,24 @@ import type { ColorFamilyId } from '../color/lexicon';
 import type { FinishId } from '../finish/tree';
 import { finishDescendants } from '../finish/tree';
 import type { PatternFamilyId } from '../pattern/taxonomy';
-import { normalize, type BrandKey, type ItemKind, type LineKey, type NivelEstoque, type ShopItem, type Vertical } from '../types';
+import {
+  normalize,
+  type BrandKey,
+  type ItemKind,
+  type LineKey,
+  type MapaPatio,
+  type NivelEstoque,
+  type ShopItem,
+  type SinalPatio,
+  type Vertical,
+} from '../types';
 import {
   COLLATOR,
   compareCatalogo,
   compareCodigo,
   compareCor,
   coverRank,
+  destaqueRank,
   estoqueRank,
 } from './ordem';
 
@@ -53,6 +64,14 @@ export interface FilterState {
   kinds: ItemKind[];
   /** Nível público de estoque. Só 'pronta-entrega' faz sentido como filtro. */
   estoque: NivelEstoque[];
+  /**
+   * As duas bolinhas do card: rolo fechado (verde) e ponta (laranja). É o que
+   * existe no pátio AGORA, e só admin enxerga. Sem o mapa de slugs — que vem
+   * de /api/nz/patio e só chega para admin — este filtro é IGNORADO, nunca
+   * aplicado com o mapa vazio: um link de admin aberto por um cliente mostraria
+   * zero produto em vez da lista.
+   */
+  patio: SinalPatio[];
   sort: SortMode;
 }
 
@@ -66,6 +85,7 @@ export const EMPTY_FILTERS: FilterState = {
   patterns: [],
   kinds: [],
   estoque: [],
+  patio: [],
   sort: 'relevancia',
 };
 
@@ -79,7 +99,8 @@ export function hasActiveFilters(f: FilterState): boolean {
     f.finishes.length > 0 ||
     f.patterns.length > 0 ||
     f.kinds.length > 0 ||
-    f.estoque.length > 0
+    f.estoque.length > 0 ||
+    f.patio.length > 0
   );
 }
 
@@ -230,8 +251,21 @@ interface Scored {
   cover: number;
 }
 
-export function applyFilters(items: readonly ShopItem[], f: FilterState): ShopItem[] {
+/**
+ * `patio` é o mapa de quem tem rolo fechado / ponta, do catálogo inteiro. Só
+ * admin recebe (ver src/lib/shop/patio.ts). Quando não vem, o filtro de pátio
+ * é ignorado — e é isso que faz um link `?patio=` chegar íntegro na mão de um
+ * cliente: ele vê a lista sem o corte, nunca uma tela vazia.
+ */
+export function applyFilters(
+  items: readonly ShopItem[],
+  f: FilterState,
+  patio?: MapaPatio | null
+): ShopItem[] {
   const pq = toParsedQuery(f);
+  const cortarPorPatio = f.patio.length > 0 && Boolean(patio);
+  const querFechado = f.patio.includes('rolo-fechado');
+  const querAberto = f.patio.includes('ponta-aberta');
 
   // Só restringe pela subfamília se ela existir no catálogo filtrado — senão
   // 'azul marinho' num acervo sem marinhos daria zero em vez dos azuis.
@@ -244,6 +278,15 @@ export function applyFilters(items: readonly ShopItem[], f: FilterState): ShopIt
     // Estoque é corte, não pontuação: quem pediu pronta entrega não quer ver
     // sob encomenda no fim da lista.
     if (f.estoque.length && !f.estoque.includes(item.nivelEstoque ?? 'sob-encomenda')) continue;
+    // Pátio: mesmo corte, e OU entre as duas bolinhas — marcar as duas é
+    // "tem rolo fechado OU tem ponta", como em toda faceta multivalor daqui.
+    if (
+      cortarPorPatio &&
+      !((querFechado && patio!.fechados.has(item.slug)) ||
+        (querAberto && patio!.abertos.has(item.slug)))
+    ) {
+      continue;
+    }
     const score = scoreItem(item, pq, f.kinds, strictSubcolor);
     if (score !== null) scored.push({ item, score, cover: coverRank(item) });
   }
@@ -254,6 +297,8 @@ export function applyFilters(items: readonly ShopItem[], f: FilterState): ShopIt
   // mesmo termo.
   const buscaTextual = pq.free.length > 0 || pq.codes.length > 0;
   const capa = (a: Scored, b: Scored) => a.cover - b.cover;
+  // A vitrine (SH Wrapping, Oracal 651/670, Speed Wrapping). Ver LINHAS_DESTAQUE.
+  const vitrine = (a: Scored, b: Scored) => destaqueRank(a.item) - destaqueRank(b.item);
 
   switch (f.sort) {
     case 'nome':
@@ -281,13 +326,14 @@ export function applyFilters(items: readonly ShopItem[], f: FilterState): ShopIt
       break;
     default:
       // Relevância. Sem texto digitado — catálogo puro ou só facetas marcadas —
-      // todo mundo empata em pontos e o que aparece é a ordem do mostruário:
-      // capa, marca, linha, código. Com texto, a pontuação manda e a capa
-      // volta a ser só desempate.
+      // manda a VITRINE e depois a ordem do mostruário: capa, marca, linha,
+      // código. Com texto, a pontuação vem primeiro (quem digitou '651 white'
+      // quer o 651 White, não a vitrine) e a vitrine desempata o que empatou
+      // em pontos.
       scored.sort((a, b) =>
         buscaTextual
-          ? b.score - a.score || capa(a, b) || compareCatalogo(a.item, b.item)
-          : capa(a, b) || b.score - a.score || compareCatalogo(a.item, b.item)
+          ? b.score - a.score || vitrine(a, b) || capa(a, b) || compareCatalogo(a.item, b.item)
+          : vitrine(a, b) || capa(a, b) || b.score - a.score || compareCatalogo(a.item, b.item)
       );
   }
 

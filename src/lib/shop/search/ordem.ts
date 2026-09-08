@@ -1,6 +1,11 @@
 // Ordem natural do catálogo da LOJA.
 //
-// Três regras, nesta ordem de prioridade:
+// Quatro regras, nesta ordem de prioridade:
+//
+// 0. VITRINE. Um punhado de linhas abre a loja por decisão comercial
+//    (LINHAS_DESTAQUE, mais abaixo). Vale só na ordenação padrão e passa na
+//    frente até da regra da capa — do contrário a Oracal 651, que é swatch e
+//    não foto, continuaria enterrada e o pedido não teria efeito nenhum.
 //
 // 1. CAPA PRIMEIRO. Item sem foto de capa vai para o fim da lista. Não é uma
 //    penalidade permanente: `coverRank` olha o item, então no instante em que
@@ -60,6 +65,33 @@ export const LINE_ORDER: LineKey[] = [
   'nar',
   'diversos',
 ];
+
+/**
+ * VITRINE. As linhas que abrem a loja, na ordem em que o João pediu
+ * (2026-09-10): "que apareçam primeiro".
+ *
+ * É uma decisão comercial, não uma ordem natural — por isso vive numa lista
+ * própria em vez de mexer em LINE_ORDER, que é o percurso do mostruário e
+ * continua valendo dentro de cada grupo e no modo "Marca e linha".
+ *
+ * Vale só na ordenação PADRÃO (Relevância). Quem escolheu "Nome (A–Z)" pediu
+ * nome, e receber a vitrine no lugar seria a tela desobedecendo. Quando há
+ * texto digitado a pontuação continua mandando primeiro: buscar '651 white'
+ * tem que devolver o 651 White, não a vitrine inteira.
+ */
+export const LINHAS_DESTAQUE: LineKey[] = [
+  'sh-wrapping',
+  'oracal-651',
+  'oracal-670',
+  'speed-wrapping',
+];
+
+const POSICAO_DESTAQUE = new Map<LineKey, number>(LINHAS_DESTAQUE.map((l, i) => [l, i]));
+
+/** Posição na vitrine; quem não está nela vem depois de todos que estão. */
+export function destaqueRank(item: ShopItem): number {
+  return POSICAO_DESTAQUE.get(item.lineKey) ?? LINHAS_DESTAQUE.length;
+}
 
 /** Espectro de cor, na mesma sequência do grid de swatches da sidebar. */
 const COLOR_ORDER = Object.keys(COLOR_LABEL) as ColorFamilyId[];

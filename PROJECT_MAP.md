@@ -82,8 +82,20 @@ Cada subdiretório em `pages/` representa uma etapa completa injetada no `App.ts
 O plano Hobby da Vercel permite 12 funções por deployment. Por isso **todo**
 endpoint novo entra no roteador `api/nz/[acao].ts`, que conta como uma função,
 com o handler em `api/_lib/handlers/`. Nunca crie um arquivo novo em `api/`.
-Os dois mais recentes: `selecoes` (criar/abrir/renovar/encerrar) e `ocorrencias`
-(informar um problema, público, com honeypot e limite por IP).
+Os três mais recentes: `selecoes` (criar/abrir/renovar/encerrar), `ocorrencias`
+(informar um problema, público, com honeypot e limite por IP) e `patio` (quais
+slugs têm rolo fechado / ponta no pátio — é o filtro das bolinhas do card, e só
+admin recebe).
+
+### As bolinhas do card: vitrine e filtro são caminhos diferentes
+
+Verde = rolo fechado, laranja = ponta. **Desenhar** as bolinhas é uma pergunta
+por página de 60 cards, e a resposta vem junto do preço (`/api/nz/precos`).
+**Filtrar** por elas é uma pergunta sobre os 806 itens do catálogo, e aí vale a
+lista de slugs de `/api/nz/patio`, buscada uma vez por sessão
+(`src/lib/shop/patio.ts`). Sem o mapa — todo mundo que não é admin — o grupo não
+aparece na sidebar e um `?patio=` na URL é **ignorado**, nunca aplicado com o
+mapa vazio: senão um link do vendedor abriria vazio na mão do cliente.
 
 ### Preço: ATACADO, não varejo
 

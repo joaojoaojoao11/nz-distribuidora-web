@@ -13,7 +13,16 @@ import { PATTERN_LABEL, PATTERN_ORDER, type PatternFamilyId } from './pattern/ta
 import { SOURCE_LABEL, VERTICAL_LABEL, VERTICAL_ORDER } from './catalog';
 import { BRAND_ORDER, LINE_ORDER } from './search/ordem';
 import { LINHA_LABEL } from './erp/mapa';
-import type { BrandKey, ItemKind, LineKey, NivelEstoque, ShopItem, Vertical } from './types';
+import type {
+  BrandKey,
+  ItemKind,
+  LineKey,
+  MapaPatio,
+  NivelEstoque,
+  ShopItem,
+  SinalPatio,
+  Vertical,
+} from './types';
 
 export interface FacetOption<T extends string = string> {
   id: T;
@@ -33,6 +42,8 @@ export interface Facets {
   patterns: FacetOption<PatternFamilyId>[];
   kinds: FacetOption<ItemKind>[];
   estoque: FacetOption<NivelEstoque>[];
+  /** As duas bolinhas do card. Vem vazio para quem não é admin. */
+  patio: FacetOption<SinalPatio>[];
 }
 
 /** Swatch de cada família, para o grid de cores da sidebar. */
@@ -60,6 +71,15 @@ export const ESTOQUE_LABEL: Record<NivelEstoque, string> = {
   'pronta-entrega': 'Pronta entrega · SP',
   'ultimas-unidades': 'Últimas unidades',
   'sob-encomenda': 'Sob encomenda',
+};
+
+/**
+ * As duas bolinhas do card, em texto. "Rolo fechado" e "ponta" é como o pátio
+ * fala — quem usa este filtro é vendedor, não visitante.
+ */
+export const PATIO_LABEL: Record<SinalPatio, string> = {
+  'rolo-fechado': 'Com rolo fechado',
+  'ponta-aberta': 'Com ponta aberta',
 };
 
 const KIND_LABEL: Record<ItemKind, string> = {
@@ -102,15 +122,23 @@ const LINE_OPTIONS: { id: LineKey; label: string }[] = LINE_ORDER.map((id) => ({
   label: LINHA_LABEL[id],
 }));
 
-function countWith(items: readonly ShopItem[], filters: FilterState): number {
-  return applyFilters(items, filters).length;
+function countWith(
+  items: readonly ShopItem[],
+  filters: FilterState,
+  patio?: MapaPatio | null
+): number {
+  return applyFilters(items, filters, patio).length;
 }
 
 /**
  * Calcula todas as facetas. Cada grupo é contado com os demais filtros
  * aplicados e o próprio grupo zerado.
  */
-export function computeFacets(items: readonly ShopItem[], f: FilterState): Facets {
+export function computeFacets(
+  items: readonly ShopItem[],
+  f: FilterState,
+  patio?: MapaPatio | null
+): Facets {
   const withoutVertical = { ...f, verticals: [] };
   const withoutColor = { ...f, colors: [] };
   const withoutFinish = { ...f, finishes: [] };
@@ -119,18 +147,19 @@ export function computeFacets(items: readonly ShopItem[], f: FilterState): Facet
   const withoutPattern = { ...f, patterns: [] };
   const withoutKind = { ...f, kinds: [] };
   const withoutEstoque = { ...f, estoque: [] };
+  const withoutPatio = { ...f, patio: [] };
 
   const verticals = VERTICAL_ORDER.map((v) => ({
     id: v,
     label: VERTICAL_LABEL[v],
-    count: countWith(items, { ...withoutVertical, verticals: [v] }),
+    count: countWith(items, { ...withoutVertical, verticals: [v] }, patio),
   })).filter((o) => o.count > 0);
 
   const colors = (Object.keys(COLOR_LABEL) as ColorFamilyId[])
     .map((c) => ({
       id: c,
       label: COLOR_LABEL[c],
-      count: countWith(items, { ...withoutColor, colors: [c] }),
+      count: countWith(items, { ...withoutColor, colors: [c] }, patio),
     }))
     .filter((o) => o.count > 0)
     .sort((a, b) => b.count - a.count);
@@ -139,32 +168,32 @@ export function computeFacets(items: readonly ShopItem[], f: FilterState): Facet
     id,
     label: FINISH_LABEL[id],
     parent: FINISH_PARENT[id],
-    count: countWith(items, { ...withoutFinish, finishes: [id] }),
+    count: countWith(items, { ...withoutFinish, finishes: [id] }, patio),
   })).filter((o) => o.count > 0);
 
   const lines = LINE_OPTIONS.map((l) => ({
     id: l.id,
     label: l.label,
-    count: countWith(items, { ...withoutLine, lines: [l.id] }),
+    count: countWith(items, { ...withoutLine, lines: [l.id] }, patio),
   })).filter((o) => o.count > 0);
 
   const brands = BRAND_OPTIONS.map((b) => ({
     id: b.id,
     label: b.label,
-    count: countWith(items, { ...withoutBrand, brands: [b.id] }),
+    count: countWith(items, { ...withoutBrand, brands: [b.id] }, patio),
   })).filter((o) => o.count > 0);
 
   const patterns = PATTERN_ORDER.map((p) => ({
     id: p,
     label: PATTERN_LABEL[p],
-    count: countWith(items, { ...withoutPattern, patterns: [p] }),
+    count: countWith(items, { ...withoutPattern, patterns: [p] }, patio),
   })).filter((o) => o.count > 0);
 
   const kinds = (Object.keys(KIND_LABEL) as ItemKind[])
     .map((k) => ({
       id: k,
       label: KIND_LABEL[k],
-      count: countWith(items, { ...withoutKind, kinds: [k] }),
+      count: countWith(items, { ...withoutKind, kinds: [k] }, patio),
     }))
     .filter((o) => o.count > 0);
 
@@ -174,11 +203,33 @@ export function computeFacets(items: readonly ShopItem[], f: FilterState): Facet
     .map((n) => ({
       id: n,
       label: ESTOQUE_LABEL[n],
-      count: countWith(items, { ...withoutEstoque, estoque: [n] }),
+      count: countWith(items, { ...withoutEstoque, estoque: [n] }, patio),
     }))
     .filter((o) => o.count > 0);
 
-  return { verticals, colors, finishes, lines, brands, patterns, kinds, estoque };
+  // Sem o mapa (todo mundo que não é admin) o grupo não existe: um filtro que
+  // não tem como ser aplicado não pode aparecer na sidebar.
+  const patioOpcoes: FacetOption<SinalPatio>[] = patio
+    ? (['rolo-fechado', 'ponta-aberta'] as SinalPatio[])
+        .map((sinal) => ({
+          id: sinal,
+          label: PATIO_LABEL[sinal],
+          count: countWith(items, { ...withoutPatio, patio: [sinal] }, patio),
+        }))
+        .filter((o) => o.count > 0)
+    : [];
+
+  return {
+    verticals,
+    colors,
+    finishes,
+    lines,
+    brands,
+    patterns,
+    kinds,
+    estoque,
+    patio: patioOpcoes,
+  };
 }
 
 /** Rótulo público de cada linha e fabricante — usado nos chips de filtro ativo. */

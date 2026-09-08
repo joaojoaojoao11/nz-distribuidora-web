@@ -27,6 +27,42 @@ interface Props {
   onClose?: () => void;
 }
 
+/** Uma linha de filtro. `marcador` é o pingo colorido do grupo do pátio. */
+function Opcao({
+  option,
+  group,
+  selected,
+  onToggle,
+  marcador,
+}: {
+  option: FacetOption;
+  group: FilterGroup;
+  selected: readonly string[];
+  onToggle: (group: FilterGroup, id: string) => void;
+  marcador?: string;
+}) {
+  const active = selected.includes(option.id);
+  return (
+    <li>
+      <button
+        type="button"
+        className={`${styles.option} ${active ? styles.optionActive : ''} ${
+          option.parent ? styles.optionChild : ''
+        }`}
+        onClick={() => onToggle(group, option.id)}
+        aria-pressed={active}
+      >
+        <span className={styles.optionBox} aria-hidden="true" />
+        <span className={styles.optionLabel}>
+          {marcador && <span className={`${styles.patioDot} ${marcador}`} aria-hidden="true" />}
+          {option.label}
+        </span>
+        <span className={styles.optionCount}>{option.count}</span>
+      </button>
+    </li>
+  );
+}
+
 function Group({
   title,
   options,
@@ -46,26 +82,65 @@ function Group({
     <div className={styles.group}>
       <h3 className={styles.groupTitle}>{title}</h3>
       <ul className={styles.optionList}>
-        {options.map((o) => {
-          const active = selected.includes(o.id);
-          return (
-            <li key={o.id}>
-              <button
-                type="button"
-                className={`${styles.option} ${active ? styles.optionActive : ''} ${
-                  o.parent ? styles.optionChild : ''
-                }`}
-                onClick={() => onToggle(group, o.id)}
-                aria-pressed={active}
-              >
-                <span className={styles.optionBox} aria-hidden="true" />
-                <span className={styles.optionLabel}>{o.label}</span>
-                <span className={styles.optionCount}>{o.count}</span>
-              </button>
-            </li>
-          );
-        })}
+        {options.map((o) => (
+          <Opcao key={o.id} option={o} group={group} selected={selected} onToggle={onToggle} />
+        ))}
       </ul>
+    </div>
+  );
+}
+
+/**
+ * Disponibilidade — o rótulo público ("Pronta entrega") e, para admin, o que
+ * está fisicamente no pátio.
+ *
+ * Um bloco só, e não dois grupos: para quem vende, "o que dá para entregar" é
+ * uma pergunta com duas respostas de precisão diferente, não dois assuntos. As
+ * duas últimas linhas repetem as bolinhas do card, com a mesma cor, para o olho
+ * ligar o filtro ao que ele já viu na grade.
+ *
+ * As opções do pátio só existem quando o mapa chegou — quem não é admin não
+ * recebe o mapa, e o grupo volta a ser exatamente o que era antes.
+ */
+function GrupoDisponibilidade({
+  facets,
+  filters,
+  onToggle,
+}: Pick<Props, 'facets' | 'filters' | 'onToggle'>) {
+  if (!facets.estoque.length && !facets.patio.length) return null;
+
+  const marcador: Record<string, string> = {
+    'rolo-fechado': styles.patioFechado,
+    'ponta-aberta': styles.patioAberto,
+  };
+
+  return (
+    <div className={styles.group}>
+      <h3 className={styles.groupTitle}>Disponibilidade</h3>
+      <ul className={styles.optionList}>
+        {facets.estoque.map((o) => (
+          <Opcao
+            key={o.id}
+            option={o}
+            group="estoque"
+            selected={filters.estoque}
+            onToggle={onToggle}
+          />
+        ))}
+        {facets.patio.map((o) => (
+          <Opcao
+            key={o.id}
+            option={o}
+            group="patio"
+            selected={filters.patio}
+            onToggle={onToggle}
+            marcador={marcador[o.id]}
+          />
+        ))}
+      </ul>
+      {facets.patio.length > 0 && (
+        <p className={styles.groupNota}>No pátio agora — só administradores veem.</p>
+      )}
     </div>
   );
 }
@@ -125,13 +200,7 @@ function Body({ facets, filters, onToggle }: Pick<Props, 'facets' | 'filters' | 
         selected={filters.verticals}
         onToggle={onToggle}
       />
-      <Group
-        title="Disponibilidade"
-        options={facets.estoque}
-        group="estoque"
-        selected={filters.estoque}
-        onToggle={onToggle}
-      />
+      <GrupoDisponibilidade facets={facets} filters={filters} onToggle={onToggle} />
 
       <ColorGroup options={facets.colors} selected={filters.colors} onToggle={onToggle} />
       <Group

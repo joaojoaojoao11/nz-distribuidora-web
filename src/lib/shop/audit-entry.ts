@@ -6,6 +6,7 @@ import { COLOR_LABEL, type ColorFamilyId } from './color/lexicon';
 import { runShopSelfTest } from './selftest';
 import { familiasDoNome, duploLegitimo } from './diag-cores';
 import { applyFilters, EMPTY_FILTERS } from './search/match';
+import { LINHAS_DESTAQUE } from './search/ordem';
 import { relatedItems } from './related';
 import { getShopItem } from './catalog';
 import { parseShopQuery } from './search/parseQuery';
@@ -83,6 +84,7 @@ export function runAudit(): number {
   failures += auditMarcasELinhas();
   failures += auditCorNome();
   failures += auditCuradoria();
+  failures += auditVitrineEPatio();
   return failures;
 }
 
@@ -530,6 +532,106 @@ function auditCuradoria(): number {
     'slug inválido no link é ignorado, não quebra',
     comLixo.length === selecao.length,
     'slug inválido alterou o resultado'
+  );
+
+  return failures;
+}
+
+
+/**
+ * Vitrine e filtro de pátio.
+ *
+ * As duas coisas erram em silêncio: uma ordem trocada continua sendo uma lista
+ * de produtos, e um filtro que corta demais continua sendo uma tela com cards.
+ * Só uma contagem denuncia.
+ */
+function auditVitrineEPatio(): number {
+  let failures = 0;
+  console.log('');
+  console.log('=== VITRINE E FILTRO DE PATIO ===');
+  console.log('');
+
+  const check = (nome: string, ok: boolean, detalhe: string) => {
+    if (ok) console.log(`  OK   ${nome}`);
+    else {
+      console.log(`  FALHA ${nome} — ${detalhe}`);
+      failures++;
+    }
+  };
+
+  const destaque = new Set<string>(LINHAS_DESTAQUE);
+  const padrao = applyFilters(SHOP_ITEMS, EMPTY_FILTERS);
+  const naVitrine = SHOP_ITEMS.filter((i) => destaque.has(i.lineKey)).length;
+
+  console.table(
+    LINHAS_DESTAQUE.map((linha) => ({
+      linha,
+      itens: SHOP_ITEMS.filter((i) => i.lineKey === linha).length,
+    }))
+  );
+
+  check(
+    'a vitrine ocupa as primeiras posições',
+    naVitrine > 0 && padrao.slice(0, naVitrine).every((i) => destaque.has(i.lineKey)),
+    `o item ${padrao.findIndex((i) => !destaque.has(i.lineKey))} já não é da vitrine`
+  );
+  check(
+    'a vitrine sai na ordem pedida',
+    (() => {
+      const vistas = padrao.slice(0, naVitrine).map((i) => i.lineKey);
+      const primeiraOcorrencia = [...new Set(vistas)];
+      return primeiraOcorrencia.every(
+        (l, idx) => LINHAS_DESTAQUE.indexOf(l) >= (idx > 0 ? LINHAS_DESTAQUE.indexOf(primeiraOcorrencia[idx - 1]) : 0)
+      );
+    })(),
+    'as linhas da vitrine saíram fora da ordem de LINHAS_DESTAQUE'
+  );
+  check(
+    'a vitrine não muda a quantidade de itens',
+    padrao.length === SHOP_ITEMS.length,
+    `${padrao.length} != ${SHOP_ITEMS.length}`
+  );
+
+  // Texto digitado continua mandando: a vitrine é desempate, não atropelo.
+  const porCodigo = applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, q: '651' });
+  check(
+    'busca por código continua respondendo o código',
+    porCodigo.length === 0 || porCodigo[0].lineKey === 'oracal-651' ||
+      (porCodigo[0].code ?? '').includes('651'),
+    `a busca '651' devolveu ${porCodigo[0]?.name} primeiro`
+  );
+
+  // --- Pátio. Mapa de mentira, para exercitar o corte sem rede.
+  const doisPrimeiros = SHOP_ITEMS.slice(0, 2).map((i) => i.slug);
+  const outro = SHOP_ITEMS[5]?.slug ?? '';
+  const mapa = {
+    fechados: new Set([doisPrimeiros[0]]),
+    abertos: new Set([doisPrimeiros[1], outro]),
+  };
+
+  const soFechado = applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, patio: ['rolo-fechado'] }, mapa);
+  const soPonta = applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, patio: ['ponta-aberta'] }, mapa);
+  const ambos = applyFilters(
+    SHOP_ITEMS,
+    { ...EMPTY_FILTERS, patio: ['rolo-fechado', 'ponta-aberta'] },
+    mapa
+  );
+  const semMapa = applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, patio: ['rolo-fechado'] });
+
+  console.table([
+    { filtro: 'rolo fechado', itens: soFechado.length },
+    { filtro: 'ponta aberta', itens: soPonta.length },
+    { filtro: 'os dois (OU)', itens: ambos.length },
+    { filtro: 'sem mapa (cliente)', itens: semMapa.length },
+  ]);
+
+  check('rolo fechado devolve só quem tem', soFechado.length === 1, `${soFechado.length} != 1`);
+  check('ponta aberta devolve só quem tem', soPonta.length === 2, `${soPonta.length} != 2`);
+  check('marcar os dois é OU, não E', ambos.length === 3, `${ambos.length} != 3`);
+  check(
+    'sem o mapa o filtro é ignorado, não zera a loja',
+    semMapa.length === SHOP_ITEMS.length,
+    `${semMapa.length} != ${SHOP_ITEMS.length} — cliente com ?patio= veria a loja vazia`
   );
 
   return failures;

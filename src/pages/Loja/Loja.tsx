@@ -18,6 +18,7 @@ import { SITE_URL } from '../../lib/siteConfig';
 import { useAuth } from '../../contexts/AuthContext';
 import { getShopItem, useShopCatalog } from '../../lib/shop/store';
 import { usePrecosLote } from '../../lib/shop/precos';
+import { usePatio } from '../../lib/shop/patio';
 import { useSelecaoRemota } from '../../lib/shop/selecoes';
 import { MAX_SELECAO } from '../../lib/shop/selecoes/regras';
 import SelecaoConfig from './SelecaoConfig';
@@ -153,6 +154,15 @@ export default function Loja() {
   // quando o JSON chega — ver src/lib/shop/store.ts.
   const SHOP_ITEMS = useShopCatalog();
 
+  // Mapa do pátio (as bolinhas verde/laranja do card) para o catálogo inteiro.
+  // Só admin recebe; para os demais é `null`, e aí o filtro de pátio não existe
+  // na sidebar nem corta a lista — nem que venha marcado na URL.
+  const patio = usePatio(isAdmin);
+  const filtrosEfetivos = useMemo(
+    () => (patio ? filters : { ...filters, patio: [] }),
+    [filters, patio]
+  );
+
   const results = useMemo(() => {
     // A ordem é a do servidor / a da URL: foi a que o vendedor montou.
     if (token) {
@@ -161,23 +171,26 @@ export default function Loja() {
     if (emSelecao) {
       return selection.map((slug) => getShopItem(slug)).filter((i): i is ShopItem => Boolean(i));
     }
-    const base = applyFilters(SHOP_ITEMS, filters);
+    const base = applyFilters(SHOP_ITEMS, filtrosEfetivos, patio);
     return excluded.length ? base.filter((i) => !excluded.includes(i.slug)) : base;
-  }, [token, selRemota, emSelecao, selection, filters, excluded, SHOP_ITEMS]);
+  }, [token, selRemota, emSelecao, selection, filtrosEfetivos, patio, excluded, SHOP_ITEMS]);
 
-  const facets = useMemo(() => computeFacets(SHOP_ITEMS, filters), [filters, SHOP_ITEMS]);
-  const filtering = hasActiveFilters(filters);
+  const facets = useMemo(
+    () => computeFacets(SHOP_ITEMS, filtrosEfetivos, patio),
+    [filtrosEfetivos, patio, SHOP_ITEMS]
+  );
+  const filtering = hasActiveFilters(filtrosEfetivos);
 
   // Itens removidos que ainda pertencem ao filtro atual — são os que dá para
   // devolver. Um item que saiu do filtro por outro motivo não deve reaparecer.
   const removidosVisiveis = useMemo(() => {
     if (emSelecao || !excluded.length) return [];
-    const noFiltro = new Set(applyFilters(SHOP_ITEMS, filters).map((i) => i.slug));
+    const noFiltro = new Set(applyFilters(SHOP_ITEMS, filtrosEfetivos, patio).map((i) => i.slug));
     return excluded
       .filter((slug) => noFiltro.has(slug))
       .map((slug) => getShopItem(slug))
       .filter((i): i is ShopItem => Boolean(i));
-  }, [emSelecao, excluded, filters, SHOP_ITEMS]);
+  }, [emSelecao, excluded, filtrosEfetivos, patio, SHOP_ITEMS]);
 
   const chaveFiltros = JSON.stringify(filters);
 
@@ -335,7 +348,15 @@ export default function Loja() {
   // (/loja?cor=azul); duas ou mais, ou qualquer texto, é combinação infinita.
   // Seleção nunca entra no índice: é uma lista feita para UMA pessoa, com prazo
   // e às vezes com preço — o Google não tem o que fazer com ela.
-  const noindex = emSelecao || activeCount >= 2 || filters.q.trim().length > 0;
+  // Um `?patio=` que veio de um link de admin não vira chip na tela do cliente:
+  // sem o mapa ele não corta nada, e um chip que não faz nada é mentira.
+  const chipsVisiveis = useMemo(
+    () => (patio ? activeChips : activeChips.filter((c) => c.group !== 'patio')),
+    [activeChips, patio]
+  );
+  const contagemAtiva = patio ? activeCount : activeCount - filters.patio.length;
+
+  const noindex = emSelecao || contagemAtiva >= 2 || filters.q.trim().length > 0;
 
   return (
     <div className={styles.page} ref={pageRef}>
@@ -492,7 +513,7 @@ export default function Loja() {
             aria-label="Abrir filtros"
           >
             FILTROS
-            {activeCount > 0 && <span className={styles.filterBadge}>{activeCount}</span>}
+            {contagemAtiva > 0 && <span className={styles.filterBadge}>{contagemAtiva}</span>}
           </button>
 
           {/* Só a equipe NZ monta seleção: liberar preço para quem não tem
@@ -548,17 +569,17 @@ export default function Loja() {
         {!emSelecao && (
         <ShopFilters
           facets={facets}
-          filters={filters}
+          filters={filtrosEfetivos}
           mode="sidebar"
           resultCount={results.length}
-          activeCount={activeCount}
+          activeCount={contagemAtiva}
           onToggle={toggle}
           onClearAll={clearAll}
         />
         )}
 
         <main className={styles.main} ref={mainRef}>
-          {!emSelecao && activeChips.length > 0 && (
+          {!emSelecao && chipsVisiveis.length > 0 && (
             <div className={styles.chipsRow}>
               {/* A fila rola na horizontal. Um arrasto menor que o "slop" do
                   navegador era entregue como clique e removia o filtro sob o
@@ -576,7 +597,7 @@ export default function Loja() {
                   }
                 }}
               >
-                {activeChips.map((chip) => (
+                {chipsVisiveis.map((chip) => (
                   <button
                     key={`${chip.group}-${chip.id}`}
                     type="button"
@@ -594,7 +615,7 @@ export default function Loja() {
               </div>
               {/* Fora do scroller: no fim da fila, arrastar até o final e soltar
                   limpava tudo. */}
-              {activeChips.length > 1 && (
+              {chipsVisiveis.length > 1 && (
                 <button type="button" className={styles.chipClearAll} onClick={clearAll}>
                   LIMPAR TUDO
                 </button>
@@ -749,10 +770,10 @@ export default function Loja() {
       {!emSelecao && (
       <ShopFilters
         facets={facets}
-        filters={filters}
+        filters={filtrosEfetivos}
         mode="sheet"
         resultCount={results.length}
-        activeCount={activeCount}
+        activeCount={contagemAtiva}
         onToggle={toggle}
         onClearAll={clearAll}
         open={sheetOpen}
