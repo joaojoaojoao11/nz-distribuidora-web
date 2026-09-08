@@ -7,14 +7,20 @@
 //
 // O que ele faz, nesta ordem:
 //   1. lê as três views inteiras (paginadas: PostgREST ignora limit > 1000);
-//   2. upsert em erp_produtos — TODOS os SKUs, ativos e inativos;
+//   2. upsert em erp_produtos — TODOS os SKUs, ativos e inativos. É AQUI que o
+//      preço de venda do site é escolhido: o ERP manda dois pares por SKU e o
+//      site usa o ATACADO (ver `precoDeVenda` mais abaixo);
 //   3. marca `removido_no_erp` quem sumiu da view (apagado no ERP);
 //   4. cria em `produtos` uma linha 'erp-auto' para todo SKU que ainda não tem
 //      produto no site — é o "todo produto do NZERP tem cadastro no site";
 //   5. espelha status dos pedidos do site;
 //   6. no cron (não no webhook): manutenção do checkout, equipe e a atribuição
 //      dos títulos do contas a receber — esta última lê o NZERP e grava só no
-//      banco do site (`erp_titulo_dono`).
+//      banco do site (`erp_titulo_dono`);
+//   7. registra na Central (`ocorrencias`) o que a equipe precisa saber: SKU
+//      ativo sem preço de atacado, SKU novo, SKU que sumiu do ERP e preço que
+//      deu um salto. Falhar aqui NUNCA derruba o espelho — o sync existe para
+//      espelhar; avisar é o bônus.
 //
 // Upsert completo e idempotente de ~1.200 linhas: não depende de updated_at,
 // não tem estado. Rodar duas vezes seguidas dá o mesmo resultado.
@@ -40,6 +46,7 @@ import { produtoAutoDeSku } from '../../../src/lib/shop/erp/mapa.js';
 import { manutencaoCheckout } from '../asaas/manutencao.js';
 import { sincronizarEquipe } from './equipe.js';
 import { atribuirTitulos } from '../conta/atribuirTitulos.js';
+import { abrirOcorrencia, chavesAbertas, resolverPorChave, resolverVariasChaves } from '../ocorrencias.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Db = SupabaseClient<any, any, any>;
@@ -59,11 +66,27 @@ interface CatalogoRow {
   updated_at: string | null;
 }
 
+/**
+ * O que a view `precos_site` do ERP entrega. Os NOMES ENGANAM e é preciso ler
+ * com o vocabulário do ERP na mão (2NZERPUPDATE30/components/PricingEngineering.tsx):
+ *
+ *   preco_rolo      = pricing_engineering.preco_venda_ideal_atacado  → "Preço V" = VAREJO
+ *   preco_rolo_min  = pricing_engineering.preco_venda_min_atacado    → "Preço A" = ATACADO
+ *
+ * Ou seja: o campo que se chama "min" é o preço praticado, e o que não tem
+ * sufixo é a tabela publicada. O caderno de preços registra a decisão: "a
+ * tabela publicada é o varejo; o preço praticado é o atacado — no atacado, o
+ * antigo preço de varejo virou o mínimo".
+ */
 interface PrecoRow {
   sku: string;
+  /** VAREJO do rolo (ideal_atacado). */
   preco_rolo: number | null;
+  /** ATACADO do rolo (min_atacado) — é o que o site cobra. */
   preco_rolo_min: number | null;
+  /** VAREJO do metro (ideal_fracionado). */
   preco_metro: number | null;
+  /** ATACADO do metro (min_fracionado) — é o que o site cobra. */
   preco_metro_min: number | null;
   promocao: boolean | null;
   updated_at: string | null;
@@ -162,7 +185,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       lerTudo<EstoqueRow>(erp, 'estoque_site', 'sku, saldo_ml, rolos_fechados, rolos_abertos, ultima_movimentacao'),
     ]);
 
-    const resultado = await espelhar(site, { catalogo, precos, estoque }, dry);
+    const resultado = await espelhar(site, { catalogo, precos, estoque }, dry, gatilho === 'webhook');
     const pedidos = await espelharPedidos(site, erp, dry);
     // Checkout: eventos do Asaas com erro, Pix expirado, ERP atrasado. Só no
     // cron e no botão — o webhook do ERP bate aqui a cada 5 min e não precisa.
@@ -187,6 +210,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .eq('id', logId);
     }
 
+    // Sync inteiro passou: se havia uma queixa de sync caído, ela morre aqui.
+    if (!dry) await resolverPorChave(site, 'sync-erro', `sync ${gatilho} concluído`);
+
     res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
@@ -196,6 +222,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .from('erp_sync_log')
         .update({ concluido_em: new Date().toISOString(), erro: mensagem })
         .eq('id', logId);
+    }
+    // O log já registrava a falha, mas ninguém lia. Uma ocorrência só enquanto
+    // durar o problema: a chave fixa 'sync-erro' impede a enxurrada de um ERP
+    // fora do ar batendo aqui a cada 5 minutos.
+    if (!dry) {
+      await abrirOcorrencia(site, {
+        categoria: 'erro',
+        tipo: 'sync-erro',
+        titulo: 'Sync com o NZERP falhou',
+        detalhe: { mensagem, gatilho, logId: logId ?? null },
+        chaveDedupe: 'sync-erro',
+      });
     }
     res.status(502).json({ error: 'sync-falhou', message: mensagem });
   }
@@ -226,12 +264,36 @@ interface Resultado {
   amostraCriados?: { slug: string; erp_sku: string; nome: string; linha_key: string; vertical: string }[];
   inativos: number;
   ativos: number;
+  /** O que foi para a Central. `null` quando o registro falhou (não é fatal). */
+  central?: ContagemCentral | null;
+}
+
+/**
+ * O preço que o SITE mostra e cobra: o ATACADO do ERP.
+ *
+ * Zero ou nulo no atacado significa que o SKU não passou pelo
+ * pricing_engineering — não é promoção nem preço de graça. Nesse caso caímos na
+ * tabela de varejo (é melhor cobrar caro do que cobrar errado) e a Central
+ * recebe uma ocorrência `preco-zerado` para alguém corrigir no ERP.
+ */
+function precoDeVenda(atacado: number | null | undefined, varejo: number | null | undefined): number | null {
+  return Number(atacado) > 0 ? Number(atacado) : (varejo ?? null);
+}
+
+/** O que estava no espelho antes deste sync — base do "preço mudou". */
+interface Anterior {
+  sku: string;
+  preco_rolo: number | null;
+  preco_metro: number | null;
+  preco_rolo_varejo: number | null;
 }
 
 async function espelhar(
   site: Db,
   dados: { catalogo: CatalogoRow[]; precos: PrecoRow[]; estoque: EstoqueRow[] },
-  dry: boolean
+  dry: boolean,
+  /** true no webhook: registra só o que está quebrado, não as mudanças. */
+  somenteErros: boolean
 ): Promise<Resultado> {
   const agora = new Date().toISOString();
   const precoPorSku = new Map(dados.precos.map((p) => [p.sku, p]));
@@ -252,10 +314,17 @@ async function espelhar(
       unidade: c.unidade ?? 'ML',
       estoque_minimo: c.estoque_minimo,
       id_tiny: c.id_tiny == null ? null : String(c.id_tiny),
-      preco_rolo: p?.preco_rolo ?? null,
-      preco_metro: p?.preco_metro ?? null,
+      // O site mostra e cobra ATACADO (decisão do João, 2026-09-08). Ver
+      // `precoDeVenda` e o comentário de PrecoRow: o "min" do ERP é o praticado.
+      preco_rolo: precoDeVenda(p?.preco_rolo_min, p?.preco_rolo),
+      preco_metro: precoDeVenda(p?.preco_metro_min, p?.preco_metro),
+      // Mantidos com o mesmo significado de sempre (o atacado cru do ERP), para
+      // não quebrar nada que ainda leia essas colunas.
       preco_rolo_min: p?.preco_rolo_min ?? null,
       preco_metro_min: p?.preco_metro_min ?? null,
+      // A tabela publicada. Só o papel admin recebe estes dois.
+      preco_rolo_varejo: p?.preco_rolo ?? null,
+      preco_metro_varejo: p?.preco_metro ?? null,
       promocao: Boolean(p?.promocao),
       preco_atualizado_em: p?.updated_at ?? null,
       saldo_ml: Number(e?.saldo_ml ?? 0),
@@ -303,6 +372,24 @@ async function espelhar(
     };
   }
 
+  // O "antes" tem que ser lido ANTES do upsert — depois dele o valor antigo já
+  // não existe em lugar nenhum. Só serve para a ocorrência "preço mudou".
+  const antes = new Map<string, Anterior>();
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await site
+      .from('erp_produtos')
+      .select('sku, preco_rolo, preco_metro, preco_rolo_varejo')
+      .order('sku', { ascending: true })
+      .range(from, from + PAGE - 1);
+    // Falha aqui não pode derrubar o espelho: sem o "antes" só perdemos o aviso.
+    if (error) {
+      console.warn('[erp-sync] não consegui ler o estado anterior:', error.message);
+      break;
+    }
+    for (const r of (data ?? []) as unknown as Anterior[]) antes.set(r.sku, r);
+    if ((data ?? []).length < PAGE) break;
+  }
+
   for (let i = 0; i < linhas.length; i += LOTE) {
     const { error } = await site.from('erp_produtos').upsert(linhas.slice(i, i + LOTE), { onConflict: 'sku' });
     if (error) throw new Error(`escrita em erp_produtos: ${error.message}`);
@@ -327,13 +414,187 @@ async function espelhar(
     if (error) throw new Error(`criação de produtos erp-auto: ${error.message}`);
   }
 
+  // O que a equipe precisa saber. Depois de tudo escrito e sem poder derrubar
+  // nada: se o aviso falhar, o espelho já aconteceu.
+  const central = await registrarOcorrencias(site, {
+    linhas,
+    antes,
+    precoPorSku,
+    paraCriar: paraCriar.map((p) => ({ sku: p.erp_sku, slug: p.slug, linha_key: p.linha_key, vertical: p.vertical })),
+    removidos: ((removidosData ?? []) as { sku: string }[]).map((r) => r.sku),
+    somenteErros,
+  }).catch((e) => {
+    console.warn('[erp-sync] central:', e instanceof Error ? e.message : e);
+    return null;
+  });
+
   return {
     atualizados: linhas.length,
     removidos: (removidosData ?? []).length,
     produtosCriados: paraCriar.length,
     inativos: linhas.length - ativos,
     ativos,
+    central,
   };
+}
+
+// ------------------------------------------------------------- ocorrências
+
+interface LinhaEspelho {
+  sku: string;
+  nome: string | null;
+  ativo: boolean;
+  preco_rolo: number | null;
+  preco_metro: number | null;
+  preco_rolo_varejo: number | null;
+  preco_metro_varejo: number | null;
+}
+
+interface ContagemCentral {
+  precoZerado: number;
+  precoResolvido: number;
+  skuNovo: number;
+  skuRemovido: number;
+  precoMudou: number;
+}
+
+/**
+ * Traduz o resultado do sync para a Central (/admin/central).
+ *
+ * Duas assimetrias de propósito:
+ *
+ *   · ERROS (preço zerado) valem em qualquer gatilho — é o que deixa a loja
+ *     errada agora.
+ *   · MUDANÇAS (SKU novo/removido, preço que saltou) só no cron e no botão. O
+ *     webhook do ERP bate a cada 5 minutos; avisar "SKU novo" 288 vezes por dia
+ *     transformaria a Central em ruído, e o cadastro em massa já chega em lote.
+ *
+ * Nada aqui pode lançar: o chamador embrulha em catch, mas cada operação já é
+ * tolerante por si (ver api/_lib/ocorrencias.ts).
+ */
+async function registrarOcorrencias(
+  site: Db,
+  args: {
+    linhas: LinhaEspelho[];
+    antes: Map<string, Anterior>;
+    precoPorSku: Map<string, PrecoRow>;
+    paraCriar: { sku: string; slug: string; linha_key: string; vertical: string }[];
+    removidos: string[];
+    /** true no webhook: só o que está quebrado agora. */
+    somenteErros: boolean;
+  }
+): Promise<ContagemCentral> {
+  const c: ContagemCentral = { precoZerado: 0, precoResolvido: 0, skuNovo: 0, skuRemovido: 0, precoMudou: 0 };
+
+  // --- erro: SKU ativo que o ERP não precificou.
+  const jaAbertas = await chavesAbertas(site, 'preco-zerado:');
+  const resolver: string[] = [];
+
+  for (const l of args.linhas) {
+    if (!l.ativo) continue;
+    const p = args.precoPorSku.get(l.sku);
+    const semAtacadoRolo = !(Number(p?.preco_rolo_min) > 0);
+    const semAtacadoMetro = !(Number(p?.preco_metro_min) > 0);
+    const chave = `preco-zerado:${l.sku}`;
+
+    if (!semAtacadoRolo && !semAtacadoMetro) {
+      // O atacado chegou: a queixa deixou de ser verdade.
+      if (jaAbertas.has(chave)) resolver.push(chave);
+      continue;
+    }
+    if (jaAbertas.has(chave)) continue;
+
+    // Sem atacado E sem varejo: o produto aparece na loja sem preço nenhum.
+    const semPreco = l.preco_rolo == null && l.preco_metro == null;
+    const aberta = await abrirOcorrencia(site, {
+      categoria: 'erro',
+      tipo: 'preco-zerado',
+      titulo: `Atacado zerado: ${l.sku}${l.nome ? ` — ${l.nome}` : ''}`,
+      detalhe: {
+        roloAtacado: p?.preco_rolo_min ?? null,
+        metroAtacado: p?.preco_metro_min ?? null,
+        roloVarejo: l.preco_rolo_varejo,
+        metroVarejo: l.preco_metro_varejo,
+        usandoVarejo: !semPreco,
+        semPreco,
+      },
+      erpSku: l.sku,
+      chaveDedupe: chave,
+    });
+    if (aberta === 'aberta') c.precoZerado++;
+  }
+  c.precoResolvido = await resolverVariasChaves(site, resolver, 'o ERP precificou o atacado');
+
+  if (args.somenteErros) return c;
+
+  // --- mudança: SKU novo. Um cadastro em massa no ERP pode trazer dezenas;
+  // a tela tem "marcar todas como vistas" para isso.
+  for (const p of args.paraCriar) {
+    const nome = args.linhas.find((l) => l.sku === p.sku)?.nome;
+    const r = await abrirOcorrencia(site, {
+      categoria: 'mudanca',
+      tipo: 'sku-novo',
+      titulo: `SKU novo no ERP: ${p.sku}${nome ? ` — ${nome}` : ''}`,
+      detalhe: { slug: p.slug, linha_key: p.linha_key, vertical: p.vertical },
+      erpSku: p.sku,
+      produtoSlug: p.slug,
+      chaveDedupe: `sku-novo:${p.sku}`,
+    });
+    if (r === 'aberta') c.skuNovo++;
+  }
+
+  // --- mudança: SKU que sumiu do ERP. O produto sai da loja pela view.
+  for (const sku of args.removidos) {
+    const r = await abrirOcorrencia(site, {
+      categoria: 'mudanca',
+      tipo: 'sku-removido',
+      titulo: `SKU sumiu do ERP: ${sku}`,
+      detalhe: { nome: args.antes.get(sku) ? undefined : null },
+      erpSku: sku,
+      chaveDedupe: `sku-removido:${sku}`,
+    });
+    if (r === 'aberta') c.skuRemovido++;
+  }
+
+  // --- mudança: preço que deu um salto.
+  const { data: cfg } = await site.from('loja_config').select('alerta_variacao_preco_pct').eq('id', 1).maybeSingle();
+  const limiar = Number((cfg as { alerta_variacao_preco_pct?: number } | null)?.alerta_variacao_preco_pct ?? 20);
+
+  for (const l of args.linhas) {
+    const a = args.antes.get(l.sku);
+    // Linha nova não tem "antes". E — importante — a PRIMEIRA rodada depois da
+    // migração de atacado troca varejo por atacado em TODO SKU: sem esta
+    // guarda, seriam ~1.200 ocorrências de uma vez, todas falsas. `preco_rolo_varejo`
+    // nulo é exatamente a marca de "esta linha é anterior à migração".
+    if (!a || a.preco_rolo_varejo == null) continue;
+
+    for (const campo of ['preco_rolo', 'preco_metro'] as const) {
+      const antigo = Number(a[campo]);
+      const novo = Number(l[campo]);
+      if (!(antigo > 0) || !(novo > 0)) continue;
+      const variacao = ((novo - antigo) / antigo) * 100;
+      if (Math.abs(variacao) < limiar) continue;
+
+      const r = await abrirOcorrencia(site, {
+        categoria: 'mudanca',
+        tipo: 'preco-mudou',
+        titulo: `Preço mudou ${variacao > 0 ? '+' : ''}${variacao.toFixed(0)} %: ${l.sku}${l.nome ? ` — ${l.nome}` : ''}`,
+        detalhe: {
+          campo: campo === 'preco_rolo' ? 'rolo fechado' : 'metro linear',
+          antes: antigo,
+          depois: novo,
+          variacaoPct: Math.round(variacao * 10) / 10,
+        },
+        erpSku: l.sku,
+        chaveDedupe: `preco-mudou:${l.sku}`,
+      });
+      if (r === 'aberta') c.precoMudou++;
+      // Uma ocorrência por SKU: se rolo e metro subiram juntos, é o mesmo fato.
+      break;
+    }
+  }
+
+  return c;
 }
 
 // ---------------------------------------------------------------- pedidos

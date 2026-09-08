@@ -3,12 +3,19 @@
 // Decisão do cliente (2026-09-05): preço só para quem está LOGADO E APROVADO.
 //   anônimo                 → 401 (a UI mostra "entre para ver o preço")
 //   logado, não aprovado    → 403 (a UI mostra "cadastro em análise")
-//   cliente final / lojista → preço ideal: rolo fechado + metro linear
-//   admin                   → + os mínimos (pisos de negociação) e promoção
+//   cliente final / lojista → preço de ATACADO: rolo fechado + metro linear
+//   admin                   → + a tabela de varejo (referência) e promoção
 //
 // Os preços vivem em erp_produtos (espelho do pricing_engineering do ERP,
 // sem custo nem margem). Unidades: `rolo` é R$ por rolo fechado de
 // `metragemPadrao` metros; `metro` é R$ por metro linear fracionado.
+//
+// ATACADO x VAREJO (decisão do João, 2026-09-08): `preco_rolo`/`preco_metro`
+// no espelho já são o ATACADO — quem escolhe é o sync, ver api/_lib/handlers/sync.ts.
+// O varejo (a tabela publicada) vem em `preco_*_varejo` e só o admin recebe:
+// serve para ele saber de quanto está descontando, não para o cliente comparar.
+// Quando o ERP não precificou o atacado o sync cai no varejo e abre uma
+// ocorrência; aqui isso vira o sinal `usandoVarejo`, também só para admin.
 //
 // `Cache-Control: no-store`: a resposta depende do token — nunca pode ficar
 // numa CDN. O papel é lido no servidor (_lib/papel.ts), nunca do cliente.
@@ -29,10 +36,15 @@ interface Espelho {
   unidade: string | null;
   largura_m: number | null;
   metragem_padrao: number | null;
+  /** ATACADO — é o que o site mostra e cobra. */
   preco_rolo: number | null;
   preco_metro: number | null;
+  /** ATACADO cru do ERP: zero/nulo é o que faz o sync cair no varejo. */
   preco_rolo_min: number | null;
   preco_metro_min: number | null;
+  /** VAREJO (tabela publicada). Só admin recebe. */
+  preco_rolo_varejo: number | null;
+  preco_metro_varejo: number | null;
   promocao: boolean;
   preco_atualizado_em: string | null;
   sincronizado_em: string;
@@ -87,7 +99,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: espelhoData } = skus.length
     ? await site
         .from('erp_produtos')
-        .select('sku, ativo, unidade, largura_m, metragem_padrao, preco_rolo, preco_metro, preco_rolo_min, preco_metro_min, promocao, preco_atualizado_em, sincronizado_em')
+        .select('sku, ativo, unidade, largura_m, metragem_padrao, preco_rolo, preco_metro, preco_rolo_min, preco_metro_min, preco_rolo_varejo, preco_metro_varejo, promocao, preco_atualizado_em, sincronizado_em')
         .in('sku', skus)
     : { data: [] };
   const porSku = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
@@ -117,8 +129,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     };
     // Só admin. Construído campo a campo: o que não entra aqui não sai.
     if (papel === 'admin') {
-      item.roloMin = e.preco_rolo_min;
-      item.metroMin = e.preco_metro_min;
+      item.roloVarejo = e.preco_rolo_varejo;
+      item.metroVarejo = e.preco_metro_varejo;
+      // O ERP não precificou o atacado e o preço acima é a tabela de varejo.
+      // A Central já tem a ocorrência; aqui é o aviso na própria tela.
+      item.usandoVarejo = !(Number(e.preco_rolo_min) > 0) || !(Number(e.preco_metro_min) > 0);
       item.erpSku = p.erp_sku;
     }
     itens[slug] = item;

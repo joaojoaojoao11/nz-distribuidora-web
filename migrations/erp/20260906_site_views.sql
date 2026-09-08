@@ -38,8 +38,21 @@ comment on view public.catalogo_site is
 
 -- ------------------------------------------------------------ preços
 -- Só preço de VENDA. atacado = R$ por rolo fechado de metragem_padrao_ml;
--- fracionado = R$ por metro linear. Os mínimos são pisos de negociação e só
--- chegam ao papel admin do site (a filtragem por papel é do site).
+-- fracionado = R$ por metro linear.
+--
+-- ATENÇÃO AOS NOMES, que enganam quem chega agora. No vocabulário do ERP
+-- (components/PricingEngineering.tsx) `ideal_*` é a coluna "Preço V" = VAREJO,
+-- a tabela publicada, e `min_*` é "Preço A" = ATACADO, o preço praticado. Os
+-- apelidos abaixo herdaram a leitura antiga ("mínimo" = piso de negociação):
+--   preco_rolo      → VAREJO do rolo
+--   preco_rolo_min  → ATACADO do rolo   ← é este que o site cobra
+--   preco_metro     → VAREJO do metro
+--   preco_metro_min → ATACADO do metro  ← é este que o site cobra
+--
+-- Desde 2026-09-08 o site mostra e cobra o ATACADO: quem faz a escolha é
+-- api/_lib/handlers/sync.ts (função `precoDeVenda`), não esta view — trocar os
+-- apelidos aqui quebraria o ERP, que também lê daqui. A filtragem por papel
+-- continua sendo do site: o varejo só chega ao admin.
 create or replace view public.precos_site as
 select
   pe.sku,

@@ -6,6 +6,10 @@
 // memória enquanto a sessão durar, e avisa os componentes por
 // useSyncExternalStore. Trocar de usuário (login/logout) zera o cache — um
 // preço de admin não pode sobreviver a um logout.
+//
+// O que chega em `rolo`/`metro` é o preço de ATACADO (decisão de 2026-09-08);
+// quem escolhe isso é o sync, não este módulo. Aqui nunca se calcula preço:
+// desenha-se o que o servidor mandou.
 
 import { useEffect, useSyncExternalStore } from 'react';
 import { supabase } from '../supabase';
@@ -19,9 +23,15 @@ export interface PrecoItem {
   unidade?: string;
   promocao?: boolean;
   atualizadoEm?: string;
-  /** Só chegam para admin. */
-  roloMin?: number | null;
-  metroMin?: number | null;
+  /**
+   * Só chegam para admin. `rolo`/`metro` acima são o ATACADO (o que se cobra);
+   * estes dois são a tabela de VAREJO, para o admin saber de quanto está
+   * descontando. `usandoVarejo` avisa que o ERP não precificou o atacado e o
+   * preço mostrado é a própria tabela — a Central tem a ocorrência.
+   */
+  roloVarejo?: number | null;
+  metroVarejo?: number | null;
+  usandoVarejo?: boolean;
   erpSku?: string;
 }
 

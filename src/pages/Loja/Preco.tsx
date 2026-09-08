@@ -3,8 +3,8 @@
 // Este componente só desenha o que /api/nz/precos devolveu (src/lib/shop/precos.ts):
 //   anônimo             → "Entre para ver o preço" (link para login com retorno)
 //   aguardando aprovação→ "Cadastro em análise"
-//   cliente / lojista   → rolo fechado + metro linear
-//   admin               → também os mínimos, em cinza
+//   cliente / lojista   → rolo fechado + metro linear, a preço de ATACADO
+//   admin               → também a tabela de varejo, em cinza
 // Se o servidor não mandou o item (SKU sem preço, produto sem conexão), some.
 //
 // A parte de COMPRAR (unidade, quantidade, subtotal, botão) mora em
@@ -80,22 +80,27 @@ export default function Preco({ slug, variante, produto }: Props) {
             {item.larguraM ? ` × ${item.larguraM} m` : ''}
           </span>
           <span className={styles.valor}>{rolo}</span>
-          {item.roloMin != null && <span className={styles.minimo}>mín. {BRL.format(Number(item.roloMin))}</span>}
+          {item.roloVarejo != null && <span className={styles.minimo}>varejo {BRL.format(Number(item.roloVarejo))}</span>}
         </div>
       )}
       {mostrarTabela && metro && (
         <div className={styles.linha}>
           <span className={styles.rotulo}>Metro linear (fracionado)</span>
           <span className={styles.valor}>{metro}</span>
-          {item.metroMin != null && <span className={styles.minimo}>mín. {BRL.format(Number(item.metroMin))}</span>}
+          {item.metroVarejo != null && <span className={styles.minimo}>varejo {BRL.format(Number(item.metroVarejo))}</span>}
         </div>
       )}
-      {(item.roloMin != null || item.metroMin != null) && !mostrarTabela && (
+      {(item.roloVarejo != null || item.metroVarejo != null) && !mostrarTabela && (
         <p className={styles.minimoAdmin}>
-          Mínimo: {item.roloMin != null ? `${BRL.format(Number(item.roloMin))} o rolo` : ''}
-          {item.roloMin != null && item.metroMin != null ? ' · ' : ''}
-          {item.metroMin != null ? `${BRL.format(Number(item.metroMin))} o metro` : ''}
+          Tabela de varejo: {item.roloVarejo != null ? `${BRL.format(Number(item.roloVarejo))} o rolo` : ''}
+          {item.roloVarejo != null && item.metroVarejo != null ? ' · ' : ''}
+          {item.metroVarejo != null ? `${BRL.format(Number(item.metroVarejo))} o metro` : ''}
         </p>
+      )}
+      {/* Só admin recebe `usandoVarejo`. O número acima não é o preço praticado:
+          é a tabela, porque o ERP não precificou o atacado deste SKU. */}
+      {item.usandoVarejo && (
+        <p className={styles.semAtacado}>⚠ Sem atacado no ERP — mostrando a tabela de varejo</p>
       )}
       {item.promocao && <span className={styles.promo}>Promoção</span>}
 
@@ -104,7 +109,9 @@ export default function Preco({ slug, variante, produto }: Props) {
           slug={slug}
           produto={produto}
           preco={item}
-          separador={mostrarTabela || Boolean(item.promocao) || item.roloMin != null || item.metroMin != null}
+          separador={
+            mostrarTabela || Boolean(item.promocao) || Boolean(item.usandoVarejo) || item.roloVarejo != null || item.metroVarejo != null
+          }
         />
       )}
 

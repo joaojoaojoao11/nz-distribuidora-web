@@ -125,3 +125,11 @@
   font-size: 0.68rem;
   color: var(--text-muted);
 }
+
+/* Só o admin vê. Âmbar porque não é erro do cliente nem do site: é cadastro
+   faltando no ERP, e o preço na tela está mais alto do que deveria. */
+.semAtacado {
+  margin: 0;
+  font-size: 0.68rem;
+  color: #f5a623;
+}
