@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
+import { definirModoAdmin } from '../lib/shop/store';
 import type { User, Session } from '@supabase/supabase-js';
 
 interface UserProfile {
@@ -158,6 +159,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, fetchProfile]);
 
   const isAdmin = profile?.role === 'admin';
+
+  // Admin logado nunca vê a cópia da borda: ele acabou de trocar a capa no
+  // painel e abre a loja na aba do lado esperando a foto nova. Ver
+  // `definirModoAdmin` em lib/shop/store.
+  useEffect(() => {
+    definirModoAdmin(isAdmin);
+  }, [isAdmin]);
+
   const value: AuthContextType = {
     user,
     session,

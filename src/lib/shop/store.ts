@@ -31,6 +31,18 @@ let porLegacy: ReadonlyMap<string, ShopItem> = new Map(
 // variante, que e o comportamento de antes.
 let indiceLinhas: IndiceDeLinhas = INDICE_VAZIO;
 let estado: Estado = 'estatico';
+/**
+ * Quem edita nunca pode ver a versao velha.
+ *
+ * A resposta do catalogo fica cacheada na borda (ver o handler). Para o
+ * visitante isso e' otimo; para quem acabou de trocar a capa de um produto e
+ * abriu a loja na aba do lado, e' a foto antiga de volta — e a conclusao e'
+ * "nao salvou". Com admin logado, toda carga vai direto na origem.
+ *
+ * Nao e' seguranca: o `?nocache=1` e publico e nao revela nada que o catalogo
+ * ja nao mostre. E so' quem paga o preco de pular o cache.
+ */
+let modoAdmin = false;
 let promessa: Promise<void> | null = null;
 const ouvintes = new Set<() => void>();
 
@@ -40,6 +52,15 @@ function publicar(novos: ShopItem[], novoEstado: Estado) {
   porLegacy = new Map(novos.flatMap((i) => (i.legacyPath ? [[i.legacyPath.toLowerCase(), i] as const] : [])));
   estado = novoEstado;
   for (const cb of ouvintes) cb();
+}
+
+/** Liga o modo "sempre da origem". Chamado pelo AuthContext quando há admin. */
+export function definirModoAdmin(ativo: boolean) {
+  if (modoAdmin === ativo) return;
+  modoAdmin = ativo;
+  // Virou admin com o catálogo da borda já carregado: recarrega, senão ele
+  // continua olhando a cópia velha pelo resto da sessão.
+  if (ativo && promessa) void recarregarCatalogo();
 }
 
 /**
@@ -57,11 +78,12 @@ export function carregarCatalogo(semCache = false): Promise<void> {
   estado = 'carregando';
   promessa = (async () => {
     try {
-      const url = semCache ? `/api/nz/catalogo?nocache=1&t=${Date.now()}` : '/api/nz/catalogo';
+      const direto = semCache || modoAdmin;
+      const url = direto ? `/api/nz/catalogo?nocache=1&t=${Date.now()}` : '/api/nz/catalogo';
       const res = await fetch(url, {
         headers: { Accept: 'application/json' },
-        // Sem isto o cache do NAVEGADOR (max-age=60) responde antes da rede.
-        cache: semCache ? 'no-store' : 'default',
+        // Sem isto o cache do NAVEGADOR (max-age=30) responde antes da rede.
+        cache: direto ? 'no-store' : 'default',
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = (await res.json()) as { itens?: LojaCatalogoRow[]; linhas?: LojaLinhaRow[] };

@@ -310,6 +310,18 @@ export default function AdminProdutoEditor() {
   }, [p, criando, user]);
 
   /**
+   * A galeria grava sozinha, em `produto_midia`. Quem consome isso é a LOJA,
+   * pelo catálogo — e o catálogo já está carregado nesta aba desde que a página
+   * abriu. Sem este aviso, subir uma foto, trocar a capa ou reordenar só
+   * aparecia na loja depois de apertar Salvar (que recarrega o catálogo por
+   * outro motivo) ou de fechar a aba.
+   */
+  const midiaMudou = useCallback((lista: Midia[]) => {
+    setMidias(lista);
+    void recarregarCatalogo();
+  }, []);
+
+  /**
    * Pop-up curto de "deu certo".
    *
    * A barra de baixo ja dizia "Salvo." num canto, e ninguem via: quem acabou de
@@ -714,7 +726,7 @@ export default function AdminProdutoEditor() {
                 <p className={styles.ajuda}>Salve o produto primeiro; depois dá para subir as fotos e os vídeos.</p>
               </section>
             ) : (
-              <GaleriaEditor produtoId={p.id} slug={p.slug} onMudou={setMidias} />
+              <GaleriaEditor produtoId={p.id} slug={p.slug} onMudou={midiaMudou} />
             ))}
 
           {/* -------------------------------------------------- ficha */}
