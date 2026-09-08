@@ -7,6 +7,7 @@ import { runShopSelfTest } from './selftest';
 import { familiasDoNome, duploLegitimo } from './diag-cores';
 import { applyFilters, EMPTY_FILTERS } from './search/match';
 import { LINHAS_DESTAQUE } from './search/ordem';
+import { lojaRowToShopItem, type LojaCatalogoRow } from './adapters/erp';
 import { relatedItems } from './related';
 import { getShopItem } from './catalog';
 import { parseShopQuery } from './search/parseQuery';
@@ -85,6 +86,7 @@ export function runAudit(): number {
   failures += auditCorNome();
   failures += auditCuradoria();
   failures += auditVitrineEPatio();
+  failures += auditMidiaVemDoBanco();
   return failures;
 }
 
@@ -632,6 +634,92 @@ function auditVitrineEPatio(): number {
     'sem o mapa o filtro é ignorado, não zera a loja',
     semMapa.length === SHOP_ITEMS.length,
     `${semMapa.length} != ${SHOP_ITEMS.length} — cliente com ?patio= veria a loja vazia`
+  );
+
+  return failures;
+}
+
+
+/**
+ * Foto do produto vem do BANCO — nunca de mapa embutido no front.
+ *
+ * Guarda contra a regressao de 11/09/2026: o adapter completava a foto por
+ * conta propria e o cadastro do produto, que le `produto_midia`, mostrava
+ * "nenhuma foto ainda" para 577 dos 806 itens. Quem tem foto so' no codigo nao
+ * consegue reordenar, trocar a capa nem apagar.
+ */
+function auditMidiaVemDoBanco(): number {
+  let failures = 0;
+  console.log('');
+  console.log('=== MIDIA VEM DO BANCO ===');
+  console.log('');
+
+  const check = (nome: string, ok: boolean, detalhe: string) => {
+    if (ok) console.log(`  OK   ${nome}`);
+    else {
+      console.log(`  FALHA ${nome} — ${detalhe}`);
+      failures++;
+    }
+  };
+
+  const linhaBase = {
+    id: '00000000-0000-0000-0000-000000000000',
+    erp_sku: 'X', tipo_vinculo: 'proprio', pai_id: null, alias_de: null,
+    subtitulo: null, marca_exibicao: 'SH', brand_key: 'sh',
+    linha_label: 'SH Wrapping', vertical: 'WRAP', kind: 'cor', aplicacoes: [],
+    codigo: 'SHMG-101', hex: '#4caf22', cor_declarada: null, transparente: false,
+    hex_inferido: null, acabamentos: [], acabamento_label: null, familia_padrao: null,
+    descricao: null, ficha: [], badges: [], garantia_anos: null, durabilidade_anos: null,
+    legacy_path: null, shipping_profile_id: null, seo_titulo: null, seo_descricao: null,
+    ordem: 0, origem: 'erp-auto', largura_m: null, metragem_padrao: null, unidade: 'ML',
+    nivel_estoque: null, atualizado_em: '2026-09-11T00:00:00Z',
+  };
+
+  // Um slug que ERA do mapa de fotos do codigo, agora sem nada no banco.
+  const semFoto = lojaRowToShopItem({
+    ...linhaBase, slug: 'sh-crystal-mamba-green', nome: 'Crystal Mamba Green',
+    linha_key: 'sh-wrapping', imagem: null, galeria: [], midias: [],
+  } as unknown as LojaCatalogoRow);
+
+  // `media` e opcional no ShopItem (as fontes estaticas nao preenchem).
+  const fotosDe = (i: ShopItem) => i.media ?? [];
+
+  check(
+    'slug conhecido sem midia no banco nao ganha foto do codigo',
+    fotosDe(semFoto).length === 0 && semFoto.gallery.length === 0,
+    `apareceram ${fotosDe(semFoto).length} fotos do codigo: ${fotosDe(semFoto).map((m) => m.url).join(', ')}`
+  );
+  check(
+    'sem foto, a capa e o placeholder da linha',
+    Boolean(semFoto.image && semFoto.image.includes('/generic/')),
+    `capa foi ${semFoto.image}`
+  );
+
+  const comFoto = lojaRowToShopItem({
+    ...linhaBase, slug: 'sh-crystal-mamba-green', nome: 'Crystal Mamba Green',
+    linha_key: 'sh-wrapping',
+    imagem: '/foto/capa.webp',
+    galeria: ['/foto/capa.webp', '/foto/2.webp'],
+    midias: [
+      { tipo: 'imagem', url: '/foto/capa.webp', poster: null, alt: 'capa', largura: null, altura: null, duracao: null },
+      { tipo: 'imagem', url: '/foto/2.webp', poster: null, alt: null, largura: null, altura: null, duracao: null },
+    ],
+  } as unknown as LojaCatalogoRow);
+
+  check(
+    'a capa do banco e a capa da loja',
+    comFoto.image === '/foto/capa.webp',
+    `capa foi ${comFoto.image}`
+  );
+  check(
+    'a galeria e exatamente a do banco, na ordem do banco',
+    fotosDe(comFoto).map((m) => m.url).join('|') === '/foto/capa.webp|/foto/2.webp',
+    fotosDe(comFoto).map((m) => m.url).join('|')
+  );
+  check(
+    'o alt cadastrado sobrevive',
+    fotosDe(comFoto)[0]?.alt === 'capa',
+    `alt veio ${String(fotosDe(comFoto)[0]?.alt)}`
   );
 
   return failures;

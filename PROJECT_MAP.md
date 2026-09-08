@@ -97,6 +97,26 @@ lista de slugs de `/api/nz/patio`, buscada uma vez por sessão
 aparece na sidebar e um `?patio=` na URL é **ignorado**, nunca aplicado com o
 mapa vazio: senão um link do vendedor abriria vazio na mão do cliente.
 
+### Foto de produto: quem manda é o banco
+
+`produto_midia` é a fonte única — o painel do produto (aba MÍDIA) edita essa
+tabela e um gatilho espelha em `produtos.imagem`/`galeria`; a view
+`loja_catalogo` publica tudo em `midias`. O adapter da loja
+(`src/lib/shop/adapters/erp.ts`) **não completa foto**: o único caminho de
+arquivo que ele conhece é o placeholder da linha, para o produto que não tem
+nenhuma.
+
+Até 11/09/2026 não era assim: mapas de slug → arquivo em `generic.ts` e no
+próprio adapter davam foto a 577 dos 806 itens, e o painel mostrava "nenhuma
+foto ainda" — não dava para reordenar, trocar a capa nem apagar. As 788 fotos
+foram para o banco em `migrations/2026-09-11d_midia_do_codigo_para_o_banco.sql`
+(gerada por `scripts/gerar-backfill-midia.mjs`, que roda o próprio adapter para
+congelar o que a loja mostrava). O `npm run shop:audit` tem a seção MÍDIA VEM DO
+BANCO para a regressão não voltar.
+
+O adapter do snapshot estático (`adapters/dbSnapshot.ts`) continua com os mapas:
+ele é o catálogo de emergência, para quando `/api/nz/catalogo` não responde.
+
 ### Preço: ATACADO, não varejo
 
 `erp_produtos.preco_rolo` e `preco_metro` são o preço de **atacado** — é o que o
