@@ -32,6 +32,7 @@ import equipe from '../_lib/handlers/equipe.js';
 import geo from '../_lib/handlers/geo.js';
 import avaliacoes from '../_lib/handlers/avaliacoes.js';
 import selecoes from '../_lib/handlers/selecoes.js';
+import ocorrencias from '../_lib/handlers/ocorrencias.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -70,6 +71,9 @@ const ROTAS: Record<string, Handler> = {
   // Seleções enviadas a clientes. `criar`/`renovar`/`encerrar` são de admin;
   // `abrir` é público — é o que a página /loja/s/<token> chama.
   selecoes,
+  // "Informar um problema" na página do produto. Público, com honeypot e
+  // limite por IP; cai na Central (/admin/central).
+  ocorrencias,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

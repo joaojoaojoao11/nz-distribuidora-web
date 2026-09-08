@@ -26,6 +26,7 @@ for (const [entrada, saida] of [
   ['src/lib/shop/selecoes/regras.ts', 'regras.js'],
   ['src/lib/shop/precos.ts', 'precos.js'],
   ['api/_lib/pedido/dinheiro.ts', 'dinheiro.js'],
+  ['src/lib/imagem/reduzir.ts', 'reduzir.js'],
 ]) {
   const build = spawnSync(
     process.execPath,
@@ -179,6 +180,26 @@ ok('sem token é o contexto vazio', chavePreco('x') === chavePreco('x', undefine
 // Um slug pode ter '|'? Não hoje, mas a chave não pode depender disso: o
 // prefixo é o token, que é base64url e nunca tem '|'.
 ok('o separador fica antes do slug', chavePreco('a|b', 'tok') === 'tok|a|b');
+
+// ============================================== redução da foto do celular
+//
+// A foto que sai do celular tem 4 a 12 MB e o corpo de uma função da Vercel
+// para em 4,5 MB. Este cálculo é o que faz o envio caber — e ele roda no
+// navegador de quem está no pátio com pressa.
+console.log('\n=== REDUÇÃO DE IMAGEM ===');
+const { dimensaoDestino, LADO_MAX } = await import(pathToFileURL(join(outDir, 'reduzir.js')).href);
+
+const dim = (l, a) => dimensaoDestino({ largura: l, altura: a });
+ok('foto deitada de celular cabe no lado maior', dim(4032, 3024).largura === LADO_MAX);
+ok('proporção mantida na deitada', dim(4032, 3024).altura === 1200);
+ok('foto em pé encolhe pela altura', dim(3024, 4032).altura === LADO_MAX);
+ok('proporção mantida na em pé', dim(3024, 4032).largura === 1200);
+// Ampliar um print pequeno só geraria arquivo maior e mais borrado.
+ok('imagem pequena não é ampliada', JSON.stringify(dim(400, 300)) === JSON.stringify({ largura: 400, altura: 300 }));
+ok('no limite exato não mexe', dim(LADO_MAX, 900).largura === LADO_MAX);
+ok('quadrada gigante vira quadrada no limite', JSON.stringify(dim(5000, 5000)) === JSON.stringify({ largura: LADO_MAX, altura: LADO_MAX }));
+ok('nunca devolve zero num lado', dim(5000, 3).altura >= 1);
+ok('dimensão inválida não quebra', JSON.stringify(dim(0, 0)) === JSON.stringify({ largura: 0, altura: 0 }));
 
 rmSync(outDir, { recursive: true, force: true });
 console.log(`\n${falhas === 0 ? 'TUDO OK' : `${falhas} FALHA(S)`}\n`);

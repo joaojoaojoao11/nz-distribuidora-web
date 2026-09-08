@@ -20,6 +20,7 @@ import { COLOR_LABEL, SUBFAMILY_LABEL } from '../../lib/shop/color/lexicon';
 import { FINISH_LABEL } from '../../lib/shop/finish/tree';
 import type { MidiaPublica, ShopItem } from '../../lib/shop/types';
 import Disponibilidade from './Disponibilidade';
+import InformarProblema from './InformarProblema';
 import Preco from './Preco';
 import PrazoEntrega from './PrazoEntrega';
 import Avaliacoes from './Avaliacoes';
@@ -90,6 +91,7 @@ function ProductView({
   const [activeImage, setActiveImage] = useState(0);
   const [lightbox, setLightbox] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [problemaAberto, setProblemaAberto] = useState(false);
 
   // Só lê o cache (quem registra o slug é o <Preco/> logo abaixo). Serve para
   // uma coisa: quando a pessoa PODE comprar, o WhatsApp deixa de ser o botão
@@ -374,6 +376,13 @@ function ProductView({
 
           <PrazoEntrega slug={item.sourceId} lineKey={item.lineKey} />
 
+          {/* Discreto e no fim: quem chega aqui já leu a página e viu o que
+              está errado. Não pede login — quem mais enxerga foto trocada é o
+              instalador no pátio, e exigir cadastro faria ninguém avisar. */}
+          <button type="button" className={styles.informarProblema} onClick={() => setProblemaAberto(true)}>
+            Informar um problema nesta página
+          </button>
+
           {item.badges.length > 0 && (
             <ul className={styles.badges}>
               {item.badges.map((b) => (
@@ -456,6 +465,10 @@ function ProductView({
             </div>
           )}
         </div>
+      )}
+
+      {problemaAberto && (
+        <InformarProblema slug={item.slug} nome={item.name} onFechar={() => setProblemaAberto(false)} />
       )}
     </div>
   );

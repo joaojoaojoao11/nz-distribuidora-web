@@ -379,6 +379,25 @@
   line-height: 1.5;
 }
 
+/* Discreto: é uma saída de emergência, não uma chamada para ação. Sublinhado
+   pontilhado para parecer o que é — um link de ajuda, não um botão. */
+.informarProblema {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  padding: 0.55rem 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color var(--transition-snappy);
+}
+
+@media (hover: hover) {
+  .informarProblema:hover { color: var(--text-secondary); }
+}
+
 .badges {
   list-style: none;
   display: flex;

@@ -1,0 +1,198 @@
+/* "Informar um problema". Mesma caixa da telinha de seleção — é a mesma
+   gramática de janela dentro da loja. */
+
+.veu {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(6px);
+}
+
+.caixa {
+  width: min(28rem, 100%);
+  max-height: min(92vh, 46rem);
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-strong);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.titulo {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.fechar {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.35rem;
+}
+
+.fechar:hover { color: var(--text-primary); }
+
+.produto {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+}
+
+.rotulo {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.entrada,
+.area {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition-snappy);
+}
+
+.entrada:focus,
+.area:focus { border-color: var(--text-primary); }
+
+.area { resize: vertical; line-height: 1.5; }
+
+.contador {
+  align-self: flex-end;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.arquivo {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.previa {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.previa img {
+  max-width: 140px;
+  max-height: 110px;
+  object-fit: cover;
+  border: 1px solid var(--border-light);
+  display: block;
+}
+
+.tirarFoto {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.tirarFoto:hover { color: var(--accent-red); }
+
+/* Fora da tela, não `display:none`: um robô que lê CSS pula o que está oculto,
+   mas preenche o que existe no formulário. */
+.armadilha {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.erro {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--accent-red);
+}
+
+.sucesso {
+  margin: 0;
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #25d366;
+}
+
+.acoes {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.cancelar {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.cancelar:hover { color: var(--text-primary); }
+
+.principal {
+  flex: 1 1 auto;
+  background: var(--accent-red);
+  border: 1px solid var(--accent-red);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition-snappy);
+}
+
+.principal:hover { background: var(--accent-red-hover); }
+.principal:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 480px) {
+  .caixa { padding: 1.15rem; }
+}
