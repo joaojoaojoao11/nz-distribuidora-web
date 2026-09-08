@@ -27,7 +27,8 @@
     "erp:test": "node scripts/test-erp-ponte.mjs",
     "analytics:test": "node scripts/test-analytics.mjs",
     "avaliacoes:test": "node scripts/test-avaliacoes.mjs",
-    "ficha:test": "node scripts/test-ficha.mjs"
+    "ficha:test": "node scripts/test-ficha.mjs",
+    "selecoes:test": "node scripts/test-selecoes.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",
