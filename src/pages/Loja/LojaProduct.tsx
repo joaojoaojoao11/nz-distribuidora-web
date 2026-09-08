@@ -11,7 +11,7 @@ import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-route
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { VERTICAL_LABEL } from '../../lib/shop/catalog';
-import { getShopItem, useCatalogoEstado, useShopCatalog } from '../../lib/shop/store';
+import { atualizarItemDoBanco, getShopItem, useCatalogoEstado, useShopCatalog } from '../../lib/shop/store';
 import { buildShopItemSchema } from '../../lib/shop/schema';
 import { relatedItems } from '../../lib/shop/related';
 import { usePrecosMapa } from '../../lib/shop/precos';
@@ -51,6 +51,15 @@ export default function LojaProduct() {
   useShopCatalog();
   const estado = useCatalogoEstado();
   const item = getShopItem(slug);
+
+  // A LISTA pode estar alguns minutos atrasada (o JSON do catálogo é cacheado
+  // na borda). A PÁGINA DO PRODUTO, não: ela relê a própria linha direto do
+  // banco a cada abertura. É uma consulta de uma linha, fora da CDN — é o que
+  // garante que uma foto apagada no painel some daqui na próxima carga, em vez
+  // de depender do cache vencer. Ver `atualizarItemDoBanco`.
+  useEffect(() => {
+    void atualizarItemDoBanco(slug);
+  }, [slug]);
 
   // Slug inexistente: o edge devolve 404 real para crawlers; aqui só levamos o
   // visitante de volta à loja em vez de mostrar uma página quebrada. Enquanto

@@ -14,8 +14,9 @@
 // estático — a loja nunca fica vazia por causa do sync.
 
 import { useSyncExternalStore } from 'react';
+import { supabase } from '../supabase';
 import { SHOP_ITEMS } from './catalog';
-import { lojaRowsToShopItems, type LojaCatalogoRow } from './adapters/erp';
+import { lojaRowToShopItem, lojaRowsToShopItems, type LojaCatalogoRow } from './adapters/erp';
 import { indexarLinhas, INDICE_VAZIO, type IndiceDeLinhas, type LojaLinhaRow } from './linhas';
 import type { ShopItem } from './types';
 
@@ -52,6 +53,53 @@ function publicar(novos: ShopItem[], novoEstado: Estado) {
   porLegacy = new Map(novos.flatMap((i) => (i.legacyPath ? [[i.legacyPath.toLowerCase(), i] as const] : [])));
   estado = novoEstado;
   for (const cb of ouvintes) cb();
+}
+
+/**
+ * Relê UM produto direto do banco e troca a versão que está na tela.
+ *
+ * POR QUE ISTO EXISTE. O catálogo inteiro (`/api/nz/catalogo`) é uma resposta
+ * grande e cacheada na borda da Vercel — é o que faz a loja abrir rápido, e é
+ * também o que fazia uma foto apagada continuar aparecendo por minutos. Não há
+ * purge de borda para função comum no plano Hobby, então esperar o cache vencer
+ * era a única saída: rápido, mas nunca *garantido*.
+ *
+ * A página do produto não precisa do catálogo inteiro para se corrigir: precisa
+ * de UMA linha. Esta função vai direto ao PostgREST do Supabase, que não passa
+ * pela CDN e responde o estado do banco naquele instante. A lista continua
+ * vindo do JSON cacheado; quem abre um produto vê a verdade.
+ *
+ * Falha em silêncio de propósito: sem rede, ou com o Supabase fora, a página
+ * segue com o que o catálogo trouxe. É melhoria, não dependência.
+ */
+export async function atualizarItemDoBanco(slug: string): Promise<void> {
+  if (typeof window === 'undefined' || !slug) return;
+  try {
+    const { data, error } = await supabase
+      .from('loja_catalogo')
+      .select('*')
+      .eq('slug', slug.toLowerCase())
+      .maybeSingle();
+    if (error || !data) return;
+
+    const novo = lojaRowToShopItem(data as unknown as LojaCatalogoRow);
+    const anterior = porSlug.get(novo.slug);
+    // `alias_de` é um id; resolvê-lo em slug exige o catálogo inteiro, que esta
+    // consulta de uma linha não tem. Preserva o que já havia.
+    if (anterior?.aliasDeSlug) novo.aliasDeSlug = anterior.aliasDeSlug;
+    // Nada mudou: não republica, senão toda página de produto re-renderiza à toa.
+    if (anterior && JSON.stringify(anterior) === JSON.stringify(novo)) return;
+
+    const lista = anterior
+      ? itens.map((i) => (i.slug === novo.slug ? novo : i))
+      : [...itens, novo];
+    // O estado descreve a CARGA do catálogo inteiro, não esta linha. Trocá-lo
+    // aqui faria a página do produto achar que o catálogo chegou e mandar para
+    // /loja um slug que ela ainda não conhece.
+    publicar(lista, estado);
+  } catch {
+    // Ver a nota acima: silêncio é o comportamento correto aqui.
+  }
 }
 
 /** Liga o modo "sempre da origem". Chamado pelo AuthContext quando há admin. */
