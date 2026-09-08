@@ -1,0 +1,148 @@
+/* Minhas seleções. O que é do painel (botões, vazio, mensagens) vem de
+   Painel.module.css; aqui fica só o que é próprio: abas, cartão e miniaturas. */
+
+.abas {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 1.1rem;
+}
+
+.aba {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color var(--transition-snappy);
+}
+
+.aba:hover { color: var(--text-primary); }
+.abaAtiva { color: var(--text-primary); border-bottom-color: var(--accent-red); }
+
+.abaContador {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.05rem 0.4rem;
+  font-size: 0.7rem;
+  border-radius: 2px;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.cartao {
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.topo {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.identidade {
+  flex: 1 1 12rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.titulo {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+/* "expira em 5 h" é o que decide se o vendedor renova antes de mandar
+   mensagem — por isso fica na primeira linha, junto da contagem. */
+.meta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.chipPreco,
+.chipSemPreco {
+  flex-shrink: 0;
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+/* Verde: este link mostra dinheiro. É a informação que muda o que se pode
+   mandar para quem. */
+.chipPreco { color: #25d366; border-color: rgba(37, 211, 102, 0.4); background: rgba(37, 211, 102, 0.08); }
+.chipSemPreco { color: var(--text-muted); border-color: var(--border-light); }
+
+.miniaturas {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Quadradinho de 40px: o suficiente para reconhecer a cor e o padrão sem
+   transformar a lista numa vitrine. */
+.mini {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.miniVazia { background: var(--bg-tertiary); }
+
+.maisN {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding-left: 0.15rem;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.confirma {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 520px) {
+  .acoes > * { flex: 1 1 auto; text-align: center; }
+  .confirma { flex: 1 1 100%; }
+}

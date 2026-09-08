@@ -8,7 +8,7 @@
 // doze títulos sem contexto ("Pagamentos", "Cupons") faz o cliente abrir tela
 // por tela para descobrir o que tem dentro.
 
-export type Contador = 'pedidos' | 'carrinho' | 'garantias' | 'favoritos' | 'cupons';
+export type Contador = 'pedidos' | 'carrinho' | 'garantias' | 'favoritos' | 'cupons' | 'selecoes';
 
 export interface ItemPainel {
   para: string;
@@ -17,6 +17,12 @@ export interface ItemPainel {
   titulo: string;
   dica: string;
   contador?: Contador;
+  /**
+   * Ferramenta de trabalho da equipe NZ, não da conta do cliente. Some do menu
+   * para quem não é admin — e a rota também redireciona, porque esconder o item
+   * não é o mesmo que proteger a tela.
+   */
+  soAdmin?: boolean;
 }
 
 export interface GrupoPainel {
@@ -73,6 +79,15 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Vistos recentemente',
         titulo: 'Vistos recentemente',
         dica: 'Os últimos produtos que você abriu',
+      },
+      {
+        para: '/painel/selecoes',
+        icone: '⊞',
+        rotulo: 'Minhas seleções',
+        titulo: 'Minhas seleções',
+        dica: 'Links que você montou para clientes',
+        contador: 'selecoes',
+        soAdmin: true,
       },
     ],
   },
@@ -142,6 +157,12 @@ export const GRUPOS: GrupoPainel[] = [
 ];
 
 export const TODOS_ITENS: ItemPainel[] = GRUPOS.flatMap((g) => g.itens);
+
+/** Os grupos como este usuário os vê. Grupo que fica vazio some inteiro. */
+export function gruposVisiveis(isAdmin: boolean): GrupoPainel[] {
+  if (isAdmin) return GRUPOS;
+  return GRUPOS.map((g) => ({ ...g, itens: g.itens.filter((i) => !i.soAdmin) })).filter((g) => g.itens.length > 0);
+}
 
 /** Título do cabeçalho a partir da rota. */
 export function tituloDaRota(pathname: string): string {

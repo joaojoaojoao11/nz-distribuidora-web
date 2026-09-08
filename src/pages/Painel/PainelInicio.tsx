@@ -13,7 +13,7 @@ import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { useFavoritos } from '../../lib/shop/listasPessoais';
 import { BRL, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
 import { SITE_WHATSAPP } from '../../lib/siteConfig';
-import { GRUPOS } from './painelNav';
+import { gruposVisiveis } from './painelNav';
 import { PAGAMENTO_LABEL, STATUS_LABEL, type PedidoResumo } from './pedidoRotulos';
 import styles from './PainelInicio.module.css';
 
@@ -166,7 +166,7 @@ export default function PainelInicio() {
 
       {/* ------------------------------------------------- o menu do celular */}
       <nav className={styles.menuCelular} aria-label="Seções da conta">
-        {GRUPOS.map((g) => (
+        {gruposVisiveis(isAdmin).map((g) => (
           <div key={g.id}>
             <span className={styles.menuGrupo}>{g.nome}</span>
             {g.itens.map((i) => {

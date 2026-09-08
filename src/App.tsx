@@ -27,6 +27,7 @@ const PainelPagamentos = lazy(() => import('./pages/Painel/PainelPagamentos'));
 const PainelCarrinho = lazy(() => import('./pages/Painel/PainelCarrinho'));
 const PainelFavoritos = lazy(() => import('./pages/Painel/PainelFavoritos'));
 const PainelVistos = lazy(() => import('./pages/Painel/PainelVistos'));
+const PainelSelecoes = lazy(() => import('./pages/Painel/PainelSelecoes'));
 const PainelGarantias = lazy(() => import('./pages/Painel/PainelGarantias'));
 const PainelCupons = lazy(() => import('./pages/Painel/PainelCupons'));
 const PainelPontos = lazy(() => import('./pages/Painel/PainelPontos'));
@@ -188,6 +189,7 @@ function App() {
                     <Route path="carrinho" element={<PainelCarrinho />} />
                     <Route path="favoritos" element={<PainelFavoritos />} />
                     <Route path="vistos" element={<PainelVistos />} />
+                    <Route path="selecoes" element={<PainelSelecoes />} />
                     <Route path="garantias" element={<PainelGarantias />} />
                     <Route path="cupons" element={<PainelCupons />} />
                     <Route path="pontos" element={<PainelPontos />} />

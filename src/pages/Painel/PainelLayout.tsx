@@ -19,7 +19,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { useFavoritos } from '../../lib/shop/listasPessoais';
-import { GRUPOS, tituloDaRota, type Contador } from './painelNav';
+import { gruposVisiveis, tituloDaRota, type Contador } from './painelNav';
 import styles from './PainelLayout.module.css';
 
 export type Contagens = Partial<Record<Contador, number>>;
@@ -33,17 +33,28 @@ export default function PainelLayout() {
 
   const carregarContagens = useCallback(async () => {
     if (!user) return;
-    const [{ count: pedidos }, { data: garantias }, { data: cupom }] = await Promise.all([
+    const [{ count: pedidos }, { data: garantias }, { data: cupom }, { count: selecoes }] = await Promise.all([
       supabase.from('pedidos').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
       supabase.rpc('minhas_garantias'),
       supabase.from('afiliados').select('codigo').eq('user_id', user.id).maybeSingle(),
+      // Só as ATIVAS: o contador do menu responde "quantos links meus estão de
+      // pé agora", não quantos já montei na vida.
+      isAdmin
+        ? supabase
+            .from('selecoes')
+            .select('id', { count: 'exact', head: true })
+            .eq('criado_por', user.id)
+            .is('encerrada_em', null)
+            .gt('expira_em', new Date().toISOString())
+        : Promise.resolve({ count: 0 }),
     ]);
     setContagens({
       pedidos: pedidos ?? 0,
       garantias: Array.isArray(garantias) ? garantias.length : 0,
       cupons: cupom ? 1 : 0,
+      selecoes: selecoes ?? 0,
     });
-  }, [user]);
+  }, [user, isAdmin]);
 
   useEffect(() => {
     // Carga dos contadores do menu.
@@ -100,7 +111,7 @@ export default function PainelLayout() {
             Início
           </NavLink>
 
-          {GRUPOS.map((g) => (
+          {gruposVisiveis(isAdmin).map((g) => (
             <div key={g.id}>
               <span className={styles.grupo}>{g.nome}</span>
               {g.itens.map((i) => {
