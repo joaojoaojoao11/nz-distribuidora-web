@@ -279,6 +279,18 @@ export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
     '/assets/images/metamark/mcx/aplicacao/mcx-96-urban-steel-3.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-96-urban-steel-4.jpg',
   ],
+  // MCX-97 Carbon Steel — leitura #41413F · S 3,3% · V 26% · metálico fosco.
+  // Audi RS6 Avant em cenário europeu, luz de dia nublado mas DIRECIONAL: cor
+  // escura sob nublado pleno achata e o flake some. Medidos: -2 V32, -3 V28,
+  // -4 V33, -5 V27. As de ambiente coberto (-3, -5) acertaram o valor; as de
+  // céu aberto (-2, -4) clarearam ~6 pontos. Fica o registro para as próximas
+  // cores escuras: privilegiar cenário com cobertura.
+  'mcx-97-carbon-steel': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-97-carbon-steel-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-97-carbon-steel-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-97-carbon-steel-4.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-97-carbon-steel-5.jpg',
+  ],
 };
 
 export const MCX_ROLL_IMAGES: Record<string, string> = {
