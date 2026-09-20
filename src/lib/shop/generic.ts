@@ -268,10 +268,16 @@ export const REVIEWED_SLUGS: ReadonlySet<string> = new Set([
  */
 export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
   // MCX-96 Urban Steel — leitura #75797A · S 4,1% · V 48% · metálico fosco.
-  // Render medido em #79797A / V 48%, dentro da tolerância da leitura.
+  // -2 (Daikoku) medido em #79797A / V 48%, dentro da tolerância da leitura.
+  // -4 (Tatsumi) medido em #646364 / V 39%: nove pontos mais escuro que a
+  // amostra, por conta do céu carregado e da sombra do viaduto. Mantido por
+  // decisão comercial — é foto de ambiente, onde a variação de luz é esperada,
+  // e o ângulo frontal não existia nas outras duas. O chip segue sendo a
+  // referência de cor do produto.
   'mcx-96-urban-steel': [
     '/assets/images/metamark/mcx/aplicacao/mcx-96-urban-steel-2.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-96-urban-steel-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-96-urban-steel-4.jpg',
   ],
 };
 
