@@ -253,6 +253,28 @@ export const REVIEWED_SLUGS: ReadonlySet<string> = new Set([
  * Slug = mesmo `c.slug` da tabela MCX_COLORS (`mcx-51-miami-blue` etc.).
  * Convenção de arquivo: `public/assets/images/shop/metamark-mcx/{slug}.webp`.
  */
+/**
+ * Fotos de aplicação EXTRAS por cor MCX, geradas a partir da leitura de cor da
+ * amostra física (hex canônico + acabamento medidos no leque) e conferidas
+ * contra essa leitura antes de entrar aqui.
+ *
+ * Complementam — não substituem — o `photo` oficial da brochure que já vem em
+ * MCX_COLORS. A ordem do array é a ordem na galeria do produto.
+ *
+ * `metamarkMcxColors.ts` é gerado por script e não aceita edição manual; por
+ * isso o acréscimo mora aqui, como os demais overrides deste arquivo.
+ *
+ * Convenção: `public/assets/images/metamark/mcx/aplicacao/{slug}-{n}.jpg`.
+ */
+export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
+  // MCX-96 Urban Steel — leitura #75797A · S 4,1% · V 48% · metálico fosco.
+  // Render medido em #79797A / V 48%, dentro da tolerância da leitura.
+  'mcx-96-urban-steel': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-96-urban-steel-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-96-urban-steel-3.jpg',
+  ],
+};
+
 export const MCX_ROLL_IMAGES: Record<string, string> = {
   'mcx-00-simply-white': '/assets/images/shop/metamark-mcx/mcx-00-simply-white.webp',
   'mcx-10-jet-black': '/assets/images/shop/metamark-mcx/mcx-10-jet-black.webp',

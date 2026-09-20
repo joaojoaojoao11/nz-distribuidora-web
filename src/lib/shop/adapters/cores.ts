@@ -16,7 +16,7 @@ import { finishFromM7, finishFromMcx, normalizeFinishString } from '../finish/no
 import { buildSearchText, shopSlug, type ShopItem, type ShopSpec } from '../types';
 // O mapa vive em `generic.ts` porque o adapter do ERP — que e o caminho de
 // producao — precisa do mesmo dado. Duas copias divergiriam na primeira cor nova.
-import { M7_ROLL_IMAGES, MCX_ROLL_IMAGES } from '../generic';
+import { M7_ROLL_IMAGES, MCX_ROLL_IMAGES, MCX_EXTRA_PHOTOS } from '../generic';
 
 /** Família publicada pela Metamark → nosso enum. */
 const M7_FAMILY_MAP: Record<M7Family, ColorFamilyId> = {
@@ -137,13 +137,15 @@ export function metamarkMcxToShopItems(): ShopItem[] {
       vertical: 'WRAP',
       kind: 'cor',
       aplicacoes: ['automotivo'],
-      // Foto de rolo custom por slug tem prioridade; chip original + foto de
-      // aplicação (quando existe) entram na galeria como secundárias.
+      // Foto de rolo custom por slug tem prioridade; chip original, foto de
+      // aplicação da brochure (quando existe) e as fotos extras conferidas
+      // contra a leitura de cor entram na galeria como secundárias.
       image: MCX_ROLL_IMAGES[c.slug] ?? c.chip,
       gallery: [
         ...(MCX_ROLL_IMAGES[c.slug] ? [MCX_ROLL_IMAGES[c.slug]] : []),
         c.chip,
         ...(c.photo ? [c.photo] : []),
+        ...(MCX_EXTRA_PHOTOS[c.slug] ?? []),
       ],
       // Deliberadamente null: exibir o hex do chip como se fosse oficial seria
       // apresentar uma estimativa nossa como dado do fabricante.
