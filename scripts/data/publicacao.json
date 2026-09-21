@@ -8,6 +8,8 @@
     "alt_base": "Volkswagen Golf R envelopado em MetaCast MCX-73 Capri Bronze",
     "extras": [
       "src/lib/shop/generic.ts",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/NZ_REALCOLOR_WRAP.md",
       "public/assets/images/shop/metamark-mcx/mcx-73-capri-bronze.webp",
       "scripts/publicar-cor.mjs",
       "scripts/recolorir-capa.py",
