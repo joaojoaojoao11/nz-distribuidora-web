@@ -426,6 +426,43 @@ export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
     '/assets/images/metamark/mcx/aplicacao/mcx-87-plum-crazy-4.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-87-plum-crazy-5.jpg',
   ],
+  // MCX-66 Army Olive — leitura #344137 · H 134° · S 20% · V 25,5% · SATIN
+  // SOLID. Verde militar ESCURO e FRIO, com leve pendor azul. NÃO é oliva drab,
+  // nem cáqui, nem verde amarronzado — a capa publicada até aqui estava em
+  // H 90°, 44 graus quente, e era ela que estava errada.
+  //
+  // COMO ISSO FOI RESOLVIDO, porque vale para as outras cores:
+  // O chip e a capa discordavam em 44°, o que não é viés, é outra família de
+  // cor. Fui aos chips oficiais do site da Metamark e medi os 37. Dezoito têm
+  // desvio de luminância ZERO: são preenchimentos chapados, valores de
+  // especificação, não fotos do material. A Army Olive é um deles — logo o
+  // #344137 não é foto que possa ter saído mal iluminada, é a cor que a
+  // Metamark especificou. Os outros 19 são fotografias, e essas NÃO servem
+  // como referência absoluta: o chip da Carbon Steel é foto e mede V 46,3
+  // enquanto a amostra física daquela cor mede V 25,5. Vinte e um pontos.
+  // Some-se que a própria Metamark chama esta cor de "matt military green" no
+  // post oficial dela. Verde militar, não oliva.
+  //
+  // Land Rover Defender 110 em pátio de pedra, nublado direcional, sem mato
+  // verde no quadro — verde sobre verde não deixa a cor ser lida. V 25,5 é o
+  // mesmo valor da Carbon Steel, então vale a lição dela: cor escura sob
+  // nublado chapado achata e o acabamento some.
+  //
+  // A CAPA FOI REGERADA, não corrigida: a rotação de 44° num verde de 20% de
+  // saturação saía manchada em todas as tentativas. Depois de gerada ela ainda
+  // veio 12 pontos clara, e aí a correção funcionou — mas só com --familia
+  // neutro. Fica a regra: capa abaixo de ~15% de saturação se corrige por
+  // valor, não por matiz, mesmo tendo cor.
+  //
+  // Medidos em recorte de lataria (a medida de quadro inteiro nesta cena está
+  // contaminada por céu e musgo, que caem na mesma faixa de matiz):
+  // -2 H130 V22, -3 H126 V22, -4 H110 V14 (painel em sombra), -5 H132 V30.
+  'mcx-66-army-olive': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-66-army-olive-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-66-army-olive-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-66-army-olive-4.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-66-army-olive-5.jpg',
+  ],
 };
 
 export const MCX_ROLL_IMAGES: Record<string, string> = {

@@ -24,8 +24,9 @@
  *
  * USO
  * ---
- *   node scripts/publicar-cor.mjs <slug>            baixa, converte e grava
- *   node scripts/publicar-cor.mjs <slug> --commit   adiciona, commita e sobe
+ *   node scripts/publicar-cor.mjs <slug>              baixa, converte e grava
+ *   node scripts/publicar-cor.mjs <slug> --apenas 5   refaz só a foto 5
+ *   node scripts/publicar-cor.mjs <slug> --commit     adiciona, commita e sobe
  *
  * São dois passos de propósito: entre um e outro entra a correção de cor
  * (scripts/medir-cor.py e scripts/recolorir-capa.py), que trabalha sobre os
@@ -46,6 +47,7 @@ import { fileURLToPath } from 'node:url';
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const MANIFESTO = path.join(RAIZ, 'scripts/data/publicacao.json');
 const DESTINO = 'public/assets/images/metamark/mcx/aplicacao';
+const DESTINO_CAPA = 'public/assets/images/shop/metamark-mcx';
 const TMP = path.join(RAIZ, 'scripts/output/.tmp-publicar');
 
 const LARGURA = 1600;
@@ -80,8 +82,19 @@ async function baixar(url, destino) {
   writeFileSync(destino, Buffer.from(await r.arrayBuffer()));
 }
 
-async function preparar(slug, entrada) {
+/**
+ * `apenas` existe porque refazer UMA foto de um conjunto é comum, e sem ele o
+ * script rebaixaria as outras por cima do que já foi corrigido. A correção de
+ * cor acontece depois do download e mora só no arquivo convertido — não há de
+ * onde recuperá-la. Aconteceu de quase acontecer na MCX-87.
+ */
+async function preparar(slug, entrada, apenas) {
   const { default: sharp } = await import('sharp');
+  if (apenas) {
+    entrada = { ...entrada, fotos: entrada.fotos.filter((f) => apenas.includes(f.n)) };
+    if (!entrada.fotos.length) morrer(`nenhuma foto com esses números neste slug`);
+    console.log(aviso(`\nsó as fotos ${apenas.join(', ')} — as outras ficam como estão no disco`));
+  }
   mkdirSync(TMP, { recursive: true });
   mkdirSync(path.join(RAIZ, DESTINO), { recursive: true });
 
@@ -100,6 +113,25 @@ async function preparar(slug, entrada) {
     const kb = (statSync(saida).size / 1024).toFixed(0);
     process.stdout.write(`\r  -${foto.n} ${(foto.nota ?? '').padEnd(22)} ${info.width}×${info.height}  ${kb} kB   ${ok('gravado')}\n`);
   }
+  // A capa só vem por aqui quando foi REGERADA. Quando a composição aprovada
+  // ainda serve, o caminho certo é recolorir o arquivo que já está no
+  // repositório com scripts/recolorir-capa.py — ver a nota em generic.ts.
+  // Ela é 1600x1600: o card da loja é 1:1 e um retângulo esticado fica ruim ao
+  // lado dos outros.
+  if (entrada.capa && !apenas) {
+    mkdirSync(path.join(RAIZ, DESTINO_CAPA), { recursive: true });
+    const bruto = path.join(TMP, `${slug}-capa.png`);
+    process.stdout.write(`  capa ${''.padEnd(22)} baixando…`);
+    await baixar(entrada.capa, bruto);
+    const saida = path.join(RAIZ, DESTINO_CAPA, `${slug}.webp`);
+    const info = await sharp(bruto)
+      .resize(1600, 1600, { fit: 'cover', position: 'centre', withoutEnlargement: true })
+      .webp({ quality: 88, effort: 6 })
+      .toFile(saida);
+    const kb = (statSync(saida).size / 1024).toFixed(0);
+    process.stdout.write(`\r  capa ${''.padEnd(22)} ${info.width}×${info.height}  ${kb} kB   ${ok('gravado')}\n`);
+  }
+
   rmSync(TMP, { recursive: true, force: true });
 
   console.log(`\n${ok('pronto')} — arquivos em ${DESTINO}/`);
@@ -166,5 +198,9 @@ if (!entrada) {
   morrer(`'${slug}' não está em scripts/data/publicacao.json.\n        disponíveis: ${slugs.join(', ') || '(nenhum)'}`);
 }
 
+const iApenas = flags.indexOf('--apenas');
+const apenas = iApenas >= 0 ? (flags[iApenas + 1] ?? '').split(',').map(Number).filter(Boolean) : null;
+if (iApenas >= 0 && !apenas?.length) morrer('--apenas precisa dos números das fotos, ex: --apenas 5');
+
 if (flags.includes('--commit')) publicar(slug, entrada);
-else await preparar(slug, entrada);
+else await preparar(slug, entrada, apenas);

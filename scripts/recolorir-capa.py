@@ -148,7 +148,13 @@ def montar_mascara(
     else:
         mh = rampa(h, lo, lo + larg) * (1 - rampa(h, hi - larg, hi))
     ms = rampa(s, sat_min * 0.6, sat_min)
-    mv = rampa(v, val_min * 0.5, val_min)
+    # O teto de valor também vale para cor cromática, e não valia. Numa cor
+    # escura e fraca como a MCX-66 Army Olive (S 20%, V 25%) a saturação NÃO
+    # separa filme de fundo: o filme desce a 3,8% nas sombras e o branco do
+    # estúdio está em 2%. Quem separa é o valor. Sem este teto, era preciso
+    # subir o sat_min para proteger o fundo, e aí a máscara perdia as partes
+    # escuras do rolo — a capa saía remendada.
+    mv = rampa(v, val_min * 0.5, val_min) * (1 - rampa(v, val_max, val_max + 0.12))
     return np.clip(gaussian_filter(mh * ms * mv, feather), 0.0, 1.0)
 
 
@@ -212,7 +218,9 @@ def main() -> int:
     ap.add_argument('--saida', help='destino; padrão = <entrada>-recolorido.png')
     ap.add_argument('--no-lugar', action='store_true', help='sobrescreve a entrada, no formato dela')
     ap.add_argument('--familia', default='verde', choices=sorted(FAIXAS),
-                    help="faixa de matiz do filme; use 'neutro' para pretos, brancos e cinzas (padrão: verde)")
+                    help="faixa de matiz do filme; use 'neutro' para pretos, brancos e cinzas E TAMBÉM "
+                         "para cor fraca, abaixo de ~15%% de saturação: na MCX-66 Army Olive (S 11%%) a "
+                         "máscara por matiz deixava remendo e a por valor saiu limpa (padrão: verde)")
     ap.add_argument('--val-max', type=float, default=0.80,
                     help="só em --familia neutro: acima disto é o fundo branco do estúdio")
     ap.add_argument('--sat-max', type=float, default=0.34,

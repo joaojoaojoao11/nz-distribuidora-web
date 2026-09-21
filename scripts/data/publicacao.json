@@ -1,6 +1,26 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
 
+  "mcx-66-army-olive": {
+    "mensagem": "feat(mcx-66): quatro fotos Defender 110 + capa regerada na leitura (#344137)",
+    "leitura": "#344137",
+    "familia": "verde",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_8f3169f2-3185-4d33-af30-6b2de5a86e49.png",
+    "extras": [
+      "public/assets/images/shop/metamark-mcx/mcx-66-army-olive.webp",
+      "src/lib/shop/generic.ts",
+      "scripts/recolorir-capa.py",
+      "scripts/publicar-cor.mjs",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015807_148ef6b0-4b3a-4c6a-9dfe-b8d502d69cc1.png", "nota": "frontal 3/4" },
+      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_92ba62fd-5a6c-44e1-ac83-e2178979bb51.png", "nota": "traseira 3/4 baixa" },
+      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_09ecedde-28b8-449d-9b14-9eefd5478216.png", "nota": "perfil puro" },
+      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_b0f0a4b7-9b2c-4c4e-bb19-208339db19ac.png", "nota": "detalhe do acetinado" }
+    ]
+  },
+
   "mcx-87-plum-crazy": {
     "mensagem": "feat(mcx-87): quatro fotos Dodge Challenger SRT + capa recolorida na leitura (#684D76)",
     "leitura": "#684D76",
