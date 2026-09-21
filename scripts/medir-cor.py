@@ -42,6 +42,17 @@ USO
     python3 scripts/medir-cor.py --alvo '#2B67A8' --familia azul \\
         --janela 0.13,0.50,0.95,0.84 foto.png
 
+LIMITE CONHECIDO
+----------------
+Quando o CENÁRIO compartilha a faixa de matiz da cor, a janela pode não bastar.
+Na MCX-66 Army Olive, num pátio com céu cinza-azulado e musgo na parede, a
+medida deu H 154 a 169 enquanto amostras tiradas direto do painel da lataria
+davam H 126 a 132 — o alvo. Céu e musgo entraram na máscara e puxaram o matiz
+para o ciano. O sinal de alerta é a medida discordar do que o recolorir-capa.py
+reporta como matiz de origem: as duas usam a mesma faixa, então divergência
+grande quer dizer contaminação. Nesse caso, amostre um recorte só de lataria
+antes de concluir que a foto está errada.
+
 Requer: numpy, pillow.
 """
 

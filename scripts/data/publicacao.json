@@ -1,6 +1,27 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
 
+  "mcx-65-carbon-green": {
+    "mensagem": "feat(mcx-65): quatro fotos Porsche 911 992 conferidas contra a leitura (#758586)",
+    "leitura": "#758586",
+    "familia": "azul",
+    "alt_base": "Porsche 911 Carrera envelopado em MetaCast MCX-65 Carbon Green",
+    "extras": [
+      "src/lib/shop/generic.ts",
+      "public/assets/images/shop/metamark-mcx/mcx-65-carbon-green.webp",
+      "scripts/publicar-cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_022905_c3eab361-a3e3-4299-a429-76036d7b37d9.png", "nota": "frontal 3/4 em mirante de estrada de montanha" },
+      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023120_b6ce72bc-bf1b-46e4-8073-543a9c648d4e.png", "nota": "traseira 3/4 em angulo baixo" },
+      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023120_e0b510df-0749-43c7-842c-95d9a9fc6046.png", "nota": "perfil lateral completo" },
+      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023122_79e237c2-5271-489d-b931-df76a8cab547.png", "nota": "macro do flake de aluminio" }
+    ]
+  },
+
   "mcx-66-army-olive": {
     "mensagem": "feat(mcx-66): quatro fotos Defender 110 + capa regerada na leitura (#344137)",
     "leitura": "#344137",

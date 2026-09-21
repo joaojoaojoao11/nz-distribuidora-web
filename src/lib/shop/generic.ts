@@ -463,6 +463,42 @@ export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
     '/assets/images/metamark/mcx/aplicacao/mcx-66-army-olive-4.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-66-army-olive-5.jpg',
   ],
+  // MCX-65 Carbon Green — leitura #758586 · H 185° · S 12,5% · V 52,5% · SATIN
+  // METALLIC, o único da linha. Cinza-grafite com fundo verde, puxando de leve
+  // para o ciano; o nome descreve bem, é mais grafite que verde.
+  //
+  // NÃO caçar tinta OEM para esta cor. As Inspire Colours™, que reproduzem
+  // pintura de fábrica, são onze e estão marcadas no próprio dado: MCX-22, 26,
+  // 35, 38, 51, 52, 60, 62, 63, 96 e 97. A MCX-65 é inspire:false, cor de casa.
+  //
+  // MÉTODO NOVO AQUI: num material de flake grosso a distribuição é bimodal e
+  // mediana e média divergem. Teste de desfoque progressivo no chip para
+  // simular distância de visão: as duas convergem em #758586, V 52,5 — esse é
+  // o valor perceptual. E a decomposição, que é o que faz a cor se comportar:
+  //   base entre os flakes  RGB (97,113,114)  S 14,8  V 44,7
+  //   faíscas do flake      RGB (191,206,207) S  7,7  V 81,0
+  // O flake é alumínio quase incolor sobre base esverdeada, por isso a cor
+  // CLAREIA E DESSATURA sob luz — não é o pigmento mudando, é a faísca branca
+  // cobrindo. Descrever os dois materiais separadamente no prompt foi o que
+  // tirou a foto do menta-azulado.
+  //
+  // Satin confirmado por número: no chip, 1,34% dos pixels passam de 200 de
+  // luminância e só 0,031% passam de 235. Nem as faíscas estouram.
+  //
+  // Porsche 911 992 em mirante de estrada de montanha, rocha cinza e luz
+  // direcional. Cenário neutro de propósito: a 12% de saturação esta cor pega
+  // cast de qualquer superfície colorida por perto.
+  //
+  // As quatro saíram com o mesmo viés de matiz, 18 a 34 graus para o azul, que
+  // não cedeu a prompt. Corrigidas por aritmética, todas fechando em H 183,5.
+  // Foi preciso a janela nova do recolorir-capa.py: sem ela a máscara pegava o
+  // céu cinza-azulado junto e a rotação deixava o céu verde.
+  'mcx-65-carbon-green': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-65-carbon-green-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-65-carbon-green-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-65-carbon-green-4.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-65-carbon-green-5.jpg',
+  ],
 };
 
 export const MCX_ROLL_IMAGES: Record<string, string> = {

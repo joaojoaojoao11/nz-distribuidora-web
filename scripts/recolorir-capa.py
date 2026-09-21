@@ -232,6 +232,11 @@ def main() -> int:
     ap.add_argument('--feather', type=float, default=1.2, help='desfoque da borda da máscara, em px')
     ap.add_argument('--margem-label', type=int, default=10,
                     help='folga em px em volta do paper label protegido (0 desliga a proteção)')
+    ap.add_argument('--janela',
+                    help='limita a correção a um recorte, em frações: esq,topo,dir,base. Existe porque '
+                         'em FOTO o cenário divide a faixa de matiz com o carro: na MCX-65, céu cinza-azulado '
+                         'entrou na máscara e a rotação de 34 graus deixou o céu verde. A borda é suavizada, '
+                         'então não fica emenda visível')
     ap.add_argument('--qualidade', type=int, default=88, help='qualidade do webp de saída')
     ap.add_argument('--manter-valor', action='store_true',
                     help='corrige matiz e saturação e deixa o valor como está — é o caso de FOTO '
@@ -252,6 +257,14 @@ def main() -> int:
 
     mask = montar_mascara(h, s, v, args.familia, args.sat_min, args.val_min, args.feather,
                           args.val_max, args.sat_max)
+    if args.janela:
+        fx0, fy0, fx1, fy1 = (float(z) for z in args.janela.split(','))
+        H, W = h.shape
+        rect = np.zeros(h.shape, np.float32)
+        rect[int(fy0 * H):int(fy1 * H), int(fx0 * W):int(fx1 * W)] = 1.0
+        # borda suave: emenda dura apareceria se a janela cortasse o próprio carro
+        mask = mask * gaussian_filter(rect, max(6.0, min(H, W) * 0.01))
+
     label = achar_label(h, s, v, args.margem_label) if args.margem_label > 0 else np.zeros(h.shape, bool)
     if label.any():
         mask = mask * gaussian_filter((~label).astype(np.float32), args.feather)
