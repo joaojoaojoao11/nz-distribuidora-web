@@ -499,6 +499,46 @@ export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
     '/assets/images/metamark/mcx/aplicacao/mcx-65-carbon-green-4.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-65-carbon-green-5.jpg',
   ],
+  // MCX-73 Capri Bronze — leitura #4A3E32 · H 29° · S 32% · V 29% · MATT
+  // METALLIC. Bronze escuro e quente, marrom com pendor laranja. Chip local e
+  // chip oficial batem exato (#4A3E32 contra #4A3D32). A capa estava 13° mais
+  // vermelha; a foto da brochure lê entre H 52 e 67 mas tem gradação evidente
+  // (rodas azul-petróleo, farol ciano — teal-and-orange), então serve para
+  // acabamento e carro, não para matiz.
+  //
+  // ERRO DE MEDIÇÃO A NÃO REPETIR, e é o achado mais útil deste lote.
+  // Li granulação 2,9 no chip e concluí "flake fino e discreto". Estava errado:
+  // o número dizia que AQUELA FOTO não tinha luz para mostrar o flake. Medindo
+  // granulação RELATIVA (variação de alta frequência ÷ luminância média, que
+  // compara cor clara com cor escura) nas duas fontes de cada cor:
+  //
+  //     cor                  chip (luz difusa)   capa (luz direcional)   razão
+  //     MCX-97 Carbon Steel        8,4%                 8,9%              1,1
+  //     MCX-65 Carbon Green        9,4%                11,1%              1,2
+  //     MCX-73 Capri Bronze        3,2%                14,7%              4,6
+  //
+  // Flake só acende sob luz direcional, e quanto mais ESCURA a base menos a
+  // foto de luz difusa revela. Esta é a base mais escura das quatro (V 25 no
+  // chip) e por isso é a única em que as fontes divergem — e sua capa mostra
+  // MAIS flake que a da Carbon Green, que eu tinha chamado de purpurina grossa.
+  // REGRA: granulação se mede em superfície com luz direcional, nunca em chip
+  // difuso de cor escura.
+  //
+  // O primeiro piloto pagou o erro: o prompt dizia que as partículas eram
+  // minúsculas e NÃO deviam parecer purpurina, e a foto saiu com 4,5% de
+  // granulação relativa, praticamente chapada. Reescrito afirmando o flake, foi
+  // para 8,2% no flanco iluminado, com H 31 contra 29 da leitura.
+  //
+  // VW Golf R Mk8 — o carro da própria brochure desta cor — em pátio de serviço
+  // de asfalto molhado e chapa cinza. Tijolo, madeira e ferrugem ficaram longe
+  // de propósito: superfície quente perto de um bronze empurra o matiz, que é o
+  // eixo em que esta cor não pode escorregar.
+  'mcx-73-capri-bronze': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-73-capri-bronze-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-73-capri-bronze-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-73-capri-bronze-4.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-73-capri-bronze-5.jpg',
+  ],
 };
 
 export const MCX_ROLL_IMAGES: Record<string, string> = {

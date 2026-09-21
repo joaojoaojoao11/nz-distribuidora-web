@@ -1,6 +1,27 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
 
+  "mcx-73-capri-bronze": {
+    "mensagem": "feat(mcx-73): quatro fotos VW Golf R + capa corrigida na leitura (#4A3E32)",
+    "leitura": "#4A3E32",
+    "familia": "laranja",
+    "alt_base": "Volkswagen Golf R envelopado em MetaCast MCX-73 Capri Bronze",
+    "extras": [
+      "src/lib/shop/generic.ts",
+      "public/assets/images/shop/metamark-mcx/mcx-73-capri-bronze.webp",
+      "scripts/publicar-cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_024824_ea4ef13f-c8fb-4656-bfa0-22970d52bb91.png", "nota": "frontal 3/4 em patio industrial" },
+      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_20a2412c-ef40-4bb6-86a8-8a0d3af9bdf4.png", "nota": "traseira 3/4 em angulo baixo" },
+      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_70f3f7a0-1a43-41ff-8a18-7b506ef9f2c0.png", "nota": "perfil lateral completo" },
+      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_64dca5c1-ecb3-45c2-8876-03d7832c0eeb.png", "nota": "macro do flake dourado" }
+    ]
+  },
+
   "mcx-65-carbon-green": {
     "mensagem": "feat(mcx-65): quatro fotos Porsche 911 992 conferidas contra a leitura (#758586)",
     "leitura": "#758586",
