@@ -363,6 +363,34 @@ export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
     '/assets/images/metamark/mcx/aplicacao/mcx-12-gotham-black-4.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-12-gotham-black-5.jpg',
   ],
+  // MCX-54 Bavarian Blue — leitura #2B67A8 · H 211° · S 74% · V 66% · MATT
+  // METALLIC. Âncora no chip; a foto da brochure é um M4 G82 em estúdio e serve
+  // só para o acabamento. A cor reproduz o Frozen Portimão Blue da BMW, cor de
+  // comunicação do G80 M3 e Individual no M4 — daí o carro.
+  //
+  // ERRO A NÃO REPETIR: a primeira leitura tirou da brochure uma "amplitude
+  // tonal enorme" (V 37 no parachoque a 91 no capô) e mandou o capô 40 pontos
+  // acima do flanco. Saiu capô lavado, lendo como outra cor. Aquela amplitude é
+  // o softbox do estúdio, não o material — a mesma foto que eu tinha acabado de
+  // desqualificar como referência de cor. Metálico fosco sob nublado abre o
+  // capô 10 a 12 pontos acima do flanco, e o capô continua saturado.
+  //
+  // M4 Competition G82 em mirante de estrada costeira no Algarve, nublado claro
+  // sem sol direto: cor média e saturada precisa de céu aberto, mas sol direto
+  // em metálico fosco joga o painel iluminado para V 90.
+  //
+  // Medidos: -2 (frontal 3/4) H211 S70 V51, -3 (traseira 3/4) H213 S65 V63,
+  // -4 (perfil) H206 S80 V56, -5 (macro do flake) H208 S62 V66. Matiz cravado
+  // entre 206 e 213 contra 211 da leitura. O valor abaixo da leitura é a sombra
+  // da cena puxando a mediana — mais apertado que a MCX-63 publicada, que ficou
+  // de -3,9 a -18,8. Mantidas como estão: corrigir foto de cena mexeria no mar
+  // e no céu, que têm o mesmo matiz. A capa é a referência de cor do produto.
+  'mcx-54-bavarian-blue': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-54-bavarian-blue-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-54-bavarian-blue-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-54-bavarian-blue-4.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-54-bavarian-blue-5.jpg',
+  ],
 };
 
 export const MCX_ROLL_IMAGES: Record<string, string> = {

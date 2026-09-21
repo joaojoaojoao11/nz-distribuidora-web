@@ -1,0 +1,23 @@
+{
+  "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
+
+  "mcx-54-bavarian-blue": {
+    "mensagem": "feat(mcx-54): quatro fotos BMW M4 G82 + capa recolorida na leitura (#2B67A8)",
+    "leitura": "#2B67A8",
+    "familia": "azul",
+    "extras": [
+      "public/assets/images/shop/metamark-mcx/mcx-54-bavarian-blue.webp",
+      "src/lib/shop/generic.ts",
+      "scripts/medir-cor.py",
+      "scripts/recolorir-capa.py",
+      "scripts/publicar-cor.mjs",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_5296aa4b-7c06-48f6-a4b4-35813a13bac3.png", "nota": "frontal 3/4" },
+      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_dab6db38-8bb9-410e-9229-2c210c081a0c.png", "nota": "traseira 3/4 baixa" },
+      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_68ae2c7b-4890-4d24-83e6-7ef603121709.png", "nota": "perfil puro" },
+      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_bacd8c54-a982-4497-97e0-d65060c71109.png", "nota": "detalhe do flake" }
+    ]
+  }
+}
