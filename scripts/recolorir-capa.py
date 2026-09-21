@@ -163,7 +163,14 @@ def achar_label(h: np.ndarray, s: np.ndarray, v: np.ndarray, margem: int) -> np.
     é dilatado pela margem — crescer a PROTEÇÃO é inócuo, ao contrário de
     crescer a máscara do filme.
     """
-    magenta = ((h >= 300) & (h <= 352) & (s >= 0.30) & (v >= 0.15))
+    # A saturação mínima é 0,55, não 0,30, e o motivo é concreto: numa capa roxa
+    # (MCX-87 Plum Crazy) parte do próprio filme cai na faixa de matiz do
+    # magenta. A 0,30 isso marcava 13,6% da imagem, o maior blob unia label e
+    # lataria, e a elipse resultante cobria o rolo inteiro — a correção deixava
+    # uma mancha oval enorme por cima do filme. A 0,55 as capas roxa, verde e
+    # azul convergem todas em ~1,9%, que é o label e mais nada. O campo magenta
+    # impresso é muito mais saturado que qualquer filme da linha.
+    magenta = ((h >= 300) & (h <= 352) & (s >= 0.55) & (v >= 0.15))
     if magenta.sum() < 200:
         return np.zeros_like(magenta)
     marcas, n = rotular(magenta)
@@ -171,6 +178,11 @@ def achar_label(h: np.ndarray, s: np.ndarray, v: np.ndarray, margem: int) -> np.
         return np.zeros_like(magenta)
     maior = 1 + int(np.argmax(np.bincount(marcas.ravel())[1:]))
     disco = binary_fill_holes(marcas == maior)
+    # Cinto e suspensório: o label ocupa uns 3% da capa. Se o blob passou de 8%,
+    # alguma coisa se fundiu com ele e proteger aquilo faria mais estrago do que
+    # não proteger nada.
+    if disco.mean() > 0.08:
+        return np.zeros_like(magenta)
     # o label é maior que só o campo magenta: fecha a elipse inteira pelo bbox
     ys, xs = np.nonzero(disco)
     cy, cx = (ys.min() + ys.max()) / 2, (xs.min() + xs.max()) / 2
@@ -213,6 +225,12 @@ def main() -> int:
     ap.add_argument('--margem-label', type=int, default=10,
                     help='folga em px em volta do paper label protegido (0 desliga a proteção)')
     ap.add_argument('--qualidade', type=int, default=88, help='qualidade do webp de saída')
+    ap.add_argument('--manter-valor', action='store_true',
+                    help='corrige matiz e saturação e deixa o valor como está — é o caso de FOTO '
+                         'de cena, onde a mediana fica abaixo da leitura porque metade da lataria '
+                         'está em sombra, e levantar isso clarearia o carro inteiro sem motivo')
+    ap.add_argument('--manter-matiz', action='store_true',
+                    help='não desloca o matiz; use quando só a saturação ou o valor estão fora')
     args = ap.parse_args()
 
     src = Path(args.entrada)
@@ -240,14 +258,14 @@ def main() -> int:
 
     # Gama que leva a mediana medida exatamente ao alvo, preservando 0 e 1.
     gama_s = np.log(max(s_alvo, 1e-4)) / np.log(max(antes['s'] / 100, 1e-4))
-    gama_v = np.log(max(v_alvo, 1e-4)) / np.log(max(antes['v'] / 100, 1e-4))
+    gama_v = 1.0 if args.manter_valor else np.log(max(v_alvo, 1e-4)) / np.log(max(antes['v'] / 100, 1e-4))
 
     # Matiz é CIRCULAR: a diferença tem de vir pelo caminho curto. Sem isto, numa
     # capa vermelha os pixels logo acima de 0° distam ~346° dos logo abaixo de
     # 360°, a compressão os joga para o outro lado da roda e aparece um anel
     # verde em volta do label. Foi exatamente o que o teste do Volcano Red pegou.
     dh = (h - antes['h'] + 180.0) % 360.0 - 180.0
-    h2 = (h_alvo + dh * args.compressao_matiz) % 360.0
+    h2 = h.copy() if args.manter_matiz else (h_alvo + dh * args.compressao_matiz) % 360.0
     s2 = np.clip(np.clip(s, 1e-4, 1.0) ** gama_s, 0, 1)
     v2 = np.clip(np.clip(v, 1e-4, 1.0) ** gama_v, 0, 1)
 
@@ -281,11 +299,27 @@ def main() -> int:
     print(f'gravado em  {dst}')
 
     saida = 0
-    dh_err = abs((depois['h'] - h_alvo + 180) % 360 - 180)
-    erro = max(dh_err, abs(depois['s'] - s_alvo * 100), abs(depois['v'] - v_alvo * 100))
+    # Matiz só entra na conta do erro quando há cor suficiente para ele
+    # significar algo. Num preto a 5% de saturação um nível de canal move o
+    # matiz dezenas de graus, e a capa da MCX-12 disparava alarme por isso
+    # estando correta.
+    dh_err = 0.0 if depois['s'] < 10 or args.manter_matiz else abs((depois['h'] - h_alvo + 180) % 360 - 180)
+    # Com --manter-valor a diferença de valor é intencional, não desvio.
+    dv_err = 0.0 if args.manter_valor else abs(depois['v'] - v_alvo * 100)
+    erro = max(dh_err, abs(depois['s'] - s_alvo * 100), dv_err)
     if erro > 1.5:
         print(f'ATENÇÃO: desvio de {erro:.1f} contra o alvo — confira antes de publicar', file=sys.stderr)
         saida = 2
+    # Estouro não é o único jeito de estragar a imagem. Uma gama de valor longe
+    # de 1 aplicada sobre JPEG amplifica a quantização em blocos 8x8: na foto de
+    # detalhe da MCX-87, corrigir V de 68 para 46 deu gama 2,0 e o painel saiu
+    # com bandas e blocos visíveis, apesar de estouro zero. Fonte tão longe do
+    # alvo assim precisa ser REGERADA, não corrigida.
+    if not 0.6 <= gama_v <= 1.6 or not 0.5 <= gama_s <= 2.0:
+        print(f'ATENÇÃO: correção agressiva (gama V {gama_v:.2f} · gama S {gama_s:.2f}). '
+              f'Em JPEG isso costuma sair com bandas — confira a imagem de perto, '
+              f'e se aparecer bloco, regere em vez de corrigir.', file=sys.stderr)
+        saida = max(saida, 4)
     if max(corte_s, corte_v) > 2.0:
         print(f'ATENÇÃO: {max(corte_s, corte_v):.1f}% do filme estourou — correção grande demais, '
               f'esta capa precisa ser regerada na cor, não corrigida', file=sys.stderr)

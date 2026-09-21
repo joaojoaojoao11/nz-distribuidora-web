@@ -1,6 +1,25 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
 
+  "mcx-87-plum-crazy": {
+    "mensagem": "feat(mcx-87): quatro fotos Dodge Challenger SRT + capa recolorida na leitura (#684D76)",
+    "leitura": "#684D76",
+    "familia": "roxo",
+    "extras": [
+      "public/assets/images/shop/metamark-mcx/mcx-87-plum-crazy.webp",
+      "src/lib/shop/generic.ts",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012432_df6441dd-04fe-4237-8075-4c5dd2070fb6.png", "nota": "frontal 3/4" },
+      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012824_4e576f31-d396-498e-bca9-f70ecd4fc3ab.png", "nota": "traseira 3/4 baixa" },
+      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012824_765a2e03-6338-4a34-b82a-5d4dd3d5c0b7.png", "nota": "perfil puro" },
+      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_013636_7e5a053c-2f14-44ee-93c7-2264ea1cc7cb.png", "nota": "detalhe do flake (regerada: a primeira saiu palida demais para corrigir sem bandar o jpeg)" }
+    ]
+  },
+
   "mcx-54-bavarian-blue": {
     "mensagem": "feat(mcx-54): quatro fotos BMW M4 G82 + capa recolorida na leitura (#2B67A8)",
     "leitura": "#2B67A8",

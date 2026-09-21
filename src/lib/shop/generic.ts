@@ -391,6 +391,41 @@ export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
     '/assets/images/metamark/mcx/aplicacao/mcx-54-bavarian-blue-4.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-54-bavarian-blue-5.jpg',
   ],
+  // MCX-87 Plum Crazy — leitura #684D76 · H 280° · S 35% · V 46% · MATT
+  // METALLIC. Âncora no chip, com uma incerteza declarada: a foto da brochure
+  // (um AMG GT) lê entre 250 e 263°, uns 20° mais azulada que o chip. Sem
+  // amostra física ficou o chip, que é a referência sancionada.
+  //
+  // O NOME ENGANA. Plum Crazy é a FC7 da Mopar, High Impact de 1970 — um roxo
+  // vivo e chapado. O filme não é aquilo: mede 35% de saturação contra os 70+
+  // da tinta. É um violeta acinzentado, mais perto de um "Frozen" moderno.
+  // Quem pedir "o roxo do Challenger" não está pedindo esta cor.
+  //
+  // Dodge Challenger SRT em pista de arrancada, nublado claro e LUZ FRIA: sob
+  // luz quente esse violeta embarra e vira marrom.
+  //
+  // DOIS DEFEITOS E O QUE RESOLVEU CADA UM:
+  // 1. O parachoque dianteiro lia como outra cor. Diagnostiquei degradê de
+  //    matiz e errei — filtrando as células com V>=35 e S>=15 a amplitude cai
+  //    de 63° para 7°; os 63° eram ruído de região escura. O defeito real era
+  //    salto de VALOR entre painéis vizinhos (37 a 40 pontos, contra o máximo
+  //    de 33,7 nos conjuntos aprovados). Três tentativas de prompt não moveram
+  //    isso. Quem resolveu foi a correção de saturação: com o violeta cheio,
+  //    parachoque e para-lama voltam a ler como o mesmo material.
+  // 2. A -5 saiu pálida demais (V 68 contra 46). Corrigir exigiria gama 2,0, e
+  //    isso amplificou a compressão do JPEG — painel com bandas e blocos, com
+  //    estouro zero. Foi regerada, não corrigida. Virou guarda no script.
+  //
+  // Medidos depois da correção de saturação: -2 H285 S31 V39, -3 H287 S34 V42,
+  // -4 H282 S35 V41, -5 H283 S34 V28. Saturação dentro de ±4 da leitura. O
+  // valor abaixo é sombra de cena; a -5 é macro com metade do painel na sombra,
+  // e a parte iluminada dela está em V 61.
+  'mcx-87-plum-crazy': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-87-plum-crazy-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-87-plum-crazy-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-87-plum-crazy-4.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-87-plum-crazy-5.jpg',
+  ],
 };
 
 export const MCX_ROLL_IMAGES: Record<string, string> = {
