@@ -336,6 +336,33 @@ export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
     '/assets/images/metamark/mcx/aplicacao/mcx-63-speed-green-4.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-63-speed-green-5.jpg',
   ],
+  // MCX-12 Gotham Black — leitura #272729 · H 240° · S 5% · V 16% · SATIN
+  // SOLID. Sem amostra física: a leitura veio do chip oficial (swatch chapado)
+  // cruzado com a foto da brochure. O chip erra pouco na maioria (Urban Steel
+  // +5,1 de valor, Speed Green +3,5) mas errou 20,8 no Carbon Steel, então a
+  // tolerância declarada foi ±5.
+  //
+  // O acabamento é o ponto da cor, e é um dos dois únicos satin-solid da linha.
+  // Granulação medida na brochure: Obsidian (gloss metálico) 5,1, Jet Black
+  // (gloss sólido) 2,6, Gotham 2,2 — sólido sem flake nenhum. O satin aparece
+  // como faixa LARGA e macia de luz, sem imagem espelhada e sem estouro: na
+  // brochure o paralama abre até V 62 sem um pixel passar de 92% de luminância.
+  //
+  // BMW M5 F90 em deck de estacionamento de concreto, nublado claro direcional.
+  // Céu aberto porque o satin precisa de céu para a faixa existir; o concreto
+  // rebate e segura o valor nas saias.
+  //
+  // Medidos: -2 (frontal 3/4) H26 S11 V22, -3 (traseira 3/4) H172 S7 V20,
+  // -4 (perfil) H242 S4 V21, -5 (detalhe) H273 S3 V13. A -2 saiu com rebote
+  // quente do concreto e foi neutralizada por processamento local. Fica o
+  // registro para as próximas neutras: mandar no prompt que o piso é cinza
+  // frio, senão o modelo inventa um rebote dourado nas saias.
+  'mcx-12-gotham-black': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-12-gotham-black-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-12-gotham-black-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-12-gotham-black-4.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-12-gotham-black-5.jpg',
+  ],
 };
 
 export const MCX_ROLL_IMAGES: Record<string, string> = {
