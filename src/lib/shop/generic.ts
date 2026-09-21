@@ -252,6 +252,31 @@ export const REVIEWED_SLUGS: ReadonlySet<string> = new Set([
  *
  * Slug = mesmo `c.slug` da tabela MCX_COLORS (`mcx-51-miami-blue` etc.).
  * Convenção de arquivo: `public/assets/images/shop/metamark-mcx/{slug}.webp`.
+ *
+ * CORRIGIR A COR DE UMA CAPA — use `scripts/recolorir-capa.py`, não regere.
+ *
+ * As capas saíram com viés sistemático de cor contra o chip do catálogo: mais
+ * escuras e dessaturadas, às vezes com o matiz deslocado. Medido até aqui —
+ * Volcano Red 32 pontos de valor abaixo, Speed Green 24 e com matiz errado,
+ * Miami Blue 23, Chalk Grey 16, Monza Yellow 12, Jet Black 10.
+ *
+ * Regerar para acertar a cor foi tentado várias vezes e não funciona: o modelo
+ * reconstrói a composição, o paper label sai girado ou ilegível e a capa deixa
+ * de seguir o padrão da linha. A composição já está aprovada — o que precisa
+ * andar é só o filme, dentro do espaço de cor:
+ *
+ *     python3 scripts/recolorir-capa.py \
+ *       --entrada public/assets/images/shop/metamark-mcx/{slug}.webp \
+ *       --alvo '#548C46' --familia verde --no-lugar
+ *
+ * O `--alvo` é a LEITURA da amostra física (o hex canônico medido no leque),
+ * que fica registrada no comentário do slug em MCX_EXTRA_PHOTOS — não o hex do
+ * chip da brochure. O script mede a capa antes, calcula a gama que leva a
+ * mediana ao alvo preservando o gradiente do cilindro, protege o label METAMARK
+ * e mede de novo. Se ele avisar que o filme estourou, a correção pedida é
+ * grande demais para aquela capa e aí sim ela precisa ser regerada.
+ *
+ * Aplicado em: mcx-63-speed-green (H 136→108, S 39→50, V 40→55).
  */
 /**
  * Fotos de aplicação EXTRAS por cor MCX, geradas a partir da leitura de cor da
@@ -290,6 +315,26 @@ export const MCX_EXTRA_PHOTOS: Record<string, string[]> = {
     '/assets/images/metamark/mcx/aplicacao/mcx-97-carbon-steel-3.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-97-carbon-steel-4.jpg',
     '/assets/images/metamark/mcx/aplicacao/mcx-97-carbon-steel-5.jpg',
+  ],
+  // MCX-63 Speed Green — leitura #548C46 · H 108° · S 50% · V 55% · metálico
+  // fosco perolizado. A primeira leitura saiu 10 pontos clara (#669B51, V 61) e
+  // foi revista cruzando chip, brochure e a pintura que a cor reproduz: AMG
+  // Green Hell Magno (Mercedes 376/6376). Daí o carro ser o AMG GT R.
+  //
+  // Cenário de céu ABERTO, ao contrário da MCX-97: cor média e saturada sob
+  // cobertura perde valor e vira verde-garrafa. O primeiro teste em box de pit
+  // devolveu H94 S33 V45 — 213 células de sombra contra 28 de corpo.
+  //
+  // Medidos: -2 (piloto, frontal 3/4) H122 S39 V50, -3 (traseira 3/4 baixa)
+  // H119 S43 V43, -4 (perfil puro) H118 S39 V40, -5 (macro do flake) H126 S50
+  // V51. O matiz encosta no atrator do modelo em ~120° em vez de 108°; o viés
+  // é o mesmo nas quatro e some quando as fotos são vistas em conjunto com o
+  // chip. Mantidas como estão, sem correção posterior.
+  'mcx-63-speed-green': [
+    '/assets/images/metamark/mcx/aplicacao/mcx-63-speed-green-2.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-63-speed-green-3.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-63-speed-green-4.jpg',
+    '/assets/images/metamark/mcx/aplicacao/mcx-63-speed-green-5.jpg',
   ],
 };
 
