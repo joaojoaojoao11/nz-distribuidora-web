@@ -20,55 +20,49 @@ Duas coisas, e as duas valem para conferir qualquer capa antiga antes de reusar:
 
 ---
 
----
+## REGRA PRIMEIRA: capa nova se GERA com a capa aprovada como IMAGEM DE REFERÊNCIA
 
-## REGRA PRIMEIRA: capa nova NÃO se gera. Se recolore.
+**Leia isto antes de qualquer outra coisa desta página.**
 
-**Leia isto antes de qualquer outra coisa desta página.** O caminho padrão para a
-capa de uma cor nova é **copiar uma capa já aprovada da linha e recolorir o
-filme**. Gerar do zero é a exceção, e só quando não existe capa aprovada.
+A capa de uma cor nova é gerada passando a capa aprovada da ESG-034 como
+**imagem de referência** na geração (image-to-image), e não descrevendo a
+proporção em texto. A referência prende a geometria; o prompt só troca a cor.
 
-```
-cp public/assets/images/shop/speed-wrapping/{slug-aprovado}.webp \
-   public/assets/images/shop/speed-wrapping/{slug-novo}.webp
+Referência de geometria: a geração crua (sem logo) da ESG-034,
+job `a811cd95-a307-424c-967a-a291f6c2c028`.
+Referência de acabamento: a geração crua da ESG-033,
+job `d1170724-55b1-4765-855b-c54191e6640e` — verde, super gloss, brilho forte.
 
-python3 scripts/recolorir-capa.py \
-  --entrada public/assets/images/shop/speed-wrapping/{slug-novo}.webp \
-  --alvo '{hex da leitura}' --familia {família da capa DOADORA} --no-lugar
-```
+Na geração:
 
-`--familia` é a família de matiz da **capa de origem**, não a da cor nova: é
-assim que a máscara acha o filme. Na ESG-035 a doadora foi a ESG-034, que é azul,
-então `--familia azul` com `--alvo '#637F44'`.
+- `model: gpt_image_2`, `quality: high` — **não** o `low` padrão. As capas em
+  `low` saíam granuladas e com brilho fraco.
+- `medias`: as duas referências acima, com `role: image`.
+- Prompt em três blocos: **IMAGEM 1 define a GEOMETRIA** (copiar exatamente:
+  posição, tamanho, ângulo, ponta cortada, tubete branco e sua largura, aro
+  estriado, canto superior esquerdo vazio, fundo, luz, sombra); **IMAGEM 2 define
+  o ACABAMENTO** (super gloss molhado, filete especular branco forte, contraste
+  entre crista e aba de baixo); **a COR não é de nenhuma das duas** — hex da
+  leitura, descrita em positivo.
+- Sem logo na geração. O logo entra por composição no `--tudo`.
 
-**Por que isto é regra e não preferência.** Na ESG-035 eu tentei gerar a capa
-seis vezes em três rodadas, mexendo em número de proporção no prompt. O tubete
-saiu 36%, depois 32%, 37%, 34%, depois 3%. Nenhuma bateu o padrão. A recoloração
-da capa da ESG-034 fechou em **H 88,5 · S 46,5 · V 49,8 contra alvo
-H 88,5 · S 46,5 · V 49,8 — exato, estouro 0,0%** — com a geometria pixel a pixel
-idêntica a uma capa que você já aprovou, e a marca já no lugar.
+Resultado na ESG-035: silhueta 93% igual à da ESG-034 (IoU), brilho no nível da
+ESG-033 aprovada, superfície lisa. A saturação sai uns 10 pontos baixa (S 35
+contra 46) — é normal e o `--tudo` fecha sozinho em duas passadas, sem estouro.
 
-Vantagens que a geração nunca vai ter:
+### O que NÃO fazer — as duas tentativas que falharam na ESG-035
 
-- **Proporção idêntica por construção.** Tubete, aro, ângulo e enquadramento não
-  são reinterpretados, são os mesmos pixels.
-- **A marca já vem junta e certa.** Não precisa recompor, e o vermelho do logo
-  (matiz ~2°) fica fora de qualquer máscara cromática de filme.
-- **O acabamento vem junto.** O brilho, o filete especular e o gradiente do
-  cilindro são os da capa aprovada. Capa gerada sai acetinada com frequência, e
-  não existe palavra no prompt que resolva isso de forma confiável.
-- **É verificável.** O script mede depois e imprime `depois` contra `alvo`. Se
-  não bater, não foi aplicado.
+1. **Gerar só com texto e números de proporção.** Seis gerações, tubete errado
+   em todas (36%, 32%, 37%, 34%, 22%, 3%). Proporção não se acerta por descrição.
+2. **Recolorir a capa aprovada de outra cor** (azul → verde, com
+   `scripts/capa-de-doadora.py` / `neutralizar-especular.py`). A geometria fica
+   certa, mas a mudança grande de matiz e de valor destrói o acabamento: o brilho
+   fica com o matiz da doadora, o cilindro achata, o campo de cor granula a cada
+   reencode. **Reprovado pelo João em três rodadas seguidas** — "piorou". Esses
+   dois scripts ficam no repositório só como registro; não usar para capa nova.
 
-**Escolha da doadora:** a mais próxima em saturação e valor, e de preferência com
-matiz longe do vermelho da marca. Se a gama de valor passar de ~1,8 o script
-avisa; em webp costuma passar limpo (a ESG-035 saiu com gama V 1,72, 165 níveis
-distintos de luminância e degrau máximo de 1 — sem banda), mas confira.
-
-**Quando gerar mesmo assim:** só quando a linha ainda não tem nenhuma capa
-aprovada, ou quando a capa antiga tem defeito estrutural — foi o caso da ESG-030,
-que tinha tubete preto. Aí siga o prompt do fim desta página, e entenda que as
-proporções vão sair erradas nas primeiras tentativas.
+Recolorir continua válido para **ajuste fino da mesma capa** (a correção de
+poucos pontos que o `--tudo` já faz). O que não funciona é trocar a cor inteira.
 
 ---
 
@@ -122,9 +116,9 @@ grande com um aro fino e finamente estriado em volta**.
 > prompt erraram o tubete para os dois lados — 36%, 32%, 37%, 34%, 22%, 3%. O
 > "65% do diâmetro do rolo" em particular é alto demais e produz furo gigante;
 > baixar para "metade, com furo interno em 40%" melhorou mas continuou instável.
-> **A proporção não se acerta por descrição. Se acerta copiando pixel, pela
-> recoloração da doadora descrita no topo desta página.** Esta seção existe para
-> o caso raro em que não há doadora.
+> **A proporção não se acerta por descrição. Se acerta passando a capa aprovada
+> como imagem de referência, como descrito no topo desta página.** Esta seção
+> fica como descrição do padrão, não como receita de prompt.
 
 ## Superfície
 
@@ -302,8 +296,8 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 |---|---|---|---|
 | ESG-030 Super Gloss Gem Red | `#98144E` · H 334 · S 87 · V 60 | super gloss sólido | `#981451` |
 | ESG-034 Ceramic China Blue | `#5D85AD` · H 210 · S 46 · V 68 | super gloss sólido | geração já em H 210,4 · S 46,9 |
-| ESG-035 Racing Green | `#637F44` · H 89 · S 46 · V 50 | super gloss sólido | **recolorida da ESG-034** → exata, estouro 0,0% |
+| ESG-035 Racing Green | `#637F44` · H 89 · S 46 · V 50 | super gloss sólido | gerada com ESG-034 (geometria) + ESG-033 (acabamento) como referência; `--tudo` fecha a saturação |
 
-**A ESG-034 é a doadora de referência da linha.** Composição aprovada, tubete na
-proporção certa, marca no lugar, brilho forte. Use ela como origem sempre que a
-cor nova não for muito mais escura.
+**A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
+**ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como
+imagem de referência em toda capa nova.
