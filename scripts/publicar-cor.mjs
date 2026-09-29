@@ -27,6 +27,8 @@
  *   node scripts/publicar-cor.mjs <slug>              baixa, converte e grava
  *   node scripts/publicar-cor.mjs <slug> --apenas 5   refaz só a foto 5
  *   node scripts/publicar-cor.mjs <slug> --so-capa    refaz só a capa
+ *   node scripts/publicar-cor.mjs <slug> --tudo       baixa, CORRIGE a cor,
+ *                                                     commita, sobe e grava
  *   node scripts/publicar-cor.mjs <slug> --commit     commita, sobe, espera o
  *                                                     deploy e registra no banco
  *
@@ -278,6 +280,114 @@ async function preparar(slug, entrada, apenas, soCapa) {
   console.log(`\ndepois de corrigir a cor:\n  node scripts/publicar-cor.mjs ${slug} --commit\n`);
 }
 
+/* ------------------------------------------------------------------ *
+ * Correcao de cor, automatica
+ *
+ * Ate aqui a correcao era um passo manual no meio: baixar, medir, rodar
+ * recolorir-capa.py a mao, so entao commitar. O script mede a imagem sozinho e
+ * calcula a gama que leva a mediana ao alvo, entao esse passo nunca precisou de
+ * gente — precisava so de alguem chamando ele.
+ *
+ * A primeira versao disto chamava o Python por spawn. Nao servia: a maquina de
+ * producao nao tinha numpy/scipy/pillow, e o comando unico morria no meio, com
+ * as imagens ja baixadas e nada commitado. Agora a matematica mora em
+ * scripts/lib/cor.mjs, em JS puro sobre o buffer cru do sharp — que o script ja
+ * usava. Zero dependencia nova, funciona em qualquer maquina que roda `npm i`.
+ *
+ * O recolorir-capa.py continua sendo a referencia documentada e a ferramenta de
+ * inspecao manual. Os dois foram conferidos imagem a imagem na ESG-032 e dao o
+ * mesmo resultado (H 347,6 · S 63,0 · V 78,4 na capa, nos dois).
+ *
+ * O freio: se mais de 2% do filme estourar, a imagem esta longe demais do alvo
+ * e precisa ser REGERADA, nao corrigida. Nesse caso o comando para antes do
+ * commit e o disco fica como estava.
+ * ------------------------------------------------------------------ */
+const ESTOURO_MAX = 2.0;
+
+async function corrigirArquivo(sharp, caminho, alvo, familia, manterValor) {
+  const { recolorir } = await import('./lib/cor.mjs');
+  let img = sharp(caminho), r = null;
+  // Duas passadas: a primeira encosta, a segunda fecha. O arquivo e lossy e a
+  // releitura muda um pouco — medido em todas as cores da Speed Wrapping.
+  for (let passo = 0; passo < 2; passo++) {
+    const { data, info } = await img.removeAlpha().raw().toBuffer({ resolveWithObject: true });
+    r = recolorir(data, { W: info.width, H: info.height, alvo, familia, manterValor });
+    if (Math.max(r.corteS, r.corteV) > ESTOURO_MAX) return r;
+    img = sharp(r.buf, { raw: { width: info.width, height: info.height, channels: 3 } });
+  }
+  const ext = path.extname(caminho).toLowerCase();
+  await (ext === '.webp'
+    ? img.webp({ quality: 92, effort: 6 })
+    : img.jpeg({ quality: QUALIDADE, mozjpeg: true })).toFile(caminho + '.tmp');
+  rmSync(caminho, { force: true });
+  writeFileSync(caminho, readFileSync(caminho + '.tmp'));
+  rmSync(caminho + '.tmp', { force: true });
+  return r;
+}
+
+async function corrigir(slug, entrada) {
+  if (!entrada.leitura) { console.log(aviso('\nsem `leitura` no manifesto — correção pulada')); return; }
+  const { default: sharp } = await import('sharp');
+  const { hexParaHsv } = await import('./lib/cor.mjs');
+  const alvo = hexParaHsv(entrada.leitura);
+  const fam = entrada.familia ?? 'verde';
+  console.log(`\ncorrigindo a cor contra ${entrada.leitura} (família ${fam})\n`);
+
+  const alvos = entrada.fotos.map((f) => ({
+    caminho: path.join(RAIZ, dirFotos(entrada), `${slug}-${f.n}.jpg`),
+    nome: `-${f.n} ${f.nota ?? ''}`,
+    // Em foto de cena metade da lataria esta em sombra: levantar o valor ate a
+    // leitura clareia o carro a toa. So matiz e saturacao andam.
+    manterValor: true,
+  }));
+  if (entrada.capa) {
+    alvos.push({ caminho: path.join(RAIZ, dirCapa(entrada), `${slug}.webp`), nome: 'capa', manterValor: false });
+  }
+
+  let parar = null;
+  for (const a of alvos) {
+    if (!existsSync(a.caminho)) continue;
+    let r;
+    try {
+      r = await corrigirArquivo(sharp, a.caminho, alvo, fam, a.manterValor);
+    } catch (e) {
+      console.log(`  ${a.nome.padEnd(26)} ${erro('falhou')}   ${e.message}`);
+      parar = a.nome; continue;
+    }
+    const d = `H${r.depois.h.toFixed(1)} S${r.depois.s.toFixed(1)} V${r.depois.v.toFixed(1)}`;
+    const estouro = Math.max(r.corteS, r.corteV);
+    if (estouro > ESTOURO_MAX) {
+      console.log(`  ${a.nome.padEnd(26)} ${erro('ESTOUROU')} ${d}  (${estouro.toFixed(1)}% do filme)`);
+      parar = a.nome;
+    } else {
+      const dS = Math.abs(r.depois.s - alvo[1] * 100);
+      const marca = dS <= 1.5 ? ok('fechou') : aviso('atenção');
+      console.log(`  ${a.nome.padEnd(26)} ${marca}   ${d}   ΔS ${dS.toFixed(1)}  estouro ${estouro.toFixed(1)}%`);
+    }
+  }
+  if (parar) {
+    morrer(`a correção de "${parar}" estourou mais de ${ESTOURO_MAX}% do filme.\n` +
+      '        Nada foi commitado. Essa imagem está longe demais do alvo e precisa ser\n' +
+      '        REGERADA na cor, não corrigida. Refaça a geração e rode de novo.');
+  }
+
+  // Cor de matiz alto (acima de ~345) cai na familia 'vermelho', que contem o
+  // vermelho do logotipo Speed Wrapping (matiz 1,6). Nessas a marca so pode
+  // entrar DEPOIS da correcao, senao ela e repintada junto.
+  if (entrada.marca_depois && entrada.capa) {
+    const L = entrada.marca_depois;
+    const capa = path.join(RAIZ, dirCapa(entrada), `${slug}.webp`);
+    const lado = (await sharp(capa).metadata()).width;
+    const marca = await sharp(path.join(RAIZ, L.arquivo))
+      .resize({ width: Math.round(lado * L.largura) }).toBuffer();
+    const buf = await sharp(capa).composite([{
+      input: marca, left: Math.round(lado * L.esquerda), top: Math.round(lado * L.topo),
+    }]).webp({ quality: 92, effort: 6 }).toBuffer();
+    writeFileSync(capa, buf);
+    console.log(`  ${'marca na capa'.padEnd(26)} ${ok('aplicada')}`);
+  }
+}
+
 function publicar(slug, entrada) {
   const caminhos = [
     ...entrada.fotos.map((f) => `${dirFotos(entrada)}/${slug}-${f.n}.jpg`),
@@ -358,7 +468,7 @@ async function registrar(slug, entrada) {
 }
 
 const [slug, ...flags] = process.argv.slice(2);
-if (!slug) morrer('uso: node scripts/publicar-cor.mjs <slug> [--commit]');
+if (!slug) morrer('uso: node scripts/publicar-cor.mjs <slug> [--tudo | --commit | --so-capa | --apenas N]');
 
 const manifesto = JSON.parse(readFileSync(MANIFESTO, 'utf8'));
 const entrada = manifesto[slug];
@@ -367,16 +477,27 @@ if (!entrada) {
   morrer(`'${slug}' não está em scripts/data/publicacao.json.\n        disponíveis: ${slugs.join(', ') || '(nenhum)'}`);
 }
 
+const tudo = flags.includes('--tudo');
 const soCapa = flags.includes('--so-capa');
 const iApenas = flags.indexOf('--apenas');
 const apenas = iApenas >= 0 ? (flags[iApenas + 1] ?? '').split(',').map(Number).filter(Boolean) : null;
 if (iApenas >= 0 && !apenas?.length) morrer('--apenas precisa dos números das fotos, ex: --apenas 5');
 
-if (flags.includes('--commit')) {
+if (tudo) {
+  // Um comando so: baixa, corrige a cor, commita, sobe, espera o deploy e grava
+  // no banco. A correcao para o processo se alguma imagem estourar, e nesse caso
+  // nada e commitado — o estado no disco fica igual ao de antes do comando.
+  await preparar(slug, entrada, apenas, soCapa);
+  await corrigir(slug, entrada);
+  publicar(slug, entrada);
+  await registrar(slug, entrada);
+} else if (flags.includes('--commit')) {
+  if (flags.includes('--corrigir')) await corrigir(slug, entrada);
   publicar(slug, entrada);
   // O registro roda mesmo quando o git não tinha nada novo: é o caso de
   // repetir o comando depois de uma falha, com os arquivos já commitados.
   await registrar(slug, entrada);
 } else {
   await preparar(slug, entrada, apenas, soCapa);
+  if (flags.includes('--corrigir')) await corrigir(slug, entrada);
 }

@@ -1,7 +1,7 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
   "speed-wrapping-esg-032-super-gloss-morganite-gem-red-spwesg032": {
-    "mensagem": "feat(esg-032): quatro fotos Mustang GT + capa na leitura (#C84A64)",
+    "mensagem": "feat(esg-032): Mustang GT + capa na leitura (#C84A64); correcao de cor em JS",
     "leitura": "#C84A64",
     "familia": "vermelho",
     "_nota_capa": "matiz 348 cai na familia vermelho, que contem o vermelho da marca. Por isso a capa vem SEM logo: corrigir a cor primeiro e depois rodar scripts/marca-capa.py.",
@@ -18,7 +18,9 @@
     "alt_base": "Ford Mustang GT envelopado em Speed Wrapping ESG 032 Super Gloss Morganite Gem Red PET",
     "extras": [
       "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-032-super-gloss-morganite-gem-red-spwesg032.webp",
+      "scripts/lib/cor.mjs",
       "scripts/marca-capa.py",
+      "scripts/publicar-cor.mjs",
       "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
       "docs/CAPAS_SPEED_WRAPPING.md",
       "scripts/data/publicacao.json"

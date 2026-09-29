@@ -167,16 +167,47 @@ imagens em caminho próprio, então os três campos de destino são obrigatório
 "logo":         { ... }
 ```
 
-Sequência:
+### Um comando só
 
 ```
-node scripts/publicar-cor.mjs <slug>            # baixa tudo e aplica a marca
-node scripts/publicar-cor.mjs <slug> --so-capa  # refaz SÓ a capa, preserva as fotos corrigidas
-node scripts/publicar-cor.mjs <slug> --commit   # commita, sobe, espera o deploy e grava no banco
+node scripts/publicar-cor.mjs <slug> --tudo
 ```
 
-**Corrigir a cor entre o download e o commit.** O `--so-capa` rebaixa a capa crua,
-então a correção precisa ser refeita depois dele.
+Baixa as cinco imagens, **corrige a cor sozinho** contra a `leitura`, estampa a
+marca, commita, sobe, espera o deploy da Vercel e grava no banco.
+
+O freio está na correção: se mais de **2% do filme estourar**, o comando para
+antes do commit e o disco fica como estava. Estouro acima disso significa que a
+imagem está longe demais do alvo e precisa ser **regerada**, não corrigida.
+
+Nas fotos de cena ele aplica `--manter-valor` sozinho, porque metade da lataria
+está em sombra e levantar o valor até a leitura clarearia o carro à toa. E faz
+duas passadas em cada arquivo: a primeira encosta, a segunda fecha — o arquivo é
+lossy e a releitura muda um pouco.
+
+**A correção roda em JS, não em Python.** A primeira versão do `--tudo` chamava o
+`recolorir-capa.py` por spawn e morreu na máquina de produção, que não tem
+numpy/scipy/pillow — com as imagens já baixadas e nada commitado. A matemática
+agora mora em `scripts/lib/cor.mjs`, sobre o buffer cru do sharp que o script já
+usava. Zero dependência nova.
+
+O `recolorir-capa.py` continua sendo a referência documentada e a ferramenta de
+inspeção manual. **Quem mexer em um tem que mexer no outro.** A conferência é
+rodar os dois na mesma imagem e comparar: na ESG-032 os dois fecharam em
+H 347,6 · S 63,0 · V 78,4 na capa, com diferença de pixel de 1,3 a 2,3 em 255 —
+resíduo do desfoque de caixa contra gaussiana na borda da máscara.
+
+### Comandos avulsos
+
+```
+node scripts/publicar-cor.mjs <slug>            # só baixa
+node scripts/publicar-cor.mjs <slug> --corrigir # baixa e corrige, sem subir
+node scripts/publicar-cor.mjs <slug> --so-capa  # refaz SÓ a capa, preserva as fotos
+node scripts/publicar-cor.mjs <slug> --commit   # commita, sobe, espera o deploy e grava
+```
+
+**O `--so-capa` rebaixa a capa crua**, então a correção precisa ser refeita depois
+dele — ou use `--so-capa --corrigir`.
 
 **Cache do navegador.** O nome do arquivo não muda, então quem já abriu a página
 continua vendo a capa antiga. Ctrl+F5 ou janela anônima. Não é bug de deploy —
