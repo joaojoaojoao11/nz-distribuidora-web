@@ -54,6 +54,62 @@ ainda vai ser corrigida.
 
 ## A leitura de cor
 
+### O bug que invalidava as leituras: a janela escolhida à mão
+
+Durante três cores eu medi a amostra assim: máscara por faixa de matiz, saturação
+e valor, mediana dentro dela. O problema é que **os limiares eram escolhidos por
+mim, por cor, e nunca registrados**. Na ESG-030 usei valor de 0,35 a 0,85; na
+ESG-031, de 0,45 a 0,92.
+
+Rodando as MESMAS fotos da ESG-030 com a janela da ESG-031, a leitura sai de
+**S 87 · V 60** para **S 67 · V 78**. Vinte pontos, só de mover o limiar.
+
+Não era medição. Era medição mais uma decisão minha invisível.
+
+### A leitura sem parâmetro livre
+
+O procedimento novo não tem nenhum limiar escolhido à mão:
+
+1. **Balanço de branco.** Estima o iluminante pelos neutros da cena — mesa, papel,
+   apoio do notebook — e normaliza. Foto de celular sob luz de escritório tem
+   dominante quente, e sem isso o matiz sai deslocado de 2 a 7 graus.
+2. **Acha o cartão** como o maior blob cromático, e recua 31 px da borda.
+3. **Fica só na parte PLANA**: gradiente de luminância no percentil 40 mais baixo.
+   Isso exclui sozinho a dobra do cartão, a borda do reflexo e o degradê da curva
+   — que é justamente o que os limiares à mão tentavam excluir, e erravam.
+4. **Corta especular e sombra por percentil DAQUELA região** (25 a 96), nunca por
+   valor absoluto. Assim a janela se adapta a cada foto em vez de impor um número.
+5. Mediana de H, S e V; e **a dispersão entre as fotos vira parte da leitura**.
+
+**A dispersão é o dado mais útil que faltava.** Ela diz quando a amostra não é
+confiável:
+
+| Cor | Leitura nova | sd(S) entre fotos | Veredito |
+|---|---|---|---|
+| ESG-031 Plum Magenta | H331 S52 V72 | 1,4 | confiável |
+| ESG-032 Morganite | H348 S63 V78 | 1,8 | confiável |
+| **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
+
+A ESG-030 foi fotografada com o cartão bem dobrado e o reflexo da janela cruzando
+a face: as quatro fotos discordam entre si em quase 8 pontos, então nenhuma serve.
+O valor publicado dela (#98144E) veio de uma janela apertada que eu escolhi, e não
+se reproduz. **Vale refotografar essa amostra.**
+
+### Como fotografar a amostra, para a leitura valer
+
+Custo zero, e elimina três fontes de erro de uma vez:
+
+- **Cartão DEITADO e PLANO** sobre a mesa, não segurado e dobrado na mão. A dobra
+  cria degradê de luz que nenhum estimador separa bem da cor.
+- **Na sombra aberta**, longe de janela. O que estraga é o reflexo especular da
+  janela cruzando a face brilhante.
+- **Uma folha de papel branco no quadro**, ao lado do cartão. É a referência de
+  branco que ancora o balanço.
+- **Três a quatro fotos**, girando o cartão 90° entre elas. Se a dispersão passar
+  de 3 pontos, a luz estava ruim e vale refazer.
+
+---
+
 ### Quais fontes existem e quanto vale cada uma
 
 | Fonte | Confiança | Cuidado |
@@ -313,6 +369,31 @@ A **razão 3px/17px é idêntica** — mesma forma de curva, logo mesma natureza
 superfície: gradiente, não partícula. O nível absoluto maior é só cena de estúdio
 com reflexo mais contrastado. **A forma da curva diz o acabamento; o nível diz a
 dureza da luz.**
+
+### Lista de negações custa saturação
+
+Padrão medido em três cores seguidas da Speed Wrapping. Quando o prompt carrega
+uma fila de guardas de matiz — "NÃO salmão, NÃO coral, NÃO pêssego, NÃO tijolo,
+NÃO violeta, NÃO lilás, NÃO lavanda" — o matiz até fica onde se pediu, mas a
+**saturação despenca de 15 a 20 pontos**. O modelo parece resolver "não é nenhum
+desses" puxando a cor para o cinza, que é o único ponto que não é vizinho de
+ninguém.
+
+| Cor | Prompt | ΔH | ΔS |
+|---|---|---|---|
+| ESG-031 Plum Magenta | com "muted, restrained chroma" | +9,4 | **−21,2** |
+| ESG-032 Morganite | com sete negações de matiz | −1,3 | **−18,9** |
+| ESG-032 Morganite | cromaticidade em positivo | −11,9 | **−0,7** |
+
+**A regra:** descreva a cromaticidade em POSITIVO e com referência concreta
+— "melancia madura", "gomo de toranja", "letreiro de néon coral" — e guarde as
+negações para uma ou duas, as que realmente importam. Se o matiz escapar, ele
+volta por rotação, que é a correção mais barata que o `recolorir-capa.py` faz: não
+estoura nada. Saturação faltando é o caro, porque levantar 20 pontos estoura a
+sombra.
+
+**Escolha da base:** entre duas gerações, prefira a que acertou a SATURAÇÃO,
+mesmo com o matiz 10 ou 12 graus fora. Nunca o contrário.
 
 > **Como pedir gloss sólido:** "tinta automotiva sólida recém-aplicada", "campo de
 > cor cremoso e perfeitamente uniforme", "o brilho aparece como formas GRANDES e de

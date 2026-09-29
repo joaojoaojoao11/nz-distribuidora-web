@@ -1,5 +1,51 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
+  "speed-wrapping-esg-032-super-gloss-morganite-gem-red-spwesg032": {
+    "mensagem": "feat(esg-032): quatro fotos Mustang GT + capa na leitura (#C84A64)",
+    "leitura": "#C84A64",
+    "familia": "vermelho",
+    "_nota_capa": "matiz 348 cai na familia vermelho, que contem o vermelho da marca. Por isso a capa vem SEM logo: corrigir a cor primeiro e depois rodar scripts/marca-capa.py.",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_155157_672af1aa-54dc-47ed-afc7-ddfa194186d7.png",
+    "marca_depois": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ford Mustang GT envelopado em Speed Wrapping ESG 032 Super Gloss Morganite Gem Red PET",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-032-super-gloss-morganite-gem-red-spwesg032.webp",
+      "scripts/marca-capa.py",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_154642_f8c97b7f-bebc-408a-9029-3fdeb77de128.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_155108_4bdf1d36-60f9-41e6-a35e-35e12d3ff337.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_155126_10a6c246-db62-4cda-bc8f-3ded3fdab098.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_155142_c8939a7d-e46f-4fa0-8ba2-d2c890ad2923.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-031-super-gloss-plum-magenta-spwesg031": {
     "mensagem": "feat(esg-031): quatro fotos Civic Type R + capa nova na leitura (#B24E74)",
     "leitura": "#B24E74",
