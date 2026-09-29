@@ -45,6 +45,26 @@ Foi o que faltava nas capas antigas. Três elementos, do lado de fora para dentr
 2. **Tubete BRANCO** — tubo de papelão branco, com **espessura de parede visível**.
 3. **Furo interno em sombra suave**, não em preto chapado.
 
+### As proporções, em número
+
+O modelo erra isso sozinho, e erra para os dois lados. Na ESG-033 a primeira capa
+saiu com a banda de material ocupando quase um terço do raio: o rolo parecia ter o
+dobro de filme enrolado e destoava do resto da linha. Na tentativa de corrigir,
+a banda sumiu e sobrou um tubo pelado.
+
+Medido nas capas aprovadas:
+
+| | proporção |
+|---|---|
+| Diâmetro da ponta cortada | **~42% da altura da imagem** |
+| Tubete branco (diâmetro externo) | **~65% do diâmetro do rolo** |
+| Banda de material enrolado | **~18% do raio** — aro fino, e visível |
+
+Escreva os três no prompt, com os números. E escreva também os dois erros pelo
+nome, porque o modelo cai neles: *"uma rosca grossa de material com tubete pequeno
+está errado; um tubo pelado sem aro estriado também"*. O certo é **tubo branco
+grande com um aro fino e finamente estriado em volta**.
+
 ## Superfície
 
 Segue o perfil de acabamento da linha. Para a ESG (super gloss sólido): campo de

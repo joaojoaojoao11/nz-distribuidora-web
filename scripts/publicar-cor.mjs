@@ -298,15 +298,43 @@ async function preparar(slug, entrada, apenas, soCapa) {
  * inspecao manual. Os dois foram conferidos imagem a imagem na ESG-032 e dao o
  * mesmo resultado (H 347,6 · S 63,0 · V 78,4 na capa, nos dois).
  *
- * O freio: se mais de 2% do filme estourar, a imagem esta longe demais do alvo
- * e precisa ser REGERADA, nao corrigida. Nesse caso o comando para antes do
- * commit e o disco fica como estava.
+ * O freio: se a correcao CRIAR estouro em mais de 2% do filme, a imagem esta
+ * longe demais do alvo e precisa ser REGERADA, nao corrigida. Nesse caso o
+ * comando para antes do commit e o disco fica como estava.
+ *
+ * "Criar" e a palavra que importa, e custou uma rodada. A primeira versao
+ * contava o TOTAL de pixels com saturacao no teto depois da correcao. Numa cor
+ * de saturacao quase maxima — a ESG-033 Python Green le S 98, com o canal
+ * vermelho no batente da camera — boa parte dos pixels ja nasce em 100%. O
+ * medidor acusou 19% a 39% de estouro e abortou a publicacao de cinco imagens
+ * que tinham fechado EXATAS no alvo (H 155,3 · S 98,2 contra H 155 · S 98).
+ * Agora so conta pixel que estava abaixo do teto antes e chegou no teto depois.
  * ------------------------------------------------------------------ */
 const ESTOURO_MAX = 2.0;
 
+/**
+ * Grava por cima, aguentando o OneDrive.
+ *
+ * O sincronizador segura o arquivo por um instante depois de qualquer escrita, e
+ * a gravacao seguinte volta EPERM. Foi o que derrubou a capa da ESG-033 num
+ * comando em que as quatro fotos ja tinham fechado. Duas correcoes aqui:
+ *   - a imagem e resolvida em BUFFER antes de tocar no destino, entao nao existe
+ *     handle aberto sobre o arquivo que estamos sobrescrevendo;
+ *   - a escrita tenta de novo com espera crescente, em vez de desistir na hora.
+ */
+async function gravarComRetentativa(caminho, buf, tentativas = 6) {
+  for (let i = 0; i < tentativas; i++) {
+    try { writeFileSync(caminho, buf); return; }
+    catch (e) {
+      if (!['EPERM', 'EBUSY', 'EACCES'].includes(e.code) || i === tentativas - 1) throw e;
+      await new Promise((r) => setTimeout(r, 300 * (i + 1)));
+    }
+  }
+}
+
 async function corrigirArquivo(sharp, caminho, alvo, familia, manterValor) {
   const { recolorir } = await import('./lib/cor.mjs');
-  let img = sharp(caminho), r = null;
+  let img = sharp(readFileSync(caminho)), r = null;
   // Duas passadas: a primeira encosta, a segunda fecha. O arquivo e lossy e a
   // releitura muda um pouco — medido em todas as cores da Speed Wrapping.
   for (let passo = 0; passo < 2; passo++) {
@@ -315,13 +343,11 @@ async function corrigirArquivo(sharp, caminho, alvo, familia, manterValor) {
     if (Math.max(r.corteS, r.corteV) > ESTOURO_MAX) return r;
     img = sharp(r.buf, { raw: { width: info.width, height: info.height, channels: 3 } });
   }
-  const ext = path.extname(caminho).toLowerCase();
-  await (ext === '.webp'
+  const webp = path.extname(caminho).toLowerCase() === '.webp';
+  const saida = await (webp
     ? img.webp({ quality: 92, effort: 6 })
-    : img.jpeg({ quality: QUALIDADE, mozjpeg: true })).toFile(caminho + '.tmp');
-  rmSync(caminho, { force: true });
-  writeFileSync(caminho, readFileSync(caminho + '.tmp'));
-  rmSync(caminho + '.tmp', { force: true });
+    : img.jpeg({ quality: QUALIDADE, mozjpeg: true })).toBuffer();
+  await gravarComRetentativa(caminho, saida);
   return r;
 }
 
@@ -352,13 +378,13 @@ async function corrigir(slug, entrada) {
       r = await corrigirArquivo(sharp, a.caminho, alvo, fam, a.manterValor);
     } catch (e) {
       console.log(`  ${a.nome.padEnd(26)} ${erro('falhou')}   ${e.message}`);
-      parar = a.nome; continue;
+      parar = { nome: a.nome, causa: 'erro', detalhe: e.message }; continue;
     }
     const d = `H${r.depois.h.toFixed(1)} S${r.depois.s.toFixed(1)} V${r.depois.v.toFixed(1)}`;
     const estouro = Math.max(r.corteS, r.corteV);
     if (estouro > ESTOURO_MAX) {
       console.log(`  ${a.nome.padEnd(26)} ${erro('ESTOUROU')} ${d}  (${estouro.toFixed(1)}% do filme)`);
-      parar = a.nome;
+      parar = { nome: a.nome, causa: 'estouro', detalhe: `${estouro.toFixed(1)}%` };
     } else {
       const dS = Math.abs(r.depois.s - alvo[1] * 100);
       const marca = dS <= 1.5 ? ok('fechou') : aviso('atenção');
@@ -366,9 +392,18 @@ async function corrigir(slug, entrada) {
     }
   }
   if (parar) {
-    morrer(`a correção de "${parar}" estourou mais de ${ESTOURO_MAX}% do filme.\n` +
-      '        Nada foi commitado. Essa imagem está longe demais do alvo e precisa ser\n' +
-      '        REGERADA na cor, não corrigida. Refaça a geração e rode de novo.');
+    // A mensagem tem que dizer o que de fato aconteceu. A primeira versao
+    // imprimia "estourou mais de 2%" para QUALQUER falha, inclusive um EPERM do
+    // OneDrive — e mandava regerar uma imagem que estava perfeita.
+    if (parar.causa === 'estouro') {
+      morrer(`a correção de "${parar.nome}" criou estouro em ${parar.detalhe} do filme.\n` +
+        '        Nada foi commitado. Essa imagem está longe demais do alvo e precisa ser\n' +
+        '        REGERADA na cor, não corrigida. Refaça a geração e rode de novo.');
+    }
+    morrer(`não consegui processar "${parar.nome}":\n        ${parar.detalhe}\n\n` +
+      '        Nada foi commitado, e a cor não foi alterada no disco.\n' +
+      '        Se for EPERM ou EBUSY, é o OneDrive segurando o arquivo: espere alguns\n' +
+      '        segundos e rode o mesmo comando de novo.');
   }
 
   // Cor de matiz alto (acima de ~345) cai na familia 'vermelho', que contem o

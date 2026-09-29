@@ -144,7 +144,15 @@ export function recolorir(buf, o) {
       const h2 = o.manterMatiz ? Hh[p] : hAlvo + dh * comp;
       const s2 = clamp(Math.pow(Ss[p], gamaS), 0, 1);
       const v2 = clamp(Math.pow(Vv[p], gamaV), 0, 1);
-      if (Ss[p] > 0.02) { nMask++; if (s2 >= 0.999) corteS++; if (v2 >= 0.999) corteV++; }
+      // Estouro e o que a correcao CRIA, nao o total de pixels no teto.
+      // Numa cor de saturacao quase maxima (a ESG-033 Python Green le S 98) boa
+      // parte dos pixels ja nasce em 100% — isso e a cor, nao dano. Contar o
+      // total abortava a publicacao de uma correcao que tinha fechado exata.
+      if (Ss[p] > 0.02) {
+        nMask++;
+        if (s2 >= 0.999 && Ss[p] < 0.999) corteS++;
+        if (v2 >= 0.999 && Vv[p] < 0.999) corteV++;
+      }
       const [r2, g2, b2] = hsvParaRgb(h2, s2, v2);
       r = r * (1 - w) + r2 * w; g = g * (1 - w) + g2 * w; b = b * (1 - w) + b2 * w;
     }

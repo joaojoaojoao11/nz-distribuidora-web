@@ -1,5 +1,51 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
+  "speed-wrapping-esg-033-super-gloss-prosche-spwesg033": {
+    "mensagem": "feat(esg-033): Cayman GT4 + capa na leitura (#03AD67); freio de estouro so conta o criado",
+    "leitura": "#03AD67",
+    "familia": "verde",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_164543_d1170724-55b1-4765-855b-c54191e6640e.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Porsche 718 Cayman GT4 envelopado em Speed Wrapping ESG 033 Super Gloss Python Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-033-super-gloss-prosche-spwesg033.webp",
+      "scripts/lib/cor.mjs",
+      "scripts/publicar-cor.mjs",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_161729_3c881390-b7ef-453b-b81e-43eadcaad53e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_162524_87fe5175-beba-4451-9986-1277cce89f0e.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_163426_0a8db367-c6ac-4ded-96a6-aff75e80b176.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_162558_bddc28ba-90d0-4305-81ab-12054f007abd.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-032-super-gloss-morganite-gem-red-spwesg032": {
     "mensagem": "feat(esg-032): Mustang GT + capa na leitura (#C84A64); correcao de cor em JS",
     "leitura": "#C84A64",
