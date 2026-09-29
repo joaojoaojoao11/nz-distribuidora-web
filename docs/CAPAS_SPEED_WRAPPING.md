@@ -240,3 +240,4 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | Cor | Leitura | Acabamento | Capa final |
 |---|---|---|---|
 | ESG-030 Super Gloss Gem Red | `#98144E` · H 334 · S 87 · V 60 | super gloss sólido | `#981451` |
+| ESG-034 Ceramic China Blue | `#5D85AD` · H 210 · S 46 · V 68 | super gloss sólido | geração já em H 210,4 · S 46,9 |

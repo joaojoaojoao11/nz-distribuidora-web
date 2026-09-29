@@ -88,6 +88,7 @@ confiável:
 |---|---|---|---|
 | ESG-031 Plum Magenta | H331 S52 V72 | 1,4 | confiável |
 | ESG-032 Morganite | H348 S63 V78 | 1,8 | confiável |
+| ESG-034 Ceramic China Blue | H210 S46 V68 | 2,4 | confiável |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
 A ESG-030 foi fotografada com o cartão bem dobrado e o reflexo da janela cruzando
@@ -395,6 +396,27 @@ sombra.
 **Escolha da base:** entre duas gerações, prefira a que acertou a SATURAÇÃO,
 mesmo com o matiz 10 ou 12 graus fora. Nunca o contrário.
 
+### "Pale" e "muted" não são sinônimos — mexem em eixos diferentes
+
+A mesma armadilha da lista de negações, por outro caminho: adjetivos de baixa
+cromaticidade não são intercambiáveis, e escolher o errado joga o VALOR junto.
+
+| Palavra | Saturação | Valor |
+|---|---|---|
+| **muted**, **dusty**, **mellow**, **restrained** | desce | **desce também** |
+| **pale**, **powdery**, **airy**, **porcelain** | desce | **sobe** |
+
+Numa cor clara e pouco saturada — a ESG-034 Ceramic China Blue lê S 46 · V 68 —
+pedir "muted blue" entrega a saturação certa e o valor 12 pontos no chão, e aí o
+que falta é brilho, que é caro de levantar. **"Pale porcelain blue" entrega os
+dois no lugar.** Para cor escura e pouco saturada vale o inverso: "muted" é a
+palavra, "pale" clareia o que não devia.
+
+Regra prática: olhe o V da leitura antes de escolher o adjetivo. **V acima de
+~60 pede a família do "pale"; V abaixo disso pede a do "muted".** E continue
+escrevendo matiz, croma e brilho como três instruções numeradas e independentes
+— o adjetivo é reforço, não é a instrução.
+
 > **Como pedir gloss sólido:** "tinta automotiva sólida recém-aplicada", "campo de
 > cor cremoso e perfeitamente uniforme", "o brilho aparece como formas GRANDES e de
 > borda MACIA, gradientes amplos, mais um filete especular limpo na linha do ombro
@@ -487,6 +509,9 @@ marca d'água, sem adesivo de patrocínio.
 | MCX-73 Capri Bronze | VW Golf R Mk8 | pátio de serviço industrial |
 | ESG-030 Gem Red | Toyota GR Supra A90 | pátio de concreto com prédio de vidro |
 | ESG-031 Plum Magenta | Honda Civic Type R FL5 | cais de porto de carga, guindastes pórtico |
+| ESG-032 Morganite Gem Red | Nissan GT-R R35 | pátio de concreto, muro board-marked |
+| ESG-033 Python Green | Porsche 718 Cayman GT4 | mirante de rocha escura, carro à esquerda |
+| ESG-034 Ceramic China Blue | Lexus LC 500 | esplanada brutalista de concreto, céu branco |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
