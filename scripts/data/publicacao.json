@@ -1,5 +1,49 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
+  "speed-wrapping-esg-031-super-gloss-plum-magenta-spwesg031": {
+    "mensagem": "feat(esg-031): quatro fotos Civic Type R + capa nova na leitura (#B24E74)",
+    "leitura": "#B24E74",
+    "familia": "rosa",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_150341_063d7eaf-325f-4bdd-a571-28250b147632.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Honda Civic Type R envelopado em Speed Wrapping ESG 031 Super Gloss Plum Magenta PET",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-031-super-gloss-plum-magenta-spwesg031.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_145902_a6b08aa7-ef0b-4771-9fc3-fe698540ed84.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_150253_0f080793-b6e9-4e84-ba56-105d4cf30c1b.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_150311_d97cdc7c-be70-40b6-9815-73a2b7d149ae.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_150328_c0a5decd-ab8a-4e5c-a2b3-6b745c800367.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-030-super-gloss-black-gem-red-spwesg030": {
     "mensagem": "fix(esg-030): marca menor na capa e URLs da linha certa no banco",
     "leitura": "#98144E",

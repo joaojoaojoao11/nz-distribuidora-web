@@ -404,11 +404,22 @@ marca d'água, sem adesivo de patrocínio.
 | MCX-66 Army Olive | Land Rover Defender 110 | pátio de pedra rural |
 | MCX-65 Carbon Green | Porsche 911 992 | mirante de estrada de montanha |
 | MCX-73 Capri Bronze | VW Golf R Mk8 | pátio de serviço industrial |
+| ESG-030 Gem Red | Toyota GR Supra A90 | pátio de concreto com prédio de vidro |
+| ESG-031 Plum Magenta | Honda Civic Type R FL5 | cais de porto de carga, guindastes pórtico |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
 uma tinta OEM, use o carro daquela marca: Green Hell Magno foi feita para o
 AMG GT R.
+
+> **O cenário genérico é uma regressão, e ela acontece sozinha.** Nas primeiras
+> cores da Speed Wrapping eu fui escrevendo "clean concrete forecourt, neutral
+> grey surfaces" em todas, porque é o pedido mais seguro para não contaminar a
+> cor. O resultado é catálogo de renderização, não de fotografia: sem contexto,
+> sem lugar, todas as cores no mesmo vazio. O padrão é **cenário com caráter**
+> — paddock, mirante, cais, pátio de pedra — escolhido para ficar fora da faixa
+> de matiz da cor, mais os detalhes de verossimilhança da seção acima. Neutro é
+> a exceção, para cor de baixa saturação, não a regra.
 
 ---
 
