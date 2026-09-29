@@ -70,10 +70,19 @@ def hsv(a: np.ndarray):
     return h, s, mx
 
 
-def balanco_de_branco(a: np.ndarray) -> np.ndarray:
-    """von Kries a partir dos neutros claros da cena."""
+def balanco_de_branco(a: np.ndarray, excluir: np.ndarray | None = None) -> np.ndarray:
+    """von Kries a partir dos neutros claros da cena, FORA do cartão.
+
+    O cartão tem de ficar fora da referência. Numa cor acinzentada (ESG-036
+    Armor Green, S ~13) o próprio cartão passa no filtro de "neutro", e o balanço
+    passava a usar a cor da amostra como se fosse branco: a correção apagava
+    metade da saturação que devia medir (S 13 -> 8). O limite de neutro também
+    desceu de 0,12 para 0,06 pelo mesmo motivo.
+    """
     _, s, v = hsv(a)
-    neutro = (s < 0.12) & (v > 0.45) & (v < 0.99)
+    neutro = (s < 0.06) & (v > 0.45) & (v < 0.99)
+    if excluir is not None:
+        neutro &= ~ndimage.binary_dilation(excluir, np.ones((31, 31)))
     if neutro.sum() < 500:
         return a
     ganho = a[neutro].mean(0)
@@ -81,9 +90,28 @@ def balanco_de_branco(a: np.ndarray) -> np.ndarray:
     return np.clip(a * ganho, 0, 1)
 
 
+FAIXAS = {
+    'vermelho': (330, 30), 'laranja': (12, 48), 'amarelo': (35, 75),
+    'verde': (60, 200), 'azul': (175, 265), 'roxo': (250, 320), 'rosa': (290, 350),
+}
+FAMILIA = None  # preenchido por --familia
+
+
 def blob_do_cartao(h: np.ndarray, s: np.ndarray, v: np.ndarray) -> np.ndarray:
-    """Maior região conexa de matiz coerente entre os pixels saturados."""
-    cand = (s > 0.20) & (v > 0.08) & (v < 0.98)
+    """Maior região conexa de matiz coerente entre os pixels saturados.
+
+    Sem --familia, o cartão é a região MAIS SATURADA da foto. Isso falha em cor
+    acinzentada: na ESG-036 Armor Green (S ~20) a pele da mão e o reflexo azulado
+    do teclado são mais saturados que o cartão, e a leitura saiu H 225 / H 4 —
+    dispersão 69. Com --familia, a faixa de matiz só LOCALIZA o cartão; a janela
+    de medida continua sem nenhum parâmetro escolhido a dedo.
+    """
+    if FAMILIA:
+        lo, hi = FAIXAS[FAMILIA]
+        dentro = ((h >= lo) | (h <= hi)) if lo > hi else ((h >= lo) & (h <= hi))
+        cand = dentro & (s > 0.07) & (v > 0.30) & (v < 0.98)
+    else:
+        cand = (s > 0.20) & (v > 0.08) & (v < 0.98)
     if cand.sum() < 2000:
         cand = s > 0.12
     # moda de matiz em histograma circular de 5 graus
@@ -102,7 +130,11 @@ def blob_do_cartao(h: np.ndarray, s: np.ndarray, v: np.ndarray) -> np.ndarray:
 
 
 def ler(caminho: str):
-    a = balanco_de_branco(carregar(caminho))
+    bruto = carregar(caminho)
+    # acha o cartao na foto crua, tira ele da referencia de branco, balanceia,
+    # e so entao localiza de novo para medir.
+    blob0 = blob_do_cartao(*hsv(bruto))
+    a = balanco_de_branco(bruto, excluir=blob0)
     h, s, v = hsv(a)
     blob = blob_do_cartao(h, s, v)
 
@@ -140,7 +172,13 @@ def multiescala(lum: np.ndarray, blob: np.ndarray) -> list[float]:
 
 
 def main() -> int:
-    caminhos = sys.argv[1:]
+    global FAMILIA
+    args = sys.argv[1:]
+    if '--familia' in args:
+        i = args.index('--familia')
+        FAMILIA = args[i + 1]
+        del args[i:i + 2]
+    caminhos = args
     if not caminhos:
         print(__doc__)
         return 1

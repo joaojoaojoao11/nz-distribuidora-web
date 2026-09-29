@@ -83,6 +83,7 @@ FAIXAS = {
     'azul': (175.0, 265.0),
     'roxo': (250.0, 320.0),
     'rosa': (290.0, 350.0),
+    'salvia': (50.0, 115.0),  # verde-acinzentado amarelado, ESG-036 (H 76)
 }
 
 

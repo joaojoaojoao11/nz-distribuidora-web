@@ -297,6 +297,7 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | ESG-030 Super Gloss Gem Red | `#98144E` · H 334 · S 87 · V 60 | super gloss sólido | `#981451` |
 | ESG-034 Ceramic China Blue | `#5D85AD` · H 210 · S 46 · V 68 | super gloss sólido | geração já em H 210,4 · S 46,9 |
 | ESG-035 Racing Green | `#637F44` · H 89 · S 46 · V 50 | super gloss sólido | gerada com ESG-034 (geometria) + ESG-033 (acabamento) como referência; `--tudo` fecha a saturação |
+| ESG-036 Armor Green | `#999E8A` · H 76 · S 13 · V 62 | super gloss sólido | gerada com ESG-034 + ESG-033 de referência; silhueta 92% igual; `--tudo` fecha com `familia: salvia`, `sat_min: 0.05` |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

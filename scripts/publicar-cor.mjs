@@ -332,14 +332,14 @@ async function gravarComRetentativa(caminho, buf, tentativas = 6) {
   }
 }
 
-async function corrigirArquivo(sharp, caminho, alvo, familia, manterValor) {
+async function corrigirArquivo(sharp, caminho, alvo, familia, manterValor, extra = {}) {
   const { recolorir } = await import('./lib/cor.mjs');
   let img = sharp(readFileSync(caminho)), r = null;
   // Duas passadas: a primeira encosta, a segunda fecha. O arquivo e lossy e a
   // releitura muda um pouco — medido em todas as cores da Speed Wrapping.
   for (let passo = 0; passo < 2; passo++) {
     const { data, info } = await img.removeAlpha().raw().toBuffer({ resolveWithObject: true });
-    r = recolorir(data, { W: info.width, H: info.height, alvo, familia, manterValor });
+    r = recolorir(data, { W: info.width, H: info.height, alvo, familia, manterValor, ...extra });
     if (Math.max(r.corteS, r.corteV) > ESTOURO_MAX) return r;
     img = sharp(r.buf, { raw: { width: info.width, height: info.height, channels: 3 } });
   }
@@ -375,7 +375,11 @@ async function corrigir(slug, entrada) {
     if (!existsSync(a.caminho)) continue;
     let r;
     try {
-      r = await corrigirArquivo(sharp, a.caminho, alvo, fam, a.manterValor);
+      // `sat_min` no manifesto: cor quase cinza (ESG-036 Armor Green, S 12,6) fica
+      // abaixo do corte padrao de 0,18 e a mascara sai vazia. O corte existe para
+      // separar filme de fundo cinza; nessas cores quem separa e a faixa de matiz.
+      r = await corrigirArquivo(sharp, a.caminho, alvo, fam, a.manterValor,
+        entrada.sat_min != null ? { satMin: entrada.sat_min } : {});
     } catch (e) {
       console.log(`  ${a.nome.padEnd(26)} ${erro('falhou')}   ${e.message}`);
       parar = { nome: a.nome, causa: 'erro', detalhe: e.message }; continue;

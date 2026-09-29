@@ -1,4 +1,54 @@
 {
+  "speed-wrapping-esg-036-super-gloss-armor-green-pet-spwesg036": {
+    "mensagem": "feat(esg-036): Audi RS e-tron GT + capa com referencia ESG-034/033 (#999E8A) Armor Green; familia salvia e sat_min",
+    "leitura": "#999E8A",
+    "familia": "salvia",
+    "sat_min": 0.05,
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_231936_274fb584-1a4d-426f-9103-5dacfeeebc05.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Audi RS e-tron GT envelopado em Speed Wrapping ESG 036 Super Gloss Armor Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-036-super-gloss-armor-green-pet-spwesg036.webp",
+      "scripts/ler-amostra.py",
+      "scripts/lib/cor.mjs",
+      "scripts/publicar-cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_231603_ee60f511-c44a-432d-bf1c-e598fdac9067.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_231938_a2f51b0d-60c8-4edc-8ab7-2cd8615fe3d2.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_231936_b0a22c44-392e-482a-934f-b45ab9a31645.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_231936_a769e2c8-ce5b-48c3-8e44-2208c2db5076.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-035-super-gloss-racing-green-pet-spwesg035": {
     "mensagem": "feat(esg-035): Aston Martin Vantage + capa gerada com a ESG-034 como referencia (#637F44); nomes de catalogo corrigidos",
     "leitura": "#637F44",

@@ -101,6 +101,7 @@ confiável:
 | ESG-032 Morganite | H348 S63 V78 | 1,8 | confiável |
 | ESG-034 Ceramic China Blue | H210 S46 V68 | 2,4 | confiável |
 | ESG-035 Racing Green | H89 S46 V50 | 1,2 | confiável |
+| ESG-036 Armor Green | H76 S13 V62 | 1,1 | confiável |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
 A ESG-030 foi fotografada com o cartão bem dobrado e o reflexo da janela cruzando
@@ -434,6 +435,39 @@ escreva "sem plantas nem folhagem", que é uma categoria de objeto, e **nunca
 repita o nome da cor do carro numa negação**. O modelo não separa "verde do
 cenário" de "verde da peça": ele lê a palavra e puxa tudo para o cinza.
 
+### Cor quase cinza: três armadilhas de uma vez (ESG-036 Armor Green, S 13)
+
+**1. O leitor de amostra perde o cartão.** O `ler-amostra.py` achava o cartão
+como a região mais saturada da foto. Numa cor com S 13, a pele da mão e o
+reflexo azulado do teclado são mais saturados que o cartão: a primeira leitura
+saiu `#6D5D82`, roxo, com dispersão de matiz 69. Use **`--familia`** para
+localizar o cartão (a faixa só localiza; a janela de medida continua sem ajuste
+manual):
+
+```
+python3 scripts/ler-amostra.py --familia verde foto1.jpg foto2.jpg ...
+```
+
+**2. O balanço de branco comia a cor.** A referência de branco era "todo pixel
+com saturação abaixo de 0,12" — e o cartão inteiro passava nesse filtro. O
+balanço tratava a amostra como branco e apagava a própria cor (S 13 caía para
+8). Corrigido: o neutro agora é S abaixo de 0,06 e **fora do cartão**. A
+ESG-035 lida de novo com o script corrigido dá `#648044` contra `#637F44`
+aprovado — as cores já fechadas não se mexem.
+
+**3. A correção do `--tudo` não enxergava o filme.** O `recolorir` exige S acima
+de 0,18 para entrar na máscara, e H 76 cai na borda das famílias `verde` e
+`amarelo`. Duas mudanças: família nova **`salvia` (50–115)** e o campo
+**`sat_min`** no manifesto (0,05 para esta cor). Sem isso a máscara sai vazia e
+o comando para.
+
+**E o carro.** Cor quase neutra em carro de painéis retos lê como **fosco**,
+mesmo pedindo brilho com todas as letras: o G 63 saiu acetinado três vezes. Não
+há contraste de cor para ajudar, então quem mostra o brilho é a CURVA — o
+gradiente de claro para escuro rolando pela lataria. **Para cor de saturação
+baixa, escolha carro de superfícies curvas.** O Audi RS e-tron GT resolveu na
+primeira.
+
 ### "Pale" e "muted" não são sinônimos — mexem em eixos diferentes
 
 A mesma armadilha da lista de negações, por outro caminho: adjetivos de baixa
@@ -551,6 +585,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-033 Python Green | Porsche 718 Cayman GT4 | mirante de rocha escura, carro à esquerda |
 | ESG-034 Ceramic China Blue | Lexus LC 500 | esplanada brutalista de concreto, céu branco |
 | ESG-035 Racing Green | Aston Martin Vantage | pátio de saibro de casarão de pedra calcária |
+| ESG-036 Armor Green | Audi RS e-tron GT | chão de pedreira de granito cinza-frio |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

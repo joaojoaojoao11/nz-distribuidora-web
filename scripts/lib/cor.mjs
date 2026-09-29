@@ -22,6 +22,10 @@ export const FAIXAS = {
   neutro: null,
   vermelho: [330, 30], laranja: [12, 48], amarelo: [35, 75],
   verde: [72, 200], azul: [175, 265], roxo: [250, 320], rosa: [290, 350],
+  // salvia: verde-acinzentado amarelado (ESG-036 Armor Green, H 76). Cai bem na
+  // borda de 'verde' (rampa 72-86) e de 'amarelo' (termina em 75): nas duas a
+  // mascara pegava menos da metade do filme.
+  salvia: [50, 115],
 };
 
 const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
