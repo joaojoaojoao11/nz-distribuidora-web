@@ -81,6 +81,17 @@ O procedimento novo não tem nenhum limiar escolhido à mão:
    valor absoluto. Assim a janela se adapta a cada foto em vez de impor um número.
 5. Mediana de H, S e V; e **a dispersão entre as fotos vira parte da leitura**.
 
+Isso tudo está em **`scripts/ler-amostra.py`**, que é o único jeito certo de ler
+uma amostra. Roda o pipeline inteiro, mais o teste multiescala de acabamento:
+
+```
+python3 scripts/ler-amostra.py foto1.jpg foto2.jpg foto3.jpg
+```
+
+Ele imprime a leitura, a dispersão e avisa sozinho quando a amostra precisa ser
+refotografada. **Ler uma amostra a olho, ou com janela escolhida na mão, é o erro
+que esta seção existe para impedir.**
+
 **A dispersão é o dado mais útil que faltava.** Ela diz quando a amostra não é
 confiável:
 
@@ -89,6 +100,7 @@ confiável:
 | ESG-031 Plum Magenta | H331 S52 V72 | 1,4 | confiável |
 | ESG-032 Morganite | H348 S63 V78 | 1,8 | confiável |
 | ESG-034 Ceramic China Blue | H210 S46 V68 | 2,4 | confiável |
+| ESG-035 Racing Green | H89 S46 V50 | 1,2 | confiável |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
 A ESG-030 foi fotografada com o cartão bem dobrado e o reflexo da janela cruzando
@@ -396,6 +408,32 @@ sombra.
 **Escolha da base:** entre duas gerações, prefira a que acertou a SATURAÇÃO,
 mesmo com o matiz 10 ou 12 graus fora. Nunca o contrário.
 
+### Negar a cor NO CENÁRIO derruba a saturação DA PEÇA
+
+Variante da mesma armadilha, e a mais cara de descobrir porque a frase parece
+inofensiva. Para evitar cast de cenário eu escrevia um bloco assim:
+
+> *"Critical: NO GREEN anywhere in the frame except the car itself — no grass,
+> no lawn, no hedges, no trees, no foliage, no ivy, no green signage."*
+
+A exceção explícita **"except the car itself" não protege nada**. Na ESG-035
+Racing Green o prompt travou em **S 27 contra alvo 46** por três gerações
+seguidas, com tudo o mais certo. Trocando aquele bloco por uma frase curta e
+positiva dentro da descrição do cenário — *"fine pale gravel underfoot, no
+plants or foliage of any kind"* — a saturação subiu para **36 e 42 no mesmo
+prompt**, sem mexer em mais nada.
+
+| Prompt | ΔH | ΔS |
+|---|---|---|
+| ESG-035, bloco "NO GREEN anywhere" | −7,7 | **−19,1** |
+| ESG-035, mesma coisa sem o bloco | −2,0 | **−4,4** |
+
+**A regra:** o cenário se descreve pelo que ele É — saibro claro, pedra calcária,
+concreto cinza-frio —, não pelo que ele não tem. Se precisar excluir vegetação,
+escreva "sem plantas nem folhagem", que é uma categoria de objeto, e **nunca
+repita o nome da cor do carro numa negação**. O modelo não separa "verde do
+cenário" de "verde da peça": ele lê a palavra e puxa tudo para o cinza.
+
 ### "Pale" e "muted" não são sinônimos — mexem em eixos diferentes
 
 A mesma armadilha da lista de negações, por outro caminho: adjetivos de baixa
@@ -512,6 +550,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-032 Morganite Gem Red | Nissan GT-R R35 | pátio de concreto, muro board-marked |
 | ESG-033 Python Green | Porsche 718 Cayman GT4 | mirante de rocha escura, carro à esquerda |
 | ESG-034 Ceramic China Blue | Lexus LC 500 | esplanada brutalista de concreto, céu branco |
+| ESG-035 Racing Green | Aston Martin Vantage | pátio de saibro de casarão de pedra calcária |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

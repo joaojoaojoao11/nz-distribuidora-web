@@ -1,4 +1,43 @@
 {
+  "speed-wrapping-esg-035-super-gloss-racing-green-pet-spwesg035": {
+    "mensagem": "feat(esg-035): Aston Martin Vantage + capa na leitura (#637F44) Racing Green; nomes de catalogo corrigidos",
+    "leitura": "#637F44",
+    "familia": "verde",
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Aston Martin Vantage envelopado em Speed Wrapping ESG 035 Super Gloss Racing Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-035-super-gloss-racing-green-pet-spwesg035.webp",
+      "scripts/ler-amostra.py",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_181514_865dd81e-047a-43cf-b09a-a4e0f4ec764d.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_181948_c7a94088-333e-45bc-8492-a605dd8a8b01.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_181948_9685cb1a-741f-4fdf-abcd-e2cc7c129fd4.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_181949_46ba8336-c000-4b62-b7b5-e58d418b75e5.png",
+        "nota": "macro do gloss solido"
+      }
+    ],
+    "capa_nota": "recolorida da capa aprovada da ESG-034 (familia azul -> #637F44); ja no disco com a marca. NAO regerar."
+  },
   "speed-wrapping-esg-034-super-gloss-piano-china-blue-spwesg034": {
     "mensagem": "feat(esg-034): Lexus LC 500 + capa na leitura (#5D85AD) Ceramic China Blue",
     "leitura": "#5D85AD",

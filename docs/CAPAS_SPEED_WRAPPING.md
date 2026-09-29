@@ -20,6 +20,58 @@ Duas coisas, e as duas valem para conferir qualquer capa antiga antes de reusar:
 
 ---
 
+---
+
+## REGRA PRIMEIRA: capa nova NÃO se gera. Se recolore.
+
+**Leia isto antes de qualquer outra coisa desta página.** O caminho padrão para a
+capa de uma cor nova é **copiar uma capa já aprovada da linha e recolorir o
+filme**. Gerar do zero é a exceção, e só quando não existe capa aprovada.
+
+```
+cp public/assets/images/shop/speed-wrapping/{slug-aprovado}.webp \
+   public/assets/images/shop/speed-wrapping/{slug-novo}.webp
+
+python3 scripts/recolorir-capa.py \
+  --entrada public/assets/images/shop/speed-wrapping/{slug-novo}.webp \
+  --alvo '{hex da leitura}' --familia {família da capa DOADORA} --no-lugar
+```
+
+`--familia` é a família de matiz da **capa de origem**, não a da cor nova: é
+assim que a máscara acha o filme. Na ESG-035 a doadora foi a ESG-034, que é azul,
+então `--familia azul` com `--alvo '#637F44'`.
+
+**Por que isto é regra e não preferência.** Na ESG-035 eu tentei gerar a capa
+seis vezes em três rodadas, mexendo em número de proporção no prompt. O tubete
+saiu 36%, depois 32%, 37%, 34%, depois 3%. Nenhuma bateu o padrão. A recoloração
+da capa da ESG-034 fechou em **H 88,5 · S 46,5 · V 49,8 contra alvo
+H 88,5 · S 46,5 · V 49,8 — exato, estouro 0,0%** — com a geometria pixel a pixel
+idêntica a uma capa que você já aprovou, e a marca já no lugar.
+
+Vantagens que a geração nunca vai ter:
+
+- **Proporção idêntica por construção.** Tubete, aro, ângulo e enquadramento não
+  são reinterpretados, são os mesmos pixels.
+- **A marca já vem junta e certa.** Não precisa recompor, e o vermelho do logo
+  (matiz ~2°) fica fora de qualquer máscara cromática de filme.
+- **O acabamento vem junto.** O brilho, o filete especular e o gradiente do
+  cilindro são os da capa aprovada. Capa gerada sai acetinada com frequência, e
+  não existe palavra no prompt que resolva isso de forma confiável.
+- **É verificável.** O script mede depois e imprime `depois` contra `alvo`. Se
+  não bater, não foi aplicado.
+
+**Escolha da doadora:** a mais próxima em saturação e valor, e de preferência com
+matiz longe do vermelho da marca. Se a gama de valor passar de ~1,8 o script
+avisa; em webp costuma passar limpo (a ESG-035 saiu com gama V 1,72, 165 níveis
+distintos de luminância e degrau máximo de 1 — sem banda), mas confira.
+
+**Quando gerar mesmo assim:** só quando a linha ainda não tem nenhuma capa
+aprovada, ou quando a capa antiga tem defeito estrutural — foi o caso da ESG-030,
+que tinha tubete preto. Aí siga o prompt do fim desta página, e entenda que as
+proporções vão sair erradas nas primeiras tentativas.
+
+---
+
 ## Composição
 
 Quadrado, **1:1**. Fundo branco de estúdio, sem gradiente de cenário, com sombra
@@ -64,6 +116,15 @@ Escreva os três no prompt, com os números. E escreva também os dois erros pel
 nome, porque o modelo cai neles: *"uma rosca grossa de material com tubete pequeno
 está errado; um tubo pelado sem aro estriado também"*. O certo é **tubo branco
 grande com um aro fino e finamente estriado em volta**.
+
+> **Aviso sobre estes números.** Eles são a melhor descrição que consegui, mas
+> **não funcionam.** Na ESG-035, seis gerações seguidas com estes números no
+> prompt erraram o tubete para os dois lados — 36%, 32%, 37%, 34%, 22%, 3%. O
+> "65% do diâmetro do rolo" em particular é alto demais e produz furo gigante;
+> baixar para "metade, com furo interno em 40%" melhorou mas continuou instável.
+> **A proporção não se acerta por descrição. Se acerta copiando pixel, pela
+> recoloração da doadora descrita no topo desta página.** Esta seção existe para
+> o caso raro em que não há doadora.
 
 ## Superfície
 
@@ -241,3 +302,8 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 |---|---|---|---|
 | ESG-030 Super Gloss Gem Red | `#98144E` · H 334 · S 87 · V 60 | super gloss sólido | `#981451` |
 | ESG-034 Ceramic China Blue | `#5D85AD` · H 210 · S 46 · V 68 | super gloss sólido | geração já em H 210,4 · S 46,9 |
+| ESG-035 Racing Green | `#637F44` · H 89 · S 46 · V 50 | super gloss sólido | **recolorida da ESG-034** → exata, estouro 0,0% |
+
+**A ESG-034 é a doadora de referência da linha.** Composição aprovada, tubete na
+proporção certa, marca no lugar, brilho forte. Use ela como origem sempre que a
+cor nova não for muito mais escura.
