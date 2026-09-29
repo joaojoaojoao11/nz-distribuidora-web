@@ -115,7 +115,7 @@ Cinco acabamentos, e cada um tem um comportamento que precisa aparecer na foto.
 
 | Acabamento | Flake | Reflexo | Como se descreve |
 |---|---|---|---|
-| Gloss solid | não | espelho nítido | reflete o entorno com bordas definidas |
+| Gloss solid | não | formas GRANDES de borda macia | ver o perfil SUPER GLOSS SÓLIDO abaixo |
 | Gloss metallic | sim | espelho nítido | flake sob verniz espelhado |
 | **Satin solid** | **não** | **nenhum** | faixa LARGA e macia de luz, sem imagem espelhada |
 | **Satin metallic** | **sim, grosso** | **nenhum** | flake visível E faixa macia, nunca espelho |
@@ -130,6 +130,93 @@ Medições de referência, em granulação absoluta na foto da brochure:
 | MCX-99 Obsidian Black | gloss metallic | 5,1 |
 
 Granulação até ~3 é sólido sem flake. Acima de 5, tem flake.
+
+---
+
+## Perfil SUPER GLOSS SÓLIDO
+
+Padrão fechado e aprovado na Speed Wrapping ESG-030. **Vale para toda cor de
+brilho sem pigmento metálico** — a linha ESG inteira, a EGB, e qualquer gloss
+sólido de outras marcas.
+
+### O que caracteriza
+
+Filme de **liner PET**: a face cura contra uma folha plástica lisa em vez de papel,
+então não guarda casca de laranja. A superfície é opticamente plana. O pigmento é
+**sólido, opaco e homogêneo** — sem flake, sem pérola, sem candy translúcido.
+
+### Como ele se comporta na imagem
+
+A confusão que custou três rodadas: **superfície lisa não significa reflexo
+detalhado.** O que reflete no carro é o céu, que é uma fonte enorme e difusa — e
+fonte enorme reflete como *gradiente*, não como imagem. Então:
+
+- O painel é um **campo cremoso e uniforme**, como tinta automotiva sólida recém
+  aplicada ou porcelana vitrificada.
+- O brilho aparece em **formas GRANDES e de borda MACIA**: gradientes amplos
+  varrendo porta e capô, reflexo escuro e desfocado do entorno empoçando na
+  lateral, e **um filete especular limpo e contínuo** na linha do ombro.
+- Só objeto de borda dura — quina de prédio, linha do horizonte — reflete nítido,
+  e aparece como duas ou três formas definidas. Nunca como textura espalhada.
+- Ampliando qualquer centímetro da pintura: liso, sem feição, sem grão.
+
+### Assinatura numérica
+
+Multiescala da variação de alta frequência ÷ luminância média, medida numa janela
+100% material, longe de borda e de especular:
+
+| Fonte | 3 px | 5 px | 9 px | 17 px | razão 3/17 |
+|---|---|---|---|---|---|
+| Charger gloss sólido (referência de campo) | 3,90% | 5,22% | 6,09% | 7,84% | **0,50** |
+| ESG-030, amostra física em luz difusa | 1,82% | 2,84% | 4,17% | 5,43% | 0,34 |
+| ESG-030, foto aprovada | 6,52% | 8,68% | 10,71% | 13,01% | **0,50** |
+
+**A razão 3/17 é o critério, não o nível absoluto.** Perto de 0,50 e monotônica
+crescente = gradiente, ou seja, sólido. Se a energia em 3 px subir a ponto de a
+curva achatar, tem partícula e a foto virou metálica.
+
+Especular: 0% de pixels acima de 235 de luminância. Gloss sólido em luz macia não
+estoura — o realce é largo e suave, não um pico branco.
+
+### Texto de prompt, pronto
+
+> The bodywork must look like FRESHLY SPRAYED SOLID AUTOMOTIVE PAINT, or like
+> smooth glazed porcelain. Across every panel the color is a CREAMY, BUTTERY,
+> PERFECTLY UNIFORM FIELD. There is absolutely NO micro-texture of any kind: no
+> grain, no speckle, no sparkle, no glitter, no shimmer, no metallic flake, no
+> aluminium particles, no pearl, no candy, no iridescence, no noise. If you zoom
+> into any square inch of the paint, it must be a completely smooth, featureless
+> expanse of color. Any granularity anywhere — especially inside the highlights —
+> is wrong.
+>
+> The gloss shows itself NOT as fine detail but as LARGE, SOFT, BROAD tonal
+> shapes: big smooth gradients sweeping across the panels, soft blurry dark
+> reflections pooling on the flanks, and one long clean unbroken specular
+> highlight running down the shoulder line. The reflections are BIG and
+> SOFT-EDGED, the way a wide sky reflects in wet paint — not a busy, detailed,
+> high-frequency mirror image. Only a very few hard edges appear, where a building
+> edge or the horizon line reflects. The panel surface is perfectly flat and
+> glass-smooth with NO orange peel, no ripple, no waviness.
+
+**Luz:** fonte grande e macia — céu claro levemente velado, luminoso e generoso,
+nunca sol pontual duro. Exposição clara, para a cor saturada não morrer. Sem
+golden hour, sem nublado pesado, sem reflexo cintilante.
+
+**Nunca escreva no prompt** "espelho nítido", "reflexo de borda afiada", "mirror
+reflections with razor-sharp edges". É o caminho mais curto para um falso metálico:
+o modelo enche o painel de estrutura fina, e estrutura fina espalhada é o que o
+olho lê como flake.
+
+### Contraste com os outros perfis de brilho
+
+| | Super gloss PET sólido | ORACAL 670RA brilhante | Gloss metallic |
+|---|---|---|---|
+| Face | lisa, sem casca de laranja | **ondulada**, orange peel de calandrado | lisa |
+| Borda do reflexo | macia e ampla | **quebrada e ondulada** | macia e ampla |
+| Partícula | nenhuma | nenhuma | flake |
+| Razão 3/17 | ~0,50 | maior (a ondulação é sinal fino) | maior |
+
+---
 
 ### A armadilha do flake, que custou uma rodada
 
@@ -152,6 +239,87 @@ chapada, com 4,5% de granulação relativa contra 14,7% da capa.
 
 Especular também é número: no chip da Carbon Green só 0,031% dos pixels passam de
 235 de luminância. Satin não estoura. Gloss teria pico branco saturado.
+
+### O teste multiescala: como saber se tem flake, de verdade
+
+Granulação num número só é ambígua. Um gradiente de luz e um campo de partículas
+podem dar o mesmo desvio-padrão — e foi assim que a ESG-030 quase virou metálica
+por engano. O que separa os dois é **em qual escala a energia está**.
+
+Flake é um sinal de 1 a 3 pixels. Gradiente de luz é um sinal de dezenas de
+pixels. Então meça a variação de alta frequência em quatro janelas — 3, 5, 9 e 17
+px — sempre dentro de uma janela 100% material, longe de borda e de especular:
+
+- **Sólido:** valor baixo em 3 px e **crescendo sempre** com a escala. Toda a
+  energia está no gradiente; não há nada de pequeno.
+- **Metálico:** valor **alto já em 3 px**, e a curva **achata**. A partícula é o
+  sinal, e ela é pequena.
+
+Na amostra física da ESG-030 Gem Red, medida na janela limpa das quatro fotos:
+
+| Escala | 3 px | 5 px | 9 px | 17 px |
+|---|---|---|---|---|
+| ESG-030 (amostra) | 1,8% | 2,8% | 4,2% | 5,4% |
+
+Monotônica e baixa na ponta fina: **sólido, sem nenhum flake**. O zoom 1:1 na
+amostra confirmou — pigmento perfeitamente homogêneo, sem uma única faísca.
+
+### O erro que esse teste evitou, e a regra que fica
+
+Eu tinha lido a ESG-030 como metálica. A granulação relativa dela dava 3,4–4,0%,
+que pela nossa própria escala é sólido — mas eu descartei o próprio número porque
+achei na internet que a ESSMO vende uma "PET Super Gloss **Metallic** Gem Red", e
+assumi que era o mesmo filme.
+
+Não era. É outro fabricante, com nome parecido, para uma cor parecida.
+
+> **Regra: nome de catálogo de terceiro não derruba medição da amostra física.**
+> A hierarquia de fontes vale para o acabamento também, não só para a cor. Amostra
+> física medida > ficha do próprio fabricante > nome comercial de um concorrente.
+> Se o número e o nome brigarem, quem manda é o número — e a conferência é o teste
+> multiescala mais um zoom 1:1, não uma busca.
+
+Vale também para a linha inteira: a metadata da ESG que já estava registrada em
+`src/lib/data/speedWrappingLines.ts` descrevia "superfície resinada lisa, ultra
+gloss mirror wet-look", sem uma palavra sobre metálico. O dado de casa estava
+certo desde o começo.
+
+### Pedir "espelho nítido" produz falso metálico
+
+Mesmo depois de eu escrever no prompt "sólido, sem flake, sem purpurina, sem
+pérola" seis vezes, a foto continuava parecendo metálica. O problema não estava na
+negação do flake — estava na descrição do brilho.
+
+Eu vinha pedindo *"reflexos de espelho com bordas nítidas em toda a lataria"*. O
+modelo obedece: enche o painel de estrutura de alta frequência. E estrutura de alta
+frequência espalhada pela lataria **é exatamente o que o olho lê como flake**.
+
+Super gloss real não é isso. Numa foto de referência de Charger envelopado em
+gloss sólido bege, o painel é um campo **cremoso e uniforme**, com poucas formas
+**grandes e de borda macia** — a sombra do teto, o reflexo escuro da porta, e um
+único filete especular correndo pela linha do ombro. O céu é uma fonte enorme e
+difusa: ele reflete como *gradiente*, não como imagem. Só objeto de borda dura
+— quina de prédio, linha do horizonte — reflete nítido, e aparece como duas ou três
+formas definidas, nunca como textura.
+
+Multiescala na janela limpa, para calibrar:
+
+| | 3 px | 5 px | 9 px | 17 px | 3/17 |
+|---|---|---|---|---|---|
+| Referência Charger (gloss sólido) | 3,90% | 5,22% | 6,09% | 7,84% | 0,50 |
+| ESG-030, foto aprovada | 6,52% | 8,68% | 10,71% | 13,01% | 0,50 |
+
+A **razão 3px/17px é idêntica** — mesma forma de curva, logo mesma natureza de
+superfície: gradiente, não partícula. O nível absoluto maior é só cena de estúdio
+com reflexo mais contrastado. **A forma da curva diz o acabamento; o nível diz a
+dureza da luz.**
+
+> **Como pedir gloss sólido:** "tinta automotiva sólida recém-aplicada", "campo de
+> cor cremoso e perfeitamente uniforme", "o brilho aparece como formas GRANDES e de
+> borda MACIA, gradientes amplos, mais um filete especular limpo na linha do ombro
+> — não como imagem espelhada detalhada", "ao dar zoom em qualquer centímetro da
+> pintura tem que ser liso e sem feição". E luz: **fonte grande e macia**, céu claro
+> levemente velado, não sol pontual duro.
 
 ---
 
@@ -300,6 +468,41 @@ visíveis, com estouro zero. Nesse caso **regere, não corrija**.
 **Foto de cena com fundo da mesma cor não se corrige.** As da Bavarian Blue foram
 publicadas sem correção por isso. A capa é a referência de cor do produto; a foto
 de cena tem variação de luz esperada.
+
+### Quando a capa está longe demais: use outra capa da linha como doadora
+
+A capa da ESG-030 estava em V 10,6 · S 50 — quase preta, porque foi gerada
+seguindo o nome cadastrado no banco, "black gem red". A leitura é V 60 · S 87.
+Levar V de 10,6 a 60 pede gama 0,27, muito além do que o JPEG aguenta.
+
+Regerar não é a única saída. Como **todas as capas da linha saem do mesmo
+template**, qualquer uma serve de doadora: escolha a que estiver mais perto do
+alvo em saturação e valor, e rotacione o matiz.
+
+Três regras para escolher:
+
+1. **Menor distância em S e V.** Matiz o script rotaciona sem custo; S e V é que
+   custam gama. Para a ESG-030 a doadora foi a **ESG-011 Miami Blue** (S 66,4 ·
+   V 55,7): S +20,6 e V +4,3. O resultado bateu em `#98144C` contra o alvo
+   `#98144E`.
+2. **Matiz longe do logo.** A máscara é por faixa de matiz. Doadora azul ou verde
+   garante que o logo vermelho da Speed Wrapping fique intocado, mesmo quando o
+   alvo é um magenta vizinho do vermelho.
+3. **Matiz com folga dentro da faixa.** A ESG-007 Acid Green (S 91,5, quase
+   perfeita) foi descartada: H 73,3 cai na borda da rampa da faixa `verde`
+   (72–200) e a máscara saiu vazia. Fique a 20° das bordas.
+
+**Passe de neutralização depois.** O realce especular tem saturação baixa e fica
+fora da máscara, então ele **carrega o matiz da doadora**: a capa magenta saiu com
+brilho ciano. A correção é um segundo passe — isolar o rolo como "tudo que não é o
+fundo branco do estúdio" (fechamento morfológico + maior componente + preenchimento
+de furos), e dentro dele zerar a cromaticidade de qualquer pixel que ainda esteja
+na faixa de matiz da doadora, preservando a luminância. O realce volta a ser branco
+neutro, que é o certo para gloss.
+
+Cuidado: o realce corta o rolo de ponta a ponta, então **não é um furo** — um
+`binary_fill_holes` na máscara cromática não o alcança. Tem de vir pelo negativo do
+fundo.
 
 ---
 

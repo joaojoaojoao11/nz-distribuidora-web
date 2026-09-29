@@ -711,6 +711,22 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
  * Slug = mesmo `slug` do banco (produtos.slug), sempre no formato
  * `speed-wrapping-<linha>-<num>-<nome>-spw<linha><num>`.
  *
+ * ATENÇÃO — duas coisas erradas no lote original de capas, corrigidas a partir
+ * da ESG-030:
+ *
+ * 1. O TUBETE DA SPEED WRAPPING É BRANCO. As capas do primeiro lote saíram com
+ *    tubete preto, que não existe no produto. Capa nova tem que trazer tubo de
+ *    papelão branco, com espessura de parede visível e o furo em sombra suave.
+ * 2. A cor de algumas capas seguiu o NOME CADASTRADO em vez da amostra. A
+ *    ESG-030 está cadastrada como "black gem red" e saiu quase preta (V 10,6),
+ *    quando a amostra física lê #98144E (V 60) — um magenta luminoso. O nome do
+ *    cadastro não é fonte de cor.
+ *
+ * A marca NÃO é pedida ao modelo: capa gerada sai sem logo, e o logotipo oficial
+ * entra por composição em `scripts/publicar-cor.mjs`, a partir do recorte com
+ * alfa em `scripts/data/marca-speed-wrapping.png`. Pedir o logotipo na geração
+ * devolve letra torta e nome errado.
+ *
  * Metadata por linha SW (material/liner/textura) fica em
  * `src/lib/data/speedWrappingLines.ts` — usar de referência quando gerar novas
  * linhas.

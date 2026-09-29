@@ -47,8 +47,18 @@ import { fileURLToPath } from 'node:url';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const MANIFESTO = path.join(RAIZ, 'scripts/data/publicacao.json');
+// Caminhos padrao = MetaCast MCX, que foi a primeira linha a passar por aqui.
+// Outras linhas (Speed Wrapping, ORACAL...) guardam as imagens em outro lugar,
+// entao a entrada do manifesto pode sobrescrever os tres. `url_base` e o que vai
+// para produto_midia; `destino` e onde o arquivo fica no repositorio. Os dois
+// precisam apontar para o mesmo arquivo, so que um com e outro sem `public/`.
 const DESTINO = 'public/assets/images/metamark/mcx/aplicacao';
 const DESTINO_CAPA = 'public/assets/images/shop/metamark-mcx';
+const URL_BASE = '/assets/images/metamark/mcx/aplicacao';
+
+const dirFotos = (e) => e?.destino ?? DESTINO;
+const dirCapa = (e) => e?.destino_capa ?? DESTINO_CAPA;
+const urlBase = (e) => e?.url_base ?? URL_BASE;
 const TMP = path.join(RAIZ, 'scripts/output/.tmp-publicar');
 
 const LARGURA = 1600;
@@ -183,7 +193,7 @@ async function preparar(slug, entrada, apenas) {
     console.log(aviso(`\nsó as fotos ${apenas.join(', ')} — as outras ficam como estão no disco`));
   }
   mkdirSync(TMP, { recursive: true });
-  mkdirSync(path.join(RAIZ, DESTINO), { recursive: true });
+  mkdirSync(path.join(RAIZ, dirFotos(entrada)), { recursive: true });
 
   console.log(`\n${slug} — ${entrada.fotos.length} fotos\n`);
   for (const foto of entrada.fotos) {
@@ -191,7 +201,7 @@ async function preparar(slug, entrada, apenas) {
     process.stdout.write(`  -${foto.n} ${(foto.nota ?? '').padEnd(22)} baixando…`);
     await baixar(foto.url, bruto);
 
-    const saida = path.join(RAIZ, DESTINO, `${slug}-${foto.n}.jpg`);
+    const saida = path.join(RAIZ, dirFotos(entrada), `${slug}-${foto.n}.jpg`);
     const info = await sharp(bruto)
       .resize({ width: LARGURA, withoutEnlargement: true })
       .jpeg({ quality: QUALIDADE, mozjpeg: true })
@@ -206,15 +216,32 @@ async function preparar(slug, entrada, apenas) {
   // Ela é 1600x1600: o card da loja é 1:1 e um retângulo esticado fica ruim ao
   // lado dos outros.
   if (entrada.capa && !apenas) {
-    mkdirSync(path.join(RAIZ, DESTINO_CAPA), { recursive: true });
+    mkdirSync(path.join(RAIZ, dirCapa(entrada)), { recursive: true });
     const bruto = path.join(TMP, `${slug}-capa.png`);
     process.stdout.write(`  capa ${''.padEnd(22)} baixando…`);
     await baixar(entrada.capa, bruto);
-    const saida = path.join(RAIZ, DESTINO_CAPA, `${slug}.webp`);
-    const info = await sharp(bruto)
-      .resize(1600, 1600, { fit: 'cover', position: 'centre', withoutEnlargement: true })
-      .webp({ quality: 88, effort: 6 })
-      .toFile(saida);
+    const saida = path.join(RAIZ, dirCapa(entrada), `${slug}.webp`);
+    // A capa gerada sai SEM marca: pedir o logotipo ao modelo devolve letra
+    // torta e nome errado. O logo oficial entra aqui por composicao, recortado
+    // uma vez de uma capa aprovada e guardado com alfa em scripts/data/. Assim
+    // ele fica pixel a pixel igual em toda a linha.
+    //   logo: { arquivo, largura, esquerda, topo }  — fracoes do lado da capa
+    const LADO = 1600;
+    let capa = sharp(bruto)
+      .resize(LADO, LADO, { fit: 'cover', position: 'centre', withoutEnlargement: true });
+    if (entrada.logo) {
+      const L = entrada.logo;
+      const marca = await sharp(path.join(RAIZ, L.arquivo))
+        .resize({ width: Math.round(LADO * L.largura) })
+        .toBuffer();
+      capa = sharp(await capa.png().toBuffer()).composite([{
+        input: marca,
+        left: Math.round(LADO * L.esquerda),
+        top: Math.round(LADO * L.topo),
+      }]);
+      process.stdout.write(`\r  capa ${''.padEnd(22)} marca aplicada…`);
+    }
+    const info = await capa.webp({ quality: 88, effort: 6 }).toFile(saida);
     const kb = (statSync(saida).size / 1024).toFixed(0);
     process.stdout.write(`\r  capa ${''.padEnd(22)} ${info.width}×${info.height}  ${kb} kB   ${ok('gravado')}\n`);
   }
@@ -232,18 +259,18 @@ async function preparar(slug, entrada, apenas) {
     }
   }
 
-  console.log(`\n${ok('pronto')} — arquivos em ${DESTINO}/`);
+  console.log(`\n${ok('pronto')} — arquivos em ${dirFotos(entrada)}/`);
   if (entrada.leitura) {
     console.log(`\npróximo passo, conferir a cor contra a leitura ${entrada.leitura}:`);
     console.log(`  python3 scripts/medir-cor.py --alvo '${entrada.leitura}' ` +
-      `--familia ${entrada.familia ?? 'verde'} ${DESTINO}/${slug}-*.jpg`);
+      `--familia ${entrada.familia ?? 'verde'} ${dirFotos(entrada)}/${slug}-*.jpg`);
   }
   console.log(`\ndepois de corrigir a cor:\n  node scripts/publicar-cor.mjs ${slug} --commit\n`);
 }
 
 function publicar(slug, entrada) {
   const caminhos = [
-    ...entrada.fotos.map((f) => `${DESTINO}/${slug}-${f.n}.jpg`),
+    ...entrada.fotos.map((f) => `${dirFotos(entrada)}/${slug}-${f.n}.jpg`),
     ...(entrada.extras ?? []),
   ];
 
@@ -284,7 +311,7 @@ function publicar(slug, entrada) {
 /** Insere as fotos em produto_midia. Idempotente: URL que já existe é pulada. */
 async function registrar(slug, entrada) {
   const e = env();
-  const urls = entrada.fotos.map((f) => `/assets/images/metamark/mcx/aplicacao/${slug}-${f.n}.jpg`);
+  const urls = entrada.fotos.map((f) => `${urlBase(entrada)}/${slug}-${f.n}.jpg`);
   if (!(await esperarNoAr(urls))) {
     morrer('as imagens não subiram a tempo. Rode de novo quando o deploy terminar — nada foi\n' +
       '        escrito no banco, então repetir é seguro.');

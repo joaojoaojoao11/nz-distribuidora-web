@@ -1,6 +1,52 @@
 {
   "_leia": "Manifesto de publicação de fotos de cor. Consumido por scripts/publicar-cor.mjs. Uma entrada por slug; some depois que a cor está publicada. As URLs são as da geração aprovada — é o registro de qual imagem virou qual arquivo.",
-
+  "speed-wrapping-esg-030-super-gloss-black-gem-red-spwesg030": {
+    "mensagem": "feat(esg-030): quatro fotos GR Supra + capa refeita na leitura (#98144E)",
+    "leitura": "#98144E",
+    "familia": "rosa",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_140136_1063852e-4866-493f-a9a9-3163396c0d18.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.525,
+      "esquerda": 0.016666666666666666,
+      "topo": 0.016666666666666666
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Toyota GR Supra envelopado em Speed Wrapping ESG 030 Super Gloss Gem Red PET",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-030-super-gloss-black-gem-red-spwesg030.webp",
+      "scripts/data/marca-speed-wrapping.png",
+      "src/lib/shop/generic.ts",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "scripts/publicar-cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_134542_5d5045db-8767-4e3d-b6ee-f3111f421511.png",
+        "nota": "frontal 3/4"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_135138_dd285440-1b19-4192-8fae-22a24c535fd8.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_135154_caecb3b1-4ac0-4d62-8775-8e435b6bf548.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260929_135212_dace512e-0ff2-4922-9122-a674e1d4e924.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "mcx-73-capri-bronze": {
     "mensagem": "feat(mcx-73): quatro fotos VW Golf R + capa corrigida na leitura (#4A3E32)",
     "leitura": "#4A3E32",
@@ -17,13 +63,28 @@
       "scripts/data/publicacao.json"
     ],
     "fotos": [
-      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_024824_ea4ef13f-c8fb-4656-bfa0-22970d52bb91.png", "nota": "frontal 3/4 em patio industrial" },
-      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_20a2412c-ef40-4bb6-86a8-8a0d3af9bdf4.png", "nota": "traseira 3/4 em angulo baixo" },
-      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_70f3f7a0-1a43-41ff-8a18-7b506ef9f2c0.png", "nota": "perfil lateral completo" },
-      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_64dca5c1-ecb3-45c2-8876-03d7832c0eeb.png", "nota": "macro do flake dourado" }
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_024824_ea4ef13f-c8fb-4656-bfa0-22970d52bb91.png",
+        "nota": "frontal 3/4 em patio industrial"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_20a2412c-ef40-4bb6-86a8-8a0d3af9bdf4.png",
+        "nota": "traseira 3/4 em angulo baixo"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_70f3f7a0-1a43-41ff-8a18-7b506ef9f2c0.png",
+        "nota": "perfil lateral completo"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_025043_64dca5c1-ecb3-45c2-8876-03d7832c0eeb.png",
+        "nota": "macro do flake dourado"
+      }
     ]
   },
-
   "mcx-65-carbon-green": {
     "mensagem": "feat(mcx-65): quatro fotos Porsche 911 992 conferidas contra a leitura (#758586)",
     "leitura": "#758586",
@@ -38,13 +99,28 @@
       "scripts/data/publicacao.json"
     ],
     "fotos": [
-      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_022905_c3eab361-a3e3-4299-a429-76036d7b37d9.png", "nota": "frontal 3/4 em mirante de estrada de montanha" },
-      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023120_b6ce72bc-bf1b-46e4-8073-543a9c648d4e.png", "nota": "traseira 3/4 em angulo baixo" },
-      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023120_e0b510df-0749-43c7-842c-95d9a9fc6046.png", "nota": "perfil lateral completo" },
-      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023122_79e237c2-5271-489d-b931-df76a8cab547.png", "nota": "macro do flake de aluminio" }
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_022905_c3eab361-a3e3-4299-a429-76036d7b37d9.png",
+        "nota": "frontal 3/4 em mirante de estrada de montanha"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023120_b6ce72bc-bf1b-46e4-8073-543a9c648d4e.png",
+        "nota": "traseira 3/4 em angulo baixo"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023120_e0b510df-0749-43c7-842c-95d9a9fc6046.png",
+        "nota": "perfil lateral completo"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_023122_79e237c2-5271-489d-b931-df76a8cab547.png",
+        "nota": "macro do flake de aluminio"
+      }
     ]
   },
-
   "mcx-66-army-olive": {
     "mensagem": "feat(mcx-66): quatro fotos Defender 110 + capa regerada na leitura (#344137)",
     "leitura": "#344137",
@@ -58,13 +134,28 @@
       "scripts/data/publicacao.json"
     ],
     "fotos": [
-      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015807_148ef6b0-4b3a-4c6a-9dfe-b8d502d69cc1.png", "nota": "frontal 3/4" },
-      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_92ba62fd-5a6c-44e1-ac83-e2178979bb51.png", "nota": "traseira 3/4 baixa" },
-      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_09ecedde-28b8-449d-9b14-9eefd5478216.png", "nota": "perfil puro" },
-      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_b0f0a4b7-9b2c-4c4e-bb19-208339db19ac.png", "nota": "detalhe do acetinado" }
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015807_148ef6b0-4b3a-4c6a-9dfe-b8d502d69cc1.png",
+        "nota": "frontal 3/4"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_92ba62fd-5a6c-44e1-ac83-e2178979bb51.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_09ecedde-28b8-449d-9b14-9eefd5478216.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_015949_b0f0a4b7-9b2c-4c4e-bb19-208339db19ac.png",
+        "nota": "detalhe do acetinado"
+      }
     ]
   },
-
   "mcx-87-plum-crazy": {
     "mensagem": "feat(mcx-87): quatro fotos Dodge Challenger SRT + capa recolorida na leitura (#684D76)",
     "leitura": "#684D76",
@@ -77,13 +168,28 @@
       "scripts/data/publicacao.json"
     ],
     "fotos": [
-      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012432_df6441dd-04fe-4237-8075-4c5dd2070fb6.png", "nota": "frontal 3/4" },
-      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012824_4e576f31-d396-498e-bca9-f70ecd4fc3ab.png", "nota": "traseira 3/4 baixa" },
-      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012824_765a2e03-6338-4a34-b82a-5d4dd3d5c0b7.png", "nota": "perfil puro" },
-      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_013636_7e5a053c-2f14-44ee-93c7-2264ea1cc7cb.png", "nota": "detalhe do flake (regerada: a primeira saiu palida demais para corrigir sem bandar o jpeg)" }
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012432_df6441dd-04fe-4237-8075-4c5dd2070fb6.png",
+        "nota": "frontal 3/4"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012824_4e576f31-d396-498e-bca9-f70ecd4fc3ab.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_012824_765a2e03-6338-4a34-b82a-5d4dd3d5c0b7.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_013636_7e5a053c-2f14-44ee-93c7-2264ea1cc7cb.png",
+        "nota": "detalhe do flake (regerada: a primeira saiu palida demais para corrigir sem bandar o jpeg)"
+      }
     ]
   },
-
   "mcx-54-bavarian-blue": {
     "mensagem": "feat(mcx-54): quatro fotos BMW M4 G82 + capa recolorida na leitura (#2B67A8)",
     "leitura": "#2B67A8",
@@ -97,10 +203,26 @@
       "scripts/data/publicacao.json"
     ],
     "fotos": [
-      { "n": 2, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_5296aa4b-7c06-48f6-a4b4-35813a13bac3.png", "nota": "frontal 3/4" },
-      { "n": 3, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_dab6db38-8bb9-410e-9229-2c210c081a0c.png", "nota": "traseira 3/4 baixa" },
-      { "n": 4, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_68ae2c7b-4890-4d24-83e6-7ef603121709.png", "nota": "perfil puro" },
-      { "n": 5, "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_bacd8c54-a982-4497-97e0-d65060c71109.png", "nota": "detalhe do flake" }
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_5296aa4b-7c06-48f6-a4b4-35813a13bac3.png",
+        "nota": "frontal 3/4"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_dab6db38-8bb9-410e-9229-2c210c081a0c.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_68ae2c7b-4890-4d24-83e6-7ef603121709.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260921_004713_bacd8c54-a982-4497-97e0-d65060c71109.png",
+        "nota": "detalhe do flake"
+      }
     ]
   }
 }
