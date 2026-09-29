@@ -26,6 +26,7 @@
  * ---
  *   node scripts/publicar-cor.mjs <slug>              baixa, converte e grava
  *   node scripts/publicar-cor.mjs <slug> --apenas 5   refaz só a foto 5
+ *   node scripts/publicar-cor.mjs <slug> --so-capa    refaz só a capa
  *   node scripts/publicar-cor.mjs <slug> --commit     commita, sobe, espera o
  *                                                     deploy e registra no banco
  *
@@ -171,7 +172,11 @@ async function esperarNoAr(urls, limiteMs = 6 * 60_000) {
   const inicio = Date.now();
   process.stdout.write('  esperando o deploy publicar as imagens');
   for (;;) {
-    const res = await Promise.all(urls.map((u) => fetch(SITE + u, { method: 'HEAD', cache: 'no-store' }).then((r) => r.ok).catch(() => false)));
+    // HEAD .ok NAO basta: o site e SPA e o Vercel devolve index.html com 200
+    // para caminho inexistente. Foi assim que a ESG-030 passou na espera com a
+    // URL errada e entrou torta no banco. Confere o content-type tambem.
+    const res = await Promise.all(urls.map((u) => fetch(SITE + u, { method: 'HEAD', cache: 'no-store' })
+      .then((r) => r.ok && (r.headers.get('content-type') ?? '').startsWith('image/')).catch(() => false)));
     if (res.every(Boolean)) { process.stdout.write(` ${ok('no ar')}\n`); return true; }
     if (Date.now() - inicio > limiteMs) { process.stdout.write(` ${erro('tempo esgotado')}\n`); return false; }
     process.stdout.write('.');
@@ -185,9 +190,14 @@ async function esperarNoAr(urls, limiteMs = 6 * 60_000) {
  * cor acontece depois do download e mora só no arquivo convertido — não há de
  * onde recuperá-la. Aconteceu de quase acontecer na MCX-87.
  */
-async function preparar(slug, entrada, apenas) {
+async function preparar(slug, entrada, apenas, soCapa) {
   const { default: sharp } = await import('sharp');
-  if (apenas) {
+  // --so-capa existe porque mexer na marca da capa e comum e as fotos ja podem
+  // estar corrigidas no disco: rebaixar todas por cima seria perder a correcao.
+  if (soCapa) {
+    entrada = { ...entrada, fotos: [] };
+    console.log(aviso('\nsó a capa — as fotos ficam como estão no disco'));
+  } else if (apenas) {
     entrada = { ...entrada, fotos: entrada.fotos.filter((f) => apenas.includes(f.n)) };
     if (!entrada.fotos.length) morrer(`nenhuma foto com esses números neste slug`);
     console.log(aviso(`\nsó as fotos ${apenas.join(', ')} — as outras ficam como estão no disco`));
@@ -215,7 +225,7 @@ async function preparar(slug, entrada, apenas) {
   // repositório com scripts/recolorir-capa.py — ver a nota em generic.ts.
   // Ela é 1600x1600: o card da loja é 1:1 e um retângulo esticado fica ruim ao
   // lado dos outros.
-  if (entrada.capa && !apenas) {
+  if (entrada.capa && (soCapa || !apenas)) {
     mkdirSync(path.join(RAIZ, dirCapa(entrada)), { recursive: true });
     const bruto = path.join(TMP, `${slug}-capa.png`);
     process.stdout.write(`  capa ${''.padEnd(22)} baixando…`);
@@ -326,7 +336,7 @@ async function registrar(slug, entrada) {
   let ordem = jaTem.reduce((mx, m) => Math.max(mx, m.ordem), -1);
 
   const novas = entrada.fotos
-    .map((f) => ({ f, url: `/assets/images/metamark/mcx/aplicacao/${slug}-${f.n}.jpg` }))
+    .map((f) => ({ f, url: `${urlBase(entrada)}/${slug}-${f.n}.jpg` }))
     .filter(({ url }) => !existentes.has(url))
     .map(({ f, url }) => ({
       produto_id: id, tipo: 'imagem', url, ordem: ++ordem, capa: false, origem: 'estatico',
@@ -357,6 +367,7 @@ if (!entrada) {
   morrer(`'${slug}' não está em scripts/data/publicacao.json.\n        disponíveis: ${slugs.join(', ') || '(nenhum)'}`);
 }
 
+const soCapa = flags.includes('--so-capa');
 const iApenas = flags.indexOf('--apenas');
 const apenas = iApenas >= 0 ? (flags[iApenas + 1] ?? '').split(',').map(Number).filter(Boolean) : null;
 if (iApenas >= 0 && !apenas?.length) morrer('--apenas precisa dos números das fotos, ex: --apenas 5');
@@ -367,5 +378,5 @@ if (flags.includes('--commit')) {
   // repetir o comando depois de uma falha, com os arquivos já commitados.
   await registrar(slug, entrada);
 } else {
-  await preparar(slug, entrada, apenas);
+  await preparar(slug, entrada, apenas, soCapa);
 }
