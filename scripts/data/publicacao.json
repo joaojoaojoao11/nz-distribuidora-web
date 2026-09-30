@@ -1,4 +1,49 @@
 {
+  "speed-wrapping-esg-037-super-gloss-khaki-grey-pet-spwesg037": {
+    "mensagem": "feat(esg-037): Ferrari Roma + capa com referencia ESG-034/033 (#B9C6B2) Khaki Grey",
+    "leitura": "#B9C6B2",
+    "familia": "verde",
+    "sat_min": 0.05,
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_001808_bde8db7a-9f51-40c8-b135-dcd7baa41747.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari Roma envelopada em Speed Wrapping ESG 037 Super Gloss Khaki Grey",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-037-super-gloss-khaki-grey-pet-spwesg037.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_001544_c75b64d5-2775-4c3a-9e6f-cb9248988ff6.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_001808_bc3635ba-b8d4-44c1-908e-edc3703fdb11.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_001808_226f5e13-7c0a-4149-a66b-0c1ae04a00b4.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_001808_81a00057-c2a8-47f7-b2fd-bfdcd1465836.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-036-super-gloss-armor-green-pet-spwesg036": {
     "mensagem": "feat(esg-036): Audi RS e-tron GT + capa com referencia ESG-034/033 (#999E8A) Armor Green; familia salvia e sat_min",
     "leitura": "#999E8A",

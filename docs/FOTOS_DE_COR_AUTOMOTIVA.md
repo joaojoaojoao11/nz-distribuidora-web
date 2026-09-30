@@ -102,6 +102,7 @@ confiável:
 | ESG-034 Ceramic China Blue | H210 S46 V68 | 2,4 | confiável |
 | ESG-035 Racing Green | H89 S46 V50 | 1,2 | confiável |
 | ESG-036 Armor Green | H76 S13 V62 | 1,1 | confiável |
+| ESG-037 Khaki Grey | H98 S10 V78 | 1,4 | confiável (3 de 5 fotos — 2 com sombra de mão descartadas) |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
 A ESG-030 foi fotografada com o cartão bem dobrado e o reflexo da janela cruzando
@@ -435,6 +436,14 @@ escreva "sem plantas nem folhagem", que é uma categoria de objeto, e **nunca
 repita o nome da cor do carro numa negação**. O modelo não separa "verde do
 cenário" de "verde da peça": ele lê a palavra e puxa tudo para o cinza.
 
+### Sombra sobre o cartão entra na leitura
+
+Na ESG-037 duas das cinco fotos tinham a sombra da mão cobrindo metade do
+cartão, sob luz de lâmpada e com a madeira da mesa refletindo. A sombra é plana,
+então passa no filtro de "região plana" e entra na medida: essas duas leram
+H 75 · V 55, as outras três H 98 · V 78. Juntas, sd(H) 12. **Descarte a foto
+com sombra sobre o cartão** — não é dispersão da amostra, é outra luz.
+
 ### Cor quase cinza: três armadilhas de uma vez (ESG-036 Armor Green, S 13)
 
 **1. O leitor de amostra perde o cartão.** O `ler-amostra.py` achava o cartão
@@ -586,6 +595,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-034 Ceramic China Blue | Lexus LC 500 | esplanada brutalista de concreto, céu branco |
 | ESG-035 Racing Green | Aston Martin Vantage | pátio de saibro de casarão de pedra calcária |
 | ESG-036 Armor Green | Audi RS e-tron GT | chão de pedreira de granito cinza-frio |
+| ESG-037 Khaki Grey | Ferrari Roma | pátio modernista de ardósia escura |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
