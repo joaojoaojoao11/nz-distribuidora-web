@@ -436,6 +436,23 @@ escreva "sem plantas nem folhagem", que é uma categoria de objeto, e **nunca
 repita o nome da cor do carro numa negação**. O modelo não separa "verde do
 cenário" de "verde da peça": ele lê a palavra e puxa tudo para o cinza.
 
+### Cor no teto: a câmera não mede e a correção não serve (ESG-038 Lava Orange)
+
+**A amostra não é medível pelo celular.** Vermelho-laranja de saturação máxima
+estoura o sensor: nas fotos da ESG-038 o canal verde ficou em ~0,5% do vermelho,
+ou seja, o celular arredondou para vermelho puro e a nuance de laranja sumiu.
+Nenhuma janela de medida recupera isso. Pedir **exposição mais baixa** na hora da
+foto (tocar no cartão e arrastar o sol para baixo) e luz do dia. Sem isso, o alvo
+vem do **piloto aprovado a olho contra o cartão** — foi o caso aqui (variante B,
+`#F31403`).
+
+**A correção do `--tudo` não serve para cor no teto.** A máscara corta valor
+acima de 0,80 para proteger o especular, e numa cor com V 95 isso deixa o próprio
+filme de fora (máscara de 1% na capa). A gama de saturação para ir de 93 a 99
+estoura 6 a 14% dos pixels. Solução: **manifesto sem `leitura`** — o comando pula
+a correção — e aceitar as imagens como nascem, desde que batam o piloto. Na
+ESG-038 as cinco ficaram a ±3° de matiz do piloto, todas com S 99.
+
 ### Sombra sobre o cartão entra na leitura
 
 Na ESG-037 duas das cinco fotos tinham a sombra da mão cobrindo metade do
@@ -596,6 +613,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-035 Racing Green | Aston Martin Vantage | pátio de saibro de casarão de pedra calcária |
 | ESG-036 Armor Green | Audi RS e-tron GT | chão de pedreira de granito cinza-frio |
 | ESG-037 Khaki Grey | Ferrari Roma | pátio modernista de ardósia escura |
+| ESG-038 Porsche Lava Orange | Porsche 911 GT3 RS | mirante de estrada de montanha, asfalto e rocha cinza |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

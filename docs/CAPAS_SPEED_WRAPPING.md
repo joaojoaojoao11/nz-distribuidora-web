@@ -299,6 +299,7 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | ESG-035 Racing Green | `#637F44` · H 89 · S 46 · V 50 | super gloss sólido | gerada com ESG-034 (geometria) + ESG-033 (acabamento) como referência; `--tudo` fecha a saturação |
 | ESG-036 Armor Green | `#999E8A` · H 76 · S 13 · V 62 | super gloss sólido | gerada com ESG-034 + ESG-033 de referência; silhueta 92% igual; `--tudo` fecha com `familia: salvia`, `sat_min: 0.05` |
 | ESG-037 Khaki Grey | `#B9C6B2` · H 98 · S 10 · V 78 | super gloss sólido | gerada com ESG-034 + ESG-033 de referência; silhueta 89% igual; `familia: verde`, `sat_min: 0.05` |
+| ESG-038 Porsche Lava Orange | `#F31403` (do piloto aprovado) · H 4 · S 99 · V 95 | super gloss sólido | gerada com ESG-034 + ESG-033 de referência; silhueta 97% igual; **sem correção** (cor no teto) |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

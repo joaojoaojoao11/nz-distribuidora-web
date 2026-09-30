@@ -1,4 +1,48 @@
 {
+  "speed-wrapping-esg-038-super-gloss-porsche-lava-orange-pet-spwesg038": {
+    "mensagem": "feat(esg-038): Porsche 911 GT3 RS + capa com referencia ESG-034/033 (#F31403) Lava Orange",
+    "leitura_referencia": "#F31403",
+    "nota_cor": "SEM `leitura` de proposito: a correcao automatica nao serve para cor quase no teto (S 99, V 95). O teto de valor da mascara (0,80) deixa o filme de fora e a gama de saturacao estoura 6-14%. As 5 imagens ja nascem a +-3 graus do piloto aprovado a olho. Alvo veio do piloto B aprovado, nao da amostra (fotos da amostra estouradas).",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_003259_56497cb5-12ff-4575-b3f0-3cbf31d57764.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Porsche 911 GT3 RS envelopado em Speed Wrapping ESG 038 Super Gloss Porsche Lava Orange",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-038-super-gloss-porsche-lava-orange-pet-spwesg038.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_002942_2c70a2bf-f8af-4eb5-b80a-103feda4c56c.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_003259_f26343de-18dd-4aa5-91b1-71a8db0f86f6.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_003259_27a2b30c-7035-4aa1-81f6-e05f72f859bc.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_003259_a92bc502-b650-4773-8822-6abb8a5d0841.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-037-super-gloss-khaki-grey-pet-spwesg037": {
     "mensagem": "feat(esg-037): Ferrari Roma + capa com referencia ESG-034/033 (#B9C6B2) Khaki Grey",
     "leitura": "#B9C6B2",
