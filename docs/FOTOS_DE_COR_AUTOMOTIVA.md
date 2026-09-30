@@ -107,6 +107,7 @@ confiável:
 | ESG-037 Khaki Grey | H98 S10 V78 | 1,4 | confiável (3 de 5 fotos — 2 com sombra de mão descartadas) |
 | EDG-020 Liquid Metal Ruby Red | H349 S100 V54 | 0,5 | matiz confiável (sd(H) 1,9); S no teto (câmera estourou), V 42–72 — cartão na mão, no sol; alvo = piloto B aprovado |
 | EDG-025 Metallic Solar Gold | H45 S43 V50 | 2,4 | confiável (4 de 4, cartão na mão mas sem reflexo direto) |
+| EMT-022 Titanium Metal Grey | H207 S12 V55 (após balanço de branco pelo cartão branco da foto) | 3,3 (3 de 4) | `ler-amostra` deu S 26: era o céu azul refletindo no acetinado; o cartão branco atrás leu H237 S9 |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -509,6 +510,23 @@ gradiente de claro para escuro rolando pela lataria. **Para cor de saturação
 baixa, escolha carro de superfícies curvas.** O Audi RS e-tron GT resolveu na
 primeira.
 
+### Satin metallic: negar reflexo demais vira fosco (EMT-022, 30/09)
+
+O primeiro piloto da EMT-022 pedia "NO mirror reflections anywhere" e céu nublado, num
+Huracán facetado: saiu fosco chapado, e o João apontou que "nas curvas faltou o
+acetinado" — o tom parecia outro. No cartão, o satin metallic faz uma **faixa de brilho
+larga e luminosa que corre na curva**, de prata quase perolado a grafite, com o flake
+dando um brilho sedoso dentro dela. O que resolveu: descrever o satin como "entre gloss e
+matte, como titânio escovado ou cetim — claramente lustroso, não fosco chapado", a faixa
+de brilho em positivo (larga, borda macia, nunca espelho), **sol baixo velado de lado**
+(não nublado) e **carro de curvas** (Aston Martin DB12). A regra do "carro de curvas para
+cor de saturação baixa" vale também para satin.
+
+**Cor quase neutra em cenário neutro não passa pela correção.** Com S ~8 no carro, a
+correção por faixa de matiz não pega nada e a família `neutro` seleciona o sal e o céu
+junto. Publicada sem `leitura`, com a capa escolhida por medida (S 8 · V 59 contra S 12 ·
+V 55 do cartão).
+
 ### "Pale" e "muted" não são sinônimos — mexem em eixos diferentes
 
 A mesma armadilha da lista de negações, por outro caminho: adjetivos de baixa
@@ -634,6 +652,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-041 Cement Grey | Maserati MC20 | praça de arenito claro em cânion, paredes ocre |
 | EDG-020 Liquid Metal Ruby Red | McLaren Artura | pátio de hangar de aeroporto executivo, concreto claro e aço cinza-frio |
 | EDG-025 Metallic Solar Gold | Jaguar F-Type R coupé | estrada na crista de barragem de concreto, represa azul-acinzentada e montanhas |
+| EMT-022 Satin Metallic Titanium Metal Grey | Aston Martin DB12 | deserto de sal, crosta branca rachada, sol baixo velado |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

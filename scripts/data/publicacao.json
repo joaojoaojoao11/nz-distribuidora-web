@@ -1,4 +1,56 @@
 {
+  "speed-wrapping-emt-022-satin-metallic-matt-titanium-metal-grey-spwemt022": {
+    "mensagem": "feat(emt-022): Aston Martin DB12 + primeira capa satin metallic (#7B848C) Titanium Metal Grey",
+    "leitura_referencia": "#7B848C",
+    "nota_cor": "SEM `leitura` de proposito: cor quase neutra (S 12) em cenario neutro (deserto de sal) — a faixa de matiz nao pega o carro (S ~8) e a familia neutro tingiria sal e ceu. Alvo H207 S12 V55 veio do balanco de branco pelo cartao branco da foto WA0078 (ler-amostra deu S26 = ceu azul refletido no acetinado). Primeiro piloto (Huracan, nublado, \"no reflections\") saiu fosco chapado; Joao pediu mais acetinado nas curvas; piloto B2 (DB12, sol baixo velado, faixa de brilho descrita) aprovado 30/09. Capa 2 escolhida por medida: H218 S8 V59.",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_222550_8e53b949-6c1f-4e25-8dc8-43ae55cad3f9.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Aston Martin DB12 envelopado em Speed Wrapping EMT 022 Satin Metallic Matt Titanium Metal Grey",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emt-022-satin-metallic-matt-titanium-metal-grey-spwemt022.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_222243_0f3cafd4-d822-441f-9264-250acaed281a.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_222549_b03136e1-e05a-4a52-a6c1-302941f85496.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_222549_cf287695-6423-4164-83ea-e1bd5b6229c9.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_222549_fb7c2cfc-75f5-4da6-a6d7-43ea4aaeb3f3.png",
+        "nota": "macro do satin metallic"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro quality medium 3:2 · capa quality high 1:1 com media SO ESG-034 (a811cd95) — nada de ESG-033 em satin",
+      "carro_acabamento": "satin metallic, halfway between gloss and matte, like brushed titanium or satin silk. The panels are clearly lustrous, not dead flat matte: on every curve the light gathers into a broad, glowing, silvery satin sheen band that glides along the long flowing bodywork and rolls off smoothly and quickly into dark graphite. The sheen band is wide and soft-edged; it never becomes a sharp mirror reflection and never shows a readable reflected image. A fine aluminium metallic flake is suspended in the finish and gives a subtle silky shimmer inside the sheen.",
+      "carro_cor": "1. HUE: a cool titanium grey with a faint steel-blue undertone, like a titanium watch case, hex #7B848C (hue about 207 degrees). 2. CHROMA: very low, about 12 percent saturation: a silver grey whose cool undertone is only a whisper. 3. BRIGHTNESS: medium overall, about 55 percent value, with strong contrast across every curve: where a panel turns toward the light it rises to a bright, almost pearl-white silver; where it turns away it rolls off into a deep charcoal graphite.",
+      "carro_cenario_luz": "vast dry salt flat, cracked white-grey salt crust, distant low mountains in pale grey haze; bright sky with a thin high haze and a soft low sun from the side; neutral white balance",
+      "capa": "One reference image is provided. It defines the GEOMETRY ONLY. [...] Do NOT copy its glossy blue surface. THE FILM COLOUR: hex #7B848C, RGB (123, 132, 140) [...]. THE FILM FINISH is SATIN METALLIC, halfway between gloss and matte, like brushed titanium or satin silk: along the top of the cylinder a broad, soft, glowing silvery sheen band, luminous but soft-edged, never a crisp mirror-white specular line; the colour rolls off smoothly into a deep graphite on the lower flank. A fine aluminium metallic flake gives a subtle silky shimmer inside the sheen."
+    }
+  },
   "speed-wrapping-edg-025-mettalic-paint-mettalic-solar-gold-pet-spwedg025": {
     "mensagem": "feat(edg-025): Jaguar F-Type R + capa metalica com referencia ESG-034/033 (#7F7148) Metallic Solar Gold",
     "leitura": "#7F7148",
