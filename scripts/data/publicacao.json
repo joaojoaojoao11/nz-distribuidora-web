@@ -1,4 +1,54 @@
 {
+  "speed-wrapping-esg-041-super-gloss-cement-grey-pet-spwesg041": {
+    "mensagem": "feat(esg-041): Maserati MC20 + capa com referencia ESG-034/033 (#566F8C) Cement Grey",
+    "leitura": "#566F8C",
+    "leitura_amostra": "#6886AA",
+    "nota_cor": "Amostra lida em 2 fotos sem sombra (H212.6 S38.7 V66.6, sd(S) 2.3). Piloto B (mais escuro, V~50) aprovado pelo Joao; alvo = matiz e croma da amostra com valor 55, entre a amostra e o piloto aprovado.",
+    "familia": "azul",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_020013_23be7ca1-fea5-40da-b2f1-a9a7814fbe5c.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Maserati MC20 envelopado em Speed Wrapping ESG 041 Super Gloss Cement Grey",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-041-super-gloss-cement-grey-pet-spwesg041.webp",
+      "scripts/publicar-cor.mjs",
+      "scripts/lib/cor.mjs",
+      "scripts/ler-amostra.py",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json",
+      "src/lib/shop/generic.ts"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_015725_c4d2dc7b-6ef1-4781-a2af-b40f5aebb03b.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_020013_890d6a51-8f11-42b6-88a7-88e71c6d7c66.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_020013_81053416-ba06-4dea-86a7-6cea776ea880.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_020013_30dc7759-1257-4664-b12d-a470636a8139.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-040-super-gloss-oolong-milk-tea-pink-pet-spwesg040": {
     "mensagem": "fix(loja): placeholder Speed Wrapping apontava para .png inexistente; esg-040 vincula fotos",
     "leitura": "#DB9FBC",

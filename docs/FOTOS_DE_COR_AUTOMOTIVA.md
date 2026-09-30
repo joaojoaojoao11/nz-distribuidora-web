@@ -103,6 +103,7 @@ confiável:
 | ESG-035 Racing Green | H89 S46 V50 | 1,2 | confiável |
 | ESG-036 Armor Green | H76 S13 V62 | 1,1 | confiável |
 | ESG-040 Oolong Milk Tea Pink | H331 S28 V86 | 0,2 | confiável (2 de 4 — 2 com sombra descartadas) |
+| ESG-041 Cement Grey | H213 S39 V67 | 2,3 | confiável (2 de 4 — 2 com sombra descartadas); piloto aprovado mais escuro, alvo V55 |
 | ESG-037 Khaki Grey | H98 S10 V78 | 1,4 | confiável (3 de 5 fotos — 2 com sombra de mão descartadas) |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -627,6 +628,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-038 Porsche Lava Orange | Porsche 911 GT3 RS | mirante de estrada de montanha, asfalto e rocha cinza |
 | ESG-039 Strawberry Red | Alfa Romeo Giulia Quadrifoglio | estacionamento de cobertura, concreto claro, céu aberto |
 | ESG-040 Oolong Milk Tea Pink | Bentley Continental GT | pátio de galeria minimalista, granilite claro e aço grafite |
+| ESG-041 Cement Grey | Maserati MC20 | praça de arenito claro em cânion, paredes ocre |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
