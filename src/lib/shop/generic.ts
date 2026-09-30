@@ -33,7 +33,7 @@ export const GENERIC_IMAGE_BY_LINE: Record<LinhaErp, string> = {
   avery: '/assets/images/shop/generic/avery.webp',
   md80: '/assets/images/shop/generic/md80.webp',
   ppf: '/assets/images/shop/generic/ppf.webp',
-  'speed-wrapping': '/assets/images/shop/generic/speed-wrapping.png',
+  'speed-wrapping': '/assets/images/shop/generic/speed-wrapping.webp',
   'nzwrap-import': '/assets/images/shop/generic/nzwrap-import.webp',
   nar: '/assets/images/shop/generic/nar.webp',
   next: '/assets/images/shop/generic/next.webp',
@@ -726,6 +726,10 @@ export const M7_ROLL_IMAGES: Record<string, string> = {
  * entra por composição em `scripts/publicar-cor.mjs`, a partir do recorte com
  * alfa em `scripts/data/marca-speed-wrapping.png`. Pedir o logotipo na geração
  * devolve letra torta e nome errado.
+ *
+ * O PADRÃO COMPLETO DA CAPA — diagramação, ponta cortada, tubete, marca, cor,
+ * prompt pronto e sequência de publicação — está em
+ * `docs/CAPAS_SPEED_WRAPPING.md`. Fechado na ESG-030; vale para toda cor nova.
  *
  * Metadata por linha SW (material/liner/textura) fica em
  * `src/lib/data/speedWrappingLines.ts` — usar de referência quando gerar novas

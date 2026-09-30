@@ -1,6 +1,6 @@
 {
   "speed-wrapping-esg-040-super-gloss-oolong-milk-tea-pink-pet-spwesg040": {
-    "mensagem": "feat(esg-040): Bentley Continental GT + capa com referencia ESG-034/033 (#DB9FBC) Oolong Milk Tea Pink; familia malva e val_max",
+    "mensagem": "fix(loja): placeholder Speed Wrapping apontava para .png inexistente; esg-040 vincula fotos",
     "leitura": "#DB9FBC",
     "familia": "malva",
     "val_max": 0.95,
@@ -23,7 +23,8 @@
       "scripts/medir-cor.py",
       "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
       "docs/CAPAS_SPEED_WRAPPING.md",
-      "scripts/data/publicacao.json"
+      "scripts/data/publicacao.json",
+      "src/lib/shop/generic.ts"
     ],
     "fotos": [
       {
