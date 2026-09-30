@@ -1,4 +1,59 @@
 {
+  "speed-wrapping-edg-020-metal-ruby-red-pet-spwedg020": {
+    "mensagem": "feat(edg-020): McLaren Artura + primeira capa metalica com referencia ESG-034/033 (#8B0019) Liquid Metal Ruby Red",
+    "leitura_referencia": "#8B0019",
+    "nota_cor": "SEM `leitura` de proposito: cor no teto (amostra S 99.7, camera estourada, igual 038/039). Amostra do catalogo fisico no Drive (EDG 020 METALLIC LIQUID METAL RUBY RED PET), 4 fotos, H349 sd(H) 1.9 sd(S) 0.5, V 42-72 (sol, na mao). Piloto B aprovado pelo Joao em 30/09 (H349 S79 V42; lataria iluminada S71 V69). Primeira cor da linha EDG (gloss metallic) e primeira capa metalica: geometria ESG-034 + brilho ESG-033 + texto de pigmento metalico fino.",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_192452_a4343d07-56cd-4a64-8e06-d83d995f1473.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "McLaren Artura envelopado em Speed Wrapping EDG 020 Metallic Liquid Metal Ruby Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-020-metal-ruby-red-pet-spwedg020.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs",
+      "scripts/drive-cores.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_192154_37698608-222b-42ea-a5fe-e5555e081e7f.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_192455_d1f77632-ca65-41e5-aaea-c2d3b7167700.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_192452_f88301a8-ee82-4b52-99ca-4adc34b8fbe9.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_192452_fc0c6218-a45e-4227-8b6c-b3ebc61127e1.png",
+        "nota": "macro do metalico liquid metal"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro quality medium 3:2 · capa quality high 1:1 com medias ESG-034 (a811cd95) + ESG-033 (d1170724)",
+      "carro_frontal": "Photorealistic automotive photograph of a McLaren Artura, fully wrapped in a ruby red metallic vinyl film.\n\nFRAMING - front three-quarter view from a low camera height, about knee level, the car angled so the nose and the full left flank are visible. The car fills about two thirds of the frame, slightly off-centre. Landscape 3:2, full-frame 35mm look, sharp focus on the car.\n\nCOLOR - three separate instructions:\n1. HUE: a true ruby red, a crimson that leans very slightly toward raspberry, like hex #8B0019 (hue about 349 degrees). Never orange.\n2. CHROMA: fully saturated, dense and rich, like a ripe cherry or a ruby gemstone held to the light. Maximum colour intensity.\n3. BRIGHTNESS: deep, about 54 percent value overall. Where panels face the sky the colour glows a luminous bright ruby-scarlet; on the lower flanks and in shadow it falls to a deep wine burgundy.\n\nFINISH - liquid-metal gloss metallic. A wet, deep, high-gloss clear layer over an ultra-fine metallic pigment, so fine that it reads as molten liquid metal rather than glitter: no visible sparkle grains, no coarse flake, no pearl confetti. The metallic shows as a strong flop: highlights bloom into a glowing red, and the colour darkens quickly as each surface turns away from the light. The surface is perfectly smooth, no orange peel, no ripple. Reflections on the bodywork are large and soft-edged, with one long clean specular highlight along the shoulder line.\n\nSETTING - the apron of a small private executive airfield: a wide expanse of pale grey concrete slabs with faint expansion joints, a cool grey corrugated steel hangar with its doors half open in the background, a low horizon and a lot of sky. No other vehicles near the car.\n\nLIGHTING - bright open sky with a thin high haze, sun low from the side in the late morning, so the metallic panels catch a bright glow while the rest of the car stays evenly lit. Clear, generous exposure.\n\nREALISM - a genuine photograph, not a render: light dust on the side skirts, brake dust on the rims, a few dried water spots on the doors, natural lens vignetting, subtle sensor grain, slightly imperfect framing. Reflections in the glass and trim. No people, no text, no logos, no watermark, no readable licence plate.",
+      "framing_traseira": "rear three-quarter view from a low camera height, about knee level, the car angled so the tail, the rear lights and the full right flank are visible.",
+      "framing_perfil": "pure side profile: the camera at door-handle height, perpendicular to the left flank, the whole car in frame from nose to tail, the hangar behind the car.",
+      "framing_macro": "close-up macro of the curved rear haunch just behind the door, where the ruby bodywork meets the gloss black side air intake; gloss black trim in one corner as gloss reference; shallow depth of field.",
+      "capa_bloco_cor": "THE FILM COLOUR is neither of the two references: it is hex #8B0019, RGB (139, 0, 25) - a deep ruby red, a crimson leaning very slightly toward raspberry, fully saturated, medium-deep in value (about 55 percent). THE FILM IS METALLIC, unlike image 2: an ultra-fine liquid-metal pigment under the gloss. Next to the white specular band the colour glows a luminous bright ruby, and it deepens to a dark wine red on the lower flank. The metallic pigment is so fine that it reads as a smooth molten sheen, not glitter: no visible grains, no coarse flake, no orange peel."
+    }
+  },
   "speed-wrapping-esg-041-super-gloss-cement-grey-pet-spwesg041": {
     "mensagem": "feat(esg-041): Maserati MC20 + capa com referencia ESG-034/033 (#566F8C) Cement Grey",
     "leitura": "#566F8C",

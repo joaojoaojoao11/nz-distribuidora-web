@@ -302,6 +302,7 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | ESG-038 Porsche Lava Orange | `#F31403` (do piloto aprovado) · H 4 · S 99 · V 95 | super gloss sólido | gerada com ESG-034 + ESG-033 de referência; silhueta 97% igual; **sem correção** (cor no teto) |
 | ESG-039 Strawberry Red | `#D91122` (do piloto aprovado) · H 356 · S 99 | super gloss sólido | referência ESG-034 + ESG-033; silhueta 92% igual; **sem correção** (cor no teto) |
 | ESG-040 Oolong Milk Tea Pink | `#DB9FBC` · H 331 · S 28 · V 86 | super gloss sólido | referência ESG-034 + ESG-033; silhueta 95% igual; `familia: malva`, `val_max: 0.95`, `marca_depois` |
+| EDG-020 Liquid Metal Ruby Red | `#8B0019` (amostra no teto; alvo = piloto aprovado) · H 349 | **gloss metallic** (liquid metal, pigmento ultrafino) | **primeira capa metálica**: referência ESG-034 (geometria) + ESG-033 (brilho) + parágrafo "THE FILM IS METALLIC, unlike image 2" (texto em `publicacao.json` → `prompts.capa_bloco_cor`); silhueta 89%; capa final H 353 · S 95 · V 56; **sem correção** (cor no teto) |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

@@ -131,6 +131,15 @@ async function baixar(url, destino) {
 // --------------------------------------------------------------- banco
 
 const SITE = 'https://www.nzgroup.com.br';
+// Mesmo deploy de produção da Vercel, por outro endereço. Em 30/09 o domínio
+// parou de responder na rede da empresa (IP da Vercel sem rota daqui) enquanto
+// o site seguia no ar para o resto do mundo; sem isto a espera trava.
+const SITE_ALT = 'https://nz-distribuidora-web.vercel.app';
+
+async function responde(base) {
+  return fetch(base + '/', { method: 'HEAD', cache: 'no-store', signal: AbortSignal.timeout(10_000) })
+    .then((r) => r.ok).catch(() => false);
+}
 
 function env() {
   const txt = readFileSync(path.join(RAIZ, '.env'), 'utf8');
@@ -172,12 +181,14 @@ async function pg(e, caminho, init = {}) {
  */
 async function esperarNoAr(urls, limiteMs = 6 * 60_000) {
   const inicio = Date.now();
+  const base = (await responde(SITE)) ? SITE : SITE_ALT;
+  if (base !== SITE) console.log(`  ${SITE} não responde desta rede — conferindo por ${SITE_ALT}`);
   process.stdout.write('  esperando o deploy publicar as imagens');
   for (;;) {
     // HEAD .ok NAO basta: o site e SPA e o Vercel devolve index.html com 200
     // para caminho inexistente. Foi assim que a ESG-030 passou na espera com a
     // URL errada e entrou torta no banco. Confere o content-type tambem.
-    const res = await Promise.all(urls.map((u) => fetch(SITE + u, { method: 'HEAD', cache: 'no-store' })
+    const res = await Promise.all(urls.map((u) => fetch(base + u, { method: 'HEAD', cache: 'no-store', signal: AbortSignal.timeout(15_000) })
       .then((r) => r.ok && (r.headers.get('content-type') ?? '').startsWith('image/')).catch(() => false)));
     if (res.every(Boolean)) { process.stdout.write(` ${ok('no ar')}\n`); return true; }
     if (Date.now() - inicio > limiteMs) { process.stdout.write(` ${erro('tempo esgotado')}\n`); return false; }
