@@ -102,6 +102,7 @@ confiável:
 | ESG-034 Ceramic China Blue | H210 S46 V68 | 2,4 | confiável |
 | ESG-035 Racing Green | H89 S46 V50 | 1,2 | confiável |
 | ESG-036 Armor Green | H76 S13 V62 | 1,1 | confiável |
+| ESG-040 Oolong Milk Tea Pink | H331 S28 V86 | 0,2 | confiável (2 de 4 — 2 com sombra descartadas) |
 | ESG-037 Khaki Grey | H98 S10 V78 | 1,4 | confiável (3 de 5 fotos — 2 com sombra de mão descartadas) |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -453,6 +454,16 @@ estoura 6 a 14% dos pixels. Solução: **manifesto sem `leitura`** — o comando
 a correção — e aceitar as imagens como nascem, desde que batam o piloto. Na
 ESG-038 as cinco ficaram a ±3° de matiz do piloto, todas com S 99.
 
+### Cor clara bate no teto de valor da correção (ESG-040, V 86)
+
+A máscara do `--tudo` corta valor acima de 0,80 para proteger o especular. Numa
+cor pastel com V 86 o próprio filme fica acima disso: a capa saiu com máscara
+de 0% e o comando aplicaria uma gama de valor sobre sombra. Solução: campo
+**`val_max`** no manifesto (0,95 aqui). E o macro nasceu em H 349, na borda da
+família `rosa` (termina em 350) — máscara vazia. Família nova **`malva`
+(300–5)**, que cruza 0° e por isso pega o vermelho do logo: usar com
+**`marca_depois`**, nunca com `logo`.
+
 ### Sombra sobre o cartão entra na leitura
 
 Na ESG-037 duas das cinco fotos tinham a sombra da mão cobrindo metade do
@@ -615,6 +626,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-037 Khaki Grey | Ferrari Roma | pátio modernista de ardósia escura |
 | ESG-038 Porsche Lava Orange | Porsche 911 GT3 RS | mirante de estrada de montanha, asfalto e rocha cinza |
 | ESG-039 Strawberry Red | Alfa Romeo Giulia Quadrifoglio | estacionamento de cobertura, concreto claro, céu aberto |
+| ESG-040 Oolong Milk Tea Pink | Bentley Continental GT | pátio de galeria minimalista, granilite claro e aço grafite |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

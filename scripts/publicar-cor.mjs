@@ -326,7 +326,9 @@ async function gravarComRetentativa(caminho, buf, tentativas = 6) {
   for (let i = 0; i < tentativas; i++) {
     try { writeFileSync(caminho, buf); return; }
     catch (e) {
-      if (!['EPERM', 'EBUSY', 'EACCES'].includes(e.code) || i === tentativas - 1) throw e;
+      // UNKNOWN (-4094) e o que o Windows devolve quando o OneDrive segura o arquivo
+      // no meio da sincronizacao — mesmo caso do EPERM, so com outro nome.
+      if (!['EPERM', 'EBUSY', 'EACCES', 'UNKNOWN'].includes(e.code) || i === tentativas - 1) throw e;
       await new Promise((r) => setTimeout(r, 300 * (i + 1)));
     }
   }
@@ -379,7 +381,12 @@ async function corrigir(slug, entrada) {
       // abaixo do corte padrao de 0,18 e a mascara sai vazia. O corte existe para
       // separar filme de fundo cinza; nessas cores quem separa e a faixa de matiz.
       r = await corrigirArquivo(sharp, a.caminho, alvo, fam, a.manterValor,
-        entrada.sat_min != null ? { satMin: entrada.sat_min } : {});
+        {
+          ...(entrada.sat_min != null ? { satMin: entrada.sat_min } : {}),
+          // `val_max`: cor clara (ESG-040, V 86) fica acima do teto padrao de 0,80,
+          // que existe para proteger o especular — e a mascara perde o proprio filme.
+          ...(entrada.val_max != null ? { valMax: entrada.val_max } : {}),
+        });
     } catch (e) {
       console.log(`  ${a.nome.padEnd(26)} ${erro('falhou')}   ${e.message}`);
       parar = { nome: a.nome, causa: 'erro', detalhe: e.message }; continue;
@@ -416,13 +423,22 @@ async function corrigir(slug, entrada) {
   if (entrada.marca_depois && entrada.capa) {
     const L = entrada.marca_depois;
     const capa = path.join(RAIZ, dirCapa(entrada), `${slug}.webp`);
-    const lado = (await sharp(capa).metadata()).width;
+    // Le a capa para a MEMORIA antes de abrir no sharp. Abrindo pelo caminho, o
+    // sharp mantem o arquivo aberto no cache dele, e no Windows isso impede a
+    // gravacao por cima do mesmo arquivo logo em seguida: foi o UNKNOWN (-4094)
+    // da ESG-040, que nao passava nem com retentativa. Mesma regra da correcao
+    // de cor (corrigirArquivo): buffer primeiro, nunca o caminho do alvo.
+    const original = readFileSync(capa);
+    const lado = (await sharp(original).metadata()).width;
     const marca = await sharp(path.join(RAIZ, L.arquivo))
       .resize({ width: Math.round(lado * L.largura) }).toBuffer();
-    const buf = await sharp(capa).composite([{
+    const buf = await sharp(original).composite([{
       input: marca, left: Math.round(lado * L.esquerda), top: Math.round(lado * L.topo),
     }]).webp({ quality: 92, effort: 6 }).toBuffer();
-    writeFileSync(capa, buf);
+    // Mesma gravacao com retentativa da correcao de cor. A primeira versao usava
+    // writeFileSync direto e caiu na ESG-040 com UNKNOWN (-4094): o OneDrive
+    // estava segurando o .webp que a correcao tinha acabado de gravar.
+    await gravarComRetentativa(capa, buf);
     console.log(`  ${'marca na capa'.padEnd(26)} ${ok('aplicada')}`);
   }
 }

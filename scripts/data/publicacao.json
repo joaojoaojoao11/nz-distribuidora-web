@@ -1,4 +1,53 @@
 {
+  "speed-wrapping-esg-040-super-gloss-oolong-milk-tea-pink-pet-spwesg040": {
+    "mensagem": "feat(esg-040): Bentley Continental GT + capa com referencia ESG-034/033 (#DB9FBC) Oolong Milk Tea Pink; familia malva e val_max",
+    "leitura": "#DB9FBC",
+    "familia": "malva",
+    "val_max": 0.95,
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_013128_41a57ae2-d478-4518-9096-6076c2d3eeb6.png",
+    "marca_depois": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Bentley Continental GT envelopado em Speed Wrapping ESG 040 Super Gloss Oolong Milk Tea Pink",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-040-super-gloss-oolong-milk-tea-pink-pet-spwesg040.webp",
+      "scripts/lib/cor.mjs",
+      "scripts/publicar-cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_012643_2f4f68f5-db76-406b-b2a2-f170d653ebd6.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_013128_2129f43e-9c22-449f-8675-7e021850c1f7.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_013128_e13aaf8a-af08-4cee-93cc-5b3efe90c2fe.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_013128_db381bb0-197c-4b9b-80fe-1a756b019e3f.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-039-super-gloss-strawberry-red-pet-spwesg039": {
     "mensagem": "feat(esg-039): Alfa Romeo Giulia Quadrifoglio + capa com referencia ESG-034/033 (#D91122) Strawberry Red",
     "leitura_referencia": "#D91122",

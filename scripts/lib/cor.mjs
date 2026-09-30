@@ -26,6 +26,11 @@ export const FAIXAS = {
   // borda de 'verde' (rampa 72-86) e de 'amarelo' (termina em 75): nas duas a
   // mascara pegava menos da metade do filme.
   salvia: [50, 115],
+  // malva: rosa pastel que atravessa a borda de 'rosa' (termina em 350). Na ESG-040
+  // Oolong Milk Tea Pink as geracoes nascem entre H 340 e 349 e a mascara 'rosa'
+  // saia vazia no macro. Cruza 0 graus, entao pega o vermelho do logo (H ~2):
+  // usar sempre com `marca_depois`, nunca com `logo`.
+  malva: [300, 5],
 };
 
 const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
