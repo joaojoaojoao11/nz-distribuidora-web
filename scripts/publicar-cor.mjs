@@ -378,6 +378,11 @@ async function corrigir(slug, entrada) {
     // Em foto de cena metade da lataria esta em sombra: levantar o valor ate a
     // leitura clareia o carro a toa. So matiz e saturacao andam.
     manterValor: true,
+    // `sat_min_cena`: corte de saturacao SO nas fotos de cena. Na EDG-025 (ouro,
+    // H 45) o concreto claro da barragem cai na mesma faixa de matiz com S
+    // 0,15-0,25 e a correcao pintou mureta e asfalto de amarelo; o carro fica em
+    // S 0,35-0,60. A capa (fundo branco) nao precisa e segue com o corte padrao.
+    satMin: entrada.sat_min_cena ?? null,
   }));
   if (entrada.capa) {
     alvos.push({ caminho: path.join(RAIZ, dirCapa(entrada), `${slug}.webp`), nome: 'capa', manterValor: false });
@@ -393,7 +398,8 @@ async function corrigir(slug, entrada) {
       // separar filme de fundo cinza; nessas cores quem separa e a faixa de matiz.
       r = await corrigirArquivo(sharp, a.caminho, alvo, fam, a.manterValor,
         {
-          ...(entrada.sat_min != null ? { satMin: entrada.sat_min } : {}),
+          ...(a.satMin != null ? { satMin: a.satMin }
+            : entrada.sat_min != null ? { satMin: entrada.sat_min } : {}),
           // `val_max`: cor clara (ESG-040, V 86) fica acima do teto padrao de 0,80,
           // que existe para proteger o especular — e a mascara perde o proprio filme.
           ...(entrada.val_max != null ? { valMax: entrada.val_max } : {}),
