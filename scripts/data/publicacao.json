@@ -1,4 +1,62 @@
 {
+  "speed-wrapping-edg-025-mettalic-paint-mettalic-solar-gold-pet-spwedg025": {
+    "mensagem": "feat(edg-025): Jaguar F-Type R + capa metalica com referencia ESG-034/033 (#7F7148) Metallic Solar Gold",
+    "leitura": "#7F7148",
+    "nota_cor": "Amostra do catalogo fisico no Drive (EDG 025 METALLIC PAINT METALLIC SOLAR GOLD PET), 4 fotos, H45.0 S43.4 V49.6, sd(H) 1.9 sd(S) 2.4 sd(V) 3.3 — confiavel. Piloto B aprovado pelo Joao em 30/09 (H37 S54 V31; lataria iluminada S45 V52): geracao saiu ~8 graus mais bronze, a correcao gira o matiz. familia nova `dourado` (22-62): a geracao nasce em H 37-41, na borda de laranja (rampa 34-48) e de amarelo (rampa 35-49) — em H 41 a capa saiu com mascara vazia nas duas. `sat_min_cena` 0.40: sem ele a correcao pintou de amarelo o concreto da barragem (S 0,15-0,25, mesmo matiz); carro fica em S 0,35-0,60.",
+    "familia": "dourado",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_200953_86fbe076-1736-4b12-ba68-90cb55c63159.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Jaguar F-Type R envelopado em Speed Wrapping EDG 025 Metallic Solar Gold",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-025-mettalic-paint-mettalic-solar-gold-pet-spwedg025.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/lib/cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_200545_5075c661-f386-4ad9-ade0-5610aaa613a7.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_200952_f7f9c532-276d-4bfe-8d62-a4cf363f7f1e.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_200952_79bdd631-1de7-466b-859b-53b575520a39.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_200952_9f85cf08-bcf4-4635-9897-e6a898d58114.png",
+        "nota": "macro do metalico"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro quality medium 3:2 · capa quality high 1:1 com medias ESG-034 (a811cd95) + ESG-033 (d1170724)",
+      "carro_cor": "1. HUE: an antique brass gold that leans slightly toward olive, like old brass or dark honey, hex #7F7148 (hue about 45 degrees). 2. CHROMA: mellow and restrained, about 43 percent saturation: a rich but quiet gold, like antique gold leaf, not a bright lemon gold. 3. BRIGHTNESS: medium-dark, about 50 percent value overall. Where panels face the sky the colour blooms into a bright champagne gold; on the lower flanks and in shadow it falls to a deep olive bronze.",
+      "carro_acabamento": "gloss metallic paint. A wet, deep, high-gloss clear layer over a fine metallic flake. In the sunlight the flake lights up as a dense, fine sparkle inside the highlights, exactly like factory metallic car paint, never coarse glitter or confetti. Strong flop.",
+      "carro_cenario": "the road across the crest of a large concrete dam: pale grey concrete parapet walls and road surface, the wide reservoir of deep blue-grey water beside it, forested mountains fading into a cool haze. Sun low from the side, thin high haze.",
+      "estrutura": "mesma de EDG-020 (prompts.carro_frontal): FRAMING / COLOR 1-2-3 / FINISH / SETTING / LIGHTING / REALISM; carro Jaguar F-Type R coupe",
+      "capa_bloco_cor": "THE FILM COLOUR is neither of the two references: it is hex #7F7148, RGB (127, 113, 72) - an antique brass gold leaning slightly toward olive, like old brass or antique gold leaf, mellow saturation (about 43 percent), medium-dark in value (about 50 percent). THE FILM IS METALLIC, unlike image 2: a fine metallic flake under the gloss. Next to the white specular band the colour blooms into a bright champagne gold and the flake shows as a dense, fine, even sparkle, like factory metallic car paint; it deepens to a dark olive bronze on the lower flank. Never coarse glitter or confetti, no orange peel."
+    },
+    "sat_min_cena": 0.4
+  },
   "speed-wrapping-edg-020-metal-ruby-red-pet-spwedg020": {
     "mensagem": "feat(edg-020): McLaren Artura + primeira capa metalica com referencia ESG-034/033 (#8B0019) Liquid Metal Ruby Red",
     "leitura_referencia": "#8B0019",

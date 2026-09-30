@@ -78,6 +78,7 @@ FAIXAS = {
     'rosa': (290.0, 350.0),
     'salvia': (50.0, 115.0),  # verde-acinzentado amarelado, ESG-036 (H 76)
     'malva': (300.0, 5.0),  # rosa pastel ESG-040; cruza 0 grau, pega o logo
+    'dourado': (22.0, 62.0),  # ouro/latao metalico EDG-025 (H 45); geracao nasce em H 37-41
 }
 
 

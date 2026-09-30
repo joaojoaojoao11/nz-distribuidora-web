@@ -303,6 +303,7 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | ESG-039 Strawberry Red | `#D91122` (do piloto aprovado) · H 356 · S 99 | super gloss sólido | referência ESG-034 + ESG-033; silhueta 92% igual; **sem correção** (cor no teto) |
 | ESG-040 Oolong Milk Tea Pink | `#DB9FBC` · H 331 · S 28 · V 86 | super gloss sólido | referência ESG-034 + ESG-033; silhueta 95% igual; `familia: malva`, `val_max: 0.95`, `marca_depois` |
 | EDG-020 Liquid Metal Ruby Red | `#8B0019` (amostra no teto; alvo = piloto aprovado) · H 349 | **gloss metallic** (liquid metal, pigmento ultrafino) | **primeira capa metálica**: referência ESG-034 (geometria) + ESG-033 (brilho) + parágrafo "THE FILM IS METALLIC, unlike image 2" (texto em `publicacao.json` → `prompts.capa_bloco_cor`); silhueta 89%; capa final H 353 · S 95 · V 56; **sem correção** (cor no teto) |
+| EDG-025 Metallic Solar Gold | `#7F7148` · H 45 · S 43 · V 50 | gloss metallic (flake fino visível) | mesmo método metálico da EDG-020; silhueta 89%; geração H 41 → `--tudo` fecha em H 44,6 · S 43,1 · V 49,8 com a família nova `dourado` |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

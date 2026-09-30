@@ -106,6 +106,7 @@ confiável:
 | ESG-041 Cement Grey | H213 S39 V67 | 2,3 | confiável (2 de 4 — 2 com sombra descartadas); piloto aprovado mais escuro, alvo V55 |
 | ESG-037 Khaki Grey | H98 S10 V78 | 1,4 | confiável (3 de 5 fotos — 2 com sombra de mão descartadas) |
 | EDG-020 Liquid Metal Ruby Red | H349 S100 V54 | 0,5 | matiz confiável (sd(H) 1,9); S no teto (câmera estourou), V 42–72 — cartão na mão, no sol; alvo = piloto B aprovado |
+| EDG-025 Metallic Solar Gold | H45 S43 V50 | 2,4 | confiável (4 de 4, cartão na mão mas sem reflexo direto) |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -632,6 +633,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-040 Oolong Milk Tea Pink | Bentley Continental GT | pátio de galeria minimalista, granilite claro e aço grafite |
 | ESG-041 Cement Grey | Maserati MC20 | praça de arenito claro em cânion, paredes ocre |
 | EDG-020 Liquid Metal Ruby Red | McLaren Artura | pátio de hangar de aeroporto executivo, concreto claro e aço cinza-frio |
+| EDG-025 Metallic Solar Gold | Jaguar F-Type R coupé | estrada na crista de barragem de concreto, represa azul-acinzentada e montanhas |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
@@ -701,6 +703,19 @@ metade da lataria está em sombra; levantar isso clareia o carro à toa.
 **Gama de valor fora de 0,6 a 1,6 banda o JPEG.** Na foto de detalhe da Plum
 Crazy, corrigir V de 68 para 46 exigiu gama 2,0 e o painel saiu com blocos
 visíveis, com estouro zero. Nesse caso **regere, não corrija**.
+
+**Cenário de concreto claro contamina cor quente de baixa saturação — `sat_min_cena`.**
+Na EDG-025 Solar Gold (H 45, S 43) o concreto da barragem tem um tom quente de H 35–45 com
+S 0,15–0,25: cai na mesma faixa de matiz e a correção pintou mureta e asfalto de amarelo.
+Quem separa é a saturação — o carro fica em S 0,35–0,60. O campo `sat_min_cena` no
+manifesto (0,40 aqui) sobe o corte só nas fotos de cena; a capa segue com o padrão.
+**Sempre olhar a prévia corrigida antes do `--commit`**: o número "fechou" não enxerga o
+cenário.
+
+**Família na borda da faixa: criar família nova, não forçar.** A geração da EDG-025 nasce em
+H 37–41, na rampa de saída de `laranja` (34–48) e de entrada de `amarelo` (35–49); em H 41 as
+duas dão 0,5 e a capa saiu com máscara vazia. Família nova **`dourado` (22–62)**, longe do
+vermelho do logo — vale com `logo`.
 
 **Foto de cena com fundo da mesma cor não se corrige.** As da Bavarian Blue foram
 publicadas sem correção por isso. A capa é a referência de cor do produto; a foto

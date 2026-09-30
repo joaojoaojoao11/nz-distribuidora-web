@@ -31,6 +31,11 @@ export const FAIXAS = {
   // saia vazia no macro. Cruza 0 graus, entao pega o vermelho do logo (H ~2):
   // usar sempre com `marca_depois`, nunca com `logo`.
   malva: [300, 5],
+  // dourado: ouro/latão metálico (EDG-025 Solar Gold, H 45). As gerações nascem
+  // entre H 37 e 41, na borda de 'laranja' (rampa 34-48) e de 'amarelo' (rampa
+  // 35-49): em H 41 as duas dão 0,5 e a capa saiu com máscara vazia. Longe do
+  // vermelho do logo (H ~1), então vale com `logo`.
+  dourado: [22, 62],
 };
 
 const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
