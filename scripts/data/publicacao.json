@@ -1,4 +1,49 @@
 {
+  "speed-wrapping-esg-039-super-gloss-strawberry-red-pet-spwesg039": {
+    "mensagem": "feat(esg-039): Alfa Romeo Giulia Quadrifoglio + capa com referencia ESG-034/033 (#D91122) Strawberry Red",
+    "leitura_referencia": "#D91122",
+    "nota_cor": "SEM `leitura` de proposito (cor no teto, S 99): mesma regra da ESG-038. Alvo do piloto A aprovado a olho; fotos da amostra estouradas. As 5 imagens ficaram a +-2 graus do piloto.",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_011121_de8062a2-2ef8-4e9b-91d3-66cd292f86c8.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Alfa Romeo Giulia Quadrifoglio envelopado em Speed Wrapping ESG 039 Super Gloss Strawberry Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-039-super-gloss-strawberry-red-pet-spwesg039.webp",
+      "scripts/publicar-cor.mjs",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_010724_045bfc11-284f-4126-88ef-9ba82dc7fd4e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_011121_1abbebd8-9e12-443b-8002-20d2437a97f3.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_011121_2f3ea292-93a3-4316-b731-e4751971ac34.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_011121_4f38047e-1381-4230-a323-93cffb081fee.png",
+        "nota": "macro do gloss solido"
+      }
+    ]
+  },
   "speed-wrapping-esg-038-super-gloss-porsche-lava-orange-pet-spwesg038": {
     "mensagem": "feat(esg-038): Porsche 911 GT3 RS + capa com referencia ESG-034/033 (#F31403) Lava Orange",
     "leitura_referencia": "#F31403",

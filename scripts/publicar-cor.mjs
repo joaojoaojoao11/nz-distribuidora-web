@@ -480,7 +480,27 @@ async function registrar(slug, entrada) {
   if (!prod?.length) morrer(`não achei o produto '${slug}' na tabela produtos`);
   const id = prod[0].id;
 
-  const jaTem = await pg(e, `produto_midia?produto_id=eq.${id}&select=url,ordem`);
+  let jaTem = await pg(e, `produto_midia?produto_id=eq.${id}&select=url,ordem`);
+
+  // Produto recem-criado pelo ERP nasce SEM a capa em produto_midia: as cores
+  // antigas ja tinham a capa cadastrada, entao este passo so inseria as fotos.
+  // Na ESG-038 (primeiro produto novo) a pagina subiu sem capa. Se a capa existe
+  // no disco e nao esta no banco, ela entra na posicao 0, como capa.
+  const urlCapa = `${dirCapa(entrada).replace(/^public/, '')}/${slug}.webp`;
+  const temCapaNoDisco = existsSync(path.join(RAIZ, dirCapa(entrada), `${slug}.webp`));
+  if (temCapaNoDisco && !jaTem.some((m) => m.url === urlCapa)) {
+    for (const m of [...jaTem].sort((a, b) => b.ordem - a.ordem)) {
+      await pg(e, `produto_midia?produto_id=eq.${id}&url=eq.${encodeURIComponent(m.url)}`,
+        { method: 'PATCH', body: JSON.stringify({ ordem: m.ordem + 1 }) });
+    }
+    await pg(e, 'produto_midia', { method: 'POST', body: JSON.stringify([{
+      produto_id: id, tipo: 'imagem', url: urlCapa, ordem: 0, capa: true, origem: 'estatico',
+      alt: `Rolo ${(entrada.alt_base ?? slug).replace(/^.* em /, '')}`,
+    }]) });
+    await pg(e, `produtos?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ imagem: urlCapa }) });
+    console.log(`  ${ok('capa')} registrada como imagem principal (estava faltando no banco).`);
+    jaTem = await pg(e, `produto_midia?produto_id=eq.${id}&select=url,ordem`);
+  }
   const existentes = new Set(jaTem.map((m) => m.url));
   let ordem = jaTem.reduce((mx, m) => Math.max(mx, m.ordem), -1);
 

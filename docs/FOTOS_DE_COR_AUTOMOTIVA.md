@@ -614,6 +614,7 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-036 Armor Green | Audi RS e-tron GT | chão de pedreira de granito cinza-frio |
 | ESG-037 Khaki Grey | Ferrari Roma | pátio modernista de ardósia escura |
 | ESG-038 Porsche Lava Orange | Porsche 911 GT3 RS | mirante de estrada de montanha, asfalto e rocha cinza |
+| ESG-039 Strawberry Red | Alfa Romeo Giulia Quadrifoglio | estacionamento de cobertura, concreto claro, céu aberto |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
