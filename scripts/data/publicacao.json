@@ -1,4 +1,61 @@
 {
+  "speed-wrapping-edg-027-metallic-paint-metallic-midnight-pluple-pet-spwedg027": {
+    "mensagem": "feat(edg-027): Nissan Skyline GT-R R34 + capa metalica com referencia ESG-034/033 (#554C6E) Metallic Midnight Purple",
+    "leitura": "#554C6E",
+    "nota_cor": "Amostra do catalogo fisico no Drive (EDG 027 METALLIC PAINT METALLIC MIDNIGHT PLUPLE PET — grafia errada no cartao; nome vale o do NZERP), 3 de 4 fotos (WA0139 com S 50 por reflexo descartada): H255.2 S30.7 V43.0, sd(H) 1.7 sd(S) 2.5 — confiavel. Piloto A aprovado pelo Joao em 30/09 (H257 S31). Traseira e perfil regerados com \"bronze six-spoke forged wheels\": a primeira geracao veio com roda de 10 raios, diferente do piloto. familia nova `violeta` (225-285): a geracao nasce em H 255-265, na rampa de entrada de roxo (250-264) e de saida de azul (251-265).",
+    "familia": "violeta",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_230100_c78987ed-875b-4c92-920c-5c3e3d970bb7.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Nissan Skyline GT-R R34 envelopado em Speed Wrapping EDG 027 Metallic Midnight Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-027-metallic-paint-metallic-midnight-pluple-pet-spwedg027.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/lib/cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_225532_91af5f88-5582-4425-85c3-1b0ff934bf2e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_230332_f248a4f7-b701-4027-ab89-96bca9d012c1.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_230332_4dfa1c60-db61-4c10-9f4f-9a794dc92e53.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20260930_230059_9b0d1727-9f09-4931-92a4-bfe5f9e06a4f.png",
+        "nota": "macro do metalico"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro quality medium 3:2 · capa quality high 1:1 com medias ESG-034 (a811cd95) + ESG-033 (d1170724)",
+      "carro": "Nissan Skyline GT-R R34 on bronze six-spoke forged wheels (especificar a roda: sem isso a traseira/perfil vieram com 10 raios)",
+      "carro_cor": "1. HUE: a deep blue-violet midnight purple, like blackcurrant or a dark amethyst, hex #554C6E (hue about 255 degrees). 2. CHROMA: moderate, about 31 percent saturation: a rich but dusky purple, deep and velvety rather than a bright grape. 3. BRIGHTNESS: deep, about 43 percent value overall. Where panels face the sky the colour glows a violet-lavender; on the lower flanks and in shadow it falls to an almost black aubergine.",
+      "carro_acabamento": "gloss metallic paint, fine metallic flake lighting up as a dense fine violet sparkle inside the highlights, strong flop (mesmo bloco da EDG-025 trocando a cor)",
+      "carro_cenario": "a Japanese coastal road: a pale concrete sea wall along the road, a grey rocky shore below, a calm grey-green sea and a wooded headland fading into haze. Sun low from the side, thin high haze.",
+      "capa_bloco_cor": "THE FILM COLOUR is neither of the two references: it is hex #554C6E, RGB (85, 76, 110) - a deep blue-violet midnight purple, like blackcurrant or a dark amethyst, moderate saturation (about 31 percent), deep in value (about 43 percent). THE FILM IS METALLIC, unlike image 2: a fine metallic flake under the gloss. Next to the white specular band the colour glows a violet-lavender and the flake shows as a dense, fine, even violet sparkle, like factory metallic car paint; it deepens to an almost black aubergine on the lower flank. Never coarse glitter or confetti, no orange peel."
+    }
+  },
   "speed-wrapping-emt-022-satin-metallic-matt-titanium-metal-grey-spwemt022": {
     "mensagem": "feat(emt-022): Aston Martin DB12 + primeira capa satin metallic (#7B848C) Titanium Metal Grey",
     "leitura_referencia": "#7B848C",

@@ -108,6 +108,7 @@ confiável:
 | EDG-020 Liquid Metal Ruby Red | H349 S100 V54 | 0,5 | matiz confiável (sd(H) 1,9); S no teto (câmera estourou), V 42–72 — cartão na mão, no sol; alvo = piloto B aprovado |
 | EDG-025 Metallic Solar Gold | H45 S43 V50 | 2,4 | confiável (4 de 4, cartão na mão mas sem reflexo direto) |
 | EMT-022 Titanium Metal Grey | H207 S12 V55 (após balanço de branco pelo cartão branco da foto) | 3,3 (3 de 4) | `ler-amostra` deu S 26: era o céu azul refletindo no acetinado; o cartão branco atrás leu H237 S9 |
+| EDG-027 Metallic Midnight Purple | H255 S31 V43 | 2,5 (3 de 4) | confiável; WA0139 descartada (S 50, reflexo) |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -653,6 +654,7 @@ marca d'água, sem adesivo de patrocínio.
 | EDG-020 Liquid Metal Ruby Red | McLaren Artura | pátio de hangar de aeroporto executivo, concreto claro e aço cinza-frio |
 | EDG-025 Metallic Solar Gold | Jaguar F-Type R coupé | estrada na crista de barragem de concreto, represa azul-acinzentada e montanhas |
 | EMT-022 Satin Metallic Titanium Metal Grey | Aston Martin DB12 | deserto de sal, crosta branca rachada, sol baixo velado |
+| EDG-027 Metallic Midnight Purple | Nissan Skyline GT-R R34 (rodas bronze 6 raios) | estrada costeira japonesa, mureta de concreto, mar verde-acinzentado |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
@@ -734,7 +736,14 @@ cenário.
 **Família na borda da faixa: criar família nova, não forçar.** A geração da EDG-025 nasce em
 H 37–41, na rampa de saída de `laranja` (34–48) e de entrada de `amarelo` (35–49); em H 41 as
 duas dão 0,5 e a capa saiu com máscara vazia. Família nova **`dourado` (22–62)**, longe do
-vermelho do logo — vale com `logo`.
+vermelho do logo — vale com `logo`. Mesmo caso na EDG-027 Midnight Purple (H 255): nasce
+na rampa de `roxo` (250–264) e de `azul` (251–265) → família **`violeta` (225–285)**.
+**Antes de gerar, olhe onde o matiz da leitura cai nas FAIXAS de `scripts/lib/cor.mjs`:** se
+estiver a menos de 14° de uma borda, já use (ou crie) a família centrada nele.
+
+**O carro tem que ser o mesmo nas 4 fotos — até a roda.** Na EDG-027 o piloto veio com roda
+bronze de 6 raios e a traseira/perfil com 10 raios. Depois que o piloto é aprovado, escreva
+no prompt das outras fotos o detalhe marcante do carro do piloto (roda, cor da pinça, asa).
 
 **Foto de cena com fundo da mesma cor não se corrige.** As da Bavarian Blue foram
 publicadas sem correção por isso. A capa é a referência de cor do produto; a foto

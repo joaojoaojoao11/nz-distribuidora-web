@@ -36,6 +36,10 @@ export const FAIXAS = {
   // 35-49): em H 41 as duas dão 0,5 e a capa saiu com máscara vazia. Longe do
   // vermelho do logo (H ~1), então vale com `logo`.
   dourado: [22, 62],
+  // violeta: roxo-azulado (EDG-027 Midnight Purple, H 255). Nasce entre H 255 e
+  // 275, na rampa de entrada de 'roxo' (250-264) e na de saida de 'azul'
+  // (251-265). Longe do vermelho do logo — vale com `logo`.
+  violeta: [225, 285],
 };
 
 const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);

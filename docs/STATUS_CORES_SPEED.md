@@ -21,7 +21,16 @@ site. O código fica no começo, então a ordem não muda.
 
 | EDG-025 | METALLIC PAINT METALLIC SOLAR GOLD PET (NZERP: METALLIC SOLAR GOLD PET — vale o NZERP) | ✅ 30/09 | ✅ 30/09 — `#7F7148` H 45 · S 43 · V 50, sd(S) 2,4 confiável | ✅ 30/09 — B aprovado (Jaguar F-Type R, crista de barragem; H37 S54 V31) | ✅ 30/09 — aprovadas corrigidas (família `dourado`, `sat_min_cena` 0,40; tudo fecha em H 45 · S 43) | ✅ 30/09 — commit `e943eed` (+ `e63cab6` script), 5 mídias no banco, conferido no ar; pasta do Drive ✅ |
 
-| EMT-022 | SATIN METALLIC MATT TITANIUM METAL GREY | ✅ 30/09 | ✅ 30/09 — `ler-amostra` deu H206 S26 (sd(S) 3,3, 3 de 4 fotos) mas era reflexo do céu azul; balanço de branco pelo cartão branco da foto WA0078 (cast H237 S9) → **`#7B848C` H 207 · S 12 · V 55** | ⏳ 30/09 gerado (Lamborghini Huracán Tecnica, deserto de sal nublado) — A `50f7b7bf` lataria H231 S6 V51 · B `af2d8236` H206 S7 V45; aguardando o João | — | — |
+| EMT-022 | SATIN METALLIC MATT TITANIUM METAL GREY | ✅ 30/09 | ✅ 30/09 — `ler-amostra` deu H206 S26 (sd(S) 3,3, 3 de 4 fotos) mas era reflexo do céu azul; balanço de branco pelo cartão branco da foto WA0078 (cast H237 S9) → **`#7B848C` H 207 · S 12 · V 55** | ✅ 30/09 — 1º par (Huracán, nublado) saiu fosco demais; João pediu mais acetinado nas curvas; 2º par: **B2 Aston Martin DB12** aprovado (sol baixo velado, faixa de brilho descrita) | ✅ 30/09 — 3 fotos + capa 2 (H218 S8 V59, só ESG-034 de referência), sem correção (quase neutra); liberado pelo João para subir direto | ✅ 30/09 — commit `cf9b5a7`, 5 mídias, conferido no ar; pasta do Drive ✅ |
+
+| EDG-027 | METALLIC PAINT METALLIC MIDNIGHT PLUPLE PET (erro de grafia no cartão; vale o NZERP: METALLIC MIDNIGHT PURPLE PET) | ✅ 30/09 | ✅ 30/09 — `#554C6E` H 255 · S 31 · V 43 (3 de 4 fotos; WA0139 com S 50 descartada), sd(S) 2,5 confiável | ✅ 30/09 — A aprovado (Nissan Skyline GT-R R34, estrada costeira japonesa; H257 S31) | ⏳ 30/09 geradas (traseira/perfil refeitas p/ manter a roda 6 raios) + corrigidas localmente (família `violeta`; tudo em H 256 · S 31, capa V 43) — prévia em `_AMOSTRAS/EDG-027/`, aguardando ok para publicar | — |
+
+**Cores fora do NZERP com amostra no Drive** (30/09 — pastas renomeadas pelo cartão; não dá
+para publicar antes de cadastrar no NZERP → Tiny → site): EDG-023 Metallic Ruby Gold ·
+EDG-026 Metallic Paint Metallic Sonoma Green · EGF-010 Gloss Forged Carbon Gold · EGF-012
+Gloss Forged Carbon Purple · EGF-013 Matte Forged Carbon Purple · EMG-021 Satin Metallic
+Glossy Agate Green · EMG-022 Satin Metallic Glossy Prunus Sakura Pink · EMT-024 Satin
+Metallic Matt Pearl Pink.
 
 ## Amostra no Drive, ainda não iniciadas (30/09)
 
@@ -35,6 +44,8 @@ neutra — ajustar antes de ler.
 
 ## Concluídas (fotos de carro + capa nova no ar)
 
+EMT-022 Satin Metallic Titanium Metal Grey (30/09, Aston Martin DB12 — primeira EMT e primeira capa satin).
+EDG-025 Metallic Solar Gold (30/09, Jaguar F-Type R — família nova `dourado`, `sat_min_cena`).
 EDG-020 Liquid Metal Ruby Red (30/09, McLaren Artura — primeira EDG e primeira capa metálica).
 ESG-030 a ESG-041 (set/2026) — detalhes em `FOTOS_DE_COR_AUTOMOTIVA.md` e
 `CAPAS_SPEED_WRAPPING.md`.

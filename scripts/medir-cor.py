@@ -79,6 +79,7 @@ FAIXAS = {
     'salvia': (50.0, 115.0),  # verde-acinzentado amarelado, ESG-036 (H 76)
     'malva': (300.0, 5.0),  # rosa pastel ESG-040; cruza 0 grau, pega o logo
     'dourado': (22.0, 62.0),  # ouro/latao metalico EDG-025 (H 45); geracao nasce em H 37-41
+    'violeta': (225.0, 285.0),  # roxo-azulado EDG-027 (H 255); borda de roxo e de azul
 }
 
 
