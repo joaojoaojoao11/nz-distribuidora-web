@@ -42,8 +42,12 @@ pasta · `✅ ` = fotos e capa 100% no site. Ex.: `✅ EDG-020 LIQUID METAL RUBY
 | EGF-013 | MATTE FORGED CARBON PURPLE PET | ✅ 30/09 | ✅ 01/10 — lascas violeta H 266–284 (S ~48) **`#5A3A80`** sobre base `#161020`; **fosco** | ✅ 01/10 — **B** aprovado (`1084225e`) | ✅ 01/10 — aprovadas: closes foscos + capa fosca com o padrão; sem correção | ✅ 01/10 — commit `b006d98`, 5 mídias, conferido no ar; pasta ✅ |
 | EGF-006 | GLOSS FORGED CARBON SILVER PET | ✅ 30/09 | ✅ 01/10 — lascas prata-grafite sobre preto, brilhante; textura do cartão `f9657486` | ✅ 01/10 — **B** aprovado (`caa2f9ea`) | ✅ 01/10 — aprovadas: closes + capa com o padrão; sem correção | ✅ 01/10 — commit `01b512e`, 5 mídias (capa antiga substituída, conferida por hash no ar), nome corrigido no ar; pasta ✅ |
 | EGF-017 | SHADOW BLACK | ✅ 30/09 | ✅ 01/10 — camuflagem preta: manchas preto brilhante × cinza-chumbo acetinado; textura `d0cfb72b` | ✅ 01/10 — **B** aprovado (`5165d1d4`) | ✅ 01/10 — aprovadas: closes + macro brilho × acetinado + capa camuflada | ✅ 01/10 — commit `3eb9121` (deploy demorou; registro no banco na 2ª rodada), 5 mídias, conferido no ar; pasta ✅ |
-| EGF-018 | FORGED CARBON | ✅ 30/09 | ⚠️ 01/10 — **leitura errada na 1ª publicação**: tratei como brilhante; o João corrigiu: é **fosco com flake metálico** nos estilhaços (base preta aveludada). Novo recorte `3f26a272` | ✅ 01/10 — refeito fosco; **B** aprovado (`ee02ef0e`) | ⏳ 01/10 — prévia refeita no acabamento certo (fosco + flake metálico): capô, retrovisor + teto `f0340e89`, teto `97ce4f7d`, macro `036d8721`, capa `35ca16ca` (rolo fosco); aguardando o João para substituir no site | ⚠️ no ar com acabamento errado (commit `2ff4491`); vai ser substituído; pasta volta para 🟢 até corrigir |
+| EGF-018 | FORGED CARBON | ✅ 30/09 | ⚠️ 01/10 — **leitura errada na 1ª publicação**: tratei como brilhante; o João corrigiu: é **fosco com flake metálico** nos estilhaços (base preta aveludada). Novo recorte `3f26a272` | ✅ 01/10 — refeito fosco; **B** aprovado (`ee02ef0e`) | ✅ 01/10 — refeitas no acabamento certo (fosco + flake metálico): closes + capa rolo fosco; sem correção | ✅ 01/10 — 1ª publicação `2ff4491` (brilhante, errada) substituída pelo commit `38bb6c7`; 5 arquivos conferidos por conteúdo no ar; pasta ✅ |
 | ESG-004 | SUPER GLOSS FERRARI RED PET | ✅ 01/10 | ✅ 01/10 — à mão: H 356–1 · S 84–97 · V ~88 → vermelho vivo levemente alaranjado **`#E31E14`** (cor no teto: sem correção) | ✅ 01/10 — **B** aprovado (`0e479703`) | ✅ 01/10 — aprovadas (H 359–5 · S 92–99; capa V 89); sem correção | ✅ 01/10 — commit `70cfffc`, 5 mídias (capa antiga substituída), conferido no ar; pasta ✅ |
+| ESG-011 | SUPER GLOSS MIAMI BLUE PET | ✅ 01/10 | ✅ 01/10 — à mão: H 188–194 · S 87–99 · V 80–86 (asfalto neutro) → **`#05A9CD`** (cor no teto) | ⏳ 01/10 — rascunho (Porsche 911 GT3 Touring, vila branca andaluza) | — | — |
+| ESG-016 | SUPER GLOSS SUNFLOWER YELLOW PET | ✅ 01/10 | ✅ 01/10 — à mão (só fotos sem a ESG-017 atrás): H 40–43 · S 97–99 · V 87–96 → **`#F2A705`** (cor no teto) | ⏳ 01/10 — rascunho (Chevrolet Corvette C8, passo das Dolomitas) | — | — |
+| ESG-025 | SUPER GLOSS LAVENDER PET | ✅ 01/10 | ✅ 01/10 — à mão: H 250–257 · S 38–41 · V 89–92 → **`#A996EA`** (lilás pastel; swatch) | ⏳ 01/10 — rascunho (Mercedes-AMG SL 63, estrada de ciprestes na Toscana) | — | — |
+| EMA-007 | MATT ARMY GREEN | ✅ 01/10 | ✅ 01/10 — à mão (balanço de branco pelo asfalto): H 104–108 · S 25–32 · V 43–48 → **`#5A7351`**; **fosco** (1ª EMA) | ⏳ 01/10 — rascunho (Mercedes-AMG G 63, pista de aeródromo de concreto) | — | — |
 
 **Cadastradas no NZERP em 01/10** (eram as "fora do NZERP" com amostra no Drive): nome lido no rótulo do
 cartão; fiscal, custo, preço da Engenharia e medidas copiados do irmão de linha; criadas no Tiny pela
@@ -67,7 +71,7 @@ sync. Prontas para foto:
 
 Os funcionários subiram 43 cores novas (pastas marcadas 🟢 em 01/10). Todas existem no NZERP e no site, só com a capa antiga (1 mídia, nenhuma foto de carro):
 
-- **ESG (super gloss), 28:** ESG-001 a ESG-029, menos a ESG-004 (no ar em 01/10).
+- **ESG (super gloss), 28:** ESG-001 a ESG-029, menos a ESG-004 (no ar em 01/10); ESG-011, 016 e 025 em andamento.
 - **EMA (matt), 14:** EMA-003 a EMA-015 e EMA-017.
 - ESG-041 ganhou 2 fotos de amostra (já publicada em set/2026; tom ainda a confirmar com o João).
 
