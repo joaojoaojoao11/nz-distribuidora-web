@@ -49,6 +49,11 @@ export const FAIXAS = {
   // branco). O gerador entrega esse verde em H 50-64, fora de 'verde' (comeca em 72) e
   // na rampa de 'salvia' (50-64): a correcao precisa pegar de H ~54 ate o alvo.
   musgo: [40, 130],
+  // militar: verde-militar fosco (EMA-007 Army Green, H 105). O gerador entrega H ~84 e a
+  // lataria acinzentada (S 10-18) pede sat_min baixo; com 'musgo' (40-130) isso tingia o
+  // concreto amarelado (H 40-60) e com 'verde' (ate 200) o cinza-azulado do hangar. 65-130
+  // deixa os dois de fora.
+  militar: [65, 130],
 };
 
 const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
