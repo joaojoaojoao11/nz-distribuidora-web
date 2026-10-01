@@ -127,6 +127,10 @@ confiável:
 | EGF-017 Shadow Black | camuflagem preto brilhante × cinza-grafite acetinado | — | não é forjado: o padrão aparece pela diferença de brilho |
 | EGF-018 Forged Carbon | estilhaços angulosos cinza/grafite sobre preto | — | forjado em estilhaços, não em retângulos |
 | ESG-004 Super Gloss Ferrari Red | H 356–1 · S 84–97 · V ~88 (à mão) → `#E31E14` | — | cor no teto: sem correção |
+| ESG-011 Super Gloss Miami Blue | H 188–194 · S 87–99 · V 80–86 → `#05A9CD` | — | cor no teto: sem correção |
+| ESG-016 Super Gloss Sunflower Yellow | H 40–43 · S 97–99 · V 87–96 → `#F2A705` | — | duas fotos tinham a ESG-017 atrás do cartão: medir só as fotos com o cartão sozinho |
+| ESG-025 Super Gloss Lavender | H 250–257 · S 38–41 · V 89–92 → `#A996EA` (swatch) | — | asfalto neutro; corrigida com `violeta` + `val_max` 0,95 |
+| EMA-007 Matt Army Green | H 104–108 · S 25–32 · V 43–48 (balanço de branco) → `#5A7351` | — | primeira EMA (fosco); gerador entrega oliva acinzentado H ~84 |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -591,6 +595,21 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
 
+### Verde-militar fosco: correção que mancha a porta ou tinge o cenário (EMA-007, 01/10)
+
+O gerador entregou o Army Green como oliva acinzentado (H 84 · S 18; cartão H 105 · S 29). Corrigindo
+com o `sat_min` padrão (0,18), as partes mais cinzentas da lataria (S 10–18) ficaram fora da máscara e
+o **perfil saiu com manchas verdes na porta**. Baixando `sat_min` para 0,06 com a família `musgo`
+(40–130), o **concreto amarelado e a torre ficaram verdes**. O que fechou: família nova `militar`
+(65–130) — fora do concreto (H 40–60) e do cinza-azulado do hangar — com `sat_min`/`sat_min_cena`
+0,06. Regra: em cor de saturação baixa, conferir na prévia **a lataria inteira (manchas)** e **o
+cenário (vazamento)**, e estreitar a faixa de matiz antes de mexer no limite de saturação.
+
+**Fosco de verdade (EMA):** "true MATTE: flat dead-matte like a military vehicle or matte rubberised
+paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; light falls off softly like on
+suede; the black trim and glass stay glossy". Saiu certo de primeira; capa só com a ESG-034
+(geometria) e "NO specular band, only a soft diffuse lightening".
+
 ### Família de correção que cruza o vermelho pinta a lanterna (EMT-024, 01/10)
 
 A `malva` (300–5) cruza 0 grau. Num carro rosa, ela corrige o rosa **e** puxa a lanterna
@@ -760,6 +779,10 @@ marca d'água, sem adesivo de patrocínio.
 | EGF-017 Shadow Black | BMW M4 (G82) branco — closes | rua de cidade, concreto claro (desfocada) |
 | EGF-018 Forged Carbon | McLaren 720S laranja papaya — closes | paddock de autódromo (desfocado) |
 | ESG-004 Super Gloss Ferrari Red | Ferrari F8 Tributo (rodas pretas em Y, pinça vermelha) | estrada na praia de areia preta da Islândia, rochas de basalto |
+| ESG-011 Super Gloss Miami Blue | Porsche 911 GT3 Touring (rodas prata usinadas) | rua de vila branca andaluza, telhado de terracota |
+| ESG-016 Super Gloss Sunflower Yellow | Chevrolet Corvette C8 (rodas grafite) | estrada de montanha nas Dolomitas |
+| ESG-025 Super Gloss Lavender | Mercedes-AMG SL 63 (capota preta, pinça cobre) | estrada de ciprestes na Toscana, campos dourados |
+| EMA-007 Matt Army Green | Mercedes-AMG G 63 (rodas pretas foscas) | pista de aeródromo de concreto, hangar e torre |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

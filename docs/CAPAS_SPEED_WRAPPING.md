@@ -324,6 +324,10 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | EGF-017 Shadow Black | padrão (camuflagem brilho × acetinado) | gloss/satin | ESG-034 + recorte do cartão (`d0cfb72b`) + "soft white highlight that shines on the glossy blotches and stays muted on the satin ones"; capa 2 |
 | EGF-018 Forged Carbon | padrão (estilhaços cinza sobre preto) | gloss forjado | ESG-034 + recorte do cartão (`5980816d`); capa 2 (estilhaços mais nítidos) |
 | ESG-004 Super Gloss Ferrari Red | `#E31E14` · H 3 · S 91 · V 89 | super gloss sólido | ESG-034 + ESG-033 + "SOLID colour, exactly like image 2"; capa 2 (H 5 · S 92 · V 89); sem correção (cor no teto) |
+| ESG-011 Super Gloss Miami Blue | `#05A9CD` · H 191 · S 97 · V 81 | super gloss sólido | ESG-034 + ESG-033 + "SOLID colour, exactly like image 2"; capa 2 (H 189 · S 97 · V 80); sem correção |
+| ESG-016 Super Gloss Sunflower Yellow | `#F2A705` · H 41 · S 98 · V 95 | super gloss sólido | idem; capa 1 (H 41 · S 99 · V 93); sem correção |
+| ESG-025 Super Gloss Lavender | `#A996EA` · H 253 · S 36 · V 92 | super gloss sólido | idem; capa 2 → `--corrigir` fecha em H 253,6 · S 36,1 · V 91,8 (família `violeta`, `val_max` 0,95) |
+| EMA-007 Matt Army Green | `#5A7351` · H 105 · S 29 · V 45 | **matt** (fosco) | **primeira capa fosca lisa**: só ESG-034 (geometria) + "TRUE MATTE… NO specular band"; capa 2 → fecha em H 104,2 · S 29,6 · V 45,1 (família nova `militar`) |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

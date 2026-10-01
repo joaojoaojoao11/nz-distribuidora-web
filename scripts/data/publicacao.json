@@ -1,4 +1,220 @@
 {
+  "speed-wrapping-esg-011-super-gloss-miami-blue-pet-spwesg011": {
+    "mensagem": "feat(esg-011): Porsche 911 GT3 Touring + capa super gloss com referencia ESG-034/033 (#05A9CD) Miami Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "#05A9CD",
+    "nota_cor": "Amostra do catalogo fisico (ESG 011 SUPER GLOSS MIAMI BLUE PET). A mao: H188-194 S87-99 V80-86 (asfalto neutro) -> #05A9CD. Piloto B aprovado 01/10. Sem correcao: cor no teto de saturacao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Porsche 911 GT3 Touring (992) on machined silver five-double-spoke wheels",
+      "carro_cor": "1. HUE: a vivid Miami blue, a bright turquoise-cyan blue like tropical pool water, hex #05A9CD (hue about 191). 2. CHROMA: fully saturated. 3. BRIGHTNESS: bright, about 81 percent; shadow falls to deep teal-blue, never grey",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "narrow street in an Andalusian white village, whitewashed walls, terracotta roof tiles, cobblestones; no blue doors, no blue sky dominating"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180048_b421d523-ae96-45ba-ab77-ba85ec4c1df6.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Porsche 911 GT3 Touring envelopado em Speed Wrapping ESG 011 Super Gloss Miami Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-011-super-gloss-miami-blue-pet-spwesg011.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_175525_d575dc96-0a9e-4f29-abbf-6a4e3160fc68.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_cc72f37f-9a83-4c24-a4b4-93ab72dc02b6.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_013d7952-5917-4973-ad1b-4312d71fccf4.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_c53a237d-f139-41f0-86c7-e89a203cc177.png",
+        "nota": "macro do super gloss"
+      }
+    ]
+  },
+  "speed-wrapping-esg-016-super-gloss-sunflower-yellow-pet-spwesg016": {
+    "mensagem": "feat(esg-016): Chevrolet Corvette C8 + capa super gloss com referencia ESG-034/033 (#F2A705) Sunflower Yellow\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "#F2A705",
+    "nota_cor": "Amostra do catalogo fisico (ESG 016 SUPER GLOSS SUNFLOWER YELLOW PET). A mao, so nas fotos sem a ESG-017 atras: H40-43 S97-99 V87-96 -> #F2A705. Piloto B aprovado 01/10 (H44, um pouco mais limao que o cartao). Sem correcao: cor no teto.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Chevrolet Corvette C8 Stingray coupe on dark graphite split-spoke wheels",
+      "carro_cor": "1. HUE: a warm sunflower yellow leaning toward amber, like a ripe sunflower petal or egg yolk, hex #F2A705 (hue about 41). 2. CHROMA: fully saturated. 3. BRIGHTNESS: very bright, about 95 percent; shadow falls to deep golden amber, never brown or olive",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Dolomites mountain pass, dark asphalt, pale grey limestone peaks, green alpine meadow; no yellow flowers"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180048_a48c2345-e292-41b6-99ee-54746534e8bf.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Chevrolet Corvette C8 envelopado em Speed Wrapping ESG 016 Super Gloss Sunflower Yellow",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-016-super-gloss-sunflower-yellow-pet-spwesg016.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_175525_7d4df5e3-8030-4083-ac4c-9781728521a3.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_43c2668f-7393-4365-ac90-01067cc2faa8.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_4a7c79b8-9982-4fe2-bb34-4e8126dd5451.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_44780686-a35c-4479-a1b3-69d926a5ef70.png",
+        "nota": "macro do super gloss"
+      }
+    ]
+  },
+  "speed-wrapping-esg-025-super-gloss-lavender-pet-spwesg025": {
+    "mensagem": "feat(esg-025): Mercedes-AMG SL 63 + capa super gloss com referencia ESG-034/033 (#A996EA) Lavender\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#A996EA",
+    "familia": "violeta",
+    "val_max": 0.95,
+    "nota_cor": "Amostra do catalogo fisico (ESG 025 SUPER GLOSS LAVENDER PET). A mao: H250-257 S38-41 V89-92 (asfalto neutro); swatch fiel #A996EA (H253 S36 V92). Piloto B aprovado 01/10 (H250 S27, mais claro e apagado que o cartao) -> correcao com familia violeta (225-285) e val_max 0,95 (cor clara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Mercedes-AMG SL 63 roadster (R232), black soft top closed, black multi-spoke AMG wheels with copper-bronze calipers",
+      "carro_cor": "1. HUE: a pale lavender, a soft lilac purple leaning slightly toward blue, hex #A996EA (hue about 253). 2. CHROMA: about 36 percent, clear pastel lilac, not grey. 3. BRIGHTNESS: light, about 92 percent",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Tuscan country road lined with dark-green cypress trees, golden harvested wheat fields, stone farmhouse; no lavender fields"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180048_d0584dda-fc41-406f-9f58-4abc88f50e7f.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Mercedes-AMG SL 63 envelopado em Speed Wrapping ESG 025 Super Gloss Lavender",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-025-super-gloss-lavender-pet-spwesg025.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_175525_afb651df-f3df-4ba5-b769-aa0fb42d3eff.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_4584b8ad-2c7e-48ed-8bce-560f257b18c6.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_54ee21df-2f5e-4dd3-8cd2-dafe66f4f965.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_8cd2af68-526a-4d15-a273-324aa1093946.png",
+        "nota": "macro do super gloss"
+      }
+    ]
+  },
+  "speed-wrapping-ema-007-matt-army-green-spwema007": {
+    "mensagem": "feat(ema-007): Mercedes-AMG G 63 + capa fosca com referencia ESG-034 (#5A7351) Matt Army Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#5A7351",
+    "familia": "militar",
+    "nota_cor": "Amostra do catalogo fisico (EMA 007 MATT ARMY GREEN). Primeira EMA (fosco de verdade). A mao com balanco de branco pelo asfalto: H104-108 S25-32 V43-48 -> #5A7351. O gerador entrega oliva acinzentado (H84 S18); corrigido para H104 S30. Piloto B aprovado 01/10 ja corrigido. sat_min/sat_min_cena 0,06: com o padrao 0,18 a lataria mais acinzentada (S 10-18) ficava fora da mascara e o perfil saiu manchado de verde nas portas. Familia nova militar (65-130): com musgo + sat_min baixo o concreto (H 40-60) e a torre ficaram verdes.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Mercedes-AMG G 63 on matte black AMG multi-spoke wheels",
+      "carro_cor": "1. HUE: a military army green, a muted sage-leaning olive green, hex #5A7351 (hue about 105). 2. CHROMA: muted, about 29 percent. 3. BRIGHTNESS: medium-dark, about 45 percent",
+      "carro_acabamento": "true MATTE: flat dead-matte like a military vehicle or matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; light falls off softly like on suede; black trim and glass stay glossy",
+      "carro_cenario": "old concrete airfield runway, grey aircraft hangar, control tower, overcast-bright sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180048_0f9faeb8-92d2-4a6c-9fe9-e955c4e764af.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Mercedes-AMG G 63 envelopado em Speed Wrapping EMA 007 Matt Army Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-007-matt-army-green-spwema007.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/lib/cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_175525_1497a65c-2d72-4567-9bae-a313ac334a5b.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_36f11c42-c698-42e2-847e-8f0f32b2b5e5.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_33f7dcd2-cd89-434e-bc5b-c2493a343e48.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_951293c8-6b6e-42b9-bb50-0cec209ab669.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "sat_min": 0.06,
+    "sat_min_cena": 0.06
+  },
   "speed-wrapping-egf-006-carbon-gloss-5d-spwegf006": {
     "mensagem": "feat(egf-006): close de aplicacao parcial (capo, teto, retrovisor) + capa com padrao do cartao EGF 006 Gloss Forged Carbon Silver PET\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "leitura_referencia": "padrao (textura do cartao)",
