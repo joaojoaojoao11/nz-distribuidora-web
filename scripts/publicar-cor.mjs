@@ -372,7 +372,10 @@ async function corrigir(slug, entrada) {
   const fam = entrada.familia ?? 'verde';
   console.log(`\ncorrigindo a cor contra ${entrada.leitura} (família ${fam})\n`);
 
-  const alvos = entrada.fotos.map((f) => ({
+  // `corrigir_apenas: "capa"`: as fotos ja estao na cor e o ceu da cena cai perto
+  // da faixa de matiz (ESG-005 verde e EMA-009 violeta, lote 8) — corrige so a capa.
+  const fotos = entrada.corrigir_apenas === 'capa' ? [] : entrada.fotos;
+  const alvos = fotos.map((f) => ({
     caminho: path.join(RAIZ, dirFotos(entrada), `${slug}-${f.n}.jpg`),
     nome: `-${f.n} ${f.nota ?? ''}`,
     // Em foto de cena metade da lataria esta em sombra: levantar o valor ate a

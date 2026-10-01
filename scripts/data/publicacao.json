@@ -1,4 +1,1073 @@
 {
+  "speed-wrapping-esg-002-super-gloss-piano-white-pet-spwesg002": {
+    "mensagem": "feat(esg-002): Range Rover + capa super gloss com referencia ESG-034/033 (#ECEEF1) Super Gloss Piano White\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 002 SUPER GLOSS PIANO WHITE PET). Leitura a mao, lote 8 (20 cores, 01/10): V 89-91 S 7-9 (balanco frio do asfalto) -> branco neutro -> #ECEEF1. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Range Rover (L460) on dark grey multi-spoke wheels, gloss black window trim",
+      "carro_cor": "a pure neutral piano white, hex #ECEEF1, no cream/yellow/blue; about 93 percent",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Giant's Causeway coastal road, dark basalt columns, grey sea; bright overcast with direction"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213024_0bdc3c5d-61d4-4693-9c57-d7a60242b8fc.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Range Rover envelopado em Speed Wrapping ESG 002 Super Gloss Piano White",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-002-super-gloss-piano-white-pet-spwesg002.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205844_d2f84eaf-f731-4dca-b2ae-25cb0a53f6db.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_848609fb-1597-4a36-bf63-9cf38da0bab3.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_ab118ead-95a0-43a6-8a39-07f0df7af27c.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_e84b855f-27d5-4cec-8cf6-7bbdea74f380.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#ECEEF1"
+  },
+  "speed-wrapping-esg-003-super-gloss-porsche-rouge-red-pet-spwesg003": {
+    "mensagem": "feat(esg-003): Porsche 918 Spyder + capa super gloss com referencia ESG-034/033 (#DE2834) Super Gloss Porsche Rouge Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 003 SUPER GLOSS PORSCHE ROUGE RED PET). Leitura a mao, lote 8 (20 cores, 01/10): H 354-357 S 74-85 V 84-89 -> #DE2834. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Porsche 918 Spyder, black roof panels, black five-spoke centre-lock wheels",
+      "carro_cor": "a pure vivid red, very slightly cool, hex #DE2834 (H 356), not orange, not pink; S 82; V 87",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Transfagarasan road, Romania; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213023_e8c6c5e2-a196-463f-b8aa-6cb21b757cee.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Porsche 918 Spyder envelopado em Speed Wrapping ESG 003 Super Gloss Porsche Rouge Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-003-super-gloss-porsche-rouge-red-pet-spwesg003.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205844_d95eaf06-5e9d-43bf-92ba-c6586ff5e5dc.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_f64ee099-c8db-4c6d-948a-9acc6f9c6e41.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_3085fd40-d477-48b9-81fa-7ba8a961decc.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_48147f33-0f02-4ade-97b0-f82b3e98e52e.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#DE2834"
+  },
+  "speed-wrapping-esg-005-super-gloss-viper-green-pet-spwesg005": {
+    "mensagem": "feat(esg-005): Dodge Viper ACR + capa super gloss com referencia ESG-034/033 (#49D12E) Super Gloss Viper Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 005 SUPER GLOSS VIPER GREEN PET). Leitura a mao, lote 8 (20 cores, 01/10): H 103-111 S 67-81 V 79-84 (fotos so com o cartao: S 75-81) -> #49D12E. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Correcao com a familia verde so na capa (as fotos ja estao na cor e o ceu cai perto da faixa).",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Dodge Viper ACR (5th gen), big rear wing, no stripes, black wheels",
+      "carro_cor": "a vivid pure green leaning slightly yellow, like spring grass, hex #49D12E (H 110); S 78; V 82",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Stelvio Pass above the tree line, snow walls, grey scree; no grass; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213023_a684e6a6-7a76-4981-849c-0b502b7344dc.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Dodge Viper ACR envelopado em Speed Wrapping ESG 005 Super Gloss Viper Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-005-super-gloss-viper-green-pet-spwesg005.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205844_142bdc41-5ad2-4008-9a80-b03226451cb2.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_488e2131-4b2c-45a6-973f-9c9f5aa71c95.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_b932ff3a-20be-433b-946c-2fbfba960373.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_9d40be3f-6fb8-4a1c-89ee-3db48669f8b5.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura": "#49D12E",
+    "familia": "verde",
+    "corrigir_apenas": "capa"
+  },
+  "speed-wrapping-esg-009-super-gloss-saspphire-pet-spwesg009": {
+    "mensagem": "feat(esg-009): Ferrari SF90 Stradale + capa super gloss com referencia ESG-034/033 (#0256E6) Super Gloss Sapphire\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 009 SUPER GLOSS SAPPHIRE PET). Leitura a mao, lote 8 (20 cores, 01/10): H 218 S 98-100 V 89-92 (so as 2 fotos com o cartao sozinho) -> #0256E6. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Ferrari SF90 Stradale on black five-spoke wheels",
+      "carro_cor": "a deep vivid royal blue, sapphire, hex #0256E6 (H 218); fully saturated; V 90",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "cobblestone street in Guanajuato, ochre/terracotta facades, little sky; sun"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213025_9e281678-6cd3-4283-bd17-b58e4f5eee82.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari SF90 Stradale envelopado em Speed Wrapping ESG 009 Super Gloss Sapphire",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-009-super-gloss-saspphire-pet-spwesg009.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205844_ab7ffa5d-ec46-4d93-9da1-dd444cdf9ebe.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_f49bd137-48c5-455a-8ebf-413ded9a89cc.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_e1d670f8-541f-4018-a26c-d03b2b1ca1eb.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212448_22b23855-123a-4565-9355-80d006fbc224.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#0256E6"
+  },
+  "speed-wrapping-esg-012-super-gloss-ice-cream-blue-pet-spwesg012": {
+    "mensagem": "feat(esg-012): Alpine A110 + capa super gloss com referencia ESG-034/033 (#049EE0) Super Gloss Ice Cream Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 012 SUPER GLOSS ICE CREAM BLUE PET). Leitura a mao, lote 8 (20 cores, 01/10): H 197-200 S 98 V 83-91 -> #049EE0. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Correcao com a familia azul nas fotos e na capa; cenario conferido sem vazamento.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Alpine A110 on gloss black wheels",
+      "carro_cor": "a bright cerulean blue between sky blue and cyan, hex #049EE0 (H 198); fully saturated; V 88",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "road through an autumn birch forest, golden leaves; sun between trees"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213024_81ef3f39-75f4-4fd6-b40d-4fd5425e7c9d.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Alpine A110 envelopado em Speed Wrapping ESG 012 Super Gloss Ice Cream Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-012-super-gloss-ice-cream-blue-pet-spwesg012.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205844_5801e438-dc29-4087-9694-88a73f12d767.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_2275d2a9-103c-4eb4-ac52-ae09f1a03f52.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212558_ed2b17c5-7b9f-45f6-b29d-969066de7fdb.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_ff6907e0-962f-4ae0-93c1-8e3095ec27cd.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura": "#049EE0",
+    "familia": "azul"
+  },
+  "speed-wrapping-esg-014-super-gloss-tiffany-pet-spwesg014": {
+    "mensagem": "feat(esg-014): BMW Z4 M40i + capa super gloss com referencia ESG-034/033 (#76D6D3) Super Gloss Tiffany\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 014 SUPER GLOSS TIFFANY PET). Leitura a mao, lote 8 (20 cores, 01/10): H 176-180 S 44 V 81-85 -> #76D6D3. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "BMW Z4 M40i (G29), black fabric roof closed, dark grey wheels",
+      "carro_cor": "a pale mint turquoise, Tiffany blue, hex #76D6D3 (H 178); S 45; V 84",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "White Sands gypsum dunes; bright hazy sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213024_e5ac7347-1a5f-4571-a1cf-4e92c252b454.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "BMW Z4 M40i envelopado em Speed Wrapping ESG 014 Super Gloss Tiffany",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-014-super-gloss-tiffany-pet-spwesg014.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205845_380ce27e-5e50-44c9-9468-6f17bb449858.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_f0be0e56-7b7c-4c7d-94f4-66959fbf2d22.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_b7f005d3-2d61-42b3-b778-d32e9140b957.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_c7b5f807-8a5e-4269-96b9-e2498ba379ff.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#76D6D3"
+  },
+  "speed-wrapping-esg-015-super-gloss-shark-blue-pet-spwesg015": {
+    "mensagem": "feat(esg-015): Subaru WRX STI + capa super gloss com referencia ESG-034/033 (#1366EB) Super Gloss Shark Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 015 SUPER GLOSS SHARK BLUE PET). Leitura a mao, lote 8 (20 cores, 01/10): H 215-219 S 90-94 V 86-99 -> #1366EB. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Subaru WRX STI (2015-2021) with large rear wing, gold multi-spoke wheels",
+      "carro_cor": "a bright electric azure blue, hex #1366EB (H 217), lighter than navy/royal; S 92; V 92",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "quiet residential street in Tokyo, light grey buildings, little sky; sun"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213123_cac92f5b-5f15-4fd6-80bb-55cd5a1fdb8c.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Subaru WRX STI envelopado em Speed Wrapping ESG 015 Super Gloss Shark Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-015-super-gloss-shark-blue-pet-spwesg015.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205847_ef091bf2-68b7-45bc-b6ce-c3f571caf0fb.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_c12a55ec-d602-4fa0-9ea8-054a4eb5d118.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_02f7af14-69fa-454f-bd38-d37e85f809fb.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_f0eac83c-af4b-41e4-82d1-114d0b6925eb.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#1366EB"
+  },
+  "speed-wrapping-esg-017-super-gloss-maize-yellow-pet-spwesg017": {
+    "mensagem": "feat(esg-017): Honda NSX + capa super gloss com referencia ESG-034/033 (#F5D314) Super Gloss Maize Yellow\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 017 SUPER GLOSS MAIZE YELLOW PET). Leitura a mao, lote 8 (20 cores, 01/10): H 47-51 S 91-95 V 91-98 (a pastilha ficou mais limao, H 51) -> #F5D314. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Honda NSX (NC1) with black roof, black wheels",
+      "carro_cor": "a vivid lemon-leaning yellow, hex #F5D314 (H 51), not golden; S 92; V 96",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Big Sur coastal highway, grey cliffs, dark blue Pacific; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213123_bf473f1a-d0d6-4bc3-9334-37f3fa32e327.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Honda NSX envelopado em Speed Wrapping ESG 017 Super Gloss Maize Yellow",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-017-super-gloss-maize-yellow-pet-spwesg017.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205847_95cd5b06-dce9-424a-9ffd-43ad012a4ba7.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_1fb1022d-b4bb-4d03-8361-388b4d50b2d4.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_8775719f-cef0-4bf6-969c-b266d293d6c4.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212559_a5067235-e560-4391-84c0-be0d2df787e1.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#F5D314"
+  },
+  "speed-wrapping-esg-019-super-gloss-bright-orange-pet-spwesg019": {
+    "mensagem": "feat(esg-019): Nissan Z + capa super gloss com referencia ESG-034/033 (#F75823) Super Gloss Bright Orange\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 019 SUPER GLOSS BRIGHT ORANGE PET). Leitura a mao, lote 8 (20 cores, 01/10): H 14-17 S 79-89 V 91-100 -> #F75823. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Nissan Z (RZ34) on dark grey wheels, red calipers",
+      "carro_cor": "a vivid red-orange, like a traffic cone / blood orange, hex #F75823 (H 15); S 86; V 97",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Grimsel Pass, grey granite, old snow, dark lake; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213123_a8ca4eed-f530-4573-84b0-31dcf6b1ab9b.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Nissan Z envelopado em Speed Wrapping ESG 019 Super Gloss Bright Orange",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-019-super-gloss-bright-orange-pet-spwesg019.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205847_756d66db-4214-48c6-8141-a3b3bbf7005f.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_f9593d9a-1e07-4e63-b100-9f3f78f029a2.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_640dad61-8ca4-4879-8fca-16526d056a44.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212707_bd937847-950a-4c4e-a8ff-04576fc94f96.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#F75823"
+  },
+  "speed-wrapping-esg-021-super-gloss-beetroot-red-pet-spwesg021": {
+    "mensagem": "feat(esg-021): Mazda MX-5 RF + capa super gloss com referencia ESG-034/033 (#E32454) Super Gloss Beetroot Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 021 SUPER GLOSS BEETROOT RED PET). Leitura a mao, lote 8 (20 cores, 01/10): H 343-346 S 79-89 V 83-94 -> #E32454. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Mazda MX-5 RF (ND), black targa roof, gunmetal wheels",
+      "carro_cor": "a vivid raspberry red, pinkish crimson leaning magenta, hex #E32454 (H 345); S 84; V 89 (nome \"beetroot\" fora do prompt)",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "gravel road in Torres del Paine, beige steppe, turquoise lake; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213123_8642db3b-0309-4bd7-b156-def2cc164aec.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Mazda MX-5 RF envelopado em Speed Wrapping ESG 021 Super Gloss Beetroot Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-021-super-gloss-beetroot-red-pet-spwesg021.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205847_dbd623bb-fba9-4953-bdb7-a67366818b77.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_1d0419f2-59ee-4b15-950d-27b4726278a9.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_4f4019b8-5164-4635-9e81-ec1c736208e0.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_d0829ab4-8f00-48cd-a67d-bd30c419b0f1.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#E32454"
+  },
+  "speed-wrapping-esg-023-super-gloss-peach-pink-pet-spwesg023": {
+    "mensagem": "feat(esg-023): Mini Cooper S + capa super gloss com referencia ESG-034/033 (#F291AD) Super Gloss Peach Pink\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 023 SUPER GLOSS PEACH PINK PET). Leitura a mao, lote 8 (20 cores, 01/10): H 343-344 S 43-50 V 84-100 (pastilha clareada: o cartao e rosa-chiclete) -> #F291AD. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Mini Cooper S (F56), body and roof in the film colour, black wheels",
+      "carro_cor": "a soft candy pink, pale bubblegum, hex #F291AD (H 343), not salmon/coral; S 40; V 95 (nome \"peach\" fora do prompt)",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Paris street, cream limestone Haussmann facades; bright overcast"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213123_fb829192-38dc-4d37-a0a2-1db58597f10b.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Mini Cooper S envelopado em Speed Wrapping ESG 023 Super Gloss Peach Pink",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-023-super-gloss-peach-pink-pet-spwesg023.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205847_703caa5f-3d27-41a5-83d4-cd08887770ca.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212707_1239d67d-cbd6-4fb3-a8ae-5144f23844a7.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_eb324b83-5b7a-41b1-88ae-2d04df7ac063.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_3bb6f6c9-d1e5-428c-9c67-c6100a198785.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#F291AD"
+  },
+  "speed-wrapping-esg-026-super-gloss-mist-blue-pet-spwesg026": {
+    "mensagem": "feat(esg-026): Porsche Panamera Turbo + capa super gloss com referencia ESG-034/033 (#A1BAE6) Super Gloss Mist Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 026 SUPER GLOSS MIST BLUE PET). Leitura a mao, lote 8 (20 cores, 01/10): H 214-224 S 26-36 V 74-90 (face plana: V 90) -> #A1BAE6. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Correcao com a familia azul nas fotos e na capa; cenario conferido sem vazamento.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Porsche Panamera Turbo (2nd gen) on dark grey wheels",
+      "carro_cor": "a pale periwinkle blue with a slight lavender lean, hex #A1BAE6 (H 218); S 30; V 90",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "Old Town Square, Prague, grey cobbles, stone facades; bright overcast"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213123_28b547a5-7728-4dc5-a1b8-cc3d4f9622a8.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Porsche Panamera Turbo envelopado em Speed Wrapping ESG 026 Super Gloss Mist Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-026-super-gloss-mist-blue-pet-spwesg026.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205847_136d7874-c8b5-4126-be91-689d7ed64164.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_b36cc346-fd24-42af-87e1-ed1aa030bf0f.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212706_d459a897-f7a1-4b30-b4b8-1364d5bc2769.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212707_ae7550e7-09d4-4c29-8ff3-f675d3c60530.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura": "#A1BAE6",
+    "familia": "azul",
+    "val_max": 0.95
+  },
+  "speed-wrapping-esg-028-super-gloss-brooklyn-grey-pet-spwesg028": {
+    "mensagem": "feat(esg-028): BMW M3 Touring + capa super gloss com referencia ESG-034/033 (#C2C6CC) Super Gloss Brooklyn Grey\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ESG 028 SUPER GLOSS BROOKLYN GREY PET). Leitura a mao, lote 8 (20 cores, 01/10): V 75-81 S 4-7, levemente frio -> #C2C6CC. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "BMW M3 Touring (G81) on gloss black wheels",
+      "carro_cor": "a light cool grey, faintest blue hint, like BMW Brooklyn Grey, hex #C2C6CC; S 5; V 80; never silver",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "business district plaza (Canary Wharf style), grey granite, glass towers; bright overcast"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213230_2630bf90-6d5b-4062-9f14-863249de46dd.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "BMW M3 Touring envelopado em Speed Wrapping ESG 028 Super Gloss Brooklyn Grey",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-028-super-gloss-brooklyn-grey-pet-spwesg028.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205850_690d54af-41b7-40a0-b1ee-c9a377f2c26b.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212812_ad807b35-26bd-492a-9d58-952e0a7b45e7.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_fd9789c3-6fa7-432a-a7bd-a3e95fecf4cc.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_f9f6aa12-dfc3-4b83-87d7-afebffe5d255.png",
+        "nota": "macro do super gloss"
+      }
+    ],
+    "leitura_referencia": "#C2C6CC"
+  },
+  "speed-wrapping-ema-003-matt-orange-spwema003": {
+    "mensagem": "feat(ema-003): Ford Bronco + capa fosca com referencia ESG-034 (#F2673D) Matt Orange\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMA 003 MATT ORANGE). Leitura a mao, lote 8 (20 cores, 01/10): H 12-15 S 75-85 V 84-97 -> #F2673D. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Ford Bronco 2-door, black flares and hardtop, black wheels, AT tyres",
+      "carro_cor": "a vivid red-orange like a ripe tangerine, hex #F2673D (H 14); S 75; V 95",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; black trim and glass stay glossy",
+      "carro_cenario": "Icelandic highland F-road, black volcanic gravel, dark mountains; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213231_c1ce4b9a-b96c-4b8f-b88b-2fe267169eb6.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ford Bronco envelopado em Speed Wrapping EMA 003 Matt Orange",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-003-matt-orange-spwema003.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205850_85de39cb-11f7-4fab-a032-490ee6c1417e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_b14da55c-24e4-460d-ad31-e9863e68caff.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_fc0a5b29-294b-4c6b-b08a-94374dd30913.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_adc26b72-8093-4ec0-9466-bb5afce6a355.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "leitura_referencia": "#F2673D"
+  },
+  "speed-wrapping-ema-004-matt-yellow-spwema004": {
+    "mensagem": "feat(ema-004): Chevrolet Camaro ZL1 + capa fosca com referencia ESG-034 (#F7A602) Matt Yellow\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMA 004 MATT YELLOW). Leitura a mao, lote 8 (20 cores, 01/10): H 38-42 S 99 V 81-100 -> #F7A602. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Chevrolet Camaro ZL1 (6th gen), black bonnet insert, no stripes, black wheels",
+      "carro_cor": "a deep warm amber yellow like egg yolk, hex #F7A602 (H 40); fully saturated; V 97",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; black trim and glass stay glossy",
+      "carro_cenario": "straight road through the Mojave, Joshua trees, grey mountains; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213230_fd39b109-0200-4d62-82f1-7d36ced26440.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Chevrolet Camaro ZL1 envelopado em Speed Wrapping EMA 004 Matt Yellow",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-004-matt-yellow-spwema004.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205850_5c5c3011-4d4d-407a-b317-6468b4a49410.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_2f41a2e7-ebfc-4927-80f3-b14b275b1323.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_9db4d98a-1225-453e-a158-f823baa15af5.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212812_8efc8054-a344-4d10-b40c-d9fc5bd8f4f3.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "leitura_referencia": "#F7A602"
+  },
+  "speed-wrapping-ema-006-matt-apple-green-spwema006": {
+    "mensagem": "feat(ema-006): Toyota GR86 + capa fosca com referencia ESG-034 (#59BF2A) Matt Apple Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMA 006 MATT APPLE GREEN). Leitura a mao, lote 8 (20 cores, 01/10): H 98-102 S 57-82 V 72-82 (cartao plano: S 79-82) -> #59BF2A. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Correcao com a familia verde nas fotos e na capa; cenario conferido sem vazamento.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Toyota GR86 on black wheels",
+      "carro_cor": "a vivid fresh green leaning yellow, like a green apple, hex #59BF2A (H 101); S 78; V 75",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; black trim and glass stay glossy",
+      "carro_cenario": "modern avenue in Dubai, glass towers, sandstone buildings, no plants; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213230_37552e0a-5edc-45c6-ba86-233d188d5ac7.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Toyota GR86 envelopado em Speed Wrapping EMA 006 Matt Apple Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-006-matt-apple-green-spwema006.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205850_fe3d7216-fac9-430d-92d7-bef694ad6ea0.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_7a996b4f-aa99-472c-b174-88311c51c2c0.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212811_4da726c2-96db-4856-9303-32c075bfa6d6.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212812_8d28f20f-4643-4a0a-b66c-537ce0c163ab.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "leitura": "#59BF2A",
+    "familia": "verde"
+  },
+  "speed-wrapping-ema-009-matt-purple-spwema009": {
+    "mensagem": "feat(ema-009): Tesla Model 3 + capa fosca com referencia ESG-034 (#53369E) Matt Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMA 009 MATT PURPLE). Leitura a mao, lote 8 (20 cores, 01/10): H 255-260 S 48-68 V 49-62 -> #53369E. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Correcao com a familia violeta so na capa (as fotos ja estao na cor e o ceu cai perto da faixa).",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Tesla Model 3 (Highland) on black aero wheels",
+      "carro_cor": "a rich vivid violet-purple, royal purple leaning blue, hex #53369E (H 257); S 66; V 62",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; black trim and glass stay glossy",
+      "carro_cenario": "Capitol Reef, golden sandstone cliffs filling the frame, little sky; clear sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213230_d0d6e6a8-d069-472c-8aa2-e7f83d423d20.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Tesla Model 3 envelopado em Speed Wrapping EMA 009 Matt Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-009-matt-purple-spwema009.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205850_15453f97-d7e0-42dc-9787-01aef9842dbb.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_0e2d9128-67a0-493c-9eae-e9df31ad5586.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_0232e453-a0c1-47c2-8bcc-e02d62f82ccf.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_13017fe8-08fc-471f-bb2c-2a7560507717.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "leitura": "#53369E",
+    "familia": "violeta",
+    "corrigir_apenas": "capa"
+  },
+  "speed-wrapping-ema-011-matt-medium-blue-spwema011": {
+    "mensagem": "feat(ema-011): Hyundai Ioniq 5 N + capa fosca com referencia ESG-034 (#1C66C7) Matt Medium Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMA 011 MATT MEDIUM BLUE). Leitura a mao, lote 8 (20 cores, 01/10): H 212-217 S 73-92 V 71-83 -> #1C66C7. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Hyundai Ioniq 5 N on black wheels",
+      "carro_cor": "a strong medium cobalt blue, hex #1C66C7 (H 214); S 86; V 78",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; black trim and glass stay glossy",
+      "carro_cenario": "courtyard between red-brick warehouses in Manchester, little sky; sun"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213230_0d28b374-b812-480a-92b8-06a7c302e36e.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Hyundai Ioniq 5 N envelopado em Speed Wrapping EMA 011 Matt Medium Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-011-matt-medium-blue-spwema011.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205850_1ce29653-1827-42f2-a991-c09d35b70be4.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_d62e868b-27cf-45d8-bbc8-65d122cc5cf5.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_cfe25073-e464-424f-a602-92ea2dc85080.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_bb64fcc0-47ba-467c-b3ae-9e2dda61ddb8.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "leitura_referencia": "#1C66C7"
+  },
+  "speed-wrapping-ema-013-matt-pink-spwema013": {
+    "mensagem": "feat(ema-013): Audi TT RS + capa fosca com referencia ESG-034 (#E87BB3) Matt Pink\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMA 013 MATT PINK). Leitura a mao, lote 8 (20 cores, 01/10): H 327-331 S 43-51 V 86-95 -> #E87BB3. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Correcao com a familia orquidea nas fotos e na capa; cenario conferido sem vazamento.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Audi TT RS coupe (8S) on dark grey wheels",
+      "carro_cor": "a soft bubblegum pink leaning orchid, hex #E87BB3 (H 329); S 47; V 91",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; black trim and glass stay glossy",
+      "carro_cenario": "Biarritz seafront, grey stone seawall, grey-blue sea, lighthouse; bright overcast"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213233_13365ecc-1176-4b92-84ac-59f21747032f.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Audi TT RS envelopado em Speed Wrapping EMA 013 Matt Pink",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-013-matt-pink-spwema013.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205853_f2258e23-c0b9-4ad6-a14c-521ea49cc898.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_510f956d-f25e-4689-b2b0-2b6ef2960b80.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_1f9e03dc-c5b5-4d16-abd1-0478a5698b04.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_7bc41a47-9d7b-41c6-840c-2101c712cd4b.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "leitura": "#E87BB3",
+    "familia": "orquidea"
+  },
+  "speed-wrapping-ema-017-matt-cement-gray-spwema017": {
+    "mensagem": "feat(ema-017): Lamborghini Huracan Sterrato + capa fosca com referencia ESG-034 (#7A8892) Matt Cement Gray\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMA 017 MATT CEMENT GRAY). Leitura a mao, lote 8 (20 cores, 01/10): caixa no cartao: H 204-207 S 19-21 V 44-52 (cinza azulado, nao neutro) -> #7A8892. Piloto aprovado pelo Joao 01/10 (escolha recomendada). Sem correcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Lamborghini Huracan Sterrato, black off-road wheels, black cladding and roof scoop",
+      "carro_cor": "a cool steel blue-grey like wet slate, hex #7A8892 (H 205); S 16; V 57 (traseira e perfil refeitos com \"clear blue cast\")",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; black trim and glass stay glossy",
+      "carro_cenario": "dry riverbed of grey pebbles in an Alpine valley; bright overcast with direction"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213233_1764165c-a55a-4a2a-9062-eabb0a02f5d2.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lamborghini Huracan Sterrato envelopado em Speed Wrapping EMA 017 Matt Cement Gray",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-017-matt-cement-gray-spwema017.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/publicar-cor.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_205853_c490071d-7d06-44ee-b263-840d9143f175.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213641_78ebdf9c-99f5-4ccb-92ae-fce1b9508d02.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_213641_998c2dcf-e217-43ab-b266-cb9c9b192551.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_212916_74d0360b-c3bf-4cb9-8b7c-1473789d7fe4.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "leitura_referencia": "#7A8892"
+  },
   "speed-wrapping-esg-001-super-gloss-piano-black-pet-spwesg001": {
     "mensagem": "feat(esg-001): BMW M8 Gran Coupe + capa super gloss com referencia ESG-034/033 (#0A0A0C) Piano Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "leitura_referencia": "#0A0A0C",

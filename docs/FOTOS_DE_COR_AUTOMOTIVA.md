@@ -135,6 +135,26 @@ confiável:
 | ESG-027 Super Gloss Nardo Grey | V 47 · S 2–8 (2 fotos limpas) → `#747577` | — | o balanço pelo asfalto quente puxou para roxo: fechar neutro conferindo a pastilha ao lado do cartão |
 | EMA-008 Matt Tiffany | H 170–171 · S 49–69 → `#48D8C2` | — | fosco segurado contra o céu ganha véu branco (S cai ~20): usar a foto de luz mais limpa |
 | EMA-015 Matt Red | H 355–357 · S 81–90 · V 76–93 → `#DD1C2A` | — | sem correção |
+| ESG-002 Super Gloss Piano White | V 89-91 · S 7-9 → branco neutro → `#ECEEF1` | — | sem correção |
+| ESG-003 Super Gloss Porsche Rouge Red | H 354-357 · S 74-85 · V 84-89 → `#DE2834` | — | sem correção |
+| ESG-005 Super Gloss Viper Green | H 103-111 · S 75-81 · V 79-84 → `#49D12E` | — | corrigida: verde só na capa (nasceu H 95) |
+| ESG-009 Super Gloss Sapphire | H 218 · S 98-100 · V 89-92 → `#0256E6` | — | sem correção |
+| ESG-012 Super Gloss Ice Cream Blue | H 197-200 · S 98 · V 83-91 → `#049EE0` | — | corrigida: azul (nasceu H 202-207) |
+| ESG-014 Super Gloss Tiffany | H 176-180 · S 44 · V 81-85 → `#76D6D3` | — | sem correção |
+| ESG-015 Super Gloss Shark Blue | H 215-219 · S 90-94 · V 86-99 → `#1366EB` | — | sem correção |
+| ESG-017 Super Gloss Maize Yellow | H 47-51 · S 91-95 · V 91-98 → `#F5D314` | — | sem correção |
+| ESG-019 Super Gloss Bright Orange | H 14-17 · S 79-89 · V 91-100 → `#F75823` | — | sem correção |
+| ESG-021 Super Gloss Beetroot Red | H 343-346 · S 79-89 · V 83-94 → `#E32454` | — | sem correção |
+| ESG-023 Super Gloss Peach Pink | H 343-344 · S 43-50 · V 84-100 (rosa-chiclete, não pêssego) → `#F291AD` | — | sem correção |
+| ESG-026 Super Gloss Mist Blue | H 214-224 · S 26-36 · V 74-90 → `#A1BAE6` | — | corrigida: azul + val_max 0,95 (traseira/macro nasceram lilás, H 225-227) |
+| ESG-028 Super Gloss Brooklyn Grey | V 75-81 · S 4-7, levemente frio → `#C2C6CC` | — | sem correção |
+| EMA-003 Matt Orange | H 12-15 · S 75-85 · V 84-97 → `#F2673D` | — | sem correção |
+| EMA-004 Matt Yellow | H 38-42 · S 99 · V 81-100 → `#F7A602` | — | sem correção |
+| EMA-006 Matt Apple Green | H 98-102 · S 79-82 · V 72-75 (cartão plano) → `#59BF2A` | — | corrigida: verde (nasceu H 90-93; vidro dos prédios intacto) |
+| EMA-009 Matt Purple | H 255-260 · S 48-68 · V 49-62 → `#53369E` | — | corrigida: violeta só na capa (nasceu H 247) |
+| EMA-011 Matt Medium Blue | H 212-217 · S 73-92 · V 71-83 → `#1C66C7` | — | sem correção |
+| EMA-013 Matt Pink | H 327-331 · S 43-51 · V 86-95 → `#E87BB3` | — | corrigida: orquidea (nasceu H 335-342; lanternas continuam vermelhas) |
+| EMA-017 Matt Cement Gray | caixa no cartão: H 204-207 · S 19-21 → cinza azulado → `#7A8892` | — | sem correção |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -599,6 +619,24 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
 
+### Lote de 20 cores de uma vez (lote 8, 01/10)
+
+O João pediu um teste com 20 cores. Rascunho conferido contra as regras de cenário, 40 pilotos (2 por
+cor) em 4 chamadas, 100 imagens no resto (60 fotos + 40 capas) em 9 chamadas. Resultado: **nenhum
+piloto errado de cor ou acabamento**; as escolhas foram por detalhe (geração antiga do carro, faixa
+no capô). No resto, 6 cores pediram correção e uma pediu refazer:
+
+- **Capa que nasce fora e fotos certas** (ESG-005 verde, EMA-009 violeta): corrigir só a capa com
+  `corrigir_apenas: "capa"` no manifesto — o céu azul das fotos fica perto da faixa de matiz e não
+  deve ser tocado.
+- **Pastel claro** (ESG-026, V 90): a correção precisa de `val_max 0,95`, senão a máscara perde o
+  próprio filme.
+- **Cinza azulado fosco** (EMA-017): traseira e perfil saíram cinza neutro (S < 1) e não há correção
+  possível para cinza neutro (a família pegaria o cascalho junto) — refazer pedindo "clear blue cast,
+  visible next to the neutral grey gravel".
+- Os arquivos do Higgsfield saem com o mesmo carimbo de hora para o lote inteiro
+  (`hf_AAAAMMDD_HHMMSS_<job>.png`): com um link por lote dá para baixar todos testando ±5 s.
+
 ### Rascunho conferido contra as regras antes do piloto (lote 7, 01/10)
 
 O primeiro rascunho do lote 7 tinha quatro erros que o João pegou ao perguntar se estava bom; todos
@@ -827,6 +865,26 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-027 Super Gloss Nardo Grey | Audi R8 V10 performance (rodas pretas em Y, **sem aerofólio**) | lajedo de calcário do Burren (Irlanda), sem vegetação, nublado branco |
 | EMA-008 Matt Tiffany | BMW M2 G87 (rodas pretas forjadas) | ruela de kasbah em Aït Benhaddou, muros de taipa ocre, pouco céu |
 | EMA-015 Matt Red | Ford Mustang Dark Horse (rodas pretas foscas) | Atlantic Ocean Road (Noruega), ponte curva, rocha cinza, mar azul, sem construção |
+| ESG-002 Super Gloss Piano White | Range Rover (L460) | Giant's Causeway, basalto escuro, mar cinza |
+| ESG-003 Super Gloss Porsche Rouge Red | Porsche 918 Spyder | Transfăgărășan (Romênia), céu aberto |
+| ESG-005 Super Gloss Viper Green | Dodge Viper ACR | Stelvio acima da linha das árvores, paredões de neve |
+| ESG-009 Super Gloss Sapphire | Ferrari SF90 Stradale | rua de Guanajuato, fachadas ocre/terracota, pouco céu |
+| ESG-012 Super Gloss Ice Cream Blue | Alpine A110 | bosque de bétulas no outono, folhas douradas |
+| ESG-014 Super Gloss Tiffany | BMW Z4 M40i (G29) | dunas de gesso de White Sands |
+| ESG-015 Super Gloss Shark Blue | Subaru WRX STI (2015-21, rodas douradas) | rua residencial de Tóquio, pouco céu |
+| ESG-017 Super Gloss Maize Yellow | Honda NSX (NC1) | Big Sur, falésias e Pacífico |
+| ESG-019 Super Gloss Bright Orange | Nissan Z (RZ34) | Grimsel Pass, granito, neve velha, lago escuro |
+| ESG-021 Super Gloss Beetroot Red | Mazda MX-5 RF (ND) | Torres del Paine, estepe bege, lago turquesa |
+| ESG-023 Super Gloss Peach Pink | Mini Cooper S (F56) | rua de Paris, calcário creme |
+| ESG-026 Super Gloss Mist Blue | Porsche Panamera Turbo | praça da Cidade Velha de Praga |
+| ESG-028 Super Gloss Brooklyn Grey | BMW M3 Touring (G81) | praça de centro financeiro (estilo Canary Wharf) |
+| EMA-003 Matt Orange | Ford Bronco 2 portas | F-road nas terras altas da Islândia, cascalho vulcânico |
+| EMA-004 Matt Yellow | Chevrolet Camaro ZL1 (sem faixas) | estrada reta no Mojave, Joshua trees |
+| EMA-006 Matt Apple Green | Toyota GR86 | avenida moderna de Dubai, sem plantas |
+| EMA-009 Matt Purple | Tesla Model 3 (Highland) | Capitol Reef, arenito dourado, pouco céu |
+| EMA-011 Matt Medium Blue | Hyundai Ioniq 5 N | pátio de galpões de tijolo em Manchester |
+| EMA-013 Matt Pink | Audi TT RS (8S) | orla de Biarritz, muro de pedra, farol |
+| EMA-017 Matt Cement Gray | Lamborghini Huracán Sterrato | leito seco de rio de cascalho nos Alpes |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

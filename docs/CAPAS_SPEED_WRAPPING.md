@@ -332,6 +332,26 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | ESG-027 Super Gloss Nardo Grey | `#747577` · neutro · V 47 | super gloss sólido | ESG-034 + ESG-033 + "NO metallic flake — it is not silver"; capa 1 (`59574f59`) → `#75777C` V 49; sem correção |
 | EMA-008 Matt Tiffany | `#48D8C2` · H 171 · S 67 · V 85 | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1 (`b646ee22`) nasceu H 177 → `--corrigir` com `verde` fecha H 171 · S 67 · V 84 |
 | EMA-015 Matt Red | `#DD1C2A` · H 356 · S 87 · V 87 | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1 (`0a08fafe`) H 358 · S 80 · V 82; sem correção |
+| ESG-002 Super Gloss Piano White | `#ECEEF1` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-003 Super Gloss Porsche Rouge Red | `#DE2834` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-005 Super Gloss Viper Green | `#49D12E` | super gloss sólido | ESG-034 + ESG-033; capa 2; corrigida (verde só na capa (nasceu H 95)) |
+| ESG-009 Super Gloss Sapphire | `#0256E6` | super gloss sólido | ESG-034 + ESG-033; capa 2; sem correção |
+| ESG-012 Super Gloss Ice Cream Blue | `#049EE0` | super gloss sólido | ESG-034 + ESG-033; capa 1; corrigida (azul (nasceu H 202-207)) |
+| ESG-014 Super Gloss Tiffany | `#76D6D3` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-015 Super Gloss Shark Blue | `#1366EB` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-017 Super Gloss Maize Yellow | `#F5D314` | super gloss sólido | ESG-034 + ESG-033; capa 2; sem correção |
+| ESG-019 Super Gloss Bright Orange | `#F75823` | super gloss sólido | ESG-034 + ESG-033; capa 2; sem correção |
+| ESG-021 Super Gloss Beetroot Red | `#E32454` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-023 Super Gloss Peach Pink | `#F291AD` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-026 Super Gloss Mist Blue | `#A1BAE6` | super gloss sólido | ESG-034 + ESG-033; capa 2; corrigida (azul + val_max 0,95 (traseira/macro nasceram lilás, H 225-227)) |
+| ESG-028 Super Gloss Brooklyn Grey | `#C2C6CC` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| EMA-003 Matt Orange | `#F2673D` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; sem correção |
+| EMA-004 Matt Yellow | `#F7A602` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 2; sem correção |
+| EMA-006 Matt Apple Green | `#59BF2A` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; corrigida (verde (nasceu H 90-93; vidro dos prédios intacto)) |
+| EMA-009 Matt Purple | `#53369E` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; corrigida (violeta só na capa (nasceu H 247)) |
+| EMA-011 Matt Medium Blue | `#1C66C7` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 2; sem correção |
+| EMA-013 Matt Pink | `#E87BB3` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; corrigida (orquidea (nasceu H 335-342; lanternas continuam vermelhas)) |
+| EMA-017 Matt Cement Gray | `#7A8892` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; sem correção |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como
