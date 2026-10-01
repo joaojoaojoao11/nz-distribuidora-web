@@ -1,4 +1,113 @@
 {
+  "speed-wrapping-edg-019-metal-austin-gold-pet-spwedg019": {
+    "mensagem": "feat(edg-019): BMW M4 F82 + capa metalica com referencia ESG-034/033 (#BF8426) Liquid Metal Austin Gold",
+    "leitura": "#BF8426",
+    "nota_cor": "Amostra do catalogo fisico (EDG 019 METALLIC LIQUID METAL AUSTIN GOLD PET) com S no teto (99, camera estourou), H 41-43. Joao escolheu o piloto A (H37, mais ambar que o cartao) em 01/10 — alvo = piloto A aprovado: H37, S80, com V75 da capa (cena usa manterValor, so H/S andam). Frontal/traseira/perfil nasceram em H37; o macro em H29 — a correcao alinha. familia laranja (12-48) cobre H29-37; dourado (22-62) deixaria o macro na rampa (0,5).",
+    "familia": "laranja",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130951_bd5ae2a1-a734-4bd4-8c96-eab0402f195b.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "BMW M4 F82 envelopado em Speed Wrapping EDG 019 Metallic Liquid Metal Austin Gold",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-019-metal-austin-gold-pet-spwedg019.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/drive-cores.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130151_fb5415fd-0958-4c7c-b002-e481ba442080.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130950_d5864bf2-3f79-454e-919d-dacbab2e3f1f.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130951_0f20a20f-5702-4cd2-bfc0-c102d73b75a8.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130951_5e432605-281f-4280-a02a-0d7930ffe086.png",
+        "nota": "macro do liquid metal"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 (metodo metalico da EDG-020)",
+      "carro": "BMW M4 F82 coupe on dark graphite multi-spoke wheels",
+      "carro_cor": "1. HUE: a vivid saffron gold, a yellow-gold leaning slightly toward amber, hex #C7910A (hue about 43 degrees). 2. CHROMA: fully saturated, rich and intense, like saffron threads or a gold ingot in the sun. 3. BRIGHTNESS: medium-bright, about 75 percent value; glows almost white-hot gold facing the sky, deepens to rich amber-ochre in shadow. (gerou H37)",
+      "carro_cenario": "cleared winter road through a snowy pine forest, white snow banks, dark green pines dusted with snow, wet dark asphalt; low winter sun from the side, thin haze",
+      "capa_bloco_cor": "THE FILM COLOUR is neither of the two references: it is hex #C28823, RGB (194, 136, 35) - a vivid amber gold, a saffron yellow-gold leaning toward amber, strongly saturated (about 80 percent), medium-bright in value (about 75 percent). THE FILM IS METALLIC, unlike image 2: an ultra-fine liquid-metal pigment under the gloss. [...] smooth molten sheen, not glitter."
+    }
+  },
+  "speed-wrapping-emt-025-satin-metallic-matt-deep-blue-spwemt025": {
+    "mensagem": "feat(emt-025): Ford GT + capa satin metallic (#233F8C) Satin Metallic Matt Deep Blue",
+    "leitura": "#233F8C",
+    "nota_cor": "Amostra do catalogo fisico (EMT 025 SATIN METALLIC MATT DEEP BLUE). ler-amostra errou (S 10-18: o asfalto azulado entrou na deteccao do cartao); medido a mao no miolo do cartao nas 4 fotos: H224.2 S74.8 V61 (sd(H) 1.2; V 55 sem a foto WA0085 de brilho). Piloto A aprovado 01/10 (H220 S74). Capa pelo metodo satin da EMT-022 (so ESG-034 de referencia).",
+    "familia": "azul",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130951_59ed7304-3dcb-49b4-b49b-dd9933df6ec5.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ford GT envelopado em Speed Wrapping EMT 025 Satin Metallic Matt Deep Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emt-025-satin-metallic-matt-deep-blue-spwemt025.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/drive-cores.mjs"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130151_cb46ab43-45da-4cd9-bde9-a57e7a25687e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130951_8499906a-26dc-454f-945f-e690ec78ebdc.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130950_4b4064be-b92b-4217-bf06-60b1dcbc9b70.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_130951_be2d9737-d36f-4c51-bb4e-c150a4364207.png",
+        "nota": "macro do satin metallic"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (metodo satin da EMT-022)",
+      "carro": "Ford GT (second generation) on dark graphite multi-spoke wheels",
+      "carro_cor": "1. HUE: a deep royal blue, like lapis lazuli or a dark sapphire, hex #233F8C (hue about 224 degrees). 2. CHROMA: strong, about 75 percent saturation. 3. BRIGHTNESS: medium-deep, about 55 percent, satin sheen rises to bright cobalt, rolls off into deep navy.",
+      "carro_acabamento": "mesmo bloco satin metallic da EMT-022 (broad glowing satin sheen band, not dead flat matte, never a mirror, silky flake shimmer)",
+      "carro_cenario": "sun-washed Mediterranean old-town square: warm ochre and terracotta plastered walls, weathered wooden shutters, worn pale stone paving, little sky; bright late-morning sun low from the side",
+      "capa": "GEOMETRY ONLY de ESG-034 + THE FILM COLOUR #233F8C + SATIN METALLIC finish (broad soft glowing cobalt-blue sheen band, never a crisp mirror-white specular line)"
+    }
+  },
   "speed-wrapping-edg-027-metallic-paint-metallic-midnight-pluple-pet-spwedg027": {
     "mensagem": "feat(edg-027): Nissan Skyline GT-R R34 + capa metalica com referencia ESG-034/033 (#554C6E) Metallic Midnight Purple",
     "leitura": "#554C6E",

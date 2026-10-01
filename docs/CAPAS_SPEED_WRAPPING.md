@@ -306,6 +306,8 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | EDG-025 Metallic Solar Gold | `#7F7148` · H 45 · S 43 · V 50 | gloss metallic (flake fino visível) | mesmo método metálico da EDG-020; silhueta 89%; geração H 41 → `--tudo` fecha em H 44,6 · S 43,1 · V 49,8 com a família nova `dourado` |
 | EMT-022 Satin Metallic Titanium Metal Grey | `#7B848C` · H 207 · S 12 · V 55 | **satin metallic** | **só a ESG-034 como referência (geometria)** — a ESG-033 é super gloss e puxaria para brilho molhado; acetinado descrito em texto ("SATIN METALLIC, halfway between gloss and matte... broad soft glowing sheen band, never a crisp mirror-white specular line"); silhueta 84%; capa H 218 · S 8 · V 59; **sem correção** (quase neutra) |
 | EDG-027 Metallic Midnight Purple | `#554C6E` · H 255 · S 31 · V 43 | gloss metallic (flake fino violeta) | método metálico da EDG-020; silhueta 89%; geração V 29 → `--tudo` fecha em H 255,9 · S 31,0 · V 43,1 com a família nova `violeta` |
+| EDG-019 Metallic Liquid Metal Austin Gold | `#BF8426` (= piloto A aprovado) · H 37 · S 80 · V 75 | gloss metallic (liquid metal) | método metálico da EDG-020; silhueta 88%; fecha em H 36,8 · S 81,2 · V 74,5 (família `laranja`) |
+| EMT-025 Satin Metallic Matt Deep Blue | `#233F8C` · H 224 · S 75 · V 55 | satin metallic | método satin da EMT-022 (só ESG-034); silhueta 90%; fecha em H 224,0 · S 75,2 · V 54,9 |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

@@ -109,6 +109,8 @@ confiável:
 | EDG-025 Metallic Solar Gold | H45 S43 V50 | 2,4 | confiável (4 de 4, cartão na mão mas sem reflexo direto) |
 | EMT-022 Titanium Metal Grey | H207 S12 V55 (após balanço de branco pelo cartão branco da foto) | 3,3 (3 de 4) | `ler-amostra` deu S 26: era o céu azul refletindo no acetinado; o cartão branco atrás leu H237 S9 |
 | EDG-027 Metallic Midnight Purple | H255 S31 V43 | 2,5 (3 de 4) | confiável; WA0139 descartada (S 50, reflexo) |
+| EDG-019 Liquid Metal Austin Gold | H41–43 · S no teto | — | câmera estourou (S 99); alvo = piloto A aprovado (H 37, mais âmbar que o cartão — escolha do João) |
+| EMT-025 Satin Metallic Matt Deep Blue | H224 S75 V55 (**medido à mão**) | 4,6 | `ler-amostra` deu S 10–18: o asfalto azulado entrou na detecção do cartão. Quando a leitura contradiz o que se vê, medir o miolo do cartão à mão |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -655,6 +657,8 @@ marca d'água, sem adesivo de patrocínio.
 | EDG-025 Metallic Solar Gold | Jaguar F-Type R coupé | estrada na crista de barragem de concreto, represa azul-acinzentada e montanhas |
 | EMT-022 Satin Metallic Titanium Metal Grey | Aston Martin DB12 | deserto de sal, crosta branca rachada, sol baixo velado |
 | EDG-027 Metallic Midnight Purple | Nissan Skyline GT-R R34 (rodas bronze 6 raios) | estrada costeira japonesa, mureta de concreto, mar verde-acinzentado |
+| EDG-019 Metallic Liquid Metal Austin Gold | BMW M4 F82 (a cor "Austin Yellow" nasceu nele) | estrada aberta em pinheiral nevado |
+| EMT-025 Satin Metallic Matt Deep Blue | Ford GT | praça de cidade antiga mediterrânea, paredes ocre e terracota |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

@@ -44,7 +44,9 @@ async function varrer(filtroCodigo) {
   for (const linha of (await listar(RAIZ_DRIVE)).filter((e) => e.pasta)) {
     if (filtroCodigo && !filtroCodigo.startsWith(linha.nome.slice(0, 3))) continue;
     for (const cor of (await listar(linha.id)).filter((e) => e.pasta)) {
-      if (filtroCodigo && !cor.nome.startsWith(filtroCodigo)) continue;
+      // A marca de status vem ANTES do código ("🟢 EDG-020 ...", "✅ ..."): procura o
+      // código como palavra, não como prefixo.
+      if (filtroCodigo && !new RegExp(`(^|\\s)${filtroCodigo}(\\s|$)`).test(cor.nome)) continue;
       await sleep(120);
       const fotos = (await listar(cor.id)).filter((e) => !e.pasta && /\.(jpe?g|png|heic|webp)$/i.test(e.nome));
       res.push({ linha: linha.nome, cor: cor.nome, id: cor.id, fotos });
