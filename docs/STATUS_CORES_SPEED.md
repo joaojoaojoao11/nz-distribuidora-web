@@ -18,7 +18,9 @@ falta ir para o site — `FALTA 56% · ESG - SUPER GLOSS` (linha completa: `✅ 
 número sai de `node scripts/painel-cores.mjs` (total = pastas de cor no Drive; feita = página da
 loja com capa + fotos de carro, 3+ mídias em `produto_midia`), que também alimenta o painel
 **"Painel Cores Speed"** (https://claude.ai/artifact/7HSvVJWFgpHP4hrrCMt7hs). Em 01/10, depois do
-lote 7: **259 cores, 42 no site, 217 faltam (84%)**. Lotes de **10 cores** a partir do lote 8.
+lote 9: **259 cores, 127 no site, 132 faltam (51%)**; a linha **ESG está completa**. Lotes de **10 cores** a
+partir do lote 8; o lote 8 testou 20 e o lote 9 fez de uma vez as 65 que tinham amostra no Drive. As 132
+que faltam não têm foto do cartão no Drive (cromos, flips, candy, carbono EGF, EGB, EBP e o resto das EDG/EMA/EMG/EMT).
 Seis pastas do Drive não têm produto no site (EDG-022, 028, 029, EGF-008, 016, 020): cadastrar no
 NZERP quando entrarem num lote.
 
