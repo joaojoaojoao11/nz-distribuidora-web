@@ -328,6 +328,10 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | ESG-016 Super Gloss Sunflower Yellow | `#E39702` · H 40 · S 99 · V 89 (refeita 01/10; antes `#F2A705`, saiu limão) | super gloss sólido | idem; capa `46c2d9be` (H 38 · S 98 · V 92); sem correção |
 | ESG-025 Super Gloss Lavender | `#A996EA` · H 253 · S 36 · V 92 | super gloss sólido | idem; capa 2 → `--corrigir` fecha em H 253,6 · S 36,1 · V 91,8 (família `violeta`, `val_max` 0,95) |
 | EMA-007 Matt Army Green | `#5A7351` · H 105 · S 29 · V 45 | **matt** (fosco) | **primeira capa fosca lisa**: só ESG-034 (geometria) + "TRUE MATTE… NO specular band"; capa 2 → fecha em H 104,2 · S 29,6 · V 45,1 (família nova `militar`) |
+| ESG-001 Super Gloss Piano Black | `#0A0A0C` · preto neutro · V 4 | super gloss sólido | ESG-034 + ESG-033 + "the film itself is inky black everywhere; the only light areas are the white specular band…"; capa 1 (`262744ed`, a mais escura); sem correção |
+| ESG-027 Super Gloss Nardo Grey | `#747577` · neutro · V 47 | super gloss sólido | ESG-034 + ESG-033 + "NO metallic flake — it is not silver"; capa 1 (`59574f59`) → `#75777C` V 49; sem correção |
+| EMA-008 Matt Tiffany | `#48D8C2` · H 171 · S 67 · V 85 | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1 (`b646ee22`) nasceu H 177 → `--corrigir` com `verde` fecha H 171 · S 67 · V 84 |
+| EMA-015 Matt Red | `#DD1C2A` · H 356 · S 87 · V 87 | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1 (`0a08fafe`) H 358 · S 80 · V 82; sem correção |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

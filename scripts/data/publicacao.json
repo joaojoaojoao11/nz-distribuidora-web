@@ -1,4 +1,213 @@
 {
+  "speed-wrapping-esg-001-super-gloss-piano-black-pet-spwesg001": {
+    "mensagem": "feat(esg-001): BMW M8 Gran Coupe + capa super gloss com referencia ESG-034/033 (#0A0A0C) Piano Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "#0A0A0C",
+    "nota_cor": "Amostra do catalogo fisico (ESG 001 SUPER GLOSS PIANO BLACK PET). A mao: V 4-5 na face sem reflexo (matiz sem sentido nesse valor) -> preto neutro #0A0A0C. Piloto B aprovado 01/10: lataria V 3-5 entre os reflexos (o A saiu V 13, acinzentado). Sem correcao (neutro). Regras aplicadas: nublado direcional, piso cinza frio, rodas claras.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "BMW M8 Competition Gran Coupe (G16) on bi-colour machined-silver/black multi-spoke wheels, blue calipers",
+      "carro_cor": "1. HUE: a perfectly neutral jet black, hex #0A0A0C - no blue, no brown, no purple tint. 2. CHROMA: none. 3. BRIGHTNESS: the paint itself about 4 percent; every bright area is only a reflection",
+      "carro_acabamento": "super gloss solid piano black: deep wet clear coat, large soft-edged reflections of the white building + one specular line; inky black between reflections",
+      "carro_cenario": "plaza in front of a flowing white curved building (Heydar Aliyev Center style), cool light-grey paving; bright overcast WITH direction"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194611_262744ed-d181-418e-8186-94c71d449db1.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "BMW M8 Gran Coupé envelopado em Speed Wrapping ESG 001 Super Gloss Piano Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-001-super-gloss-piano-black-pet-spwesg001.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_193744_a62ddc18-537f-4e1a-9e1c-f0c9b5b435d1.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_4e2f544f-2d67-4ea4-a1fe-aeb719e684e7.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_4fc21eec-dc18-4029-b8b2-56ae6d8d9a4a.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_4ca9e8ea-6051-41a4-b6dd-083c6e7b579c.png",
+        "nota": "macro do super gloss"
+      }
+    ]
+  },
+  "speed-wrapping-esg-027-super-gloss-nardo-grey-pet-spwesg027": {
+    "mensagem": "feat(esg-027): Audi R8 V10 + capa super gloss com referencia ESG-034/033 (#747577) Nardo Grey\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "#747577",
+    "nota_cor": "Amostra do catalogo fisico (ESG 027 SUPER GLOSS NARDO GREY PET). A mao, 2 fotos limpas: V 47, S 2-8; o balanco pelo asfalto (quente) puxava para roxo, fechado neutro #747577 (a 3a foto pegou reflexo vermelho). Piloto A aprovado 01/10: porta V 38 / paralama V 57. Cenario neutro (Burren, calcario sem vegetacao) pela regra de cor de baixa saturacao. Perfil refeito: o 1o tinha aerofolio alto (o piloto nao tem) e saiu azulado (S 12). Sem correcao (neutro).",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Audi R8 V10 performance (2nd gen facelift) on gloss black Y-spoke wheels, dark grey calipers, black side blades; NO rear wing (only lip spoiler)",
+      "carro_cor": "1. HUE: a perfectly neutral medium grey, Audi Nardo Grey, hex #747577 - no blue, no green, no beige. 2. CHROMA: about 2 percent. 3. BRIGHTNESS: about 47 percent, darker than the pale limestone; never silver, never charcoal",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder; NOT metallic, not silver",
+      "carro_cenario": "the Burren, Ireland: pale grey limestone pavement, bare hills, no grass; bright white overcast"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194611_59574f59-4d76-44f1-a579-4cd849237a1a.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Audi R8 V10 envelopado em Speed Wrapping ESG 027 Super Gloss Nardo Grey",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-027-super-gloss-nardo-grey-pet-spwesg027.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_193744_b0bcc800-5299-4439-a362-49e5679cdd3c.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_6e76e3b6-3f5b-48ca-91db-adcc523629f7.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194839_4a2a8fed-0a24-4feb-ac0c-5d3ca56285e2.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_a92bb3e9-0a3b-4a51-8581-86dca31ca1f1.png",
+        "nota": "macro do super gloss"
+      }
+    ]
+  },
+  "speed-wrapping-ema-008-matt-tiffany-spwema008": {
+    "mensagem": "feat(ema-008): BMW M2 + capa fosca com referencia ESG-034 (#48D8C2) Matt Tiffany\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#48D8C2",
+    "familia": "verde",
+    "nota_cor": "Amostra do catalogo fisico (EMA 008 MATT TIFFANY). A mao: H 170-171; S 49-69 conforme a foto (as de S ~50 pegaram veu do ceu no fosco); fechado na foto de luz mais limpa: #48D8C2 (H 171 S 67 V 85). Prompt sem a palavra 'Tiffany' (o gerador conhece o azul Tiffany, S ~41). Piloto B aprovado 01/10 (H 171 S 60 V 83). Correcao leve com a familia verde: fotos H 173 -> 171, capa H 177 -> 172; so o carro muda (ceu e muros de taipa intactos).",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "BMW M2 coupe (G87) on gloss black forged wheels",
+      "carro_cor": "1. HUE: a vivid turquoise-mint, aqua green halfway between green and cyan leaning slightly green, hex #48D8C2 (hue about 171). 2. CHROMA: about 65 percent, not pastel, not chalky. 3. BRIGHTNESS: light, about 85 percent; shade to deeper teal-green",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; light falls off softly like on suede; black trim and glass stay glossy",
+      "carro_cenario": "kasbah lane in Ait Benhaddou, ochre rammed-earth walls filling the frame, little sky; clear sun"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194611_b646ee22-24c5-49a6-b7ee-a7651602e292.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "BMW M2 envelopado em Speed Wrapping EMA 008 Matt Tiffany",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-008-matt-tiffany-spwema008.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_193745_0f1557f8-31e7-4404-8ec9-4898ea02efc5.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_f3997c77-1fe5-4e67-98bc-5bf14f91b467.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_7f78a0e0-b924-4c16-9a51-7615b66112f4.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_bc859ae5-806f-4d48-9392-7276b1fcb3be.png",
+        "nota": "macro do fosco"
+      }
+    ]
+  },
+  "speed-wrapping-ema-015-matt-red-spwema015": {
+    "mensagem": "feat(ema-015): Ford Mustang Dark Horse + capa fosca com referencia ESG-034 (#DD1C2A) Matt Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "#DD1C2A",
+    "nota_cor": "Amostra do catalogo fisico (EMA 015 MATT RED). A mao: H 355-357 S 81-90 V 76-93 -> #DD1C2A. Piloto A aprovado 01/10 (H 354 S 82 V 89; o B saiu V 94, puxando para coral). Fotos H 354-358 S 81-86; capa H 358 S 80 V 82. Sem correcao: perto do alvo e a familia vermelho pegaria as lanternas. Ceu aberto (cor saturada) e cenario sem construcao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (geometria) + TRUE MATTE",
+      "carro": "Ford Mustang Dark Horse (2024) on matte black wheels, black bonnet vent",
+      "carro_cor": "1. HUE: a pure vivid red leaning very slightly to cool crimson, hex #DD1C2A (hue about 356) - not orange-red, not pink. 2. CHROMA: about 87 percent. 3. BRIGHTNESS: about 87 percent; shade to deep rich red, never brown",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; light falls off softly like on suede; black trim and glass stay glossy",
+      "carro_cenario": "Atlantic Ocean Road, Norway: curving concrete bridge, grey granite islets, dark blue sea, no buildings; clear sun, blue sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194611_0a08fafe-1171-4c6a-859a-32e73af4dc62.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ford Mustang Dark Horse envelopado em Speed Wrapping EMA 015 Matt Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-015-matt-red-spwema015.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_193744_14352136-6305-407d-9232-8aad3fce4a79.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_282938b9-ab56-4819-9cde-7828753a8af9.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_21d7d603-4373-4ba4-99a1-981cd6942d86.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_194608_8b140463-4b64-4529-ab00-3d385312f555.png",
+        "nota": "macro do fosco"
+      }
+    ]
+  },
   "speed-wrapping-esg-011-super-gloss-miami-blue-pet-spwesg011": {
     "mensagem": "feat(esg-011): Porsche 911 GT3 Touring + capa super gloss com referencia ESG-034/033 (#05A9CD) Miami Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "leitura_referencia": "#05A9CD",

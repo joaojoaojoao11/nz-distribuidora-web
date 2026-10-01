@@ -131,6 +131,10 @@ confiável:
 | ESG-016 Super Gloss Sunflower Yellow | face plana H 39,7 · S 99 · V 89 → **`#E39702`** (âmbar/manga; a 1ª leitura `#F2A705` pegou o reflexo) | — | refeita em 01/10 com prompt "deep amber / marigold / mango, NOT canary"; sem correção (a família `dourado` tinge o cenário) |
 | ESG-025 Super Gloss Lavender | H 250–257 · S 38–41 · V 89–92 → `#A996EA` (swatch) | — | asfalto neutro; corrigida com `violeta` + `val_max` 0,95 |
 | EMA-007 Matt Army Green | H 104–108 · S 25–32 · V 43–48 (balanço de branco) → `#5A7351` | — | primeira EMA (fosco); gerador entrega oliva acinzentado H ~84 |
+| ESG-001 Super Gloss Piano Black | V 4–5 na face sem reflexo → `#0A0A0C` | — | preto neutro: matiz sem sentido nesse valor; medir só entre os reflexos |
+| ESG-027 Super Gloss Nardo Grey | V 47 · S 2–8 (2 fotos limpas) → `#747577` | — | o balanço pelo asfalto quente puxou para roxo: fechar neutro conferindo a pastilha ao lado do cartão |
+| EMA-008 Matt Tiffany | H 170–171 · S 49–69 → `#48D8C2` | — | fosco segurado contra o céu ganha véu branco (S cai ~20): usar a foto de luz mais limpa |
+| EMA-015 Matt Red | H 355–357 · S 81–90 · V 76–93 → `#DD1C2A` | — | sem correção |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -595,6 +599,22 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
 
+### Rascunho conferido contra as regras antes do piloto (lote 7, 01/10)
+
+O primeiro rascunho do lote 7 tinha quatro erros que o João pegou ao perguntar se estava bom; todos
+estavam escritos neste manual: Nardo Grey (S ~2) num pasto verde (cor de baixa saturação pede cenário
+neutro — o pasto refletiria no cinza e não daria para corrigir), Matt Red com nublado (cor saturada
+pede céu aberto) num fiorde (casas vermelhas; e negar a cor no cenário atrai a cor), "Tiffany" no
+prompt (o gerador conhece o azul Tiffany, S ~41, contra S ~65 do cartão) e preto sem rodas claras nem
+nublado direcional. Revisado, o lote saiu sem nenhum piloto refeito. Regra: **antes de mandar o
+rascunho, passar cada cor pela seção "Luz e cenário, por tipo de cor"**, conferir se o nome
+comercial da cor puxa o gerador para outro tom e fixar as rodas no prompt.
+
+Outros dois achados do lote: (1) o carro pode ganhar peça que o piloto não tem — o perfil do R8 veio
+com aerofólio alto; escreva "NO rear wing" quando o piloto não tiver; (2) correção de fosco com
+`manterValor` desligado deixa o carro chapado (perde a sombra); nas fotos ela roda sempre com o valor
+mantido, e só a capa usa o modo sem valor.
+
 ### Amarelo-âmbar lido como limão (ESG-016, 01/10)
 
 A ESG-016 Sunflower Yellow foi publicada amarelo-canário (H 42–45 · V 96–98) e o João reprovou com
@@ -803,6 +823,10 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-016 Super Gloss Sunflower Yellow | Chevrolet Corvette C8 (rodas grafite) | estrada de montanha nas Dolomitas |
 | ESG-025 Super Gloss Lavender | Mercedes-AMG SL 63 (capota preta, pinça cobre) | estrada de ciprestes na Toscana, campos dourados |
 | EMA-007 Matt Army Green | Mercedes-AMG G 63 (rodas pretas foscas) | pista de aeródromo de concreto, hangar e torre |
+| ESG-001 Super Gloss Piano Black | BMW M8 Competition Gran Coupé (rodas bicolores prata/preto, pinça azul) | praça diante de prédio branco curvo (estilo Heydar Aliyev), piso cinza frio |
+| ESG-027 Super Gloss Nardo Grey | Audi R8 V10 performance (rodas pretas em Y, **sem aerofólio**) | lajedo de calcário do Burren (Irlanda), sem vegetação, nublado branco |
+| EMA-008 Matt Tiffany | BMW M2 G87 (rodas pretas forjadas) | ruela de kasbah em Aït Benhaddou, muros de taipa ocre, pouco céu |
+| EMA-015 Matt Red | Ford Mustang Dark Horse (rodas pretas foscas) | Atlantic Ocean Road (Noruega), ponte curva, rocha cinza, mar azul, sem construção |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
