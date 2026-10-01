@@ -40,10 +40,10 @@ pasta · `✅ ` = fotos e capa 100% no site. Ex.: `✅ EDG-020 LIQUID METAL RUBY
 | EMG-022 | SATIN METALLIC GLOSSY PRUNUS SAKURA PINK PET | ✅ 30/09 | ✅ 01/10 — à mão: H 354–358, S 21–30, V 73–89 → swatch **`#EDB8BA`** (rosa-salmão pastel, H 357 · S 22 · V 93) | ✅ 01/10 — **B** aprovado (`63c3b945`) | ✅ 01/10 — aprovadas, sem correção (H 5–16 · S 20–25; capa H 357) | ✅ 01/10 — commit `e9ebbaf`, 5 mídias, conferido no ar; pasta ✅ |
 | EGF-010 | GLOSS FORGED CARBON GOLD PET | ✅ 30/09 | ✅ 01/10 — lascas âmbar-ouro H 30–36 (S 60–70) **`#B07A2A`**/`#8A5E1E` sobre base marrom-preta `#1A120A`; brilhante | ✅ 01/10 — **B** aprovado (`1e2d6395`) | ✅ 01/10 — aprovadas: closes (capô, retrovisor + teto, teto, macro) + capa com o padrão; sem correção | ✅ 01/10 — commit `56234fe`, 5 mídias, conferido no ar; pasta ✅ |
 | EGF-013 | MATTE FORGED CARBON PURPLE PET | ✅ 30/09 | ✅ 01/10 — lascas violeta H 266–284 (S ~48) **`#5A3A80`** sobre base `#161020`; **fosco** | ✅ 01/10 — **B** aprovado (`1084225e`) | ✅ 01/10 — aprovadas: closes foscos + capa fosca com o padrão; sem correção | ✅ 01/10 — commit `b006d98`, 5 mídias, conferido no ar; pasta ✅ |
-| EGF-006 | GLOSS FORGED CARBON SILVER PET | ✅ 30/09 | ✅ 01/10 — lascas prata-grafite sobre preto, brilhante; textura do cartão `f9657486` | ✅ 01/10 — **B** aprovado (`caa2f9ea`) | ⏳ 01/10 — prévia pronta: closes (capô, retrovisor + teto, teto, macro) + capa com o padrão; sem correção | — |
-| EGF-017 | SHADOW BLACK | ✅ 30/09 | ✅ 01/10 — camuflagem preta: manchas preto brilhante × cinza-chumbo acetinado; textura `d0cfb72b` | ✅ 01/10 — **B** aprovado (`5165d1d4`) | ⏳ 01/10 — prévia pronta: closes + macro brilho × acetinado + capa camuflada; sem correção | — |
-| EGF-018 | FORGED CARBON | ✅ 30/09 | ✅ 01/10 — estilhaços angulosos cinza/preto (não retangulares como os outros forjados), brilhante; textura `5980816d` | ✅ 01/10 — **B** aprovado (`3556e017`; eu tinha recomendado A) | ⏳ 01/10 — prévia pronta: closes + capa com os estilhaços; sem correção | — |
-| ESG-004 | SUPER GLOSS FERRARI RED PET | ✅ 01/10 | ✅ 01/10 — à mão: H 356–1 · S 84–97 · V ~88 → vermelho vivo levemente alaranjado **`#E31E14`** (cor no teto: sem correção) | ✅ 01/10 — **B** aprovado (`0e479703`) | ⏳ 01/10 — prévia pronta (H 359–5 · S 92–99; capa V 89); sem correção (cor no teto) | — |
+| EGF-006 | GLOSS FORGED CARBON SILVER PET | ✅ 30/09 | ✅ 01/10 — lascas prata-grafite sobre preto, brilhante; textura do cartão `f9657486` | ✅ 01/10 — **B** aprovado (`caa2f9ea`) | ✅ 01/10 — aprovadas: closes + capa com o padrão; sem correção | ✅ 01/10 — commit `01b512e`, 5 mídias (capa antiga substituída, conferida por hash no ar), nome corrigido no ar; pasta ✅ |
+| EGF-017 | SHADOW BLACK | ✅ 30/09 | ✅ 01/10 — camuflagem preta: manchas preto brilhante × cinza-chumbo acetinado; textura `d0cfb72b` | ✅ 01/10 — **B** aprovado (`5165d1d4`) | ✅ 01/10 — aprovadas: closes + macro brilho × acetinado + capa camuflada | ✅ 01/10 — commit `3eb9121` (deploy demorou; registro no banco na 2ª rodada), 5 mídias, conferido no ar; pasta ✅ |
+| EGF-018 | FORGED CARBON | ✅ 30/09 | ✅ 01/10 — estilhaços angulosos cinza/preto (não retangulares como os outros forjados), brilhante; textura `5980816d` | ✅ 01/10 — **B** aprovado (`3556e017`; eu tinha recomendado A) | ✅ 01/10 — aprovadas: closes + capa com os estilhaços | ✅ 01/10 — commit `2ff4491`, 5 mídias, conferido no ar; pasta ✅ |
+| ESG-004 | SUPER GLOSS FERRARI RED PET | ✅ 01/10 | ✅ 01/10 — à mão: H 356–1 · S 84–97 · V ~88 → vermelho vivo levemente alaranjado **`#E31E14`** (cor no teto: sem correção) | ✅ 01/10 — **B** aprovado (`0e479703`) | ✅ 01/10 — aprovadas (H 359–5 · S 92–99; capa V 89); sem correção | ✅ 01/10 — commit `70cfffc`, 5 mídias (capa antiga substituída), conferido no ar; pasta ✅ |
 
 **Cadastradas no NZERP em 01/10** (eram as "fora do NZERP" com amostra no Drive): nome lido no rótulo do
 cartão; fiscal, custo, preço da Engenharia e medidas copiados do irmão de linha; criadas no Tiny pela
@@ -67,9 +67,8 @@ sync. Prontas para foto:
 
 Os funcionários subiram 43 cores novas (pastas marcadas 🟢 em 01/10). Todas existem no NZERP e no site, só com a capa antiga (1 mídia, nenhuma foto de carro):
 
-- **ESG (super gloss), 29:** ESG-001 a ESG-029.
+- **ESG (super gloss), 28:** ESG-001 a ESG-029, menos a ESG-004 (no ar em 01/10).
 - **EMA (matt), 14:** EMA-003 a EMA-015 e EMA-017.
-- **Carbono, 3:** EGF-006, EGF-017, EGF-018.
 - ESG-041 ganhou 2 fotos de amostra (já publicada em set/2026; tom ainda a confirmar com o João).
 
 **Refotografar** (cartão deitado, na sombra, folha branca ao lado) — leitura instável por
@@ -79,6 +78,7 @@ neutra — ajustar antes de ler.
 
 ## Concluídas (fotos de carro + capa nova no ar)
 
+EGF-006 Gloss Forged Carbon Silver (closes do Mercedes-AMG GT, nome corrigido no Tiny/site), EGF-017 Shadow Black (closes do M4 — camuflagem, não forjado), EGF-018 Forged Carbon (closes do 720S) e ESG-004 Super Gloss Ferrari Red (Ferrari F8 Tributo) — 01/10, 4º lote. Fechadas todas as EDG/EMT/EMG/EGF com amostra.
 EDG-026 Metallic Paint Metallic Sonoma Green (Lamborghini Urus — família nova `musgo`), EMG-022 Satin Metallic Glossy Prunus Sakura Pink (Maserati GranTurismo), EGF-010 Gloss Forged Carbon Gold (closes da Ferrari 296 GTB) e EGF-013 Matte Forged Carbon Purple (closes do 911 GT3) — 01/10, 3º lote de 4.
 EDG-023 Metallic Ruby Gold (Porsche Taycan), EMG-021 Satin Metallic Glossy Agate Green (Lotus Emira), EMT-024 Satin Metallic Matt Pearl Pink (BMW i8) e EGF-012 Gloss Forged Carbon Purple (Huracán STO, **primeira de padrão: só closes das áreas aplicadas**) — 01/10, 2º lote de 4, as quatro cadastradas no NZERP no mesmo dia.
 EDG-016 Metallic Liquid Metal Space Silver (01/10, Mercedes-Benz SLS AMG — 3º piloto: prata chumbo, não cromo), EDG-018 Metallic Liquid Metal Agate Green (01/10, Lamborghini Aventador SVJ), EDG-021 Metallic Liquid Blue Berry (01/10, Bugatti Chiron) e EMT-023 Satin Metallic Matt Sakura Pink (01/10, Rolls-Royce Wraith) — primeiro lote de 4 feito junto.
