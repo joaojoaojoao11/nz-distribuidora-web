@@ -40,6 +40,11 @@ export const FAIXAS = {
   // 275, na rampa de entrada de 'roxo' (250-264) e na de saida de 'azul'
   // (251-265). Longe do vermelho do logo — vale com `logo`.
   violeta: [225, 285],
+  // orquidea: rosa-orquidea (EMT-024 Pearl Pink, H 323). As geracoes nascem em H 333-337,
+  // fora de 'rosa' (rampa 336-350); 'malva' cruza 0 grau e deixou as lanternas vermelhas
+  // do i8 rosa-magenta. Termina em 352: vermelho de lanterna e do logo (H >= 355) fica de
+  // fora, entao vale com `logo`.
+  orquidea: [305, 352],
 };
 
 const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);

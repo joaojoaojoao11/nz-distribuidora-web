@@ -87,6 +87,7 @@ FAIXAS = {
     'malva': (300.0, 5.0),  # rosa pastel ESG-040; cruza 0 grau, pega o logo
     'dourado': (22.0, 62.0),  # ouro/latao metalico EDG-025 (H 45); geracao nasce em H 37-41
     'violeta': (225.0, 285.0),  # roxo-azulado EDG-027 (H 255); borda de roxo e de azul
+    'orquidea': (305.0, 352.0),  # rosa-orquidea EMT-024 (H 323); fica fora do vermelho de lanterna/logo
 }
 
 
