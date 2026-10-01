@@ -32,18 +32,36 @@ pasta · `✅ ` = fotos e capa 100% no site. Ex.: `✅ EDG-020 LIQUID METAL RUBY
 | EDG-018 | METALLIC LIQUID METAL AGATE GREEN PET | ✅ 30/09 | ✅ 01/10 — à mão: H 132–137 (fotos limpas #0/#1), S 97–99 **no teto**, V 44–50; alvo = piloto | ✅ 01/10 — **B** aprovado (Aventador SVJ, dunas; `104395f7` H139 S93) | ✅ 01/10 — aprovadas corrigidas contra `#077A2D` (família `verde`; tudo em H 140 · S 94, capa V 48) | ✅ 01/10 — commit `49bcf03`, 5 mídias, conferido no ar; pasta ✅ |
 | EDG-021 | METALLIC LIQUID BLUE BERRY PET | ✅ 30/09 | ✅ 01/10 — à mão: H 219–222 (sd 1,4), S 86–99 quase no teto, V 47–82; alvo = piloto | ✅ 01/10 — **B** aprovado (Chiron, vinhedo; `3a59579d` H221 S85) | ✅ 01/10 — aprovadas; traseira e perfil refeitos (1ª rodada com friso C prata e roda clara); sem correção (H 218–221) | ✅ 01/10 — commit `138a9ca`, 5 mídias, conferido no ar; pasta ✅ |
 | EMT-023 | SATIN METALLIC MATT SAKURA PINK PET | ✅ 30/09 | ✅ 01/10 — à mão instável (rosa quase branco; S 12–23); alvo = piloto | ✅ 01/10 — **B** aprovado (Wraith, jardim zen; `73538848` H0 S15) | ✅ 01/10 — aprovadas; capa satin (só ESG-034); sem correção (quase neutra, S ~14) | ✅ 01/10 — commit `0ad2701` (deploy demorou; registro no banco na 2ª rodada), 5 mídias, conferido no ar; pasta ✅ |
+| EDG-023 | METALLIC RUBY GOLD PET | ✅ 30/09 | ✅ 01/10 — `ler-amostra` errou (asfalto H 205 / mão); **à mão**: H 334–345, S ~52, V 35–55 (flop: destaque rosa-magenta, curva escura com reflexo **dourado/bronze** — o "Gold" do nome) → alvo **`#73374D`** (conferido com swatch) | ✅ 01/10 — **B** aprovado (`af172bfb`) | ⏳ 01/10 — prévia pronta, corrigida contra `#73374D` (família `malva` + `marca_depois`; tudo em H 338 · S 52, capa V 45); macro mostra o flop dourado; barra de luz traseira ficou levemente mais rosada (malva cruza o vermelho) | — |
+| EMG-021 | SATIN METALLIC GLOSSY AGATE GREEN PET | ✅ 30/09 | ✅ 01/10 — `ler-amostra` errou; **à mão**: H 172–182, S 73–93, V 28–52 (verde-jade escuro, destaque verde vivo; cartão é brilhante, não acetinado) → alvo **`#0F6655`** | ✅ 01/10 — **A** aprovado (`1e674ce2`) | ⏳ 01/10 — prévia pronta, corrigida contra `#0F6655` (família `verde`, `sat_min_cena` 0,45; tudo em H 168 · S 85, capa V 40) | — |
+| EMT-024 | SATIN METALLIC MATT PEARL PINK | ✅ 30/09 | ✅ 01/10 — `ler-amostra` errou; **à mão**: H 318–327, S ~50, V 77–95 → no swatch o mais fiel é **`#E68CC4`** (H 323 · S 39 · V 90) | ✅ 01/10 — **B** aprovado (`e1e69373`) | ⏳ 01/10 — prévia pronta, corrigida contra `#E68CC4` com a família **nova `orquidea` (305–352)**: a `malva` deixou as lanternas do i8 rosa-magenta; tudo em H 323 · S 39, capa V 90 | — |
+| EGF-012 | GLOSS FORGED CARBON PURPLE PET | ✅ 30/09 | ✅ 01/10 — padrão forjado: lascas violeta H 268–284 (S ~55, V até 70–85 no brilho) sobre base quase preta → lascas **`#5A2D8C`** / base **`#1A1024`** | ✅ 01/10 — **A** (close do capô) aprovado; caminho de close aprovado | ⏳ 01/10 — prévia pronta: close do capô, retrovisor + teto, teto, macro (todas `high` com a textura do cartão) + capa com o padrão (ESG-034 + textura); sem correção | — |
 
-**Cores fora do NZERP com amostra no Drive** (30/09 — pastas renomeadas pelo cartão; não dá
-para publicar antes de cadastrar no NZERP → Tiny → site): EDG-023 Metallic Ruby Gold ·
-EDG-026 Metallic Paint Metallic Sonoma Green · EGF-010 Gloss Forged Carbon Gold · EGF-012
-Gloss Forged Carbon Purple · EGF-013 Matte Forged Carbon Purple · EMG-021 Satin Metallic
-Glossy Agate Green · EMG-022 Satin Metallic Glossy Prunus Sakura Pink · EMT-024 Satin
-Metallic Matt Pearl Pink.
+**Cadastradas no NZERP em 01/10** (eram as "fora do NZERP" com amostra no Drive): nome lido no rótulo do
+cartão; fiscal, custo, preço da Engenharia e medidas copiados do irmão de linha; criadas no Tiny pela
+Matriz (categoria ENVELOPAMENTO, marca SPEED WRAPPING, origem 1) e o site criou a página sozinho no
+sync. Prontas para foto:
+
+| SKU | Nome (NZERP) | Irmão copiado | id Tiny |
+|---|---|---|---|
+| SPWEDG023 | EDG 023 METALLIC RUBY GOLD PET | SPWEDG027 | 437012348 |
+| SPWEDG026 | EDG 026 METALLIC PAINT METALLIC SONOMA GREEN PET | SPWEDG027 | 437012380 |
+| SPWEGF010 | EGF 010 GLOSS FORGED CARBON GOLD PET | SPWEGF006 | 437012389 |
+| SPWEGF012 | EGF 012 GLOSS FORGED CARBON PURPLE PET | SPWEGF006 | 437012391 |
+| SPWEGF013 | EGF 013 MATTE FORGED CARBON PURPLE PET | SPWEGF007 | 437012419 |
+| SPWEMG021 | EMG 021 SATIN METALLIC GLOSSY AGATE GREEN PET | SPWEMG017 | 437012442 |
+| SPWEMG022 | EMG 022 SATIN METALLIC GLOSSY PRUNUS SAKURA PINK PET | SPWEMG017 | 437012495 |
+| SPWEMT024 | EMT 024 SATIN METALLIC MATT PEARL PINK | SPWEMT025 | 437012538 |
+
+**Nome divergente NZERP × Tiny (achado 01/10, não mexido):** SPWEGF006 é "GLOSS FORGED CARBON SILVER
+PET" no NZERP e "EGF 006 CARBON GLOSS 5D" no Tiny (a pasta do Drive segue o Tiny); SPWEGF007 é "MATTE
+FORGED CARBON SILVER PET" no NZERP e "EGF 007 FROSTED BLACK PET" no Tiny. Conferir pelo cartão físico
+antes de fotografar a EGF-006.
 
 ## Amostra no Drive, ainda não iniciadas (01/10)
 
-EGF-006, EGF-017, EGF-018 (as EDG/EMT com amostra já estão no ar; conferir `drive-cores.mjs status`
-para novas pastas com foto).
+EDG-023, EDG-026, EGF-006, EGF-010, EGF-012, EGF-013, EGF-017, EGF-018, EMG-021, EMG-022,
+EMT-024 (11 cores; conferir `drive-cores.mjs status` para novas pastas com foto).
 
 **Refotografar** (cartão deitado, na sombra, folha branca ao lado) — leitura instável por
 reflexo do céu/sol no cartão segurado na mão: EDG-018 sd(S) 29,5 · EDG-019 16,7 ·

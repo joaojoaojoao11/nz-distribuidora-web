@@ -312,6 +312,10 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | EDG-018 Metallic Liquid Metal Agate Green | `#077A2D` (= piloto B) · H 140 · S 94 · V 48 | gloss metallic (liquid metal) | método metálico da EDG-020; gerada em H 148 (a mais viva das duas) → `--corrigir` fecha em H 139,9 · S 94,2 · V 47,8 (família `verde`) |
 | EDG-021 Metallic Liquid Blue Berry | `#1446B3` · H 221 · S 89 · V 70 | gloss metallic (liquid metal) | método metálico da EDG-020; nasceu em H 219 · S 98; sem correção (fotos e capa já em H 218–221) |
 | EMT-023 Satin Metallic Matt Sakura Pink | `#D9BEC1` · H 354 · S 12 · V 85 | satin metallic (pérola) | método satin da EMT-022 (só ESG-034) + "must clearly read as a pale pink, not white and not grey"; saiu H 353 · S 10 · V 82; sem correção (quase neutra) |
+| EDG-023 Metallic Ruby Gold | `#73374D` · H 338 · S 52 · V 45 | gloss metallic (flop dourado) | método metálico da EDG-020 + "golden-bronze glint at the very edge of the curve"; capa 2 (H 349, com o bronze embaixo) → `--corrigir` fecha em H 338,1 · S 52,1 · V 45,1 (família `malva` + `marca_depois`) |
+| EMG-021 Satin Metallic Glossy Agate Green | `#0F6655` · H 168 · S 85 · V 40 | gloss metallic | método metálico; capa 1 (H 180 · S 87) → fecha em H 168,2 · S 85,2 · V 40,0 (família `verde`) |
+| EMT-024 Satin Metallic Matt Pearl Pink | `#E68CC4` · H 323 · S 39 · V 90 | satin metallic (pérola) | método satin (só ESG-034); capa 2 → fecha em H 322,7 · S 39,2 · V 90,2 com a família nova `orquidea` + `val_max` 0,95 |
+| EGF-012 Gloss Forged Carbon Purple | padrão (lascas `#5A2D8C` / base `#1A1024`) | gloss forjado | **primeira capa de padrão**: ESG-034 (só geometria, "do NOT copy its blue colour") + recorte do cartão como IMAGE 2 ("defines the PATTERN… wrap this exact pattern around the outer surface of the roll"); capa 1 (lascas mais densas); sem correção |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

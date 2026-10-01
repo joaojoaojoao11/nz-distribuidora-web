@@ -1,4 +1,222 @@
 {
+  "speed-wrapping-edg-023-metallic-ruby-gold-pet-spwedg023": {
+    "mensagem": "feat(edg-023): Porsche Taycan + capa metalica com referencia ESG-034/033 (#73374D) Metallic Ruby Gold\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#73374D",
+    "familia": "malva",
+    "nota_cor": "Amostra do catalogo fisico (EDG 023 METALLIC RUBY GOLD PET). ler-amostra errou (asfalto H205 / mao). Medido a mao no miolo do cartao: H334-345, S~52, V35-55; flop: destaque rosa-framboesa e reflexo dourado-bronze na curva escura (o Gold do nome). Alvo #73374D conferido com swatch. Piloto B aprovado 01/10 (H341 S60). familia malva (300-5): fotos nascem em H341-349, a rosa (290-350) deixaria a rampa vazia; malva cruza 0 grau e pegaria o vermelho da logo -> marca_depois.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 (metodo metalico da EDG-020)",
+      "carro": "Porsche Taycan Turbo S on black twin five-spoke wheels with a machined silver rim lip and yellow brake calipers",
+      "carro_cor": "1. HUE: a deep ruby wine red leaning toward raspberry, hex #73374D (hue about 338 degrees). 2. CHROMA: rich, about 52 percent. 3. BRIGHTNESS: medium-dark, about 45 percent; bright raspberry-pink in the light, deep black-cherry in shadow",
+      "carro_acabamento": "gloss metallic colour-shift; subtle warm golden-bronze glint only at the edges of the curves; face of every panel stays ruby",
+      "carro_cenario": "marina pier, weathered grey timber deck, white yachts, calm blue-grey sea",
+      "capa_bloco_cor": "hex #73374D, RGB (115, 55, 77)... METALLIC, unlike image 2... raspberry-pink next to the specular band, black-cherry on the lower flank with a subtle golden-bronze glint at the edge"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151548_fe41ec68-1759-4a81-825e-a476985a5cc8.png",
+    "marca_depois": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Porsche Taycan Turbo S envelopado em Speed Wrapping EDG 023 Metallic Ruby Gold",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-023-metallic-ruby-gold-pet-spwedg023.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_145110_af172bfb-d6d0-42a9-ba3f-09e5ee5166ca.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_959a6b38-87a4-431c-a481-9a19ff47140a.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_66e0ee30-9a99-423d-aa34-4d11ee9ffe9f.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_7bb1d223-5130-40c5-b0ef-72fac3b14c3b.png",
+        "nota": "macro do metalico com flop dourado"
+      }
+    ]
+  },
+  "speed-wrapping-emg-021-satin-metallic-glossy-agate-green-pet-spwemg021": {
+    "mensagem": "feat(emg-021): Lotus Emira + capa metalica com referencia ESG-034/033 (#0F6655) Satin Metallic Glossy Agate Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#0F6655",
+    "familia": "verde",
+    "sat_min_cena": 0.45,
+    "nota_cor": "Amostra do catalogo fisico (EMG 021 SATIN METALLIC GLOSSY AGATE GREEN PET). ler-amostra errou; a mao: H172-182, S73-93, V28-52; o cartao e BRILHANTE (o satin do nome nao vale para o acabamento). Alvo #0F6655. Piloto A aprovado 01/10 (H175 S74). familia verde (72-200); sat_min_cena 0,45 protege o ceu azul claro (borda 186-200) e a areia.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 (metodo metalico)",
+      "carro": "Lotus Emira on dark graphite split ten-spoke wheels with yellow Lotus centre caps",
+      "carro_cor": "1. HUE: a deep jade green, an emerald leaning slightly toward blue-green, like polished agate, hex #0F6655 (hue about 168). 2. CHROMA: about 85 percent. 3. BRIGHTNESS: about 40 percent; vivid emerald in the light, near-black bottle green in shadow",
+      "carro_acabamento": "high-gloss metallic, fine silky pigment, strong flop",
+      "carro_cenario": "desert road through red sandstone rock formations (Valley of Fire), no plants",
+      "capa_bloco_cor": "hex #0F6655, RGB (15, 102, 85)... METALLIC, unlike image 2... vivid emerald next to the specular band, near-black bottle green on the lower flank"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151547_8fa2c34c-8382-4332-9a06-98df54618a87.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lotus Emira envelopado em Speed Wrapping EMG 021 Satin Metallic Glossy Agate Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emg-021-satin-metallic-glossy-agate-green-pet-spwemg021.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_145111_1e674ce2-ceed-4868-b481-870950924079.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151545_e5135456-6b92-42ae-83e5-05efa689e682.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_b72dd76b-f855-47fd-8b06-2c947666dbc0.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_d6f3263e-565b-4c13-91a7-e910ff10a113.png",
+        "nota": "macro do metalico"
+      }
+    ]
+  },
+  "speed-wrapping-emt-024-satin-metallic-matt-pearl-pink-spwemt024": {
+    "mensagem": "feat(emt-024): BMW i8 + capa satin metallic (#E68CC4) Satin Metallic Matt Pearl Pink\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#E68CC4",
+    "familia": "orquidea",
+    "val_max": 0.95,
+    "nota_cor": "Amostra do catalogo fisico (EMT 024 SATIN METALLIC MATT PEARL PINK). ler-amostra errou; a mao: H318-327, S~50, V77-95; no swatch o mais fiel e #E68CC4 (H323 S39 V90). Piloto B aprovado 01/10 (H336 S37 V86). familia nova orquidea (305-352): fotos em H333-337, a rosa (290-350) deixaria a rampa vazia e a malva (cruza 0 grau) deixou as lanternas vermelhas do i8 rosa-magenta na 1a correcao; orquidea para em 352 e o vermelho fica de fora. val_max 0,95 (cor clara, licao ESG-040). Capa satin so com ESG-034.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (metodo satin da EMT-022)",
+      "carro": "BMW i8 coupe on two-tone black and machined silver multi-spoke wheels; black roof, hood vent and lower trim as standard",
+      "carro_cor": "1. HUE: a sweet bubblegum pink leaning slightly toward orchid, hex #E68CC4 (hue about 323). 2. CHROMA: about 39 percent, clear candy pink, not white pastel, not hot neon. 3. BRIGHTNESS: light, about 90 percent",
+      "carro_acabamento": "satin metallic pearl: broad glowing pearly satin sheen band on every curve, soft-edged, never a mirror",
+      "carro_cenario": "beachfront parking lot in Malibu, light grey concrete wall, palm trees, no pastel buildings",
+      "capa": "GEOMETRY ONLY de ESG-034 + THE FILM COLOUR #E68CC4 (must read as candy pink) + SATIN METALLIC PEARL"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151548_9e307ad3-66a8-4dc1-a3de-70ab7f870cfa.png",
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "BMW i8 envelopado em Speed Wrapping EMT 024 Satin Metallic Matt Pearl Pink",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emt-024-satin-metallic-matt-pearl-pink-spwemt024.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/lib/cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_145111_e1e69373-595f-45eb-8712-4196b6597a60.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_1059b56a-49e7-485e-b4e7-fce21d01bfec.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_08077781-3812-40e2-8597-6b24ce7814a9.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_2067bc57-773d-400e-a023-a883ebb1d9b5.png",
+        "nota": "macro do satin perolado"
+      }
+    ],
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    }
+  },
+  "speed-wrapping-egf-012-gloss-forged-carbon-purple-pet-spwegf012": {
+    "mensagem": "feat(egf-012): close de aplicacao parcial (capo, teto, retrovisor) + capa com padrao do cartao Gloss Forged Carbon Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "padrao (lascas #5A2D8C / base #1A1024)",
+    "nota_cor": "Amostra do catalogo fisico (EGF 12 GLOSS FORGED CARBON PURPLE PET). Primeira cor de padrao. Carbono e comprado para detalhe: a pedido do Joao, fotos bem proximas das areas aplicadas (capo, teto, retrovisor) num Huracan STO cinza Nardo. Carro inteiro e padrao so por texto foram reprovados (granito/onca); o que funcionou foi o recorte do cartao como referencia de textura (media 527fad28-5d24-4aef-9a5c-229c89c4807f) em close, quality high. Sem correcao de cor (padrao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos 3:2 quality HIGH com a textura do cartao (527fad28) em medias · capa high 1:1 com ESG-034 (geometria) + textura do cartao (padrao)",
+      "padrao": "dense mosaic of flat, elongated rectangular carbon chips with straight cut ends, like short cut ribbons... fine parallel fibre striations... deep violet-purple chips mixed with very dark purple-black chips... keep the same chip shape, density, striations and chip size relative to the frame as in the reference photo. No round spots, no blobs, no speckles, no glitter, no gold.",
+      "carro": "Lamborghini Huracan STO in Nardo grey; only hood, roof and mirror caps wrapped",
+      "enquadramentos": "close do capo (60 cm, baixo) · close do retrovisor + borda do teto · close do teto por tras · macro 20 cm com a borda do filme na pintura"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151548_4cce5dc7-d9b8-4adf-8dc6-b6f9828cbab6.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Detalhe de Lamborghini Huracán STO com capô, teto e retrovisores em Speed Wrapping EGF 012 Gloss Forged Carbon Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-012-gloss-forged-carbon-purple-pet-spwegf012.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_150956_495717cf-0a9c-45dc-8901-2d909da2ef8b.png",
+        "nota": "close do capo"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_54c8cbfc-09a2-4823-85e4-e77502c91f87.png",
+        "nota": "close do retrovisor + teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_887bca3d-4faf-48e5-9c24-2db3b278c5af.png",
+        "nota": "close do teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_151544_059ca0a5-786e-4cdb-a28c-797248f3f0ea.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
   "speed-wrapping-edg-016-metal-space-silver-pet-spwedg016": {
     "mensagem": "feat(edg-016): Mercedes-Benz SLS AMG + capa metalica com referencia ESG-034/033 (#73767A) Liquid Metal Space Silver",
     "leitura_referencia": "#73767A",

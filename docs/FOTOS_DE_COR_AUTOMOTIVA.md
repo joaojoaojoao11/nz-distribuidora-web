@@ -115,6 +115,10 @@ confiável:
 | EDG-018 Liquid Metal Agate Green | H132–137 · S no teto · V 44–50 (à mão) | — | câmera estourou (S 97–99); alvo = piloto B aprovado (H 140 · S 94) |
 | EDG-021 Liquid Blue Berry | H219–222 · S 86–99 · V 47–82 (à mão) | 1,4 (H) | matiz confiável; S quase no teto; alvo = piloto B (H 220) |
 | EMT-023 Satin Metallic Matt Sakura Pink | S 12–23, instável (à mão) | — | rosa quase branco; alvo = piloto B (H 3 · S 14) |
+| EDG-023 Metallic Ruby Gold | H334–345 · S ~52 · V 35–55 (à mão) → `#73374D` | — | `ler-amostra` pegou asfalto/mão; flop rosa-framboesa no destaque e **dourado-bronze na curva escura** |
+| EMG-021 Satin Metallic Glossy Agate Green | H172–182 · S 73–93 · V 28–52 (à mão) → `#0F6655` | — | apesar do "satin" no nome, o cartão é brilhante |
+| EMT-024 Satin Metallic Matt Pearl Pink | H318–327 · S ~50 · V 77–95 (à mão) → `#E68CC4` (swatch) | — | a medida dava S 50; no swatch ao lado do cartão o fiel foi S 39 · V 90 |
+| EGF-012 Gloss Forged Carbon Purple | lascas H 268–284 (`#5A2D8C`) sobre base `#1A1024` | — | padrão, não cor lisa: a referência é o recorte do cartão (textura), não um hex |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -559,6 +563,15 @@ multi-spoke"). O Chiron veio com friso C prata e roda clara; resolveu "C-shaped 
 wrapped in the same blue as the body: no polished aluminium, chrome or silver trim".
 Conferir roda e friso de cada foto contra o piloto antes da prévia.
 
+### Família de correção que cruza o vermelho pinta a lanterna (EMT-024, 01/10)
+
+A `malva` (300–5) cruza 0 grau. Num carro rosa, ela corrige o rosa **e** puxa a lanterna
+vermelha para magenta: no i8 da EMT-024 as lanternas saíram rosa-choque. Criada a família
+`orquidea` (305–352): pega rosas entre H ~319 e ~338 com folga de rampa e deixa o vermelho
+(H ≥ 355) de fora. Regra: em carro rosa/magenta, **olhar a lanterna traseira na prévia**; se a cor
+nasce abaixo de ~338, usar `orquidea` (com `logo`, sem `marca_depois`). Acima disso (rubi, H 341–349,
+EDG-023) não há faixa que separe da lanterna: a barra de luz fica levemente rosada; avisar o João.
+
 ### "Pale" e "muted" não são sinônimos — mexem em eixos diferentes
 
 A mesma armadilha da lista de negações, por outro caminho: adjetivos de baixa
@@ -692,6 +705,10 @@ marca d'água, sem adesivo de patrocínio.
 | EDG-018 Metallic Liquid Metal Agate Green | Lamborghini Aventador SVJ (rodas forjadas pretas em Y) | estrada no deserto entre dunas douradas |
 | EDG-021 Metallic Liquid Blue Berry | Bugatti Chiron (rodas grafite, pinça azul, C lateral na cor do carro) | estradinha entre vinhedos de outono, casa de pedra |
 | EMT-023 Satin Metallic Matt Sakura Pink | Rolls-Royce Wraith (rodas prata 7 raios) | pátio de jardim zen, cascalho branco rastelado, madeira escura, lanternas de pedra |
+| EDG-023 Metallic Ruby Gold | Porsche Taycan Turbo S (rodas pretas 5 raios duplos, aro usinado, pinça amarela) | píer de marina, deck de madeira cinza, iates brancos |
+| EMG-021 Satin Metallic Glossy Agate Green | Lotus Emira (rodas grafite 10 raios, calota amarela) | estrada no deserto de rocha vermelha (Valley of Fire) |
+| EMT-024 Satin Metallic Matt Pearl Pink | BMW i8 (rodas bicolores preto/usinado) | estacionamento à beira-mar em Malibu, muro de concreto, palmeiras |
+| EGF-012 Gloss Forged Carbon Purple | Lamborghini Huracán STO cinza Nardo — **só capô, teto e retrovisores**, fotos de perto | pit lane de autódromo (desfocado) |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
@@ -706,6 +723,25 @@ AMG GT R.
 > — paddock, mirante, cais, pátio de pedra — escolhido para ficar fora da faixa
 > de matiz da cor, mais os detalhes de verossimilhança da seção acima. Neutro é
 > a exceção, para cor de baixa saturação, não a regra.
+
+### Linha de carbono (EGF): aplicação parcial, fotos de perto (João, 01/10)
+
+Película com desenho de carbono (carbono, carbono forjado, 3D/5D) é comprada para **detalhe**:
+capô, teto, capas de retrovisor, spoiler. A foto da loja mostra isso, e de **perto**: o João
+pediu fotos bem próximas das áreas aplicadas, não o carro inteiro. O carro inteiro deixa o desenho
+pequeno demais e o gerador não reproduz o padrão nessa escala.
+
+- **Referência da textura é obrigatória.** Só com texto, o forjado saiu granito com pinta dourada,
+  depois manchas de onça (01/10). Recortar o miolo do cartão (sem mão, rótulo nem reflexo grande),
+  subir no Higgsfield e passar como `medias` com "It defines the PATTERN of the film… keep the same
+  chip shape, the same striations and the same chip size relative to the frame". EGF-012:
+  `527fad28-5d24-4aef-9a5c-229c89c4807f`.
+- Conjunto de fotos: close do capô (com a borda do filme encontrando a pintura), close do
+  retrovisor + borda do teto, close do teto, macro da textura. Pintura do carro em cor neutra de
+  contraste (cinza Nardo).
+- Qualidade `high` nas fotos de textura.
+- Correção de cor: não se aplica ao carro (a pintura não é a cor do produto); se precisar, só nas
+  lascas.
 
 ---
 
