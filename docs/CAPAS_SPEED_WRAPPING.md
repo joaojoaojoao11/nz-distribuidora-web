@@ -316,6 +316,10 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | EMG-021 Satin Metallic Glossy Agate Green | `#0F6655` · H 168 · S 85 · V 40 | gloss metallic | método metálico; capa 1 (H 180 · S 87) → fecha em H 168,2 · S 85,2 · V 40,0 (família `verde`) |
 | EMT-024 Satin Metallic Matt Pearl Pink | `#E68CC4` · H 323 · S 39 · V 90 | satin metallic (pérola) | método satin (só ESG-034); capa 2 → fecha em H 322,7 · S 39,2 · V 90,2 com a família nova `orquidea` + `val_max` 0,95 |
 | EGF-012 Gloss Forged Carbon Purple | padrão (lascas `#5A2D8C` / base `#1A1024`) | gloss forjado | **primeira capa de padrão**: ESG-034 (só geometria, "do NOT copy its blue colour") + recorte do cartão como IMAGE 2 ("defines the PATTERN… wrap this exact pattern around the outer surface of the roll"); capa 1 (lascas mais densas); sem correção |
+| EDG-026 Metallic Paint Metallic Sonoma Green | `#434D2C` · H 78 · S 43 · V 30 | gloss metallic (flake dourado) | método metálico; capa 2 → `--corrigir` fecha em H 78,0 · S 42,2 · V 30,2 (família nova `musgo`) |
+| EMG-022 Satin Metallic Glossy Prunus Sakura Pink | `#EDB8BA` · H 357 · S 22 · V 93 | gloss pérola | ESG-034 + ESG-033 + "PEARL METALLIC, unlike image 2"; capa 1 (H 357 · S 17 · V 87); sem correção |
+| EGF-010 Gloss Forged Carbon Gold | padrão (lascas `#B07A2A` / base `#1A120A`) | gloss forjado | ESG-034 (geometria) + recorte do cartão (`7325eda7`); capa 2 (lascas mais densas); sem correção |
+| EGF-013 Matte Forged Carbon Purple | padrão fosco (lascas `#5A3A80` / base `#161020`) | **matte** forjado | ESG-034 (geometria, "do NOT copy its glossy surface") + recorte do cartão (`fed54336`) + "MATTE… no crisp specular band"; capa 2; sem correção |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

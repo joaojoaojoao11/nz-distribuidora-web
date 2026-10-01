@@ -45,6 +45,10 @@ export const FAIXAS = {
   // do i8 rosa-magenta. Termina em 352: vermelho de lanterna e do logo (H >= 355) fica de
   // fora, entao vale com `logo`.
   orquidea: [305, 352],
+  // musgo: verde-musgo/oliva escuro (EDG-026 Sonoma Green, cartao H ~89 com balanco de
+  // branco). O gerador entrega esse verde em H 50-64, fora de 'verde' (comeca em 72) e
+  // na rampa de 'salvia' (50-64): a correcao precisa pegar de H ~54 ate o alvo.
+  musgo: [40, 130],
 };
 
 const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);

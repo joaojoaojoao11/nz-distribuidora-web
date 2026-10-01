@@ -1,4 +1,214 @@
 {
+  "speed-wrapping-edg-026-metallic-paint-metallic-sonoma-green-pet-spwedg026": {
+    "mensagem": "feat(edg-026): Lamborghini Urus + capa metalica com referencia ESG-034/033 (#434D2C) Metallic Sonoma Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#434D2C",
+    "familia": "musgo",
+    "nota_cor": "Amostra do catalogo fisico (EDG 026 METALLIC PAINT METALLIC SONOMA GREEN PET), 2 fotos. Medido a mao: H94-96 com cast azul do asfalto; com balanco de branco pelo asfalto o cartao da H88-93 S52-59 V28-31. O gerador entrega esse verde em H50-64 (caqui) com qualquer texto (olive, army, moss; 6 tentativas). Correcao total (#384C1E) virou verde-limao; a suave #434D2C (H78 S43) fecha com o cartao. Piloto B aprovado 01/10 = 5e07555c corrigido. Familia nova musgo (40-130): a geracao nasce fora de verde (72+) e na rampa de salvia.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 (metodo metalico)",
+      "carro": "Lamborghini Urus on gloss black multi-spoke wheels; black lower bumper and trim",
+      "carro_cor": "1. HUE: a deep moss green, a dark forest green with a slight yellow lean, like wet moss or a fir needle, hex #384C1E (hue about 87). 2. CHROMA: about 60 percent, unmistakably green. 3. BRIGHTNESS: dark, about 30 percent. (NAO usar 'olive': puxa para caqui H~52)",
+      "carro_acabamento": "gloss metallic; fine gold flake only as small golden sparkles inside the highlight",
+      "carro_cenario": "Carrara marble quarry, white and pale grey marble terraces, cut blocks, distant mountains",
+      "capa_bloco_cor": "hex #434D2C, RGB (67, 77, 44) - a dark olive-moss green... METALLIC, unlike image 2: fine gold flake... brighter moss green full of small golden sparkles next to the specular band"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161533_0a4deb59-41f2-4f86-b285-e0366ebc87bd.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lamborghini Urus envelopado em Speed Wrapping EDG 026 Metallic Paint Metallic Sonoma Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-026-metallic-paint-metallic-sonoma-green-pet-spwedg026.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json",
+      "scripts/lib/cor.mjs",
+      "scripts/recolorir-capa.py",
+      "scripts/medir-cor.py"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_160026_5e07555c-a5eb-4046-b638-402ef8cffb77.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161528_b5df31d8-760a-4bf3-ac0b-177cc352ac57.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161527_0de6d8a5-ad04-4e45-ab4f-6af2095139f6.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161527_9ae10c58-5d53-47e8-978c-d836773a6f31.png",
+        "nota": "macro do metalico com flake dourado"
+      }
+    ]
+  },
+  "speed-wrapping-emg-022-satin-metallic-glossy-prunus-sakura-pink-pet-spwemg022": {
+    "mensagem": "feat(emg-022): Maserati GranTurismo + capa perolada com referencia ESG-034/033 (#EDB8BA) Satin Metallic Glossy Prunus Sakura Pink\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "#EDB8BA",
+    "nota_cor": "Amostra do catalogo fisico (EMG 022 SATIN METALLIC GLOSSY PRUNUS SAKURA PINK PET). A mao: H354-358, S21-30, V73-89; swatch fiel #EDB8BA (rosa-salmao pastel H357 S22 V93). Piloto B aprovado 01/10 (H5 S25 V82). Sem correcao: pastel perto do alvo, e a familia que cobre H357-5 (vermelho) pegaria as lanternas; com V acima de 0,80 o carro ainda ficaria fora da mascara padrao.",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 + 'PEARL METALLIC, unlike image 2'",
+      "carro": "Maserati GranTurismo (current generation) on dark grey machined multi-spoke wheels",
+      "carro_cor": "1. HUE: a pale salmon pink, a soft peachy rose pink, hex #EDB8BA (hue about 357). 2. CHROMA: about 22 percent, pastel, clearly pink. 3. BRIGHTNESS: very light, about 93 percent",
+      "carro_acabamento": "glossy pearl metallic, soft silky pearl shimmer on the curves",
+      "carro_cenario": "Lake Como lakeside promenade, pale stone balustrade, grey-blue lake, mountains; no pink flowers or buildings"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161532_9c6d9e86-8939-4538-a5fc-6d5b4aec8d7d.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Maserati GranTurismo envelopado em Speed Wrapping EMG 022 Satin Metallic Glossy Prunus Sakura Pink",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emg-022-satin-metallic-glossy-prunus-sakura-pink-pet-spwemg022.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_155609_63c3b945-159e-4441-9b2e-00cb29d6fb55.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161528_8c42e2ff-31c8-4784-8a0c-e4af37a04a91.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161527_9fc21075-9b5c-4346-8307-bbbfe8ae506e.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161528_b1c7daaf-fdf2-466a-9102-aec73635fdae.png",
+        "nota": "macro do perolado"
+      }
+    ]
+  },
+  "speed-wrapping-egf-010-gloss-forged-carbon-gold-pet-spwegf010": {
+    "mensagem": "feat(egf-010): close de aplicacao parcial (capo, teto, retrovisor) + capa com padrao do cartao Gloss Forged Carbon Gold\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "padrao (lascas #B07A2A / #8A5E1E sobre base #1A120A)",
+    "nota_cor": "Amostra do catalogo fisico (EGF 10 GLOSS FORGED CARBON GOLD PET). Metodo da EGF-012: closes das areas aplicadas (capo, retrovisor + teto, teto, macro) numa Ferrari 296 GTB preta, quality high, com o recorte do cartao como referencia de textura (media 7325eda7-2069-4949-ad1b-0ebe5d411281). Piloto B aprovado 01/10. Sem correcao (padrao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos 3:2 HIGH com a textura do cartao (7325eda7) em medias · capa high 1:1 com ESG-034 + textura",
+      "carro": "Ferrari 296 GTB in solid gloss black; only hood, roof and mirror caps wrapped",
+      "fundo": "Alpine mountain road, grey rock and peaks, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161533_15d5dcd3-e622-4f71-ab5f-f1a19c736cde.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Detalhe de Ferrari 296 GTB com capô, teto e retrovisores em Speed Wrapping EGF 010 Gloss Forged Carbon Gold",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-010-gloss-forged-carbon-gold-pet-spwegf010.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_155609_1e2d6395-fb03-46c5-9d3f-46678d3b5f79.png",
+        "nota": "close do capo"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161528_2e7ccdf2-a3ae-4daf-b961-e765088046c7.png",
+        "nota": "close do retrovisor + teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161528_db9db302-a89e-4f67-9e1c-b78bcc2af00c.png",
+        "nota": "close do teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161528_7ecbbd2b-0905-4376-885b-ef5b33b3715b.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "speed-wrapping-egf-013-matte-forged-carbon-purple-pet-spwegf013": {
+    "mensagem": "feat(egf-013): close de aplicacao parcial (capo, teto, retrovisor) + capa fosca com padrao do cartao Matte Forged Carbon Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "padrao fosco (lascas #5A3A80 sobre base #161020)",
+    "nota_cor": "Amostra do catalogo fisico (EGF 13 MATTE FORGED CARBON PURPLE PET). Metodo da EGF-012 com acabamento FOSCO (sem verniz, so um brilho difuso; a pintura branca brilhante em volta mostra a diferenca), num Porsche 911 GT3 branco, quality high, textura do cartao (media fed54336-aa07-4a70-af4c-819c86d3bc0a). Piloto B aprovado 01/10. Sem correcao (padrao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos 3:2 HIGH com a textura do cartao (fed54336) em medias · capa high 1:1 com ESG-034 + textura, MATTE",
+      "carro": "Porsche 911 GT3 (992) in solid gloss white; only hood, roof and mirror caps wrapped",
+      "fosco": "THE FILM IS MATTE: a flat, velvety surface with no clear coat and no sharp reflections - only a very soft, diffuse sheen... the gloss white paint around it is clearly shiny",
+      "fundo": "modern city street, light concrete buildings, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161534_dbed5447-b3a0-4f13-b87a-260e589b8379.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Detalhe de Porsche 911 GT3 com capô, teto e retrovisores em Speed Wrapping EGF 013 Matte Forged Carbon Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-013-matte-forged-carbon-purple-pet-spwegf013.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_155610_1084225e-66e5-4a77-bdf5-7fa9cedebaf6.png",
+        "nota": "close do capo"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161528_e795f5d9-693a-4058-85a0-e0d69c35d41c.png",
+        "nota": "close do retrovisor + teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161528_780d3b8a-c8b2-4912-8edf-0255643e6de0.png",
+        "nota": "close do teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_161529_56b8fd0d-dd55-4d8c-b96f-43ba04ea06bf.png",
+        "nota": "macro da textura fosca"
+      }
+    ]
+  },
   "speed-wrapping-edg-023-metallic-ruby-gold-pet-spwedg023": {
     "mensagem": "feat(edg-023): Porsche Taycan + capa metalica com referencia ESG-034/033 (#73374D) Metallic Ruby Gold\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "leitura": "#73374D",

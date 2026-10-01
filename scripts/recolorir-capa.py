@@ -88,6 +88,7 @@ FAIXAS = {
     'dourado': (22.0, 62.0),  # ouro/latao metalico EDG-025 (H 45); geracao nasce em H 37-41
     'violeta': (225.0, 285.0),  # roxo-azulado EDG-027 (H 255); borda de roxo e de azul
     'orquidea': (305.0, 352.0),  # rosa-orquidea EMT-024 (H 323); fica fora do vermelho de lanterna/logo
+    'musgo': (40.0, 130.0),  # verde-musgo EDG-026 (H ~89); geracao nasce em H 50-64
 }
 
 

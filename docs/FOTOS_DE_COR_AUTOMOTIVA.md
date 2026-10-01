@@ -119,6 +119,10 @@ confiável:
 | EMG-021 Satin Metallic Glossy Agate Green | H172–182 · S 73–93 · V 28–52 (à mão) → `#0F6655` | — | apesar do "satin" no nome, o cartão é brilhante |
 | EMT-024 Satin Metallic Matt Pearl Pink | H318–327 · S ~50 · V 77–95 (à mão) → `#E68CC4` (swatch) | — | a medida dava S 50; no swatch ao lado do cartão o fiel foi S 39 · V 90 |
 | EGF-012 Gloss Forged Carbon Purple | lascas H 268–284 (`#5A2D8C`) sobre base `#1A1024` | — | padrão, não cor lisa: a referência é o recorte do cartão (textura), não um hex |
+| EDG-026 Metallic Paint Metallic Sonoma Green | H94–96 cru → **H88–93 · S 52–59 · V 28–31 com balanço de branco pelo asfalto** | — | o asfalto azulado puxava o verde para o azul; alvo final `#434D2C` (H 78 · S 43), o que fecha a olho com o cartão |
+| EMG-022 Satin Metallic Glossy Prunus Sakura Pink | H354–358 · S 21–30 · V 73–89 (à mão) → swatch `#EDB8BA` | — | rosa-salmão pastel; cartão brilhante perolado |
+| EGF-010 Gloss Forged Carbon Gold | lascas H 30–36 (`#B07A2A`/`#8A5E1E`) sobre base `#1A120A` | — | padrão: referência é o recorte do cartão |
+| EGF-013 Matte Forged Carbon Purple | lascas H 266–284 (`#5A3A80`) sobre base `#161020`, fosco | — | padrão: referência é o recorte do cartão |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -572,6 +576,21 @@ vermelha para magenta: no i8 da EMT-024 as lanternas saíram rosa-choque. Criada
 nasce abaixo de ~338, usar `orquidea` (com `logo`, sem `marca_depois`). Acima disso (rubi, H 341–349,
 EDG-023) não há faixa que separe da lanterna: a barra de luz fica levemente rosada; avisar o João.
 
+### "Olive" ancora no cáqui: o gerador não acerta o verde-oliva (EDG-026, 01/10)
+
+Seis pilotos da EDG-026 Sonoma Green, com "olive green", "army green", "clearly GREEN… not khaki" e
+"deep moss green", saíram todos em **H 50–64**, um oliva-cáqui, contra **H 88–93** do cartão (com
+balanço de branco). Trocar a palavra não resolve. O que fechou: aceitar o piloto mais verde e corrigir
+na publicação com a família nova `musgo` (40–130), que pega a geração em H ~54 e leva até o alvo.
+**Correção total para o hex do cartão (`#384C1E`, S 60) deixou o carro verde-limão** e transformou o
+flake dourado em verde. O alvo que fechou a olho foi o meio do caminho, `#434D2C` (H 78 · S 43).
+Regra: em verde-oliva/musgo, testar a correção no próprio piloto (`recolorir` de `scripts/lib/cor.mjs`)
+e mostrar ao João o piloto **já corrigido** como opção B.
+
+**Pastel perto do vermelho fica sem correção (EMG-022).** H 357–5 só cabe na família `vermelho`
+(ou `malva`), que pega a lanterna; e cor com V > 0,80 fica fora da máscara padrão. Com o piloto a
+~10° do alvo e S ~22, publicar sem correção.
+
 ### "Pale" e "muted" não são sinônimos — mexem em eixos diferentes
 
 A mesma armadilha da lista de negações, por outro caminho: adjetivos de baixa
@@ -709,6 +728,10 @@ marca d'água, sem adesivo de patrocínio.
 | EMG-021 Satin Metallic Glossy Agate Green | Lotus Emira (rodas grafite 10 raios, calota amarela) | estrada no deserto de rocha vermelha (Valley of Fire) |
 | EMT-024 Satin Metallic Matt Pearl Pink | BMW i8 (rodas bicolores preto/usinado) | estacionamento à beira-mar em Malibu, muro de concreto, palmeiras |
 | EGF-012 Gloss Forged Carbon Purple | Lamborghini Huracán STO cinza Nardo — **só capô, teto e retrovisores**, fotos de perto | pit lane de autódromo (desfocado) |
+| EDG-026 Metallic Paint Metallic Sonoma Green | Lamborghini Urus (rodas pretas) | pedreira de mármore de Carrara |
+| EMG-022 Satin Metallic Glossy Prunus Sakura Pink | Maserati GranTurismo (rodas grafite usinadas) | orla do Lago di Como, balaustrada de pedra |
+| EGF-010 Gloss Forged Carbon Gold | Ferrari 296 GTB preta — só capô, teto e retrovisores, fotos de perto | estrada alpina (desfocada) |
+| EGF-013 Matte Forged Carbon Purple | Porsche 911 GT3 (992) branco — só capô, teto e retrovisores, fotos de perto | rua de cidade, concreto claro (desfocada) |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
