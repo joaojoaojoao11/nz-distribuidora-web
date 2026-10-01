@@ -100,15 +100,16 @@
     ]
   },
   "speed-wrapping-egf-018-forged-carbon-spwegf018": {
-    "mensagem": "feat(egf-018): close de aplicacao parcial (capo, teto, retrovisor) + capa com padrao do cartao EGF 018 Forged Carbon\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "mensagem": "fix(egf-018): refaz fotos e capa no acabamento certo (fosco com flake metalico nos estilhacos) EGF 018 Forged Carbon\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "leitura_referencia": "padrao (textura do cartao)",
-    "nota_cor": "Amostra do catalogo fisico (EGF 018 FORGED CARBON). Metodo da EGF-012: closes das areas aplicadas (capo, retrovisor + teto, teto, macro) num McLaren 720S laranja papaya, quality high, com o recorte do cartao como referencia de textura (media 5980816d-5848-44d9-9656-8d584a31c830). Forjado classico em estilhacos angulosos cinza/grafite sobre preto (nao retangulos como EGF-006/010/012/013), brilhante. Piloto B aprovado 01/10. Sem correcao (padrao).",
+    "nota_cor": "Amostra do catalogo fisico (EGF 018 FORGED CARBON). 1a publicacao (commit 2ff4491) saiu com verniz brilhante: ERRADO. O Joao corrigiu (01/10): o material e FOSCO - base preta aveludada sem reflexo - e so os estilhacos tem flake metalico que acende cinza-prateado onde bate a luz (mesmo brilho das manchas acetinadas da EGF-017). Refeito com recorte novo do cartao mostrando a base fosca (media 3f26a272-2e75-48bc-9575-cc6164d96908). Piloto B aprovado. Sem correcao (padrao).",
     "prompts": {
-      "modelo": "gpt_image_2 · fotos 3:2 HIGH com a textura do cartao (5980816d) em medias · capa high 1:1 com ESG-034 + textura",
+      "modelo": "gpt_image_2 · fotos 3:2 HIGH com a textura v2 do cartao (3f26a272) · capa high 1:1 com ESG-034 (so geometria) + textura, MATTE",
       "carro": "McLaren 720S laranja papaya; only hood, roof and mirror caps wrapped",
-      "fundo": "racetrack paddock, light concrete and white garages, out of focus"
+      "fundo": "racetrack paddock, light concrete and white garages, out of focus",
+      "acabamento": "THE FINISH IS MATTE WITH A METALLIC FLAKE: base between the shards flat velvety matte black, no clear coat; shards dark graphite-grey with a fine metallic flake that lights up as a soft silvery shimmer with tiny sparkles where the light hits; NO wet clear coat, NO glossy lacquer, NO mirror reflections"
     },
-    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170503_0faf6926-7176-473f-a2ee-06ecf445b4ca.png",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_173925_35ca16ca-e1ef-46d4-ad5c-2d6725934bad.png",
     "logo": {
       "arquivo": "scripts/data/marca-speed-wrapping.png",
       "largura": 0.26,
@@ -129,23 +130,23 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_165912_3556e017-4364-462e-998c-e6d95ed89de6.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_173402_ee02ef0e-990e-461d-aee6-b8476ec65872.png",
         "nota": "close do capo"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170500_2d57b52e-85ce-4c79-8903-afec9bc3e0f4.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_173924_f0340e89-fbb8-4ea1-b79b-82e9cedc2d80.png",
         "nota": "close do retrovisor + teto"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_f81c791d-84b1-410e-9264-24c23360afa3.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_173924_97ce4f7d-a55e-43bd-abc9-373e19e15d13.png",
         "nota": "close do teto"
       },
       {
         "n": 5,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_9d7e5a54-a60b-4793-9143-ed6907d63e1f.png",
-        "nota": "macro da textura"
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_173925_036d8721-1fb1-4272-b579-62f6922f3f63.png",
+        "nota": "macro do flake no fosco"
       }
     ]
   },

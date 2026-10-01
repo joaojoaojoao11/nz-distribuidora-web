@@ -580,6 +580,17 @@ sheen") junto com o recorte do cartão; o macro mostra a borda entre uma mancha 
 acetinada, que é o que vende o produto. Regra: na linha EGF, olhar o cartão antes de escrever —
 forjado retangular, forjado em estilhaço (EGF-018) e camuflagem pedem descrições diferentes.
 
+### Forjado fosco com flake metálico: não é gloss (EGF-018, 01/10)
+
+A EGF-018 Forged Carbon foi publicada com "high-gloss clear coat over everything" e o João reprovou:
+**o material é fosco**. No cartão, a base entre os estilhaços é preta fosca, aveludada, sem reflexo;
+só os estilhaços têm um **flake metálico** que acende em cinza-prateado onde bate a luz — o mesmo
+brilho das manchas acetinadas da EGF-017, que tinha saído certo. O que enganou: no cartão segurado
+contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, separar **a base**
+(fosca ou brilhante?) do **flake das lascas** (metálico ou liso?) e escrever as duas coisas no prompt;
+o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
+ao João o acabamento antes do piloto.
+
 ### Família de correção que cruza o vermelho pinta a lanterna (EMT-024, 01/10)
 
 A `malva` (300–5) cruza 0 grau. Num carro rosa, ela corrige o rosa **e** puxa a lanterna
