@@ -53,7 +53,7 @@
     }
   },
   "speed-wrapping-edg-018-metal-agate-green-spwedg018": {
-    "mensagem": "feat(edg-018): Lamborghini Aventador SVJ + capa metalica com referencia ESG-034/033 (#077A2D) Liquid Metal Agate Green",
+    "mensagem": "feat(edg-018): Lamborghini Aventador SVJ + capa metalica com referencia ESG-034/033 (#077A2D) Liquid Metal Agate Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "logo": {
       "arquivo": "scripts/data/marca-speed-wrapping.png",
       "largura": 0.26,
@@ -106,7 +106,7 @@
     }
   },
   "speed-wrapping-edg-021-metal-blue-berry-pet-spwedg021": {
-    "mensagem": "feat(edg-021): Bugatti Chiron + capa metalica com referencia ESG-034/033 (#1446B3) Liquid Metal Blue Berry",
+    "mensagem": "feat(edg-021): Bugatti Chiron + capa metalica com referencia ESG-034/033 (#1446B3) Liquid Metal Blue Berry\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "logo": {
       "arquivo": "scripts/data/marca-speed-wrapping.png",
       "largura": 0.26,
@@ -158,7 +158,7 @@
     }
   },
   "speed-wrapping-emt-023-satin-metallic-matt-sakura-pink-spwemt023": {
-    "mensagem": "feat(emt-023): Rolls-Royce Wraith + capa satin metallic (#D9BEC1) Satin Metallic Matt Sakura Pink",
+    "mensagem": "feat(emt-023): Rolls-Royce Wraith + capa satin metallic (#D9BEC1) Satin Metallic Matt Sakura Pink\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "logo": {
       "arquivo": "scripts/data/marca-speed-wrapping.png",
       "largura": 0.26,
