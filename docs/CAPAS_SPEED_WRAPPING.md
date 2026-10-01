@@ -352,6 +352,71 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | EMA-011 Matt Medium Blue | `#1C66C7` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 2; sem correção |
 | EMA-013 Matt Pink | `#E87BB3` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; corrigida (orquidea (nasceu H 335-342; lanternas continuam vermelhas)) |
 | EMA-017 Matt Cement Gray | `#7A8892` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; sem correção |
+| EDG-001 Metallic Agate Grey | `#2A2B30` | gloss metallic (prata/cinza, "not chrome") | ESG-034 + ESG-033; capa 1; sem correção |
+| EDG-002 Metallic Soul Red | `#C5253C` | gloss metallic | ESG-034 + ESG-033; capa 2; sem correção |
+| EDG-003 Metallic Mountain Green | `#2F3D3A` | gloss metallic | ESG-034 + ESG-033; capa 1; corrigida (`verde`) |
+| EDG-004 Metallic Isle Of Man Green | `#1E8C62` | gloss metallic | ESG-034 + ESG-033; capa 2; corrigida (`verde`) |
+| EDG-005 Metallic Indigo Blue Flip Purple Green | `#5F9A8C` | gloss metallic flip | ESG-034 + ESG-033; capa 2; corrigida (`verde`) |
+| EDG-006 Metallic Porshe Urban Green | `#86A897` | gloss metallic | ESG-034 + ESG-033; capa 2; sem correção |
+| EDG-007 Metallic Ice Crystal Blue | `#7B99B6` | gloss metallic | ESG-034 + ESG-033; capa 1; sem correção |
+| EDG-008 Metallic Lamborghini Blue Blast Purple | `#512AB1` | gloss metallic flip | ESG-034 + ESG-033; capa 2; sem correção |
+| EDG-009 Metallic Violet | `#7D6FC4` | gloss metallic | ESG-034 + ESG-033; capa 2; sem correção |
+| EDG-010 Metallic Gentian Blue | `#1D2858` | gloss metallic | ESG-034 + ESG-033; capa 2; sem correção |
+| EDG-011 Metallic Grey | `#B3B7C0` | gloss metallic (prata/cinza, "not chrome") | ESG-034 + ESG-033; capa 1; sem correção |
+| EDG-012 Metallic Brown Grey | `#7E756D` | gloss metallic (prata/cinza, "not chrome") | ESG-034 + ESG-033; capa 1; sem correção |
+| EDG-013 Metallic Byron Bay Blue | `#5A7590` | gloss metallic | ESG-034 + ESG-033; capa 2; sem correção |
+| EDG-014 Metallic Champane | `#C8BEAF` | gloss metallic (prata/cinza, "not chrome") | ESG-034 + ESG-033; capa 1; sem correção |
+| EDG-015 Metallic Passion Pink | `#C29AB3` | gloss metallic | ESG-034 + ESG-033; capa 1; sem correção |
+| EMA-005 Matt Lemon Green | `#BED842` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; sem correção |
+| EMA-010 Matt Light Blue | `#179DE0` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; sem correção |
+| EMA-012 Matt Pearl Blue | `#1F60B7` | **matt** perolado | só ESG-034 + TRUE MATTE com pérola; capa 1; corrigida (`azul` só na capa) |
+| EMA-014 Matt Rose Red | `#E8357B` | **matt** (fosco) | só ESG-034 + TRUE MATTE; capa 1; corrigida (`orquidea`) |
+| EMG-001 Satin Metallic Glossy White | `#E3E7EA` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-002 Satin Metallic Glossy Black | `#0E0E10` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-003 Satin Metallic Glossy Coal Grey | `#3C3D41` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-004 Satin Metallic Glossy Grey | `#8C8D92` | gloss metallic com faísca | ESG-034 + ESG-033; capa 2; sem correção |
+| EMG-005 Satin Metallic Glossy Fire Red | `#C1161E` | gloss metallic com faísca | ESG-034 + ESG-033; capa 2; sem correção |
+| EMG-006 Satin Metallic Glossy Orange | `#EE4A1F` | gloss metallic com faísca | ESG-034 + ESG-033; capa 2; sem correção |
+| EMG-007 Satin Metallic Glossy Maple Leaf Yellow | `#E68C03` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-008 Satin Metallic Glossy Champagne | `#D3B6A1` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-009 Satin Metallic Glossy Roes Pink | `#E72345` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-010 Satin Metallic Glossy Grape Purple | `#4E2280` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-011 Satin Metallic Glossy Royal Green | `#1A4A44` | gloss metallic com faísca | ESG-034 + ESG-033; capa 2; corrigida (`verde`) |
+| EMG-012 Satin Metallic Glossy Emerald | `#237A6A` | gloss metallic com faísca | ESG-034 + ESG-033; capa 2; corrigida (`verde`) |
+| EMG-013 Satin Metallic Glossy Blueberry | `#1A1C96` | gloss metallic com faísca | ESG-034 + ESG-033; capa 2; sem correção |
+| EMG-014 Satin Metallic Glossy Sapphire | `#0A50D8` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-015 Satin Metallic Glossy Magic Blue | `#0391C7` | gloss metallic com faísca | ESG-034 + ESG-033; capa 1; sem correção |
+| EMG-017 Satin Metallic Glossy Mistblue | `#8A9DBD` | gloss metallic com faísca | ESG-034 + ESG-033; capa 2; sem correção |
+| EMT-001 Satin Metallic Matt White | `#CED3CF` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| EMT-002 Satin Metallic Matt Black | `#1A1A1C` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| EMT-003 Satin Metallic Matt Carbon Grey | `#7D8088` | satin metallic | só ESG-034 (método satin); capa 2; sem correção |
+| EMT-004 Satin Metallic Matt Titanium Grey | `#A2A5AC` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| EMT-005 Satin Metallic Matt Coal Grey | `#4E4F52` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| EMT-006 Satin Metallic Matt Grey | `#8F8986` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| EMT-007 Satin Metallic Matt Fire Red | `#BD2028` | satin metallic | só ESG-034 (método satin); capa 2; sem correção |
+| EMT-008 Satin Metallic Matt Orange | `#E2471F` | satin metallic | só ESG-034 (método satin); capa 2; sem correção |
+| EMT-009 Satin Metallic Matt Maple Leaf Yellow | `#EEA302` | satin metallic | só ESG-034 (método satin); capa 2; sem correção |
+| EMT-010 Satin Metallic Matt Rose Gold | `#DDB2A8` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| EMT-011 Satin Metallic Matt Grape Purple | `#8A70C2` | satin metallic | só ESG-034 (método satin); capa 2; sem correção |
+| EMT-012 Satin Metallic Matt Royal Green | `#2A5A48` | satin metallic | só ESG-034 (método satin); capa 1; corrigida (`verde`) |
+| EMT-013 Satin Metallic Matt Emerald | `#2B776B` | satin metallic | só ESG-034 (método satin); capa 1; corrigida (`verde`) |
+| EMT-014 Satin Metallic Matt New Grass Green | `#CDE02A` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| EMT-015 Satin Metallic Matt Lime | `#B2CC3E` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| EMT-016 Satin Metallic Matt Lake Green | `#5ED4C0` | satin metallic | só ESG-034 (método satin); capa 2; corrigida (`verde`) |
+| EMT-017 Satin Metallic Matt Sea Blue | `#4793C8` | satin metallic | só ESG-034 (método satin); capa 2; sem correção |
+| EMT-018 Satin Metallic Matt Lake Blue | `#4F9BBA` | satin metallic | só ESG-034 (método satin); capa 2; sem correção |
+| EMT-019 Satin Metallic Matt Sky Blue | `#62BBDD` | satin metallic | só ESG-034 (método satin); capa 2; corrigida (`azul`) |
+| EMT-020 Satin Metallic Matt Mist Blue | `#8BA8D5` | satin metallic | só ESG-034 (método satin); capa 1; sem correção |
+| ESG-006 Super Gloss Apple Green | `#AEE245` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-007 Super Gloss Acid Green | `#D4D837` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-008 Super Gloss Light Lime Green | `#9CD2A1` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-010 Super Gloss Denim Blue | `#A3C8EC` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-013 Super Gloss Sky Blue | `#43BEE1` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-018 Super Gloss Lemon Yellow | `#F0E024` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-020 Super Gloss Mclaren Orange | `#FF8007` | super gloss sólido | ESG-034 + ESG-033; capa 2; sem correção |
+| ESG-022 Super Gloss Coral Orange | `#E74E47` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ESG-024 Super Gloss Rouge Pink | `#EBA0A9` | super gloss sólido | ESG-034 + ESG-033; capa 2; sem correção |
+| ESG-029 Super Gloss Volcano Grey | `#C4C5CB` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

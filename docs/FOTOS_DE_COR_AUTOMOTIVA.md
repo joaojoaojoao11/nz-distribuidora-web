@@ -155,6 +155,71 @@ confiável:
 | EMA-011 Matt Medium Blue | H 212-217 · S 73-92 · V 71-83 → `#1C66C7` | — | sem correção |
 | EMA-013 Matt Pink | H 327-331 · S 43-51 · V 86-95 → `#E87BB3` | — | corrigida: orquidea (nasceu H 335-342; lanternas continuam vermelhas) |
 | EMA-017 Matt Cement Gray | caixa no cartão: H 204-207 · S 19-21 → cinza azulado → `#7A8892` | — | sem correção |
+| EDG-001 Metallic Agate Grey | H 229-291 · S 11-17 · V 26-34 (alvo a olho no cartão) → `#2A2B30` | — | sem correção |
+| EDG-002 Metallic Soul Red | H 351-353 · S 75-94 · V 71-87 → `#C5253C` | — | sem correção |
+| EDG-003 Metallic Mountain Green | H 186-211 · S 13-27 · V 41-73 (alvo a olho no cartão) → `#2F3D3A` | — | corrigida: `verde` |
+| EDG-004 Metallic Isle Of Man Green | H 158-163 · S 53-62 · V 53-62 (alvo a olho no cartão) → `#1E8C62` | — | corrigida: `verde` |
+| EDG-005 Metallic Indigo Blue Flip Purple Green | H 163-178 · S 25-30 · V 61-70 (alvo a olho no cartão) → `#5F9A8C` | — | corrigida: `verde` |
+| EDG-006 Metallic Porshe Urban Green | H 140-154 · S 13-21 · V 63-69 (alvo a olho no cartão) → `#86A897` | — | sem correção |
+| EDG-007 Metallic Ice Crystal Blue | H 206-214 · S 31-40 · V 48-75 → `#7B99B6` | — | sem correção |
+| EDG-008 Metallic Lamborghini Blue Blast Purple | H 253-264 · S 65-80 · V 65-78 → `#512AB1` | — | sem correção |
+| EDG-009 Metallic Violet | H 246-256 · S 38-43 · V 58-78 (alvo a olho no cartão) → `#7D6FC4` | — | sem correção |
+| EDG-010 Metallic Gentian Blue | H 221-229 · S 37-67 · V 42-58 (alvo a olho no cartão) → `#1D2858` | — | sem correção |
+| EDG-011 Metallic Grey | H 213-229 · S 4-9 · V 69-84 → `#B3B7C0` | — | sem correção |
+| EDG-012 Metallic Brown Grey | H 23-28 · S 10 · V 48-68 (alvo a olho no cartão) → `#7E756D` | — | sem correção |
+| EDG-013 Metallic Byron Bay Blue | H 205-213 · S 26-34 · V 53-69 (alvo a olho no cartão) → `#5A7590` | — | sem correção |
+| EDG-014 Metallic Champane | H 29-39 · S 10-15 · V 70-80 → `#C8BEAF` | — | sem correção |
+| EDG-015 Metallic Passion Pink | H 319-325 · S 16-20 · V 76-84 (alvo a olho no cartão) → `#C29AB3` | — | sem correção |
+| EMA-005 Matt Lemon Green | H 67-73 · S 64-75 · V 80-88 → `#BED842` | — | sem correção |
+| EMA-010 Matt Light Blue | H 198-202 · S 76-99 · V 83-91 → `#179DE0` | — | sem correção |
+| EMA-012 Matt Pearl Blue | H 211-218 · S 68-86 · V 65-88 → `#1F60B7` | — | corrigida: `azul` só na capa |
+| EMA-014 Matt Rose Red | H 336-338 · S 68-85 · V 83-92 → `#E8357B` | — | corrigida: `orquidea` |
+| EMG-001 Satin Metallic Glossy White | H 188-215 · S 4-9 · V 81-90 (alvo a olho no cartão) → `#E3E7EA` | — | sem correção |
+| EMG-002 Satin Metallic Glossy Black | cor quase preta, a olho (alvo a olho no cartão) → `#0E0E10` | — | sem correção |
+| EMG-003 Satin Metallic Glossy Coal Grey | H 213-256 · S 1-3 · V 37-39 (alvo a olho no cartão) → `#3C3D41` | — | sem correção |
+| EMG-004 Satin Metallic Glossy Grey | H 334-345 · S 9-13 · V 36-60 (alvo a olho no cartão) → `#8C8D92` | — | sem correção |
+| EMG-005 Satin Metallic Glossy Fire Red | H 355-359 · S 84-92 · V 68-87 → `#C1161E` | — | sem correção |
+| EMG-006 Satin Metallic Glossy Orange | H 4-10 · S 84-89 · V 75-87 (alvo a olho no cartão) → `#EE4A1F` | — | sem correção |
+| EMG-007 Satin Metallic Glossy Maple Leaf Yellow | H 35-37 · S 96-99 · V 81-94 → `#E68C03` | — | sem correção |
+| EMG-008 Satin Metallic Glossy Champagne | H 23-28 · S 21-27 · V 81-87 → `#D3B6A1` | — | sem correção |
+| EMG-009 Satin Metallic Glossy Roes Pink | H 348-351 · S 78-90 · V 85-96 → `#E72345` | — | sem correção |
+| EMG-010 Satin Metallic Glossy Grape Purple | H 289-305 · S 50-57 · V 37-41 (alvo a olho no cartão) → `#4E2280` | — | sem correção |
+| EMG-011 Satin Metallic Glossy Royal Green | H 172-183 · S 39-48 · V 34-67 (alvo a olho no cartão) → `#1A4A44` | — | corrigida: `verde` |
+| EMG-012 Satin Metallic Glossy Emerald | H 172-175 · S 41-67 · V 35-81 (alvo a olho no cartão) → `#237A6A` | — | corrigida: `verde` |
+| EMG-013 Satin Metallic Glossy Blueberry | H 239-247 · S 65-80 · V 24-48 (alvo a olho no cartão) → `#1A1C96` | — | sem correção |
+| EMG-014 Satin Metallic Glossy Sapphire | H 217-224 · S 94-99 · V 51-81 (alvo a olho no cartão) → `#0A50D8` | — | sem correção |
+| EMG-015 Satin Metallic Glossy Magic Blue | H 195-198 · S 95-99 · V 74-81 → `#0391C7` | — | sem correção |
+| EMG-017 Satin Metallic Glossy Mistblue | H 221-224 · S 26-37 · V 51-73 (alvo a olho no cartão) → `#8A9DBD` | — | sem correção |
+| EMT-001 Satin Metallic Matt White | H 89-168 · S 0-4 · V 80-87 → `#CED3CF` | — | sem correção |
+| EMT-002 Satin Metallic Matt Black | cor quase preta, a olho (alvo a olho no cartão) → `#1A1A1C` | — | sem correção |
+| EMT-003 Satin Metallic Matt Carbon Grey | H 250-261 · S 9-12 · V 43-62 (alvo a olho no cartão) → `#7D8088` | — | sem correção |
+| EMT-004 Satin Metallic Matt Titanium Grey | H 253-277 · S 8-9 · V 39-60 (alvo a olho no cartão) → `#A2A5AC` | — | sem correção |
+| EMT-005 Satin Metallic Matt Coal Grey | H 209-253 · S 2-6 · V 29-36 → `#4E4F52` | — | sem correção |
+| EMT-006 Satin Metallic Matt Grey | H 3-345 · S 7-15 · V 57-64 (alvo a olho no cartão) → `#8F8986` | — | sem correção |
+| EMT-007 Satin Metallic Matt Fire Red | H 356-358 · S 74-89 · V 66-86 → `#BD2028` | — | sem correção |
+| EMT-008 Satin Metallic Matt Orange | H 9-12 · S 69-91 · V 61-87 (alvo a olho no cartão) → `#E2471F` | — | sem correção |
+| EMT-009 Satin Metallic Matt Maple Leaf Yellow | H 38-41 · S 98-99 · V 80-89 (alvo a olho no cartão) → `#EEA302` | — | sem correção |
+| EMT-010 Satin Metallic Matt Rose Gold | H 8-11 · S 24-32 · V 80-90 (alvo a olho no cartão) → `#DDB2A8` | — | sem correção |
+| EMT-011 Satin Metallic Matt Grape Purple | H 260-266 · S 33-44 · V 52-73 (alvo a olho no cartão) → `#8A70C2` | — | sem correção |
+| EMT-012 Satin Metallic Matt Royal Green | H 155-163 · S 30-32 · V 42-46 (alvo a olho no cartão) → `#2A5A48` | — | corrigida: `verde` |
+| EMT-013 Satin Metallic Matt Emerald | H 173-177 · S 47-60 · V 33-63 (alvo a olho no cartão) → `#2B776B` | — | corrigida: `verde` |
+| EMT-014 Satin Metallic Matt New Grass Green | H 60-68 · S 74-84 · V 74-87 (alvo a olho no cartão) → `#CDE02A` | — | sem correção |
+| EMT-015 Satin Metallic Matt Lime | H 65-67 · S 72-76 · V 58-69 (alvo a olho no cartão) → `#B2CC3E` | — | sem correção |
+| EMT-016 Satin Metallic Matt Lake Green | H 168-172 · S 53-81 · V 77-81 (alvo a olho no cartão) → `#5ED4C0` | — | corrigida: `verde` |
+| EMT-017 Satin Metallic Matt Sea Blue | H 201-207 · S 58-71 · V 68-82 → `#4793C8` | — | sem correção |
+| EMT-018 Satin Metallic Matt Lake Blue | H 197 · S 58 · V 73 → `#4F9BBA` | — | sem correção |
+| EMT-019 Satin Metallic Matt Sky Blue | H 193-200 · S 48-70 · V 84-93 → `#62BBDD` | — | corrigida: `azul` |
+| EMT-020 Satin Metallic Matt Mist Blue | H 213-221 · S 33-37 · V 79-87 → `#8BA8D5` | — | sem correção |
+| ESG-006 Super Gloss Apple Green | H 78-82 · S 64-83 · V 85-91 → `#AEE245` | — | sem correção |
+| ESG-007 Super Gloss Acid Green | H 58-64 · S 68-91 · V 84-89 → `#D4D837` | — | sem correção |
+| ESG-008 Super Gloss Light Lime Green | H 114-134 · S 19-32 · V 60-88 → `#9CD2A1` | — | sem correção |
+| ESG-010 Super Gloss Denim Blue | H 206-212 · S 34-52 · V 89-95 (alvo a olho no cartão) → `#A3C8EC` | — | sem correção |
+| ESG-013 Super Gloss Sky Blue | H 190-196 · S 64-84 · V 88-90 → `#43BEE1` | — | sem correção |
+| ESG-018 Super Gloss Lemon Yellow | H 52-56 · S 83-92 · V 92-95 (alvo a olho no cartão) → `#F0E024` | — | sem correção |
+| ESG-020 Super Gloss Mclaren Orange | H 27-32 · S 94-99 · V 100 → `#FF8007` | — | sem correção |
+| ESG-022 Super Gloss Coral Orange | H 1-3 · S 65-72 · V 87-95 → `#E74E47` | — | sem correção |
+| ESG-024 Super Gloss Rouge Pink | H 352-353 · S 31-33 · V 89-96 → `#EBA0A9` | — | sem correção |
+| ESG-029 Super Gloss Volcano Grey | H 182-286 · S 1-5 · V 77-82 → `#C4C5CB` | — | sem correção |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -619,6 +684,28 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
 
+### Lote de 65 cores de uma vez (lote 9, 01/10)
+
+Todas as cores com amostra no Drive num lote só. Rascunho conferido contra as regras de cenário,
+130 pilotos (2 por cor), 327 imagens no resto (195 fotos + 130 capas + 2 frentes novas), enviadas
+em 28 chamadas de 12 por 14 agentes em paralelo — tudo gerado em cerca de 5 minutos. Pilotos: 55 A,
+10 B, **nenhum errado de cor ou acabamento**. O que apareceu, e a regra que fica:
+
+- **Verde escuro e esmeralda puxam para petróleo** (H +10 a +30: EDG-004, EDG-005, EMG-011,
+  EMG-012, EMT-012, EMT-013, EMT-016). Das 12 correções, 8 foram com a família `verde`. Em verde com
+  matiz abaixo de ~175, já contar com a correção no manifesto.
+- **Verde quase preto sai grafite neutro** (EDG-003, S 23 · V 24): a correção não salva, porque a
+  máscara de verde fica vazia. Refazer pedindo "clearly GREEN in daylight, never neutral grey and
+  never black" — saiu verde-garrafa e a correção fechou o resto.
+- **A configuração do carro precisa estar no texto**: o BMW Z8 do piloto saiu conversível aberto e
+  a traseira/perfil vieram com capota rígida; a Kombi do piloto saiu toda menta e a traseira/perfil
+  vieram saia-e-blusa com teto branco. Escrever "roof DOWN, no hardtop" e "ONE single colour all
+  over, NOT two-tone, no white roof".
+- **Nome de versão vira letreiro**: "Wrangler Rubicon" pôs RUBICON no capô de um dos pilotos.
+  Tirar a palavra do prompt e pedir "plain bonnet with no decals".
+- Lista de preparo gerada no Windows sai com CRLF: o `\r` grudou no slug (cor "não está no
+  manifesto") e na flag (`--corrigir` ignorada). Gerar com `newline='\n'` ou limpar o `\r` no laço.
+
 ### Lote de 20 cores de uma vez (lote 8, 01/10)
 
 O João pediu um teste com 20 cores. Rascunho conferido contra as regras de cenário, 40 pilotos (2 por
@@ -885,6 +972,71 @@ marca d'água, sem adesivo de patrocínio.
 | EMA-011 Matt Medium Blue | Hyundai Ioniq 5 N | pátio de galpões de tijolo em Manchester |
 | EMA-013 Matt Pink | Audi TT RS (8S) | orla de Biarritz, muro de pedra, farol |
 | EMA-017 Matt Cement Gray | Lamborghini Huracán Sterrato | leito seco de rio de cascalho nos Alpes |
+| EDG-001 Metallic Agate Grey | Aston Martin DBS Superleggera | the deck beside the white cable-stayed Octavio Frias de Oliveira bridge in Sao Paulo, light grey concrete, white steel cables, city towers far behind |
+| EDG-002 Metallic Soul Red | Mazda RX-7 (FD3S) | a lakeside road at Lake Kawaguchi with the snow-capped Mount Fuji behind |
+| EDG-003 Metallic Mountain Green | Bentley Bentayga | the white curved concrete arches of Oscar Niemeyer's modernist buildings in Brasilia, pale paving |
+| EDG-004 Metallic Isle Of Man Green | Lamborghini Countach LPI 800-4 | Deadvlei, Namibia |
+| EDG-005 Metallic Indigo Blue Flip Purple Green | McLaren P1 | the beige tuff rock formations and fairy chimneys of Cappadocia, a dusty road |
+| EDG-006 Metallic Porshe Urban Green | Porsche 356 Speedster (classic) | the gravel courtyard of a pale limestone chateau in the Loire Valley |
+| EDG-007 Metallic Ice Crystal Blue | Rolls-Royce Spectre | a cobbled street in Edinburgh Old Town, dark grey sandstone buildings, only a strip of sky |
+| EDG-008 Metallic Lamborghini Blue Blast Purple | Lamborghini Revuelto | the deep orange dunes of Sossusvlei, Namibia, filling most of the frame, only a strip of sky |
+| EDG-009 Metallic Violet | BMW i4 M50 | Zabriskie Point, Death Valley |
+| EDG-010 Metallic Gentian Blue | Mercedes-Maybach S 680 | Praca do Comercio in Lisbon |
+| EDG-011 Metallic Grey | Audi RS7 Sportback (C8) | the Furka Pass in the Swiss Alps |
+| EDG-012 Metallic Brown Grey | Audi RS Q8 | the Great Ocean Road above the Twelve Apostles |
+| EDG-013 Metallic Byron Bay Blue | Range Rover Velar | beside the white Erasmus bridge in Rotterdam, grey concrete quay, steel and glass |
+| EDG-014 Metallic Champane | Maserati Levante Trofeo | the white marble plaza of the Sheikh Zayed Grand Mosque in Abu Dhabi, white columns and domes |
+| EDG-015 Metallic Passion Pink | Volkswagen Beetle (2012-2019) | a whitewashed lane in Oia, Santorini |
+| EMA-005 Matt Lemon Green | McLaren 570S | the white sand dunes of Lencois Maranhenses, Brazil, with small blue lagoons |
+| EMA-010 Matt Light Blue | Ford Focus RS (Mk3) | the rose-red sandstone cliffs of Petra, Jordan, in sunlight, filling most of the frame, only a strip of sky |
+| EMA-012 Matt Pearl Blue | Kia Stinger GT | a road through the terraced vineyards of the Douro valley, schist walls, warm earth, only a strip of sky |
+| EMA-014 Matt Rose Red | Chevrolet Corvette C7 Z06 | Glen Coe in the Scottish Highlands |
+| EMG-001 Satin Metallic Glossy White | Rolls-Royce Ghost | the Trollstigen mountain road in Norway |
+| EMG-002 Satin Metallic Glossy Black | Bugatti Veyron | the pale granite promenade of Marina Bay, Singapore, glass towers behind |
+| EMG-003 Satin Metallic Glossy Coal Grey | BMW X6 M Competition | a pale stone plaza beside a curving titanium-clad museum in the style of the Guggenheim Bilbao |
+| EMG-004 Satin Metallic Glossy Grey | Porsche Cayenne Turbo GT coupe | the old stone bridge over the gorge in Ronda, Spain, pale limestone cliffs |
+| EMG-005 Satin Metallic Glossy Fire Red | Ferrari 812 Superfast | the Amalfi Coast road |
+| EMG-006 Satin Metallic Glossy Orange | Ford F-150 Raptor R | the Icefields Parkway in the Canadian Rockies |
+| EMG-007 Satin Metallic Glossy Maple Leaf Yellow | Ferrari 488 Pista | the Grossglockner High Alpine Road, Austria |
+| EMG-008 Satin Metallic Glossy Champagne | Toyota Land Cruiser 300 | the stone promenade of Lake Lucerne, grey-green lake, mountains behind |
+| EMG-009 Satin Metallic Glossy Roes Pink | Alfa Romeo 4C | Chapman's Peak Drive, Cape Town |
+| EMG-010 Satin Metallic Glossy Grape Purple | Dodge Charger SRT Hellcat | Valle de la Luna, Atacama |
+| EMG-011 Satin Metallic Glossy Royal Green | Jaguar F-Pace SVR | the cobbled road in front of the pale Georgian limestone Royal Crescent in Bath |
+| EMG-012 Satin Metallic Glossy Emerald | Koenigsegg Jesko | the red sandstone buttes of Monument Valley, red earth road |
+| EMG-013 Satin Metallic Glossy Blueberry | Pagani Huayra | a stone-paved lane in Gion, Kyoto, dark wooden machiya houses, only a strip of sky |
+| EMG-014 Satin Metallic Glossy Sapphire | Nissan 370Z Nismo | a street of golden baroque limestone in Noto, Sicily, only a strip of sky |
+| EMG-015 Satin Metallic Glossy Magic Blue | Hyundai Ioniq 6 | a cobbled colonial street in Ouro Preto, Brazil |
+| EMG-017 Satin Metallic Glossy Mistblue | Polestar 1 | a Mayfair street in London |
+| EMT-001 Satin Metallic Matt White | Tesla Model S Plaid | Teide National Park, Tenerife |
+| EMT-002 Satin Metallic Matt Black | Mercedes-AMG ONE | the grey asphalt and white architecture of the Yas Marina circuit in Abu Dhabi |
+| EMT-003 Satin Metallic Matt Carbon Grey | Koenigsegg Agera RS | beside the white saucer-shaped Niteroi Contemporary Art Museum (Niemeyer), Brazil, pale paving |
+| EMT-004 Satin Metallic Matt Titanium Grey | Jaguar E-Type Series 1 coupe (classic) | a Cornish coastal road |
+| EMT-005 Satin Metallic Matt Coal Grey | Lucid Air Sapphire | beside the silver curved panels of the Dongdaemun Design Plaza in Seoul, pale paving |
+| EMT-006 Satin Metallic Matt Grey | Porsche Carrera GT | El Mirage dry lake bed |
+| EMT-007 Satin Metallic Matt Fire Red | Ferrari LaFerrari | the terraced vineyards of Lavaux above Lake Geneva, stone walls |
+| EMT-008 Satin Metallic Matt Orange | Lamborghini Miura (classic) | the Corniche road on the Cote d'Azur |
+| EMT-009 Satin Metallic Matt Maple Leaf Yellow | Toyota 2000GT (classic) | the Quiraing ridge on the Isle of Skye |
+| EMT-010 Satin Metallic Matt Rose Gold | Ferrari Portofino M | the pale limestone city walls of Dubrovnik, stone paving |
+| EMT-011 Satin Metallic Matt Grape Purple | BMW Z8 (classic) | a Cotswolds village lane of honey limestone cottages |
+| EMT-012 Satin Metallic Matt Royal Green | Aston Martin DB5 (classic) | the pale stone quay of Monaco harbour, white yachts |
+| EMT-013 Satin Metallic Matt Emerald | Lotus Evija | the red sand and sandstone cliffs of Wadi Rum, Jordan |
+| EMT-014 Satin Metallic Matt New Grass Green | Porsche 718 Boxster | the black lava fields and white houses of Lanzarote |
+| EMT-015 Satin Metallic Matt Lime | Lexus LFA | the grey concrete towers and walkways of the Barbican estate in London |
+| EMT-016 Satin Metallic Matt Lake Green | Alfa Romeo 33 Stradale (2023) | the white windmills and whitewashed walls of Mykonos |
+| EMT-017 Satin Metallic Matt Sea Blue | Chevrolet Corvette C2 Sting Ray split-window coupe (1963) | the pale stone houses of the Sassi di Matera, only a strip of sky |
+| EMT-018 Satin Metallic Matt Lake Blue | Porsche 959 (classic) | the orange dunes of Merzouga in the Sahara, only a strip of sky |
+| EMT-019 Satin Metallic Matt Sky Blue | Fiat 500e (2020) | the terracotta and ochre porticoes of Bologna, stone paving, only a strip of sky |
+| EMT-020 Satin Metallic Matt Mist Blue | Mercedes-Benz EQS | the white marble slopes of the Oslo Opera House, grey fjord water |
+| ESG-006 Super Gloss Apple Green | Subaru BRZ | the pale clay badlands of Bardenas Reales, Spain |
+| ESG-007 Super Gloss Acid Green | Lotus Exige Cup 430 | the ochre and black volcanic desert of Fuerteventura |
+| ESG-008 Super Gloss Light Lime Green | Volkswagen T1 Samba bus (classic) with white roof, | the pale stone seaside promenade of Cascais, white sand |
+| ESG-010 Super Gloss Denim Blue | Ford Mustang Fastback (1967) | a mid-century modern house in Palm Springs |
+| ESG-013 Super Gloss Sky Blue | Toyota Supra (A80, Mk4) | a narrow street in Seville, ochre and white facades, only a strip of sky |
+| ESG-018 Super Gloss Lemon Yellow | Honda S2000 | a coastal road on the Faroe Islands |
+| ESG-020 Super Gloss Mclaren Orange | McLaren Senna | a public road beside the Nurburgring, green forest |
+| ESG-022 Super Gloss Coral Orange | Mitsubishi Lancer Evolution X | Lake Tekapo, New Zealand |
+| ESG-024 Super Gloss Rouge Pink | Jeep Wrangler two-door | the white streets of Sidi Bou Said, Tunisia |
+| ESG-029 Super Gloss Volcano Grey | Mercedes-Benz SLR McLaren | a road on Mount Etna |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
