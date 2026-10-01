@@ -128,7 +128,7 @@ confiável:
 | EGF-018 Forged Carbon | estilhaços angulosos cinza/grafite sobre preto | — | forjado em estilhaços, não em retângulos |
 | ESG-004 Super Gloss Ferrari Red | H 356–1 · S 84–97 · V ~88 (à mão) → `#E31E14` | — | cor no teto: sem correção |
 | ESG-011 Super Gloss Miami Blue | H 188–194 · S 87–99 · V 80–86 → `#05A9CD` | — | cor no teto: sem correção |
-| ESG-016 Super Gloss Sunflower Yellow | H 40–43 · S 97–99 · V 87–96 → `#F2A705` | — | duas fotos tinham a ESG-017 atrás do cartão: medir só as fotos com o cartão sozinho |
+| ESG-016 Super Gloss Sunflower Yellow | face plana H 39,7 · S 99 · V 89 → **`#E39702`** (âmbar/manga; a 1ª leitura `#F2A705` pegou o reflexo) | — | refeita em 01/10 com prompt "deep amber / marigold / mango, NOT canary"; sem correção (a família `dourado` tinge o cenário) |
 | ESG-025 Super Gloss Lavender | H 250–257 · S 38–41 · V 89–92 → `#A996EA` (swatch) | — | asfalto neutro; corrigida com `violeta` + `val_max` 0,95 |
 | EMA-007 Matt Army Green | H 104–108 · S 25–32 · V 43–48 (balanço de branco) → `#5A7351` | — | primeira EMA (fosco); gerador entrega oliva acinzentado H ~84 |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
@@ -594,6 +594,26 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 (fosca ou brilhante?) do **flake das lascas** (metálico ou liso?) e escrever as duas coisas no prompt;
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
+
+### Amarelo-âmbar lido como limão (ESG-016, 01/10)
+
+A ESG-016 Sunflower Yellow foi publicada amarelo-canário (H 42–45 · V 96–98) e o João reprovou com
+uma foto do cartão **na frente da ESG-017** (limão, H 53): a face plana da ESG-016 dá H 39,7 · S 99 ·
+V 89 → `#E39702`, um amarelo-âmbar puxado para manga. Dois erros somados:
+
+1. **Leitura no reflexo.** A primeira leitura (`#F2A705`) pegou a parte do cartão que estava no
+   brilho; ali o valor sobe e o matiz anda para o amarelo (H 45 no brilho × H 39,7 na face plana do
+   mesmo cartão). Medir a **face plana bem iluminada**, nunca a faixa mais clara.
+2. **O nome puxa o gerador.** "Sunflower" + V 95 ancorou no canário. Para âmbar, o prompt que
+   acertou de primeira foi "a deep amber yellow, a warm marigold or mango yellow that leans clearly
+   toward orange … NOT a bright canary yellow", com V ~88 → H 36–38 iluminado.
+
+Correção não serviu: a família `dourado` (22–62) pegou as rochas calcárias e o pasto das Dolomitas
+(com `manterValor` desligado, a paisagem inteira ficou laranja). Amarelo num cenário de pedra e pasto
+quentes → **refazer com o prompt certo**, não corrigir. E a melhor referência de tom é o **irmão de
+linha ao lado** no mesmo cartão: a diferença relativa entre os dois não depende do balanço de branco.
+Fotos refeitas: frontal `9b244d73`, traseira `5a21a2de`, perfil `c6443c48`, macro `7129a767`, capa
+`46c2d9be`.
 
 ### Verde-militar fosco: correção que mancha a porta ou tinge o cenário (EMA-007, 01/10)
 

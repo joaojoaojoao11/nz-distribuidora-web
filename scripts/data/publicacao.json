@@ -52,17 +52,17 @@
     ]
   },
   "speed-wrapping-esg-016-super-gloss-sunflower-yellow-pet-spwesg016": {
-    "mensagem": "feat(esg-016): Chevrolet Corvette C8 + capa super gloss com referencia ESG-034/033 (#F2A705) Sunflower Yellow\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-    "leitura_referencia": "#F2A705",
-    "nota_cor": "Amostra do catalogo fisico (ESG 016 SUPER GLOSS SUNFLOWER YELLOW PET). A mao, so nas fotos sem a ESG-017 atras: H40-43 S97-99 V87-96 -> #F2A705. Piloto B aprovado 01/10 (H44, um pouco mais limao que o cartao). Sem correcao: cor no teto.",
+    "mensagem": "fix(esg-016): tom corrigido para o amarelo-ambar do cartao (#E39702), fotos e capa refeitas\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "#E39702",
+    "nota_cor": "Amostra do catalogo fisico (ESG 016 SUPER GLOSS SUNFLOWER YELLOW PET). 1a versao (a232b57) saiu amarelo-limao (H42-45, V96-98): a leitura #F2A705 pegou o cartao com brilho e a ESG-017 (limao, H53) atras contaminou o olho. Joao corrigiu em 01/10 com foto do cartao na frente da ESG-017: face plana H39,7 S99 V89 -> #E39702 (amarelo-ambar/manga). Refeita do zero com prompt 'deep amber / marigold / mango, NOT canary' -> H36-38 iluminado. Sem correcao: a familia dourado contamina as rochas e o pasto dos Dolomitas.",
     "prompts": {
       "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
       "carro": "Chevrolet Corvette C8 Stingray coupe on dark graphite split-spoke wheels",
-      "carro_cor": "1. HUE: a warm sunflower yellow leaning toward amber, like a ripe sunflower petal or egg yolk, hex #F2A705 (hue about 41). 2. CHROMA: fully saturated. 3. BRIGHTNESS: very bright, about 95 percent; shadow falls to deep golden amber, never brown or olive",
+      "carro_cor": "1. HUE: a deep amber yellow, a warm marigold or mango yellow that leans clearly toward orange, hex #E59702 (hue about 39); warmer and deeper than lemon or school-bus yellow, NOT canary. 2. CHROMA: fully saturated. 3. BRIGHTNESS: bright but rich, about 88 percent; shadow falls to deep orange-amber, never brown or olive",
       "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
       "carro_cenario": "Dolomites mountain pass, dark asphalt, pale grey limestone peaks, green alpine meadow; no yellow flowers"
     },
-    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180048_a48c2345-e292-41b6-99ee-54746534e8bf.png",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_191207_46c2d9be-7f6f-40da-8d26-8b735822332c.png",
     "logo": {
       "arquivo": "scripts/data/marca-speed-wrapping.png",
       "largura": 0.26,
@@ -83,22 +83,22 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_175525_7d4df5e3-8030-4083-ac4c-9781728521a3.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_191207_9b244d73-b1e4-436f-bc8a-ff92924bec5d.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_43c2668f-7393-4365-ac90-01067cc2faa8.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_191207_5a21a2de-00a0-4504-b7d5-de391ed9fae1.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_4a7c79b8-9982-4fe2-bb34-4e8126dd5451.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_191208_c6443c48-e0f8-412d-8654-e95ae07efd41.png",
         "nota": "perfil puro"
       },
       {
         "n": 5,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_180045_44780686-a35c-4479-a1b3-69d926a5ef70.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_191207_7129a767-982f-4fed-b0f0-58a44ef669f5.png",
         "nota": "macro do super gloss"
       }
     ]
