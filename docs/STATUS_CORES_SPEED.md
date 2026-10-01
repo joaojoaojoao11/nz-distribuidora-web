@@ -44,10 +44,10 @@ pasta · `✅ ` = fotos e capa 100% no site. Ex.: `✅ EDG-020 LIQUID METAL RUBY
 | EGF-017 | SHADOW BLACK | ✅ 30/09 | ✅ 01/10 — camuflagem preta: manchas preto brilhante × cinza-chumbo acetinado; textura `d0cfb72b` | ✅ 01/10 — **B** aprovado (`5165d1d4`) | ✅ 01/10 — aprovadas: closes + macro brilho × acetinado + capa camuflada | ✅ 01/10 — commit `3eb9121` (deploy demorou; registro no banco na 2ª rodada), 5 mídias, conferido no ar; pasta ✅ |
 | EGF-018 | FORGED CARBON | ✅ 30/09 | ⚠️ 01/10 — **leitura errada na 1ª publicação**: tratei como brilhante; o João corrigiu: é **fosco com flake metálico** nos estilhaços (base preta aveludada). Novo recorte `3f26a272` | ✅ 01/10 — refeito fosco; **B** aprovado (`ee02ef0e`) | ✅ 01/10 — refeitas no acabamento certo (fosco + flake metálico): closes + capa rolo fosco; sem correção | ✅ 01/10 — 1ª publicação `2ff4491` (brilhante, errada) substituída pelo commit `38bb6c7`; 5 arquivos conferidos por conteúdo no ar; pasta ✅ |
 | ESG-004 | SUPER GLOSS FERRARI RED PET | ✅ 01/10 | ✅ 01/10 — à mão: H 356–1 · S 84–97 · V ~88 → vermelho vivo levemente alaranjado **`#E31E14`** (cor no teto: sem correção) | ✅ 01/10 — **B** aprovado (`0e479703`) | ✅ 01/10 — aprovadas (H 359–5 · S 92–99; capa V 89); sem correção | ✅ 01/10 — commit `70cfffc`, 5 mídias (capa antiga substituída), conferido no ar; pasta ✅ |
-| ESG-011 | SUPER GLOSS MIAMI BLUE PET | ✅ 01/10 | ✅ 01/10 — à mão: H 188–194 · S 87–99 · V 80–86 (asfalto neutro) → **`#05A9CD`** (cor no teto) | ✅ 01/10 — **B** aprovado (`d575dc96`) | ⏳ 01/10 — prévia pronta, sem correção (cor no teto; capa H 189 · S 97) | — |
-| ESG-016 | SUPER GLOSS SUNFLOWER YELLOW PET | ✅ 01/10 | ✅ 01/10 — à mão (só fotos sem a ESG-017 atrás): H 40–43 · S 97–99 · V 87–96 → **`#F2A705`** (cor no teto) | ✅ 01/10 — **B** aprovado (`7d4df5e3`; eu tinha recomendado A) | ⏳ 01/10 — prévia pronta, sem correção (cor no teto; capa H 41 · S 99) | — |
-| ESG-025 | SUPER GLOSS LAVENDER PET | ✅ 01/10 | ✅ 01/10 — à mão: H 250–257 · S 38–41 · V 89–92 → **`#A996EA`** (lilás pastel; swatch) | ✅ 01/10 — **B** aprovado (`afb651df`; eu tinha recomendado A) | ⏳ 01/10 — prévia pronta, corrigida contra `#A996EA` (família `violeta`, `val_max` 0,95; tudo em H 253 · S 36, capa V 92) | — |
-| EMA-007 | MATT ARMY GREEN | ✅ 01/10 | ✅ 01/10 — à mão (balanço de branco pelo asfalto): H 104–108 · S 25–32 · V 43–48 → **`#5A7351`**; **fosco** (1ª EMA) | ✅ 01/10 — **B** aprovado (`1497a65c`, corrigido) | ⏳ 01/10 — prévia pronta, corrigida contra `#5A7351` com a família nova **`militar` (65–130)** + `sat_min` 0,06: com o padrão 0,18 a porta saiu manchada; com `musgo` o concreto e a torre ficaram verdes. Tudo em H 104 · S 30 | — |
+| ESG-011 | SUPER GLOSS MIAMI BLUE PET | ✅ 01/10 | ✅ 01/10 — à mão: H 188–194 · S 87–99 · V 80–86 (asfalto neutro) → **`#05A9CD`** (cor no teto) | ✅ 01/10 — **B** aprovado (`d575dc96`) | ✅ 01/10 — aprovadas, sem correção | ✅ 01/10 — commit `99a4a2a`, 5 mídias, conferidas por conteúdo no ar; pasta ✅ |
+| ESG-016 | SUPER GLOSS SUNFLOWER YELLOW PET | ✅ 01/10 | ✅ 01/10 — à mão (só fotos sem a ESG-017 atrás): H 40–43 · S 97–99 · V 87–96 → **`#F2A705`** (cor no teto) | ✅ 01/10 — **B** aprovado (`7d4df5e3`; eu tinha recomendado A) | ✅ 01/10 — aprovadas, sem correção | ✅ 01/10 — commit `a232b57`, 5 mídias, conferidas no ar; pasta ✅ |
+| ESG-025 | SUPER GLOSS LAVENDER PET | ✅ 01/10 | ✅ 01/10 — à mão: H 250–257 · S 38–41 · V 89–92 → **`#A996EA`** (lilás pastel; swatch) | ✅ 01/10 — **B** aprovado (`afb651df`; eu tinha recomendado A) | ✅ 01/10 — aprovadas, corrigidas contra `#A996EA` (violeta, val_max 0,95) | ✅ 01/10 — commit `9fe9043` (deploy demorou; banco na 2ª rodada), 5 mídias, conferidas no ar; pasta ✅ |
+| EMA-007 | MATT ARMY GREEN | ✅ 01/10 | ✅ 01/10 — à mão (balanço de branco pelo asfalto): H 104–108 · S 25–32 · V 43–48 → **`#5A7351`**; **fosco** (1ª EMA) | ✅ 01/10 — **B** aprovado (`1497a65c`, corrigido) | ✅ 01/10 — aprovadas, corrigidas com a família nova `militar` + sat_min 0,06 | ⚠️ 01/10 — commit `c721c12`, 5 mídias gravadas e conferidas no ar, **mas a página não aparece na loja: as 17 EMA estão INATIVAS no NZERP** (`master_catalog.active = false`; a loja redireciona para o catálogo). Pasta ✅. Aguardando o João decidir se ativa a linha EMA |
 
 **Cadastradas no NZERP em 01/10** (eram as "fora do NZERP" com amostra no Drive): nome lido no rótulo do
 cartão; fiscal, custo, preço da Engenharia e medidas copiados do irmão de linha; criadas no Tiny pela
@@ -71,8 +71,8 @@ sync. Prontas para foto:
 
 Os funcionários subiram 43 cores novas (pastas marcadas 🟢 em 01/10). Todas existem no NZERP e no site, só com a capa antiga (1 mídia, nenhuma foto de carro):
 
-- **ESG (super gloss), 28:** ESG-001 a ESG-029, menos a ESG-004 (no ar em 01/10); ESG-011, 016 e 025 em andamento.
-- **EMA (matt), 14:** EMA-003 a EMA-015 e EMA-017.
+- **ESG (super gloss), 28:** ESG-001 a ESG-029, menos a ESG-004 (no ar em 01/10); ESG-011, 016 e 025 no ar em 01/10.
+- **EMA (matt), 13:** EMA-003 a EMA-015 e EMA-017, menos a EMA-007. **A linha EMA inteira está inativa no NZERP** (as páginas não aparecem na loja) — esperar a decisão do João antes de fotografar o resto.
 - ESG-041 ganhou 2 fotos de amostra (já publicada em set/2026; tom ainda a confirmar com o João).
 
 **Refotografar** (cartão deitado, na sombra, folha branca ao lado) — leitura instável por
@@ -82,6 +82,7 @@ neutra — ajustar antes de ler.
 
 ## Concluídas (fotos de carro + capa nova no ar)
 
+ESG-011 Super Gloss Miami Blue (Porsche 911 GT3 Touring), ESG-016 Super Gloss Sunflower Yellow (Corvette C8), ESG-025 Super Gloss Lavender (Mercedes-AMG SL 63) e EMA-007 Matt Army Green (Mercedes-AMG G 63 — página oculta: EMA inativa no NZERP) — 01/10, 5º lote. EGF-018 refeita no acabamento fosco (`38bb6c7`).
 EGF-006 Gloss Forged Carbon Silver (closes do Mercedes-AMG GT, nome corrigido no Tiny/site), EGF-017 Shadow Black (closes do M4 — camuflagem, não forjado), EGF-018 Forged Carbon (closes do 720S) e ESG-004 Super Gloss Ferrari Red (Ferrari F8 Tributo) — 01/10, 4º lote. Fechadas todas as EDG/EMT/EMG/EGF com amostra.
 EDG-026 Metallic Paint Metallic Sonoma Green (Lamborghini Urus — família nova `musgo`), EMG-022 Satin Metallic Glossy Prunus Sakura Pink (Maserati GranTurismo), EGF-010 Gloss Forged Carbon Gold (closes da Ferrari 296 GTB) e EGF-013 Matte Forged Carbon Purple (closes do 911 GT3) — 01/10, 3º lote de 4.
 EDG-023 Metallic Ruby Gold (Porsche Taycan), EMG-021 Satin Metallic Glossy Agate Green (Lotus Emira), EMT-024 Satin Metallic Matt Pearl Pink (BMW i8) e EGF-012 Gloss Forged Carbon Purple (Huracán STO, **primeira de padrão: só closes das áreas aplicadas**) — 01/10, 2º lote de 4, as quatro cadastradas no NZERP no mesmo dia.
