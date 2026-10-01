@@ -320,6 +320,10 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | EMG-022 Satin Metallic Glossy Prunus Sakura Pink | `#EDB8BA` · H 357 · S 22 · V 93 | gloss pérola | ESG-034 + ESG-033 + "PEARL METALLIC, unlike image 2"; capa 1 (H 357 · S 17 · V 87); sem correção |
 | EGF-010 Gloss Forged Carbon Gold | padrão (lascas `#B07A2A` / base `#1A120A`) | gloss forjado | ESG-034 (geometria) + recorte do cartão (`7325eda7`); capa 2 (lascas mais densas); sem correção |
 | EGF-013 Matte Forged Carbon Purple | padrão fosco (lascas `#5A3A80` / base `#161020`) | **matte** forjado | ESG-034 (geometria, "do NOT copy its glossy surface") + recorte do cartão (`fed54336`) + "MATTE… no crisp specular band"; capa 2; sem correção |
+| EGF-006 Gloss Forged Carbon Silver | padrão (lascas prata sobre preto) | gloss forjado | ESG-034 (geometria) + recorte do cartão (`f9657486`); capa 2 (mais prata visível); sem correção |
+| EGF-017 Shadow Black | padrão (camuflagem brilho × acetinado) | gloss/satin | ESG-034 + recorte do cartão (`d0cfb72b`) + "soft white highlight that shines on the glossy blotches and stays muted on the satin ones"; capa 2 |
+| EGF-018 Forged Carbon | padrão (estilhaços cinza sobre preto) | gloss forjado | ESG-034 + recorte do cartão (`5980816d`); capa 2 (estilhaços mais nítidos) |
+| ESG-004 Super Gloss Ferrari Red | `#E31E14` · H 3 · S 91 · V 89 | super gloss sólido | ESG-034 + ESG-033 + "SOLID colour, exactly like image 2"; capa 2 (H 5 · S 92 · V 89); sem correção (cor no teto) |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

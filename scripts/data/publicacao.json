@@ -1,4 +1,206 @@
 {
+  "speed-wrapping-egf-006-carbon-gloss-5d-spwegf006": {
+    "mensagem": "feat(egf-006): close de aplicacao parcial (capo, teto, retrovisor) + capa com padrao do cartao EGF 006 Gloss Forged Carbon Silver PET\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "padrao (textura do cartao)",
+    "nota_cor": "Amostra do catalogo fisico (EGF 006 GLOSS FORGED CARBON SILVER PET). Metodo da EGF-012: closes das areas aplicadas (capo, retrovisor + teto, teto, macro) num Mercedes-AMG GT preto, quality high, com o recorte do cartao como referencia de textura (media f9657486-3186-40bc-a076-6d5b4ba2197f). Lascas retangulares prata-grafite com fibra sobre base preta, brilhante. Nome corrigido no Tiny e no site em 01/10 (era \"Carbon Gloss 5D\"; o cartao e o NZERP dizem Gloss Forged Carbon Silver); slug antigo mantido. Piloto B aprovado 01/10. Sem correcao (padrao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos 3:2 HIGH com a textura do cartao (f9657486) em medias · capa high 1:1 com ESG-034 + textura",
+      "carro": "Mercedes-AMG GT preto; only hood, roof and mirror caps wrapped",
+      "fundo": "light concrete industrial yard, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170503_b12d05df-746f-4211-89a2-effac9ed1bb5.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Detalhe de Mercedes-AMG GT com capô, teto e retrovisores em Speed Wrapping EGF 006 Gloss Forged Carbon Silver",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-006-carbon-gloss-5d-spwegf006.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_165912_caa2f9ea-4f15-4163-a4b2-5402dd5e542a.png",
+        "nota": "close do capo"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_7d112811-c942-4f57-a9f6-044733e6c130.png",
+        "nota": "close do retrovisor + teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_e7cbeb00-a7aa-4fab-9e92-6ae09118c802.png",
+        "nota": "close do teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_dd71f319-10a4-48cb-a664-22e44fb0846a.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "speed-wrapping-egf-017-shadow-black-spwegf017": {
+    "mensagem": "feat(egf-017): close de aplicacao parcial (capo, teto, retrovisor) + capa com padrao do cartao EGF 017 Shadow Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "padrao (textura do cartao)",
+    "nota_cor": "Amostra do catalogo fisico (EGF 017 SHADOW BLACK). Metodo da EGF-012: closes das areas aplicadas (capo, retrovisor + teto, teto, macro) num BMW M4 (G82) branco, quality high, com o recorte do cartao como referencia de textura (media d0cfb72b-4b2c-4fa7-83db-86ffd06580a7). Nao e forjado: camuflagem preta tom sobre tom, manchas de preto brilhante x cinza-grafite acetinado; aparece pela diferenca de brilho. Piloto B aprovado 01/10. Sem correcao (padrao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos 3:2 HIGH com a textura do cartao (d0cfb72b) em medias · capa high 1:1 com ESG-034 + textura",
+      "carro": "BMW M4 (G82) branco; only hood, roof and mirror caps wrapped",
+      "fundo": "modern city street, light concrete buildings, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170503_27052af2-bd4c-4b4f-996d-8e77ee9225f9.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Detalhe de BMW M4 com capô, teto e retrovisores em Speed Wrapping EGF 017 Shadow Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-017-shadow-black-spwegf017.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_165912_5165d1d4-4423-4921-b3d2-9f30e0328c00.png",
+        "nota": "close do capo"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_2fe844d6-258f-470f-9693-e456eba6b404.png",
+        "nota": "close do retrovisor + teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170500_3028149d-00ff-4c62-91f8-fc054ffcc56f.png",
+        "nota": "close do teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_7338cf55-2ce6-4de9-bc01-799de7e1731d.png",
+        "nota": "macro brilho x acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-egf-018-forged-carbon-spwegf018": {
+    "mensagem": "feat(egf-018): close de aplicacao parcial (capo, teto, retrovisor) + capa com padrao do cartao EGF 018 Forged Carbon\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "padrao (textura do cartao)",
+    "nota_cor": "Amostra do catalogo fisico (EGF 018 FORGED CARBON). Metodo da EGF-012: closes das areas aplicadas (capo, retrovisor + teto, teto, macro) num McLaren 720S laranja papaya, quality high, com o recorte do cartao como referencia de textura (media 5980816d-5848-44d9-9656-8d584a31c830). Forjado classico em estilhacos angulosos cinza/grafite sobre preto (nao retangulos como EGF-006/010/012/013), brilhante. Piloto B aprovado 01/10. Sem correcao (padrao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos 3:2 HIGH com a textura do cartao (5980816d) em medias · capa high 1:1 com ESG-034 + textura",
+      "carro": "McLaren 720S laranja papaya; only hood, roof and mirror caps wrapped",
+      "fundo": "racetrack paddock, light concrete and white garages, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170503_0faf6926-7176-473f-a2ee-06ecf445b4ca.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Detalhe de McLaren 720S com capô, teto e retrovisores em Speed Wrapping EGF 018 Forged Carbon",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-018-forged-carbon-spwegf018.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_165912_3556e017-4364-462e-998c-e6d95ed89de6.png",
+        "nota": "close do capo"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170500_2d57b52e-85ce-4c79-8903-afec9bc3e0f4.png",
+        "nota": "close do retrovisor + teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_f81c791d-84b1-410e-9264-24c23360afa3.png",
+        "nota": "close do teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_9d7e5a54-a60b-4793-9143-ed6907d63e1f.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "speed-wrapping-esg-004-super-gloss-ferrari-red-pet-spwesg004": {
+    "mensagem": "feat(esg-004): Ferrari F8 Tributo + capa super gloss com referencia ESG-034/033 (#E31E14) Ferrari Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura_referencia": "#E31E14",
+    "nota_cor": "Amostra do catalogo fisico (ESG 004 SUPER GLOSS FERRARI RED PET). A mao: H356-1, S84-97, V~88 -> vermelho vivo levemente alaranjado #E31E14. Piloto B aprovado 01/10 (H1,5 S99 V85). Sem correcao: cor no teto de saturacao (licao ESG-038/039).",
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 ('SOLID colour, exactly like image 2')",
+      "carro": "Ferrari F8 Tributo on black Y-spoke wheels with red brake calipers",
+      "carro_cor": "1. HUE: a vivid racing red leaning very slightly toward orange, like a fresh tomato or a fire engine, hex #E31E14 (hue about 3). 2. CHROMA: fully saturated. 3. BRIGHTNESS: bright, about 89 percent; shadow falls to a deep rich red, never brown",
+      "carro_acabamento": "super gloss solid: creamy uniform colour field, no flake, no pearl; large soft reflections + one specular line on the shoulder",
+      "carro_cenario": "coastal road beside a black volcanic sand beach in Iceland, white surf, basalt sea stacks, bright overcast sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170502_6ef543ed-ebcf-4e02-8b78-085784ec97a4.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari F8 Tributo envelopada em Speed Wrapping ESG 004 Super Gloss Ferrari Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-esg-004-super-gloss-ferrari-red-pet-spwesg004.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_165912_0e479703-7c60-4c98-a448-c1c54ff3cf14.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_c1665dd9-9757-4a4f-82ec-c721e62a8cec.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_b9c7ee1d-3940-4c97-b85b-942780a2a89a.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_170459_71932643-2f18-417b-8aaf-624ffb33ba15.png",
+        "nota": "macro do super gloss"
+      }
+    ]
+  },
   "speed-wrapping-edg-026-metallic-paint-metallic-sonoma-green-pet-spwedg026": {
     "mensagem": "feat(edg-026): Lamborghini Urus + capa metalica com referencia ESG-034/033 (#434D2C) Metallic Sonoma Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "leitura": "#434D2C",

@@ -123,6 +123,10 @@ confiável:
 | EMG-022 Satin Metallic Glossy Prunus Sakura Pink | H354–358 · S 21–30 · V 73–89 (à mão) → swatch `#EDB8BA` | — | rosa-salmão pastel; cartão brilhante perolado |
 | EGF-010 Gloss Forged Carbon Gold | lascas H 30–36 (`#B07A2A`/`#8A5E1E`) sobre base `#1A120A` | — | padrão: referência é o recorte do cartão |
 | EGF-013 Matte Forged Carbon Purple | lascas H 266–284 (`#5A3A80`) sobre base `#161020`, fosco | — | padrão: referência é o recorte do cartão |
+| EGF-006 Gloss Forged Carbon Silver | lascas prata-grafite sobre preto | — | padrão: referência é o recorte do cartão; nome corrigido no Tiny/site (era "Carbon Gloss 5D") |
+| EGF-017 Shadow Black | camuflagem preto brilhante × cinza-grafite acetinado | — | não é forjado: o padrão aparece pela diferença de brilho |
+| EGF-018 Forged Carbon | estilhaços angulosos cinza/grafite sobre preto | — | forjado em estilhaços, não em retângulos |
+| ESG-004 Super Gloss Ferrari Red | H 356–1 · S 84–97 · V ~88 (à mão) → `#E31E14` | — | cor no teto: sem correção |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -567,6 +571,15 @@ multi-spoke"). O Chiron veio com friso C prata e roda clara; resolveu "C-shaped 
 wrapped in the same blue as the body: no polished aluminium, chrome or silver trim".
 Conferir roda e friso de cada foto contra o piloto antes da prévia.
 
+### Padrão que não é forjado: descrever o padrão do cartão, não "carbono" (EGF-017, 01/10)
+
+A EGF-017 Shadow Black está na linha de carbono, mas o desenho é uma **camuflagem tom sobre tom**
+(manchas de preto brilhante × cinza-grafite acetinado). O prompt descreve exatamente isso ("large,
+rounded, organic blotches; some deep glossy black, the others dark graphite-grey with a softer satin
+sheen") junto com o recorte do cartão; o macro mostra a borda entre uma mancha brilhante e uma
+acetinada, que é o que vende o produto. Regra: na linha EGF, olhar o cartão antes de escrever —
+forjado retangular, forjado em estilhaço (EGF-018) e camuflagem pedem descrições diferentes.
+
 ### Família de correção que cruza o vermelho pinta a lanterna (EMT-024, 01/10)
 
 A `malva` (300–5) cruza 0 grau. Num carro rosa, ela corrige o rosa **e** puxa a lanterna
@@ -732,6 +745,10 @@ marca d'água, sem adesivo de patrocínio.
 | EMG-022 Satin Metallic Glossy Prunus Sakura Pink | Maserati GranTurismo (rodas grafite usinadas) | orla do Lago di Como, balaustrada de pedra |
 | EGF-010 Gloss Forged Carbon Gold | Ferrari 296 GTB preta — só capô, teto e retrovisores, fotos de perto | estrada alpina (desfocada) |
 | EGF-013 Matte Forged Carbon Purple | Porsche 911 GT3 (992) branco — só capô, teto e retrovisores, fotos de perto | rua de cidade, concreto claro (desfocada) |
+| EGF-006 Gloss Forged Carbon Silver | Mercedes-AMG GT preto — closes de capô, teto e retrovisores | pátio de concreto claro (desfocado) |
+| EGF-017 Shadow Black | BMW M4 (G82) branco — closes | rua de cidade, concreto claro (desfocada) |
+| EGF-018 Forged Carbon | McLaren 720S laranja papaya — closes | paddock de autódromo (desfocado) |
+| ESG-004 Super Gloss Ferrari Red | Ferrari F8 Tributo (rodas pretas em Y, pinça vermelha) | estrada na praia de areia preta da Islândia, rochas de basalto |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
