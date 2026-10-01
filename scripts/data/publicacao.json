@@ -1,4 +1,215 @@
 {
+  "speed-wrapping-edg-016-metal-space-silver-pet-spwedg016": {
+    "mensagem": "feat(edg-016): Mercedes-Benz SLS AMG + capa metalica com referencia ESG-034/033 (#73767A) Liquid Metal Space Silver",
+    "leitura_referencia": "#73767A",
+    "nota_cor": "Amostra do catalogo fisico (EDG 016 METALLIC LIQUID METAL SPACE SILVER PET). O cartao e quase espelho (topo = ceu V75-95, base = chao V12-30): a media enganou duas vezes (1o piloto cromado, 2o prata claro V75 — os dois reprovados pelo Joao: 'prata chumbo, quase um cinza'). Cor propria lida na foto plana WA0127: degrade com mediana V53 -> alvo #73767A (S~5, V48), conferido com swatch ao lado do cartao. 3o par: Joao aprovou o F (01/10). Sem correcao (quase neutra). Traseira refeita 2x ate vir a roda AMG twin 5-spoke do piloto; macro refeito para ler high-gloss (o 1o saiu acetinado).",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135752_06d5e0ba-bcab-4ac4-8c40-5e59a753fcea.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Mercedes-Benz SLS AMG envelopado em Speed Wrapping EDG 016 Metallic Liquid Metal Space Silver",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-016-metal-space-silver-pet-spwedg016.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135004_21a79736-8385-4ccc-8cb7-c304ec3057ea.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_140313_513d5f18-ca84-4b2a-a4c0-dd62969af1dc.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_140049_d64172c4-92f5-45c8-9c21-c6863efff637.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_140338_e95d527a-bead-4683-92b8-4049c6a2277d.png",
+        "nota": "macro do liquid metal"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 (metodo metalico da EDG-020)",
+      "carro": "Mercedes-Benz SLS AMG gullwing coupe; WHEELS: chunky dark graphite AMG twin five-spoke wheels, five wide spokes each split in two, NOT thin multi-spoke",
+      "carro_cor": "1. HUE: a lead silver, a gunmetal silver-grey with a faint cool undertone, hex #73767A. 2. CHROMA: very low, about 5 percent. 3. BRIGHTNESS: medium-dark, about 48 percent value; must read as a darker lead-grey silver, almost a grey - not a light silver",
+      "carro_acabamento": "high-gloss liquid-metal metallic with a lead-grey base; NOT chrome and NOT a mirror: own lead-grey colour, reflections only broad soft bands of sky. NUNCA usar 'liquid metal like molten mercury' nem 'reflect the surroundings' em prata (vira cromo)",
+      "carro_cenario": "road through a black volcanic lava field, basalt rocks, distant reddish-brown volcanic cones, bright hazy sky; sun low from the side",
+      "capa_bloco_cor": "THE FILM COLOUR is neither of the two references: it is hex #73767A, RGB (115, 118, 122) - a lead silver... medium-dark (about 48 percent), not a light silver, not white. THE FILM IS METALLIC, unlike image 2... It is not chrome and not a mirror: the roll has its own lead-grey colour."
+    }
+  },
+  "speed-wrapping-edg-018-metal-agate-green-spwedg018": {
+    "mensagem": "feat(edg-018): Lamborghini Aventador SVJ + capa metalica com referencia ESG-034/033 (#077A2D) Liquid Metal Agate Green",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lamborghini Aventador SVJ envelopado em Speed Wrapping EDG 018 Metallic Liquid Metal Agate Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-018-metal-agate-green-spwedg018.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "leitura": "#077A2D",
+    "nota_cor": "Amostra do catalogo fisico (EDG 018 METALLIC LIQUID METAL AGATE GREEN PET): H 132-137 nas fotos limpas, S 97-99 no teto (camera estourou), V 44-50. Piloto B aprovado 01/10 (H140 S94). Alvo = piloto: H140 S94, com V48 do cartao (cena usa manterValor, so H/S andam). Fotos nasceram em H136-143; a capa escolhida (mais viva) em H148 — a correcao alinha tudo. familia verde (72-200) cobre com folga; areia (H~35) fica fora.",
+    "familia": "verde",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135752_774d5bcd-7fe8-44a5-8ae1-177bb11dd674.png",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_132650_104395f7-64d5-4939-a48d-15364ee962e9.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135748_1603770d-ac0e-412d-ac8d-0a8922c40498.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135749_2a9e794d-073e-49ec-8715-1699dc27c697.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135748_f9b0ee2c-1a4c-4668-bcdc-4cc92ae62bb2.png",
+        "nota": "macro do liquid metal"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 (metodo metalico da EDG-020)",
+      "carro": "Lamborghini Aventador SVJ on gloss black forged Y-spoke wheels, fully wrapped in a liquid-metal emerald green vinyl film",
+      "carro_cor": "1. HUE: a vivid emerald green, leaning very slightly toward blue-green, like a polished emerald, hex #078C28 (hue about 135 degrees). 2. CHROMA: fully saturated. 3. BRIGHTNESS: medium, about 55 percent value; glows luminous green facing the sky, deep bottle green in shadow",
+      "carro_cenario": "desert road through pale golden sand dunes, clear sky with thin haze, no plants; sun low from the side",
+      "capa_bloco_cor": "THE FILM COLOUR is neither of the two references: it is hex #088C2D, RGB (8, 140, 45) - a vivid emerald green... fully saturated (about 94 percent), medium in value (about 55 percent). THE FILM IS METALLIC, unlike image 2..."
+    }
+  },
+  "speed-wrapping-edg-021-metal-blue-berry-pet-spwedg021": {
+    "mensagem": "feat(edg-021): Bugatti Chiron + capa metalica com referencia ESG-034/033 (#1446B3) Liquid Metal Blue Berry",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Bugatti Chiron envelopado em Speed Wrapping EDG 021 Metallic Liquid Blue Berry",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-021-metal-blue-berry-pet-spwedg021.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "leitura_referencia": "#1446B3",
+    "nota_cor": "Amostra do catalogo fisico (EDG 021 METALLIC LIQUID BLUE BERRY PET): H 219-222 (sd 1,4), S 86-99 quase no teto, V 47-82 (reflexo). Piloto B aprovado 01/10 (H220 S81). Sem leitura: fotos e capa ja nasceram em H218-221, dentro de +-3 do cartao. Traseira e perfil refeitos (1a rodada veio com friso C prata e roda clara; o piloto tem o C na cor do carro e roda grafite).",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135752_cc02b968-98ba-42e5-be80-763935d817f4.png",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_132650_3a59579d-fbca-4759-89b8-189fd3821d19.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_140050_f5915cd4-f996-4f8b-bcb9-a94e3d6eec03.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_140050_0a1936ae-3d0f-480b-a7fe-c046e62e21d5.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135748_f899ffc1-ff99-4efe-8bee-33ac52c03f55.png",
+        "nota": "macro do liquid metal"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com ESG-034 + ESG-033 (metodo metalico da EDG-020)",
+      "carro": "Bugatti Chiron on uniformly dark graphite multi-spoke wheels with blue brake calipers; C-shaped side line wrapped in the same blue (no silver trim)",
+      "carro_cor": "1. HUE: a vivid royal blue, like a sapphire held to the light, hex #0D40B8 (hue about 222 degrees). 2. CHROMA: fully saturated. 3. BRIGHTNESS: medium-bright, about 70 percent value; electric blue facing the sky, deep ink navy in shadow",
+      "carro_cenario": "narrow road through autumn vineyards, golden and orange vines, rolling hills, small stone farmhouse; late-morning sun low from the side",
+      "capa_bloco_cor": "THE FILM COLOUR is neither of the two references: it is hex #1446B3, RGB (20, 70, 179) - a vivid royal blue... strongly saturated (about 89 percent), medium-bright in value (about 70 percent). THE FILM IS METALLIC, unlike image 2..."
+    }
+  },
+  "speed-wrapping-emt-023-satin-metallic-matt-sakura-pink-spwemt023": {
+    "mensagem": "feat(emt-023): Rolls-Royce Wraith + capa satin metallic (#D9BEC1) Satin Metallic Matt Sakura Pink",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Rolls-Royce Wraith envelopado em Speed Wrapping EMT 023 Satin Metallic Matt Sakura Pink",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emt-023-satin-metallic-matt-sakura-pink-spwemt023.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "leitura_referencia": "#D9BEC1",
+    "nota_cor": "Amostra do catalogo fisico (EMT 023 SATIN METALLIC MATT SAKURA PINK PET): leitura a mao instavel (rosa quase branco, S 12-23). Piloto B aprovado 01/10 (H3 S14). Sem correcao (quase neutra, S~14: a faixa H347-357 das fotos nao aparece a olho). Capa pelo metodo satin da EMT-022 (so ESG-034 de referencia).",
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135752_c3a02d7c-0227-420a-b65f-479a036cc6c8.png",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_132650_73538848-96bb-42e0-b64f-7c77e65ccf7e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135748_3fcb7bfd-49db-4f89-be4b-d1b7440f5090.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135748_84420662-e7fb-478f-9cee-7fc177ff087c.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261001_135748_4aad0966-2e8a-4271-9247-a0d6f7a1ca10.png",
+        "nota": "macro do satin metallic"
+      }
+    ],
+    "prompts": {
+      "modelo": "gpt_image_2 · carro medium 3:2 · capa high 1:1 com SO ESG-034 (metodo satin da EMT-022)",
+      "carro": "Rolls-Royce Wraith coupe on polished silver seven-spoke wheels, fully wrapped in a satin metallic pale sakura pink vinyl film",
+      "carro_cor": "1. HUE: a pale cherry-blossom pink, hex #D9BFC8 (hue about 340 degrees). 2. CHROMA: very low, about 12 percent. 3. BRIGHTNESS: pale, about 85 percent value; pearly near-white pink in the sheen, dusty rose-grey turning away",
+      "carro_acabamento": "satin metallic pearl: broad glowing pearly satin sheen band on every curve, soft-edged, never a mirror; fine pearlescent flake",
+      "carro_cenario": "Japanese zen garden courtyard, raked white gravel, dark weathered timber walls, stone lanterns, mossy rocks; bright sun low from the side",
+      "capa": "GEOMETRY ONLY de ESG-034 + THE FILM COLOUR #D9BEC1 (pale cherry-blossom pink, must read as pink, not white) + SATIN METALLIC PEARL finish"
+    }
+  },
   "speed-wrapping-edg-019-metal-austin-gold-pet-spwedg019": {
     "mensagem": "feat(edg-019): BMW M4 F82 + capa metalica com referencia ESG-034/033 (#BF8426) Liquid Metal Austin Gold",
     "leitura": "#BF8426",

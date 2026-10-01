@@ -111,6 +111,10 @@ confiável:
 | EDG-027 Metallic Midnight Purple | H255 S31 V43 | 2,5 (3 de 4) | confiável; WA0139 descartada (S 50, reflexo) |
 | EDG-019 Liquid Metal Austin Gold | H41–43 · S no teto | — | câmera estourou (S 99); alvo = piloto A aprovado (H 37, mais âmbar que o cartão — escolha do João) |
 | EMT-025 Satin Metallic Matt Deep Blue | H224 S75 V55 (**medido à mão**) | 4,6 | `ler-amostra` deu S 10–18: o asfalto azulado entrou na detecção do cartão. Quando a leitura contradiz o que se vê, medir o miolo do cartão à mão |
+| EDG-016 Liquid Metal Space Silver | V 53 (mediana, foto plana WA0127) · S ~5 → alvo `#73767A` | — | **cartão quase espelho**: topo = céu (V 75–95), base = chão (V 12–30); a média leu prata claro e o piloto saiu V 75 (reprovado). A cor própria está na foto em que o cartão fica mais plano |
+| EDG-018 Liquid Metal Agate Green | H132–137 · S no teto · V 44–50 (à mão) | — | câmera estourou (S 97–99); alvo = piloto B aprovado (H 140 · S 94) |
+| EDG-021 Liquid Blue Berry | H219–222 · S 86–99 · V 47–82 (à mão) | 1,4 (H) | matiz confiável; S quase no teto; alvo = piloto B (H 220) |
+| EMT-023 Satin Metallic Matt Sakura Pink | S 12–23, instável (à mão) | — | rosa quase branco; alvo = piloto B (H 3 · S 14) |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -530,6 +534,31 @@ correção por faixa de matiz não pega nada e a família `neutro` seleciona o s
 junto. Publicada sem `leitura`, com a capa escolhida por medida (S 8 · V 59 contra S 12 ·
 V 55 do cartão).
 
+### Prata/chumbo: "liquid metal" vira cromo, e a média do cartão engana (EDG-016, 01/10)
+
+Duas reprovações seguidas na mesma cor. **1º par: cromado.** O prompt dizia "liquid-metal…
+like molten mercury… reflect the dark surroundings"; em cor colorida isso dá brilho molhado,
+mas em prata o modelo entende **espelho** — o carro saiu cromo. **2º par: prata claro (V 75).**
+Trocar para "metallic PAINT, not chrome" resolveu o cromo, mas o tom ainda veio da média do
+cartão, e o cartão liquid metal é quase espelho: o topo reflete o céu (V 75–95) e a base o
+chão (V 12–30). O João: "prata chumbo, quase um cinza". A cor própria estava na foto em que o
+cartão fica mais plano (degradê com mediana V 53) → alvo `#73767A`, conferido com swatch ao
+lado do cartão antes de gerar.
+
+Regras que ficam: (1) em prata/cinza metálico **nunca** "molten mercury", "mirror",
+"reflect the surroundings" — escrever "lead-grey colour of its own; reflections only broad,
+soft-edged bands of sky, never a detailed mirror image"; (2) cartão espelhado: **ler a cor
+pela foto mais plana**, não pela média de todas; (3) dizer o valor em palavras de nível
+("medium-dark, about 48 percent… must read as a darker lead-grey silver, almost a grey — not a
+light silver").
+
+**Mesmo carro até a roda, de novo (EDG-016, EDG-021).** Ângulo traseiro puxa outra roda: a
+SLS veio com roda fina de 10 raios duas vezes. Resolveu um bloco `WHEELS` próprio descrevendo
+a roda do piloto ("chunky… five wide spokes, each split into two parallel bars… NOT thin
+multi-spoke"). O Chiron veio com friso C prata e roda clara; resolveu "C-shaped side line
+wrapped in the same blue as the body: no polished aluminium, chrome or silver trim".
+Conferir roda e friso de cada foto contra o piloto antes da prévia.
+
 ### "Pale" e "muted" não são sinônimos — mexem em eixos diferentes
 
 A mesma armadilha da lista de negações, por outro caminho: adjetivos de baixa
@@ -659,6 +688,10 @@ marca d'água, sem adesivo de patrocínio.
 | EDG-027 Metallic Midnight Purple | Nissan Skyline GT-R R34 (rodas bronze 6 raios) | estrada costeira japonesa, mureta de concreto, mar verde-acinzentado |
 | EDG-019 Metallic Liquid Metal Austin Gold | BMW M4 F82 (a cor "Austin Yellow" nasceu nele) | estrada aberta em pinheiral nevado |
 | EMT-025 Satin Metallic Matt Deep Blue | Ford GT | praça de cidade antiga mediterrânea, paredes ocre e terracota |
+| EDG-016 Metallic Liquid Metal Space Silver | Mercedes-Benz SLS AMG (rodas AMG twin 5-spoke grafite) | estrada em campo de lava negra, cones vulcânicos avermelhados |
+| EDG-018 Metallic Liquid Metal Agate Green | Lamborghini Aventador SVJ (rodas forjadas pretas em Y) | estrada no deserto entre dunas douradas |
+| EDG-021 Metallic Liquid Blue Berry | Bugatti Chiron (rodas grafite, pinça azul, C lateral na cor do carro) | estradinha entre vinhedos de outono, casa de pedra |
+| EMT-023 Satin Metallic Matt Sakura Pink | Rolls-Royce Wraith (rodas prata 7 raios) | pátio de jardim zen, cascalho branco rastelado, madeira escura, lanternas de pedra |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz

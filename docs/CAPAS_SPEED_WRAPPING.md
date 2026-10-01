@@ -308,6 +308,10 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | EDG-027 Metallic Midnight Purple | `#554C6E` · H 255 · S 31 · V 43 | gloss metallic (flake fino violeta) | método metálico da EDG-020; silhueta 89%; geração V 29 → `--tudo` fecha em H 255,9 · S 31,0 · V 43,1 com a família nova `violeta` |
 | EDG-019 Metallic Liquid Metal Austin Gold | `#BF8426` (= piloto A aprovado) · H 37 · S 80 · V 75 | gloss metallic (liquid metal) | método metálico da EDG-020; silhueta 88%; fecha em H 36,8 · S 81,2 · V 74,5 (família `laranja`) |
 | EMT-025 Satin Metallic Matt Deep Blue | `#233F8C` · H 224 · S 75 · V 55 | satin metallic | método satin da EMT-022 (só ESG-034); silhueta 90%; fecha em H 224,0 · S 75,2 · V 54,9 |
+| EDG-016 Metallic Liquid Metal Space Silver | `#73767A` · S ~5 · V 48 (cor própria do cartão) | gloss metallic (liquid metal, prata chumbo) | método metálico da EDG-020 + "It is not chrome and not a mirror: the roll has its own lead-grey colour"; capa 2 (V 45, S 7); sem correção (quase neutra) |
+| EDG-018 Metallic Liquid Metal Agate Green | `#077A2D` (= piloto B) · H 140 · S 94 · V 48 | gloss metallic (liquid metal) | método metálico da EDG-020; gerada em H 148 (a mais viva das duas) → `--corrigir` fecha em H 139,9 · S 94,2 · V 47,8 (família `verde`) |
+| EDG-021 Metallic Liquid Blue Berry | `#1446B3` · H 221 · S 89 · V 70 | gloss metallic (liquid metal) | método metálico da EDG-020; nasceu em H 219 · S 98; sem correção (fotos e capa já em H 218–221) |
+| EMT-023 Satin Metallic Matt Sakura Pink | `#D9BEC1` · H 354 · S 12 · V 85 | satin metallic (pérola) | método satin da EMT-022 (só ESG-034) + "must clearly read as a pale pink, not white and not grey"; saiu H 353 · S 10 · V 82; sem correção (quase neutra) |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

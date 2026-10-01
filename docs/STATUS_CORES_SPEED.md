@@ -25,8 +25,13 @@ pasta · `✅ ` = fotos e capa 100% no site. Ex.: `✅ EDG-020 LIQUID METAL RUBY
 
 | EDG-027 | METALLIC PAINT METALLIC MIDNIGHT PLUPLE PET (erro de grafia no cartão; vale o NZERP: METALLIC MIDNIGHT PURPLE PET) | ✅ 30/09 | ✅ 30/09 — `#554C6E` H 255 · S 31 · V 43 (3 de 4 fotos; WA0139 com S 50 descartada), sd(S) 2,5 confiável | ✅ 30/09 — A aprovado (Nissan Skyline GT-R R34, estrada costeira japonesa; H257 S31) | ✅ 30/09 — aprovadas corrigidas + capa 1 (família `violeta`; tudo em H 256 · S 31, capa V 43) | ✅ 30/09 — commit `f4dc279`, 5 mídias, conferido no ar; pasta do Drive ✅ |
 
-| EDG-019 | METALLIC LIQUID METAL AUSTIN GOLD PET | ✅ 30/09 | ✅ 01/10 — H 41–43 firme, **S no teto (99, câmera estourou)**, V 40–65 → sem `leitura`, alvo = piloto aprovado (método da EDG-020); WA0116 descartada | ✅ 01/10 — **A** aprovado pelo João (BMW M4 F82, pinheiral nevado; H37, mais âmbar) | ⏳ 01/10 geradas + corrigidas (alvo = piloto A, família `laranja`; tudo em H 37 · S 80) — prévia em `_AMOSTRAS/EDG-019/`, aguardando ok para publicar | — |
-| EMT-025 | SATIN METALLIC MATT DEEP BLUE | ✅ 30/09 | ✅ 01/10 — `ler-amostra` errou (S 10–18: asfalto azulado entrou no cartão); **medido à mão no miolo do cartão**: `#233F8C` H 224 · S 75 · V 55 (sd(H) 1,2) | ✅ 01/10 — A aprovado (Ford GT, praça mediterrânea ocre; H220 S74) | ⏳ 01/10 geradas + corrigidas (família `azul`; tudo em H 224 · S 75, capa V 55) — prévia em `_AMOSTRAS/EMT-025/`, aguardando ok para publicar | — |
+| EDG-019 | METALLIC LIQUID METAL AUSTIN GOLD PET | ✅ 30/09 | ✅ 01/10 — H 41–43 firme, **S no teto (99, câmera estourou)**, V 40–65 → sem `leitura`, alvo = piloto aprovado (método da EDG-020); WA0116 descartada | ✅ 01/10 — **A** aprovado pelo João (BMW M4 F82, pinheiral nevado; H37, mais âmbar) | ✅ 01/10 — aprovadas corrigidas (alvo = piloto A, família `laranja`; tudo em H 37 · S 80) | ✅ 01/10 — commit `7ed1292`, 5 mídias, conferido no ar; pasta ✅ |
+| EMT-025 | SATIN METALLIC MATT DEEP BLUE | ✅ 30/09 | ✅ 01/10 — `ler-amostra` errou (S 10–18: asfalto azulado entrou no cartão); **medido à mão no miolo do cartão**: `#233F8C` H 224 · S 75 · V 55 (sd(H) 1,2) | ✅ 01/10 — A aprovado (Ford GT, praça mediterrânea ocre; H220 S74) | ✅ 01/10 — aprovadas corrigidas (família `azul`; tudo em H 224 · S 75, capa V 55) | ✅ 01/10 — commit `04a8118`, 5 mídias, conferido no ar; pasta ✅ |
+
+| EDG-016 | METALLIC LIQUID METAL SPACE SILVER PET | ✅ 30/09 | ✅ 01/10 — cartão quase espelho (topo = céu V 75–95, base = chão V 12–30); cor própria na foto plana WA0127 = degradê com mediana V 53 → alvo **`#73767A`** (S ~5, V 48), conferido com swatch | ✅ 01/10 — 3º par; **F** aprovado (`21a79736`). 1º par reprovado (cromado: "liquid metal… molten mercury… reflect the surroundings"); 2º reprovado (prata claro V 75) | ⏳ 01/10 — prévia pronta (traseira refeita 2× até vir a roda AMG twin 5-spoke do piloto; macro refeito p/ ler high-gloss; capa 2 V 45); sem correção (quase neutra) | — |
+| EDG-018 | METALLIC LIQUID METAL AGATE GREEN PET | ✅ 30/09 | ✅ 01/10 — à mão: H 132–137 (fotos limpas #0/#1), S 97–99 **no teto**, V 44–50; alvo = piloto | ✅ 01/10 — **B** aprovado (Aventador SVJ, dunas; `104395f7` H139 S93) | ⏳ 01/10 — prévia pronta, corrigida contra `#077A2D` (família `verde`; tudo fecha em H 140 · S 94, capa V 48) | — |
+| EDG-021 | METALLIC LIQUID BLUE BERRY PET | ✅ 30/09 | ✅ 01/10 — à mão: H 219–222 (sd 1,4), S 86–99 quase no teto, V 47–82; alvo = piloto | ✅ 01/10 — **B** aprovado (Chiron, vinhedo; `3a59579d` H221 S85) | ⏳ 01/10 — prévia pronta; traseira e perfil refeitos (1ª rodada com friso C prata e roda clara); sem correção (fotos e capa já em H 218–221) | — |
+| EMT-023 | SATIN METALLIC MATT SAKURA PINK PET | ✅ 30/09 | ✅ 01/10 — à mão instável (rosa quase branco; S 12–23); alvo = piloto | ✅ 01/10 — **B** aprovado (Wraith, jardim zen; `73538848` H0 S15) | ⏳ 01/10 — prévia pronta; capa satin (só ESG-034); sem correção (quase neutra, S ~14) | — |
 
 **Cores fora do NZERP com amostra no Drive** (30/09 — pastas renomeadas pelo cartão; não dá
 para publicar antes de cadastrar no NZERP → Tiny → site): EDG-023 Metallic Ruby Gold ·
@@ -47,6 +52,7 @@ neutra — ajustar antes de ler.
 
 ## Concluídas (fotos de carro + capa nova no ar)
 
+EDG-019 Metallic Liquid Metal Austin Gold (01/10, BMW M4 F82) e EMT-025 Satin Metallic Matt Deep Blue (01/10, Ford GT) — primeiro par feito junto.
 EDG-027 Metallic Midnight Purple (30/09, Nissan Skyline GT-R R34 — família nova `violeta`).
 EMT-022 Satin Metallic Titanium Metal Grey (30/09, Aston Martin DB12 — primeira EMT e primeira capa satin).
 EDG-025 Metallic Solar Gold (30/09, Jaguar F-Type R — família nova `dourado`, `sat_min_cena`).
