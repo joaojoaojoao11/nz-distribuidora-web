@@ -13,6 +13,15 @@ conferido no ar).
 30/09; **na frente do nome** desde 01/10, a pedido dele): `🟢 ` = amostra do catálogo na
 pasta · `✅ ` = fotos e capa 100% no site. Ex.: `✅ EDG-020 LIQUID METAL RUBY RED`.
 
+**Progresso por linha (01/10, pedido do João):** as pastas de **linha** levam na frente quanto
+falta ir para o site — `FALTA 56% · ESG - SUPER GLOSS` (linha completa: `✅ COMPLETA · …`). O
+número sai de `node scripts/painel-cores.mjs` (total = pastas de cor no Drive; feita = página da
+loja com capa + fotos de carro, 3+ mídias em `produto_midia`), que também alimenta o painel
+**"Painel Cores Speed"** (https://claude.ai/artifact/7HSvVJWFgpHP4hrrCMt7hs). Em 01/10, depois do
+lote 7: **259 cores, 42 no site, 217 faltam (84%)**. Lotes de **10 cores** a partir do lote 8.
+Seis pastas do Drive não têm produto no site (EDG-022, 028, 029, EGF-008, 016, 020): cadastrar no
+NZERP quando entrarem num lote.
+
 ## Em andamento
 
 | Cor | Nome no catálogo físico | Amostra | Leitura | Piloto | Fotos + capa | No site |

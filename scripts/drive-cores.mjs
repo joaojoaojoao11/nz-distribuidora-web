@@ -15,34 +15,19 @@
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { RAIZ_DRIVE, listar, lerLinha, sleep } from './lib/drive.mjs';
 
-const RAIZ_DRIVE = '1ncYxSSoIwUObmmsOslIVvPs1D6sMwOlm'; // CORES SPEEDWRAP
 const AMOSTRAS = path.join(os.homedir(), 'OneDrive', 'Área de Trabalho', 'AUTOMAÇÕES',
   'NZMARKETING - CLEDNA', '_AMOSTRAS');
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-async function listar(id, tentativa = 0) {
-  const r = await fetch(`https://drive.google.com/embeddedfolderview?id=${id}`,
-    { headers: { 'User-Agent': 'Mozilla/5.0' } });
-  if (r.status !== 200) {
-    if (tentativa < 3) { await sleep(2000 * (tentativa + 1)); return listar(id, tentativa + 1); }
-    throw new Error(`pasta ${id}: HTTP ${r.status}`);
-  }
-  const html = await r.text();
-  const re = /<div class="flip-entry" id="entry-([A-Za-z0-9_-]+)"[\s\S]*?<a href="([^"]+)"[\s\S]*?flip-entry-title">([^<]*)<[\s\S]*?flip-entry-last-modified"><div>([^<]*)</g;
-  const out = [];
-  let m;
-  while ((m = re.exec(html))) {
-    out.push({ id: m[1], pasta: m[2].includes('/folders/'), nome: m[3].replace(/&amp;/g, '&'), mod: m[4] });
-  }
-  return out;
-}
 
 /** Todas as pastas de cor: [{ linha, cor, id, fotos: [{id, nome, mod}] }] */
 async function varrer(filtroCodigo) {
   const res = [];
   for (const linha of (await listar(RAIZ_DRIVE)).filter((e) => e.pasta)) {
-    if (filtroCodigo && !filtroCodigo.startsWith(linha.nome.slice(0, 3))) continue;
+    // O nome da linha leva o progresso na frente ("FALTA 96% · EBP - ..."): o
+    // código sai por regex, não pelos 3 primeiros caracteres.
+    const cod = lerLinha(linha.nome)?.codigo;
+    if (filtroCodigo && (!cod || !filtroCodigo.startsWith(cod))) continue;
     for (const cor of (await listar(linha.id)).filter((e) => e.pasta)) {
       // A marca de status vem ANTES do código ("🟢 EDG-020 ...", "✅ ..."): procura o
       // código como palavra, não como prefixo.
