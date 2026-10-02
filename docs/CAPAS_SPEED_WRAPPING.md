@@ -417,6 +417,70 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | ESG-022 Super Gloss Coral Orange | `#E74E47` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
 | ESG-024 Super Gloss Rouge Pink | `#EBA0A9` | super gloss sólido | ESG-034 + ESG-033; capa 2; sem correção |
 | ESG-029 Super Gloss Volcano Grey | `#C4C5CB` | super gloss sólido | ESG-034 + ESG-033; capa 1; sem correção |
+| ECG-001 Candy Gold Green | `#5BD21E` | candy com pérola dourada | capa 1 (só texto); sem correção |
+| ECG-002 Candy Gold Violet | `#7440D0` | candy com pérola dourada | capa 1 (só texto); sem correção |
+| ECG-003 Candy Gold Lemon Yellow | `#B6D30A` | candy com pérola dourada | capa 1 (só texto); sem correção |
+| ECG-004 Candy Gold Sky Blue | `#3FAAE6` | candy com pérola dourada | capa 1 (só texto); sem correção |
+| ECG-005 Candy Gold Racing Orange | `#F25A0A` | candy com pérola dourada | capa 1 (só texto); sem correção |
+| ECG-006 Candy Gold Pink Purple | `#EC8496` | candy com pérola dourada | capa 1 (só texto); sem correção |
+| ECG-007 Candy Gold Blue Chameleon | `#3FCFCF` | candy com pérola dourada | capa 1 (só texto); sem correção |
+| ECH-001 Chrome Matte Gold | `#D2BA0C` | cromo fosco (acetinado) | capa 1 (só texto); sem correção |
+| ECH-002 Chrome Matte Orange | `#D0561A` | cromo fosco (acetinado) | capa 2 (piloto aprovado como referência); sem correção |
+| ECH-003 Chrome Matte Red | `#D23238` | cromo fosco (acetinado) | capa 1 (só texto); sem correção |
+| ECH-004 Chrome Matte Rose Red | `#D22A62` | cromo fosco (acetinado) | capa 1 (só texto); sem correção |
+| ECH-005 Chrome Matte Brown | `#A65E3A` | cromo fosco (acetinado) | capa 1 (só texto); sem correção |
+| ECH-006 Chrome Matte Tiffany | `#0CB38E` | cromo fosco (acetinado) | capa 1 (só texto); sem correção |
+| ECH-008 Chrome Matte Light Blue | `#3A8CDC` | cromo fosco (acetinado) | capa 1 (só texto); sem correção |
+| ECH-009 Chrome Matte Green | `#30BE2C` | cromo fosco (acetinado) | capa 2 (piloto aprovado como referência); sem correção |
+| ECH-010 Chrome Matte Purple | `#6B30D8` | cromo fosco (acetinado) | capa 1 (só texto); sem correção |
+| ECH-011 Chrome Matte Black | `#34353A` | cromo fosco (acetinado) | capa 1 (só texto); sem correção |
+| EFG-001 Magic Flip Grey Green | `#BEC2C6` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EFG-002 Magic Flip Grey Purple | `#BFC1CA` | pérola com virada de cor / fosco com glitter | capa 2 (piloto aprovado como referência); sem correção |
+| EFG-003 Magic Flip Volcano Grey | `#BDBDC2` | pérola com virada de cor / fosco com glitter | capa 2 (piloto aprovado como referência); sem correção |
+| EFG-004 Magic Flip Grey Blue | `#C8CDD6` | pérola com virada de cor / fosco com glitter | capa 2 (piloto aprovado como referência); sem correção |
+| EFG-005 Magic Crystal White Green | `#E6E8EC` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EFG-006 Magic Crystal White Gold | `#E6E7EA` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EFG-007 Magic Crystal White Red | `#E8E9EC` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EFG-008 Magic Crystal White Blue | `#E6E9EC` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EFG-009 Magic Racing Tiffany | `#7DDDBF` | pérola com virada de cor / fosco com glitter | capa 2 (piloto aprovado como referência); sem correção |
+| EFG-010 Magic Flip Glacial Frost Blue | `#A48CEC` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EFG-011 Magic Blue White Gold | `#C9D3E6` | pérola com virada de cor / fosco com glitter | capa 2 (piloto aprovado como referência); sem correção |
+| EFG-012 Magic Blue White Green | `#A9C4E8` | pérola com virada de cor / fosco com glitter | capa 2 (piloto aprovado como referência); sem correção |
+| EFG-013 Magic Matte Grey Blue | `#788D90` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EFG-014 Magic Matte Grey Red | `#7C8996` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EFG-015 Magic Matte Grey Purple | `#98A2B4` | pérola com virada de cor / fosco com glitter | capa 1 (só texto); sem correção |
+| EGH-001 Phontom Shadow Black Purple | `#2F2B3A` | phantom (quase preto com cor escondida) | capa 1 (só texto); sem correção |
+| EGH-002 Phontom Shadow Jazz Blue | `#34344E` | phantom (quase preto com cor escondida) | capa 2 (piloto aprovado como referência); sem correção |
+| EGH-003 Phontom Shadow Olive Green | `#2F342F` | phantom (quase preto com cor escondida) | capa 1 (só texto); sem correção |
+| EGH-004 Phontom Shadow Black Blue | `#2D313B` | phantom (quase preto com cor escondida) | capa 1 (só texto); sem correção |
+| EGH-005 Phontom Shadow Black Gold | `#2E2F33` | phantom (quase preto com cor escondida) | capa 2 (piloto aprovado como referência); sem correção |
+| EGL-001 Chrome Gloss Silver | `#A9ABAD` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-002 Chrome Gloss Grey | `#696469` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-003 Chrome Gloss Red | `#94081E` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-004 Chrome Gloss Rose Red | `#991D44` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-005 Chrome Gloss Pink | `#944A80` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-007 Chrome Gloss Orange | `#A63C14` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-008 Chrome Gloss Gold | `#B38D07` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-009 Chrome Gloss Green | `#078C12` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-010 Chrome Gloss Tiffany | `#06A08A` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 2 (piloto aprovado como referência); sem correção |
+| EGL-011 Chrome Gloss Blue | `#0B2C94` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EGL-012 Chrome Gloss Light Blue | `#057CA1` | candy gloss metálico (nome comercial "Chrome Gloss") | capa 1 (só texto); sem correção |
+| EHM-001 Chrome Metallic Gold | `#DCC40C` | cromo metálico acetinado | capa 1 (só texto); sem correção |
+| EHM-002 Chrome Metallic Rose Red | `#DC2A58` | cromo metálico acetinado | capa 1 (só texto); sem correção |
+| EHM-003 Chrome Metallic Red | `#D23A34` | cromo metálico acetinado | capa 1 (só texto); sem correção |
+| EHM-004 Chrome Metallic Orange | `#E05A18` | cromo metálico acetinado | capa 1 (só texto); sem correção |
+| EHM-005 Chrome Metallic Light Blue | `#2A7EDC` | cromo metálico acetinado | capa 1 (só texto); sem correção |
+| EHM-006 Chrome Metallic King Blue | `#2747D0` | cromo metálico acetinado | capa 1 (só texto); sem correção |
+| EOX-001 Oxide Chrome Silver | `#D4D7DB` | oxide (cromo fosco metálico) | capa 1 (só texto); sem correção |
+| EOX-002 Oxide Red | `#942C35` | oxide (cromo fosco metálico) | capa 1 (só texto); sem correção |
+| EOX-003 Oxide Ghost Venom Green | `#1E3A32` | oxide (cromo fosco metálico) | capa 1 (só texto); sem correção |
+| EOX-004 Oxide Dusk Purple | `#6430D2` | oxide (cromo fosco metálico) | capa 2 (piloto aprovado como referência); sem correção |
+| ERW-001 Rainbow Grey | `#5E5F66` | glitter holográfico arco-íris | capa 2 (piloto aprovado como referência); sem correção |
+| ERW-002 Rainbow Silver | `#9A9BA2` | glitter holográfico arco-íris | capa 2 (piloto aprovado como referência); sem correção |
+| ERW-003 Rainbow White | `#E4E7EE` | glitter holográfico arco-íris | capa 1 (só texto); sem correção |
+| ERW-004 Rainbow Matte Grey | `#4E5058` | glitter holográfico arco-íris | capa 1 (só texto); sem correção |
+| ERW-005 Rainbow Matte Silver | `#9EA1A8` | glitter holográfico arco-íris | capa 1 (só texto); sem correção |
+| ERW-006 Rainbow Matte White | `#DADCE2` | glitter holográfico arco-íris | capa 1 (só texto); sem correção |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

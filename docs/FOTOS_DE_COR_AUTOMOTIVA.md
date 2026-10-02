@@ -220,6 +220,70 @@ confiável:
 | ESG-022 Super Gloss Coral Orange | H 1-3 · S 65-72 · V 87-95 → `#E74E47` | — | sem correção |
 | ESG-024 Super Gloss Rouge Pink | H 352-353 · S 31-33 · V 89-96 → `#EBA0A9` | — | sem correção |
 | ESG-029 Super Gloss Volcano Grey | H 182-286 · S 1-5 · V 77-82 → `#C4C5CB` | — | sem correção |
+| ECG-001 Candy Gold Green | sombra/meio/luz à mão → `#5BD21E` (candy com pérola dourada) | — | sem correção |
+| ECG-002 Candy Gold Violet | sombra/meio/luz à mão → `#7440D0` (candy com pérola dourada) | — | sem correção |
+| ECG-003 Candy Gold Lemon Yellow | sombra/meio/luz à mão → `#B6D30A` (candy com pérola dourada) | — | sem correção |
+| ECG-004 Candy Gold Sky Blue | sombra/meio/luz à mão → `#3FAAE6` (candy com pérola dourada) | — | sem correção |
+| ECG-005 Candy Gold Racing Orange | sombra/meio/luz à mão → `#F25A0A` (candy com pérola dourada) | — | sem correção |
+| ECG-006 Candy Gold Pink Purple | sombra/meio/luz à mão → `#EC8496` (candy com pérola dourada) | — | sem correção |
+| ECG-007 Candy Gold Blue Chameleon | sombra/meio/luz à mão → `#3FCFCF` (candy com pérola dourada) | — | sem correção |
+| ECH-001 Chrome Matte Gold | sombra/meio/luz à mão → `#D2BA0C` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-002 Chrome Matte Orange | sombra/meio/luz à mão → `#D0561A` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-003 Chrome Matte Red | sombra/meio/luz à mão → `#D23238` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-004 Chrome Matte Rose Red | sombra/meio/luz à mão → `#D22A62` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-005 Chrome Matte Brown | sombra/meio/luz à mão → `#A65E3A` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-006 Chrome Matte Tiffany | sombra/meio/luz à mão → `#0CB38E` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-008 Chrome Matte Light Blue | sombra/meio/luz à mão → `#3A8CDC` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-009 Chrome Matte Green | sombra/meio/luz à mão → `#30BE2C` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-010 Chrome Matte Purple | sombra/meio/luz à mão → `#6B30D8` (cromo fosco (acetinado)) | — | sem correção |
+| ECH-011 Chrome Matte Black | sombra/meio/luz à mão → `#34353A` (cromo fosco (acetinado)) | — | sem correção |
+| EFG-001 Magic Flip Grey Green | sombra/meio/luz à mão → `#BEC2C6` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-002 Magic Flip Grey Purple | sombra/meio/luz à mão → `#BFC1CA` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-003 Magic Flip Volcano Grey | sombra/meio/luz à mão → `#BDBDC2` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-004 Magic Flip Grey Blue | sombra/meio/luz à mão → `#C8CDD6` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-005 Magic Crystal White Green | sombra/meio/luz à mão → `#E6E8EC` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-006 Magic Crystal White Gold | sombra/meio/luz à mão → `#E6E7EA` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-007 Magic Crystal White Red | sombra/meio/luz à mão → `#E8E9EC` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-008 Magic Crystal White Blue | sombra/meio/luz à mão → `#E6E9EC` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-009 Magic Racing Tiffany | sombra/meio/luz à mão → `#7DDDBF` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-010 Magic Flip Glacial Frost Blue | sombra/meio/luz à mão → `#A48CEC` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-011 Magic Blue White Gold | sombra/meio/luz à mão → `#C9D3E6` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-012 Magic Blue White Green | sombra/meio/luz à mão → `#A9C4E8` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-013 Magic Matte Grey Blue | sombra/meio/luz à mão → `#788D90` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-014 Magic Matte Grey Red | sombra/meio/luz à mão → `#7C8996` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EFG-015 Magic Matte Grey Purple | sombra/meio/luz à mão → `#98A2B4` (pérola com virada de cor / fosco com glitter) | — | sem correção |
+| EGH-001 Phontom Shadow Black Purple | sombra/meio/luz à mão → `#2F2B3A` (phantom (quase preto com cor escondida)) | — | sem correção |
+| EGH-002 Phontom Shadow Jazz Blue | sombra/meio/luz à mão → `#34344E` (phantom (quase preto com cor escondida)) | — | sem correção |
+| EGH-003 Phontom Shadow Olive Green | sombra/meio/luz à mão → `#2F342F` (phantom (quase preto com cor escondida)) | — | sem correção |
+| EGH-004 Phontom Shadow Black Blue | sombra/meio/luz à mão → `#2D313B` (phantom (quase preto com cor escondida)) | — | sem correção |
+| EGH-005 Phontom Shadow Black Gold | sombra/meio/luz à mão → `#2E2F33` (phantom (quase preto com cor escondida)) | — | sem correção |
+| EGL-001 Chrome Gloss Silver | sombra/meio/luz à mão → `#A9ABAD` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-002 Chrome Gloss Grey | sombra/meio/luz à mão → `#696469` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-003 Chrome Gloss Red | sombra/meio/luz à mão → `#94081E` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-004 Chrome Gloss Rose Red | sombra/meio/luz à mão → `#991D44` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-005 Chrome Gloss Pink | sombra/meio/luz à mão → `#944A80` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-007 Chrome Gloss Orange | sombra/meio/luz à mão → `#A63C14` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-008 Chrome Gloss Gold | sombra/meio/luz à mão → `#B38D07` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-009 Chrome Gloss Green | sombra/meio/luz à mão → `#078C12` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-010 Chrome Gloss Tiffany | sombra/meio/luz à mão → `#06A08A` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-011 Chrome Gloss Blue | sombra/meio/luz à mão → `#0B2C94` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EGL-012 Chrome Gloss Light Blue | sombra/meio/luz à mão → `#057CA1` (candy gloss metálico (nome comercial "Chrome Gloss")) | — | sem correção |
+| EHM-001 Chrome Metallic Gold | sombra/meio/luz à mão → `#DCC40C` (cromo metálico acetinado) | — | sem correção |
+| EHM-002 Chrome Metallic Rose Red | sombra/meio/luz à mão → `#DC2A58` (cromo metálico acetinado) | — | sem correção |
+| EHM-003 Chrome Metallic Red | sombra/meio/luz à mão → `#D23A34` (cromo metálico acetinado) | — | sem correção |
+| EHM-004 Chrome Metallic Orange | sombra/meio/luz à mão → `#E05A18` (cromo metálico acetinado) | — | sem correção |
+| EHM-005 Chrome Metallic Light Blue | sombra/meio/luz à mão → `#2A7EDC` (cromo metálico acetinado) | — | sem correção |
+| EHM-006 Chrome Metallic King Blue | sombra/meio/luz à mão → `#2747D0` (cromo metálico acetinado) | — | sem correção |
+| EOX-001 Oxide Chrome Silver | sombra/meio/luz à mão → `#D4D7DB` (oxide (cromo fosco metálico)) | — | sem correção |
+| EOX-002 Oxide Red | sombra/meio/luz à mão → `#942C35` (oxide (cromo fosco metálico)) | — | sem correção |
+| EOX-003 Oxide Ghost Venom Green | sombra/meio/luz à mão → `#1E3A32` (oxide (cromo fosco metálico)) | — | sem correção |
+| EOX-004 Oxide Dusk Purple | sombra/meio/luz à mão → `#6430D2` (oxide (cromo fosco metálico)) | — | sem correção |
+| ERW-001 Rainbow Grey | sombra/meio/luz à mão → `#5E5F66` (glitter holográfico arco-íris) | — | sem correção |
+| ERW-002 Rainbow Silver | sombra/meio/luz à mão → `#9A9BA2` (glitter holográfico arco-íris) | — | sem correção |
+| ERW-003 Rainbow White | sombra/meio/luz à mão → `#E4E7EE` (glitter holográfico arco-íris) | — | sem correção |
+| ERW-004 Rainbow Matte Grey | sombra/meio/luz à mão → `#4E5058` (glitter holográfico arco-íris) | — | sem correção |
+| ERW-005 Rainbow Matte Silver | sombra/meio/luz à mão → `#9EA1A8` (glitter holográfico arco-íris) | — | sem correção |
+| ERW-006 Rainbow Matte White | sombra/meio/luz à mão → `#DADCE2` (glitter holográfico arco-íris) | — | sem correção |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -684,6 +748,41 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
 
+### Acabamentos especiais: candy, cromo, flip, phantom, oxide, rainbow (lote 10, 02/10)
+
+64 cores de 8 linhas que nunca tinham sido fotografadas. Antes do lote, **um teste de receita por
+família** (1 cor, 2 variações). Mesmo assim o João reprovou 22 pilotos — tudo por leitura errada do
+acabamento ou do tom, nenhum por erro de carro. O que ficou:
+
+- **O nome comercial engana. Vale o cartão.** A linha EGL se chama "Chrome Gloss", mas o cartão é
+  **candy gloss metálico** (cor profunda, flake visível, reflexo de tinta) — não espelho. Pedir
+  "chrome/mirror" fez espelho colorido e o João reprovou a linha inteira. Receita aprovada:
+  "candy gloss metallic... It is NOT chrome and NOT a mirror - reflections are the sharp reflections
+  of glossy paint, and the colour itself has depth, like looking into coloured glass. The metallic
+  flake sparkles visibly in the sun as fine grain."
+- **Oxide (EOX) é cromo fosco metálico, não filme escuro.** O texto "a very dark satin metallic film"
+  escureceu o prata (virou grafite) e o vermelho (virou vinho). O que funcionou: "a brushed, satin-matte
+  METAL, like red anodised aluminium... full of a very fine metallic grain... broad, bright, silky
+  sheen band".
+- **Ler o cartão em três níveis: sombra / meio / luz.** Em cromo, flip e candy uma média só não diz
+  nada: o EGH-002 é índigo no meio e ciano-turquesa na luz; o EGL-007 vai de vermelho candy na sombra a
+  laranja-dourado na luz. Escrever os três valores no prompt ("about 65 percent on the panels, glowing to
+  about 95 percent in the highlights, falling to about 35 percent in shadow").
+- **"Gold" vira ouro velho.** ECH-001 e EHM-001 são amarelo vivo com brilho dourado: pedir "bright
+  lemon-gold yellow... never old gold, mustard, brass or ochre".
+- **Leitura automática escurece neon e rosa claro** (ECG-001, ECG-003, ECG-006): conferir a olho no
+  cartão e escrever "Must clearly read as X - never Y" para o erro provável.
+- **O piloto aprovado como imagem de referência** nas fotos 3/4/5 resolveu a maior fonte de retrabalho
+  dos lotes anteriores (traseira com outra roda, capota, peça ou tom): "a photograph of the EXACT car...
+  Keep exactly the same car model and generation, the same wheels, the same trim colours and the same
+  wrap film... Only the camera position changes". 0 de 192 fotos refeitas por carro.
+- **Capa: duas receitas por cor** — 1 só texto (ESG-034 + ESG-033 nas brilhantes), 2 com o piloto como
+  referência de cor e acabamento. Nenhuma ganha sempre; escolher por cor.
+- **Correção de cor desligada** nesses acabamentos: reflexo de cromo, faísca de glitter e virada de cor
+  caem fora da faixa da família e a máscara mancha.
+- Com 13 frentes em paralelo o Higgsfield recusou ~16% dos envios ("Something went wrong"), sem cobrar.
+  Reenviar só os recusados, 2 frentes por vez, com nova tentativa — passaram todos.
+
 ### Lote de 65 cores de uma vez (lote 9, 01/10)
 
 Todas as cores com amostra no Drive num lote só. Rascunho conferido contra as regras de cenário,
@@ -1037,6 +1136,70 @@ marca d'água, sem adesivo de patrocínio.
 | ESG-022 Super Gloss Coral Orange | Mitsubishi Lancer Evolution X | Lake Tekapo, New Zealand |
 | ESG-024 Super Gloss Rouge Pink | Jeep Wrangler two-door | the white streets of Sidi Bou Said, Tunisia |
 | ESG-029 Super Gloss Volcano Grey | Mercedes-Benz SLR McLaren | a road on Mount Etna |
+| ECG-001 Candy Gold Green | Porsche 911 Dakar | the pale grey hoodoos and clay badlands of Bisti, New Mexico, no plants |
+| ECG-002 Candy Gold Violet | Lamborghini Huracan Tecnica | the Storseisundet bridge on the Atlantic Road in Norway, grey sea, dark rocks |
+| ECG-003 Candy Gold Lemon Yellow | Lotus Esprit | the white salt pans and old windmills of Marsala, Sicily, no plants |
+| ECG-004 Candy Gold Sky Blue | BMW M1 | a narrow street of pink sandstone facades in the old city of Jaipur, only a strip of sky |
+| ECG-005 Candy Gold Racing Orange | Ferrari F40 | a road above Lake Powell, Arizona, cream and red sandstone, deep blue water, open sky |
+| ECG-006 Candy Gold Pink Purple | Porsche 911 Turbo S | the whitewashed lanes and stone steps of Ostuni, Puglia |
+| ECG-007 Candy Gold Blue Chameleon | Lancia Stratos HF | a red-earth road in the Australian outback with Uluru far behind, no plants near the car |
+| ECH-001 Chrome Matte Gold | Lamborghini Diablo VT | the white chalk formations of the White Desert at Farafra, Egypt |
+| ECH-002 Chrome Matte Orange | McLaren 600LT | the grey slate terraces of the Dinorwic quarry in Wales |
+| ECH-003 Chrome Matte Red | Ferrari 599 GTO | the hairpins of the Klausen Pass in Switzerland, grey rock, open sky |
+| ECH-004 Chrome Matte Rose Red | Mercedes-AMG CLE 53 Coupe | the stone esplanade of La Defense in Paris, Grande Arche behind |
+| ECH-005 Chrome Matte Brown | Jaguar XJ220 | the gravel courtyard of a stone winery among vineyards in Napa Valley |
+| ECH-006 Chrome Matte Tiffany | Pagani Utopia | a road beside the white travertine terraces of Pamukkale, Turkey, pale stone, no trees |
+| ECH-008 Chrome Matte Light Blue | Porsche 911 GT2 RS | a narrow street of honey limestone in Valletta, Malta, only a strip of sky |
+| ECH-009 Chrome Matte Green | Lamborghini Murcielago LP640 | the cream sand dunes around the Huacachina oasis in Peru, no palms near the car |
+| ECH-010 Chrome Matte Purple | Koenigsegg Regera | the stone ramparts and narrow lane of the medieval city of Carcassonne, only a strip of sky |
+| ECH-011 Chrome Matte Black | Cadillac CT5-V Blackwing | the white sculptural shell of the Ordos Museum in Inner Mongolia, pale paving |
+| EFG-001 Magic Flip Grey Green | Audi RS 5 Sportback | the white concrete forecourt of the Sydney Opera House |
+| EFG-002 Magic Flip Grey Purple | Rimac Nevera | the waterfront promenade of HafenCity in Hamburg with the Elbphilharmonie behind, grey paving, light grey sky |
+| EFG-003 Magic Flip Volcano Grey | Lamborghini Gallardo | the grey volcanic ash plain below Mount Bromo, Java |
+| EFG-004 Magic Flip Grey Blue | BMW i7 M70 | the pale granite forecourt of Parliament House in Canberra |
+| EFG-005 Magic Crystal White Green | Bentley Bacalar | the dark brick industrial halls of the Zollverein colliery in Essen |
+| EFG-006 Magic Crystal White Gold | Bentley Flying Spur | the dark basalt harbour wall and grey sea of Ponta Delgada, Azores |
+| EFG-007 Magic Crystal White Red | Rolls-Royce Phantom | the grey stone old bridge Stari Most in Mostar, grey stone houses |
+| EFG-008 Magic Crystal White Blue | Aston Martin DB11 | the dark slate road above the Geirangerfjord, grey rock walls |
+| EFG-009 Magic Racing Tiffany | Alfa Romeo 8C Competizione | the sand-coloured square in front of the Koutoubia mosque in Marrakech, no palms near the car |
+| EFG-010 Magic Flip Glacial Frost Blue | McLaren Elva | the grey granite road at Tunnel View in Yosemite, granite cliffs behind |
+| EFG-011 Magic Blue White Gold | Maserati MC12 | the pale facades of Palace Square in Saint Petersburg, grey paving |
+| EFG-012 Magic Blue White Green | Volvo P1800 | the art nouveau harbour front of Alesund, Norway, grey stone quay |
+| EFG-013 Magic Matte Grey Blue | Aston Martin DBX707 | the car park above Reynisfjara black sand beach in Iceland, black basalt columns, grey sea |
+| EFG-014 Magic Matte Grey Red | Range Rover Sport SV | the stone harbour of St Ives, Cornwall, grey granite quay |
+| EFG-015 Magic Matte Grey Purple | Aston Martin Valhalla | the pass road at Passo Giau in the Dolomites, grey scree, no meadow near the car |
+| EGH-001 Phontom Shadow Black Purple | McLaren Speedtail | the pale limestone quarry on the Isle of Portland, Dorset |
+| EGH-002 Phontom Shadow Jazz Blue | Rolls-Royce Cullinan | the white curved structures and pale paving of the City of Arts and Sciences in Valencia |
+| EGH-003 Phontom Shadow Olive Green | Ineos Grenadier | the pale chalk road at the cliffs of Etretat, Normandy, white cliffs and grey sea |
+| EGH-004 Phontom Shadow Black Blue | Mercedes-Maybach GLS 600 | the white terraces and pale stone steps of the Bahai Gardens in Haifa, no lawn near the car |
+| EGH-005 Phontom Shadow Black Gold | Ferrari 12Cilindri | the pale gravel forecourt and cream stone wings of the Palace of Versailles |
+| EGL-001 Chrome Gloss Silver | Mercedes-Benz 300 SL Gullwing | a straight red-earth road in the Australian outback, flat horizon, big open sky |
+| EGL-002 Chrome Gloss Grey | Aston Martin One-77 | a cypress-lined gravel road in the Val d Orcia, Tuscany, rolling hills, open sky |
+| EGL-003 Chrome Gloss Red | Bugatti Divo | a wide coastal plateau at Cabo de Sao Vicente, Portugal, low scrub, the lighthouse far away, a big open sky |
+| EGL-004 Chrome Gloss Rose Red | Ferrari Daytona SP3 | the beige sand dunes around the Liwa oasis road in Abu Dhabi, big open sky |
+| EGL-005 Chrome Gloss Pink | Jaguar C-X75 | the beachfront promenade of Miami South Beach with a pastel lifeguard tower, big sky |
+| EGL-007 Chrome Gloss Orange | Ford GT40 | a road through the black lava fields of the Snaefellsnes peninsula, Iceland, big open sky |
+| EGL-008 Chrome Gloss Gold | Koenigsegg Gemera | the dark grey coast road of the Lofoten islands, grey mountains, big sky |
+| EGL-009 Chrome Gloss Green | Zenvo TSR-S | the black sand flats of Myrdalssandur, Iceland, no vegetation, big open sky |
+| EGL-010 Chrome Gloss Tiffany | Pagani Zonda | the pink granite rocks of the Ploumanac h coast in Brittany, no grass near the car, big sky |
+| EGL-011 Chrome Gloss Blue | Hennessey Venom F5 | a square of ochre walls in the medina of Fez, only a strip of sky |
+| EGL-012 Chrome Gloss Light Blue | SSC Tuatara | the ochre and red clay cliffs of Roussillon in Provence, only a little sky |
+| EHM-001 Chrome Metallic Gold | Ferrari Testarossa | the slate-grey plateau at the North Cape, Norway, grey sea, open sky |
+| EHM-002 Chrome Metallic Rose Red | Maserati Ghibli Trofeo | the grey stone causeway to Mont-Saint-Michel, tidal flats |
+| EHM-003 Chrome Metallic Red | Ferrari Enzo | the hairpins of the Col de Turini in the French Alps, grey rock, open sky |
+| EHM-004 Chrome Metallic Orange | Toyota GR Yaris | the grey shingle beach of Dungeness with the old black lighthouse |
+| EHM-005 Chrome Metallic Light Blue | Audi RS 3 Sportback | a narrow stone lane of the old town of Toledo, Spain, only a strip of sky |
+| EHM-006 Chrome Metallic King Blue | Ford Mustang GTD | the viewpoint road below the Millau Viaduct in France, pale limestone, open sky |
+| EOX-001 Oxide Chrome Silver | Aston Martin Valkyrie | a road through the dark green pine forest of the Black Forest, Germany |
+| EOX-002 Oxide Red | Lamborghini Sian FKP 37 | the cobbled market square of Bruges, grey brick facades with stepped gables |
+| EOX-003 Oxide Ghost Venom Green | McLaren 765LT | a gravel road through the Painted Hills of Oregon, red and ochre clay hills, no trees |
+| EOX-004 Oxide Dusk Purple | Czinger 21C | the ochre ramparts of the Amber Fort near Jaipur, only a strip of sky |
+| ERW-001 Rainbow Grey | BMW XM | the top deck of a concrete rooftop car park in downtown Los Angeles with the skyline behind |
+| ERW-002 Rainbow Silver | Cadillac Escalade-V | a plaza of the Lujiazui towers in Shanghai Pudong, grey paving |
+| ERW-003 Rainbow White | Tesla Model X | the red rock buttes around Sedona, Arizona, red earth road |
+| ERW-004 Rainbow Matte Grey | GMC Hummer EV | a desert road through the golden dunes outside Dubai, open sky |
+| ERW-005 Rainbow Matte Silver | Rivian R1T | the red cliffs and slickrock of Canyonlands, Utah |
+| ERW-006 Rainbow Matte White | Polestar 3 | a road through a dark green pine forest in the Pacific Northwest |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
