@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/promo-moto",
+      "destination": "/loja?promo=moto&utm_source=instagram&utm_medium=social&utm_campaign=promo_moto",
+      "permanent": false
+    },
+    {
       "source": "/motos",
       "destination": "/wrap/motos",
       "permanent": true
