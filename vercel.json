@@ -1,8 +1,8 @@
 {
   "redirects": [
     {
-      "source": "/promo-moto",
-      "destination": "/loja?promo=moto&utm_source=instagram&utm_medium=social&utm_campaign=promo_moto",
+      "source": "/acao-moto",
+      "destination": "/loja?promo=moto&utm_source=instagram&utm_medium=social&utm_campaign=acao_moto",
       "permanent": false
     },
     {
