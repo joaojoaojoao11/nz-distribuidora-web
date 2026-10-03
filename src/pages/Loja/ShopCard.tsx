@@ -173,7 +173,13 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
         )}
         {meta && <span className={styles.meta}>{meta}</span>}
         {/* Preço por papel: o servidor decide o que este card pode mostrar. */}
-        {item.kind !== 'linha' && <Preco slug={item.slug} variante="card" selecao={selecao} soMetro={Boolean(promo)} />}
+        {item.kind !== 'linha' && <Preco
+            slug={item.slug}
+            variante="card"
+            selecao={selecao}
+            soMetro={Boolean(promo)}
+            publico={promo ? { metro: promo.metro, metroCheio: promo.metroCheio } : undefined}
+          />}
       </div>
     </Link>
   );

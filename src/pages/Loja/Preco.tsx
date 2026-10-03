@@ -30,9 +30,14 @@ interface Props {
   selecao?: string;
   /** Card da Promoção Moto: só o preço do metro (João, 03/10), sem o rolo. */
   soMetro?: boolean;
+  /**
+   * Promoção Moto: o metro "de/por" que vale para TODOS, inclusive quem não
+   * entrou (João, 03/10). Vem do /api/nz/promo-moto. Comprar segue pedindo login.
+   */
+  publico?: { metro: number | null | undefined; metroCheio: number | null | undefined };
 }
 
-export default function Preco({ slug, variante, produto, selecao, soMetro = false }: Props) {
+export default function Preco({ slug, variante, produto, selecao, soMetro = false, publico }: Props) {
   const { estado, papel, item } = usePreco(slug, selecao);
   const location = useLocation();
   const next = encodeURIComponent(`${location.pathname}${location.search}`);
@@ -42,6 +47,31 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
   // inteiro, e a página ficaria sem explicar por que aquele produto não mostra
   // valor enquanto o vizinho mostra.
   const foraDaSelecao = Boolean(item?.foraDaSelecao) && papel === 'anonimo';
+
+  // Promoção Moto para quem não entrou: o metro aparece, o rolo e o carrinho não.
+  if ((estado === 'anonimo' || foraDaSelecao) && publico?.metro) {
+    const por = BRL.format(Number(publico.metro));
+    const de = publico.metroCheio ? BRL.format(Number(publico.metroCheio)) : null;
+    return variante === 'card' ? (
+      <span className={styles.card}>
+        {de && <s className={styles.cheio}>{de}</s>}
+        <strong>{por}/m</strong>
+      </span>
+    ) : (
+      <div className={styles.bloco}>
+        <div className={styles.linha}>
+          <span className={styles.rotulo}>Metro linear (fracionado) · promoção moto</span>
+          <span className={styles.valor}>
+            {de && <s className={styles.cheio}>{de}</s>}
+            {por}
+          </span>
+        </div>
+        <Link to={`/login?next=${next}`} className={styles.entrar} onClick={(e) => e.stopPropagation()}>
+          Entre para comprar
+        </Link>
+      </div>
+    );
+  }
 
   if (estado === 'anonimo' || foraDaSelecao) {
     return variante === 'card' ? (

@@ -392,6 +392,7 @@ function ProductView({
               variante="pagina"
               produto={{ nome: item.name, codigo: item.code, imagem: item.image, hex: item.hex }}
               selecao={selecao}
+              publico={promoItem ? { metro: promoItem.metro, metroCheio: promoItem.metroCheio } : undefined}
             />
           )}
 
