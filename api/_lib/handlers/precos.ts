@@ -33,6 +33,7 @@ import { resolverPapelDetalhado } from '../papel.js';
 import { lerSelecaoPorToken, selecaoAtiva } from './selecoes.js';
 import { aplicarAcrescimo } from '../pedido/dinheiro.js';
 import { lerEstoqueParceiro } from '../estoqueParceiro.js';
+import { lerPromoMoto, precoMetroPromo, type PromoMoto } from '../promoMotoDados.js';
 
 interface Produto {
   slug: string;
@@ -127,6 +128,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .in('sku', skus)
     : { data: [] };
   const porSku = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
+  // Promoção Moto: o metro das cores com pedaço sai pelo preço de saída — a
+  // MESMA regra do checkout (pedido/precificar.ts). Se a leitura falhar, fica a
+  // tabela: anunciar menos do que o checkout cobra é o erro que não pode haver.
+  let promo: PromoMoto | null = null;
+  try {
+    promo = await lerPromoMoto(site);
+  } catch {
+    promo = null;
+  }
+
   // A bolinha vermelha (estoque do parceiro). Só admin — os demais nem consultam.
   const parceiroPorSku = papel === 'admin' ? await lerEstoqueParceiro(site, skus) : new Map();
 
@@ -157,7 +168,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // final e nunca o percentual — no navegador não há como recalcular a base.
     const pct = dentroDaSelecao ? Number(selValida?.acrescimo_pct ?? 0) : 0;
     const rolo = pct > 0 ? aplicarAcrescimo(baseRolo, pct) : baseRolo;
-    const metro = pct > 0 ? aplicarAcrescimo(baseMetro, pct) : baseMetro;
+    // Dentro de uma seleção o preço é o negociado; a promoção não se soma a ele.
+    const metroPromo = !dentroDaSelecao && promo ? precoMetroPromo(promo, e.sku, baseMetro) : null;
+    const metro = pct > 0 ? aplicarAcrescimo(baseMetro, pct) : (metroPromo ?? baseMetro);
 
     const item: Record<string, unknown> = {
       disponivel: rolo != null || metro != null,
@@ -172,6 +185,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // O cliente precisa saber que aquele valor é o daquela seleção, não a
     // tabela do site — é o que a legenda da tela diz. O percentual não vai.
     if (dentroDaSelecao) item.viaSelecao = true;
+    // "De R$ X por R$ Y o metro": o card risca a tabela.
+    if (metroPromo != null) item.metroCheio = baseMetro;
 
     // Só admin. Construído campo a campo: o que não entra aqui não sai.
     if (papel === 'admin') {

@@ -218,3 +218,11 @@
     transition: none;
   }
 }
+
+/* Promoção Moto: tabela riscada antes do preço de saída. */
+.cheio {
+  margin-right: 0.3rem;
+  font-size: 0.75em;
+  font-weight: 400;
+  color: var(--text-muted);
+}

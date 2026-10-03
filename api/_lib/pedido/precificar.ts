@@ -11,6 +11,7 @@
 import type { Db } from '../papel.js';
 import { faltandoNoCadastro } from '../conta/completude.js';
 import { r2 } from './dinheiro.js';
+import { lerPromoMoto, precoMetroPromo, type PromoMoto } from '../promoMotoDados.js';
 
 export interface ItemPedido {
   slug: string;
@@ -122,6 +123,17 @@ export async function precificar(site: Db, itens: ItemPedido[]): Promise<{ linha
     : { data: [] };
   const espelho = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
 
+  // Promoção Moto: o metro das cores com pedaço sai pelo preço de saída — a
+  // MESMA regra que o card mostra (/api/nz/precos). Só no fracionado.
+  let promo: PromoMoto | null = null;
+  if (itens.some((i) => i.unidade === 'metro')) {
+    try {
+      promo = await lerPromoMoto(site);
+    } catch {
+      promo = null;
+    }
+  }
+
   const linhas: Linha[] = [];
   const invalidos: string[] = [];
   for (const item of itens) {
@@ -147,7 +159,7 @@ export async function precificar(site: Db, itens: ItemPedido[]): Promise<{ linha
         invalidos.push(item.slug);
         continue;
       }
-      const unitPrice = Number(e.preco_metro);
+      const unitPrice = (promo && precoMetroPromo(promo, e.sku, Number(e.preco_metro))) || Number(e.preco_metro);
       linhas.push({ produto: p, e, item, unitPrice, qtyMt: item.qtd, total: r2(unitPrice * item.qtd) });
     }
   }

@@ -71,17 +71,29 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
 
   const rolo = item.rolo != null ? BRL.format(Number(item.rolo)) : null;
   const metro = item.metro != null ? BRL.format(Number(item.metro)) : null;
+  // Promoção Moto: "de R$ X por R$ Y o metro" — o checkout cobra o Y.
+  const metroCheio = item.metroCheio != null ? BRL.format(Number(item.metroCheio)) : null;
 
   if (variante === 'card') {
     return (
       <span className={styles.card}>
         {soMetro ? (
-          metro && <strong>{metro}/m</strong>
+          metro && (
+            <>
+              {metroCheio && <s className={styles.cheio}>{metroCheio}</s>}
+              <strong>{metro}/m</strong>
+            </>
+          )
         ) : (
           <>
             {rolo && <strong>{rolo}</strong>}
             {rolo && metro && <span className={styles.sep}>·</span>}
-            {metro && <span>{metro}/m</span>}
+            {metro && (
+              <span>
+                {metroCheio && <s className={styles.cheio}>{metroCheio}</s>}
+                {metro}/m
+              </span>
+            )}
           </>
         )}
       </span>
@@ -112,8 +124,11 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
       )}
       {mostrarTabela && metro && (
         <div className={styles.linha}>
-          <span className={styles.rotulo}>Metro linear (fracionado)</span>
-          <span className={styles.valor}>{metro}</span>
+          <span className={styles.rotulo}>Metro linear (fracionado){metroCheio ? ' · promoção' : ''}</span>
+          <span className={styles.valor}>
+            {metroCheio && <s className={styles.cheio}>{metroCheio}</s>}
+            {metro}
+          </span>
           {item.metroVarejo != null && <span className={styles.minimo}>varejo {BRL.format(Number(item.metroVarejo))}</span>}
         </div>
       )}

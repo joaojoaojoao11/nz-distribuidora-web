@@ -26,6 +26,11 @@ export interface PrecoItem {
   disponivel: boolean;
   rolo?: number | null;
   metro?: number | null;
+  /**
+   * Promoção Moto: a tabela do metro, quando `metro` é o preço de saída. O card
+   * mostra "de metroCheio por metro". Mesma regra do checkout (servidor).
+   */
+  metroCheio?: number | null;
   metragemPadrao?: number | null;
   larguraM?: number | null;
   unidade?: string;

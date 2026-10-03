@@ -154,3 +154,10 @@
 @media (hover: hover) {
   .pedirSelecao:hover { background: var(--accent-red-hover); }
 }
+
+/* Promoção Moto: a tabela riscada antes do preço de saída. */
+.cheio {
+  margin-right: 0.35rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
