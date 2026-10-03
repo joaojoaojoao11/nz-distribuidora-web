@@ -521,6 +521,21 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | EGF-004 Matte Carbon Black | — | carbono — aplicação parcial, fotos de perto, textura do cartão como referência | capa 1 (só texto; carbono com o recorte do cartão); sem correção |
 | EGF-005 Carbon Gloss 3D | — | carbono — aplicação parcial, fotos de perto, textura do cartão como referência | capa 1 (só texto; carbono com o recorte do cartão); sem correção |
 | EBP-001 Gloss Black Sunroof 12C | — | preto brilho para teto — aplicação parcial no teto | capa 1 (só texto); sem correção |
+| ECH-007 Chrome Matte Blue | — | cromo fosco | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EDG-017 Metal Midnight Purple | — | metalico | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EGL-006 Chrome Gloss Purple | — | candy gloss metalico | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| ELS-007 Laser Chrome Green | — | cromo laser holografico | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EMA-001 Matt White | — | fosco | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EMA-002 Matt Black | — | fosco | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EMA-016 Matt Gray | — | fosco | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EMG-016 Satin Metallic Glossy Seablue | — | metalico acetinado brilho | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EMT-021 Satin Metallic Matt Gunsmoke Grey | — | metalico acetinado fosco | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EMT-026 Satin Ceramic Black | — | acetinado ceramico | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EGF-007 Matte Forged Carbon Silver | — | carbono | capa 1 (piloto aprovado como referência; carbono); sem correção; sem amostra (engenharia reversa) |
+| EGF-019 Simulation Carbon Fiber Silver | — | carbono | capa 1 (piloto aprovado como referência; carbono); sem correção; sem amostra (engenharia reversa) |
+| EGF-021 Frosted Black | — | preto fosco frosted | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EBP-002 Gloss Black Sunroof 18C | — | teto | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
+| EBP-003 Matte Black | — | teto | capa 1 (só texto); sem correção; sem amostra (engenharia reversa) |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

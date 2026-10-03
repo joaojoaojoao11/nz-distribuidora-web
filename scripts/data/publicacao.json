@@ -1,4 +1,769 @@
 {
+  "speed-wrapping-ech-007-chrome-matte-blue-spwech007": {
+    "mensagem": "feat(ech-007): McLaren GT + capa cromo fosco Chrome Matte Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #263FBB (H230); irmas ECH: imagem Speed -> receita aprovada ~ -15 de croma, brilho igual. Alvo #3550C8. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "McLaren GT on dark grey wheels",
+      "carro_cor": "1. HUE: a cobalt royal blue, hex #3550C8 (hue about 229) - a pure royal blue, deeper and more violet-leaning than sky blue, not purple, not navy. 2. CHROMA: high, about 73 percent. 3. BRIGHTNESS: about 70 percent on the panels, rising to about 92 percent bright electric blue inside the sheen bands, about 38 percent deep cobalt in shadow.",
+      "carro_acabamento": "matte chrome (satin chrome): a coloured metallic chrome film with a brushed satin surface, like anodised aluminium. Much brighter and more metallic than paint: on every curve the light forms broad, very bright, soft-edged metallic sheen bands that fall off quickly into a deeper shade of the same colour. NO mirror image and no sharp reflections of the surroundings - reflections are blurred like frosted metal. The colour stays saturated everywhere, never silver. The black trim and the glass stay glossy.",
+      "carro_cenario": "the pale travertine colonnade of the Palazzo della Civilta Italiana in Rome's EUR district, stone paving, only a strip of sky; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044949_62a26ac2-30db-4a42-b2da-012ec5eabffd.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "McLaren GT envelopado em Speed Wrapping ECH 007 Chrome Matte Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ech-007-chrome-matte-blue-spwech007.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041032_053370cf-9690-4a8a-911e-634b117b2110.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044948_063ba830-a2d3-4844-84d0-d1557f2c2a4f.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044952_412c6eb3-fa16-4350-9df2-cb51024c4a97.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044948_cefe2dd6-8e7f-4bab-9ca2-193782f06682.png",
+        "nota": "macro do cromo fosco"
+      }
+    ]
+  },
+  "speed-wrapping-edg-017-metal-midnigth-plurple-spwedg017": {
+    "mensagem": "feat(edg-017): Nissan Silvia S15 + capa metalico Metal Midnight Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #49006B (H281, S100); EDG-008/009: cartao = Speed -15 graus, -7 a -23 de croma, -8 de brilho. Alvo #3A1666. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Nissan Silvia S15 on bronze six-spoke wheels",
+      "carro_cor": "1. HUE: a deep midnight purple, hex #3A1666 (hue about 268) - a deep saturated indigo-violet, clearly purple, not black, not grey, not navy. 2. CHROMA: high, about 78 percent. 3. BRIGHTNESS: dark, about 40 percent on the panels; facing the sky the flake lifts it to a vivid violet of about 70 percent with a magenta-violet flash inside the brightest highlights; in shadow a near-black aubergine of about 18 percent.",
+      "carro_acabamento": "gloss metallic paint: a wet, deep, high-gloss clear layer over a fine metallic flake; in the light the flake shows as a dense, fine sparkle inside the highlights, exactly like factory metallic car paint, never coarse glitter. Strong flop. Large soft-edged reflections, not a detailed mirror image.",
+      "carro_cenario": "the pale stone terraces and travertine walls of the Getty Center in Los Angeles, only a strip of sky; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044949_be25057f-3685-406a-b10b-570a69833dcd.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Nissan Silvia S15 envelopado em Speed Wrapping EDG 017 Metal Midnight Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-edg-017-metal-midnigth-plurple-spwedg017.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041032_b235dc12-937d-42f5-a3d1-6ec3205bfed3.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044951_feb6f212-56ec-4e1a-a23d-484b279bcdcc.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044950_dc03bafd-68a7-4e76-aa30-8823df019940.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044950_eab5797f-c74d-46a9-9c2a-5bf76805505b.png",
+        "nota": "macro do metalico"
+      }
+    ]
+  },
+  "speed-wrapping-egl-006-chrome-gloss-purple-spwegl006": {
+    "mensagem": "feat(egl-006): Plymouth Hemi 'Cuda (1970) + capa candy gloss metalico Chrome Gloss Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #580770 (H286); EGL-003/004/005/011: meio = Speed -5 graus, brilho ~58 no painel. Alvo #6A0F94. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Plymouth Hemi 'Cuda (1970) on chrome Rallye wheels, black hood scoop",
+      "carro_cor": "1. HUE: a candy violet purple, hex #6A0F94 at the mid-tone (hue about 281) - a vivid royal violet, not magenta, not blue. 2. CHROMA: maximum, about 90 percent. 3. BRIGHTNESS: about 58 percent on the panels, glowing to about 90 percent bright violet in the highlights, about 34 percent deep purple in shadow.",
+      "carro_acabamento": "candy gloss metallic, like a custom candy paint job: a wet, deep, high-gloss clear coat over a dense fine metallic flake in a transparent candy violet purple. It is NOT chrome and NOT a mirror - reflections are the sharp reflections of glossy paint, and the colour itself has depth, like looking into coloured glass. The metallic flake sparkles visibly in the sun as fine grain. No orange peel.",
+      "carro_cenario": "a desert roadside at Amboy on Route 66, California: pale cracked asphalt, a white stucco building with no signs, dry desert and brown mountains behind; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044948_c8064580-8b50-4e73-a868-4877c8d25b1a.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Plymouth Hemi 'Cuda (1970) envelopado em Speed Wrapping EGL 006 Chrome Gloss Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egl-006-chrome-gloss-purple-spwegl006.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041037_9fddcdcf-51f1-456c-ad1a-6b57f57fc525.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044952_477d3a68-9ea5-4c1e-8b6f-402c12d47551.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044949_fd0a8b75-56e6-4f1e-aa5b-54266a8cfec3.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044950_18f38c28-7f40-4364-b87a-112b1bef3396.png",
+        "nota": "macro do candy"
+      }
+    ]
+  },
+  "speed-wrapping-els-007-laser-chrome-green-pet-spwels007": {
+    "mensagem": "feat(els-007): Dodge Viper GTS (1996, second generation) + capa cromo laser holografico Laser Chrome Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #07490C base + lupa verde-ciano; ELS: cartao ~ Speed -10 graus. Alvo #0C6A2A. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Dodge Viper GTS (1996, second generation) on silver five-spoke wheels",
+      "carro_cor": "an emerald green holographic mirror chrome: a deep emerald green mirror (hex #0C6A2A at the mid-tone, glowing to a bright lime-green in the highlights) with yellow, cyan and blue holographic bands. The car reads clearly EMERALD GREEN overall; the rainbow lives only inside the bands.",
+      "carro_acabamento": "holographic laser chrome: the film is a TRUE MIRROR whose surface diffracts light into rainbow bands - red, orange, yellow, green, blue and violet streaks flow across every curve like a holographic sticker, over the base colour described in COLOR. Sharp mirror reflections of the sky. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Col de la Bonette road in the French Alps, grey-brown scree, no green, a big sky with white clouds; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044945_9e371dc7-9ef6-46f2-b963-fe61d7d30f32.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Dodge Viper GTS (1996, second generation) envelopado em Speed Wrapping ELS 007 Laser Chrome Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-els-007-laser-chrome-green-pet-spwels007.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041033_5878ebdc-7896-47eb-9e82-e5d6d5ef3049.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044944_aeb8acea-113c-4010-ad88-68322b994e03.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044946_5558095c-ab93-4306-b4b9-4978008ca342.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044943_b16c6e1d-6555-4479-ab2e-3a295424f7ae.png",
+        "nota": "macro do holografico"
+      }
+    ]
+  },
+  "speed-wrapping-ema-001-matt-white-spwema001": {
+    "mensagem": "feat(ema-001): Ferrari Purosangue + capa fosco Matt White\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #E9E9E9 (branco neutro). Alvo #ECEDEB. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Ferrari Purosangue on gloss black wheels",
+      "carro_cor": "1. HUE: a clean neutral white, hex #ECEDEB - pure white, not cream, not blue. 2. CHROMA: none. 3. BRIGHTNESS: very bright, about 92 percent on the lit panels, a soft light grey of about 70 percent in shadow.",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; light falls off softly across the panels like on suede. The black trim and the glass stay glossy.",
+      "carro_cenario": "the dark grey brutalist concrete plaza of Boston City Hall, bare concrete and brick paving; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044943_d1422ea6-777f-46d6-a6f4-d46472b73ce1.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari Purosangue envelopado em Speed Wrapping EMA 001 Matt White",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-001-matt-white-spwema001.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041032_7a67f80a-f8ac-449d-a8cc-3e77d1ec0e1c.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044946_7cb8247a-6064-40f1-af07-9daa3342cbc3.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044950_d2fecae1-d428-4f69-a88d-4a833db75d51.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044951_a86342bc-cfcf-4932-a612-948a3220c28a.png",
+        "nota": "macro do fosco"
+      }
+    ]
+  },
+  "speed-wrapping-ema-002-matt-black-spwema002": {
+    "mensagem": "feat(ema-002): Aston Martin Rapide + capa fosco Matt Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #050505 (preto neutro). Alvo #1B1B1C. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Aston Martin Rapide on gloss black ten-spoke wheels",
+      "carro_cor": "1. HUE: a deep neutral black, hex #1B1B1C. 2. CHROMA: none. 3. BRIGHTNESS: very dark: about 14 percent soft charcoal on the panels facing the sky, pure black in shadow.",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; light falls off softly across the panels like on suede. The black trim and the glass stay glossy.",
+      "carro_cenario": "the pale limestone road below the cliffs of the Valley of the Kings near Luxor, Egypt, pale sand; no plants, no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044946_eb1676d0-9729-4415-997f-f3a50a9cf05a.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Aston Martin Rapide envelopado em Speed Wrapping EMA 002 Matt Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-002-matt-black-spwema002.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041037_86817979-71b0-4673-9476-28c415f77081.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044946_785b1027-4655-4d54-a17b-843bdf91f64a.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044943_88778c08-d9a4-4a01-9a1e-513e8653cd60.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044944_2fe66245-e1fe-4618-952b-5c47c98242aa.png",
+        "nota": "macro do fosco"
+      }
+    ]
+  },
+  "speed-wrapping-ema-016-matt-gray-spwema016": {
+    "mensagem": "feat(ema-016): Kia EV6 GT + capa fosco Matt Gray\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #58523D (oliva = vies da Speed nos cinzas); na Speed e mais claro que o EMA-017 (#7A8892 no cartao). Alvo #9C9E9F. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Kia EV6 GT on black wheels",
+      "carro_cor": "1. HUE: a neutral medium-light grey, hex #9C9E9F - a pure grey, not olive, not khaki, not blue. 2. CHROMA: none. 3. BRIGHTNESS: medium-light, about 62 percent; light grey on the lit panels, a medium grey in shadow.",
+      "carro_acabamento": "true MATTE: flat dead-matte like matte rubberised paint; NO clear coat, NO gloss, NO reflections, NO satin sheen band; light falls off softly across the panels like on suede. The black trim and the glass stay glossy.",
+      "carro_cenario": "the golden sandstone lanes of Jaisalmer Fort, India, carved stone facades, only a strip of sky; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044947_964dd4e6-3086-45c9-acb9-c7733f8f4fba.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Kia EV6 GT envelopado em Speed Wrapping EMA 016 Matt Gray",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ema-016-matt-gray-spwema016.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041033_d46cb144-68a9-4441-b8f1-38db64584590.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044949_241f4d5c-21be-4b7d-bbd5-f79ddf443d31.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044947_714ef19a-fcf4-4a9a-8dbe-e98d34fca761.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044945_f90cfb9a-db7b-495b-9138-d3976f3dd31e.png",
+        "nota": "macro do fosco"
+      }
+    ]
+  },
+  "speed-wrapping-emg-016-satin-metallic-glossy-seablue-pet-spwemg016": {
+    "mensagem": "feat(emg-016): Ferrari 550 Maranello + capa metalico acetinado brilho Satin Metallic Glossy Seablue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #1588AD (H195); EMG-015: cartao = Speed +19 graus; par EMT-017 Sea Blue = H204 S64. Alvo #2A84C6. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Ferrari 550 Maranello on silver five-spoke wheels",
+      "carro_cor": "1. HUE: an ocean sea blue, hex #2A84C6 (hue about 206) - between azure and cobalt, bluer and softer than a vivid cyan, not teal, not navy. 2. CHROMA: high, about 78 percent. 3. BRIGHTNESS: about 76 percent; glowing sky-azure in the highlights, a deep ocean blue of about 40 percent in shadow.",
+      "carro_acabamento": "high-gloss metallic with a fine sparkling flake: a wet clear coat over a dense, silky metallic pigment; the flake glitters finely inside the highlights, never coarse glitter. Strong flop. Large soft-edged reflections, not a detailed mirror image.",
+      "carro_cenario": "the cream limestone square in front of the Palais des Papes in Avignon, stone paving, only a strip of sky; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044946_e76ad2c6-972b-4044-a3a3-0e96f3ca38c1.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari 550 Maranello envelopado em Speed Wrapping EMG 016 Satin Metallic Glossy Seablue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emg-016-satin-metallic-glossy-seablue-pet-spwemg016.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041034_3bb7b7a1-1033-4a6d-9af9-667af778faf5.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044951_9c0b9905-c08b-4ff7-8231-2e5cdce5553f.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044947_3876e083-6b84-45f9-bfe0-76d9c46f64ef.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044949_5e5d8544-b673-40c0-9476-0ee927969245.png",
+        "nota": "macro do metalico"
+      }
+    ]
+  },
+  "speed-wrapping-emt-021-satin-metallic-matt-matt-gunsmoke-grey-spwemt021": {
+    "mensagem": "feat(emt-021): Mercedes-AMG E 63 S Estate (S213) + capa metalico acetinado fosco Satin Metallic Matt Gunsmoke Grey\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed #373A31 (oliva = vies); EMT-005/006: cartao = Speed +16..+18 de brilho, neutro. Alvo #5D5F5B. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Mercedes-AMG E 63 S Estate (S213) on black multi-spoke wheels",
+      "carro_cor": "1. HUE: a dark gunsmoke grey, hex #5D5F5B - a gunmetal grey with the faintest warm-olive undertone, almost neutral. 2. CHROMA: very low, about 4 percent. 3. BRIGHTNESS: dark, about 37 percent; the satin sheen lifts it to a silvery grey of about 70 percent, about 20 percent in shadow.",
+      "carro_acabamento": "satin metallic, halfway between gloss and matte, like brushed titanium or satin silk: clearly lustrous, not dead flat matte; on every curve the light gathers into a broad, soft-edged, glowing satin sheen band that rolls off smoothly into the darker tone; never a sharp mirror reflection. A fine metallic flake gives a silky shimmer inside the sheen. The black trim and the glass stay glossy.",
+      "carro_cenario": "the pale concrete viewpoint at the Oresund bridge near Malmo, grey sea, the cable-stayed bridge far behind; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044948_95520864-4c06-4cfe-8267-1acd3ec37d4d.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Mercedes-AMG E 63 S Estate (S213) envelopado em Speed Wrapping EMT 021 Satin Metallic Matt Gunsmoke Grey",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emt-021-satin-metallic-matt-matt-gunsmoke-grey-spwemt021.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041035_49ecfdb2-97a8-47f5-b951-9b4060f6b261.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044952_6a435130-1c48-454d-818e-555e4de6ffc0.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044951_bb54a2a2-9871-4700-a1fc-7f688b6bbf01.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044945_fc2509dd-c21a-48df-a116-40b6115ee4ea.png",
+        "nota": "macro do acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-emt-026-satin-ceramic-black-pet-spwemt026": {
+    "mensagem": "feat(emt-026): Bentley Mulsanne + capa acetinado ceramico Satin Ceramic Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: imagem oficial da Speed (speedwrapping.com.br) calibrada contra 27 irmas com cartao (cinza sai oliva na Speed; azul puxa ~20 graus para o verde; roxo metalico mais magenta). Detalhe: Speed (EMT-023 no site deles) #141414 com micro brilho prata na faixa; irma EMT-002 preto acetinado. Alvo #1B1B1C. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Bentley Mulsanne on dark grey wheels",
+      "carro_cor": "1. HUE: a deep black, hex #1B1B1C. 2. CHROMA: none. 3. BRIGHTNESS: very dark; the satin sheen reads as a soft graphite band of about 45 percent with a very fine silver micro-sparkle.",
+      "carro_acabamento": "satin ceramic black, halfway between gloss and matte: a smooth, silky satin surface like satin ceramic; on every curve the light gathers into a broad, soft graphite-grey sheen band that rolls off smoothly into deep black, and inside the sheen an extremely fine silver micro-sparkle, like ceramic glaze dust; never a sharp mirror reflection, never dead flat. The black trim and the glass stay glossy.",
+      "carro_cenario": "the white stone forecourt of the Louvre Abu Dhabi beneath its silver lattice dome; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044942_af78ac2a-543a-48a6-8131-ec88c1ea6253.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Bentley Mulsanne envelopado em Speed Wrapping EMT 026 Satin Ceramic Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emt-026-satin-ceramic-black-pet-spwemt026.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041036_eac7f460-bad9-4b06-89d0-6d9949d16202.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044936_fee24591-1eb4-4188-970a-62da2ee36f34.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044940_d6258c34-d364-4d04-9040-962163f65321.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044939_43304713-15c4-48b8-bf80-2e1b54801d1f.png",
+        "nota": "macro do acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-egf-007-frosted-black-pet-spwegf007": {
+    "mensagem": "feat(egf-007): Ford Mustang Shelby GT500 (2020) + capa carbono Matte Forged Carbon Silver\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: pesquisa (nao ha pagina da cor no site da Speed) e irmas aprovadas da linha. Detalhe: NZERP: MATTE FORGED CARBON SILVER (a loja diz \"Frosted Black\" - nome errado); = EGF-006 forjado prata em versao fosca, como EGF-012 -> EGF-013. Alvo -. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 com o piloto (carbono). Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Ford Mustang Shelby GT500 (2020) in gloss Race Red",
+      "carro_cor": "a forged carbon pattern of irregular chopped flakes in silver-grey, graphite and black, the pale silver flakes catching the light",
+      "carro_acabamento": "CARBON",
+      "carro_cenario": "a pale concrete rooftop terrace in Milan, city buildings out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044940_25bd6de9-9932-4308-b23f-7bdda899785b.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ford Mustang Shelby GT500 (2020) envelopado em Speed Wrapping EGF 007 Matte Forged Carbon Silver",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-007-frosted-black-pet-spwegf007.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041034_68d8a7c2-64d8-413e-91e1-359472ecba94.png",
+        "nota": "capo (aplicacao parcial)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044942_9f8d0328-7321-426f-9217-7c7e98808b09.png",
+        "nota": "retrovisor e borda do teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_045309_35297e70-74c2-4d41-a7b5-6c3511618b8f.png",
+        "nota": "teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044937_7b167bff-a97e-4d56-b8cf-50110358247d.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "nz-egf-019-simulation-carbon-fiber-silver-pet-spwegf019": {
+    "mensagem": "feat(egf-019): Volkswagen Scirocco R + capa carbono Simulation Carbon Fiber Silver\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: pesquisa (nao ha pagina da cor no site da Speed) e irmas aprovadas da linha. Detalhe: NZERP: SIMULATION CARBON FIBER SILVER (produto oculto na loja); tecido 2x2 em prata, como o EGF-005 aprovado. Alvo -. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 com o piloto (carbono). Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Volkswagen Scirocco R in gloss black",
+      "carro_cor": "a woven carbon-fibre pattern: a fine 2x2 twill weave of metallic silver-grey and dark graphite strands, the silver strands catching the light",
+      "carro_acabamento": "CARBON",
+      "carro_cenario": "a quiet cobbled street in Ghent, brick facades out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044937_40289ba2-56d8-4add-9625-0d081f411569.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Volkswagen Scirocco R envelopado em Speed Wrapping EGF 019 Simulation Carbon Fiber Silver",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/nz-egf-019-simulation-carbon-fiber-silver-pet-spwegf019.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041033_62fbfab1-317c-40d8-a195-9fa7bb917c42.png",
+        "nota": "capo (aplicacao parcial)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044936_e4ba96d4-fe65-411e-a6b4-fca0128b63da.png",
+        "nota": "retrovisor e borda do teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044953_3cedfeb4-0ff7-4537-ad33-c945d1e9ebcf.png",
+        "nota": "teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044937_93dc5715-6841-4831-ae0c-549a361ce32e.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "nz-egf-021-frosted-black-pet-spwegf021": {
+    "mensagem": "feat(egf-021): BMW X5 M Competition (F95) + capa preto fosco frosted Frosted Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: pesquisa (nao ha pagina da cor no site da Speed) e irmas aprovadas da linha. Detalhe: NZERP: FROSTED BLACK PET (oculto na loja); pesquisa: preto fosco de grao fino, micro brilho (PET Frosted Black). Alvo #1E1F21. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "BMW X5 M Competition (F95) on black wheels",
+      "carro_cor": "1. HUE: a deep neutral black, hex #1E1F21. 2. CHROMA: none. 3. BRIGHTNESS: very dark: about 16 percent deep charcoal on the lit panels, with the frosted grain visible, pure black in shadow.",
+      "carro_acabamento": "frosted matte black: a flat matte film with a fine frosted grain, like finely sandblasted metal; NO clear coat, NO gloss and no reflections; where the light falls, the grain shows a very faint, very fine silvery micro-sparkle, so lit panels read a deep charcoal-black with a velvety frosted texture and the shadows a pure black. The black trim and the glass stay glossy.",
+      "carro_cenario": "a cleared mountain road at Courchevel, white snow banks, grey peaks; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044942_b7564948-1637-4db5-b988-46b95cf9c97b.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "BMW X5 M Competition (F95) envelopado em Speed Wrapping EGF 021 Frosted Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/nz-egf-021-frosted-black-pet-spwegf021.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041014_1276b325-4fbe-4001-8a5d-de9aedc34a90.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044941_2c93108f-b522-4561-a7a5-efa8563859d8.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044941_13da118e-4656-47be-a7ac-cc6785ab29f5.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044936_6d0b0961-88e5-43b1-bb79-9657f67e1003.png",
+        "nota": "macro do grao frosted"
+      }
+    ]
+  },
+  "speed-wrapping-ebp-002-gloss-black-sunroof-18c-spwebp002": {
+    "mensagem": "feat(ebp-002): Tesla Model Y + capa teto Gloss Black Sunroof 18C\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: pesquisa (nao ha pagina da cor no site da Speed) e irmas aprovadas da linha. Detalhe: = EBP-001 (12C) aprovado; 18C e outra espessura, visual igual. Alvo -. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Tesla Model Y in white",
+      "carro_cor": "a deep piano gloss black vinyl film - a wet, mirror-like high gloss with sharp reflections of the sky and the clouds",
+      "carro_acabamento": "ROOF",
+      "carro_cenario": "a clifftop car park above the ochre sea stacks of Ponta da Piedade, Algarve, turquoise sea; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044941_1011143b-3fde-45ab-bcc6-1b2914f97ded.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Tesla Model Y envelopado em Speed Wrapping EBP 002 Gloss Black Sunroof 18C",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ebp-002-gloss-black-sunroof-18c-spwebp002.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041014_e6c4e332-93cb-46e1-a837-c0ccd7132c53.png",
+        "nota": "frente 3/4 de cima (so o teto envelopado)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044939_4d89f726-a416-4345-a6c0-2ac7cf8a1e4f.png",
+        "nota": "traseira 3/4 de cima"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044944_757f17e4-9d31-4242-a975-18582773752c.png",
+        "nota": "lateral de cima"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044941_957bda4c-0fae-4bf4-9f85-ed85cc33f538.png",
+        "nota": "close do teto"
+      }
+    ]
+  },
+  "speed-wrapping-ebp-003-matte-black-pet-spwebp003": {
+    "mensagem": "feat(ebp-003): Volvo XC90 + capa teto Matte Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "SEM amostra no Drive: engenharia reversa (lote 12, 03/10). Fonte: pesquisa (nao ha pagina da cor no site da Speed) e irmas aprovadas da linha. Detalhe: NZERP: MATTE BLACK PET (linha de teto); preto fosco. Alvo -. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 e capa com o piloto aprovado como referencia. Capa c1 so texto. Sem correcao de cor (sem leitura de cartao).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 brilho | + piloto no carbono]",
+      "carro": "Volvo XC90 in white",
+      "carro_cor": "a MATTE black vinyl film - flat, no clear coat, no gloss and no reflections, a soft charcoal where the sky lights it, clearly matte next to the glossy white paint and the glass",
+      "carro_acabamento": "ROOF",
+      "carro_cenario": "the gravel parking area of an alpine hut in the Tyrol, grey peaks behind; no other vehicles, no people"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044940_7cab2dca-d9c9-490e-a199-5fdf7d909b4f.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Volvo XC90 envelopado em Speed Wrapping EBP 003 Matte Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ebp-003-matte-black-pet-spwebp003.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_041013_cc65e35f-c25a-461c-80a1-8f8638885e92.png",
+        "nota": "frente 3/4 de cima (so o teto envelopado)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044939_8fada1f1-8080-4166-bc8e-7908391c5815.png",
+        "nota": "traseira 3/4 de cima"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044936_34036857-668c-4f57-89ee-0994a83e3ebc.png",
+        "nota": "lateral de cima"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_044943_95a090f0-cb83-432c-901e-1c66385c5e74.png",
+        "nota": "close do teto"
+      }
+    ]
+  },
   "speed-wrapping-ecc-001-chameleon-chrome-silver-spwecc001": {
     "mensagem": "feat(ecc-001): Lamborghini Sesto Elemento + capa camaleao espelhado Chameleon Chrome Silver\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "nota_cor": "Amostra do catalogo fisico (ECC 001 CHAMELEON CHROME SILVER). Lote 11 (40 cores, 03/10): cromo espelhado camaleão (espelho + virada de cor iridescente). Leitura do cartao: espelho iridescente: base água-turquesa claro com rosa, violeta e dourado nas curvas. Piloto C aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",

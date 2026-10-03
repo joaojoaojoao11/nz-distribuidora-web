@@ -18,11 +18,10 @@ falta ir para o site — `FALTA 56% · ESG - SUPER GLOSS` (linha completa: `✅ 
 número sai de `node scripts/painel-cores.mjs` (total = pastas de cor no Drive; feita = página da
 loja com capa + fotos de carro, 3+ mídias em `produto_midia`), que também alimenta o painel
 **"Painel Cores Speed"** (https://claude.ai/artifact/7HSvVJWFgpHP4hrrCMt7hs). Em 03/10, depois do
-lote 11: **259 cores, 231 no site, 28 faltam (11%)**; linhas **completas: ESG, ECG, EFG, EGH, EOX, ERW, ECC, EMR e EHM**. As 28 que faltam não têm foto do cartão (lista para a equipe: `NZ-AGENTES/CLEDNA/relatorios/2026-10-02_FOTOS_FALTANTES_SPEED.pdf`). Lotes de **10 cores** a
+lote 12: **246 cores, 246 no site (100%)** — todas as linhas completas. Saíram da conta, por decisão do João (03/10): a **linha EGB** (7 cores, inativa no NZERP e oculta na loja) e **6 pastas sem nome nem produto** (EDG-022, 028, 029, EGF-008, 016, 020); o `painel-cores.mjs` ignora as duas listas (`LINHAS_FORA`, `CORES_FORA`). As 15 do lote 12 não tinham foto do cartão: foram feitas por engenharia reversa (ver lição em `FOTOS_DE_COR_AUTOMOTIVA.md`); se a equipe fotografar o cartão, conferir contra as fotos no ar. Lotes de **10 cores** a
 partir do lote 8; o lote 8 testou 20 e o lote 9 fez de uma vez as 65 que tinham amostra no Drive. As 132
 que faltam não têm foto do cartão no Drive (cromos, flips, candy, carbono EGF, EGB, EBP e o resto das EDG/EMA/EMG/EMT).
-Seis pastas do Drive não têm produto no site (EDG-022, 028, 029, EGF-008, 016, 020): cadastrar no
-NZERP quando entrarem num lote.
+As seis pastas do Drive sem produto (EDG-022, 028, 029, EGF-008, 016, 020) ficam fora da conta (João, 03/10).
 
 ## Em andamento
 
@@ -252,6 +251,21 @@ NZERP quando entrarem num lote.
 | EGF-004 | MATTE CARBON BLACK PET | ✅ 02/10 | ✅ 03/10 — à mão: carbono forjado FOSCO preto: lascas grafite sobre preto, sem verniz | ✅ 03/10 — **B** aprovado (lote 11) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 11) |
 | EGF-005 | CARBON GLOSS 3D | ✅ 02/10 | ✅ 03/10 — à mão: carbono 3D trançado clássico (twill) preto brilho | ✅ 03/10 — **B** aprovado (lote 11) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 11) |
 | EBP-001 | GLOSS BLACK SUNROOF 12C | ✅ 02/10 | ✅ 03/10 — à mão: preto brilho profundo (filme de teto, efeito teto panorâmico) | ✅ 03/10 — **A** aprovado (lote 11) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 11) |
+| ECH-007 | CHROME MATTE BLUE | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #3550C8: Speed #263FBB (H230); irmas ECH: imagem Speed -> receita aprovada ~ -15 de croma, brilho igual | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EDG-017 | METAL MIDNIGTH PLURPLE | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #3A1666: Speed #49006B (H281, S100); EDG-008/009: cartao = Speed -15 graus, -7 a -23 de croma, -8 de brilho | ✅ 03/10 — **B** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EGL-006 | CHROME GLOSS PURPLE | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #6A0F94: Speed #580770 (H286); EGL-003/004/005/011: meio = Speed -5 graus, brilho ~58 no painel | ✅ 03/10 — **B** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| ELS-007 | LASER CHROME GREEN PET | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #0C6A2A: Speed #07490C base + lupa verde-ciano; ELS: cartao ~ Speed -10 graus | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EMA-001 | MATT WHITE | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #ECEDEB: Speed #E9E9E9 (branco neutro) | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EMA-002 | MATT BLACK | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #1B1B1C: Speed #050505 (preto neutro) | ✅ 03/10 — **B** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EMA-016 | MATT GRAY | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #9C9E9F: Speed #58523D (oliva = vies da Speed nos cinzas); na Speed e mais claro que o EMA-017 (#7A8892 no cartao) | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EMG-016 | SATIN METALLIC GLOSSY SEABLUE PET | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #2A84C6: Speed #1588AD (H195); EMG-015: cartao = Speed +19 graus; par EMT-017 Sea Blue = H204 S64 | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EMT-021 | SATIN METALLIC MATT MATT GUNSMOKE GREY | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #5D5F5B: Speed #373A31 (oliva = vies); EMT-005/006: cartao = Speed +16..+18 de brilho, neutro | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EMT-026 | SATIN CERAMIC BLACK PET | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #1B1B1C: Speed (EMT-023 no site deles) #141414 com micro brilho prata na faixa; irma EMT-002 preto acetinado | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EGF-007 | MATTE FORGED CARBON SILVER PET | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo —: NZERP: MATTE FORGED CARBON SILVER (a loja diz "Frosted Black" - nome errado); = EGF-006 forjado prata em versao fosca, como EGF-012 -> EGF-013 | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EGF-019 | SIMULATION CARBON FIBER SILVER PET | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo —: NZERP: SIMULATION CARBON FIBER SILVER (produto oculto na loja); tecido 2x2 em prata, como o EGF-005 aprovado | ✅ 03/10 — **B** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EGF-021 | FROSTED BLACK PET | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo #1E1F21: NZERP: FROSTED BLACK PET (oculto na loja); pesquisa: preto fosco de grao fino, micro brilho (PET Frosted Black) | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EBP-002 | GLOSS BLACK SUNROOF 18C | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo —: = EBP-001 (12C) aprovado; 18C e outra espessura, visual igual | ✅ 03/10 — **A** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
+| EBP-003 | MATTE BLACK PET | — sem amostra (engenharia reversa) | ✅ 03/10 — alvo —: NZERP: MATTE BLACK PET (linha de teto); preto fosco | ✅ 03/10 — **B** aprovado (lote 12) | ✅ 03/10 — fotos com o piloto como referência; capa 1 | ✅ 03/10 — publicada (lote 12) |
 
 **Cadastradas no NZERP em 01/10** (eram as "fora do NZERP" com amostra no Drive): nome lido no rótulo do
 cartão; fiscal, custo, preço da Engenharia e medidas copiados do irmão de linha; criadas no Tiny pela
@@ -286,6 +300,8 @@ EDG-021 41 · EDG-027 8,7 · EMT-025 26. EDG-016 (prata): o `ler-amostra.py` nã
 neutra — ajustar antes de ler.
 
 ## Concluídas (fotos de carro + capa nova no ar)
+
+Lote 12 (03/10) — **15 cores SEM amostra no Drive**, por engenharia reversa: ECH-007, EDG-017, EGL-006, ELS-007, EMA-001/002/016, EMG-016, EMT-021/026 (imagem oficial da Speed, calibrada contra 27 irmãs que têm cartão), EGF-007/019/021 e EBP-002/003 (pesquisa + irmãs aprovadas). 30 pilotos, nenhum refeito; o João escolheu A/B só na EMA-016 e EMT-021 (cores com mais dúvida) e aprovou o resto. Fotos 3/4/5 e UMA capa por cor com o piloto como referência. Loja: nome do SPWEGF007 corrigido ("Frosted Black" → "Matte Forged Carbon Silver", slug mantido); EGF-019 e EGF-021 saíram da ocultação; linha EGB oculta (`oculto_manual`). EDG-017 e EDG-027 têm o mesmo nome (Midnight Purple): pela Speed a 017 é violeta saturado, a 027 (cartão) é roxo acinzentado — fotos diferentes de propósito.
 
 Lote 11 (03/10) — **40 cores**: ECC Chameleon Chrome (11), EMR Chrome Mirror (11), ELS Laser Chrome (6), EHM-007 a 012 (fecha a linha), EGF-001 a 005 (carbono, aplicação parcial com o recorte do cartão como referência de textura) e EBP-001 (preto brilho só no teto). Teste de receita por família antes; 9 pilotos refeitos ANTES de mostrar ao João (conferência contra o cartão). Fotos 3/4/5 com o piloto aprovado como referência; no carbono também o recorte do cartão. Nomes que não batem com o cartão: ECC-002 "Chrome Green" é vermelho-cobre e ECC-003 "Chrome Blue" é verde — fotos pelo cartão.
 

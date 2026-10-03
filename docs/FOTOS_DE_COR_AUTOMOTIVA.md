@@ -324,6 +324,21 @@ confiável:
 | EGF-004 Matte Carbon Black | carbono forjado FOSCO preto: lascas grafite sobre preto, sem verniz (carbono — aplicação parcial, fotos de perto, textura do cartão como referência) | — | sem correção |
 | EGF-005 Carbon Gloss 3D | carbono 3D trançado clássico (twill) preto brilho (carbono — aplicação parcial, fotos de perto, textura do cartão como referência) | — | sem correção |
 | EBP-001 Gloss Black Sunroof 12C | preto brilho profundo (filme de teto, efeito teto panorâmico) (preto brilho para teto — aplicação parcial no teto) | — | sem correção |
+| ECH-007 Chrome Matte Blue | sem amostra — alvo #3550C8 (cromo fosco; engenharia reversa) | — | sem correção |
+| EDG-017 Metal Midnight Purple | sem amostra — alvo #3A1666 (metalico; engenharia reversa) | — | sem correção |
+| EGL-006 Chrome Gloss Purple | sem amostra — alvo #6A0F94 (candy gloss metalico; engenharia reversa) | — | sem correção |
+| ELS-007 Laser Chrome Green | sem amostra — alvo #0C6A2A (cromo laser holografico; engenharia reversa) | — | sem correção |
+| EMA-001 Matt White | sem amostra — alvo #ECEDEB (fosco; engenharia reversa) | — | sem correção |
+| EMA-002 Matt Black | sem amostra — alvo #1B1B1C (fosco; engenharia reversa) | — | sem correção |
+| EMA-016 Matt Gray | sem amostra — alvo #9C9E9F (fosco; engenharia reversa) | — | sem correção |
+| EMG-016 Satin Metallic Glossy Seablue | sem amostra — alvo #2A84C6 (metalico acetinado brilho; engenharia reversa) | — | sem correção |
+| EMT-021 Satin Metallic Matt Gunsmoke Grey | sem amostra — alvo #5D5F5B (metalico acetinado fosco; engenharia reversa) | — | sem correção |
+| EMT-026 Satin Ceramic Black | sem amostra — alvo #1B1B1C (acetinado ceramico; engenharia reversa) | — | sem correção |
+| EGF-007 Matte Forged Carbon Silver | sem amostra — alvo — (carbono; engenharia reversa) | — | sem correção |
+| EGF-019 Simulation Carbon Fiber Silver | sem amostra — alvo — (carbono; engenharia reversa) | — | sem correção |
+| EGF-021 Frosted Black | sem amostra — alvo #1E1F21 (preto fosco frosted; engenharia reversa) | — | sem correção |
+| EBP-002 Gloss Black Sunroof 18C | sem amostra — alvo — (teto; engenharia reversa) | — | sem correção |
+| EBP-003 Matte Black | sem amostra — alvo — (teto; engenharia reversa) | — | sem correção |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -787,6 +802,28 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 (fosca ou brilhante?) do **flake das lascas** (metálico ou liso?) e escrever as duas coisas no prompt;
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
+
+### Engenharia reversa: cor sem amostra no Drive (lote 12, 03/10)
+
+15 cores sem foto do cartão. Nada de chutar pelo nome — o caminho que funcionou (0 pilotos refeitos):
+
+- **Fonte:** o site da Speed (`speedwrapping.com.br/<codigo>-<nome>/`) tem imagem do filme e ficha técnica de
+  quase toda cor; o sitemap `wp-sitemap-posts-page-1.xml` lista as 300 páginas (pedir com `Accept: text/html`,
+  senão o Mod_Security responde 406). Sem página (EGF novas, EBP, EGB): pesquisa do nome + irmãs aprovadas.
+- **A imagem da Speed NÃO é a cor — calibrar.** Medido em 27 irmãs que têm cartão E imagem Speed (`calib12.py`):
+  todo **cinza** sai **oliva** na Speed (EMA-017 azulado #7A8892 → Speed #363829; EMT-005/006 idem); **ciano/azul**
+  sai ~20° mais **verde** (EMG-015, EMG-017, EMA-008); **roxo metálico** sai ~15° mais magenta e mais saturado (EDG-008/009).
+  Por isso a EMA-016 "Matt Gray" e a EMT-021 "Gunsmoke" (oliva na Speed) foram feitas cinza, e a EMG-016 Seablue azul-oceano.
+- **Mesmo nome entre linhas = mesma cor.** Os pares EMG/EMT confirmam (Mist Blue H222/H217); a EMG-016 Seablue seguiu a
+  EMT-017 Sea Blue (cartão H204). Linha "irmã" de acabamento: EGF-007 (forjado prata fosco) = EGF-006 com o fosco da EGF-013,
+  como EGF-012 → 013; no NZERP a EGF-013 foi copiada da EGF-007.
+- **Cor incerta → 2 variantes de cor no piloto** (EMA-016 e EMT-021: A neutra, B alternativa) e o João escolhe. Nas outras,
+  A e B são a mesma receita.
+- **Piloto aprovado como referência de padrão no carbono sem recorte do cartão:** EGF-007 com o piloto da EGF-006 (+ EGF-013 para o fosco);
+  EGF-019 (tecido prata) saiu melhor só com texto (com a EGF-005 de referência virou carbono preto comum).
+- **Uma capa por cor** (só texto; no carbono, com o piloto): no lote 11 o João escolheu a c1 em 39 de 40 — economiza 3,5 créditos por cor.
+- Conferir a loja antes: nome errado no site (SPWEGF007 "Frosted Black" × NZERP "Matte Forged Carbon Silver") e produto oculto
+  (EGF-019/021 com `oculto_manual`). A loja só mostra `publicado AND NOT oculto_manual AND erp_produtos.ativo`.
 
 ### Cromo espelho, laser, camaleão e carbono (lote 11, 03/10)
 
@@ -1305,6 +1342,21 @@ marca d'água, sem adesivo de patrocínio.
 | EGF-004 Matte Carbon Black | Toyota GR Corolla | estrada no deserto de Nevada, desfocado |
 | EGF-005 Carbon Gloss 3D | Audi RS4 Avant | estrada de montanha nos Pirineus, desfocado |
 | EBP-001 Gloss Black Sunroof 12C | Porsche Macan Electric | estrada costeira em Sintra (Portugal), desfocado |
+| ECH-007 Chrome Matte Blue | McLaren GT | colunata de travertino do EUR, Roma |
+| EDG-017 Metal Midnight Purple | Nissan Silvia S15 | terraços de travertino do Getty Center, Los Angeles |
+| EGL-006 Chrome Gloss Purple | Plymouth Hemi 'Cuda (1970) | beira da Rota 66 em Amboy, deserto |
+| ELS-007 Laser Chrome Green | Dodge Viper GTS (1996, second generation) | Col de la Bonette (Alpes), céu com nuvens |
+| EMA-001 Matt White | Ferrari Purosangue | praça de concreto da prefeitura de Boston |
+| EMA-002 Matt Black | Aston Martin Rapide | Vale dos Reis, Luxor, calcário claro |
+| EMA-016 Matt Gray | Kia EV6 GT | vielas de arenito dourado de Jaisalmer |
+| EMG-016 Satin Metallic Glossy Seablue | Ferrari 550 Maranello | praça do Palácio dos Papas, Avignon |
+| EMT-021 Satin Metallic Matt Gunsmoke Grey | Mercedes-AMG E 63 S Estate (S213) | mirante da ponte de Öresund, Malmö |
+| EMT-026 Satin Ceramic Black | Bentley Mulsanne | pátio do Louvre Abu Dhabi |
+| EGF-007 Matte Forged Carbon Silver | Ford Mustang Shelby GT500 (2020) | terraço em Milão, desfocado |
+| EGF-019 Simulation Carbon Fiber Silver | Volkswagen Scirocco R | rua de Gante, desfocada |
+| EGF-021 Frosted Black | BMW X5 M Competition (F95) | estrada com neve em Courchevel |
+| EBP-002 Gloss Black Sunroof 18C | Tesla Model Y | falésias da Ponta da Piedade, Algarve |
+| EBP-003 Matte Black | Volvo XC90 | cabana alpina no Tirol |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
