@@ -179,7 +179,7 @@ export default function Navbar() {
               </Link>
               <span className={styles.dropdownDivider} aria-hidden="true" />
               <Link to="/wrap/motos" className={styles.dropdownTextItem} onClick={closeMenu}>
-                AÇÃO MOTO
+                AÇÃO ENVELOPAMENTO DE MOTO
               </Link>
             </div>
           </div>

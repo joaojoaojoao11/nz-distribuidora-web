@@ -26,8 +26,8 @@ export default function AcaoMotos() {
   return (
     <main className={styles.page}>
       <SEO
-        title="Ação Moto — Envelopamento de Moto com Metragem Fracionada"
-        description={`Cores de envelopamento em metragem fracionada para tanque, carenagens e paralamas: ${CORES_MOTO.length} cores com fotos em moto, Speed Wrapping, Oracal 670RA e Metamark MCX.`}
+        title="Ação Envelopamento de Moto — Cores com Condição Especial"
+        description={`Ação envelopamento de moto: ${CORES_MOTO.length} cores com condição especial, material importado e 3 anos de garantia. Speed Wrapping, Oracal 670RA, SH e Metamark MCX.`}
         canonicalUrl={`${SITE_URL}/wrap/motos`}
         imageUrl={`${SITE_URL}${fotoMoto(HERO.slug, 1)}`}
       />
@@ -36,14 +36,14 @@ export default function AcaoMotos() {
         <img className={styles.heroImg} src={fotoMoto(HERO.slug, 1)} alt={`Moto envelopada com ${HERO.marca} ${HERO.codigo} ${HERO.cor}`} />
         <div className={styles.heroVeu} aria-hidden="true" />
         <div className={styles.heroTexto}>
-          <p className={styles.eyebrow}>Ação Moto · NZ</p>
-          <h1 className={styles.titulo}>Cor nova na sua moto, com a metragem certa.</h1>
+          <p className={styles.eyebrow}>Ação envelopamento de moto · NZ</p>
+          <h1 className={styles.titulo}>Mesma moto. Outra máquina.</h1>
           <p className={styles.sub}>
-            Separamos as cores que temos em metragem fracionada: pedaços prontos para tanque,
-            carenagens, rabeta e paralama. Você leva só o que a moto pede.
+            Envelopamento com cara de pintura de fábrica, sem mexer na pintura original. Material
+            importado, alta performance e 3 anos de garantia — e você leva só a metragem que a moto pede.
           </p>
           <div className={styles.ctas}>
-            <Link className={styles.ctaPrimario} to="/loja?promo=moto">Ver pedaços e preços na loja</Link>
+            <Link className={styles.ctaPrimario} to="/loja?promo=moto">Ver as cores na loja</Link>
             <a className={styles.ctaSecundario} href="#cores">Ver as {CORES_MOTO.length} cores</a>
             <a className={styles.ctaSecundario} href={SITE_WHATSAPP} target="_blank" rel="noopener noreferrer">
               Chamar no WhatsApp
@@ -72,7 +72,7 @@ export default function AcaoMotos() {
       <section id="cores" className={styles.secao} aria-labelledby="cores-titulo">
         <h2 id="cores-titulo" className={styles.secaoTitulo}>As cores da ação</h2>
         <p className={styles.nota}>
-          Metragem limitada ao que está separado: quando um pedaço sai, a cor pode sair da lista.
+          Condição especial enquanto durar a metragem separada para a ação.
         </p>
         <ul className={styles.grade}>
           {CORES_MOTO.map((c) => (
@@ -83,7 +83,7 @@ export default function AcaoMotos() {
 
       <section className={styles.final}>
         <h2 className={styles.secaoTitulo}>Escolheu a cor?</h2>
-        <p className={styles.sub}>Mande o modelo da moto e a cor. A gente separa o pedaço e envia.</p>
+        <p className={styles.sub}>Mande o modelo da moto e a cor. A gente separa a metragem e envia.</p>
         <a className={styles.ctaPrimario} href={SITE_WHATSAPP} target="_blank" rel="noopener noreferrer">
           Falar com a NZ no WhatsApp
         </a>

@@ -79,7 +79,7 @@ export default function Comprar({ slug, produto, preco, separador = true }: Prop
           </button>
           <button type="button" className={atual === 'metro' ? styles.unidadeAtiva : styles.unidade} aria-pressed={atual === 'metro'} onClick={() => setUnidade('metro')}>
             <span className={styles.unidadeNome}>Por metro</span>
-            <span className={styles.unidadeDetalhe}>{preco.metroCheio != null ? 'promoção moto' : 'cortado do rolo'}</span>
+            <span className={styles.unidadeDetalhe}>{preco.metroCheio != null ? 'ação moto' : 'cortado do rolo'}</span>
             <span className={styles.unidadePreco}>
               {/* Promoção Moto: a tabela riscada; o checkout cobra o preço de saída. */}
               {preco.metroCheio != null && <s className={styles.cheio}>{BRL.format(Number(preco.metroCheio))}</s>}

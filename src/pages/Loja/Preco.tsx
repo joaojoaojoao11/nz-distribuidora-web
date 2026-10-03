@@ -60,7 +60,7 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
     ) : (
       <div className={styles.bloco}>
         <div className={styles.linha}>
-          <span className={styles.rotulo}>Metro linear (fracionado) · promoção moto</span>
+          <span className={styles.rotulo}>Metro linear (fracionado) · ação moto</span>
           <span className={styles.valor}>
             {de && <s className={styles.cheio}>{de}</s>}
             {por}
@@ -154,7 +154,7 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
       )}
       {mostrarTabela && metro && (
         <div className={styles.linha}>
-          <span className={styles.rotulo}>Metro linear (fracionado){metroCheio ? ' · promoção' : ''}</span>
+          <span className={styles.rotulo}>Metro linear (fracionado){metroCheio ? ' · ação moto' : ''}</span>
           <span className={styles.valor}>
             {metroCheio && <s className={styles.cheio}>{metroCheio}</s>}
             {metro}

@@ -47,8 +47,8 @@ export const routeMeta: Record<string, RouteMeta> = {
     description: 'PPF de parabrisa com absorção de impacto, compatível com sensores e ADAS. 190μ e 2 anos de garantia. Proteção invisível para o vidro do seu carro.',
   },
   '/wrap/motos': {
-    title: 'Ação Moto — Envelopamento de Moto com Metragem Fracionada',
-    description: 'Cores de envelopamento em metragem fracionada para tanque, carenagens e paralamas, com fotos em moto. Speed Wrapping, Oracal 670RA e Metamark MCX na NZ Distribuidora.',
+    title: 'Ação Envelopamento de Moto — Cores com Condição Especial',
+    description: 'Ação envelopamento de moto da NZ: cores com condição especial, material importado e 3 anos de garantia. Speed Wrapping, Oracal 670RA, SH e Metamark MCX.',
   },
   '/wrap': {
     title: 'Adesivo Automotivo Premium | Catálogo de Envelopamento',

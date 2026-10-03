@@ -423,7 +423,7 @@ export default function Loja() {
             onClick={() => setPromoMoto(!promoMoto)}
           >
             <Motorbike size={18} strokeWidth={1.8} aria-hidden="true" />
-            Promoção moto
+            Ação envelopamento de moto
           </button>
         </div>
       </header>
@@ -711,20 +711,20 @@ export default function Loja() {
           {emPromo && (
             <div className={styles.promoFaixa}>
               <div className={styles.promoFaixaTexto}>
-                <h2 className={styles.promoTitulo}>Promoção envelopamento de moto</h2>
+                <h2 className={styles.promoTitulo}>Ação envelopamento de moto</h2>
                 <p className={styles.promoSub}>
                   {promo === undefined
-                    ? 'Carregando as cores com metragem fracionada…'
+                    ? 'Carregando as cores da ação…'
                     : promo === null
-                      ? 'Não consegui carregar a promoção agora. Tente de novo em instantes.'
-                      : `${catalogo.length} cores com metragem fracionada pronta para tanque, carenagens, rabeta e paralama. Preço por metro linear.`}
+                      ? 'Não consegui carregar a ação agora. Tente de novo em instantes.'
+                      : `${catalogo.length} cores selecionadas com condição especial no metro. Material importado, alta performance e 3 anos de garantia.`}
                 </p>
                 <p className={styles.promoGuia}>
                   Naked 2 a 3 m · Esportiva carenada 3 a 4 m · Big trail 3 a 4 m
                 </p>
               </div>
               <button type="button" className={styles.promoSair} onClick={() => setPromoMoto(false)}>
-                Sair da promoção ✕
+                Sair da ação ✕
               </button>
             </div>
           )}
@@ -737,7 +737,7 @@ export default function Loja() {
               </>
             ) : emPromo ? (
               <>
-                <strong>{results.length}</strong> {results.length === 1 ? 'cor na promoção' : 'cores na promoção'}
+                <strong>{results.length}</strong> {results.length === 1 ? 'cor na ação' : 'cores na ação'}
               </>
             ) : filtering || excluded.length > 0 ? (
               <>
@@ -794,9 +794,9 @@ export default function Loja() {
             <div className={styles.empty}>
               <p className={styles.emptyTitle}>
                 {emPromo && !promo
-                  ? 'Carregando a promoção…'
+                  ? 'Carregando a ação…'
                   : emPromo
-                    ? `Nenhuma cor da promoção${filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.`
+                    ? `Nenhuma cor da ação${filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.`
                     : `Nenhum produto encontrado${filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.`}
               </p>
               <p className={styles.emptyHint}>

@@ -35,7 +35,7 @@ export function buildNavItems(contagens: { shDecor: number; etherna: number }): 
         { label: 'MetaCast MCX', to: '/wrap/metamark-mcx' },
         { label: 'Oracal 970RA', to: '/wrap/oracal-970ra' },
         { label: 'Oracal 670RA', to: '/wrap/oracal-670ra' },
-        { label: 'Ação Moto', to: '/wrap/motos' },
+        { label: 'Ação envelopamento de moto', to: '/wrap/motos' },
       ],
     },
     {
