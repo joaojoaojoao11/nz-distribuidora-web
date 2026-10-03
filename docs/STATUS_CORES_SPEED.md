@@ -17,8 +17,8 @@ pasta · `✅ ` = fotos e capa 100% no site. Ex.: `✅ EDG-020 LIQUID METAL RUBY
 falta ir para o site — `FALTA 56% · ESG - SUPER GLOSS` (linha completa: `✅ COMPLETA · …`). O
 número sai de `node scripts/painel-cores.mjs` (total = pastas de cor no Drive; feita = página da
 loja com capa + fotos de carro, 3+ mídias em `produto_midia`), que também alimenta o painel
-**"Painel Cores Speed"** (https://claude.ai/artifact/7HSvVJWFgpHP4hrrCMt7hs). Em 02/10, depois do
-lote 10: **259 cores, 191 no site, 68 faltam (26%)**; linhas **completas: ESG, ECG, EFG, EGH, EOX e ERW**. Lotes de **10 cores** a
+**"Painel Cores Speed"** (https://claude.ai/artifact/7HSvVJWFgpHP4hrrCMt7hs). Em 03/10, depois do
+lote 11: **259 cores, 231 no site, 28 faltam (11%)**; linhas **completas: ESG, ECG, EFG, EGH, EOX, ERW, ECC, EMR e EHM**. As 28 que faltam não têm foto do cartão (lista para a equipe: `NZ-AGENTES/CLEDNA/relatorios/2026-10-02_FOTOS_FALTANTES_SPEED.pdf`). Lotes de **10 cores** a
 partir do lote 8; o lote 8 testou 20 e o lote 9 fez de uma vez as 65 que tinham amostra no Drive. As 132
 que faltam não têm foto do cartão no Drive (cromos, flips, candy, carbono EGF, EGB, EBP e o resto das EDG/EMA/EMG/EMT).
 Seis pastas do Drive não têm produto no site (EDG-022, 028, 029, EGF-008, 016, 020): cadastrar no
