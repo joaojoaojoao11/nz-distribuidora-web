@@ -14,7 +14,7 @@ export const PresenteIcon = "/assets/simbolos/simbolo-presente.svg";
 export const coreColor = '#4A7C59'; // Tactical Green
 
 export const tabelaTecnica = [
-  { icon: CamadaIcon, info: 'Espessura Média', spec: '150-180 Micras', detalhe: 'Garante resistência essencial contra pedriscos.' },
+  { icon: CamadaIcon, info: 'Espessura Total', spec: '175 Micras', detalhe: 'Garante resistência essencial contra pedriscos.' },
   { icon: EscudoVazioIcon, info: 'Engenharia de Base', spec: '80% TPU + 20% PVC', detalhe: 'O Híbrido Inteligente perfeito para Custo-Benefício.' },
   { icon: CamadaIcon, info: 'Estruturação', spec: 'Multicamadas', detalhe: 'Projetada para não rasgar no tensionamento grave.' },
   { icon: RepelenciaIcon, info: 'Top Coating', spec: 'Proteção Acelerada', detalhe: 'Camada de fechamento superior com repelência hidrofóbica.' },
