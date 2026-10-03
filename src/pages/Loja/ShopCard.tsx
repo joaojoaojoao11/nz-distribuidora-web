@@ -13,7 +13,6 @@ import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import type { ShopItem } from '../../lib/shop/types';
 import EstoqueDots from './EstoqueDots';
-import PecasPromo from './PecasPromo';
 import type { ItemPromoMoto } from '../../lib/shop/promoMoto';
 import Preco from './Preco';
 import { cortarNome } from './useLimiteNome';
@@ -48,8 +47,8 @@ interface Props {
    */
   selecao?: string;
   /**
-   * Promoção Moto ligada e este item dentro dela: a foto vira a da moto e os
-   * pedaços aparecem sobre ela, com o valor fechado (ver PecasPromo).
+   * Promoção Moto ligada e este item dentro dela: a foto vira a da moto e o
+   * preço mostra só o metro. O tamanho do pedaço não aparece (João, 03/10).
    */
   promo?: ItemPromoMoto;
 }
@@ -114,9 +113,6 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
           </span>
         )}
 
-        {/* Na promoção quem fala de estoque são os pedaços, sobre a foto. */}
-        {promo && <PecasPromo slug={item.slug} pecas={promo.pecas} variante="card" selecao={selecao} />}
-
         {/* Nível público de estoque, já embutido no catálogo — sem request. */}
         {!promo && item.nivelEstoque === 'pronta-entrega' && (
           <span className={`${styles.estoque} ${styles.estoquePronta}`}>Pronta entrega</span>
@@ -177,7 +173,7 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
         )}
         {meta && <span className={styles.meta}>{meta}</span>}
         {/* Preço por papel: o servidor decide o que este card pode mostrar. */}
-        {item.kind !== 'linha' && <Preco slug={item.slug} variante="card" selecao={selecao} />}
+        {item.kind !== 'linha' && <Preco slug={item.slug} variante="card" selecao={selecao} soMetro={Boolean(promo)} />}
       </div>
     </Link>
   );

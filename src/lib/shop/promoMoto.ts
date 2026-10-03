@@ -1,15 +1,11 @@
-// Promoção Moto (/loja?promo=moto) no cliente: quais cores entram e os metros
-// de cada pedaço. Vem de /api/nz/promo-moto (ver o handler), que é público e
+// Promoção Moto (/loja?promo=moto) no cliente: quais cores entram e as fotos de
+// moto de cada uma. Vem de /api/nz/promo-moto (ver o handler), que é público e
 // fica 5 minutos na CDN — aqui é uma busca por sessão, guardada em memória.
-//
-// O preço não vem junto: cada card multiplica os metros pelo preço do metro que
-// o /api/nz/precos já entrega por papel (quem não entrou vê só os metros).
+// O preço continua vindo do /api/nz/precos, por papel.
 
 import { useEffect, useState } from 'react';
 
 export interface ItemPromoMoto {
-  /** Metros de cada pedaço aberto, do maior para o menor. */
-  pecas: number[];
   /** As fotos de moto da cor, na ordem da galeria (3/4, perfil, tanque). */
   fotos: string[];
 }
@@ -58,6 +54,3 @@ export function usePromoMoto(ativo: boolean): MapaPromoMoto | null | undefined {
 
   return ativo ? mapa : undefined;
 }
-
-/** "7 m" / "1,8 m" */
-export const metrosTexto = (m: number) => `${m.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} m`;

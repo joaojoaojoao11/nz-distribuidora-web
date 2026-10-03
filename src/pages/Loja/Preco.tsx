@@ -28,9 +28,11 @@ interface Props {
    * compra sai do carrinho e vai para o WhatsApp — ver `viaSelecao` abaixo.
    */
   selecao?: string;
+  /** Card da Promoção Moto: só o preço do metro (João, 03/10), sem o rolo. */
+  soMetro?: boolean;
 }
 
-export default function Preco({ slug, variante, produto, selecao }: Props) {
+export default function Preco({ slug, variante, produto, selecao, soMetro = false }: Props) {
   const { estado, papel, item } = usePreco(slug, selecao);
   const location = useLocation();
   const next = encodeURIComponent(`${location.pathname}${location.search}`);
@@ -73,9 +75,15 @@ export default function Preco({ slug, variante, produto, selecao }: Props) {
   if (variante === 'card') {
     return (
       <span className={styles.card}>
-        {rolo && <strong>{rolo}</strong>}
-        {rolo && metro && <span className={styles.sep}>·</span>}
-        {metro && <span>{metro}/m</span>}
+        {soMetro ? (
+          metro && <strong>{metro}/m</strong>
+        ) : (
+          <>
+            {rolo && <strong>{rolo}</strong>}
+            {rolo && metro && <span className={styles.sep}>·</span>}
+            {metro && <span>{metro}/m</span>}
+          </>
+        )}
       </span>
     );
   }

@@ -11,10 +11,10 @@
 //      numa lista de até PARCEIRO_DIAS_VALIDADE dias (a mesma régua que apaga a
 //      bolinha vermelha). Rolo fechado do parceiro não é pedaço e não entra.
 //
-// O que sai daqui é só slug → metros dos pedaços + fotos. Nada de LPN, endereço,
-// origem do pedaço ou nome do parceiro: o estoque do parceiro continua fechado
-// (a tabela não tem policy) e a resposta é a mesma para todo mundo. O preço NÃO
-// vem aqui — continua no /api/nz/precos, por papel; o card multiplica.
+// O que sai daqui é só slug → fotos de moto. Os metros dos pedaços decidem quem
+// entra, mas não saem (o João tirou o tamanho do pedaço da tela em 03/10). Nada
+// de LPN, endereço, origem ou nome do parceiro: o estoque do parceiro continua
+// fechado. O preço continua no /api/nz/precos, por papel.
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
@@ -108,16 +108,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  const itens: Record<string, { pecas: number[]; fotos: string[] }> = {};
+  const itens: Record<string, { fotos: string[] }> = {};
   for (const p of produtos) {
-    const lista = pecas.get(p.erp_sku as string);
-    if (!lista?.length) continue;
-    itens[p.slug] = { pecas: [...lista].sort((a, b) => b - a), fotos: fotosPorProduto.get(p.id) ?? [] };
+    if (!pecas.get(p.erp_sku as string)?.length) continue;
+    itens[p.slug] = { fotos: fotosPorProduto.get(p.id) ?? [] };
   }
   responder(res, itens);
 }
 
-function responder(res: VercelResponse, itens: Record<string, { pecas: number[]; fotos: string[] }>) {
+function responder(res: VercelResponse, itens: Record<string, { fotos: string[] }>) {
   // Muda quando uma ponta é vendida (sync diário do ERP) ou chega lista nova do
   // parceiro: 5 minutos de CDN bastam e poupam o ERP de uma consulta por visita.
   res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');

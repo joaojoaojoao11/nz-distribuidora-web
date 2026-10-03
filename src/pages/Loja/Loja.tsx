@@ -717,7 +717,7 @@ export default function Loja() {
                     ? 'Carregando as cores com metragem fracionada…'
                     : promo === null
                       ? 'Não consegui carregar a promoção agora. Tente de novo em instantes.'
-                      : `${catalogo.length} cores com metragem fracionada pronta para tanque, carenagens, rabeta e paralama. O valor é o do pedaço inteiro.`}
+                      : `${catalogo.length} cores com metragem fracionada pronta para tanque, carenagens, rabeta e paralama. Preço por metro linear.`}
                 </p>
                 <p className={styles.promoGuia}>
                   Naked 2 a 3 m · Esportiva carenada 3 a 4 m · Big trail 3 a 4 m

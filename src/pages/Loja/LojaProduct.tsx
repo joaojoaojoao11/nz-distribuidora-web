@@ -22,7 +22,6 @@ import type { MidiaPublica, ShopItem } from '../../lib/shop/types';
 import Disponibilidade from './Disponibilidade';
 import InformarProblema from './InformarProblema';
 import Preco from './Preco';
-import PecasPromo from './PecasPromo';
 import { usePromoMoto } from '../../lib/shop/promoMoto';
 import PrazoEntrega from './PrazoEntrega';
 import Avaliacoes from './Avaliacoes';
@@ -77,8 +76,7 @@ export default function LojaProduct() {
   // dentro da conversa com o cliente.
   const busca = new URLSearchParams(location.search);
   const selecao = busca.get('s') || undefined;
-  // `?promo=moto`: veio da Promoção Moto. A galeria abre nas fotos de moto e os
-  // pedaços aparecem com o valor fechado.
+  // `?promo=moto`: veio da Promoção Moto. A galeria abre nas fotos de moto.
   const promoMoto = busca.get('promo') === 'moto';
   return (
     <ProductView
@@ -387,10 +385,6 @@ function ProductView({
           {renderChips()}
 
           <DescricaoDoProduto item={item} className={styles.description} />
-
-          {promoItem && (
-            <PecasPromo slug={item.slug} pecas={promoItem.pecas} variante="pagina" selecao={selecao} />
-          )}
 
           {item.kind !== 'linha' && (
             <Preco
