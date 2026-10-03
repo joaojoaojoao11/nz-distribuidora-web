@@ -73,18 +73,6 @@ const productLines = [
     badge2: '1,52m',
     badge3: '',
     available: true
-  },
-  {
-    slug: 'metamark-7-series',
-    title: 'METAMARK 7 SERIES',
-    subtitle: 'Vinil de Recorte Polimérico 70 micras | Reino Unido',
-    description: 'Vinil polimérico calandrado para recorte, sinalização e gráficos veiculares. 92 cores com valor Pantone® e CMYK publicados, adesivo Apex e reação ao fogo Classe B.',
-    image: '/assets/images/metamark/m7/m7-card.jpg',
-    cardLogo: '/assets/logos/metamark/logo-metamark.svg',
-    badge1: '92 CORES',
-    badge2: '70μ',
-    badge3: 'CLASSE B',
-    available: true
   }
 ];
 

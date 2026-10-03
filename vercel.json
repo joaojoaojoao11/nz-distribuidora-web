@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/wrap/metamark-7-series",
+      "destination": "/sign/metamark-7-series",
+      "permanent": true
+    },
+    {
       "source": "/wrap/oracal-651",
       "destination": "/sign/oracal-651",
       "permanent": true

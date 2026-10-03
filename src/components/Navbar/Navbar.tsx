@@ -171,9 +171,6 @@ export default function Navbar() {
                 <span className={styles.dropdownLabel}>metacast mcx</span>
               </Link>
               <span className={styles.dropdownDivider} aria-hidden="true" />
-              <Link to="/wrap/metamark-7-series" className={styles.dropdownTextItem} onClick={closeMenu}>
-                METAMARK 7 SERIES
-              </Link>
               <Link to="/wrap/oracal-970ra" className={styles.dropdownTextItem} onClick={closeMenu}>
                 ORACAL 970RA
               </Link>
@@ -190,6 +187,9 @@ export default function Navbar() {
             <div className={styles.dropdown}>
               <Link to="/sign" className={styles.dropdownTextItem} onClick={closeMenu}>
                 METAMARK MD-80 · AVERY DENNISON
+              </Link>
+              <Link to="/sign/metamark-7-series" className={styles.dropdownTextItem} onClick={closeMenu}>
+                METAMARK 7 SERIES
               </Link>
               <Link to="/sign/oracal-651" className={styles.dropdownTextItem} onClick={closeMenu}>
                 ORACAL 651

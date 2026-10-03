@@ -33,7 +33,6 @@ export function buildNavItems(contagens: { shDecor: number; etherna: number }): 
         { label: 'NZWrap Premium', to: '/wrap/nzwrap-premium' },
         { label: 'SH Wrapping', to: '/wrap/sh-colors' },
         { label: 'MetaCast MCX', to: '/wrap/metamark-mcx' },
-        { label: 'Metamark 7 Series', to: '/wrap/metamark-7-series' },
         { label: 'Oracal 970RA', to: '/wrap/oracal-970ra' },
         { label: 'Oracal 670RA', to: '/wrap/oracal-670ra' },
       ],
@@ -43,6 +42,7 @@ export function buildNavItems(contagens: { shDecor: number; etherna: number }): 
       to: '/sign',
       children: [
         { label: 'Metamark MD-80 · Avery Dennison', to: '/sign' },
+        { label: 'Metamark 7 Series', to: '/sign/metamark-7-series' },
         { label: 'Oracal 651', to: '/sign/oracal-651' },
       ],
     },

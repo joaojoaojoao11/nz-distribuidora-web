@@ -276,7 +276,7 @@ export function MetamarkM7() {
     name: 'Metamark 7 Series — Vinil de Recorte 70μ',
     description:
       'Catálogo das 92 cores do vinil polimérico Metamark 7 Series, com valores Pantone® e CMYK oficiais. Distribuição NZ.',
-    url: `${SITE_URL}/wrap/metamark-7-series`,
+    url: `${SITE_URL}/sign/metamark-7-series`,
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: M7_COLORS.length,
@@ -299,7 +299,7 @@ export function MetamarkM7() {
         title="Metamark 7 Series — Vinil de Recorte 70μ com 92 Cores"
         description="Metamark 7 Series: vinil polimérico calandrado 70μ com adesivo Apex, reação ao fogo Classe B e 92 cores com Pantone® e CMYK publicados. Larguras de 380 a 1.600 mm."
         keywords="metamark 7 series, m7 vinil, vinil de recorte, vinil polimerico, vinil sinalizacao, pantone vinil, plotter de recorte, comunicacao visual"
-        canonicalUrl="/wrap/metamark-7-series"
+        canonicalUrl="/sign/metamark-7-series"
         schema={schema}
       />
       <WrapProductPage
@@ -309,6 +309,7 @@ export function MetamarkM7() {
           heroDescription:
             'Alto desempenho onde a cor precisa ser potente e durável: gráficos veiculares em superfícies planas e curvas, sinalização e recorte. Filme de 70 micras com toque macio, adesivo Apex permanente base solvente e liner lay-flat de alto desempenho. As 92 cores têm valores Pantone® e CMYK publicados pelo fabricante.',
           heroWarning: '92 CORES · REAÇÃO AO FOGO CLASSE B · LARGURAS DE 380 A 1.600 mm.',
+          voltarPara: '/sign',
           heroImage: '/assets/images/metamark/m7/m7-hero.jpg',
           specs: [
             {

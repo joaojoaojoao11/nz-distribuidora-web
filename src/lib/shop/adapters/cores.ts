@@ -93,7 +93,7 @@ export function metamark7ToShopItems(): ShopItem[] {
       garantiaAnos: null,
       durabilidadeAnos: null,
       description: null,
-      legacyPath: `/wrap/metamark-7-series?cor=${c.slug}`,
+      legacyPath: `/sign/metamark-7-series?cor=${c.slug}`,
       searchText: buildSearchText([
         c.name,
         c.fullName,

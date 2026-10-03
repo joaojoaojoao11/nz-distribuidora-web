@@ -2,7 +2,7 @@
  *
  * 1. MD-80 Series: vinil de impressão digital, lançamento de setembro/2026. É o
  *    destaque da seção e o motivo dela vir antes do bloco Avery.
- * 2. 7 Series: vinil de recorte, cuja página vive em /wrap/metamark-7-series.
+ * 2. 7 Series: vinil de recorte, cuja página vive em /sign/metamark-7-series.
  *    Aqui é resumo e link — sem <h1>, sem <SEO> e sem canonical próprio, para
  *    não criar uma segunda URL disputando a mesma busca.
  *
@@ -237,7 +237,7 @@ export default function MetamarkBlock() {
         </motion.div>
 
         <motion.div className={own.cardWrap} variants={fadeUpItem}>
-          <Link to="/wrap/metamark-7-series" className={styles.familyCard}>
+          <Link to="/sign/metamark-7-series" className={styles.familyCard}>
             <div className={styles.familyCardBadges}>
               <span className={styles.familyBadge}>{M7_COLORS.length} CORES</span>
               {/* "micras" por extenso: o badge é uppercase no CSS e μ vira Μ (Mu maiúsculo) */}

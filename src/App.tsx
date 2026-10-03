@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import AnalyticsTracker from './components/AnalyticsTracker';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
@@ -51,6 +51,11 @@ const Oracal651 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ de
 const Oracal670 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.Oracal670 })));
 const Oracal670ColorPage = lazy(() => import('./pages/Wrap/Oracal670Colors'));
 const Oracal651Colors = lazy(() => import('./pages/Wrap/Oracal651Colors'));
+/** Metamark 7 Series tambem foi para o NZSIGN (03/10/2026); preserva o ?cor= das paginas de cor. */
+function RedirecionaM7() {
+  const { search } = useLocation();
+  return <Navigate to={`/sign/metamark-7-series${search}`} replace />;
+}
 function RedirecionaCor651() {
   const { id } = useParams();
   return <Navigate to={`/sign/oracal-651/${id ?? ''}`} replace />;
@@ -223,8 +228,9 @@ function App() {
                   <Route path="/wrap/oracal-670ra" element={<Oracal670 />} />
                   <Route path="/wrap/oracal-670ra/:colorCode" element={<Oracal670ColorPage />} />
                   <Route path="/wrap/metamark-mcx" element={<MetamarkMcx />} />
-                  <Route path="/wrap/metamark-7-series" element={<MetamarkM7 />} />
+                  <Route path="/wrap/metamark-7-series" element={<RedirecionaM7 />} />
                   <Route path="/sign" element={<Sign />} />
+                  <Route path="/sign/metamark-7-series" element={<MetamarkM7 />} />
                   <Route path="/sign/oracal-651" element={<Oracal651 />} />
                   <Route path="/sign/oracal-651/:id" element={<Oracal651Colors />} />
                   <Route path="/sign/:slug" element={<SignProduct />} />

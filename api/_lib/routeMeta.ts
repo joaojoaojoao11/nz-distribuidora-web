@@ -74,7 +74,7 @@ export const routeMeta: Record<string, RouteMeta> = {
     title: 'MetaCast MCX — Envelopamento Cast Premium Metamark',
     description: 'MetaCast® MCX da Metamark: filme cast premium 100μ com adesivo MetaGlide®, 37 cores e garantia MetaSure™ de até 12 anos. Distribuição autorizada NZ.',
   },
-  '/wrap/metamark-7-series': {
+  '/sign/metamark-7-series': {
     title: 'Metamark 7 Series — Vinil de Recorte 70μ com 92 Cores',
     description: 'Metamark 7 Series: vinil polimérico calandrado 70μ com adesivo Apex, reação ao fogo Classe B e 92 cores com Pantone® e CMYK publicados. Larguras de 380 a 1.600 mm.',
   },
