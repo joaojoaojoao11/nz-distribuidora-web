@@ -83,7 +83,7 @@ const productLines = [
   {
     slug: 'windshield',
     title: 'NZ PPF WINDSHIELD',
-    subtitle: 'TPU 190μ para Parabrisa | Absorção de Impacto',
+    subtitle: 'TPU 190 micras para Parabrisa | Absorção de Impacto',
     description: 'Película externa de 190 micras em TPU de alta performance. Absorve pedras e detritos, preserva o vidro original e mantém compatibilidade total com sensores/ADAS. 2 anos de garantia.',
     image: '/assets/images/nzppf_windshield_hero.png',
     thickness: '190μ',

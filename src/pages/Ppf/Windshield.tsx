@@ -168,7 +168,7 @@ export default function Windshield() {
             </div>
             <div className={styles.techLayers}>
               {[
-                { name: 'TPU 190μ', desc: 'Camada externa de alta performance dimensionada para dissipar energia de impacto' },
+                { name: 'TPU 190 micras', desc: 'Camada externa de alta performance dimensionada para dissipar energia de impacto' },
                 { name: 'Transparência Óptica Total', desc: 'Sem distorção visual — claridade preservada em qualquer ângulo' },
                 { name: 'Compatibilidade ADAS', desc: 'Sem interferência em sensores, câmeras e sistemas de assistência' },
                 { name: 'Resistência UV e Intempéries', desc: 'Top coat que protege contra radiação solar, chuva ácida e abrasão' }

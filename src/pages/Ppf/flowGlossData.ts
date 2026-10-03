@@ -78,7 +78,7 @@ export const finishesData: Finish[] = [
 /** Camadas da arquitetura do filme (seção Tecnologia). */
 export const camadas = [
   { name: 'Top Coat Nano-Hidrofóbico G2', desc: 'Camada nova: repele mais água e sujeira e acelera a auto-cura dos micro-riscos.' },
-  { name: 'TPU Técnico G2 185μ (Core)', desc: 'Base de 2ª geração, agora dez micras mais espessa: mais absorção de impacto e mais estabilidade sob UV.' },
+  { name: 'TPU Técnico G2 185 micras (Core)', desc: 'Base de 2ª geração, agora dez micras mais espessa: mais absorção de impacto e mais estabilidade sob UV.' },
   { name: 'Adesivo Acrílico de Alta Conformação', desc: 'Aplicação amigável até nas geometrias mais complexas, com remoção limpa.' },
 ];
 
