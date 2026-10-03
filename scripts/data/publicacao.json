@@ -1,4 +1,2044 @@
 {
+  "speed-wrapping-ecc-001-chameleon-chrome-silver-spwecc001": {
+    "mensagem": "feat(ecc-001): Lamborghini Sesto Elemento + capa camaleao espelhado Chameleon Chrome Silver\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 001 CHAMELEON CHROME SILVER). Lote 11 (40 cores, 03/10): cromo espelhado camaleão (espelho + virada de cor iridescente). Leitura do cartao: espelho iridescente: base água-turquesa claro com rosa, violeta e dourado nas curvas. Piloto C aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Lamborghini Sesto Elemento",
+      "carro_cor": "an aqua-cyan iridescent mirror chrome: the car reads clearly AQUA-CYAN overall (like a turquoise mirror), and across the curves the mirror shifts to pink, violet and soft gold, like an oil-slick on polished chrome - never plain silver",
+      "carro_acabamento": "chameleon mirror chrome: the film is a TRUE MIRROR finish like polished chrome, but iridescent - its colour shifts with the viewing angle across every panel and curve, as described in COLOR. It reflects the sky and the ground as sharp mirror images, all tinted by the shifting colours. Never plain paint, never a single flat colour, never silver. No people and no camera visible in the reflections.",
+      "carro_cenario": "Salar de Uyuni in Bolivia, the white salt flat with a thin layer of water reflecting the sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031903_210a86e7-8c4f-48bd-adb4-100e9114c775.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lamborghini Sesto Elemento envelopado em Speed Wrapping ECC 001 Chameleon Chrome Silver",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-001-chameleon-chrome-silver-spwecc001.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_030137_7f23c2ba-0e8c-4aca-979a-64dc0d5615c9.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031902_6d9a6ecf-adc8-4042-b807-5d6502f19f17.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031859_5f9eb37d-3bce-4b4f-88e6-39c4154c34c5.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031855_e26386c3-91a6-452f-9a39-6dc4c36eb4f8.png",
+        "nota": "macro do espelho camaleao"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-002-chameleon-chrome-green-spwecc002": {
+    "mensagem": "feat(ecc-002): Ferrari F50 + capa camaleao espelhado Chameleon Chrome Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 002 CHAMELEON CHROME GREEN). Lote 11 (40 cores, 03/10): cromo espelhado camaleão (espelho + virada de cor iridescente). Leitura do cartao: espelho vermelho-cobre com borda laranja-dourada (o nome diz \"Chrome Green\", o cartão é vermelho). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Ferrari F50",
+      "carro_cor": "a deep red mirror chrome that shifts to copper-orange and gold across the curves - red on the faces, gold-orange at the edges",
+      "carro_acabamento": "chameleon mirror chrome: the film is a TRUE MIRROR finish like polished chrome, but iridescent - its colour shifts with the viewing angle across every panel and curve, as described in COLOR. It reflects the sky and the ground as sharp mirror images, all tinted by the shifting colours. Never plain paint, never a single flat colour, never silver. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Serra do Rio do Rastro road in Santa Catarina, Brazil, hairpins on a green cliff, open sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031901_73039b44-6ff9-436e-939b-569fe45807eb.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari F50 envelopado em Speed Wrapping ECC 002 Chameleon Chrome Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-002-chameleon-chrome-green-spwecc002.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025257_54d64727-e6b2-4004-94ce-726172909bd7.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031901_5b62e0d9-823b-46a6-a8cf-892beaec5959.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031858_ab571489-fd20-4caf-9641-96be2779833c.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031859_f0f64126-80f8-4af9-9d35-b442abf9aa70.png",
+        "nota": "macro do espelho camaleao"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-003-chameleon-chrome-blue-spwecc003": {
+    "mensagem": "feat(ecc-003): Koenigsegg CC850 + capa camaleao espelhado Chameleon Chrome Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 003 CHAMELEON CHROME BLUE). Lote 11 (40 cores, 03/10): cromo espelhado camaleão (espelho + virada de cor iridescente). Leitura do cartao: espelho verde-esmeralda com reflexo verde-água (o nome diz \"Chrome Blue\", o cartão é verde). Piloto C aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Koenigsegg CC850",
+      "carro_cor": "a vivid emerald GREEN mirror chrome - the car reads clearly bright green overall, like green-tinted polished chrome; only a faint aqua glint at the very edges of the curves - never teal, never gold, never yellow",
+      "carro_acabamento": "chameleon mirror chrome: the film is a TRUE MIRROR finish like polished chrome, but iridescent - its colour shifts with the viewing angle across every panel and curve, as described in COLOR. It reflects the sky and the ground as sharp mirror images, all tinted by the shifting colours. Never plain paint, never a single flat colour, never silver. No people and no camera visible in the reflections.",
+      "carro_cenario": "the red rock formations of AlUla, Saudi Arabia, pale sand, big sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032145_fe41dcea-ff20-490c-95c1-1005edcf282b.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Koenigsegg CC850 envelopado em Speed Wrapping ECC 003 Chameleon Chrome Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-003-chameleon-chrome-blue-spwecc003.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025940_f555d964-1cbc-4ad7-9a62-f45d2e0ec318.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031856_ef925c50-afe4-47b4-aec8-82a2b99a2a69.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031858_e7aa4da2-9891-4aba-86a1-518db1307bfc.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032140_72ec19f8-510f-4b1f-b28c-3f1321636303.png",
+        "nota": "macro do espelho camaleao"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-004-chameleon-chrome-sapphire-blue-spwecc004": {
+    "mensagem": "feat(ecc-004): McLaren W1 + capa camaleao espelhado Chameleon Chrome Sapphire Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 004 CHAMELEON CHROME SAPPHIRE BLUE). Lote 11 (40 cores, 03/10): cromo espelhado camaleão (espelho + virada de cor iridescente). Leitura do cartao: espelho azul-céu iridescente com rosa e lilás nas curvas. Piloto C aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "McLaren W1",
+      "carro_cor": "a bright sky-blue / cyan iridescent mirror chrome - the car reads clearly SKY BLUE overall, like a light-blue polished chrome; only along the very edges of the curves a soft pink-lilac glint - never lavender, never silver, never purple",
+      "carro_acabamento": "chameleon mirror chrome: the film is a TRUE MIRROR finish like polished chrome, but iridescent - its colour shifts with the viewing angle across every panel and curve, as described in COLOR. It reflects the sky and the ground as sharp mirror images, all tinted by the shifting colours. Never plain paint, never a single flat colour, never silver. No people and no camera visible in the reflections.",
+      "carro_cenario": "the white gypsum dunes and dry lakebed of the Salinas Grandes in Argentina, mountains far behind"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032144_3573f175-e5dc-4a63-ab6a-404544b75c0f.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "McLaren W1 envelopado em Speed Wrapping ECC 004 Chameleon Chrome Sapphire Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-004-chameleon-chrome-sapphire-blue-spwecc004.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025940_7607576b-e475-4005-a6c3-6d7b49e49a09.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032145_be1050a2-03d2-4ad6-829c-e55dbc7dc169.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032144_db4ccf8b-dcd4-4630-8d9c-93c1776e4d09.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032140_d400221b-de4d-4311-839c-433ecbdb672c.png",
+        "nota": "macro do espelho camaleao"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-005-chameleon-blue-purple-pet-spwecc005": {
+    "mensagem": "feat(ecc-005): Aston Martin Valour + capa camaleao metalico Chameleon Blue Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 005 CHAMELEON BLUE PURPLE PET). Lote 11 (40 cores, 03/10): camaleão brilho metálico com glitter (cor muda conforme o ângulo). Leitura do cartao: azul-marinho com glitter azul fino; borda vira roxo-violeta (H215 S73 V44 meio). Piloto C aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Aston Martin Valour",
+      "carro_cor": "a vivid royal blue (hue about 215) packed with bright blue glitter that sparkles in the sun; the shaded lower panels fall to navy; only a faint violet hint at the very edges - the car must read clearly BLUE, never purple",
+      "carro_acabamento": "chameleon colour-shift metallic: a wet, deep, high-gloss clear coat over a dense, fine glitter flake that changes colour with the viewing angle, as described in COLOR. The panels facing the camera show the base colour; along the curves and the edges the colour shifts. The fine flake sparkles visibly in the sun as tiny points. It is NOT chrome and NOT a mirror - reflections are the soft glossy reflections of paint.",
+      "carro_cenario": "the Bealach na Ba road in the Scottish Highlands, grey rock and brown moor, no other vehicles"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032145_1eeb5b7c-ed6e-4ea8-83a4-6a5b5f8b6a7e.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Aston Martin Valour envelopado em Speed Wrapping ECC 005 Chameleon Blue Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-005-chameleon-blue-purple-pet-spwecc005.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025939_f6f5a6db-40d9-4d50-9256-76759c0c49a1.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032141_88ccabf8-baa9-4e1c-95c6-83d2e86bbb64.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032140_3aeecda1-8da1-4b81-92a2-a4416038459a.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032140_ae8683d9-1ba4-485d-a590-56a43b38c514.png",
+        "nota": "macro do camaleao com glitter"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-006-chameleon-purple-red-pet-spwecc006": {
+    "mensagem": "feat(ecc-006): Bentley Batur + capa camaleao metalico Chameleon Purple Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 006 CHAMELEON PURPLE RED PET). Lote 11 (40 cores, 03/10): camaleão brilho metálico com glitter (cor muda conforme o ângulo). Leitura do cartao: índigo-marinho escuro com glitter azul; brilho vira violeta-púrpura (H227 S51 V35 meio). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Bentley Batur",
+      "carro_cor": "a dark indigo-navy with dense blue sparkle; where the light hits, the highlight turns violet-purple",
+      "carro_acabamento": "chameleon colour-shift metallic: a wet, deep, high-gloss clear coat over a dense, fine glitter flake that changes colour with the viewing angle, as described in COLOR. The panels facing the camera show the base colour; along the curves and the edges the colour shifts. The fine flake sparkles visibly in the sun as tiny points. It is NOT chrome and NOT a mirror - reflections are the soft glossy reflections of paint.",
+      "carro_cenario": "the pale limestone gorge road of the Gorges du Verdon, turquoise river far below"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032420_3c5962d3-bf92-48f4-b0ec-2b50da7f672f.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Bentley Batur envelopado em Speed Wrapping ECC 006 Chameleon Purple Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-006-chameleon-purple-red-pet-spwecc006.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025252_9ce08aa3-9b74-4ba2-a9be-1e172b1db895.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032423_1d581e13-65d1-4b87-afe5-3cfd9c641803.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032421_8c4670e7-9982-4687-b876-aef241508cb0.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032423_8d1228d6-0235-4779-b1f1-c6e4d5b9ccf8.png",
+        "nota": "macro do camaleao com glitter"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-007-chameleon-purple-blue-pet-spwecc007": {
+    "mensagem": "feat(ecc-007): Mercedes-Benz CLK GTR + capa camaleao metalico Chameleon Purple Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 007 CHAMELEON PURPLE BLUE PET). Lote 11 (40 cores, 03/10): camaleão brilho metálico com glitter (cor muda conforme o ângulo). Leitura do cartao: azul-petróleo/aço com glitter, sombra azul-marinho, luz azul-acinzentado (H205 S60 V45). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Mercedes-Benz CLK GTR",
+      "carro_cor": "a teal-steel blue packed with fine silver-blue sparkle, falling to deep navy in shadow",
+      "carro_acabamento": "chameleon colour-shift metallic: a wet, deep, high-gloss clear coat over a dense, fine glitter flake that changes colour with the viewing angle, as described in COLOR. The panels facing the camera show the base colour; along the curves and the edges the colour shifts. The fine flake sparkles visibly in the sun as tiny points. It is NOT chrome and NOT a mirror - reflections are the soft glossy reflections of paint.",
+      "carro_cenario": "the Tabernas desert in Spain, ochre badlands and dry riverbed"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032423_35ee357b-48d4-47e0-b8a0-a396d244a25e.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Mercedes-Benz CLK GTR envelopado em Speed Wrapping ECC 007 Chameleon Purple Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-007-chameleon-purple-blue-pet-spwecc007.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025252_14a37999-6d86-4245-af77-ed29e2a464e0.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032421_edd0ec37-3245-41c1-93cf-c46060c1cb5c.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032426_8a6f6523-f457-4446-aa82-c74dea876519.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032425_8ba2a574-13aa-4279-be72-ab61275dbe9c.png",
+        "nota": "macro do camaleao com glitter"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-008-chameleon-green-gold-pet-spwecc008": {
+    "mensagem": "feat(ecc-008): Aston Martin Victor + capa camaleao metalico Chameleon Green Gold\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 008 CHAMELEON GREEN GOLD PET). Lote 11 (40 cores, 03/10): camaleão brilho metálico com glitter (cor muda conforme o ângulo). Leitura do cartao: verde-oliva escuro com glitter dourado-esverdeado (H100 S30 V30). Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Aston Martin Victor",
+      "carro_cor": "a very dark olive green packed with fine gold-green sparkle; the highlights glow gold-green, the shadows fall to near-black olive",
+      "carro_acabamento": "chameleon colour-shift metallic: a wet, deep, high-gloss clear coat over a dense, fine glitter flake that changes colour with the viewing angle, as described in COLOR. The panels facing the camera show the base colour; along the curves and the edges the colour shifts. The fine flake sparkles visibly in the sun as tiny points. It is NOT chrome and NOT a mirror - reflections are the soft glossy reflections of paint.",
+      "carro_cenario": "the gravel road through the Avenue of the Baobabs in Madagascar, red earth"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031916_abc2d3b3-2873-48a1-9a79-08e0c79dff5d.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Aston Martin Victor envelopado em Speed Wrapping ECC 008 Chameleon Green Gold",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-008-chameleon-green-gold-pet-spwecc008.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025411_772ff400-b5a5-486c-96ab-92080176b2b6.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032425_46a230a6-0a7c-40db-8973-e9daae244331.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031902_7c116072-133a-4707-af25-174c20786dc7.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031857_70b056f4-e093-4f66-b978-b2ef39ad8507.png",
+        "nota": "macro do camaleao com glitter"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-009-chameleon-green-purple-pet-spwecc009": {
+    "mensagem": "feat(ecc-009): De Tomaso P72 + capa camaleao metalico Chameleon Green Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 009 CHAMELEON GREEN PURPLE PET). Lote 11 (40 cores, 03/10): camaleão brilho metálico com glitter (cor muda conforme o ângulo). Leitura do cartao: verde-esmeralda escuro com glitter verde; leve virada para roxo nas bordas (H165 S47 V27). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "De Tomaso P72",
+      "carro_cor": "a dark emerald-teal green packed with fine green sparkle; at the edges of the curves a subtle shift to purple",
+      "carro_acabamento": "chameleon colour-shift metallic: a wet, deep, high-gloss clear coat over a dense, fine glitter flake that changes colour with the viewing angle, as described in COLOR. The panels facing the camera show the base colour; along the curves and the edges the colour shifts. The fine flake sparkles visibly in the sun as tiny points. It is NOT chrome and NOT a mirror - reflections are the soft glossy reflections of paint.",
+      "carro_cenario": "the volcanic summit road of Haleakala in Maui, red-brown cinder cones, sky above the clouds"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031854_2b6be375-a3f2-476d-8ab0-68d6a8eda947.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "De Tomaso P72 envelopado em Speed Wrapping ECC 009 Chameleon Green Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-009-chameleon-green-purple-pet-spwecc009.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025412_587a05fe-b7ea-4f18-b273-38fda6e59c4f.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031855_0efac9db-b039-4367-b543-26e4e2ba13c7.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031853_c230e3ad-1e5d-4739-b134-3059b88de0e3.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031855_493393ca-8c5d-4fdb-891f-097d0bccd842.png",
+        "nota": "macro do camaleao com glitter"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-010-chameleon-galaxy-pet-spwecc010": {
+    "mensagem": "feat(ecc-010): Lamborghini Veneno + capa camaleao metalico Chameleon Galaxy\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 010 CHAMELEON GALAXY PET). Lote 11 (40 cores, 03/10): camaleão brilho metálico com glitter (cor muda conforme o ângulo). Leitura do cartao: verde vivo metálico que escurece para verde-petróleo quase preto (H140 S55 V35). Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Lamborghini Veneno",
+      "carro_cor": "a vivid metallic green that shifts to a deep teal-black where the curves turn away; fine green sparkle",
+      "carro_acabamento": "chameleon colour-shift metallic: a wet, deep, high-gloss clear coat over a dense, fine glitter flake that changes colour with the viewing angle, as described in COLOR. The panels facing the camera show the base colour; along the curves and the edges the colour shifts. The fine flake sparkles visibly in the sun as tiny points. It is NOT chrome and NOT a mirror - reflections are the soft glossy reflections of paint.",
+      "carro_cenario": "the striped rainbow hills of the Zhangye Danxia landform in China, red, orange and cream bands"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032151_2675b5db-92e5-42b7-b705-262244a25f18.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lamborghini Veneno envelopado em Speed Wrapping ECC 010 Chameleon Galaxy",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-010-chameleon-galaxy-pet-spwecc010.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025413_d85eb17d-0f12-44ec-994e-0e5c1e36c44b.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031903_cd248f3e-d299-439f-a2b5-27e9d6d26c36.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031855_8d399f1b-ca7a-4987-b084-fce22417c7bc.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031903_33003d44-2f56-4dde-aba6-83769821e170.png",
+        "nota": "macro do camaleao com glitter"
+      }
+    ]
+  },
+  "speed-wrapping-ecc-011-chameleon-fancy-galatic-sparkling-pet-spwecc011": {
+    "mensagem": "feat(ecc-011): Gordon Murray T.50 + capa camaleao metalico Chameleon Fancy Galatic Sparkling\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ECC 011 CHAMELEON FANCY GALATIC SPARKLING PET). Lote 11 (40 cores, 03/10): camaleão brilho metálico com glitter (cor muda conforme o ângulo). Leitura do cartao: azul-petróleo escuro com glitter; vira roxo-violeta e verde-água nas curvas (H210-245 S45 V30). Piloto C aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 2 (piloto como referencia). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Gordon Murray T.50",
+      "carro_cor": "a very dark navy-teal, almost black-blue on the flat panels, packed with fine silver-blue sparkle; ONLY at the very edges of the curves, where the light grazes, a thin violet-purple and aqua glow appears - the car must read dark navy-teal, not purple",
+      "carro_acabamento": "chameleon colour-shift metallic: a wet, deep, high-gloss clear coat over a dense, fine glitter flake that changes colour with the viewing angle, as described in COLOR. The panels facing the camera show the base colour; along the curves and the edges the colour shifts. The fine flake sparkles visibly in the sun as tiny points. It is NOT chrome and NOT a mirror - reflections are the soft glossy reflections of paint.",
+      "carro_cenario": "the Million Dollar Highway in Colorado, red mountains and a cliffside road"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032154_2e68eaf5-a6ab-48fc-8758-36657bf7870c.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Gordon Murray T.50 envelopado em Speed Wrapping ECC 011 Chameleon Fancy Galatic Sparkling",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ecc-011-chameleon-fancy-galatic-sparkling-pet-spwecc011.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025531_f36fd320-6398-4a7c-b73c-5d3e755e6840.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032152_a372fb9a-95fb-4756-9ce9-00c885440647.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032152_9747c458-6002-4f61-ab53-08429a2d3988.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032153_77cb6321-c606-4e88-8db7-f3cf09ae752e.png",
+        "nota": "macro do camaleao com glitter"
+      }
+    ]
+  },
+  "speed-wrapping-emr-001-chrome-mirror-silver-spwemr001": {
+    "mensagem": "feat(emr-001): Bugatti Mistral + capa cromo espelhado Chrome Mirror Silver\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 001 CHROME MIRROR SILVER). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho prata puro. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Bugatti Mistral",
+      "carro_cor": "a pure silver mirror chrome with no tint - it shows the colours it reflects",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the white Pinnacles desert in Western Australia, limestone spires on yellow sand"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032153_68682582-cbce-449a-a7ac-fc953510b707.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Bugatti Mistral envelopado em Speed Wrapping EMR 001 Chrome Mirror Silver",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-001-chrome-mirror-silver-spwemr001.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025413_13d54b8e-4dd5-4bfc-ba7a-44dde54115e6.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032153_d2c99e3e-142f-42b5-b455-cae6edf82d70.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032152_501c06bf-2cd3-4685-bd4f-517c1089df4a.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032152_f63d8a2b-5f33-4ebc-b4ac-d1f0194d95ef.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-002-chrome-mirror-red-spwemr002": {
+    "mensagem": "feat(emr-002): Ferrari Monza SP2 + capa cromo espelhado Chrome Mirror Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 002 CHROME MIRROR RED). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho vermelho-sangue (H352 S86 V40-85). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Ferrari Monza SP2",
+      "carro_cor": "a candy red mirror chrome - every reflection is tinted deep red",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Alabama Hills in California, round granite boulders, Mount Whitney behind"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032430_4c23964f-675c-41ef-a63f-298991e73a99.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari Monza SP2 envelopado em Speed Wrapping EMR 002 Chrome Mirror Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-002-chrome-mirror-red-spwemr002.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_024838_a8fbca58-e490-49a7-92ea-0baa7d3df059.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032427_9e891012-5d68-470d-af68-0c0d275ee67a.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032427_8cf4ad49-34cb-4501-b862-7e15ee482db9.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032430_acd7bbe3-92a3-4a5e-a5e9-bec942dba00f.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-003-chrome-mirror-blue-spwemr003": {
+    "mensagem": "feat(emr-003): Bugatti Tourbillon + capa cromo espelhado Chrome Mirror Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 003 CHROME MIRROR BLUE). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho azul-royal (H240 S90). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Bugatti Tourbillon",
+      "carro_cor": "a royal blue mirror chrome - every reflection is tinted deep blue",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the road along the Horseshoe Bend rim in Arizona, orange sandstone, big sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032430_4d31ce2e-f8f2-4d5d-8ff4-7a4a937cf6d6.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Bugatti Tourbillon envelopado em Speed Wrapping EMR 003 Chrome Mirror Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-003-chrome-mirror-blue-spwemr003.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025413_94a2130a-3efe-49a3-9be4-422a7f93d263.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032429_65149807-a339-40cc-9136-9c09e13ff051.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032430_3f8a3da7-908c-4f63-8b01-701c12a565fe.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032429_de5b7b5c-82e0-4dd8-bf65-3cae50eeb194.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-004-chrome-mirror-purple-spwemr004": {
+    "mensagem": "feat(emr-004): Lamborghini Centenario + capa cromo espelhado Chrome Mirror Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 004 CHROME MIRROR PURPLE). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho roxo-violeta (H275 S70). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Lamborghini Centenario",
+      "carro_cor": "a violet-purple mirror chrome - every reflection is tinted purple",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Gobi desert in Mongolia, flat sand and stony steppe, far mountains"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031858_703d4ed1-520e-4841-a264-1cd43bbff356.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lamborghini Centenario envelopado em Speed Wrapping EMR 004 Chrome Mirror Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-004-chrome-mirror-purple-spwemr004.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025412_296e696a-8b7b-4d9e-bc1c-3a6b62eca10f.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032429_818c05b6-4d1a-4be9-83e9-e954e481ef1d.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032431_b9adc459-8f7d-444d-a33a-6fa5e986dcf7.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031858_d7cd5550-2564-42a8-861a-7de48fcd337e.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-005-chrome-mirror-orange-spwemr005": {
+    "mensagem": "feat(emr-005): McLaren F1 + capa cromo espelhado Chrome Mirror Orange\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 005 CHROME MIRROR ORANGE). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho laranja-âmbar (H25 S88). Piloto C aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "McLaren F1",
+      "carro_cor": "a bright amber-orange mirror chrome (hue about 28) - a luminous tangerine-amber tinted chrome, never copper, never brown, never bronze",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Charyn Canyon road in Kazakhstan, red and ochre canyon walls"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031914_47b8944b-d4c0-4129-b72d-0b91a841f127.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "McLaren F1 envelopado em Speed Wrapping EMR 005 Chrome Mirror Orange",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-005-chrome-mirror-orange-spwemr005.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025940_7769e229-4375-41e0-92eb-feaaa2ddf071.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031900_0c72159e-adb3-43cf-aba3-a7a252c60649.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031902_5c66ae4f-d09d-4d3f-8a20-b1631771dc47.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031856_ae10aca8-64e8-4d01-9899-fa1f036ce02f.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-006-chrome-mirror-gold-spwemr006": {
+    "mensagem": "feat(emr-006): Lamborghini Temerario + capa cromo espelhado Chrome Mirror Gold\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 006 CHROME MIRROR GOLD). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho dourado amarelo (H45 S80). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Lamborghini Temerario",
+      "carro_cor": "a yellow-gold mirror chrome, like polished gold - every reflection is tinted gold",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Jebel Jais mountain road in Ras Al Khaimah, bare grey-brown mountains, big sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031854_b7d5b3ff-3d3b-4967-8bfe-343a015596ee.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lamborghini Temerario envelopado em Speed Wrapping EMR 006 Chrome Mirror Gold",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-006-chrome-mirror-gold-spwemr006.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025257_5f5096c2-8d9c-46f4-91e4-3dc7032d38ea.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031915_723d5093-7afe-4bb8-95ed-4ffe4486042c.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031857_54ad76c1-4bfd-4fd7-8f5a-1733420297e4.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031857_b6e5d41a-796c-4167-8fce-8ad03386b3e6.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-007-chrome-mirror-rose-spwemr007": {
+    "mensagem": "feat(emr-007): Ferrari 458 Italia + capa cromo espelhado Chrome Mirror Rose\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 007 CHROME MIRROR ROSE). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho rosa-magenta (H340 S75). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Ferrari 458 Italia",
+      "carro_cor": "a hot magenta-pink mirror chrome - every reflection is tinted magenta",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Tizi n Tichka pass in the Atlas mountains of Morocco, red earth hairpins"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032143_941a7677-c21a-4c88-b91a-e28e8ec2b4b0.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari 458 Italia envelopado em Speed Wrapping EMR 007 Chrome Mirror Rose",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-007-chrome-mirror-rose-spwemr007.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025252_76cd98ad-0310-47b2-a8ed-111c6b0587ec.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032142_5648296d-68c8-4e63-992e-6dc5068ea96e.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032142_67417366-c50b-4113-b966-d1732a6a6eb6.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032140_d5e3a342-ebe5-4af2-8c30-173171ccfcfd.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-008-chrome-mirror-tiffany-spwemr008": {
+    "mensagem": "feat(emr-008): Koenigsegg One:1 + capa cromo espelhado Chrome Mirror Tiffany\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 008 CHROME MIRROR TIFFANY). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho verde-esmeralda com tom tiffany (H165 S92). Piloto D aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Koenigsegg One:1",
+      "carro_cor": "an emerald-green mirror chrome with a slight teal lean (hue about 160) - clearly GREEN, never turquoise, never cyan",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Spitzkoppe granite peaks in Namibia, orange rock, dry grass, big sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032146_3e4e58e0-2ffa-42b6-8f50-d6ab8a5247d4.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Koenigsegg One:1 envelopado em Speed Wrapping EMR 008 Chrome Mirror Tiffany",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-008-chrome-mirror-tiffany-spwemr008.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025941_d49fd478-7810-4e77-a304-2cb4aad5e22c.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032144_e6952d06-ac99-4646-a79c-6c0e4b0a8c64.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032145_cd77953d-4931-4979-b8d3-ef2dc1d9e3ca.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032141_7bc92c26-314a-4c3e-abeb-b4c2df74cce5.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-009-chrome-mirror-bronze-spwemr009": {
+    "mensagem": "feat(emr-009): Ferrari F12berlinetta + capa cromo espelhado Chrome Mirror Bronze\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 009 CHROME MIRROR BRONZE). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho bronze-cobre rosado (H15 S50). Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Ferrari F12berlinetta",
+      "carro_cor": "a copper-bronze mirror chrome, like polished rose copper - every reflection is tinted copper",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Mount Cook road along Lake Pukaki in New Zealand, milky turquoise lake, snowy peaks"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032423_3f716c88-397f-4a13-a859-35e3fa81c152.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari F12berlinetta envelopado em Speed Wrapping EMR 009 Chrome Mirror Bronze",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-009-chrome-mirror-bronze-spwemr009.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025253_d1154432-7bd6-42d4-9873-c72ffc818b48.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032141_4904e21c-90cf-4cc0-80f9-17ae79d480b4.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032422_ccdb0a8e-a7ca-4ebc-8998-600b8f6587d3.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032424_33cf4b33-75c5-43a1-ac67-4e250fa75ea2.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-010-chrome-mirror-black-spwemr010": {
+    "mensagem": "feat(emr-010): Aston Martin Vulcan + capa cromo espelhado Chrome Mirror Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 010 CHROME MIRROR BLACK). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho preto (fumê bem escuro, quase preto). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Aston Martin Vulcan",
+      "carro_cor": "a black mirror chrome - a true mirror, very dark, like polished black glass; bright reflections of the sky stay visible on top",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the white salt flat of the Bonneville Speedway in Utah, mountains far away"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032424_9160b477-d3c7-4c99-837d-a7e5157dedff.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Aston Martin Vulcan envelopado em Speed Wrapping EMR 010 Chrome Mirror Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-010-chrome-mirror-black-spwemr010.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025254_a6d1f199-6203-4581-a585-4ad21654920d.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032424_a4d1c077-ffd3-40cf-b967-7e0654e877de.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032425_59779777-b2f6-4883-a5a9-720fe2d3e0c5.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032426_deba32c5-2d6a-44a9-b0aa-a86aba468f2b.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-emr-011-chrome-mirror-green-spwemr011": {
+    "mensagem": "feat(emr-011): Dodge Challenger SRT Demon + capa cromo espelhado Chrome Mirror Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EMR 011 CHROME MIRROR GREEN). Lote 11 (40 cores, 03/10): cromo espelhado colorido (espelho de verdade). Leitura do cartao: espelho verde vivo (H130 S90). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Dodge Challenger SRT Demon",
+      "carro_cor": "a vivid green mirror chrome - every reflection is tinted bright green",
+      "carro_acabamento": "high-gloss coloured mirror chrome: the film is a TRUE MIRROR, like polished chrome tinted with colour. It reflects the sky and the surroundings as sharp mirror reflections, all tinted: bright sky reflections glow a luminous light version of the colour, dark reflections turn a deep rich version of it. Never plain paint. No people and no camera visible in the reflections.",
+      "carro_cenario": "the pale sand road through the Jalapao dunes in Brazil, orange dunes, big sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031859_69fbe2e3-9555-47c6-a8bb-edd257489564.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Dodge Challenger SRT Demon envelopado em Speed Wrapping EMR 011 Chrome Mirror Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-emr-011-chrome-mirror-green-spwemr011.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025425_bd96300f-3f3c-4161-b978-acaffdb55420.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032422_3a67d277-39f4-45e3-9cb1-9f7231f077e9.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032422_d4523563-57e3-4fb8-bb85-565763baef7f.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032424_4eac179f-c549-4953-8e0c-b858517b8fa1.png",
+        "nota": "macro do espelho"
+      }
+    ]
+  },
+  "speed-wrapping-els-001-laser-chrome-black-pet-spwels001": {
+    "mensagem": "feat(els-001): Cadillac Celestiq + capa cromo laser holografico Laser Chrome Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ELS 001 LASER CHROME BLACK PET). Lote 11 (40 cores, 03/10): cromo laser holográfico (espelho com arco-íris). Leitura do cartao: espelho escuro/fumê com faixas de arco-íris fortes. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Cadillac Celestiq",
+      "carro_cor": "a dark smoky mirror chrome with strong holographic rainbow bands - red, yellow, green, blue and violet - flowing across every curve",
+      "carro_acabamento": "holographic laser chrome: the film is a TRUE MIRROR whose surface diffracts light into rainbow bands - red, orange, yellow, green, blue and violet streaks flow across every curve like a holographic sticker, over the base colour described in COLOR. Sharp mirror reflections of the sky. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Museum of Tomorrow (Museu do Amanha) plaza in Rio de Janeiro, white structure, Guanabara bay"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031900_7be4ac19-5ce5-4efc-8e1b-7ec9e6deb983.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Cadillac Celestiq envelopado em Speed Wrapping ELS 001 Laser Chrome Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-els-001-laser-chrome-black-pet-spwels001.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025424_e43c083b-8352-486a-8d0a-967a5e3e3fb8.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031851_0fb10224-2d01-4ebe-acb5-e42b66dd135a.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031909_8f0cf56f-c86e-48df-8374-0b3253a95d84.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031853_027d6790-1ba7-4820-b396-af0ffc26afe2.png",
+        "nota": "macro do holografico"
+      }
+    ]
+  },
+  "speed-wrapping-els-002-laser-chrome-silver-pet-spwels002": {
+    "mensagem": "feat(els-002): Tesla Roadster + capa cromo laser holografico Laser Chrome Silver\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ELS 002 LASER CHROME SILVER PET). Lote 11 (40 cores, 03/10): cromo laser holográfico (espelho com arco-íris). Leitura do cartao: espelho prata com arco-íris holográfico em todo o painel. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Tesla Roadster (second generation)",
+      "carro_cor": "a silver holographic mirror chrome: the whole surface splits the light into rainbow bands - pink, yellow, green, blue - over a silver mirror",
+      "carro_acabamento": "holographic laser chrome: the film is a TRUE MIRROR whose surface diffracts light into rainbow bands - red, orange, yellow, green, blue and violet streaks flow across every curve like a holographic sticker, over the base colour described in COLOR. Sharp mirror reflections of the sky. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Hakone Turnpike in Japan, Mount Fuji far behind, open sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031852_4fb685ff-3d86-451c-97c1-c1a4b626ec85.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Tesla Roadster envelopado em Speed Wrapping ELS 002 Laser Chrome Silver",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-els-002-laser-chrome-silver-pet-spwels002.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_024839_a99966a7-d25a-4103-ba4b-b12344961591.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031856_3326d576-d545-483e-856d-d84616ec943a.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031900_aa502ef8-55a4-4768-b3b5-787a63796463.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031853_47f996bf-ee40-4bc9-9663-f2b88e513710.png",
+        "nota": "macro do holografico"
+      }
+    ]
+  },
+  "speed-wrapping-els-003-laser-chrome-blue-pet-spwels003": {
+    "mensagem": "feat(els-003): Lexus RC F + capa cromo laser holografico Laser Chrome Blue\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ELS 003 LASER CHROME BLUE PET). Lote 11 (40 cores, 03/10): cromo laser holográfico (espelho com arco-íris). Leitura do cartao: espelho azul-royal com reflexo holográfico ciano. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Lexus RC F",
+      "carro_cor": "a royal blue holographic mirror chrome: deep blue mirror with cyan and violet holographic sheen bands",
+      "carro_acabamento": "holographic laser chrome: the film is a TRUE MIRROR whose surface diffracts light into rainbow bands - red, orange, yellow, green, blue and violet streaks flow across every curve like a holographic sticker, over the base colour described in COLOR. Sharp mirror reflections of the sky. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Hai Van Pass road in Vietnam, green mountains down to the sea"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032132_b19dc350-a2e7-49cc-8224-5bc0868b3a12.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lexus RC F envelopado em Speed Wrapping ELS 003 Laser Chrome Blue",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-els-003-laser-chrome-blue-pet-spwels003.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025425_cd3cc47d-5b55-4561-87fa-fb732fdc9d1c.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032130_8f9391f6-06d7-471f-9bb9-fd02aa42545e.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032133_9ecbaeeb-87b8-412f-afa1-5ba3027ffaa5.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032128_fc6d496a-7427-4e94-b055-afe2352adb28.png",
+        "nota": "macro do holografico"
+      }
+    ]
+  },
+  "speed-wrapping-els-004-laser-chrome-gold-pet-spwels004": {
+    "mensagem": "feat(els-004): Ferrari California T + capa cromo laser holografico Laser Chrome Gold\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ELS 004 LASER CHROME GOLD PET). Lote 11 (40 cores, 03/10): cromo laser holográfico (espelho com arco-íris). Leitura do cartao: espelho dourado com holografia laranja e verde. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Ferrari California T",
+      "carro_cor": "a yellow-gold holographic mirror chrome: gold mirror with orange, red and green holographic bands",
+      "carro_acabamento": "holographic laser chrome: the film is a TRUE MIRROR whose surface diffracts light into rainbow bands - red, orange, yellow, green, blue and violet streaks flow across every curve like a holographic sticker, over the base colour described in COLOR. Sharp mirror reflections of the sky. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Mont Ventoux summit road in Provence, white limestone scree, big sky"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032131_a10d6a6f-d4cd-47ae-8c4b-0162cda7d5ff.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Ferrari California T envelopado em Speed Wrapping ELS 004 Laser Chrome Gold",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-els-004-laser-chrome-gold-pet-spwels004.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025425_71975d73-b6f4-4a87-bcf5-1068600eedeb.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032130_2bf5d9b5-f0d5-4024-987b-f6d064a2399f.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032129_3a036801-9c15-4d66-9bbe-d5d3dffdd0d8.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032128_a614ffed-b60f-47c8-83d3-6579715759e2.png",
+        "nota": "macro do holografico"
+      }
+    ]
+  },
+  "speed-wrapping-els-005-laser-chrome-purple-pet-spwels005": {
+    "mensagem": "feat(els-005): Nissan GT-R50 by Italdesign + capa cromo laser holografico Laser Chrome Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ELS 005 LASER CHROME PURPLE PET). Lote 11 (40 cores, 03/10): cromo laser holográfico (espelho com arco-íris). Leitura do cartao: espelho violeta com holografia azul e rosa. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Nissan GT-R50 by Italdesign",
+      "carro_cor": "a violet holographic mirror chrome: purple mirror with blue and pink holographic bands",
+      "carro_acabamento": "holographic laser chrome: the film is a TRUE MIRROR whose surface diffracts light into rainbow bands - red, orange, yellow, green, blue and violet streaks flow across every curve like a holographic sticker, over the base colour described in COLOR. Sharp mirror reflections of the sky. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Kazbegi road in Georgia, green valley and the Gergeti church on a hill far behind"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032411_caea5311-b7a0-4ff2-8379-7c9d95ea0f39.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Nissan GT-R50 by Italdesign envelopado em Speed Wrapping ELS 005 Laser Chrome Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-els-005-laser-chrome-purple-pet-spwels005.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025425_4014c26c-23de-42da-b815-09e69cddbd54.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032129_4aeec267-a2d0-43ef-a7a5-6a98b238d641.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032132_6f6aee94-9b68-40b7-9f83-a3089b0b56e4.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032410_6b00c4fb-6600-4260-b7ef-4e5d94e2641f.png",
+        "nota": "macro do holografico"
+      }
+    ]
+  },
+  "speed-wrapping-els-006-laser-chrome-red-pet-spwels006": {
+    "mensagem": "feat(els-006): Hyundai N Vision 74 + capa cromo laser holografico Laser Chrome Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (ELS 006 LASER CHROME RED PET). Lote 11 (40 cores, 03/10): cromo laser holográfico (espelho com arco-íris). Leitura do cartao: espelho vermelho com holografia rosa e laranja. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Hyundai N Vision 74",
+      "carro_cor": "a red holographic mirror chrome: red mirror with pink and orange holographic bands",
+      "carro_acabamento": "holographic laser chrome: the film is a TRUE MIRROR whose surface diffracts light into rainbow bands - red, orange, yellow, green, blue and violet streaks flow across every curve like a holographic sticker, over the base colour described in COLOR. Sharp mirror reflections of the sky. No people and no camera visible in the reflections.",
+      "carro_cenario": "the Rainbow Mountain Vinicunca area in Peru, striped mountain slopes"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032412_d5628d71-f4c8-4c9d-8759-334c49e8e6fb.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Hyundai N Vision 74 envelopado em Speed Wrapping ELS 006 Laser Chrome Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-els-006-laser-chrome-red-pet-spwels006.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025426_818c38b5-02fa-4c3f-8a6e-867bccab0364.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032412_c8b17435-aa38-48e9-8eaf-98a63ffef4bf.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032413_b1692bec-f4e3-44c4-8676-c2d0b3089dc5.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032411_d30b33ac-fa51-4eba-9ed4-f94f383191ad.png",
+        "nota": "macro do holografico"
+      }
+    ]
+  },
+  "speed-wrapping-ehm-007-chrome-metallic-green-pet-spwehm007": {
+    "mensagem": "feat(ehm-007): Lancia Delta HF Integrale + capa cromo metalico acetinado Chrome Metallic Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EHM 007 CHROME METALLIC GREEN PET). Lote 11 (40 cores, 03/10): cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas). Leitura do cartao: verde vivo acetinado metálico (H120 S85 V70). Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Lancia Delta HF Integrale (classic)",
+      "carro_cor": "a vivid pure green satin chrome (hue about 120)",
+      "carro_acabamento": "satin chrome metallic: a coloured chrome film with a silky brushed-metal sheen, brighter and more mirror-like than matte chrome but still soft: every curve carries a brilliant, metallic, slightly blurred sheen band that falls off fast into a deeper shade of the same colour; reflections of the surroundings are soft and smeared, never a sharp mirror image. The black trim and the glass stay glossy.",
+      "carro_cenario": "the road below the Grand Teton range in Wyoming, sagebrush flats, no trees near the car"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032412_c4414421-6acc-43a0-8731-361bcf5ae168.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Lancia Delta HF Integrale envelopado em Speed Wrapping EHM 007 Chrome Metallic Green",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ehm-007-chrome-metallic-green-pet-spwehm007.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025254_ac2c4990-ea09-47f4-9ede-940bcd4ab063.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032411_cfa5f828-f3d4-410a-bd97-392874e22d09.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032412_b6816695-4f35-40d8-9a07-2c5b5092725a.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032410_1d9408bd-777c-44be-9bd8-c2b66c4f9864.png",
+        "nota": "macro do cromo acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-ehm-008-chrome-metallic-purple-pet-spwehm008": {
+    "mensagem": "feat(ehm-008): Datsun 240Z + capa cromo metalico acetinado Chrome Metallic Purple\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EHM 008 CHROME METALLIC PURPLE PET). Lote 11 (40 cores, 03/10): cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas). Leitura do cartao: violeta elétrico acetinado (H260 S80 V80). Piloto D aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Datsun 240Z (classic)",
+      "carro_cor": "an electric blue-violet satin chrome, like ultramarine violet (hue about 260) - bluer than purple, never pink, never lilac or lavender",
+      "carro_acabamento": "satin chrome metallic: a coloured chrome film with a silky brushed-metal sheen, brighter and more mirror-like than matte chrome but still soft: every curve carries a brilliant, metallic, slightly blurred sheen band that falls off fast into a deeper shade of the same colour; reflections of the surroundings are soft and smeared, never a sharp mirror image. The black trim and the glass stay glossy.",
+      "carro_cenario": "the road below the rock pillars and monasteries of Meteora, Greece"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031901_95c12f62-0c13-4159-912c-0084a8f64650.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Datsun 240Z envelopado em Speed Wrapping EHM 008 Chrome Metallic Purple",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ehm-008-chrome-metallic-purple-pet-spwehm008.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025940_f2994194-2209-4880-968d-ac5d927faa04.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031858_d8166799-fc95-430e-9d33-b8cc46e7bac3.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031852_975bb221-c86d-4d14-8a93-60673dba1c34.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031854_d9a337e2-bdc3-46c3-9ca0-de6606e2dd41.png",
+        "nota": "macro do cromo acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-ehm-009-chrome-metallic-romani-red-pet-spwehm009": {
+    "mensagem": "feat(ehm-009): Maserati Quattroporte + capa cromo metalico acetinado Chrome Metallic Romani Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EHM 009 CHROME METALLIC ROMANI RED PET). Lote 11 (40 cores, 03/10): cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas). Leitura do cartao: vermelho-romani: framboesa-vinho queimada, suave (H357 S48 V60). Piloto D aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Maserati Quattroporte",
+      "carro_cor": "a deep crimson-wine red satin chrome (hue about 357) - clearly RED, never pink, never mauve, never rose; dark wine-red on the flat panels, and the sheen bands glow a bright vivid red",
+      "carro_acabamento": "satin chrome metallic: a coloured chrome film with a silky brushed-metal sheen, brighter and more mirror-like than matte chrome but still soft: every curve carries a brilliant, metallic, slightly blurred sheen band that falls off fast into a deeper shade of the same colour; reflections of the surroundings are soft and smeared, never a sharp mirror image. The black trim and the glass stay glossy.",
+      "carro_cenario": "a lakeside road on Lake Como near Bellagio, stone walls and old villas"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031853_76947c14-f6a7-41db-84fa-f19fc7b35b43.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Maserati Quattroporte envelopado em Speed Wrapping EHM 009 Chrome Metallic Romani Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ehm-009-chrome-metallic-romani-red-pet-spwehm009.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025531_cc192faa-f318-4293-a252-e7da02deb110.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031917_48037450-940d-42ec-8bfd-1941f8730322.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031918_06f5374b-d7a3-4611-9152-6e47d0fbb66d.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031917_7a82b46e-5020-4dc7-9e80-f6dcf6654fe8.png",
+        "nota": "macro do cromo acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-ehm-010-chrome-metallic-dark-gold-pet-spwehm010": {
+    "mensagem": "feat(ehm-010): BMW 3.0 CSL + capa cromo metalico acetinado Chrome Metallic Dark Gold\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EHM 010 CHROME METALLIC DARK GOLD PET). Lote 11 (40 cores, 03/10): cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas). Leitura do cartao: ouro escuro / latão oliva; faixa de brilho dourada (H42 S60 V50). Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "BMW 3.0 CSL (classic)",
+      "carro_cor": "a dark olive-gold brass satin chrome; the sheen bands glow bright gold",
+      "carro_acabamento": "satin chrome metallic: a coloured chrome film with a silky brushed-metal sheen, brighter and more mirror-like than matte chrome but still soft: every curve carries a brilliant, metallic, slightly blurred sheen band that falls off fast into a deeper shade of the same colour; reflections of the surroundings are soft and smeared, never a sharp mirror image. The black trim and the glass stay glossy.",
+      "carro_cenario": "the road through the orange hoodoos of Bryce Canyon, Utah"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032130_de452a65-3607-455a-9b79-f91a05605f58.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "BMW 3.0 CSL envelopado em Speed Wrapping EHM 010 Chrome Metallic Dark Gold",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ehm-010-chrome-metallic-dark-gold-pet-spwehm010.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025253_a7bca673-d4b8-4d5b-a074-ac3852d3d473.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031859_712da81a-b757-44ba-beac-54684fb35d54.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032131_6d775bb8-9425-4134-8be9-07aab0166bf1.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032133_03e157d9-7dee-418b-8654-eaa987afd71e.png",
+        "nota": "macro do cromo acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-ehm-011-chrome-metallic-grey-pet-spwehm011": {
+    "mensagem": "feat(ehm-011): Audi Sport quattro + capa cromo metalico acetinado Chrome Metallic Grey\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EHM 011 CHROME METALLIC GREY PET). Lote 11 (40 cores, 03/10): cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas). Leitura do cartao: grafite acetinado (cinza escuro neutro) com faixa prata. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Audi Sport quattro (1984)",
+      "carro_cor": "a dark gunmetal grey satin chrome (neutral); the sheen bands glow bright silver",
+      "carro_acabamento": "satin chrome metallic: a coloured chrome film with a silky brushed-metal sheen, brighter and more mirror-like than matte chrome but still soft: every curve carries a brilliant, metallic, slightly blurred sheen band that falls off fast into a deeper shade of the same colour; reflections of the surroundings are soft and smeared, never a sharp mirror image. The black trim and the glass stay glossy.",
+      "carro_cenario": "the serpentine road above the Bay of Kotor, Montenegro, grey mountains and dark water"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032134_1bb6af3e-248f-4810-95c8-cd1bf5b7b01d.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Audi Sport quattro envelopado em Speed Wrapping EHM 011 Chrome Metallic Grey",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ehm-011-chrome-metallic-grey-pet-spwehm011.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025257_1ae3d661-753b-4ff8-bacc-7ed5aa767f90.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032129_a3b52440-0c5f-4688-b116-cb1686b60fae.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032133_c5f29572-73ce-40a4-a543-f4410fa0c6dd.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032135_a997b5ab-c639-4559-9a87-41508bb432e2.png",
+        "nota": "macro do cromo acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-ehm-012-chrome-metallic-silver-pet-spwehm012": {
+    "mensagem": "feat(ehm-012): Citroen DS + capa cromo metalico acetinado Chrome Metallic Silver\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EHM 012 CHROME METALLIC SILVER PET). Lote 11 (40 cores, 03/10): cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas). Leitura do cartao: prata acetinado claro, alumínio escovado (V80), faixa quase branca. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Citroen DS (classic)",
+      "carro_cor": "a bright satin silver chrome, like brushed aluminium (neutral); the sheen bands glow almost white",
+      "carro_acabamento": "satin chrome metallic: a coloured chrome film with a silky brushed-metal sheen, brighter and more mirror-like than matte chrome but still soft: every curve carries a brilliant, metallic, slightly blurred sheen band that falls off fast into a deeper shade of the same colour; reflections of the surroundings are soft and smeared, never a sharp mirror image. The black trim and the glass stay glossy.",
+      "carro_cenario": "the lakeside road at Hallstatt, Austria, dark lake and steep mountains"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032403_f0171b71-6a1a-476c-8449-22c13d1d5a4e.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Citroen DS envelopado em Speed Wrapping EHM 012 Chrome Metallic Silver",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ehm-012-chrome-metallic-silver-pet-spwehm012.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025255_9ef4daa8-c02e-43bf-aee7-d50659dc663b.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032131_e5a95f2e-e4ba-4e88-a965-6e507129554d.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032134_43f4bf60-2ac7-4dff-afa9-20e13f1e96d8.png",
+        "nota": "perfil puro"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032133_5f89cac0-21ca-4a2a-8916-9c7ebd8b4d3f.png",
+        "nota": "macro do cromo acetinado"
+      }
+    ]
+  },
+  "speed-wrapping-egf-001-gloss-carbon-red-pet-spwegf001": {
+    "mensagem": "feat(egf-001): McLaren 750S + capa carbono Gloss Carbon Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EGF 001 GLOSS CARBON RED PET). Lote 11 (40 cores, 03/10): carbono — aplicação parcial, fotos de perto, textura do cartão como referência. Leitura do cartao: carbono forjado BRILHO vermelho: lascas vermelho-rubi sobre fundo vinho escuro. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia e o recorte do cartao como referencia de textura. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "McLaren 750S in white - only the bonnet, roof and mirror caps wrapped",
+      "carro_cor": "gloss forged carbon in ruby red: elongated chips of bright ruby red over a deep wine-red base",
+      "carro_acabamento": "carbono — aplicação parcial, fotos de perto, textura do cartão como referência",
+      "carro_cenario": "a marina quay at Porto Cervo, Sardinia, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032402_7e1da4f3-f54d-4f5d-8bc1-25f2fddb6345.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "McLaren 750S envelopado em Speed Wrapping EGF 001 Gloss Carbon Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-001-gloss-carbon-red-pet-spwegf001.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_024839_e5a5631e-c38e-417c-a8a2-77adf76400d1.png",
+        "nota": "capo (aplicacao parcial)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032404_9f2d77da-767a-4fea-974c-5136b03a18b6.png",
+        "nota": "retrovisor e borda do teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032402_318abbcc-b916-4273-98b9-10c3436b9086.png",
+        "nota": "teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032403_a5025a95-0160-4a3a-86d9-78bd4f9b0bde.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "speed-wrapping-egf-002-gloss-carbon-black-pet-spwegf002": {
+    "mensagem": "feat(egf-002): Porsche 911 S/T + capa carbono Gloss Carbon Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EGF 002 GLOSS CARBON BLACK PET). Lote 11 (40 cores, 03/10): carbono — aplicação parcial, fotos de perto, textura do cartão como referência. Leitura do cartao: carbono forjado BRILHO preto: lascas grafite sobre preto. Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia e o recorte do cartao como referencia de textura. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Porsche 911 S/T in silver - only the bonnet, roof and mirror caps wrapped",
+      "carro_cor": "gloss forged carbon in black: elongated graphite-grey chips over a black base",
+      "carro_acabamento": "carbono — aplicação parcial, fotos de perto, textura do cartão como referência",
+      "carro_cenario": "the white Vitra Campus buildings in Weil am Rhein, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032404_76eebf65-fa79-484e-845f-515bb615bd56.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Porsche 911 S/T envelopado em Speed Wrapping EGF 002 Gloss Carbon Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-002-gloss-carbon-black-pet-spwegf002.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025258_1f49aea6-ee2c-470c-a8ef-cccd24426f44.png",
+        "nota": "capo (aplicacao parcial)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032405_70c2cf23-c60c-4c1c-a0dd-bebde6bcf5ba.png",
+        "nota": "retrovisor e borda do teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032404_a5929e4f-c601-41fd-856b-faa9a24d5940.png",
+        "nota": "teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032403_765b4ea9-be25-463f-8f10-c0bba252cb0a.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "speed-wrapping-egf-003-matte-carbon-red-pet-spwegf003": {
+    "mensagem": "feat(egf-003): Mercedes-AMG C63 + capa carbono Matte Carbon Red\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EGF 003 MATTE CARBON RED PET). Lote 11 (40 cores, 03/10): carbono — aplicação parcial, fotos de perto, textura do cartão como referência. Leitura do cartao: carbono forjado FOSCO vermelho: lascas vermelhas sobre vinho, sem verniz. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia e o recorte do cartao como referencia de textura. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Mercedes-AMG C63 in white - only the bonnet, roof and mirror caps wrapped",
+      "carro_cor": "MATTE forged carbon in red: elongated red chips over a deep wine-red base, no clear coat",
+      "carro_acabamento": "carbono — aplicação parcial, fotos de perto, textura do cartão como referência",
+      "carro_cenario": "the lavender fields of Valensole in Provence, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031850_fabe1a0d-caab-45f6-a5d7-acb4d18c5ba4.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Mercedes-AMG C63 envelopado em Speed Wrapping EGF 003 Matte Carbon Red",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-003-matte-carbon-red-pet-spwegf003.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025531_ec2f02a0-4e86-4581-ad55-a3a9f85222fb.png",
+        "nota": "capo (aplicacao parcial)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031849_f748192b-b59b-43ba-b3c6-c76dcd6c62c0.png",
+        "nota": "retrovisor e borda do teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031848_99480231-a735-49eb-9a98-11f011fcd02f.png",
+        "nota": "teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031848_34ee6a90-4314-45ff-b0a8-14de4f1be894.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "speed-wrapping-egf-004-matte-carbon-black-pet-spwegf004": {
+    "mensagem": "feat(egf-004): Toyota GR Corolla + capa carbono Matte Carbon Black\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EGF 004 MATTE CARBON BLACK PET). Lote 11 (40 cores, 03/10): carbono — aplicação parcial, fotos de perto, textura do cartão como referência. Leitura do cartao: carbono forjado FOSCO preto: lascas grafite sobre preto, sem verniz. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia e o recorte do cartao como referencia de textura. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Toyota GR Corolla in grey - only the bonnet, roof and mirror caps wrapped",
+      "carro_cor": "MATTE forged carbon in black: elongated graphite chips over a black base, no clear coat",
+      "carro_acabamento": "carbono — aplicação parcial, fotos de perto, textura do cartão como referência",
+      "carro_cenario": "a desert road in Nevada, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031849_63dd8008-25e6-4e24-bee8-c555b2f29338.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Toyota GR Corolla envelopado em Speed Wrapping EGF 004 Matte Carbon Black",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-004-matte-carbon-black-pet-spwegf004.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025533_b9710bca-05da-4a5e-885a-e22bbebaeb0b.png",
+        "nota": "capo (aplicacao parcial)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031849_53764bc9-f79c-4f7d-9fb8-d3944f335545.png",
+        "nota": "retrovisor e borda do teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031848_319bec08-78a4-4021-93cb-e3447c99cb58.png",
+        "nota": "teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031848_39053340-524b-4757-acff-e67f97930877.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "speed-wrapping-egf-005-carbon-gloss-3d-spwegf005": {
+    "mensagem": "feat(egf-005): Audi RS4 Avant + capa carbono Carbon Gloss 3D\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EGF 005 CARBON GLOSS 3D). Lote 11 (40 cores, 03/10): carbono — aplicação parcial, fotos de perto, textura do cartão como referência. Leitura do cartao: carbono 3D trançado clássico (twill) preto brilho. Piloto B aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia e o recorte do cartao como referencia de textura. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Audi RS4 Avant in white - only the bonnet, roof and mirror caps wrapped",
+      "carro_cor": "gloss 3D carbon fibre in black: a classic tight twill weave with a deep clear coat",
+      "carro_acabamento": "carbono — aplicação parcial, fotos de perto, textura do cartão como referência",
+      "carro_cenario": "a mountain pass road in the Pyrenees, out of focus"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032111_30cec8d4-cb46-4e31-9d5f-0c7228470982.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Audi RS4 Avant envelopado em Speed Wrapping EGF 005 Carbon Gloss 3D",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-egf-005-carbon-gloss-3d-spwegf005.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025532_5339ed23-c9b5-48e6-bbbe-618638797a5f.png",
+        "nota": "capo (aplicacao parcial)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031850_c479bb9d-2f65-4a0f-b862-b76781ec58e5.png",
+        "nota": "retrovisor e borda do teto"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_031849_02e6ae3f-d2a4-4674-bc75-f78daeca4ff0.png",
+        "nota": "teto"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032111_affb0121-2623-48d7-9d5f-f30814e4089e.png",
+        "nota": "macro da textura"
+      }
+    ]
+  },
+  "speed-wrapping-ebp-001-gloss-black-sunroof-12c-spwebp001": {
+    "mensagem": "feat(ebp-001): Porsche Macan Electric + capa preto brilho para teto Gloss Black Sunroof 12C\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "nota_cor": "Amostra do catalogo fisico (EBP 001 GLOSS BLACK SUNROOF 12C). Lote 11 (40 cores, 03/10): preto brilho para teto — aplicação parcial no teto. Leitura do cartao: preto brilho profundo (filme de teto, efeito teto panorâmico). Piloto A aprovado pelo Joao 03/10. Fotos 3/4/5 com o piloto aprovado como referencia. Capa 1 (so texto). Sem correcao de cor (espelho, holografico e glitter enganam a mascara).",
+    "prompts": {
+      "modelo": "gpt_image_2 · fotos com o piloto aprovado como referencia · capa high 1:1 com ESG-034 (geometria) [+ ESG-033 | + piloto | + textura]",
+      "carro": "Porsche Macan Electric in white - only the roof wrapped",
+      "carro_cor": "a deep piano gloss black film on the roof only, like a panoramic glass roof",
+      "carro_acabamento": "preto brilho para teto — aplicação parcial no teto",
+      "carro_cenario": "a coastal road in Sintra, Portugal, with the Atlantic and green hills behind"
+    },
+    "capa": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032112_b7f7e2b5-15f2-4ae6-bd27-860d73aa5c87.png",
+    "logo": {
+      "arquivo": "scripts/data/marca-speed-wrapping.png",
+      "largura": 0.26,
+      "esquerda": 0.025,
+      "topo": 0.025
+    },
+    "destino": "public/assets/images/shop/speed-wrapping/aplicacao",
+    "url_base": "/assets/images/shop/speed-wrapping/aplicacao",
+    "destino_capa": "public/assets/images/shop/speed-wrapping",
+    "alt_base": "Porsche Macan Electric envelopado em Speed Wrapping EBP 001 Gloss Black Sunroof 12C",
+    "extras": [
+      "public/assets/images/shop/speed-wrapping/speed-wrapping-ebp-001-gloss-black-sunroof-12c-spwebp001.webp",
+      "docs/FOTOS_DE_COR_AUTOMOTIVA.md",
+      "docs/CAPAS_SPEED_WRAPPING.md",
+      "docs/STATUS_CORES_SPEED.md",
+      "scripts/data/publicacao.json"
+    ],
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_025034_4cb458b2-aace-4ac4-a599-1a51374f55b5.png",
+        "nota": "frente 3/4 de cima (so o teto envelopado)"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032112_555a508d-1b3e-4220-a89f-fd7157052ebd.png",
+        "nota": "traseira 3/4 de cima"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032111_09a9095c-801c-48a0-9091-86772c1ae36d.png",
+        "nota": "lateral de cima"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261003_032112_2ec10d3f-5fc2-4df6-ac39-3bf9e2fb5fc5.png",
+        "nota": "close do teto"
+      }
+    ]
+  },
   "speed-wrapping-ecg-001-candy-gold-green-pet-spwecg001": {
     "mensagem": "feat(ecg-001): Porsche 911 Dakar + capa candy gold Candy Gold Green\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
     "nota_cor": "Amostra do catalogo fisico (ECG 001 CANDY GOLD GREEN PET). Lote 10 (64 cores de acabamento especial, 02/10): candy com perola dourada. Piloto C aprovado pelo Joao 02/10. Fotos 3/4/5 geradas com o PILOTO APROVADO como imagem de referencia (mesmo carro, rodas e filme). Capa 1 so texto, capa 2 com o piloto como referencia de cor; usada a c1. Sem correcao de cor (acabamento especial: reflexo/cromo/glitter confundem a mascara).",

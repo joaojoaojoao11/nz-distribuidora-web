@@ -481,6 +481,46 @@ conferir sempre pelo arquivo no ar antes de mexer em qualquer coisa.
 | ERW-004 Rainbow Matte Grey | `#4E5058` | glitter holográfico arco-íris | capa 1 (só texto); sem correção |
 | ERW-005 Rainbow Matte Silver | `#9EA1A8` | glitter holográfico arco-íris | capa 1 (só texto); sem correção |
 | ERW-006 Rainbow Matte White | `#DADCE2` | glitter holográfico arco-íris | capa 1 (só texto); sem correção |
+| ECC-001 Chameleon Chrome Silver | — | cromo espelhado camaleão (espelho + virada de cor iridescente) | capa 1 (só texto); sem correção |
+| ECC-002 Chameleon Chrome Green | — | cromo espelhado camaleão (espelho + virada de cor iridescente) | capa 1 (só texto); sem correção |
+| ECC-003 Chameleon Chrome Blue | — | cromo espelhado camaleão (espelho + virada de cor iridescente) | capa 1 (só texto); sem correção |
+| ECC-004 Chameleon Chrome Sapphire Blue | — | cromo espelhado camaleão (espelho + virada de cor iridescente) | capa 1 (só texto); sem correção |
+| ECC-005 Chameleon Blue Purple | — | camaleão brilho metálico com glitter (cor muda conforme o ângulo) | capa 1 (só texto); sem correção |
+| ECC-006 Chameleon Purple Red | — | camaleão brilho metálico com glitter (cor muda conforme o ângulo) | capa 1 (só texto); sem correção |
+| ECC-007 Chameleon Purple Blue | — | camaleão brilho metálico com glitter (cor muda conforme o ângulo) | capa 1 (só texto); sem correção |
+| ECC-008 Chameleon Green Gold | — | camaleão brilho metálico com glitter (cor muda conforme o ângulo) | capa 1 (só texto); sem correção |
+| ECC-009 Chameleon Green Purple | — | camaleão brilho metálico com glitter (cor muda conforme o ângulo) | capa 1 (só texto); sem correção |
+| ECC-010 Chameleon Galaxy | — | camaleão brilho metálico com glitter (cor muda conforme o ângulo) | capa 1 (só texto); sem correção |
+| ECC-011 Chameleon Fancy Galatic Sparkling | — | camaleão brilho metálico com glitter (cor muda conforme o ângulo) | capa 2 (piloto aprovado como referência); sem correção |
+| EMR-001 Chrome Mirror Silver | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-002 Chrome Mirror Red | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-003 Chrome Mirror Blue | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-004 Chrome Mirror Purple | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-005 Chrome Mirror Orange | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-006 Chrome Mirror Gold | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-007 Chrome Mirror Rose | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-008 Chrome Mirror Tiffany | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-009 Chrome Mirror Bronze | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-010 Chrome Mirror Black | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| EMR-011 Chrome Mirror Green | — | cromo espelhado colorido (espelho de verdade) | capa 1 (só texto); sem correção |
+| ELS-001 Laser Chrome Black | — | cromo laser holográfico (espelho com arco-íris) | capa 1 (só texto); sem correção |
+| ELS-002 Laser Chrome Silver | — | cromo laser holográfico (espelho com arco-íris) | capa 1 (só texto); sem correção |
+| ELS-003 Laser Chrome Blue | — | cromo laser holográfico (espelho com arco-íris) | capa 1 (só texto); sem correção |
+| ELS-004 Laser Chrome Gold | — | cromo laser holográfico (espelho com arco-íris) | capa 1 (só texto); sem correção |
+| ELS-005 Laser Chrome Purple | — | cromo laser holográfico (espelho com arco-íris) | capa 1 (só texto); sem correção |
+| ELS-006 Laser Chrome Red | — | cromo laser holográfico (espelho com arco-íris) | capa 1 (só texto); sem correção |
+| EHM-007 Chrome Metallic Green | — | cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas) | capa 1 (só texto); sem correção |
+| EHM-008 Chrome Metallic Purple | — | cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas) | capa 1 (só texto); sem correção |
+| EHM-009 Chrome Metallic Romani Red | — | cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas) | capa 1 (só texto); sem correção |
+| EHM-010 Chrome Metallic Dark Gold | — | cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas) | capa 1 (só texto); sem correção |
+| EHM-011 Chrome Metallic Grey | — | cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas) | capa 1 (só texto); sem correção |
+| EHM-012 Chrome Metallic Silver | — | cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas) | capa 1 (só texto); sem correção |
+| EGF-001 Gloss Carbon Red | — | carbono — aplicação parcial, fotos de perto, textura do cartão como referência | capa 1 (só texto; carbono com o recorte do cartão); sem correção |
+| EGF-002 Gloss Carbon Black | — | carbono — aplicação parcial, fotos de perto, textura do cartão como referência | capa 1 (só texto; carbono com o recorte do cartão); sem correção |
+| EGF-003 Matte Carbon Red | — | carbono — aplicação parcial, fotos de perto, textura do cartão como referência | capa 1 (só texto; carbono com o recorte do cartão); sem correção |
+| EGF-004 Matte Carbon Black | — | carbono — aplicação parcial, fotos de perto, textura do cartão como referência | capa 1 (só texto; carbono com o recorte do cartão); sem correção |
+| EGF-005 Carbon Gloss 3D | — | carbono — aplicação parcial, fotos de perto, textura do cartão como referência | capa 1 (só texto; carbono com o recorte do cartão); sem correção |
+| EBP-001 Gloss Black Sunroof 12C | — | preto brilho para teto — aplicação parcial no teto | capa 1 (só texto); sem correção |
 
 **A ESG-034 é a referência de geometria da linha** (job `a811cd95…`), e a
 **ESG-033 é a referência de acabamento** (job `d1170724…`). Passar as duas como

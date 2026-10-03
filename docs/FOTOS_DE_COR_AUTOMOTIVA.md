@@ -284,6 +284,46 @@ confiável:
 | ERW-004 Rainbow Matte Grey | sombra/meio/luz à mão → `#4E5058` (glitter holográfico arco-íris) | — | sem correção |
 | ERW-005 Rainbow Matte Silver | sombra/meio/luz à mão → `#9EA1A8` (glitter holográfico arco-íris) | — | sem correção |
 | ERW-006 Rainbow Matte White | sombra/meio/luz à mão → `#DADCE2` (glitter holográfico arco-íris) | — | sem correção |
+| ECC-001 Chameleon Chrome Silver | espelho iridescente: base água-turquesa claro com rosa, violeta e dourado nas curvas (cromo espelhado camaleão (espelho + virada de cor iridescente)) | — | sem correção |
+| ECC-002 Chameleon Chrome Green | espelho vermelho-cobre com borda laranja-dourada (o nome diz "Chrome Green", o cartão é vermelho) (cromo espelhado camaleão (espelho + virada de cor iridescente)) | — | sem correção |
+| ECC-003 Chameleon Chrome Blue | espelho verde-esmeralda com reflexo verde-água (o nome diz "Chrome Blue", o cartão é verde) (cromo espelhado camaleão (espelho + virada de cor iridescente)) | — | sem correção |
+| ECC-004 Chameleon Chrome Sapphire Blue | espelho azul-céu iridescente com rosa e lilás nas curvas (cromo espelhado camaleão (espelho + virada de cor iridescente)) | — | sem correção |
+| ECC-005 Chameleon Blue Purple | azul-marinho com glitter azul fino; borda vira roxo-violeta (H215 S73 V44 meio) (camaleão brilho metálico com glitter (cor muda conforme o ângulo)) | — | sem correção |
+| ECC-006 Chameleon Purple Red | índigo-marinho escuro com glitter azul; brilho vira violeta-púrpura (H227 S51 V35 meio) (camaleão brilho metálico com glitter (cor muda conforme o ângulo)) | — | sem correção |
+| ECC-007 Chameleon Purple Blue | azul-petróleo/aço com glitter, sombra azul-marinho, luz azul-acinzentado (H205 S60 V45) (camaleão brilho metálico com glitter (cor muda conforme o ângulo)) | — | sem correção |
+| ECC-008 Chameleon Green Gold | verde-oliva escuro com glitter dourado-esverdeado (H100 S30 V30) (camaleão brilho metálico com glitter (cor muda conforme o ângulo)) | — | sem correção |
+| ECC-009 Chameleon Green Purple | verde-esmeralda escuro com glitter verde; leve virada para roxo nas bordas (H165 S47 V27) (camaleão brilho metálico com glitter (cor muda conforme o ângulo)) | — | sem correção |
+| ECC-010 Chameleon Galaxy | verde vivo metálico que escurece para verde-petróleo quase preto (H140 S55 V35) (camaleão brilho metálico com glitter (cor muda conforme o ângulo)) | — | sem correção |
+| ECC-011 Chameleon Fancy Galatic Sparkling | azul-petróleo escuro com glitter; vira roxo-violeta e verde-água nas curvas (H210-245 S45 V30) (camaleão brilho metálico com glitter (cor muda conforme o ângulo)) | — | sem correção |
+| EMR-001 Chrome Mirror Silver | espelho prata puro (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-002 Chrome Mirror Red | espelho vermelho-sangue (H352 S86 V40-85) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-003 Chrome Mirror Blue | espelho azul-royal (H240 S90) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-004 Chrome Mirror Purple | espelho roxo-violeta (H275 S70) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-005 Chrome Mirror Orange | espelho laranja-âmbar (H25 S88) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-006 Chrome Mirror Gold | espelho dourado amarelo (H45 S80) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-007 Chrome Mirror Rose | espelho rosa-magenta (H340 S75) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-008 Chrome Mirror Tiffany | espelho verde-esmeralda com tom tiffany (H165 S92) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-009 Chrome Mirror Bronze | espelho bronze-cobre rosado (H15 S50) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-010 Chrome Mirror Black | espelho preto (fumê bem escuro, quase preto) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| EMR-011 Chrome Mirror Green | espelho verde vivo (H130 S90) (cromo espelhado colorido (espelho de verdade)) | — | sem correção |
+| ELS-001 Laser Chrome Black | espelho escuro/fumê com faixas de arco-íris fortes (cromo laser holográfico (espelho com arco-íris)) | — | sem correção |
+| ELS-002 Laser Chrome Silver | espelho prata com arco-íris holográfico em todo o painel (cromo laser holográfico (espelho com arco-íris)) | — | sem correção |
+| ELS-003 Laser Chrome Blue | espelho azul-royal com reflexo holográfico ciano (cromo laser holográfico (espelho com arco-íris)) | — | sem correção |
+| ELS-004 Laser Chrome Gold | espelho dourado com holografia laranja e verde (cromo laser holográfico (espelho com arco-íris)) | — | sem correção |
+| ELS-005 Laser Chrome Purple | espelho violeta com holografia azul e rosa (cromo laser holográfico (espelho com arco-íris)) | — | sem correção |
+| ELS-006 Laser Chrome Red | espelho vermelho com holografia rosa e laranja (cromo laser holográfico (espelho com arco-íris)) | — | sem correção |
+| EHM-007 Chrome Metallic Green | verde vivo acetinado metálico (H120 S85 V70) (cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas)) | — | sem correção |
+| EHM-008 Chrome Metallic Purple | violeta elétrico acetinado (H260 S80 V80) (cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas)) | — | sem correção |
+| EHM-009 Chrome Metallic Romani Red | vermelho-romani: framboesa-vinho queimada, suave (H357 S48 V60) (cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas)) | — | sem correção |
+| EHM-010 Chrome Metallic Dark Gold | ouro escuro / latão oliva; faixa de brilho dourada (H42 S60 V50) (cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas)) | — | sem correção |
+| EHM-011 Chrome Metallic Grey | grafite acetinado (cinza escuro neutro) com faixa prata (cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas)) | — | sem correção |
+| EHM-012 Chrome Metallic Silver | prata acetinado claro, alumínio escovado (V80), faixa quase branca (cromo metálico acetinado (mesma receita das EHM-001 a 006 aprovadas)) | — | sem correção |
+| EGF-001 Gloss Carbon Red | carbono forjado BRILHO vermelho: lascas vermelho-rubi sobre fundo vinho escuro (carbono — aplicação parcial, fotos de perto, textura do cartão como referência) | — | sem correção |
+| EGF-002 Gloss Carbon Black | carbono forjado BRILHO preto: lascas grafite sobre preto (carbono — aplicação parcial, fotos de perto, textura do cartão como referência) | — | sem correção |
+| EGF-003 Matte Carbon Red | carbono forjado FOSCO vermelho: lascas vermelhas sobre vinho, sem verniz (carbono — aplicação parcial, fotos de perto, textura do cartão como referência) | — | sem correção |
+| EGF-004 Matte Carbon Black | carbono forjado FOSCO preto: lascas grafite sobre preto, sem verniz (carbono — aplicação parcial, fotos de perto, textura do cartão como referência) | — | sem correção |
+| EGF-005 Carbon Gloss 3D | carbono 3D trançado clássico (twill) preto brilho (carbono — aplicação parcial, fotos de perto, textura do cartão como referência) | — | sem correção |
+| EBP-001 Gloss Black Sunroof 12C | preto brilho profundo (filme de teto, efeito teto panorâmico) (preto brilho para teto — aplicação parcial no teto) | — | sem correção |
 | EDG-021 / EMT-025 (azuis, 30/09) | — | 41 / 26 | **não confiável**: reflexo do céu no cartão segurado na mão — refotografar deitado, na sombra |
 | **ESG-030 Gem Red** | H333 S68 V76 | **7,7** | **não confiável** |
 
@@ -748,6 +788,31 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
 
+### Cromo espelho, laser, camaleão e carbono (lote 11, 03/10)
+
+40 cores. O que funcionou e fica:
+
+- **Camaleão (ECC) tem dois acabamentos na mesma linha.** ECC-001 a 004 são espelho iridescente;
+  ECC-005 a 011 são brilho metálico com glitter e a cor virando só nas bordas — não é espelho.
+  Pedir "chameleon chrome" para as 005-011 faria espelho e o João reprovaria (mesmo erro da EGL).
+- **O nome engana de novo:** ECC-002 "Chrome Green" é vermelho-cobre-dourado e ECC-003
+  "Chrome Blue" é verde-esmeralda. Fotos pelo cartão; nome mantido como está no NZERP.
+- **Espelho (EMR) e laser (ELS):** "TRUE MIRROR... reflects the sky and the ground as sharp mirror
+  reflections, all tinted" e, no laser, "diffracts light into rainbow bands... like a holographic
+  sticker". Céu com nuvens no cenário — o espelho precisa de algo para refletir.
+- **Cor dominante tem de ser dita como dominante.** Camaleão espelhado puxa para prata ou lilás e
+  o glitter azul puxa para roxo: escrever "the car reads clearly AQUA-CYAN / SKY BLUE / BLUE overall"
+  e deixar a virada "ONLY at the very edges". Foi o que corrigiu ECC-001/003/004/005/011.
+- **Conferir contra o cartão ANTES de mostrar ao João.** 9 pilotos refeitos nessa etapa; ele viu só
+  os corrigidos.
+- **Carbono (EGF):** recorte do cartão (sem logo, sem mão, sem reflexo) subido no Higgsfield como
+  referência de textura, qualidade high. Fotos 3/4/5 com DUAS referências: textura + piloto. Fotos:
+  capô (piloto), retrovisor + borda do teto, teto, macro.
+- **Upload no Higgsfield:** o PUT pré-assinado pelo urllib do Python volta 403 (Cloudflare 1010);
+  com `curl -X PUT -H "Content-Type: image/jpeg" -H "If-None-Match: *"` passa.
+- 6 frentes em paralelo (contra 13 no lote 10) e reenvio automático das recusas: 200 de 200 sem
+  intervenção.
+
 ### Acabamentos especiais: candy, cromo, flip, phantom, oxide, rainbow (lote 10, 02/10)
 
 64 cores de 8 linhas que nunca tinham sido fotografadas. Antes do lote, **um teste de receita por
@@ -1200,6 +1265,46 @@ marca d'água, sem adesivo de patrocínio.
 | ERW-004 Rainbow Matte Grey | GMC Hummer EV | a desert road through the golden dunes outside Dubai, open sky |
 | ERW-005 Rainbow Matte Silver | Rivian R1T | the red cliffs and slickrock of Canyonlands, Utah |
 | ERW-006 Rainbow Matte White | Polestar 3 | a road through a dark green pine forest in the Pacific Northwest |
+| ECC-001 Chameleon Chrome Silver | Lamborghini Sesto Elemento | Salar de Uyuni (Bolívia), sal branco com lâmina d'água refletindo o céu |
+| ECC-002 Chameleon Chrome Green | Ferrari F50 | Serra do Rio do Rastro (SC), curvas na encosta verde, céu aberto |
+| ECC-003 Chameleon Chrome Blue | Koenigsegg CC850 | formações de rocha vermelha de AlUla (Arábia Saudita), areia clara |
+| ECC-004 Chameleon Chrome Sapphire Blue | McLaren W1 | Salinas Grandes (Argentina), salar branco com montanhas ao fundo |
+| ECC-005 Chameleon Blue Purple | Aston Martin Valour | estrada Bealach na Bà (Escócia), rocha cinza e charneca marrom |
+| ECC-006 Chameleon Purple Red | Bentley Batur | estrada das Gargantas do Verdon (França), calcário claro, rio turquesa lá embaixo |
+| ECC-007 Chameleon Purple Blue | Mercedes-Benz CLK GTR | deserto de Tabernas (Espanha), terra ocre e leito seco |
+| ECC-008 Chameleon Green Gold | Aston Martin Victor | estrada de terra vermelha na Avenida dos Baobás (Madagascar) |
+| ECC-009 Chameleon Green Purple | De Tomaso P72 | cume do vulcão Haleakalā (Havaí), cones de cinza marrom, acima das nuvens |
+| ECC-010 Chameleon Galaxy | Lamborghini Veneno | morros listrados de Zhangye Danxia (China), faixas vermelhas, laranja e creme |
+| ECC-011 Chameleon Fancy Galatic Sparkling | Gordon Murray T.50 | Million Dollar Highway (Colorado), montanhas vermelhas e estrada na encosta |
+| EMR-001 Chrome Mirror Silver | Bugatti Mistral | deserto dos Pinnacles (Austrália), torres de calcário na areia amarela |
+| EMR-002 Chrome Mirror Red | Ferrari Monza SP2 | Alabama Hills (Califórnia), pedras de granito redondas, Monte Whitney ao fundo |
+| EMR-003 Chrome Mirror Blue | Bugatti Tourbillon | mirante do Horseshoe Bend (Arizona), arenito laranja, céu grande |
+| EMR-004 Chrome Mirror Purple | Lamborghini Centenario | deserto de Gobi (Mongólia), areia plana e estepe, montanhas longe |
+| EMR-005 Chrome Mirror Orange | McLaren F1 | cânion de Charyn (Cazaquistão), paredões vermelhos e ocre |
+| EMR-006 Chrome Mirror Gold | Lamborghini Temerario | estrada de Jebel Jais (Emirados), montanhas peladas, céu grande |
+| EMR-007 Chrome Mirror Rose | Ferrari 458 Italia | passo Tizi n'Tichka (Marrocos), curvas de terra vermelha no Atlas |
+| EMR-008 Chrome Mirror Tiffany | Koenigsegg One:1 | picos de granito de Spitzkoppe (Namíbia), rocha laranja, capim seco |
+| EMR-009 Chrome Mirror Bronze | Ferrari F12berlinetta | estrada do Lago Pukaki (Nova Zelândia), lago turquesa, picos nevados |
+| EMR-010 Chrome Mirror Black | Aston Martin Vulcan | salar de Bonneville (Utah), sal branco, montanhas longe |
+| EMR-011 Chrome Mirror Green | Dodge Challenger SRT Demon | estrada de areia nas dunas do Jalapão (TO), dunas laranja |
+| ELS-001 Laser Chrome Black | Cadillac Celestiq | praça do Museu do Amanhã (Rio de Janeiro), estrutura branca, baía de Guanabara |
+| ELS-002 Laser Chrome Silver | Tesla Roadster | Hakone Turnpike (Japão), Monte Fuji ao fundo |
+| ELS-003 Laser Chrome Blue | Lexus RC F | passo Hai Van (Vietnã), montanhas verdes descendo até o mar |
+| ELS-004 Laser Chrome Gold | Ferrari California T | cume do Mont Ventoux (Provença), cascalho branco de calcário |
+| ELS-005 Laser Chrome Purple | Nissan GT-R50 by Italdesign | estrada de Kazbegi (Geórgia), vale verde e igreja de Gergeti no morro |
+| ELS-006 Laser Chrome Red | Hyundai N Vision 74 | região da Montanha Arco-Íris Vinicunca (Peru), encostas listradas |
+| EHM-007 Chrome Metallic Green | Lancia Delta HF Integrale | estrada aos pés da cordilheira Grand Teton (Wyoming), campo de sálvia |
+| EHM-008 Chrome Metallic Purple | Datsun 240Z | estrada sob as rochas e mosteiros de Meteora (Grécia) |
+| EHM-009 Chrome Metallic Romani Red | Maserati Quattroporte | estrada à beira do Lago de Como, perto de Bellagio, muros de pedra e vilas |
+| EHM-010 Chrome Metallic Dark Gold | BMW 3.0 CSL | estrada entre as torres de pedra laranja do Bryce Canyon (Utah) |
+| EHM-011 Chrome Metallic Grey | Audi Sport quattro | serpentina acima da Baía de Kotor (Montenegro), montanhas cinza e água escura |
+| EHM-012 Chrome Metallic Silver | Citroen DS | estrada à beira do lago em Hallstatt (Áustria), montanhas íngremes |
+| EGF-001 Gloss Carbon Red | McLaren 750S | cais da marina de Porto Cervo (Sardenha), desfocado |
+| EGF-002 Gloss Carbon Black | Porsche 911 S/T | prédios brancos do Vitra Campus (Alemanha), desfocado |
+| EGF-003 Matte Carbon Red | Mercedes-AMG C63 | campos de lavanda de Valensole (Provença), desfocado |
+| EGF-004 Matte Carbon Black | Toyota GR Corolla | estrada no deserto de Nevada, desfocado |
+| EGF-005 Carbon Gloss 3D | Audi RS4 Avant | estrada de montanha nos Pirineus, desfocado |
+| EBP-001 Gloss Black Sunroof 12C | Porsche Macan Electric | estrada costeira em Sintra (Portugal), desfocado |
 
 Quando o fabricante já escolheu um carro na brochure, é uma boa escolha — foi o
 caso do Golf na Capri Bronze e do M4 na Bavarian Blue. E quando a cor reproduz
