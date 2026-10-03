@@ -1,5 +1,6 @@
-// GET /api/nz/patio — quem tem rolo fechado (bolinha verde) e quem tem ponta
-// aberta (bolinha laranja), no catálogo INTEIRO. SÓ ADMIN.
+// GET /api/nz/patio — quem tem rolo fechado (bolinha verde), quem tem ponta
+// aberta (bolinha laranja) e quem tem pedaço no parceiro (bolinha vermelha),
+// no catálogo INTEIRO. SÓ ADMIN.
 //
 // POR QUE UM ENDPOINT NOVO E NÃO O /api/nz/precos
 // As bolinhas do card vêm junto do preço, e isso resolve a VITRINE: uma
@@ -17,6 +18,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado } from '../papel.js';
+import { skusDoParceiro } from '../estoqueParceiro.js';
 
 interface LinhaEspelho {
   sku: string;
@@ -80,12 +82,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const comAberto = new Set(
     espelho.filter((e) => e.ativo && Number(e.rolos_abertos ?? 0) > 0).map((e) => e.sku)
   );
-  const skus = [...new Set([...comFechado, ...comAberto])];
+  // Vermelha: o estoque do parceiro não passa pelo espelho do ERP — vem da
+  // lista que a Cledna grava (api/_lib/estoqueParceiro.ts).
+  const comParceiro = new Set(await skusDoParceiro(site));
+  const skus = [...new Set([...comFechado, ...comAberto, ...comParceiro])];
 
   // Um SKU pode ter mais de um slug (alias NZWRAP → SH Wrapping): a volta é
   // pelo produto, nunca pelo SKU, senão os alias ficariam de fora do filtro.
   const fechados: string[] = [];
   const abertos: string[] = [];
+  const parceiro: string[] = [];
   if (skus.length) {
     const { data, error } = await site
       .from('produtos')
@@ -99,8 +105,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!p.erp_sku) continue;
       if (comFechado.has(p.erp_sku)) fechados.push(p.slug);
       if (comAberto.has(p.erp_sku)) abertos.push(p.slug);
+      if (comParceiro.has(p.erp_sku)) parceiro.push(p.slug);
     }
   }
 
-  res.status(200).json({ papel, fechados, abertos });
+  res.status(200).json({ papel, fechados, abertos, parceiro });
 }

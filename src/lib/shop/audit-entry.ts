@@ -609,6 +609,7 @@ function auditVitrineEPatio(): number {
   const mapa = {
     fechados: new Set([doisPrimeiros[0]]),
     abertos: new Set([doisPrimeiros[1], outro]),
+    parceiro: new Set([outro, SHOP_ITEMS[7]?.slug ?? '']),
   };
 
   const soFechado = applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, patio: ['rolo-fechado'] }, mapa);
@@ -618,18 +619,32 @@ function auditVitrineEPatio(): number {
     { ...EMPTY_FILTERS, patio: ['rolo-fechado', 'ponta-aberta'] },
     mapa
   );
+  const soParceiro = applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, patio: ['parceiro'] }, mapa);
+  const pontaOuParceiro = applyFilters(
+    SHOP_ITEMS,
+    { ...EMPTY_FILTERS, patio: ['ponta-aberta', 'parceiro'] },
+    mapa
+  );
   const semMapa = applyFilters(SHOP_ITEMS, { ...EMPTY_FILTERS, patio: ['rolo-fechado'] });
 
   console.table([
     { filtro: 'rolo fechado', itens: soFechado.length },
     { filtro: 'ponta aberta', itens: soPonta.length },
     { filtro: 'os dois (OU)', itens: ambos.length },
+    { filtro: 'parceiro', itens: soParceiro.length },
+    { filtro: 'ponta OU parceiro', itens: pontaOuParceiro.length },
     { filtro: 'sem mapa (cliente)', itens: semMapa.length },
   ]);
 
   check('rolo fechado devolve só quem tem', soFechado.length === 1, `${soFechado.length} != 1`);
   check('ponta aberta devolve só quem tem', soPonta.length === 2, `${soPonta.length} != 2`);
   check('marcar os dois é OU, não E', ambos.length === 3, `${ambos.length} != 3`);
+  check('parceiro devolve só quem tem', soParceiro.length === 2, `${soParceiro.length} != 2`);
+  check(
+    'ponta OU parceiro não conta duas vezes quem tem os dois',
+    pontaOuParceiro.length === 3,
+    `${pontaOuParceiro.length} != 3`
+  );
   check(
     'sem o mapa o filtro é ignorado, não zera a loja',
     semMapa.length === SHOP_ITEMS.length,

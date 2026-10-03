@@ -266,6 +266,7 @@ export function applyFilters(
   const cortarPorPatio = f.patio.length > 0 && Boolean(patio);
   const querFechado = f.patio.includes('rolo-fechado');
   const querAberto = f.patio.includes('ponta-aberta');
+  const querParceiro = f.patio.includes('parceiro');
 
   // Só restringe pela subfamília se ela existir no catálogo filtrado — senão
   // 'azul marinho' num acervo sem marinhos daria zero em vez dos azuis.
@@ -278,12 +279,13 @@ export function applyFilters(
     // Estoque é corte, não pontuação: quem pediu pronta entrega não quer ver
     // sob encomenda no fim da lista.
     if (f.estoque.length && !f.estoque.includes(item.nivelEstoque ?? 'sob-encomenda')) continue;
-    // Pátio: mesmo corte, e OU entre as duas bolinhas — marcar as duas é
-    // "tem rolo fechado OU tem ponta", como em toda faceta multivalor daqui.
+    // Pátio: mesmo corte, e OU entre as bolinhas — marcar duas é "tem rolo
+    // fechado OU tem ponta", como em toda faceta multivalor daqui.
     if (
       cortarPorPatio &&
       !((querFechado && patio!.fechados.has(item.slug)) ||
-        (querAberto && patio!.abertos.has(item.slug)))
+        (querAberto && patio!.abertos.has(item.slug)) ||
+        (querParceiro && patio!.parceiro.has(item.slug)))
     ) {
       continue;
     }

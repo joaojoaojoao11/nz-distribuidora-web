@@ -74,12 +74,13 @@ export const ESTOQUE_LABEL: Record<NivelEstoque, string> = {
 };
 
 /**
- * As duas bolinhas do card, em texto. "Rolo fechado" e "ponta" é como o pátio
+ * As bolinhas do card, em texto. "Rolo fechado" e "ponta" é como o pátio
  * fala — quem usa este filtro é vendedor, não visitante.
  */
 export const PATIO_LABEL: Record<SinalPatio, string> = {
   'rolo-fechado': 'Com rolo fechado',
   'ponta-aberta': 'Com ponta aberta',
+  parceiro: 'No parceiro (Inova)',
 };
 
 const KIND_LABEL: Record<ItemKind, string> = {
@@ -210,7 +211,7 @@ export function computeFacets(
   // Sem o mapa (todo mundo que não é admin) o grupo não existe: um filtro que
   // não tem como ser aplicado não pode aparecer na sidebar.
   const patioOpcoes: FacetOption<SinalPatio>[] = patio
-    ? (['rolo-fechado', 'ponta-aberta'] as SinalPatio[])
+    ? (['rolo-fechado', 'ponta-aberta', 'parceiro'] as SinalPatio[])
         .map((sinal) => ({
           id: sinal,
           label: PATIO_LABEL[sinal],

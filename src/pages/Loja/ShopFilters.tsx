@@ -112,6 +112,7 @@ function GrupoDisponibilidade({
   const marcador: Record<string, string> = {
     'rolo-fechado': styles.patioFechado,
     'ponta-aberta': styles.patioAberto,
+    parceiro: styles.patioParceiro,
   };
 
   return (
@@ -139,7 +140,7 @@ function GrupoDisponibilidade({
         ))}
       </ul>
       {facets.patio.length > 0 && (
-        <p className={styles.groupNota}>No pátio agora — só administradores veem.</p>
+        <p className={styles.groupNota}>Pátio SP e parceiro — só administradores veem.</p>
       )}
     </div>
   );

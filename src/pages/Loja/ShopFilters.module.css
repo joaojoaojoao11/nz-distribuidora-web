@@ -191,6 +191,10 @@
   background: #f59e0b;
 }
 
+.patioParceiro {
+  background: #ef4444;
+}
+
 /* Legenda curta do bloco do pátio. Existe para o admin não achar que o cliente
    está vendo o mesmo painel que ele. */
 .groupNota {

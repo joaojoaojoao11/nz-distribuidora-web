@@ -11,7 +11,8 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { BolinhasDeEstoque } from './EstoqueDots';
+import { BolinhasDeEstoque, agruparPecas, dataCurta, listaVelha } from './EstoqueDots';
+import type { EstoqueParceiro } from '../../lib/shop/precos';
 import styles from './Disponibilidade.module.css';
 
 type Nivel = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
@@ -45,6 +46,8 @@ interface Resposta {
   /** Só admin: o mesmo rótulo da tabela de preço do ERP. */
   rotuloErp?: 'ESTOQUE' | 'DROP';
   erpSku?: string;
+  /** Só admin: pedaços no estoque do parceiro (a bolinha vermelha). */
+  parceiros?: EstoqueParceiro[];
 }
 
 const ROTULO: Record<Nivel, string> = {
@@ -118,7 +121,11 @@ export default function Disponibilidade({ slug, nome }: { slug: string; nome?: s
             endpoint de estoque, que só os manda para lojista e admin. */}
         {dados.papel === 'admin' && dados.saldo && (
           <BolinhasDeEstoque
-            estoque={{ rolosFechados: dados.saldo.rolosFechados, rolosAbertos: dados.saldo.rolosAbertos }}
+            estoque={{
+              rolosFechados: dados.saldo.rolosFechados,
+              rolosAbertos: dados.saldo.rolosAbertos,
+              parceiros: dados.parceiros,
+            }}
           />
         )}
       </h2>
@@ -156,6 +163,26 @@ export default function Disponibilidade({ slug, nome }: { slug: string; nome?: s
           )}
         </dl>
       )}
+
+      {/* Nível admin: pedaços no parceiro. Não é nosso estoque — por isso fica
+          fora da tabela de saldo, com a data da lista à vista. */}
+      {dados.parceiros?.map((p) => (
+        <div key={p.nome} className={styles.parceiro}>
+          <p className={styles.parceiroTitulo}>
+            <span className={styles.parceiroPonto} aria-hidden="true" />
+            No parceiro · {p.nome}
+          </p>
+          <ul className={styles.parceiroPecas}>
+            {agruparPecas(p.pecas).map((texto) => (
+              <li key={texto}>{texto}</li>
+            ))}
+          </ul>
+          <p className={styles.parceiroNota}>
+            Lista de {dataCurta(p.listaDe)}
+            {listaVelha(p.listaDe) ? ' — antiga, confirme com o parceiro antes de vender.' : '. Confirme com o parceiro antes de fechar.'}
+          </p>
+        </div>
+      ))}
 
       {/* Nível admin: botões por quantidade. Sem reserva — é o que está no
           pátio AGORA; quem fecha o pedido é o vendedor no ERP. */}

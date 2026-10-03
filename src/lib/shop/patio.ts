@@ -1,6 +1,7 @@
-// Mapa do pátio no cliente — quais slugs têm rolo fechado e quais têm ponta.
+// Mapa do pátio no cliente — quais slugs têm rolo fechado, quais têm ponta e
+// quais têm pedaço no parceiro.
 //
-// É o que faz as duas bolinhas do card virarem FILTRO. As bolinhas em si
+// É o que faz as bolinhas do card virarem FILTRO. As bolinhas em si
 // chegam junto do preço, página por página; o filtro precisa da resposta para
 // o catálogo inteiro, e é isso que /api/nz/patio entrega (ver o handler).
 //
@@ -24,6 +25,7 @@ let assinouAuth = false;
 interface Resposta {
   fechados?: string[];
   abertos?: string[];
+  parceiro?: string[];
 }
 
 async function buscar(): Promise<MapaPatio | null> {
@@ -43,6 +45,7 @@ async function buscar(): Promise<MapaPatio | null> {
   return {
     fechados: new Set(json.fechados ?? []),
     abertos: new Set(json.abertos ?? []),
+    parceiro: new Set(json.parceiro ?? []),
   };
 }
 

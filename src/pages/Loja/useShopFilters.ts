@@ -49,7 +49,7 @@ const VERTICALS: Vertical[] = ['PPF', 'WRAP', 'SIGN', 'DECOR'];
 const BRAND_KEYS: BrandKey[] = ['nz', 'sh', 'metamark', 'orafol', 'avery', 'etherna', 'speed', 'nar', 'outro'];
 const LINE_KEYS = Object.keys(LINHA_LABEL) as LineKey[];
 const KINDS: ItemKind[] = ['cor', 'padrao', 'linha'];
-const PATIO_KEYS: SinalPatio[] = ['rolo-fechado', 'ponta-aberta'];
+const PATIO_KEYS: SinalPatio[] = ['rolo-fechado', 'ponta-aberta', 'parceiro'];
 const SORTS: SortMode[] = [
   'relevancia',
   'marca',

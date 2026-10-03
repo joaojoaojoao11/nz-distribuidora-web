@@ -14,6 +14,14 @@
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { supabase } from '../supabase';
 
+/** Pedaços de um parceiro para um SKU. Espelha api/_lib/estoqueParceiro.ts. */
+export interface EstoqueParceiro {
+  nome: string;
+  /** Data da lista, AAAA-MM-DD. */
+  listaDe: string;
+  pecas: { metros: number; status: 'aberto' | 'fechado' }[];
+}
+
 export interface PrecoItem {
   disponivel: boolean;
   rolo?: number | null;
@@ -33,8 +41,11 @@ export interface PrecoItem {
   metroVarejo?: number | null;
   usandoVarejo?: boolean;
   erpSku?: string;
-  /** Contagem de rolos no pátio — as bolinhas do card. Só admin. */
-  estoque?: { rolosFechados: number; rolosAbertos: number };
+  /**
+   * Contagem de rolos no pátio — as bolinhas do card. Só admin. `parceiros` é a
+   * bolinha vermelha: pedaços no estoque da Inova (Jardel), que não são nossos.
+   */
+  estoque?: { rolosFechados: number; rolosAbertos: number; parceiros?: EstoqueParceiro[] };
 
   /**
    * O preço acima é o desta seleção, com o acréscimo já aplicado no servidor.

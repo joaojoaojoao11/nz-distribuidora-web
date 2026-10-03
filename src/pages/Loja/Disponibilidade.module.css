@@ -150,6 +150,60 @@
   color: var(--text-muted);
 }
 
+/* ---------------------------------------------- admin: estoque do parceiro */
+/* Vermelho é o código da bolinha do card; aqui só no ponto e na borda, para o
+   bloco não parecer erro. */
+.parceiro {
+  margin-top: 0.9rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 10px;
+}
+
+.parceiroTitulo {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.parceiroPonto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  flex-shrink: 0;
+}
+
+.parceiroPecas {
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.parceiroPecas li {
+  font-family: var(--font-tech);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--border-light);
+  border-radius: 999px;
+}
+
+.parceiroNota {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
 /* ---------------------------------------------- admin: comprar de uma vez */
 .compra {
   margin-top: 0.9rem;

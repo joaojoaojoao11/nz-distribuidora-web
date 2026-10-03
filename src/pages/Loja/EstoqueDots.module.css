@@ -1,4 +1,4 @@
-/* Duas bolinhas de 8px. Pequenas de propósito: são para o vendedor varrer a
+/* Bolinhas de 8px. Pequenas de propósito: são para o vendedor varrer a
    grade com o olho, não para competir com o nome do produto. */
 
 .grupo {
@@ -24,3 +24,9 @@
 
 /* Laranja: ponta, o que sai fracionado. */
 .aberto { background: #f59e0b; color: #f59e0b; }
+
+/* Vermelha: pedaço no estoque do parceiro (Inova, do Jardel). Não é nosso. */
+.parceiro { background: #ef4444; color: #ef4444; }
+
+/* Lista do parceiro velha: continua ali, mas apagada — é palpite, não estoque. */
+.velho { opacity: 0.35; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35); }

@@ -65,14 +65,15 @@ export type BrandKey = BrandKeyErp;
 export type NivelEstoque = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
 
 /**
- * O que existe FISICAMENTE no pátio, por trás das duas bolinhas do card:
- * verde = rolo fechado (sai inteiro), laranja = ponta (sai fracionado).
+ * O que existe FISICAMENTE no pátio, por trás das bolinhas do card:
+ * verde = rolo fechado (sai inteiro), laranja = ponta (sai fracionado),
+ * vermelha = pedaço no estoque do parceiro Inova/Jardel (não é nosso).
  *
  * Não confundir com `NivelEstoque`, que é o rótulo público e vem no catálogo.
  * Isto aqui é contagem de rolo e SÓ ADMIN recebe — quem decide é o servidor
  * (api/_lib/handlers/patio.ts), nunca a interface.
  */
-export type SinalPatio = 'rolo-fechado' | 'ponta-aberta';
+export type SinalPatio = 'rolo-fechado' | 'ponta-aberta' | 'parceiro';
 
 /**
  * Quais slugs têm cada sinal, no catálogo inteiro. Vem de /api/nz/patio.
@@ -84,6 +85,7 @@ export type SinalPatio = 'rolo-fechado' | 'ponta-aberta';
 export interface MapaPatio {
   fechados: ReadonlySet<string>;
   abertos: ReadonlySet<string>;
+  parceiro: ReadonlySet<string>;
 }
 
 /** Como o produto do site se liga ao SKU físico do ERP. */

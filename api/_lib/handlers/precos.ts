@@ -32,6 +32,7 @@ import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado } from '../papel.js';
 import { lerSelecaoPorToken, selecaoAtiva } from './selecoes.js';
 import { aplicarAcrescimo } from '../pedido/dinheiro.js';
+import { lerEstoqueParceiro } from '../estoqueParceiro.js';
 
 interface Produto {
   slug: string;
@@ -126,6 +127,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .in('sku', skus)
     : { data: [] };
   const porSku = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
+  // A bolinha vermelha (estoque do parceiro). Só admin — os demais nem consultam.
+  const parceiroPorSku = papel === 'admin' ? await lerEstoqueParceiro(site, skus) : new Map();
 
   const itens: Record<string, unknown> = {};
   for (const slug of slugs) {
@@ -178,11 +181,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // A Central já tem a ocorrência; aqui é o aviso na própria tela.
       item.usandoVarejo = !(Number(e.preco_rolo_min) > 0) || !(Number(e.preco_metro_min) > 0);
       item.erpSku = p.erp_sku;
-      // As bolinhas do card: verde = tem rolo fechado, laranja = tem ponta.
+      // As bolinhas do card: verde = tem rolo fechado, laranja = tem ponta,
+      // vermelha = tem pedaço no parceiro.
       // Vem por aqui, e não por /api/nz/estoque, porque este endpoint já é
       // chamado UMA vez por página de cards; o de estoque consulta o ERP ao
       // vivo por SKU e derrubaria a vitrine com 60 requisições.
-      item.estoque = { rolosFechados: Number(e.rolos_fechados ?? 0), rolosAbertos: Number(e.rolos_abertos ?? 0) };
+      // A vermelha é o estoque do parceiro (api/_lib/estoqueParceiro.ts).
+      const parceiros = parceiroPorSku.get(e.sku);
+      item.estoque = {
+        rolosFechados: Number(e.rolos_fechados ?? 0),
+        rolosAbertos: Number(e.rolos_abertos ?? 0),
+        ...(parceiros ? { parceiros } : {}),
+      };
       // Dentro de uma seleção o admin vê a conta que o cliente não vê: de onde
       // saiu o número e de quanto foi o aumento.
       if (dentroDaSelecao && pct > 0) {

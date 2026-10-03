@@ -9,7 +9,8 @@
 //   anônimo / client   → só disponibilidade qualitativa. Nenhum número.
 //   reseller aprovado  → saldo em metros e rolos, com quebra fechado × aberto.
 //   admin              → tudo acima + os rótulos do ERP (ESTOQUE/DROP) + LPNs,
-//                        localização física — lidos AO VIVO no ERP.
+//                        localização física — lidos AO VIVO no ERP — e os
+//                        pedaços no estoque do parceiro (estoque_parceiro).
 //
 // NENHUM papel vê preço aqui — preço é /api/nz/precos, com a mesma régua.
 //
@@ -19,6 +20,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapel, type Papel } from '../papel.js';
+import { lerEstoqueParceiro, type EstoqueParceiro } from '../estoqueParceiro.js';
 
 type Nivel = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
 
@@ -85,6 +87,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .in('sku', skus)
     : { data: [] };
   const espelhoPorSku = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
+  const parceiroPorSku = papel === 'admin' ? await lerEstoqueParceiro(site, skus) : new Map<string, EstoqueParceiro[]>();
 
   const { data: cfg } = await site
     .from('loja_config')
@@ -99,7 +102,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   for (const slug of slugs) {
     const p = produtos.find((x) => x.slug === slug);
     const e = p?.erp_sku ? espelhoPorSku.get(p.erp_sku) : undefined;
-    itens[slug] = await montar(p, e, papel, limiteGlobal);
+    const parceiros = p?.erp_sku ? parceiroPorSku.get(p.erp_sku) : undefined;
+    itens[slug] = await montar(p, e, papel, limiteGlobal, parceiros);
   }
 
   // Compatibilidade com o chamador de um produto só: mesmo objeto no topo.
@@ -110,7 +114,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.status(200).json({ papel, itens });
 }
 
-async function montar(p: Produto | undefined, e: Espelho | undefined, papel: Papel, limiteGlobal: number) {
+async function montar(
+  p: Produto | undefined,
+  e: Espelho | undefined,
+  papel: Papel,
+  limiteGlobal: number,
+  parceiros?: EstoqueParceiro[]
+) {
   if (!p || !p.erp_sku) return { mapeado: false };
   if (!e) return { mapeado: true, semDados: true };
 
@@ -140,6 +150,9 @@ async function montar(p: Produto | undefined, e: Espelho | undefined, papel: Pap
     r.rotuloErp = Number(e.saldo_ml) > 0.01 ? 'ESTOQUE' : 'DROP';
     r.estoqueMinimo = e.estoque_minimo;
     r.lpns = await lerLpns(p.erp_sku);
+    // Pedaços no estoque do parceiro (a bolinha vermelha). Não é nosso: só
+    // aparece para o admin saber que dá para vender fracionado por lá.
+    if (parceiros?.length) r.parceiros = parceiros;
   }
   return r;
 }
