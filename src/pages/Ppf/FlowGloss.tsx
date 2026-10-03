@@ -159,7 +159,7 @@ export default function FlowGloss() {
           <motion.h2 className={styles.sectionTitle} variants={blurReveal}>Nova Formulação, Mais Espessura</motion.h2>
           <motion.div className={styles.techGrid} variants={scaleIn}>
             <div className={styles.techImagePanel}>
-              <img src="/assets/images/flow_layers.png" alt="Camadas da Película Flow TPU" className={styles.techImage} loading="lazy" decoding="async" />
+              <img src="/assets/images/ppf/camadas/flow-camadas-tecnologia.jpg" alt="Camadas da película NZPPF Flow: top coat, TPU G2, adesivo e liner" className={styles.techImage} loading="lazy" decoding="async" />
               <div className={styles.techImageOverlay}></div>
               <img src={CamadaIcon} className={`${styles.techDiagramIcon} ${styles.accentIcon}`} alt="" loading="lazy" decoding="async" />
             </div>

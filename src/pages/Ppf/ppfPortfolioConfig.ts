@@ -158,7 +158,7 @@ export const PPF_PORTFOLIOS: Record<string, PpfPortfolioConfig> = {
     },
     tecnologia: {
       title: 'Nova formulação, mais espessura',
-      layersImage: '/assets/images/flow_layers.png',
+      layersImage: '/assets/images/ppf/camadas/flow-camadas-tecnologia.jpg',
       camadas: [
         { name: 'Top Coat Nano-Hidrofóbico G2', desc: 'Camada nova: repele mais água e sujeira e acelera a auto-cura dos micro-riscos.' },
         { name: 'TPU Técnico G2 185μ (Core)', desc: 'Base de 2ª geração, agora dez micras mais espessa: mais absorção de impacto e mais estabilidade sob UV.' },
