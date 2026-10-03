@@ -14,7 +14,7 @@ import { productLines } from '../../components/Catalog/data/catalogData';
 
 const FAMILY_LABELS: Record<MotorFamily, string> = {
   'nzppf': 'NZPPF',
-  'oracal-651': 'NZWRAP · Oracal 651',
+  'oracal-651': 'NZSIGN · Oracal 651',
   'oracal-670': 'NZWRAP · Oracal 670',
 };
 

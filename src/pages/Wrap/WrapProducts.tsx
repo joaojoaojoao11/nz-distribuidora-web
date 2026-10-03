@@ -33,6 +33,8 @@ export const RepelenciaIcon = "/assets/simbolos/simbolo-repelencia.svg";
 export const PresenteIcon = "/assets/simbolos/simbolo-presente.svg";
 
 export interface WrapProductData {
+  /** Para onde o "voltar ao catálogo" leva. Padrão: /wrap. A Oracal 651 é NZSIGN e volta para /sign. */
+  voltarPara?: string;
   title: string;
   subtitle: string;
   heroDescription: string;
@@ -73,7 +75,7 @@ export function WrapProductPage({ data, children }: { data: WrapProductData, chi
             variants={stagger}
           >
             <motion.div className={styles.heroBreadcrumb} variants={blurReveal}>
-              <Link to="/wrap" className={styles.breadcrumbLink}>← VOLTAR AO CATÁLOGO</Link>
+              <Link to={data.voltarPara ?? '/wrap'} className={styles.breadcrumbLink}>← VOLTAR AO CATÁLOGO</Link>
             </motion.div>
             <motion.h1 className={styles.heroTitle} variants={blurReveal}>{data.title}</motion.h1>
             <motion.p className={styles.heroSubtitle} variants={blurReveal}>{data.subtitle}</motion.p>
@@ -774,7 +776,7 @@ function Oracal651ColorGrid() {
       {colors.map(color => (
         <Link 
           key={color.slug}
-          to={`/wrap/oracal-651/${color.slug}`}
+          to={`/sign/oracal-651/${color.slug}`}
           style={{ textDecoration: 'none' }}
         >
           <div style={{
@@ -821,13 +823,14 @@ export function Oracal651() {
   <SEO
     title="ORACAL 651 — Vinil para Recortes e Sinalização"
     description="ORACAL 651 com mais de 62 cores: vinil intermediário para recortes, sinalização e detalhes, 63μ e 6 anos de durabilidade. Pronta entrega NZ."
-    canonicalUrl="/wrap/oracal-651"
+    canonicalUrl="/sign/oracal-651"
   />
   <WrapProductPage data={{
     title: 'ORACAL 651',
     subtitle: 'Intermediate Cal | O Vinil Mais Popular do Mundo',
     heroDescription: 'Com 62+ cores vibrantes e alto brilho, o Oracal 651 é a referência mundial para sinalização automotiva, recortes de precisão e detalhamentos. Durabilidade de até 6 anos.',
     heroWarning: 'O padrão da indústria para comunicação visual automotiva.',
+    voltarPara: '/sign',
     heroImage: '/assets/images/wrap_651_hero.png',
     specs: [
       { icon: CamadaIcon, info: 'Espessura', spec: '2.5 mil (63μ)', detalhe: 'Filme fino ideal para corte e aplicação.' },

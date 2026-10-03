@@ -82,7 +82,7 @@ export const LINHAS = [
     desc: 'Linha alemã completa para recortes, sinalização e envelopamento com tecnologia anti-bolhas.',
     resumo: 'Vinil alemão para recortes, sinalização e detalhes — 77+ cores.',
     img: '/assets/images/interlagos/oracal.webp',
-    href: '/wrap/oracal-651',
+    href: '/sign/oracal-651',
     externo: false,
     cta: 'Ver a linha',
   },

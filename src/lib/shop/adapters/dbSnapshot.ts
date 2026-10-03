@@ -257,16 +257,16 @@ const SOURCE_CFG: Record<
     line: string;
     routePrefix: string;
     badges: string[];
-    aplicacao: 'automotivo';
+    aplicacao: 'automotivo' | 'comunicacao-visual';
   }
 > = {
   'oracal-651': {
     brand: 'Orafol',
     brandKey: 'orafol',
     line: 'Oracal 651',
-    routePrefix: '/wrap/oracal-651',
+    routePrefix: '/sign/oracal-651',
     badges: ['VINIL INTERMEDIÁRIO', 'RECORTE E SINALIZAÇÃO'],
-    aplicacao: 'automotivo',
+    aplicacao: 'comunicacao-visual',
   },
   'oracal-670': {
     brand: 'Orafol',
@@ -342,7 +342,8 @@ function rowToShopItem(row: DbSnapshotRow): ShopItem {
     line: cfg.line,
     lineKey: row.source,
     brandKey: cfg.brandKey,
-    vertical: 'WRAP',
+    // Oracal 651 e vinil de recorte e sinalizacao: NZSIGN, nao NZWRAP (Joao, 03/10/2026).
+    vertical: row.source === 'oracal-651' ? 'SIGN' : 'WRAP',
     kind: 'cor',
     aplicacoes: [cfg.aplicacao],
     // Regra de imagem/galeria:

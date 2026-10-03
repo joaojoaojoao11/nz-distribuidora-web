@@ -61,7 +61,7 @@ export default function Oracal651Colors() {
   }
 
   if (!colorData) {
-    return <Navigate to="/wrap" replace />;
+    return <Navigate to="/sign/oracal-651" replace />;
   }
 
   // Identificar se a cor é clara para ajuste de texto, se necessário.
@@ -79,12 +79,12 @@ export default function Oracal651Colors() {
       <SEO
         title={`${colorData.name} — ORACAL 651`}
         description={`Cor ${colorData.name} da linha ORACAL 651. Veja o acabamento, peça amostra e compre com a NZ Distribuidora.`}
-        canonicalUrl={`/wrap/oracal-651/${colorData.slug}`}
+        canonicalUrl={`/sign/oracal-651/${colorData.slug}`}
         schema={buildColorSchema({
           name: colorData.name,
-          path: `/wrap/oracal-651/${colorData.slug}`,
+          path: `/sign/oracal-651/${colorData.slug}`,
           brand: 'Oracal 651',
-          catalogPath: '/wrap/oracal-651',
+          catalogPath: '/sign/oracal-651',
           catalogLabel: 'Oracal 651',
           sku: colorData.sku,
           hex: colorData.hex_code,
@@ -130,7 +130,7 @@ export default function Oracal651Colors() {
         {/* Navbar space / Breadcrumb Ultra Visível */}
         <nav style={{ paddingTop: '8rem', paddingLeft: '5%', paddingRight: '5%', maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center' }}>
           <button 
-            onClick={() => navigate('/wrap')}
+            onClick={() => navigate('/sign/oracal-651')}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -551,7 +551,7 @@ export default function Oracal651Colors() {
         <ColorSeoSection
           name={colorData.name}
           brandLabel="Oracal 651"
-          catalogPath="/wrap/oracal-651"
+          catalogPath="/sign/oracal-651"
           sku={colorData.sku}
           finish={colorData.finish_type}
           hex={colorData.hex_code}

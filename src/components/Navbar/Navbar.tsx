@@ -180,14 +180,22 @@ export default function Navbar() {
               <Link to="/wrap/oracal-670ra" className={styles.dropdownTextItem} onClick={closeMenu}>
                 ORACAL 670RA
               </Link>
-              <Link to="/wrap/oracal-651" className={styles.dropdownTextItem} onClick={closeMenu}>
+            </div>
+          </div>
+          <div className={styles.dropdownWrap}>
+            <Link to="/sign" className={`${styles.navLink} ${location.pathname.startsWith('/sign') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
+              <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="Linha NZSIGN" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
+              <span className={styles.dropdownCaret} aria-hidden="true">▾</span>
+            </Link>
+            <div className={styles.dropdown}>
+              <Link to="/sign" className={styles.dropdownTextItem} onClick={closeMenu}>
+                METAMARK MD-80 · AVERY DENNISON
+              </Link>
+              <Link to="/sign/oracal-651" className={styles.dropdownTextItem} onClick={closeMenu}>
                 ORACAL 651
               </Link>
             </div>
           </div>
-          <Link to="/sign" className={`${styles.navLink} ${location.pathname.startsWith('/sign') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
-            <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="Linha NZSIGN" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />
-          </Link>
           <div className={styles.dropdownWrap}>
             <Link to="/decor" className={`${styles.navLink} ${location.pathname.startsWith('/decor') ? styles.navLinkActive : ''}`} onClick={closeMenu}>
               <img src="/assets/logos/nzdecor/logo-nzdecor-branco.png" alt="Linha NZDECOR" className={`${styles.navLogo} ${styles.navLogoNzsign}`} />

@@ -75,18 +75,6 @@ const productLines = [
     available: true
   },
   {
-    slug: 'oracal-651',
-    title: 'ORACAL 651',
-    subtitle: 'Intermediário Versátil | 77+ Cores',
-    description: 'O vinil intermediário mais popular do mundo. Ideal para recortes, sinalização automotiva e detalhes de alta precisão com durabilidade de 6 anos.',
-    image: '/assets/images/wrap_651_card.png',
-    cardLogo: '/assets/logos/logo-orafol.svg',
-    badge1: '63μ',
-    badge2: '6 ANOS',
-    badge3: '',
-    available: true
-  },
-  {
     slug: 'metamark-7-series',
     title: 'METAMARK 7 SERIES',
     subtitle: 'Vinil de Recorte Polimérico 70 micras | Reino Unido',
@@ -134,22 +122,6 @@ const comparisonData = [
     ]
   },
   {
-    id: '651',
-    name: 'ORACAL 651',
-    highlight: 'O intermediário mais popular do mundo. Ideal para recortes, sinalização e detalhes de alta precisão.',
-    thickness: '63μ',
-    warranty: '6 Anos',
-    warrantyLabel: 'DURABILIDADE',
-    warrantyLabelShort: 'DUR',
-    metrics: [
-      { label: 'Brilho & Acabamento', value: 82 },
-      { label: 'Conformabilidade', value: 70 },
-      { label: 'Resistência UV', value: 88 },
-      { label: 'Facilidade de Aplicação', value: 85 },
-      { label: 'Custo-Benefício', value: 97 }
-    ]
-  },
-  {
     id: '670ra',
     name: 'ORACAL 670RA',
     highlight: 'A evolução do 651 para wrapping: mesma qualidade, agora com largura profissional de 1,52m e sistema RapidAir® para instalações sem bolhas.',
@@ -175,7 +147,7 @@ export default function Wrap() {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "name": "Catálogo de Adesivos Automotivos e Vinil Premium - NZ Distribuidora",
-    "description": "Veja nossa linha de Vinil Automotivo: NZWrap Premium, Oracal 651, Oracal 670RA e SH Colors. Alta performance para envelopamento.",
+    "description": "Veja nossa linha de Vinil Automotivo: NZWrap Premium, Oracal 670RA e SH Colors. Alta performance para envelopamento.",
     "url": `${SITE_URL}/wrap`
   });
 
@@ -184,7 +156,7 @@ export default function Wrap() {
       <SEO 
         title="Adesivo Automotivo Premium | Catálogo de Envelopamento"
         description="Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal e NZWrap com centenas de cores."
-        keywords="adesivo automotivo, vinil automotivo, oracal 651, oracal 670ra, nzwrap, sh colors, envelopamento"
+        keywords="adesivo automotivo, vinil automotivo, oracal 670ra, nzwrap, sh colors, envelopamento"
         canonicalUrl="/wrap"
         schema={schema}
       />

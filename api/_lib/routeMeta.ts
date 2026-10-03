@@ -62,7 +62,7 @@ export const routeMeta: Record<string, RouteMeta> = {
     title: 'ORACAL 970RA — Vinil Premium de Envelopamento',
     description: 'ORACAL 970RA com tecnologia RapidAir anti-bolhas: o vinil alemão premium para envelopamento automotivo completo. Distribuição oficial NZ.',
   },
-  '/wrap/oracal-651': {
+  '/sign/oracal-651': {
     title: 'ORACAL 651 — Vinil para Recortes e Sinalização',
     description: 'ORACAL 651 com mais de 62 cores: vinil intermediário para recortes, sinalização e detalhes, 63μ e 6 anos de durabilidade. Pronta entrega NZ.',
   },

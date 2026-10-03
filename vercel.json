@@ -1,6 +1,16 @@
 {
   "redirects": [
     {
+      "source": "/wrap/oracal-651",
+      "destination": "/sign/oracal-651",
+      "permanent": true
+    },
+    {
+      "source": "/wrap/oracal-651/:id",
+      "destination": "/sign/oracal-651/:id",
+      "permanent": true
+    },
+    {
       "source": "/festival",
       "destination": "/interlagos",
       "permanent": false

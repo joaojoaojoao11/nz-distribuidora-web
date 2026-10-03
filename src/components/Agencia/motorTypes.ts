@@ -16,7 +16,7 @@ export type MotorSource = 'builtin' | 'user';
 
 /**
  * Família/marca do motor. Usado para agrupar built-ins no hub
- * em sub-seções (NZPPF, NZWRAP Oracal 651, NZWRAP Oracal 670).
+ * em sub-seções (NZPPF, NZSIGN Oracal 651, NZWRAP Oracal 670).
  */
 export type MotorFamily = 'nzppf' | 'oracal-651' | 'oracal-670';
 

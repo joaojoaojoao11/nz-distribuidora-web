@@ -36,10 +36,16 @@ export function buildNavItems(contagens: { shDecor: number; etherna: number }): 
         { label: 'Metamark 7 Series', to: '/wrap/metamark-7-series' },
         { label: 'Oracal 970RA', to: '/wrap/oracal-970ra' },
         { label: 'Oracal 670RA', to: '/wrap/oracal-670ra' },
-        { label: 'Oracal 651', to: '/wrap/oracal-651' },
       ],
     },
-    { label: 'NZSIGN', to: '/sign' },
+    {
+      label: 'NZSIGN',
+      to: '/sign',
+      children: [
+        { label: 'Metamark MD-80 · Avery Dennison', to: '/sign' },
+        { label: 'Oracal 651', to: '/sign/oracal-651' },
+      ],
+    },
     {
       label: 'NZDECOR',
       to: '/decor',

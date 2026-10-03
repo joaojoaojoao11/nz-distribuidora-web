@@ -63,7 +63,7 @@ if (!url || !key) {
  * Nunca derivar rota a partir de brand.
  */
 const BRANDS = {
-  'Oracal 651': { source: 'oracal-651', line: 'Oracal 651', routePrefix: '/wrap/oracal-651' },
+  'Oracal 651': { source: 'oracal-651', line: 'Oracal 651', routePrefix: '/sign/oracal-651' },
   'Oracal 670': { source: 'oracal-670', line: 'Oracal 670RA', routePrefix: '/wrap/oracal-670ra' },
   'SH Wrapping': { source: 'sh-wrapping', line: 'SH Wrapping', routePrefix: '/wrap/sh-colors' },
 };

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import AnalyticsTracker from './components/AnalyticsTracker';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
@@ -51,6 +51,10 @@ const Oracal651 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ de
 const Oracal670 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.Oracal670 })));
 const Oracal670ColorPage = lazy(() => import('./pages/Wrap/Oracal670Colors'));
 const Oracal651Colors = lazy(() => import('./pages/Wrap/Oracal651Colors'));
+function RedirecionaCor651() {
+  const { id } = useParams();
+  return <Navigate to={`/sign/oracal-651/${id ?? ''}`} replace />;
+}
 const ShWrappingColors = lazy(() => import('./pages/Wrap/ShWrappingColors'));
 const NzwrapColorPage = lazy(() => import('./pages/Wrap/NzwrapColorPage'));
 const MetamarkMcx = lazy(() => import('./pages/Wrap/WrapMetamark').then(m => ({ default: m.MetamarkMcx })));
@@ -212,13 +216,17 @@ function App() {
                   <Route path="/wrap/sh-colors" element={<ShColors />} />
                   <Route path="/wrap/sh-colors/:colorCode" element={<ShWrappingColors />} />
                   <Route path="/wrap/oracal-970ra" element={<Oracal970 />} />
-                  <Route path="/wrap/oracal-651" element={<Oracal651 />} />
-                  <Route path="/wrap/oracal-651/:id" element={<Oracal651Colors />} />
+                  {/* Oracal 651 e comunicacao visual: mudou de NZWRAP para NZSIGN (03/10/2026). O 301 de verdade
+                      esta no vercel.json; estes dois cobrem a navegacao interna do SPA. */}
+                  <Route path="/wrap/oracal-651" element={<Navigate to="/sign/oracal-651" replace />} />
+                  <Route path="/wrap/oracal-651/:id" element={<RedirecionaCor651 />} />
                   <Route path="/wrap/oracal-670ra" element={<Oracal670 />} />
                   <Route path="/wrap/oracal-670ra/:colorCode" element={<Oracal670ColorPage />} />
                   <Route path="/wrap/metamark-mcx" element={<MetamarkMcx />} />
                   <Route path="/wrap/metamark-7-series" element={<MetamarkM7 />} />
                   <Route path="/sign" element={<Sign />} />
+                  <Route path="/sign/oracal-651" element={<Oracal651 />} />
+                  <Route path="/sign/oracal-651/:id" element={<Oracal651Colors />} />
                   <Route path="/sign/:slug" element={<SignProduct />} />
                   <Route path="/decor" element={<Decor />} />
                   <Route path="/decor/sh" element={<ShDecorCatalog />} />

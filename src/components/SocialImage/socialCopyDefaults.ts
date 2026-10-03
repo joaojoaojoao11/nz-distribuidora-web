@@ -102,7 +102,7 @@ export function suggestCopy(
  */
 const BRAND_HASHTAG_KIT: Record<string, string[]> = {
   NZPPF: ['#NZPPF', '#PaintProtection', '#PPF', '#NZGroup', '#ProtecaoAutomotiva'],
-  'ORACAL 651': ['#Oracal651', '#VinilAdesivo', '#Sinalizacao', '#Plotagem', '#NZWrap', '#NZGroup'],
+  'ORACAL 651': ['#Oracal651', '#VinilAdesivo', '#Sinalizacao', '#Plotagem', '#NZSign', '#NZGroup'],
   'ORACAL 670RA': ['#Oracal670', '#Oracal670RA', '#Envelopamento', '#WrapPro', '#NZWrap', '#NZGroup'],
 };
 

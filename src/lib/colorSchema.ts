@@ -6,9 +6,9 @@ import { SITE_URL } from './siteConfig';
 
 interface ColorSchemaOpts {
   name: string;
-  path: string;          // ex: /wrap/oracal-651/oracal-651-purple-red
+  path: string;          // ex: /sign/oracal-651/oracal-651-purple-red
   brand: string;         // ex: Oracal 651
-  catalogPath: string;   // ex: /wrap/oracal-651
+  catalogPath: string;   // ex: /sign/oracal-651
   catalogLabel: string;  // ex: Oracal 651
   sku?: string | null;
   hex?: string | null;

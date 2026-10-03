@@ -12,7 +12,7 @@ export interface ColorFamilyCfg {
 
 export const colorFamilies: Record<string, ColorFamilyCfg> = {
   'sh-colors':    { brand: 'SH Wrapping', label: 'SH Wrapping', routePrefix: '/wrap/sh-colors',    skuInTitle: false },
-  'oracal-651':   { brand: 'Oracal 651',  label: 'Oracal 651',  routePrefix: '/wrap/oracal-651',   skuInTitle: true },
+  'oracal-651':   { brand: 'Oracal 651',  label: 'Oracal 651',  routePrefix: '/sign/oracal-651',   skuInTitle: true },
   'oracal-670ra': { brand: 'Oracal 670',  label: 'Oracal 670RA', routePrefix: '/wrap/oracal-670ra', skuInTitle: true },
 };
 

@@ -188,8 +188,9 @@ export function aplicacoesDeVertical(v: VerticalErp): ('automotivo' | 'arquiteto
 
 /** Linha do produto 'erp-auto' inteira, pronta para gravar em `produtos`. */
 export function produtoAutoDeSku(row: ErpSkuBasico) {
-  const vertical = verticalDeCategoria(row.categoria, row.marca);
   const { linha, brandKey, marcaExibicao } = linhaDeMarca(row);
+  // Oracal 651 e vinil de recorte e sinalizacao: vai para NZSIGN mesmo com categoria ENVELOPAMENTO no ERP (Joao, 03/10/2026).
+  const vertical = linha === 'oracal-651' ? 'SIGN' : verticalDeCategoria(row.categoria, row.marca);
   return {
     slug: slugErp(row),
     erp_sku: row.sku,

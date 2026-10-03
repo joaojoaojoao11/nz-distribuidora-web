@@ -36,7 +36,7 @@ const STATIC_PAGES: SearchItem[] = [
   { label: 'SH Wrapping Colors', sublabel: 'Catálogo de cores SH', group: 'NZWRAP', path: '/wrap/sh-colors', keywords: 'sh colors cores' },
   { label: 'Oracal 970RA', sublabel: 'Wrapping premium Orafol', group: 'NZWRAP', path: '/wrap/oracal-970ra', keywords: 'oracal orafol 970' },
   { label: 'Oracal 670RA', sublabel: 'Wrapping film Orafol', group: 'NZWRAP', path: '/wrap/oracal-670ra', keywords: 'oracal orafol 670' },
-  { label: 'Oracal 651', sublabel: 'Vinil intermediário Orafol', group: 'NZWRAP', path: '/wrap/oracal-651', keywords: 'oracal orafol 651' },
+  { label: 'Oracal 651', sublabel: 'Vinil intermediário Orafol', group: 'NZSIGN', path: '/sign/oracal-651', keywords: 'oracal orafol 651' },
   { label: 'MetaCast MCX', sublabel: 'Cast premium Metamark · 37 cores', group: 'NZWRAP', path: '/wrap/metamark-mcx', keywords: 'metamark metacast mcx cast envelopamento inspire colours metaglide metasure reino unido' },
   { label: 'Metamark 7 Series', sublabel: 'Vinil de recorte · 92 cores', group: 'NZWRAP', path: '/wrap/metamark-7-series', keywords: 'metamark m7 7 series recorte sinalizacao vinil sign pantone plotter' },
   { label: 'NZSIGN', sublabel: 'Comunicação visual Avery Dennison', group: 'PÁGINA', path: '/sign', keywords: 'sign avery dennison comunicacao visual impressao' },

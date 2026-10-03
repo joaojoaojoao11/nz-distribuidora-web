@@ -36,7 +36,7 @@ const brands: Brand[] = [
     name: 'Oracal 651',
     tag: 'Plotter & sinalização · 62 cores',
     logo: '/assets/logos/logo-orafol.svg',
-    to: '/wrap/oracal-651',
+    to: '/sign/oracal-651',
   },
   {
     name: 'Oracal 670RA',

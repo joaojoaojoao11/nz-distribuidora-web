@@ -46,7 +46,7 @@ const crumbLabels: Record<string, string> = {
   '/wrap/nzwrap-premium': 'NZWRAP Premium',
   '/wrap/sh-colors': 'SH Wrapping',
   '/wrap/oracal-970ra': 'Oracal 970RA',
-  '/wrap/oracal-651': 'Oracal 651',
+  '/sign/oracal-651': 'Oracal 651',
   '/wrap/oracal-670ra': 'Oracal 670RA',
   '/wrap/metamark-mcx': 'Metamark MCX',
   '/wrap/metamark-7-series': 'Metamark Série 7',
@@ -62,7 +62,7 @@ const crumbLabels: Record<string, string> = {
 const catalogPaths = new Set([
   '/loja',
   '/ppf', '/wrap', '/sign', '/decor', '/decor/sh', '/decor/etherna', '/blog',
-  '/wrap/nzwrap-premium', '/wrap/sh-colors', '/wrap/oracal-970ra', '/wrap/oracal-651',
+  '/wrap/nzwrap-premium', '/wrap/sh-colors', '/wrap/oracal-970ra', '/sign/oracal-651',
   '/wrap/oracal-670ra', '/wrap/metamark-mcx', '/wrap/metamark-7-series',
 ]);
 
