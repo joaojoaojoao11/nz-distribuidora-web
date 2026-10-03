@@ -27,7 +27,7 @@ export const benchmarkData = [
 ];
 
 export const diferenciais = [
-  { icon: EscudoVazioIcon, title: 'Absorção de Impacto', desc: 'Pedras que antes trincariam o vidro são absorvidas e dissipadas pela película. A superfície permanece intacta.', accent: 'TPU 190μ', image: '/assets/images/nzppf_windshield_diff_impacto.png' },
+  { icon: EscudoVazioIcon, title: 'Absorção de Impacto', desc: 'Pedras que antes trincariam o vidro são absorvidas e dissipadas pela película. A superfície permanece intacta.', accent: 'TPU 190 micras', image: '/assets/images/nzppf_windshield_diff_impacto.png' },
   { icon: CertoIcon, title: 'Preserva o Vidro Original', desc: 'Evita a troca do parabrisa e mantém a vedação de fábrica — algo que nunca se recupera após substituição.', accent: 'Integridade Estrutural', image: '/assets/images/nzppf_windshield_diff_preservacao.png' },
   { icon: CamadaIcon, title: 'Compatível com ADAS', desc: 'Transparência óptica total. Nenhuma interferência em sensores, câmeras ou sistemas de assistência à condução.', accent: 'Zero Distorção', image: '/assets/images/nzppf_windshield_diff_adas.png' },
   { icon: RepelenciaIcon, title: 'Resistência Real', desc: 'Resistência a abrasão, intempéries e radiação UV em condições de uso intenso, em rodovia e cidade.', accent: '2 Anos de Garantia', image: '/assets/images/nzppf_windshield_diff_resistencia.png' }
