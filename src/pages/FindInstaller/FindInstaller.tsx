@@ -73,6 +73,7 @@ export default function FindInstaller() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [submittedName, setSubmittedName] = useState('');
   const [formStep, setFormStep] = useState(1);
   const [googleLoaded, setGoogleLoaded] = useState(false);
@@ -87,86 +88,101 @@ export default function FindInstaller() {
 
   const openForm = () => {
     setFormStep(1);
+    setSubmitError('');
     setIsFormOpen(true);
   };
 
+  // Modal aberto: trava a rolagem da página atrás (no celular ela vazava por
+  // baixo do formulário) e fecha com Esc.
   useEffect(() => {
+    if (!isFormOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsFormOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [isFormOpen]);
+
+  // O script do Google Places só entra quando o formulário abre pela primeira
+  // vez. Antes carregava em toda visita à página, mesmo de quem nunca abria o
+  // formulário (quota da chave e ~200 KB de JS à toa).
+  useEffect(() => {
+    if (!isFormOpen) return;
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-    console.log("[DEBUG MAPS] 1. API Key no Vite:", apiKey ? "ACHOU!" : "NAO ACHOU :(");
     if (!apiKey) return;
-    
+
     if (window.google?.maps?.places) {
-      console.log("[DEBUG MAPS] 2. Google Maps já carregado na janela.");
       setGoogleLoaded(true);
       return;
     }
 
     if (!document.querySelector('#google-maps-script')) {
-      console.log("[DEBUG MAPS] 3. Injetando Script Tag no HEAD do HTML...");
-      window.initGoogleMaps = () => {
-         console.log("[DEBUG MAPS] 4. Script carregou com Sucesso (Callback disparado)!");
-         setGoogleLoaded(true);
-      };
+      window.initGoogleMaps = () => setGoogleLoaded(true);
       const script = document.createElement('script');
       script.id = 'google-maps-script';
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps&loading=async`;
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
     }
-  }, []);
+  }, [isFormOpen]);
+
+  // Cidade/UF do endereço escolhido no dropdown do Google. Fica em ref (não
+  // precisa de render) e é zerado se o visitante voltar a digitar à mão.
+  const placeRef = useRef<{ city: string; state: string } | null>(null);
 
   useEffect(() => {
-    if (formStep === 2 && googleLoaded) {
-      let autocomplete: any;
-      let listener: any;
-      let retryCount = 0;
+    if (formStep !== 2 || !googleLoaded) return;
+    let autocomplete: any;
+    let listener: any;
+    let retryCount = 0;
+    let retryTimer: number | undefined;
 
-      const initAutocomplete = () => {
-        const input = document.getElementById('locationInput') as HTMLInputElement;
-        if (!input) {
-          if (retryCount < 10) {
-            retryCount++;
-            setTimeout(initAutocomplete, 100);
-          } else {
-             console.log("[DEBUG MAPS] 5. Erro fatal: O campo de input nunca apareceu no DOM!");
-          }
-          return;
+    const initAutocomplete = () => {
+      const input = document.getElementById('locationInput') as HTMLInputElement | null;
+      if (!input) {
+        // O campo entra com animação (AnimatePresence); espera ele existir.
+        if (retryCount < 10) {
+          retryCount++;
+          retryTimer = window.setTimeout(initAutocomplete, 100);
         }
+        return;
+      }
+      if (autocomplete) return;
 
-        console.log("[DEBUG MAPS] 5. Input Capturado! Anexando Autocomplete do Google...", input);
+      try {
+        autocomplete = new window.google.maps.places.Autocomplete(input, {
+          componentRestrictions: { country: 'br' },
+          fields: ['formatted_address', 'address_components', 'name'],
+        });
+        listener = autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (!place) return;
+          const comps: any[] = place.address_components || [];
+          const find = (type: string) => comps.find((c) => c.types?.includes(type));
+          const state = find('administrative_area_level_1')?.short_name || '';
+          const city = find('administrative_area_level_2')?.long_name || find('locality')?.long_name || '';
+          placeRef.current = state || city ? { city, state } : null;
+          if (place.formatted_address) setLocation(place.formatted_address);
+          else if (place.name) setLocation(place.name);
+        });
+      } catch (e) {
+        // Sem Places (chave sem permissão, bloqueador etc.) o campo segue como texto livre.
+        console.warn('[aplicador] Google Places indisponível:', e);
+      }
+    };
 
-        // Evita duplicação se recarregar
-        if (autocomplete) return;
+    initAutocomplete();
 
-        try {
-          autocomplete = new window.google.maps.places.Autocomplete(input, {
-             componentRestrictions: { country: 'br' }
-          });
-          console.log("[DEBUG MAPS] 6. Autocomplete Anexado sem erros na sintaxe JS!");
-          
-          listener = autocomplete.addListener('place_changed', () => {
-            const place = autocomplete.getPlace();
-            console.log("[DEBUG MAPS] 7. Local capturado do dropdown:", place);
-            if (place && place.formatted_address) {
-              setLocation(place.formatted_address);
-            } else if (place && place.name) {
-              setLocation(place.name);
-            }
-          });
-        } catch (e) {
-          console.error("[DEBUG MAPS] 6. FALHA INESPERADA ao Tentar rodar new Autocomplete:", e);
-        }
-      };
-
-      initAutocomplete();
-
-      return () => {
-        if (window.google?.maps?.event && listener) {
-          window.google.maps.event.removeListener(listener);
-        }
-      };
-    }
+    return () => {
+      if (retryTimer) window.clearTimeout(retryTimer);
+      if (window.google?.maps?.event && listener) {
+        window.google.maps.event.removeListener(listener);
+      }
+    };
   }, [formStep, googleLoaded]);
 
   const formatPhone = (value: string) => {
@@ -200,21 +216,29 @@ export default function FindInstaller() {
     if (!fullName || !whatsapp || !location || !serviceType) return;
 
     setSubmitting(true);
-    const { state, city } = parseLocation(location);
+    setSubmitError('');
+    const parsed = parseLocation(location);
+    const state = placeRef.current?.state || parsed.state;
+    const city = placeRef.current?.city || parsed.city;
     try {
-      await supabase.from('installer_leads').insert({
-        full_name: fullName,
+      // supabase-js não lança em erro de RLS/rede: devolve { error }. Antes o
+      // insert falhava em silêncio e a tela de sucesso aparecia mesmo assim —
+      // o lead se perdia sem ninguém saber.
+      const { error } = await supabase.from('installer_leads').insert({
+        full_name: fullName.trim(),
         whatsapp,
         state: state || null,
         city,
-        vehicle: vehicle || null,
+        vehicle: vehicle.trim() || null,
         service_type: serviceType,
-        notes: notes || null,
+        notes: notes.trim() || null,
       });
-      setSubmittedName(fullName.split(' ')[0]);
+      if (error) throw error;
+      setSubmittedName(fullName.trim().split(' ')[0]);
       setSuccess(true);
-    } catch {
-      alert('Erro ao enviar. Tente novamente.');
+    } catch (err) {
+      console.error('[aplicador] falha ao gravar lead:', err);
+      setSubmitError('Não conseguimos enviar sua solicitação. Tente de novo ou fale com a gente pelo WhatsApp.');
     } finally {
       setSubmitting(false);
     }
@@ -250,7 +274,6 @@ export default function FindInstaller() {
               >
                 NÃO PROCURE.
               </motion.span>
-              <br />
               <motion.span
                 className={styles.heroLine}
                 initial={{ opacity: 0, filter: 'blur(12px)', y: 20 }}
@@ -259,7 +282,6 @@ export default function FindInstaller() {
               >
                 NÓS ENCONTRAMOS
               </motion.span>
-              <br />
               <motion.span
                 className={styles.heroLine}
                 initial={{ opacity: 0, filter: 'blur(12px)', y: 20 }}
@@ -476,6 +498,9 @@ export default function FindInstaller() {
           >
             <motion.div
               className={styles.formModal}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Solicitar um especialista NZ"
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -580,7 +605,7 @@ export default function FindInstaller() {
                           className={styles.formInput}
                           placeholder="CEP, Cidade ou Endereço Completo"
                           value={location}
-                          onChange={(e) => setLocation(e.target.value)}
+                          onChange={(e) => { placeRef.current = null; setLocation(e.target.value); }}
                           autoFocus
                         />
                         <span className={styles.formHint}>Aceita CEP, nome da cidade ou cidade com estado</span>
@@ -657,6 +682,7 @@ export default function FindInstaller() {
                   )}
                 </AnimatePresence>
 
+                {submitError && <p className={styles.formError} role="alert">{submitError}</p>}
                 <p className={styles.formDisclaimer}>Sem compromisso. Resposta em até 2h úteis.</p>
               </form>
             </motion.div>

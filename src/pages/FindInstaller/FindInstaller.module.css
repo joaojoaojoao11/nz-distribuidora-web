@@ -12,7 +12,9 @@
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  /* 5% como o .container global: o hero usa o global e as outras seções usam
+     este — com 2rem aqui, o texto do hero e o mapa não alinhavam à esquerda. */
+  padding: 0 5%;
   width: 100%;
   box-sizing: border-box;
 }
@@ -227,8 +229,11 @@
   background: #08080a;
   border: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
-  min-height: 500px;
   position: relative;
+  /* Contexto de empilhamento próprio: os controles do Leaflet têm z-index 1000
+     e passavam por cima da navbar fixa (z-index 100) e do menu do celular
+     quando o mapa rolava por baixo deles. */
+  isolation: isolate;
   box-shadow: 0 0 60px rgba(212, 175, 55, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -951,6 +956,17 @@
   margin-top: 1.25rem;
 }
 
+.formError {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #f0b8b8;
+  background: rgba(220, 60, 60, 0.08);
+  border: 1px solid rgba(220, 60, 60, 0.35);
+  text-align: center;
+}
+
 
 /* ═══════════════════════════════════════════
    MODAL: SUCESSO
@@ -1035,12 +1051,32 @@
   }
 
   .heroTitle {
-    font-size: clamp(2rem, 10vw, 2.8rem);
+    /* 10vw cortava "NÓS ENCONTRAMOS" na borda direita em telas de 390px. */
+    font-size: clamp(1.75rem, 8.6vw, 2.8rem);
+  }
+
+  .heroLine {
+    white-space: normal;
   }
 
   .counters {
     flex-wrap: wrap;
     gap: 1.5rem;
+  }
+
+  /* No celular o botão da seção do mapa quebrava em duas linhas
+     ("SOLICITAR UM ESPECIALISTA / NZ"): borda + recuo do manifesto
+     deixavam pouco espaço. Botão de largura cheia, recuo menor. */
+  .mapManifestoInner {
+    padding-left: 1rem;
+  }
+
+  .heroCta {
+    width: 100%;
+    justify-content: center;
+    padding: 1.1rem 1rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
   }
 
   .counterItem::after {
@@ -1097,7 +1133,9 @@
   }
 
   .stepIndicators {
-    padding: 1rem 1.25rem;
+    /* Mantém o espaço de cima: o botão FECHAR é absoluto e cobria a etapa
+       "Serviço" quando o padding caía para 1rem. */
+    padding: 3.25rem 1.25rem 1rem;
   }
 
   .formNavRow {

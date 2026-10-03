@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, AttributionControl, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -8,44 +8,22 @@ interface BrazilMapProps {
   onStateClick: (uf: string) => void;
 }
 
-// NZ logo icon for capitals — Large 3D effect
+const LOGO = '/assets/logos/logo-simbolo-branco.svg';
+
+// Os ícones só carregam classe; o CSS deles fica num único <style> lá embaixo.
+// Antes cada marcador trazia a própria tag <style> no html — eram ~130 cópias
+// iguais injetadas no DOM a cada render do mapa.
 const nzIcon = L.divIcon({
-  className: 'nz-marker-capital',
-  html: `<div style="
-    width: 44px; height: 44px;
-    display: flex; align-items: center; justify-content: center;
-    filter: drop-shadow(0 4px 12px rgba(212,175,55,0.5)) drop-shadow(0 1px 3px rgba(0,0,0,0.8));
-    animation: nzPulse 3s ease-in-out infinite;
-    transform: perspective(200px) rotateX(10deg);
-    transition: transform 0.3s, filter 0.3s;
-  ">
-    <img src='/assets/logos/logo-simbolo-branco.svg' style='width:44px;height:44px;' />
-  </div>
-  <style>
-    @keyframes nzPulse { 0%,100%{transform:perspective(200px) rotateX(10deg) scale(1)} 50%{transform:perspective(200px) rotateX(10deg) scale(1.12)} }
-    .nz-marker-capital:hover div { transform: perspective(200px) rotateX(0deg) scale(1.25) !important; filter: drop-shadow(0 6px 20px rgba(212,175,55,0.7)) drop-shadow(0 2px 6px rgba(0,0,0,0.9)) !important; }
-  </style>`,
+  className: 'nz-mk nz-mk--capital',
+  html: `<div class="nz-mk__inner"><img src="${LOGO}" alt="" /></div>`,
   iconSize: [44, 44],
   iconAnchor: [22, 22],
   popupAnchor: [0, -24],
 });
 
-// NZ logo icon for cities — smaller with subtle 3D
 const nzIconSmall = L.divIcon({
-  className: 'nz-marker-city',
-  html: `<div style="
-    width: 24px; height: 24px;
-    display: flex; align-items: center; justify-content: center;
-    filter: drop-shadow(0 2px 6px rgba(255,255,255,0.3)) drop-shadow(0 1px 2px rgba(0,0,0,0.6));
-    transform: perspective(150px) rotateX(8deg);
-    opacity: 0.75;
-    transition: transform 0.3s, opacity 0.3s, filter 0.3s;
-  ">
-    <img src='/assets/logos/logo-simbolo-branco.svg' style='width:24px;height:24px;' />
-  </div>
-  <style>
-    .nz-marker-city:hover div { opacity: 1 !important; transform: perspective(150px) rotateX(0deg) scale(1.3) !important; filter: drop-shadow(0 4px 12px rgba(212,175,55,0.5)) !important; }
-  </style>`,
+  className: 'nz-mk nz-mk--city',
+  html: `<div class="nz-mk__inner"><img src="${LOGO}" alt="" /></div>`,
   iconSize: [24, 24],
   iconAnchor: [12, 12],
   popupAnchor: [0, -14],
@@ -212,69 +190,154 @@ const CITIES: { name: string; lat: number; lng: number }[] = [
   { name: 'Novo Hamburgo', lat: -29.679, lng: -51.130 },
 ];
 
-// Pan to Brazil on mount
-function FlyToBrazil() {
+// Caixa que envolve o Brasil inteiro (do Chuí ao Monte Caburaí, do Acre à Paraíba).
+const BRAZIL_BOUNDS = L.latLngBounds([-33.9, -74.1], [5.4, -34.6]);
+
+// Enquadra o Brasil no tamanho real do container, em vez de um zoom fixo.
+// Com zoom fixo 4.3 o país cabia num desktop e saía pelos dois lados num
+// celular (marcadores do Acre e do Nordeste ficavam fora da tela).
+// Reenquadra quando a largura muda (girar o celular, redimensionar a janela).
+function FitBrazil() {
   const map = useMap();
+  const lastWidth = useRef(0);
+
   useEffect(() => {
-    map.flyTo([-14.5, -51.0], 4.3, { duration: 1.5 });
+    const fit = () => {
+      const width = map.getSize().x;
+      if (width === lastWidth.current) return;
+      lastWidth.current = width;
+      map.fitBounds(BRAZIL_BOUNDS, { padding: [20, 20], animate: false });
+    };
+    fit();
+    // O container entra animado (framer) — garante a medida certa depois do layout.
+    const t = window.setTimeout(() => { map.invalidateSize(); fit(); }, 400);
+    map.on('resize', fit);
+    return () => { window.clearTimeout(t); map.off('resize', fit); };
   }, [map]);
+
   return null;
 }
 
+// Em tela de toque o arraste com um dedo fica desligado: o mapa ocupa quase a
+// tela inteira do celular e capturava a rolagem da página — o visitante
+// "prendia" no mapa e não conseguia descer até o formulário. Pinça (dois dedos)
+// continua dando zoom.
+const TOUCH = L.Browser.mobile;
+
 export default function BrazilMap({ activeState: _activeState, onStateClick }: BrazilMapProps) {
   return (
-    <MapContainer
-      center={[-14.5, -51.0]}
-      zoom={4}
-      minZoom={3}
-      maxZoom={12}
-      style={{ width: '100%', height: '100%', minHeight: '550px', borderRadius: '16px', background: '#0a0a0a' }}
-      zoomControl={true}
-      attributionControl={false}
-      scrollWheelZoom={false}
-    >
-      {/* Dark tile layer */}
-      <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      />
-      <FlyToBrazil />
+    <>
+      <style>{`
+        .nz-brmap { width: 100%; height: 550px; background: #08080a; }
+        @media (max-width: 768px) { .nz-brmap { height: 440px; } }
 
-      {/* Capital markers — large NZ logo */}
-      {CAPITALS.map((cap) => (
-        <Marker
-          key={cap.uf}
-          position={[cap.lat, cap.lng]}
-          icon={nzIcon}
-          eventHandlers={{
-            click: () => onStateClick(cap.uf),
-          }}
-        >
-          <Popup>
-            <div style={{ fontFamily: "'Inter', sans-serif", textAlign: 'center', color: '#000' }}>
-              <strong style={{ fontSize: '0.9rem' }}>{cap.name}</strong>
-              <br />
-              <span style={{ fontSize: '0.75rem', color: '#666' }}>{cap.uf} — Capital</span>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+        /* Ladrilhos do OpenStreetMap, que são claros, escurecidos por filtro.
+           Antes era o "Dark Matter" da CARTO, que passou a exigir chave de API
+           (ago/2026) e hoje devolve o ladrilho carimbado "API KEY REQUIRED".
+           O filtro vale só para o painel de ladrilhos — marcadores, popups e
+           controles ficam de fora. Mesmo padrão do WorldMap do painel. */
+        .nz-brmap .leaflet-tile-pane {
+          filter: invert(1) hue-rotate(180deg) grayscale(0.85) brightness(0.62) contrast(1.1);
+        }
+        .nz-brmap .leaflet-control-attribution {
+          background: rgba(8, 8, 10, 0.75); color: #555; font-size: 10px; padding: 2px 6px;
+        }
+        .nz-brmap .leaflet-control-attribution a { color: #777; }
 
-      {/* Smaller city markers */}
-      {CITIES.map((city, i) => (
-        <Marker
-          key={`city-${i}`}
-          position={[city.lat, city.lng]}
-          icon={nzIconSmall}
-        >
-          <Popup>
-            <div style={{ fontFamily: "'Inter', sans-serif", textAlign: 'center', color: '#000' }}>
-              <strong style={{ fontSize: '0.8rem' }}>{city.name}</strong>
-              <br />
-              <span style={{ fontSize: '0.7rem', color: '#666' }}>Aplicador NZ Certificado</span>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        /* Marcadores */
+        .nz-mk { background: none; border: 0; }
+        .nz-mk__inner {
+          width: 100%; height: 100%;
+          display: flex; align-items: center; justify-content: center;
+          transition: transform 0.3s, filter 0.3s, opacity 0.3s;
+        }
+        .nz-mk__inner img { width: 100%; height: 100%; display: block; }
+        .nz-mk--capital .nz-mk__inner {
+          filter: drop-shadow(0 4px 12px rgba(212,175,55,0.5)) drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+          transform: perspective(200px) rotateX(10deg);
+          animation: nzPulse 3s ease-in-out infinite;
+        }
+        .nz-mk--capital:hover .nz-mk__inner {
+          animation-play-state: paused;
+          transform: perspective(200px) rotateX(0deg) scale(1.25);
+          filter: drop-shadow(0 6px 20px rgba(212,175,55,0.7)) drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+        }
+        .nz-mk--city .nz-mk__inner {
+          opacity: 0.75;
+          filter: drop-shadow(0 2px 6px rgba(255,255,255,0.3)) drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+          transform: perspective(150px) rotateX(8deg);
+        }
+        .nz-mk--city:hover .nz-mk__inner {
+          opacity: 1;
+          transform: perspective(150px) rotateX(0deg) scale(1.3);
+          filter: drop-shadow(0 4px 12px rgba(212,175,55,0.5));
+        }
+        @keyframes nzPulse {
+          0%, 100% { transform: perspective(200px) rotateX(10deg) scale(1); }
+          50% { transform: perspective(200px) rotateX(10deg) scale(1.12); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .nz-mk--capital .nz-mk__inner { animation: none; }
+        }
+      `}</style>
+
+      <MapContainer
+        className="nz-brmap"
+        center={[-14.5, -51.0]}
+        zoom={4}
+        minZoom={2}
+        maxZoom={12}
+        zoomSnap={0}
+        zoomControl={true}
+        attributionControl={false}
+        scrollWheelZoom={false}
+        dragging={!TOUCH}
+      >
+        <TileLayer
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+        />
+        <AttributionControl position="bottomright" prefix={false} />
+        <FitBrazil />
+
+        {/* Capitais — logo NZ grande */}
+        {CAPITALS.map((cap) => (
+          <Marker
+            key={cap.uf}
+            position={[cap.lat, cap.lng]}
+            icon={nzIcon}
+            eventHandlers={{
+              click: () => onStateClick(cap.uf),
+            }}
+          >
+            <Popup>
+              <div style={{ fontFamily: "'Inter', sans-serif", textAlign: 'center' }}>
+                <strong style={{ fontSize: '0.9rem' }}>{cap.name}</strong>
+                <br />
+                <span style={{ fontSize: '0.75rem', color: '#999' }}>{cap.uf} — Capital</span>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+
+        {/* Cidades — logo NZ menor */}
+        {CITIES.map((city, i) => (
+          <Marker
+            key={`city-${i}`}
+            position={[city.lat, city.lng]}
+            icon={nzIconSmall}
+          >
+            <Popup>
+              <div style={{ fontFamily: "'Inter', sans-serif", textAlign: 'center' }}>
+                <strong style={{ fontSize: '0.8rem' }}>{city.name}</strong>
+                <br />
+                <span style={{ fontSize: '0.7rem', color: '#999' }}>Aplicador NZ Certificado</span>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </>
   );
 }
