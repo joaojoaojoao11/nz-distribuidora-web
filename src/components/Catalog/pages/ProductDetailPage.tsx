@@ -3,6 +3,7 @@ import styles from '../Catalog.module.css';
 import { type ProductLine, catalogMeta } from '../data/catalogData';
 import { usePageScale, useElementHidden } from '../useCatalogOverrides';
 import EditableText from '../EditableText';
+import MuText from '../MuText';
 
 interface ProductDetailPageProps {
   pageNumber: number;
@@ -44,7 +45,7 @@ export default function ProductDetailPage({
           zIndex: 1,
         }}
       >
-        {product.thickness}
+        <MuText>{product.thickness}</MuText>
       </div>
 
       <div
@@ -276,7 +277,9 @@ function ArchItem({ pageId, index, item, accent }: ArchItemProps) {
           defaultValue={item.title}
           as="div"
           className={styles.archTitle}
-        />
+        >
+          {(t) => <MuText>{t}</MuText>}
+        </EditableText>
         <EditableText
           pageId={pageId}
           fieldKey={`arch.${index}.desc`}

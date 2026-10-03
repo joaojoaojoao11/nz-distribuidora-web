@@ -3,6 +3,7 @@ import styles from '../Catalog.module.css';
 import { productLines } from '../data/catalogData';
 import { usePageScale } from '../useCatalogOverrides';
 import EditableText from '../EditableText';
+import MuText from '../MuText';
 
 const PAGE_ID = 'lines-overview';
 
@@ -100,7 +101,9 @@ export default function LinesOverviewPage({ pageNumber = 3, totalPages }: LinesO
                       defaultValue={`${line.thickness} TPU`}
                       as="div"
                       className={styles.lineCardThickness}
-                    />
+                    >
+                      {(t) => <MuText>{t}</MuText>}
+                    </EditableText>
                   </div>
                 </div>
               </div>

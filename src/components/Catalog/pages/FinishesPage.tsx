@@ -3,6 +3,7 @@ import styles from '../Catalog.module.css';
 import type { ProductLine, FinishItem, ArchitectureItem } from '../data/catalogData';
 import { usePageScale, useElementHidden } from '../useCatalogOverrides';
 import EditableText from '../EditableText';
+import MuText from '../MuText';
 
 interface FinishesPageProps {
   pageNumber: number;
@@ -186,7 +187,9 @@ function EstruturaCard({ pageId, index, item, accent }: EstruturaCardProps) {
           defaultValue={item.title}
           as="div"
           className={styles.archTitle}
-        />
+        >
+          {(t) => <MuText>{t}</MuText>}
+        </EditableText>
         <EditableText
           pageId={pageId}
           fieldKey={`arch.${index}.desc`}

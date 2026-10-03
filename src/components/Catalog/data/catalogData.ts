@@ -184,30 +184,30 @@ const rawProductLines: ProductLine[] = [
     slug: 'flow-gloss',
     title: 'NZ PPF FLOW GLOSS',
     shortName: 'FLOW',
-    subtitle: 'TPU Técnico 175µ · 4 anos',
-    sectionTitle: 'Entrada Inteligente no Mundo do PPF',
+    subtitle: 'TPU Técnico G2 185µ · 7 anos',
+    sectionTitle: 'A Nova Geração do PPF Intermediário',
     bodyParagraphs: [
-      'TPU técnico hidrofóbico. Não resseca, não trinca. Auto-cura sob o sol.',
-      '175µ é o suficiente pro impacto urbano: pedra, areia, lavagem agressiva. Quatro anos de garantia que resistem ao mundo real.'
+      'Nova formulação G2: TPU técnico de 2ª geração com top coat nano-hidrofóbico. Não resseca, não trinca e regenera micro-riscos mais rápido.',
+      '185µ — dez micras a mais que a geração anterior — para absorver pedra, areia e detrito da via antes da pintura. Sete anos de garantia de fábrica.'
     ],
-    closingTagline: 'ENTRADA TÉCNICA',
-    closingLine: 'Nem todo carro precisa de 12 anos. Mas todo carro merece 4.',
+    closingTagline: 'INTERMEDIÁRIO DE PERFORMANCE',
+    closingLine: 'Mais corpo, mais proteção e 7 anos de garantia.',
     image: '/assets/images/flow_haval.png',
-    thickness: '175μ',
-    warranty: '4 ANOS',
+    thickness: '185μ',
+    warranty: '7 ANOS',
     accent: '#d11e1e',
     tone: 'red',
     highlights: [
-      { label: 'Espessura', value: '175 µ' },
-      { label: 'Material', value: 'TPU Técnico' },
-      { label: 'Top Coat', value: 'Hidrofóbico' },
-      { label: 'Garantia', value: '4 anos' }
+      { label: 'Espessura', value: '185 µ' },
+      { label: 'Material', value: 'TPU Técnico G2' },
+      { label: 'Top Coat', value: 'Nano-Hidrofóbico G2' },
+      { label: 'Garantia', value: '7 anos' }
     ],
     architecture: [
-      { num: '01', title: 'Revestimento Hidrofóbico', desc: 'Repele água. Lavagem fácil.', icon: ICON.repelencia },
-      { num: '02', title: 'TPU Técnico 175μ',         desc: 'Não resseca. Não trinca.',    icon: ICON.escudoVazio },
-      { num: '03', title: 'Regeneração Térmica',      desc: 'Auto-cura leve solar.',       icon: ICON.regeneracao },
-      { num: '04', title: 'Adesivo Acrílico',         desc: 'Curvas complexas.',           icon: ICON.presente }
+      { num: '01', title: 'Top Coat Nano-Hidrofóbico G2', desc: 'Repele água e sujeira.',          icon: ICON.repelencia },
+      { num: '02', title: 'TPU Técnico G2 185μ',          desc: 'Mais impacto e estabilidade UV.', icon: ICON.escudoVazio },
+      { num: '03', title: 'Regeneração Acelerada',        desc: 'Auto-cura mais rápida.',          icon: ICON.regeneracao },
+      { num: '04', title: 'Adesivo de Alta Conformação',  desc: 'Curvas complexas, remoção limpa.', icon: ICON.presente }
     ],
     finishes: {
       tagline: 'Versatilidade real. Estética sem compromisso.',
@@ -389,7 +389,7 @@ const rawProductLines: ProductLine[] = [
       { label: 'Garantia', value: '2 anos' }
     ],
     architecture: [
-      { num: '01', title: 'TPU 190 micras',       desc: 'Camada anti-impacto.',   icon: ICON.escudoBraco },
+      { num: '01', title: 'TPU 190μ',             desc: 'Camada anti-impacto.',   icon: ICON.escudoBraco },
       { num: '02', title: 'Top Coat Hidrofóbico', desc: 'Repele água. Bloqueia UV.', icon: ICON.repelencia },
       { num: '03', title: 'Transparência Óptica', desc: 'Zero distorção. ADAS.',   icon: ICON.certo },
       { num: '04', title: 'Adesivo Face Externa', desc: 'Resiste a lavagens.',     icon: ICON.presente }
@@ -428,7 +428,7 @@ const rawBenchmarkLines: BenchmarkLine[] = [
     highlight: 'Híbrido 80/20. Durabilidade na entrada.'
   },
   {
-    id: 'flow', name: 'FLOW', thickness: '175μ', warranty: '4 Anos', accent: '#d11e1e',
+    id: 'flow', name: 'FLOW', thickness: '185μ', warranty: '7 Anos', accent: '#d11e1e',
     metrics: [
       { label: 'Brilho', value: 85 },
       { label: 'Durabilidade', value: 75 },
@@ -436,7 +436,7 @@ const rawBenchmarkLines: BenchmarkLine[] = [
       { label: 'Repelência', value: 80 },
       { label: 'Custo-Benefício', value: 85 }
     ],
-    highlight: 'TPU técnico hidrofóbico com regeneração.'
+    highlight: 'TPU técnico G2 com top coat nano-hidrofóbico.'
   },
   {
     id: 'prime', name: 'PRIME', thickness: '190μ', warranty: '10 Anos', accent: '#4A90D9',
