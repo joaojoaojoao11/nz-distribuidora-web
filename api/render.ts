@@ -49,6 +49,7 @@ const crumbLabels: Record<string, string> = {
   '/sign/oracal-651': 'Oracal 651',
   '/wrap/oracal-670ra': 'Oracal 670RA',
   '/wrap/metamark-mcx': 'Metamark MCX',
+  '/wrap/motos': 'Ação Moto',
   '/sign/metamark-7-series': 'Metamark Série 7',
   '/ppf/luxury-gloss': 'Luxury Gloss',
   '/ppf/prime-gloss': 'Prime Gloss',

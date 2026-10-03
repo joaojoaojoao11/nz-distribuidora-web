@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/motos",
+      "destination": "/wrap/motos",
+      "permanent": true
+    },
+    {
       "source": "/wrap/metamark-7-series",
       "destination": "/sign/metamark-7-series",
       "permanent": true

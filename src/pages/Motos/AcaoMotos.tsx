@@ -1,10 +1,11 @@
-// /motos — Ação Moto: vitrine das cores que têm pedaço (ponta no pátio da NZ ou
+// /wrap/motos — Ação Moto (no menu NZWRAP; /motos redireciona): vitrine das cores que têm pedaço (ponta no pátio da NZ ou
 // estoque do parceiro), com 3 fotos de moto envelopada cada. O objetivo é fazer
 // os fracionados saírem: moto pede 2 a 4 metros, exatamente o tamanho de um
 // pedaço que não serve mais para carro inteiro. Pedido do João em 2026-10-03.
 //
 // A metragem disponível NÃO aparece aqui (é dado de admin). A lista vem de
 // motosCores.ts; o preço e o estoque continuam na página de cada produto.
+// Só vitrine, sem condição comercial própria (João, 03/10).
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -12,12 +13,6 @@ import SEO from '../../components/SEO/SEO';
 import { SITE_URL, SITE_WHATSAPP } from '../../lib/siteConfig';
 import { CORES_MOTO, fotoMoto, type CorMoto } from './motosCores';
 import styles from './AcaoMotos.module.css';
-
-/**
- * Condição comercial da ação. `null` enquanto o João não define — o bloco
- * simplesmente não aparece. Preço é decisão comercial, não da página.
- */
-const OFERTA: { titulo: string; texto: string } | null = null;
 
 const METRAGEM = [
   { tipo: 'Naked', metros: '2 a 3 m', detalhe: 'Tanque, laterais, rabeta e paralama' },
@@ -33,7 +28,7 @@ export default function AcaoMotos() {
       <SEO
         title="Ação Moto — Envelopamento de Moto com Metragem Fracionada"
         description={`Cores de envelopamento em metragem fracionada para tanque, carenagens e paralamas: ${CORES_MOTO.length} cores com fotos em moto, Speed Wrapping, Oracal 670RA e Metamark MCX.`}
-        canonicalUrl={`${SITE_URL}/motos`}
+        canonicalUrl={`${SITE_URL}/wrap/motos`}
         imageUrl={`${SITE_URL}${fotoMoto(HERO.slug, 1)}`}
       />
 
@@ -72,13 +67,6 @@ export default function AcaoMotos() {
           WhatsApp e a gente confirma a metragem antes do corte.
         </p>
       </section>
-
-      {OFERTA && (
-        <section className={styles.oferta}>
-          <h2 className={styles.secaoTitulo}>{OFERTA.titulo}</h2>
-          <p>{OFERTA.texto}</p>
-        </section>
-      )}
 
       <section id="cores" className={styles.secao} aria-labelledby="cores-titulo">
         <h2 id="cores-titulo" className={styles.secaoTitulo}>As cores da ação</h2>

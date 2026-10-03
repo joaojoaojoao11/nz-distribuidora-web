@@ -217,7 +217,7 @@ function App() {
                   <Route path="/ppf/headlight" element={<Headlight />} />
                   <Route path="/ppf/windshield" element={<Windshield />} />
                   <Route path="/wrap" element={<Wrap />} />
-                  <Route path="/motos" element={<AcaoMotos />} />
+                  <Route path="/wrap/motos" element={<AcaoMotos />} />
                   <Route path="/wrap/nzwrap-premium" element={<NzwrapPremium />} />
                   <Route path="/wrap/nzwrap-premium/:sku" element={<NzwrapColorPage />} />
                   <Route path="/wrap/sh-colors" element={<ShColors />} />

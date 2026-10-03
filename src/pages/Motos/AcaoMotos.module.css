@@ -125,7 +125,6 @@
 
 /* ---------------------------------------------------------------- seções */
 .secao,
-.oferta,
 .final {
   max-width: 1200px;
   margin: 0 auto;
@@ -182,9 +181,6 @@
   color: var(--text-secondary);
 }
 
-.oferta {
-  padding-bottom: 0;
-}
 
 /* ----------------------------------------------------------------- grade */
 .grade {

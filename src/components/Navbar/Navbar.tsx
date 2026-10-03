@@ -177,6 +177,10 @@ export default function Navbar() {
               <Link to="/wrap/oracal-670ra" className={styles.dropdownTextItem} onClick={closeMenu}>
                 ORACAL 670RA
               </Link>
+              <span className={styles.dropdownDivider} aria-hidden="true" />
+              <Link to="/wrap/motos" className={styles.dropdownTextItem} onClick={closeMenu}>
+                AÇÃO MOTO
+              </Link>
             </div>
           </div>
           <div className={styles.dropdownWrap}>
