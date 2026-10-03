@@ -36,3 +36,14 @@ scratchpad-nao-versionado
 
 # scratch do pipeline de imagens
 tmp/
+
+
+# saídas dos scripts de foto de cor: prévias, temporários do publicar-cor,
+# dados do painel. Tudo regenerável — o que vai para o site sai de public/.
+scripts/output/*
+!scripts/output/qr-interlagos.png
+!scripts/output/qr-interlagos.svg
+
+# cache do Python e temporários de gravação (sharp/OneDrive)
+__pycache__/
+*.tmp
