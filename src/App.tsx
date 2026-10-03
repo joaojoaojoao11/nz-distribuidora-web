@@ -44,6 +44,7 @@ const CoreGloss = lazy(() => import('./pages/Ppf/CoreGloss'));
 const Headlight = lazy(() => import('./pages/Ppf/Headlight'));
 const Windshield = lazy(() => import('./pages/Ppf/Windshield'));
 const Wrap = lazy(() => import('./pages/Wrap/Wrap'));
+const AcaoMotos = lazy(() => import('./pages/Motos/AcaoMotos'));
 const NzwrapPremium = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.NzwrapPremium })));
 const ShColors = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.ShColors })));
 const Oracal970 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.Oracal970 })));
@@ -216,6 +217,7 @@ function App() {
                   <Route path="/ppf/headlight" element={<Headlight />} />
                   <Route path="/ppf/windshield" element={<Windshield />} />
                   <Route path="/wrap" element={<Wrap />} />
+                  <Route path="/motos" element={<AcaoMotos />} />
                   <Route path="/wrap/nzwrap-premium" element={<NzwrapPremium />} />
                   <Route path="/wrap/nzwrap-premium/:sku" element={<NzwrapColorPage />} />
                   <Route path="/wrap/sh-colors" element={<ShColors />} />

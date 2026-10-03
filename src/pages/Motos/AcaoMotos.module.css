@@ -1,0 +1,291 @@
+/* Ação Moto. Mesmo fundo escuro e tipografia das páginas de linha (/wrap, /ppf). */
+
+.page {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------------------ hero */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+/* Desktop: a foto ocupa os 2/3 da direita e o texto fica à esquerda, sobre o
+   fundo — a moto não pode ficar atrás do título. */
+.heroImg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 68%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.heroVeu {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, var(--bg-primary) 32%, rgba(5, 5, 5, 0.6) 44%, rgba(5, 5, 5, 0) 62%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0) 70%, var(--bg-primary) 100%);
+}
+
+/* Celular: a foto vai inteira em cima e o texto embaixo, sobre o degradê. */
+@media (max-width: 767px) {
+  .hero {
+    min-height: 92vh;
+  }
+
+  .heroImg {
+    width: 100%;
+    height: 54%;
+  }
+
+  .heroVeu {
+    background: linear-gradient(180deg, rgba(5, 5, 5, 0) 32%, var(--bg-primary) 54%);
+  }
+}
+
+.heroTexto {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 8vh;
+}
+
+.eyebrow {
+  font-family: var(--font-tech);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.8rem;
+}
+
+.titulo {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1.05;
+  max-width: 14ch;
+  margin: 0 0 1rem;
+}
+
+.sub {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 56ch;
+  margin: 0 0 1.6rem;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ctaPrimario,
+.ctaSecundario {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  font-family: var(--font-tech);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background var(--transition-snappy), border-color var(--transition-snappy);
+}
+
+.ctaPrimario {
+  background: var(--accent-red);
+  color: #fff;
+}
+
+.ctaPrimario:hover {
+  background: var(--accent-red-hover);
+}
+
+.ctaSecundario {
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+}
+
+.ctaSecundario:hover {
+  border-color: var(--text-secondary);
+}
+
+/* ---------------------------------------------------------------- seções */
+.secao,
+.oferta,
+.final {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 16px 0;
+}
+
+.secaoTitulo {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  margin: 0 0 1.2rem;
+}
+
+.nota {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0.8rem 0 0;
+}
+
+.metragem {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.metragemItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.2rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.metragemTipo {
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.metragemMetros {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+}
+
+.metragemDetalhe {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.oferta {
+  padding-bottom: 0;
+}
+
+/* ----------------------------------------------------------------- grade */
+.grade {
+  list-style: none;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.cartao {
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+}
+
+.cartaoImg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+
+.miniaturas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 8px 8px 0;
+}
+
+.miniatura {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.miniatura img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+}
+
+.miniaturaAtiva {
+  border-color: var(--text-primary);
+}
+
+.cartaoTexto {
+  padding: 0.9rem 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.cartaoMarca {
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cartaoCor {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.cartaoLink {
+  align-self: flex-start;
+  margin-top: 0.4rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ----------------------------------------------------------------- final */
+.final {
+  padding-bottom: 5rem;
+  text-align: center;
+}
+
+.final .sub {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* No topo o texto não pode invadir a foto. */
+.heroTexto .sub {
+  max-width: 40ch;
+}

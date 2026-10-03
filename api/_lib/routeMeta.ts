@@ -46,6 +46,10 @@ export const routeMeta: Record<string, RouteMeta> = {
     title: 'NZ PPF Windshield — Película de Proteção para Parabrisa 190μ',
     description: 'PPF de parabrisa com absorção de impacto, compatível com sensores e ADAS. 190μ e 2 anos de garantia. Proteção invisível para o vidro do seu carro.',
   },
+  '/motos': {
+    title: 'Ação Moto — Envelopamento de Moto com Metragem Fracionada',
+    description: 'Cores de envelopamento em metragem fracionada para tanque, carenagens e paralamas, com fotos em moto. Speed Wrapping, Oracal 670RA e Metamark MCX na NZ Distribuidora.',
+  },
   '/wrap': {
     title: 'Adesivo Automotivo Premium | Catálogo de Envelopamento',
     description: 'Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal e NZWrap com centenas de cores.',
