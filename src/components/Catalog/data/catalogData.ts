@@ -389,7 +389,7 @@ const rawProductLines: ProductLine[] = [
       { label: 'Garantia', value: '2 anos' }
     ],
     architecture: [
-      { num: '01', title: 'TPU 190μ',             desc: 'Camada anti-impacto.',   icon: ICON.escudoBraco },
+      { num: '01', title: 'TPU 190 micras',       desc: 'Camada anti-impacto.',   icon: ICON.escudoBraco },
       { num: '02', title: 'Top Coat Hidrofóbico', desc: 'Repele água. Bloqueia UV.', icon: ICON.repelencia },
       { num: '03', title: 'Transparência Óptica', desc: 'Zero distorção. ADAS.',   icon: ICON.certo },
       { num: '04', title: 'Adesivo Face Externa', desc: 'Resiste a lavagens.',     icon: ICON.presente }
