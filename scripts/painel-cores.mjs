@@ -22,6 +22,12 @@ import { RAIZ_DRIVE, listar, lerLinha, lerCor, sleep } from './lib/drive.mjs';
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const MIN_MIDIAS = 3; // capa + ao menos 2 fotos de carro
 
+// Fora da conta (decisão do João, 03/10): a pasta existe no Drive, mas a cor não vai ao site.
+// EGB: linha inativa no NZERP e oculta na loja. As 6 cores: pasta vazia, sem nome nem produto
+// no NZERP ou na loja.
+const LINHAS_FORA = new Set(['EGB']);
+const CORES_FORA = new Set(['EDG-022', 'EDG-028', 'EDG-029', 'EGF-008', 'EGF-016', 'EGF-020']);
+
 function env() {
   const txt = readFileSync(path.join(RAIZ, '.env'), 'utf8');
   return Object.fromEntries(
@@ -54,11 +60,13 @@ const divergencias = [];
 for (const pasta of (await listar(RAIZ_DRIVE)).filter((x) => x.pasta)) {
   const l = lerLinha(pasta.nome);
   if (!l) { divergencias.push(`pasta de linha sem código: "${pasta.nome}"`); continue; }
+  if (LINHAS_FORA.has(l.codigo)) continue;
   await sleep(150);
   const cores = [];
   for (const c of (await listar(pasta.id)).filter((x) => x.pasta)) {
     const cor = lerCor(c.nome);
     if (!cor) { divergencias.push(`${l.codigo}: pasta de cor sem código: "${c.nome}"`); continue; }
+    if (CORES_FORA.has(cor.codigo)) continue;
     const p = site.get(cor.sku);
     const feita = (p?.midias ?? 0) >= MIN_MIDIAS;
     if (!p) divergencias.push(`${cor.codigo}: sem produto no site (${cor.sku})`);
