@@ -627,3 +627,20 @@
     scroll-snap-align: start;
   }
 }
+
+/* Promoção Moto: alterna entre só as fotos de moto e a galeria inteira. */
+.fotosToggle {
+  margin-top: 0.6rem;
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.fotosToggle:hover {
+  color: var(--text-primary);
+}

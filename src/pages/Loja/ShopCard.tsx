@@ -13,6 +13,8 @@ import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import type { ShopItem } from '../../lib/shop/types';
 import EstoqueDots from './EstoqueDots';
+import PecasPromo from './PecasPromo';
+import type { ItemPromoMoto } from '../../lib/shop/promoMoto';
 import Preco from './Preco';
 import { cortarNome } from './useLimiteNome';
 import styles from './ShopCard.module.css';
@@ -45,6 +47,11 @@ interface Props {
    * aparecendo depois do clique.
    */
   selecao?: string;
+  /**
+   * Promoção Moto ligada e este item dentro dela: a foto vira a da moto e os
+   * pedaços aparecem sobre ela, com o valor fechado (ver PecasPromo).
+   */
+  promo?: ItemPromoMoto;
 }
 
 function swatchBackground(hex: string): string {
@@ -59,8 +66,14 @@ function swatchBackground(hex: string): string {
 const mesmoRotulo = (a: string, b: string) =>
   a.trim().replace(/\s+/g, ' ').toLowerCase() === b.trim().replace(/\s+/g, ' ').toLowerCase();
 
-function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao }: Props) {
-  const hasImage = Boolean(item.image);
+function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao, promo }: Props) {
+  // Na promoção a capa é a moto: o rolo não vende a ideia de envelopar a moto.
+  const imagem = promo?.fotos[0] ?? item.image;
+  const hasImage = Boolean(imagem);
+  const busca = new URLSearchParams();
+  if (selecao) busca.set('s', selecao);
+  if (promo) busca.set('promo', 'moto');
+  const qs = busca.toString();
 
   // Boa parte do catálogo não tem acabamento nem subtítulo próprios, e as duas
   // linhas caíam no mesmo `brand`: o card repetia "Speed Wrapping" embaixo de
@@ -73,7 +86,8 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
     <Link
       // `?s=` na URL, não no `state` do Link: um F5 na página do produto perde
       // o state e o preço da seleção sumiria no meio da conversa.
-      to={`/loja/${item.slug}${selecao ? `?s=${selecao}` : ''}`}
+      // `?promo=moto` também: a página do produto abre nas fotos de moto.
+      to={`/loja/${item.slug}${qs ? `?${qs}` : ''}`}
       state={from ? { from } : undefined}
       className={styles.card}
       aria-label={item.name}
@@ -81,8 +95,8 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
       <div className={styles.media}>
         {hasImage ? (
           <img
-            src={item.image as string}
-            alt={item.name}
+            src={imagem as string}
+            alt={promo ? `Moto envelopada com ${item.name}` : item.name}
             className={styles.image}
             loading={eager ? undefined : 'lazy'}
             decoding="async"
@@ -100,11 +114,14 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
           </span>
         )}
 
+        {/* Na promoção quem fala de estoque são os pedaços, sobre a foto. */}
+        {promo && <PecasPromo slug={item.slug} pecas={promo.pecas} variante="card" selecao={selecao} />}
+
         {/* Nível público de estoque, já embutido no catálogo — sem request. */}
-        {item.nivelEstoque === 'pronta-entrega' && (
+        {!promo && item.nivelEstoque === 'pronta-entrega' && (
           <span className={`${styles.estoque} ${styles.estoquePronta}`}>Pronta entrega</span>
         )}
-        {item.nivelEstoque === 'ultimas-unidades' && (
+        {!promo && item.nivelEstoque === 'ultimas-unidades' && (
           <span className={`${styles.estoque} ${styles.estoqueUltimas}`}>Últimas unidades</span>
         )}
 

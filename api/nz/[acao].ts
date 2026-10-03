@@ -34,6 +34,7 @@ import avaliacoes from '../_lib/handlers/avaliacoes.js';
 import selecoes from '../_lib/handlers/selecoes.js';
 import ocorrencias from '../_lib/handlers/ocorrencias.js';
 import patio from '../_lib/handlers/patio.js';
+import promoMoto from '../_lib/handlers/promoMoto.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -77,6 +78,9 @@ const ROTAS: Record<string, Handler> = {
   ocorrencias,
   // Quais slugs têm rolo fechado / ponta no pátio — o filtro das bolinhas. Admin.
   patio,
+  // Promoção Moto da loja: cores com pedaço aberto (pátio ou parceiro) e foto
+  // de moto, com os metros de cada pedaço. Público, cache de 5 min na CDN.
+  'promo-moto': promoMoto,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

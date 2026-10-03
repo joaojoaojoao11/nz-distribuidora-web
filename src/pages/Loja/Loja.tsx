@@ -19,6 +19,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { getShopItem, useShopCatalog } from '../../lib/shop/store';
 import { usePrecosLote } from '../../lib/shop/precos';
 import { usePatio } from '../../lib/shop/patio';
+import { usePromoMoto } from '../../lib/shop/promoMoto';
+import { Motorbike } from 'lucide-react';
 import { useSelecaoRemota } from '../../lib/shop/selecoes';
 import { MAX_SELECAO } from '../../lib/shop/selecoes/regras';
 import SelecaoConfig from './SelecaoConfig';
@@ -101,6 +103,8 @@ export default function Loja() {
     clearAll,
     activeChips,
     activeCount,
+    promoMoto,
+    setPromoMoto,
   } = useShopFilters();
 
   const location = useLocation();
@@ -163,6 +167,17 @@ export default function Loja() {
     [filters, patio]
   );
 
+  // Promoção Moto (?promo=moto): o catálogo encolhe para as cores com pedaço
+  // aberto e foto de moto (ver api/_lib/handlers/promoMoto.ts). Os filtros da
+  // sidebar continuam valendo DENTRO da promoção. Enquanto o mapa não chega a
+  // lista fica vazia — mostrar a loja inteira como se fosse promoção seria pior.
+  const promo = usePromoMoto(promoMoto && !emSelecao);
+  const emPromo = promoMoto && !emSelecao;
+  const catalogo = useMemo(
+    () => (emPromo ? (promo ? SHOP_ITEMS.filter((i) => promo.has(i.slug)) : []) : SHOP_ITEMS),
+    [emPromo, promo, SHOP_ITEMS]
+  );
+
   const results = useMemo(() => {
     // A ordem é a do servidor / a da URL: foi a que o vendedor montou.
     if (token) {
@@ -171,13 +186,13 @@ export default function Loja() {
     if (emSelecao) {
       return selection.map((slug) => getShopItem(slug)).filter((i): i is ShopItem => Boolean(i));
     }
-    const base = applyFilters(SHOP_ITEMS, filtrosEfetivos, patio);
+    const base = applyFilters(catalogo, filtrosEfetivos, patio);
     return excluded.length ? base.filter((i) => !excluded.includes(i.slug)) : base;
-  }, [token, selRemota, emSelecao, selection, filtrosEfetivos, patio, excluded, SHOP_ITEMS]);
+  }, [token, selRemota, emSelecao, selection, filtrosEfetivos, patio, excluded, catalogo]);
 
   const facets = useMemo(
-    () => computeFacets(SHOP_ITEMS, filtrosEfetivos, patio),
-    [filtrosEfetivos, patio, SHOP_ITEMS]
+    () => computeFacets(catalogo, filtrosEfetivos, patio),
+    [filtrosEfetivos, patio, catalogo]
   );
   const filtering = hasActiveFilters(filtrosEfetivos);
 
@@ -185,12 +200,12 @@ export default function Loja() {
   // devolver. Um item que saiu do filtro por outro motivo não deve reaparecer.
   const removidosVisiveis = useMemo(() => {
     if (emSelecao || !excluded.length) return [];
-    const noFiltro = new Set(applyFilters(SHOP_ITEMS, filtrosEfetivos, patio).map((i) => i.slug));
+    const noFiltro = new Set(applyFilters(catalogo, filtrosEfetivos, patio).map((i) => i.slug));
     return excluded
       .filter((slug) => noFiltro.has(slug))
       .map((slug) => getShopItem(slug))
       .filter((i): i is ShopItem => Boolean(i));
-  }, [emSelecao, excluded, filtrosEfetivos, patio, SHOP_ITEMS]);
+  }, [emSelecao, excluded, filtrosEfetivos, patio, catalogo]);
 
   const chaveFiltros = JSON.stringify(filters);
 
@@ -401,6 +416,15 @@ export default function Loja() {
             <span className={styles.counterNumber}>{facets.verticals.length}</span>
             <span className={styles.counterLabel}>LINHAS</span>
           </div>
+          <button
+            type="button"
+            className={`${styles.promoBotao} ${promoMoto ? styles.promoBotaoAtivo : ''}`}
+            aria-pressed={promoMoto}
+            onClick={() => setPromoMoto(!promoMoto)}
+          >
+            <Motorbike size={18} strokeWidth={1.8} aria-hidden="true" />
+            Promoção moto
+          </button>
         </div>
       </header>
       )}
@@ -684,11 +708,36 @@ export default function Loja() {
             </div>
           )}
 
+          {emPromo && (
+            <div className={styles.promoFaixa}>
+              <div className={styles.promoFaixaTexto}>
+                <h2 className={styles.promoTitulo}>Promoção envelopamento de moto</h2>
+                <p className={styles.promoSub}>
+                  {promo === undefined
+                    ? 'Carregando as cores com metragem fracionada…'
+                    : promo === null
+                      ? 'Não consegui carregar a promoção agora. Tente de novo em instantes.'
+                      : `${catalogo.length} cores com metragem fracionada pronta para tanque, carenagens, rabeta e paralama. O valor é o do pedaço inteiro.`}
+                </p>
+                <p className={styles.promoGuia}>
+                  Naked 2 a 3 m · Esportiva carenada 3 a 4 m · Big trail 3 a 4 m
+                </p>
+              </div>
+              <button type="button" className={styles.promoSair} onClick={() => setPromoMoto(false)}>
+                Sair da promoção ✕
+              </button>
+            </div>
+          )}
+
           <p className={styles.resultCount} role="status" aria-live="polite">
             {emSelecao ? (
               <>
                 <strong>{results.length}</strong>{' '}
                 {results.length === 1 ? 'produto nesta seleção' : 'produtos nesta seleção'}
+              </>
+            ) : emPromo ? (
+              <>
+                <strong>{results.length}</strong> {results.length === 1 ? 'cor na promoção' : 'cores na promoção'}
               </>
             ) : filtering || excluded.length > 0 ? (
               <>
@@ -724,6 +773,7 @@ export default function Loja() {
                     from={`${location.pathname}${location.search}`}
                     limiteNome={limiteNome}
                     selecao={tokenDePreco}
+                    promo={emPromo ? promo?.get(item.slug) : undefined}
                   />
                 ))}
               </div>
@@ -743,7 +793,11 @@ export default function Loja() {
           ) : (
             <div className={styles.empty}>
               <p className={styles.emptyTitle}>
-                Nenhum produto encontrado{filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.
+                {emPromo && !promo
+                  ? 'Carregando a promoção…'
+                  : emPromo
+                    ? `Nenhuma cor da promoção${filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.`
+                    : `Nenhum produto encontrado${filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.`}
               </p>
               <p className={styles.emptyHint}>
                 Tente uma cor ("azul fosco"), uma marca ("metamark") ou um código. Se não achar,

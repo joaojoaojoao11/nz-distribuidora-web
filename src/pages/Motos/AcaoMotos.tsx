@@ -43,7 +43,8 @@ export default function AcaoMotos() {
             carenagens, rabeta e paralama. Você leva só o que a moto pede.
           </p>
           <div className={styles.ctas}>
-            <a className={styles.ctaPrimario} href="#cores">Ver as {CORES_MOTO.length} cores</a>
+            <Link className={styles.ctaPrimario} to="/loja?promo=moto">Ver pedaços e preços na loja</Link>
+            <a className={styles.ctaSecundario} href="#cores">Ver as {CORES_MOTO.length} cores</a>
             <a className={styles.ctaSecundario} href={SITE_WHATSAPP} target="_blank" rel="noopener noreferrer">
               Chamar no WhatsApp
             </a>
@@ -124,7 +125,7 @@ function CartaoCor({ cor }: { cor: CorMoto }) {
       <div className={styles.cartaoTexto}>
         <span className={styles.cartaoMarca}>{cor.marca} · {cor.codigo}</span>
         <h3 className={styles.cartaoCor}>{cor.cor}</h3>
-        <Link className={styles.cartaoLink} to={`/loja/${cor.slug}`}>
+        <Link className={styles.cartaoLink} to={`/loja/${cor.slug}?promo=moto`}>
           Ver na loja
         </Link>
       </div>

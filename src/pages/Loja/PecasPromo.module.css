@@ -1,0 +1,100 @@
+/* Pedaços da Promoção Moto. No card ficam sobre a foto, no canto de baixo: o
+   rodapé do card tem altura fixa (ver ShopCard.module.css) e não comporta dois
+   pedaços com preço. O fundo escuro garante leitura sobre qualquer foto. */
+
+.chips {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  pointer-events: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  max-width: 100%;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(5, 5, 5, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f5f5f7;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.chip strong {
+  font-weight: 600;
+}
+
+.valor {
+  color: #f5f5f7;
+}
+
+.mais {
+  color: #a1a1a6;
+}
+
+/* ------------------------------------------------- página do produto */
+.bloco {
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(209, 30, 30, 0.45);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.titulo {
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 0.6rem;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.linha:last-child {
+  border-bottom: none;
+}
+
+.metros {
+  font-family: var(--font-tech);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.preco {
+  font-family: var(--font-tech);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.nota {
+  margin: 0.6rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}

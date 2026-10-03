@@ -22,6 +22,8 @@ import type { MidiaPublica, ShopItem } from '../../lib/shop/types';
 import Disponibilidade from './Disponibilidade';
 import InformarProblema from './InformarProblema';
 import Preco from './Preco';
+import PecasPromo from './PecasPromo';
+import { usePromoMoto } from '../../lib/shop/promoMoto';
 import PrazoEntrega from './PrazoEntrega';
 import Avaliacoes from './Avaliacoes';
 import FichaTecnica, { DescricaoDoProduto } from './FichaTecnica';
@@ -73,9 +75,19 @@ export default function LojaProduct() {
   // `?s=<token>`: veio de uma seleção. Fica na URL (e não no state do Link)
   // para o preço sobreviver a um F5 e para o link do produto ser compartilhável
   // dentro da conversa com o cliente.
-  const selecao = new URLSearchParams(location.search).get('s') || undefined;
+  const busca = new URLSearchParams(location.search);
+  const selecao = busca.get('s') || undefined;
+  // `?promo=moto`: veio da Promoção Moto. A galeria abre nas fotos de moto e os
+  // pedaços aparecem com o valor fechado.
+  const promoMoto = busca.get('promo') === 'moto';
   return (
-    <ProductView item={item} backTo={from ?? '/loja'} viaHistorico={Boolean(from)} selecao={selecao} />
+    <ProductView
+      item={item}
+      backTo={from ?? (promoMoto ? '/loja?promo=moto' : '/loja')}
+      viaHistorico={Boolean(from)}
+      selecao={selecao}
+      promoMoto={promoMoto}
+    />
   );
 }
 
@@ -84,6 +96,7 @@ function ProductView({
   backTo,
   viaHistorico,
   selecao,
+  promoMoto = false,
 }: {
   item: ShopItem;
   backTo: string;
@@ -91,6 +104,8 @@ function ProductView({
   viaHistorico: boolean;
   /** Token da seleção que trouxe o visitante até aqui, se houver. */
   selecao?: string;
+  /** Veio da Promoção Moto (`?promo=moto`). */
+  promoMoto?: boolean;
 }) {
   const navigate = useNavigate();
   // Mesmo corte de nome da listagem: os relacionados usam os mesmos cards e
@@ -131,7 +146,7 @@ function ProductView({
   const gallery = item.gallery.length ? item.gallery : item.image ? [item.image] : [];
   // `media` só vem do catálogo do banco; as fontes estáticas continuam com as
   // URLs soltas de `gallery`. Um caminho só para renderizar os dois.
-  const midias: MidiaPublica[] = useMemo(
+  const todasMidias: MidiaPublica[] = useMemo(
     () =>
       item.media && item.media.length > 0
         ? item.media
@@ -139,6 +154,18 @@ function ProductView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [item.media, item.gallery, item.image]
   );
+
+  // Promoção Moto: só as fotos de moto, com um botão para ver o resto. Se a cor
+  // saiu da promoção (pedaço vendido) a página volta ao normal sozinha.
+  const promo = usePromoMoto(promoMoto);
+  const promoItem = promoMoto ? promo?.get(item.slug) : undefined;
+  const [todasFotos, setTodasFotos] = useState(false);
+  const midias = useMemo(() => {
+    if (!promoItem || todasFotos) return todasMidias;
+    const motos = todasMidias.filter((m) => m.url.includes('/assets/images/shop/motos/'));
+    return motos.length ? motos : todasMidias;
+  }, [promoItem, todasFotos, todasMidias]);
+  useEffect(() => setActiveImage(0), [todasFotos]);
 
   // Trocar de produto volta para a primeira mídia.
   useEffect(() => {
@@ -232,6 +259,11 @@ function ProductView({
                 </button>
               ))}
             </div>
+          )}
+          {promoItem && (
+            <button type="button" className={styles.fotosToggle} onClick={() => setTodasFotos((v) => !v)}>
+              {todasFotos ? 'Ver só as fotos de moto' : 'Ver todas as fotos do produto'}
+            </button>
           )}
         </div>
       );
@@ -355,6 +387,10 @@ function ProductView({
           {renderChips()}
 
           <DescricaoDoProduto item={item} className={styles.description} />
+
+          {promoItem && (
+            <PecasPromo slug={item.slug} pecas={promoItem.pecas} variante="pagina" selecao={selecao} />
+          )}
 
           {item.kind !== 'linha' && (
             <Preco

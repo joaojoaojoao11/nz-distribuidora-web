@@ -36,6 +36,12 @@ const PARAM = {
   out: 'fora',
   /** Seleção CONGELADA: quando presente, é ela que manda, e os filtros somem. */
   selection: 'sel',
+  /**
+   * Promoção Moto (`?promo=moto`). É um MODO, não um filtro: troca a foto dos
+   * cards e sobrevive a qualquer troca de filtro e ao "limpar tudo" — sai só
+   * pelo próprio botão.
+   */
+  promo: 'promo',
 } as const;
 
 /** Rótulo dos chips de tipo — o da sidebar é plural, o do chip é singular. */
@@ -79,6 +85,9 @@ export interface UseShopFilters {
    * ignora os filtros — é o link que foi enviado para o cliente.
    */
   selection: string[];
+  /** Promoção Moto ligada (`?promo=moto`). */
+  promoMoto: boolean;
+  setPromoMoto: (ligar: boolean) => void;
   removeItem: (slug: string) => void;
   restoreItem: (slug: string) => void;
   clearExcluded: () => void;
@@ -113,6 +122,7 @@ export function useShopFilters(): UseShopFilters {
 
   const excluded = useMemo(() => readList(params, PARAM.out), [params]);
   const selection = useMemo(() => readList(params, PARAM.selection), [params]);
+  const promoMoto = params.get(PARAM.promo) === 'moto';
 
   const filters = useMemo<FilterState>(() => {
     const sortRaw = params.get(PARAM.sort) as SortMode | null;
@@ -160,9 +170,10 @@ export function useShopFilters(): UseShopFilters {
       // A curadoria sobrevive à troca de filtro: quem tirou um item continua
       // sem ele ao estreitar a busca.
       if (excluded.length) out.set(PARAM.out, excluded.join(','));
+      if (promoMoto) out.set(PARAM.promo, 'moto');
       setParams(out, { replace: true });
     },
-    [setParams, excluded]
+    [setParams, excluded, promoMoto]
   );
 
   const setQuery = useCallback((q: string) => commit({ ...filters, q }), [commit, filters]);
@@ -189,8 +200,21 @@ export function useShopFilters(): UseShopFilters {
     // limpa filtros, não a lista que o vendedor montou — antes descartava os
     // itens ocultos em silêncio.
     if (excluded.length) out.set(PARAM.out, excluded.join(','));
+    if (promoMoto) out.set(PARAM.promo, 'moto');
     setParams(out, { replace: true });
-  }, [setParams, excluded]);
+  }, [setParams, excluded, promoMoto]);
+
+  // Ligar/desligar a promoção mantém os filtros que já estavam na URL. Entra no
+  // histórico (sem `replace`): o "voltar" do navegador sai da promoção.
+  const setPromoMoto = useCallback(
+    (ligar: boolean) => {
+      const out = new URLSearchParams(params);
+      if (ligar) out.set(PARAM.promo, 'moto');
+      else out.delete(PARAM.promo);
+      setParams(out);
+    },
+    [params, setParams]
+  );
 
   const setExcluded = useCallback(
     (slugs: string[]) => {
@@ -263,6 +287,8 @@ export function useShopFilters(): UseShopFilters {
     toggle,
     setSort,
     clearGroup,
+    promoMoto,
+    setPromoMoto,
     clearAll,
     activeChips,
     activeCount,

@@ -897,3 +897,89 @@
     width: 100%;
   }
 }
+
+/* ------------------------------------------------------- Promoção moto
+   Botão no topo da loja e faixa acima dos resultados (?promo=moto). Vermelho é
+   a cor de destaque do site (--accent-red); fora da promoção o botão é contorno. */
+.promoBotao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin-top: 1.4rem;
+  padding: 0 1.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent-red);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition-snappy);
+}
+
+.promoBotao:hover,
+.promoBotaoAtivo {
+  background: var(--accent-red);
+  color: #fff;
+}
+
+.promoFaixa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--accent-red);
+  border-radius: 0 12px 12px 0;
+  background: var(--bg-secondary);
+}
+
+.promoFaixaTexto {
+  min-width: 0;
+}
+
+.promoTitulo {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-tech);
+  font-size: 0.95rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.promoSub {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.promoGuia {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.promoSair {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .promoFaixa {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
