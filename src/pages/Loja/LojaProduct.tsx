@@ -423,7 +423,7 @@ function ProductView({
             </p>
           </div>
 
-          <Disponibilidade slug={item.slug} nome={item.name} />
+          <Disponibilidade slug={item.slug} nome={item.name} decor={item.vertical === 'DECOR'} />
 
           <PrazoEntrega slug={item.sourceId} lineKey={item.lineKey} decor={item.vertical === 'DECOR'} />
 

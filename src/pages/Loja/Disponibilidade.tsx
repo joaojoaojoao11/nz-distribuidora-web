@@ -13,6 +13,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { BolinhasDeEstoque, agruparPecas, dataCurta, listaVelha } from './EstoqueDots';
 import type { EstoqueParceiro } from '../../lib/shop/precos';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+import { DECOR, linkWhatsApp } from '../../lib/contatos';
 import styles from './Disponibilidade.module.css';
 
 type Nivel = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
@@ -56,7 +58,7 @@ const ROTULO: Record<Nivel, string> = {
   'sob-encomenda': 'Sob encomenda',
 };
 
-export default function Disponibilidade({ slug, nome }: { slug: string; nome?: string }) {
+export default function Disponibilidade({ slug, nome, decor = false }: { slug: string; nome?: string; decor?: boolean }) {
   const [dados, setDados] = useState<Resposta | null>(null);
   // Seleção do admin nos botões "comprar de uma vez": N rolos fechados e/ou
   // pontas específicas. Vira o texto do pedido no WhatsApp até o carrinho
@@ -220,14 +222,16 @@ export default function Disponibilidade({ slug, nome }: { slug: string; nome?: s
             </div>
           )}
           {pedidoTexto && (
-            <a
-              className={styles.compraCta}
-              href={`https://wa.me/5511920707565?text=${encodeURIComponent(pedidoTexto)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Enviar pedido interno · WhatsApp
-            </a>
+            decor ? (
+              // NZDECOR: direto para a Daniela
+              <a className={styles.compraCta} href={linkWhatsApp(DECOR, pedidoTexto)} target="_blank" rel="noopener noreferrer">
+                Enviar pedido interno · WhatsApp
+              </a>
+            ) : (
+              <LinkVendas className={styles.compraCta} mensagem={pedidoTexto}>
+                Enviar pedido interno · WhatsApp
+              </LinkVendas>
+            )
           )}
         </div>
       )}

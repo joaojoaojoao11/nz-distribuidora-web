@@ -111,9 +111,10 @@ export function mensagemDaSelecao(token: string, titulo?: string | null, produto
     : `Olá! Segue a seleção da NZ${titulo ? ` — ${titulo}` : ''}: ${urlDaSelecao(token)}`;
 }
 
-/** Uso interno (admin compartilha a seleção). O cliente pede pela Central de Vendas (Preco.tsx). */
+/** Compartilhar a seleção: abre o WhatsApp sem destinatário — quem envia escolhe o cliente.
+    (O cliente que pede de dentro da seleção vai pela Central de Vendas, em Preco.tsx.) */
 export function whatsappDaSelecao(token: string, titulo?: string | null, produto?: string): string {
-  return `https://wa.me/5511920707565?text=${encodeURIComponent(mensagemDaSelecao(token, titulo, produto))}`;
+  return `https://wa.me/?text=${encodeURIComponent(mensagemDaSelecao(token, titulo, produto))}`;
 }
 
 export type EstadoSelecao = 'carregando' | 'ok' | 'expirada' | 'inexistente' | 'erro';
