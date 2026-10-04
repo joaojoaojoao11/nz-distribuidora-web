@@ -11,6 +11,15 @@ export function ContatoVendasProvider({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const [mensagem, setMensagem] = useState<string | null>(null);
 
+  // Trocou de página com a janela aberta (ex.: "voltar" do celular): fecha. Só o caminho conta —
+  // filtro da loja e ?cor= do Metamark mexem na URL sem trocar de página.
+  // Ajuste durante o render (padrão do React), sem efeito.
+  const [paginaVista, setPaginaVista] = useState(pathname);
+  if (paginaVista !== pathname) {
+    setPaginaVista(pathname);
+    if (mensagem !== null) setMensagem(null);
+  }
+
   const abrir = useCallback((msg?: string) => {
     if (ehRotaDecor(pathname)) {
       window.open(linkWhatsApp(DECOR, msg ?? 'Olá! Vim pelo site da NZDECOR e gostaria de mais informações.'), '_blank');
