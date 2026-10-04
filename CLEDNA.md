@@ -151,6 +151,11 @@ Manuais completos (leia antes de gerar qualquer coisa):
 - Capa não aparece na página: o `registrar` agora insere a capa com `ordem 0, capa: true`.
 - O João achou que nosso trabalho derrubou o site (29/09): era bloqueio Cloudflare 1015 no IP
   do Wi-Fi da empresa (Hostinger). Evite loops de requisição ao site; espere o deploy com calma.
+- **WhatsApp no site e nas peças (regra do João, 04/10/2026):** nunca escreva `wa.me/...` solto.
+  Os números moram em `src/lib/contatos.ts`: **NZDECOR → Daniela** (92070-7565); **todo o resto →
+  Vendas 1, 2 e 3** (botão `LinkVendas` / `useContatoVendas`, que abre a Central de Vendas com a
+  mensagem pronta). Em PDF/arte, ponha os 3 botões (Vendas 1/2/3). O link curto
+  `wa.me/message/3DBG…` e o número 95325-8757 saíram do site.
 
 ## 4. Outras frentes da Cledna (histórico e onde está)
 
