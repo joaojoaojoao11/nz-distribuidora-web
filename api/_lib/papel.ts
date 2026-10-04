@@ -49,7 +49,9 @@ export async function resolverPapelDetalhado(site: Db, authHeader: string | unde
 
     const profile = data as { role?: string; is_approved?: boolean } | null;
     if (!profile) return anonimo;
-    if (profile.role === 'admin' || profile.role === 'superadmin') {
+    // Só 'admin': o front (AuthContext, ProtectedRoute) não conhece outro papel
+    // de administração, e um papel aceito só aqui entraria na API sem painel.
+    if (profile.role === 'admin') {
       return { papel: 'admin', aprovado: true, userId: user.id };
     }
     const aprovado = Boolean(profile.is_approved);

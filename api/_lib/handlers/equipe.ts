@@ -116,7 +116,10 @@ export function montarLista(erp: UsuarioErp[], perfis: PerfilEquipe[], convites:
     const convite = conviteDe.get(u.email) ?? null;
     let status: StatusEquipe;
     if (!perfil) status = convite ? 'convidado' : 'sem-conta';
-    else if (perfil.bloqueado || perfil.role !== 'admin') status = 'bloqueado';
+    else if (perfil.bloqueado) status = 'bloqueado';
+    // Conta comum com o e-mail de alguém do ERP: ainda não é admin e a rotina
+    // não promove. Aparece como "sem acesso" para o admin convidar de propósito.
+    else if (perfil.role !== 'admin') status = 'sem-conta';
     // A conta existe desde o convite, mas quem nunca entrou ainda não definiu
     // senha — dizer "com acesso" aí faria o admin achar que a pessoa já está
     // dentro e parar de cobrar.
@@ -243,7 +246,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { data: existente } = await site.from('user_profiles').select('id, role').ilike('email', u.email).maybeSingle();
     if (existente) {
       await promover(site, (existente as { id: string }).id, u);
-      await registrarLog(site, 'promover', u.email, { erp_user_id: u.id }, userId);
+      await registrarLog(site, 'promover-conta-existente', u.email, { erp_user_id: u.id }, userId);
       res.status(200).json({ status: 'promovido', email: u.email });
       return;
     }
@@ -334,13 +337,13 @@ export interface ResultadoSincronia {
 
 /**
  * Alinha o site com o ERP. Chamada pelo cron (api/nz/sync) e pelo botão do
- * painel. Promove quem já tem conta, atualiza papel/permissões e tira o acesso
- * de quem saiu do ERP. Convite é ação de admin, não de rotina.
+ * painel. Atualiza papel/permissões de quem JÁ é admin e tira o acesso de quem
+ * saiu do ERP. Promover e convidar são ações de admin, nunca de rotina.
  */
 export async function sincronizarEquipe(site: Db, quem: string | null): Promise<ResultadoSincronia> {
   const r: ResultadoSincronia = { semAcesso: 0, perfisAtualizados: 0, bloqueados: 0, erros: [] };
   try {
-    const { erp, perfis, convites } = await carregar(site);
+    const { erp, perfis } = await carregar(site);
     if (!erp.length) {
       r.erros.push('ERP sem usuários (ou credencial ausente)');
       return r;
@@ -349,19 +352,22 @@ export async function sincronizarEquipe(site: Db, quem: string | null): Promise<
 
     for (const u of erp.filter((x) => x.ativo)) {
       const perfil = perfilPorEmail.get(u.email);
-      if (!perfil) {
+      // Quem ainda não é admin NÃO é promovido por rotina: o ERP não prova que
+      // o dono do e-mail do cadastro é a pessoa (o e-mail do site nunca foi
+      // verificado, e quem escreve em `users` do ERP escolheria os próprios
+      // admins). Promover é ato de um admin, na op `convidar`.
+      if (!perfil || perfil.role !== 'admin') {
         r.semAcesso++;
         continue;
       }
       const mudou =
-        perfil.role !== 'admin' ||
         perfil.erp_user_id !== u.id ||
         perfil.erp_role !== u.papel ||
         JSON.stringify(perfil.erp_permissions ?? []) !== JSON.stringify(u.permissoes);
       if (mudou && !perfil.bloqueado) {
         await site
           .from('user_profiles')
-          .update({ role: 'admin', is_approved: true, erp_user_id: u.id, erp_role: u.papel, erp_permissions: u.permissoes })
+          .update({ erp_user_id: u.id, erp_role: u.papel, erp_permissions: u.permissoes })
           .eq('id', perfil.id);
         r.perfisAtualizados++;
       }

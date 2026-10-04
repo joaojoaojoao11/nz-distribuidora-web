@@ -28,6 +28,8 @@ interface Cliente {
   aprovado_motivo: string | null;
   origem: string;
   erp_client_id: string | null;
+  erp_candidato_id: string | null;
+  erp_candidato_motivo: string | null;
   cadastro_completo_em: string | null;
   ultimo_acesso_em: string | null;
   created_at: string;
@@ -39,7 +41,7 @@ interface Cliente {
 }
 
 const CAMPOS =
-  'id, email, full_name, company_name, phone, cpf_cnpj, ie, role, is_approved, aprovado_em, aprovado_motivo, origem, erp_client_id, cadastro_completo_em, ultimo_acesso_em, created_at, address_street, address_number, address_city, address_state, address_zip';
+  'id, email, full_name, company_name, phone, cpf_cnpj, ie, role, is_approved, aprovado_em, aprovado_motivo, origem, erp_client_id, erp_candidato_id, erp_candidato_motivo, cadastro_completo_em, ultimo_acesso_em, created_at, address_street, address_number, address_city, address_state, address_zip';
 
 type Filtro = 'todos' | 'pendentes' | 'lojistas' | 'sem-erp' | 'incompletos';
 
@@ -253,7 +255,20 @@ export default function AdminClientes() {
                       </span>
                     )}
                   </td>
-                  <td>{c.erp_client_id ? <span className={`${styles.badge} ${styles.badgeApproved}`}>vinculado</span> : '—'}</td>
+                  <td>
+                    {c.erp_client_id ? (
+                      <span className={`${styles.badge} ${styles.badgeApproved}`}>vinculado</span>
+                    ) : c.erp_candidato_id ? (
+                      <span
+                        className={`${styles.badge} ${styles.badgePending}`}
+                        title={`Parece ser cliente do NZERP (achado por ${c.erp_candidato_motivo === 'email' ? 'e-mail' : 'documento'}). O e-mail ainda não foi verificado: confirme antes de liberar histórico e preço.`}
+                      >
+                        candidato
+                      </span>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
                   <td>
                     {c.is_approved ? (
                       <span className={`${styles.badge} ${styles.badgeApproved}`}>Aprovado</span>
@@ -273,7 +288,7 @@ export default function AdminClientes() {
                     )}
                     {!c.erp_client_id && (
                       <button className={styles.actionBtn} onClick={() => void procurarNoErp(c)} disabled={ocupado === c.id}>
-                        🔎 Procurar no ERP
+                        {c.erp_candidato_id ? '✔ Confirmar vínculo' : '🔎 Procurar no ERP'}
                       </button>
                     )}
                   </td>

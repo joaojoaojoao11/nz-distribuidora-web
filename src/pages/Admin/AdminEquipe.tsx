@@ -158,7 +158,8 @@ export default function AdminEquipe() {
         <div className={styles.createModal}>
           <h4 className={styles.createModalTitle}>Link de convite — {link.email}</h4>
           <p className={styles.tabDescription}>
-            Vale 24 horas e serve uma vez só. Mande no WhatsApp da pessoa; ela abre e escolhe a própria senha.
+            Este link entra direto como administrador. Vale 1 hora e serve uma vez só. Mande só para a pessoa, por canal
+            privado, e apague a mensagem depois; ela abre e escolhe a própria senha.
           </p>
           <div className={styles.createField}>
             <input readOnly value={link.url} onFocus={(e) => e.currentTarget.select()} style={{ fontSize: '0.75rem' }} />

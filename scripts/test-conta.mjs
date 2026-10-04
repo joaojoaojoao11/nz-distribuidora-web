@@ -28,6 +28,7 @@ const build = spawnSync(
     'api/_lib/conta/documento.ts',
     'api/_lib/conta/erpClientes.ts',
     'api/_lib/conta/vinculo.ts',
+    'api/_lib/conta/emailVerificado.ts',
     'api/_lib/conta/erpHistorico.ts',
     'api/_lib/conta/atribuirTitulos.ts',
     'api/_lib/pedido/despachoErp.ts',
@@ -114,7 +115,10 @@ function fakeDb(dados = {}) {
 
 const { completude, faltandoNoCadastro } = await import(pathToFileURL(join(outDir, 'conta/completude.js')).href);
 const { validarCpfCnpj, tipoDocumento, normalizarEmail, somenteDigitos } = await import(pathToFileURL(join(outDir, 'conta/documento.js')).href);
-const { vincularComErp, consultarDocumento } = await import(pathToFileURL(join(outDir, 'conta/vinculo.js')).href);
+const { vincularComErp: vincularBruto, consultarDocumento } = await import(pathToFileURL(join(outDir, 'conta/vinculo.js')).href);
+// Os testes de regra abaixo valem para e-mail CONFIRMADO; o caso sem confirmação
+// tem bloco próprio (passa `{}` explícito).
+const vincularComErp = (db, perfil, opcoes = { confirmado: true }) => vincularBruto(db, perfil, opcoes);
 const { montarLista, sincronizarEquipe } = await import(pathToFileURL(join(outDir, 'handlers/equipe.js')).href);
 
 const COMPLETO = {
@@ -258,8 +262,30 @@ console.log('\n=== VÍNCULO COM O ERP ===');
   linhasErp = [CLIENTE_ERP_BRUTO];
 }
 {
-  const r = await consultarDocumento('11222333000181', 'compras@lojateste.com.br');
-  ok('consulta com e-mail igual devolve dados', r.jaCliente && r.dados?.address_city === 'São Paulo');
+  // SEM e-mail verificado: só candidato. Nada de aprovar, preencher ou vincular.
+  const db = fakeDb({ user_profiles: [{ id: 'u7' }] });
+  const r = await vincularComErp(db, {
+    id: 'u7', role: 'reseller', email: 'compras@lojateste.com.br', cpf_cnpj: '11222333000181',
+    is_approved: false, erp_client_id: null,
+  }, {});
+  const patch = db.escritas.find((e) => e.tabela === 'user_profiles')?.payload ?? {};
+  ok('sem confirmação: grava só o candidato', patch.erp_candidato_id === 'cli-1' && patch.erp_candidato_motivo === 'documento');
+  ok('sem confirmação: NÃO grava erp_client_id', patch.erp_client_id === undefined);
+  ok('sem confirmação: NÃO aprova o lojista', r.aprovouAgora === false && patch.is_approved === undefined);
+  ok('sem confirmação: NÃO copia endereço do ERP', patch.address_street === undefined && r.preencheu.length === 0);
+  ok('sem confirmação: avisa que aguarda confirmação', r.aguardandoConfirmacao === true);
+}
+{
+  const db = fakeDb({ user_profiles: [{ id: 'u8' }] });
+  const r = await vincularBruto(db, { id: 'u8', role: 'client', email: 'compras@lojateste.com.br', cpf_cnpj: null, is_approved: true, erp_client_id: null });
+  const patch = db.escritas.find((e) => e.tabela === 'user_profiles')?.payload ?? {};
+  ok('sem o parâmetro, o padrão é fechado (candidato, não vínculo)', r.aguardandoConfirmacao === true && patch.erp_client_id === undefined && patch.erp_candidato_motivo === 'email');
+}
+{
+  const r = await consultarDocumento('11222333000181', 'compras@lojateste.com.br', true);
+  ok('consulta com e-mail igual e VERIFICADO devolve dados', r.jaCliente && r.dados?.address_city === 'São Paulo');
+  const rNv = await consultarDocumento('11222333000181', 'compras@lojateste.com.br');
+  ok('e-mail igual mas NÃO verificado não devolve dados', rNv.jaCliente && rNv.dados === null && Boolean(rNv.aviso));
   const r2 = await consultarDocumento('11222333000181', 'curioso@gmail.com');
   ok('consulta com outro e-mail não devolve dados', r2.jaCliente && r2.dados === null && Boolean(r2.aviso));
   const r3 = await consultarDocumento('123', 'x@y.com');
@@ -314,9 +340,9 @@ const ERP_USERS = [
     user_profiles: [{ id: 'p1' }, { id: 'p7' }],
   });
   const r = await sincronizarEquipe(db, null);
-  ok('conta quem do ERP ainda não tem acesso', r.semAcesso === 1, `semAcesso=${r.semAcesso}`);
+  ok('conta quem do ERP ainda não é admin do site', r.semAcesso === 2, `semAcesso=${r.semAcesso}`);
   ok('sincronização NÃO cria convite sozinha (e-mail é autoconfirmado)', (db.tabelas.equipe_convites ?? []).length === 0);
-  ok('promove a admin quem já tem conta', r.perfisAtualizados === 1 && db.tabelas.user_profiles.find((p) => p.id === 'p1').role === 'admin');
+  ok('NÃO promove a admin conta comum com e-mail do ERP', r.perfisAtualizados === 0 && db.tabelas.user_profiles.find((p) => p.id === 'p1').role !== 'admin');
   ok('bloqueia quem saiu do ERP', r.bloqueados === 1 && db.bans.some((b) => b.id === 'p7' && b.ban_duration !== 'none'));
   ok('quem saiu vira cliente comum', db.tabelas.user_profiles.find((p) => p.id === 'p7').role === 'client');
   ok('sincronização sem erros', r.erros.length === 0, r.erros.join('; '));

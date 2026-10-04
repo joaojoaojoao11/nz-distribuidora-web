@@ -25,6 +25,7 @@ import { ipDoCliente } from '../asaas/cliente.js';
 import { completude } from '../conta/completude.js';
 import { normalizarEmail, validarCpfCnpj } from '../conta/documento.js';
 import { consultarDocumento, registrarLog, vincularComErp, type PerfilVinculo } from '../conta/vinculo.js';
+import { emailVerificado } from '../conta/emailVerificado.js';
 import { clienteDoUsuario, pedidosDoCliente, titulosDoCliente } from '../conta/erpHistorico.js';
 import { atribuirTitulos, titulosSemDono } from '../conta/atribuirTitulos.js';
 
@@ -130,13 +131,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     await registrarTentativa(site, 'CONSULTA_DOC', userId, ip);
-    const r = await consultarDocumento(doc, normalizarEmail(perfil.email));
+    const r = await consultarDocumento(doc, normalizarEmail(perfil.email), await emailVerificado(site, userId));
     res.status(200).json(r);
     return;
   }
 
   if (op === 'pos-cadastro') {
-    const r = await vincularComErp(site, perfil);
+    const r = await vincularComErp(site, perfil, { confirmado: await emailVerificado(site, userId) });
     res.status(200).json(r);
     return;
   }
@@ -196,7 +197,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(404).json({ error: 'perfil-nao-encontrado' });
       return;
     }
-    const r = await vincularComErp(site, data as unknown as PerfilVinculo);
+    const r = await vincularComErp(site, data as unknown as PerfilVinculo, { confirmado: true });
     await registrarLog(site, 'reavaliar', normalizarEmail((data as { email?: string }).email), r, userId);
     res.status(200).json(r);
     return;

@@ -62,8 +62,32 @@ export default function PainelLayout() {
     void carregarContagens();
   }, [carregarContagens]);
 
+  // Logado, mas sem linha em user_profiles (ou perfil que não carrega): depois de
+  // alguns segundos explica em vez de deixar a tela vazia.
+  const [perfilDemorou, setPerfilDemorou] = useState(false);
+  useEffect(() => {
+    if (!user || profile) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPerfilDemorou(false);
+      return;
+    }
+    const t = window.setTimeout(() => setPerfilDemorou(true), 5000);
+    return () => window.clearTimeout(t);
+  }, [user, profile]);
+
   if (loading) return null;
   if (!user) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname)}`} replace />;
+  if (!profile && perfilDemorou) {
+    return (
+      <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '6rem 1.5rem 2rem', color: '#fff' }}>
+        <h2 style={{ marginBottom: '0.75rem' }}>Sua conta está sem cadastro</h2>
+        <p style={{ color: '#999', maxWidth: 420 }}>Não encontramos seus dados. Fale com a NZ pelo WhatsApp para ajustarmos.</p>
+        <button type="button" onClick={() => void signOut()} style={{ marginTop: '1.25rem', padding: '0.75rem 1.5rem' }}>
+          Sair
+        </button>
+      </div>
+    );
+  }
 
   const naInicial = location.pathname === '/painel' || location.pathname === '/painel/';
   const papel = isAdmin ? 'Conta da equipe NZ' : profile?.role === 'reseller' ? 'Conta de lojista' : 'Conta de cliente';

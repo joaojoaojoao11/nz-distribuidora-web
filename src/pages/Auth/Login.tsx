@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { textoDoErroAuth } from '../../lib/shop/conta';
@@ -20,10 +20,15 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [waitingProfile, setWaitingProfile] = useState(false);
+  // Rede de segurança: se o perfil nunca chegar (sem linha, RLS, rede), a tela
+  // não pode ficar em "Entrando..." para sempre.
+  const prazoPerfil = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(prazoPerfil.current), []);
 
   // Reage à mudança de profile após o login (resolve o bug de closure stale)
   useEffect(() => {
     if (waitingProfile && user && profile) {
+      window.clearTimeout(prazoPerfil.current);
       if (destinoSeguro) navigate(destinoSeguro);
       else if (profile.role === 'admin') navigate('/admin');
       else navigate('/painel');
@@ -49,6 +54,11 @@ export default function Login() {
 
     // Marca para aguardar o profile carregar via useEffect
     setWaitingProfile(true);
+    prazoPerfil.current = window.setTimeout(() => {
+      navigate(destinoSeguro ?? '/painel');
+      setLoading(false);
+      setWaitingProfile(false);
+    }, 6000);
   };
 
   const entrarComGoogle = async () => {
@@ -69,6 +79,9 @@ export default function Login() {
             <button type="button" className={styles.googleBtn} onClick={() => void entrarComGoogle()}>
               Continuar com Google
             </button>
+            <p className={styles.hint}>
+              Ao continuar com Google você aceita os <Link to="/termos">termos de uso</Link> e a <Link to="/privacidade">política de privacidade</Link>.
+            </p>
             <div className={styles.divisor}>ou</div>
           </>
         )}

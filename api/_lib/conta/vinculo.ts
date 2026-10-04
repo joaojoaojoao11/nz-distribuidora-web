@@ -39,6 +39,8 @@ export interface ResultadoVinculo {
   erpClientId: string | null;
   jaCliente: boolean;
   aprovouAgora: boolean;
+  /** Achou um cliente parecido, mas o e-mail não foi verificado: ficou só como candidato. */
+  aguardandoConfirmacao: boolean;
   /** Campos do cadastro que vieram prontos do ERP. */
   preencheu: string[];
   motivo: string | null;
@@ -59,11 +61,22 @@ export async function registrarLog(site: Db, acao: string, alvoEmail: string | n
  * aprovação automática do lojista (D4 do plano). Idempotente: se o perfil já
  * está vinculado, não faz nada.
  */
-export async function vincularComErp(site: Db, perfil: PerfilVinculo): Promise<ResultadoVinculo> {
+export async function vincularComErp(
+  site: Db,
+  perfil: PerfilVinculo,
+  /**
+   * `confirmado` = o e-mail foi provado (ou um admin mandou vincular). Sem isso o
+   * achado vira CANDIDATO: nada de histórico, endereço ou aprovação, porque
+   * quem sabe o e-mail ou o CNPJ de um cliente da NZ poderia se passar por ele.
+   * Padrão fechado: quem esquecer de passar o parâmetro não vincula ninguém.
+   */
+  opcoes: { confirmado?: boolean } = {}
+): Promise<ResultadoVinculo> {
   const vazio: ResultadoVinculo = {
     erpClientId: perfil.erp_client_id,
     jaCliente: Boolean(perfil.erp_client_id),
     aprovouAgora: false,
+    aguardandoConfirmacao: false,
     preencheu: [],
     motivo: null,
   };
@@ -71,8 +84,12 @@ export async function vincularComErp(site: Db, perfil: PerfilVinculo): Promise<R
 
   const emailSite = normalizarEmail(perfil.email);
   let cliente: ClienteErp | null = null;
+  let achadoPor: 'documento' | 'email' = 'documento';
   if (perfil.cpf_cnpj) cliente = await clienteErpPorDocumento(perfil.cpf_cnpj);
-  if (!cliente && emailSite) cliente = await clienteErpPorEmail(emailSite);
+  if (!cliente && emailSite) {
+    cliente = await clienteErpPorEmail(emailSite);
+    achadoPor = 'email';
+  }
   if (!cliente) return vazio;
 
   // Um cliente do ERP responde por uma conta só (índice único em
@@ -84,8 +101,22 @@ export async function vincularComErp(site: Db, perfil: PerfilVinculo): Promise<R
     return { ...vazio, motivo: 'cliente-ja-vinculado' };
   }
 
+  if (!opcoes.confirmado) {
+    await site
+      .from('user_profiles')
+      .update({ erp_candidato_id: cliente.id, erp_candidato_em: new Date().toISOString(), erp_candidato_motivo: achadoPor })
+      .eq('id', perfil.id);
+    await registrarLog(site, 'vinculo-erp-candidato', emailSite || null, { erp_client_id: cliente.id, achado_por: achadoPor });
+    return {
+      ...vazio,
+      jaCliente: true,
+      aguardandoConfirmacao: true,
+      motivo: 'e-mail ainda não verificado — a equipe confirma o vínculo',
+    };
+  }
+
   const mesmoEmail = Boolean(emailSite) && normalizarEmail(cliente.email) === emailSite;
-  const patch: Record<string, unknown> = { erp_client_id: cliente.id };
+  const patch: Record<string, unknown> = { erp_client_id: cliente.id, erp_candidato_id: null, erp_candidato_em: null, erp_candidato_motivo: null };
 
   // A NZ já tem o endereço deste cliente há anos: aproveita o que está vazio no
   // site. Só com e-mail conferindo — senão seria entregar dado de terceiro a
@@ -134,6 +165,7 @@ export async function vincularComErp(site: Db, perfil: PerfilVinculo): Promise<R
     erpClientId: cliente.id,
     jaCliente: true,
     aprovouAgora: aprovar,
+    aguardandoConfirmacao: false,
     preencheu,
     motivo: aprovar ? (patch.aprovado_motivo as string) : mesmoEmail ? null : 'documento já existe no NZERP com outro e-mail — confirmar com o cliente',
   };
@@ -144,15 +176,26 @@ export async function vincularComErp(site: Db, perfil: PerfilVinculo): Promise<R
  * e-mail da sessão bate com o do cliente no ERP — caso contrário responde
  * apenas "já é cliente", sem revelar nome, endereço ou telefone de terceiro.
  */
-export async function consultarDocumento(doc: unknown, emailSessao: string): Promise<{ jaCliente: boolean; dados: Record<string, string> | null; aviso: string | null }> {
+export async function consultarDocumento(
+  doc: unknown,
+  emailSessao: string,
+  /** E-mail provado? Sem isso nunca devolve dado do ERP: só "já é cliente". */
+  emailVerificado = false
+): Promise<{ jaCliente: boolean; dados: Record<string, string> | null; aviso: string | null }> {
   const d = somenteDigitos(doc);
   if (d.length !== 11 && d.length !== 14) return { jaCliente: false, dados: null, aviso: null };
   const cliente = await clienteErpPorDocumento(d);
   if (!cliente) return { jaCliente: false, dados: null, aviso: null };
 
   const mesmoEmail = normalizarEmail(cliente.email) === normalizarEmail(emailSessao);
-  if (!mesmoEmail) {
-    return { jaCliente: true, dados: null, aviso: 'Este documento já está cadastrado na NZ com outro e-mail. Seu cadastro segue para conferência da equipe.' };
+  if (!mesmoEmail || !emailVerificado) {
+    return {
+      jaCliente: true,
+      dados: null,
+      aviso: mesmoEmail
+        ? 'Encontramos seu cadastro na NZ. Assim que confirmarmos seu e-mail, os dados são preenchidos.'
+        : 'Este documento já está cadastrado na NZ com outro e-mail. Seu cadastro segue para conferência da equipe.',
+    };
   }
   return {
     jaCliente: true,

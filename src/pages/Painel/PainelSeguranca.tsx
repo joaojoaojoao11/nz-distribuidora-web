@@ -9,6 +9,7 @@
 // dispara confirmação nos DOIS endereços, e hoje isso cairia no vazio.
 
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { textoDoErroAuth } from '../../lib/shop/conta';
@@ -22,9 +23,15 @@ const ORIGEM_LABEL: Record<string, string> = {
 };
 
 export default function PainelSeguranca() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [trocando, setTrocando] = useState(false);
+  const [atual, setAtual] = useState('');
   const [senha, setSenha] = useState('');
+  const [repetir, setRepetir] = useState('');
+  const [salvando, setSalvando] = useState(false);
+  // Conta que só entra pelo Google não tem senha: não há "senha atual" a pedir.
+  const temSenha = (user?.app_metadata?.providers as string[] | undefined)?.includes('email') ?? true;
   const [msg, setMsg] = useState<{ tipo: 'ok' | 'erro'; texto: string } | null>(null);
   const [conta, setConta] = useState<{ ultimo_acesso_em: string | null; origem: string | null; created_at: string | null } | null>(null);
 
@@ -51,14 +58,42 @@ export default function PainelSeguranca() {
       setMsg({ tipo: 'erro', texto: 'A senha precisa de pelo menos 8 caracteres.' });
       return;
     }
-    const { error } = await supabase.auth.updateUser({ password: senha });
-    if (error) {
-      setMsg({ tipo: 'erro', texto: textoDoErroAuth(error.message) });
+    if (senha !== repetir) {
+      setMsg({ tipo: 'erro', texto: 'As duas senhas não são iguais.' });
       return;
     }
-    setSenha('');
-    setTrocando(false);
-    setMsg({ tipo: 'ok', texto: 'Senha alterada.' });
+    setSalvando(true);
+    try {
+      // Sessão esquecida aberta num computador alheio não pode trocar a senha
+      // sem saber a atual.
+      if (temSenha) {
+        if (!user?.email) return;
+        const { error: errAtual } = await supabase.auth.signInWithPassword({ email: user.email, password: atual });
+        if (errAtual) {
+          setMsg({ tipo: 'erro', texto: 'A senha atual não confere.' });
+          return;
+        }
+      }
+      const { error } = await supabase.auth.updateUser({ password: senha });
+      if (error) {
+        setMsg({ tipo: 'erro', texto: textoDoErroAuth(error.message) });
+        return;
+      }
+      // Quem tinha a senha antiga (ou uma sessão roubada) perde o acesso.
+      await supabase.auth.signOut({ scope: 'others' }).catch(() => undefined);
+      setAtual('');
+      setSenha('');
+      setRepetir('');
+      setTrocando(false);
+      setMsg({ tipo: 'ok', texto: temSenha ? 'Senha alterada. Os outros aparelhos foram desconectados.' : 'Senha definida.' });
+    } finally {
+      setSalvando(false);
+    }
+  };
+
+  const sairDeTodos = async () => {
+    await signOut();
+    navigate('/login', { replace: true });
   };
 
   const data = (v: string | null | undefined) => (v ? new Date(v).toLocaleString('pt-BR') : '—');
@@ -76,10 +111,16 @@ export default function PainelSeguranca() {
       </section>
 
       <section className={styles.bloco}>
-        <h2 className={styles.subtitulo}>Senha</h2>
+        <h2 className={styles.subtitulo}>{temSenha ? 'Senha' : 'Definir uma senha'}</h2>
         {msg && <p className={msg.tipo === 'ok' ? styles.ok : styles.erro}>{msg.texto}</p>}
         {trocando ? (
           <form className={styles.form} onSubmit={trocarSenha}>
+            {temSenha && (
+              <label className={styles.campo}>
+                <span>Senha atual</span>
+                <input type="password" value={atual} onChange={(e) => setAtual(e.target.value)} required autoComplete="current-password" />
+              </label>
+            )}
             <label className={styles.campo}>
               <span>Nova senha</span>
               <input
@@ -87,12 +128,24 @@ export default function PainelSeguranca() {
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
                 minLength={8}
+                required
+                autoComplete="new-password"
+              />
+            </label>
+            <label className={styles.campo}>
+              <span>Repita a nova senha</span>
+              <input
+                type="password"
+                value={repetir}
+                onChange={(e) => setRepetir(e.target.value)}
+                minLength={8}
+                required
                 autoComplete="new-password"
               />
             </label>
             <div className={styles.acoesBloco}>
-              <button type="submit" className={styles.salvar}>
-                Salvar senha
+              <button type="submit" className={styles.salvar} disabled={salvando}>
+                {salvando ? 'Salvando…' : 'Salvar senha'}
               </button>
               <button type="button" className={styles.botaoSecundario} onClick={() => setTrocando(false)}>
                 Cancelar
@@ -102,7 +155,10 @@ export default function PainelSeguranca() {
         ) : (
           <div className={styles.acoesBloco}>
             <button type="button" className={styles.botaoSecundario} onClick={() => setTrocando(true)}>
-              Alterar senha
+              {temSenha ? 'Alterar senha' : 'Definir senha'}
+            </button>
+            <button type="button" className={styles.botaoSecundario} onClick={() => void sairDeTodos()}>
+              Sair de todos os aparelhos
             </button>
           </div>
         )}

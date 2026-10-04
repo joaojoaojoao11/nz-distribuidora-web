@@ -76,10 +76,17 @@ export default function Register() {
     // Agora existe sessão: procura o cliente no NZERP, copia o endereço que a
     // NZ já tem e — lojista com CNPJ e e-mail conferindo — aprova na hora.
     // Best-effort: falhar aqui não impede a conta de existir.
-    const vinculo = await chamarConta<{ aprovouAgora: boolean; jaCliente: boolean }>({ op: 'pos-cadastro' }).catch(() => null);
+    const vinculo = await chamarConta<{ aprovouAgora: boolean; jaCliente: boolean; aguardandoConfirmacao?: boolean }>({ op: 'pos-cadastro' }).catch(() => null);
     navigate(destino ?? (lojista ? '/painel' : '/loja'), {
       replace: true,
-      state: { recemCadastrado: true, reconhecido: Boolean(vinculo?.jaCliente), aprovouAgora: Boolean(vinculo?.aprovouAgora) },
+      state: {
+        recemCadastrado: true,
+        reconhecido: Boolean(vinculo?.jaCliente),
+        aprovouAgora: Boolean(vinculo?.aprovouAgora),
+        // Achou cadastro parecido no NZERP, mas o e-mail não foi verificado:
+        // a equipe confirma o vínculo antes de liberar histórico e preço.
+        aguardandoConfirmacao: Boolean(vinculo?.aguardandoConfirmacao),
+      },
     });
   };
 
@@ -101,6 +108,9 @@ export default function Register() {
             <button type="button" className={styles.googleBtn} onClick={() => void entrarComGoogle()}>
               Continuar com Google
             </button>
+            <p className={styles.hint}>
+              Ao continuar com Google você aceita os <Link to="/termos">termos de uso</Link> e a <Link to="/privacidade">política de privacidade</Link>.
+            </p>
             <div className={styles.divisor}>ou</div>
           </>
         )}
