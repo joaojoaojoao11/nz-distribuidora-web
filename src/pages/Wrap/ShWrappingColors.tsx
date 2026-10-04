@@ -7,6 +7,7 @@ import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
 import { buildColorSchema } from '../../lib/colorSchema';
 import styles from './ShWrappingColors.module.css';
 import { SH_COLORS_ASSETS } from '../../lib/data/shWrappingAssets';
+import { useContatoVendas } from '../../components/ContatoVendas/contexto';
 
 // O mapa saiu daqui para `lib/data/shWrappingAssets` — a loja tambem o consome.
 // Reexportado para nao quebrar quem ja importava desta pagina.
@@ -25,6 +26,7 @@ interface DbProduct {
 }
 
 export default function ShWrappingColors() {
+  const { abrir: abrirContato } = useContatoVendas();
   const { colorCode } = useParams<{ colorCode: string }>();
   const navigate = useNavigate();
   
@@ -97,7 +99,7 @@ export default function ShWrappingColors() {
   
   const handleBuy = () => {
     const text = `Olá time NZ! Quero falar com um especialista sobre o envelopamento *${productData.name}* (${productData.finish_type}).`;
-    window.open(`https://wa.me/5511918907565?text=${encodeURIComponent(text)}`, '_blank');
+    abrirContato(text);
   };
 
   return (

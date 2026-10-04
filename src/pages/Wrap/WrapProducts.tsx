@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
 import SEO from '../../components/SEO/SEO';
 import styles from './WrapProduct.module.css';
+import { useContatoVendas } from '../../components/ContatoVendas/contexto';
 
 const blurReveal = {
   hidden: { opacity: 0, y: 30, filter: 'blur(10px)' },
@@ -55,6 +56,7 @@ export interface WrapProductData {
 }
 
 export function WrapProductPage({ data, children }: { data: WrapProductData, children?: React.ReactNode }) {
+  const { abrir: abrirContato } = useContatoVendas();
   const maxOfficial = data.officialData
     ? Math.max(...data.officialData.rows.map((r) => r.value))
     : 0;
@@ -270,9 +272,12 @@ export function WrapProductPage({ data, children }: { data: WrapProductData, chi
           variants={stagger}
         >
           <motion.a
-            href="https://wa.me/message/3DBGPIZF4EMWO1"
-            target="_blank"
-            rel="noreferrer"
+            href="#contato"
+            role="button"
+            onClick={(e) => {
+              e.preventDefault();
+              abrirContato(`Olá! Vim pelo site e quero um orçamento do ${data.title}.`);
+            }}
             className={styles.ctaButton}
             variants={blurReveal}
           >

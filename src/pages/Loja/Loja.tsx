@@ -31,14 +31,14 @@ import { ShopCard } from './ShopCard';
 import ShopFilters from './ShopFilters';
 import { useLimiteNome } from './useLimiteNome';
 import { useShopFilters, type FilterGroup } from './useShopFilters';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 import styles from './Loja.module.css';
 
 const PAGE_SIZE = 60;
 /** Cards com imagem prioritária — o suficiente para preencher a primeira dobra. */
 const EAGER_COUNT = 8;
 
-const WHATSAPP_URL =
-  'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20estou%20na%20loja%20do%20site%20da%20NZ%20e%20quero%20um%20or%C3%A7amento.';
+const MENSAGEM_LOJA = 'Olá, estou na loja do site da NZ e quero um orçamento.';
 
 /**
  * Ordem do <select>. É a ordem em que aparecem, não a do tipo: 'Marca e linha'
@@ -446,9 +446,9 @@ export default function Loja() {
               : `${tituloSel ? `“${tituloSel}” ` : 'A lista '}foi montada para você e tinha prazo. Peça uma nova para quem te enviou, ou fale com a NZ.`}
           </p>
           <div className={styles.selecaoExpiradaAcoes}>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={styles.selecaoExpiradaWhats}>
+            <LinkVendas mensagem={MENSAGEM_LOJA} className={styles.selecaoExpiradaWhats}>
               FALAR COM A NZ →
-            </a>
+            </LinkVendas>
             <Link to="/loja" className={styles.selecaoVerTudo}>
               VER O CATÁLOGO COMPLETO →
             </Link>
@@ -807,14 +807,9 @@ export default function Loja() {
                 <button type="button" className={styles.emptyClear} onClick={clearAll}>
                   LIMPAR FILTROS
                 </button>
-                <a
-                  href={WHATSAPP_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.emptyWhats}
-                >
+                <LinkVendas mensagem={MENSAGEM_LOJA} className={styles.emptyWhats}>
                   FALAR COM A NZ →
-                </a>
+                </LinkVendas>
               </div>
             </div>
           )}

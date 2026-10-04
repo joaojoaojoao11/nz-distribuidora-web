@@ -16,6 +16,9 @@ import {
   type PerfilValue,
 } from './interlagosConfig';
 import styles from './Interlagos.module.css';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+
+const MENSAGEM_INTERLAGOS = 'Olá! Vim pela página NZ Interlagos e quero falar com um especialista.';
 
 /* ═══════════════════════════════════════════
    Estado do quiz
@@ -117,7 +120,7 @@ function LinhaCard({ linha, index, compact = false }: {
       transition={{ duration: 0.55, delay: Math.min(index, 3) * 0.07, ease: easing }}
     >
       {linha.externo ? (
-        <a href={linha.href} target="_blank" rel="noreferrer" className={className}>{conteudo}</a>
+        <LinkVendas mensagem={MENSAGEM_INTERLAGOS} className={className}>{conteudo}</LinkVendas>
       ) : (
         <Link to={linha.href} className={className}>{conteudo}</Link>
       )}
@@ -463,10 +466,10 @@ export default function Interlagos() {
                 </p>
               )}
 
-              <a href={INTERLAGOS.WHATSAPP_URL} target="_blank" rel="noreferrer" className={styles.successCta}>
+              <LinkVendas mensagem={MENSAGEM_INTERLAGOS} className={styles.successCta}>
                 Falar agora com a equipe
                 <ArrowRight size={16} />
-              </a>
+              </LinkVendas>
 
               {INTERLAGOS.ESTANDE && (
                 <p className={styles.successFoot}>Passe no estande {INTERLAGOS.ESTANDE} para conhecer as linhas de perto.</p>
@@ -615,15 +618,13 @@ export default function Interlagos() {
             <div className={styles.quizTopActions}>
               {/* O flutuante do site fica coberto pelo painel — o WhatsApp
                   continua a um toque de distância por aqui. */}
-              <a
-                href={INTERLAGOS.WHATSAPP_URL}
-                target="_blank"
-                rel="noreferrer"
+              <LinkVendas
+                mensagem={MENSAGEM_INTERLAGOS}
                 className={styles.quizIconBtn}
                 aria-label="Falar no WhatsApp"
               >
                 <WhatsappLogo size={20} />
-              </a>
+              </LinkVendas>
               <button
                 type="button"
                 className={styles.quizIconBtn}

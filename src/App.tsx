@@ -8,6 +8,7 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import FloatingWhatsApp from './components/FloatingWhatsApp/FloatingWhatsApp';
+import { ContatoVendasProvider } from './components/ContatoVendas/ContatoVendas';
 import './App.css';
 // Efeito colateral: liga a cópia do carrinho no servidor (uma linha por
 // usuário). Sem ela, carrinho abandonado não existe como dado.
@@ -129,6 +130,8 @@ function App() {
   return (
     <AuthProvider>
       <ScrollToTop />
+      {/* Central de Vendas: todo botão de contato do site abre por aqui (lib/contatos.ts) */}
+      <ContatoVendasProvider>
       <Routes>
         {/* Admin (without Navbar/Footer) */}
         <Route
@@ -260,6 +263,7 @@ function App() {
           </div>
         } />
       </Routes>
+      </ContatoVendasProvider>
     </AuthProvider>
   );
 }

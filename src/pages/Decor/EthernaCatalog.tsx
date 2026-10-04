@@ -11,9 +11,9 @@ import {
   type EthernaFamilySlug,
 } from './ethernaProducts';
 import styles from './EthernaCatalog.module.css';
+import { DECOR, linkWhatsApp } from '../../lib/contatos';
 
-const WHATSAPP_URL =
-  'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20estou%20vendo%20o%20cat%C3%A1logo%20Etherna%20Decor%20no%20site%20da%20NZDecor%20e%20quero%20um%20or%C3%A7amento.';
+const WHATSAPP_URL = linkWhatsApp(DECOR, 'Olá, estou vendo o catálogo Etherna Decor no site da NZDecor e quero um orçamento.');
 
 // Mosaico do hero: cards oficiais do catálogo, intercalados por família.
 // São os mesmos arquivos do grid — o navegador reaproveita o download.

@@ -11,8 +11,8 @@ import {
   SH_DEFAULT_BADGES,
 } from './shDecorProducts';
 import styles from './ShDecorProduct.module.css';
+import { DECOR, linkWhatsApp } from '../../lib/contatos';
 
-const WHATSAPP_NUMBER = '5511920707565';
 
 export default function ShDecorProduct() {
   const { slug } = useParams<{ slug: string }>();
@@ -77,7 +77,7 @@ export default function ShDecorProduct() {
   ].slice(0, 4);
 
   const whatsappMsg = `Olá Daniela! Tenho interesse no padrão *${product.name}* (${product.code}) da linha SH Decor e gostaria de um orçamento.`;
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMsg)}`;
+  const whatsappUrl = linkWhatsApp(DECOR, whatsappMsg);
 
   const schema = JSON.stringify({
     '@context': 'https://schema.org',

@@ -1,6 +1,7 @@
 import { Phone, EnvelopeSimple, MapPin, WhatsappLogo, Clock } from '@phosphor-icons/react';
 import SEO from '../../components/SEO/SEO';
-import { SITE_PHONE, SITE_EMAIL, SITE_WHATSAPP } from '../../lib/siteConfig';
+import { SITE_PHONE, SITE_EMAIL } from '../../lib/siteConfig';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 
 const rowStyle: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '14px',
@@ -22,13 +23,13 @@ export default function Contact() {
       </p>
 
       <div style={{ display: 'grid', gap: '16px' }}>
-        <a href={SITE_WHATSAPP} target="_blank" rel="noreferrer" style={{ ...rowStyle, color: 'inherit', textDecoration: 'none' }}>
+        <LinkVendas mensagem="Olá! Vim pela página de contato do site da NZ." style={{ ...rowStyle, color: 'inherit', textDecoration: 'none' }}>
           <WhatsappLogo size={26} color="#FFD400" weight="fill" />
           <div>
             <strong>WhatsApp Comercial</strong>
-            <p style={{ margin: 0, color: '#999' }}>{SITE_PHONE} — resposta em horário comercial</p>
+            <p style={{ margin: 0, color: '#999' }}>Central de Vendas (Vendas 1, 2 e 3) — resposta em horário comercial</p>
           </div>
-        </a>
+        </LinkVendas>
         <div style={rowStyle}>
           <Phone size={26} color="#FFD400" weight="light" />
           <div>

@@ -105,11 +105,15 @@ export const encerrarSelecao = (id: string) => chamar<{ ok: true }>({ op: 'encer
 export const urlDaSelecao = (token: string) => `${window.location.origin}/loja/s/${token}`;
 
 /** Mensagem pronta de WhatsApp — com o link, que é o ponto da coisa. */
-export function whatsappDaSelecao(token: string, titulo?: string | null, produto?: string): string {
-  const texto = produto
+export function mensagemDaSelecao(token: string, titulo?: string | null, produto?: string): string {
+  return produto
     ? `Olá! Sobre o ${produto} desta seleção da NZ: ${urlDaSelecao(token)}`
     : `Olá! Segue a seleção da NZ${titulo ? ` — ${titulo}` : ''}: ${urlDaSelecao(token)}`;
-  return `https://wa.me/5511920707565?text=${encodeURIComponent(texto)}`;
+}
+
+/** Uso interno (admin compartilha a seleção). O cliente pede pela Central de Vendas (Preco.tsx). */
+export function whatsappDaSelecao(token: string, titulo?: string | null, produto?: string): string {
+  return `https://wa.me/5511920707565?text=${encodeURIComponent(mensagemDaSelecao(token, titulo, produto))}`;
 }
 
 export type EstadoSelecao = 'carregando' | 'ok' | 'expirada' | 'inexistente' | 'erro';

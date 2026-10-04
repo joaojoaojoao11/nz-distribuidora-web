@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase';
 import SEO from '../../components/SEO/SEO';
 import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
 import { buildColorSchema } from '../../lib/colorSchema';
+import { useContatoVendas } from '../../components/ContatoVendas/contexto';
 
 interface DbProduct {
   id: string;
@@ -21,6 +22,7 @@ interface DbProduct {
 }
 
 export default function Oracal651Colors() {
+  const { abrir: abrirContato } = useContatoVendas();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -71,7 +73,7 @@ export default function Oracal651Colors() {
 
   const handleBuy = () => {
     const text = `Olá time NZ! Quero solicitar ${colorData.name} (${upCode}) da linha Oracal 651. Tenho interesse em bobinas/rolos fechados.`;
-    window.open(`https://wa.me/5511953258757?text=${encodeURIComponent(text)}`, '_blank');
+    abrirContato(text);
   };
 
   return (

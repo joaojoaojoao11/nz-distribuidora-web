@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'r
 import { Link, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import styles from './MetamarkColorCatalog.module.css';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 
 /** Swatch fotográfico (MetaCast MCX) ou cor chapada a partir do valor oficial (Metamark 7). */
 export type CatalogSwatch =
@@ -40,7 +41,8 @@ interface Props {
   searchPlaceholder: string;
   /** Aviso de fidelidade de cor, exibido sob o grid e dentro do painel. */
   disclaimer: string;
-  whatsappUrl: (item: CatalogItem) => string;
+  /** Mensagem do pedido de orçamento (vai pela Central de Vendas). */
+  mensagemOrcamento: (item: CatalogItem) => string;
   /**
    * Rota da ficha do item na LOJA. Existe para dar ao item uma URL própria:
    * estas cores só viviam como ?cor=<slug> e não eram indexáveis como
@@ -80,7 +82,7 @@ export default function MetamarkColorCatalog({
   cardMinPx,
   searchPlaceholder,
   disclaimer,
-  whatsappUrl,
+  mensagemOrcamento,
   shopPath,
 }: Props) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -417,14 +419,9 @@ export default function MetamarkColorCatalog({
               </div>
 
               <div className={styles.panelFooter}>
-                <a
-                  href={whatsappUrl(activeItem)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.panelCta}
-                >
+                <LinkVendas mensagem={mensagemOrcamento(activeItem)} className={styles.panelCta}>
                   SOLICITAR ORÇAMENTO
-                </a>
+                </LinkVendas>
                 <span className={styles.panelNote}>Valores sob consulta</span>
                 {shopPath && (
                   <Link to={shopPath(activeItem)} className={styles.panelLink}>

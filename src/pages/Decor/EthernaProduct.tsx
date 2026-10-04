@@ -10,8 +10,8 @@ import {
   ethernaProducts,
 } from './ethernaProducts';
 import styles from './EthernaProduct.module.css';
+import { DECOR, linkWhatsApp } from '../../lib/contatos';
 
-const WHATSAPP_NUMBER = '5511920707565';
 
 export default function EthernaProduct() {
   const { slug } = useParams<{ slug: string }>();
@@ -76,7 +76,7 @@ export default function EthernaProduct() {
   ].slice(0, 4);
 
   const whatsappMsg = `Olá Daniela! Tenho interesse no padrão *${product.name}*${product.code ? ` (cód. ${product.code})` : ''} da linha Etherna Decor e gostaria de um orçamento.`;
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMsg)}`;
+  const whatsappUrl = linkWhatsApp(DECOR, whatsappMsg);
 
   const schema = JSON.stringify({
     '@context': 'https://schema.org',

@@ -5,8 +5,10 @@ import { NZWRAP_COLORS } from '../../lib/data/nzwrapColors';
 import SEO from '../../components/SEO/SEO';
 import ColorSeoSection from '../../components/Wrap/ColorSeoSection';
 import { buildColorSchema } from '../../lib/colorSchema';
+import { useContatoVendas } from '../../components/ContatoVendas/contexto';
 
 export default function NzwrapColorPage() {
+  const { abrir: abrirContato } = useContatoVendas();
   const { sku } = useParams<{ sku: string }>();
   const navigate = useNavigate();
   
@@ -27,7 +29,7 @@ export default function NzwrapColorPage() {
 
   const handleBuy = () => {
     const text = `Olá time NZ! Quero solicitar a cor ${colorData.name} (${colorData.sku}) da linha premium.`;
-    window.open(`https://wa.me/5511918907565?text=${encodeURIComponent(text)}`, '_blank');
+    abrirContato(text);
   };
 
   return (

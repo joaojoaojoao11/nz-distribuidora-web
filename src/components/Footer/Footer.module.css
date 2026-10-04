@@ -137,6 +137,16 @@
   font-weight: 300;
 }
 
+.contactLink {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contactLink:hover {
+  color: var(--text-primary);
+}
+
 .contactIcon {
   font-size: 1.25rem;
   color: var(--text-primary);

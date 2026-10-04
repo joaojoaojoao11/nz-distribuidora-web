@@ -1,26 +1,32 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X } from 'lucide-react';
+import { DECOR, MENSAGEM_PADRAO, VENDAS, ehRotaDecor, linkWhatsApp } from '../../lib/contatos';
 import styles from './FloatingWhatsApp.module.css';
-
-const contacts = [
-  { id: 1, name: 'Vendas 1', phone: '5511953037391' },
-  { id: 2, name: 'Vendas 2', phone: '5511916777565' },
-  { id: 3, name: 'Vendas 3', phone: '5511918907565' },
-];
 
 export default function FloatingWhatsApp() {
   const [isOpen, setIsOpen] = useState(false);
+  const { pathname } = useLocation();
+  // Nas páginas NZDECOR o botão vai direto para a Daniela, sem o menu de vendas.
+  const decor = ehRotaDecor(pathname);
 
   const handleWhatsAppClick = (phone: string) => {
-    const message = encodeURIComponent('Olá! Gostaria de mais informações.');
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(MENSAGEM_PADRAO)}`, '_blank');
+  };
+
+  const handleMainClick = () => {
+    if (decor) {
+      window.open(linkWhatsApp(DECOR, 'Olá! Vim pelo site da NZDECOR e gostaria de mais informações.'), '_blank');
+      return;
+    }
+    setIsOpen(!isOpen);
   };
 
   return (
     <div className={styles.container}>
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !decor && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -33,14 +39,14 @@ export default function FloatingWhatsApp() {
               <p className={styles.menuSubtitle}>Escolha um consultor para um atendimento rápido.</p>
             </div>
             <div className={styles.contactList}>
-              {contacts.map((contact) => (
+              {VENDAS.map((contact) => (
                 <button
-                  key={contact.id}
+                  key={contact.telefone}
                   className={styles.contactBtn}
-                  onClick={() => handleWhatsAppClick(contact.phone)}
+                  onClick={() => handleWhatsAppClick(contact.telefone)}
                 >
                   <MessageCircle size={18} className={styles.contactIcon} />
-                  <span>{contact.name}</span>
+                  <span>{contact.nome}</span>
                 </button>
               ))}
             </div>
@@ -49,12 +55,12 @@ export default function FloatingWhatsApp() {
       </AnimatePresence>
 
       <button
-        className={`${styles.mainBtn} ${isOpen ? styles.mainBtnOpen : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Abrir menu do WhatsApp"
+        className={`${styles.mainBtn} ${isOpen && !decor ? styles.mainBtnOpen : ''}`}
+        onClick={handleMainClick}
+        aria-label={decor ? 'Falar com a NZDECOR no WhatsApp' : 'Abrir menu do WhatsApp'}
       >
         <AnimatePresence mode="wait">
-          {isOpen ? (
+          {isOpen && !decor ? (
             <motion.div
               key="close"
               initial={{ rotate: -90, opacity: 0 }}

@@ -12,7 +12,8 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { BRL, usePreco } from '../../lib/shop/precos';
-import { whatsappDaSelecao } from '../../lib/shop/selecoes';
+import { mensagemDaSelecao } from '../../lib/shop/selecoes';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 import Comprar, { type ProdutoDoCarrinho } from './Comprar';
 import styles from './Preco.module.css';
 
@@ -199,15 +200,9 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
       )}
 
       {produto && (rolo || metro) && viaSelecao && selecao && (
-        <a
-          className={styles.pedirSelecao}
-          href={whatsappDaSelecao(selecao, null, produto.nome)}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <LinkVendas className={styles.pedirSelecao} mensagem={mensagemDaSelecao(selecao, null, produto.nome)}>
           PEDIR PELO WHATSAPP
-        </a>
+        </LinkVendas>
       )}
 
       <p className={styles.nota}>

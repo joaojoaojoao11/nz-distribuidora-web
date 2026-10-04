@@ -25,15 +25,11 @@ import MetamarkColorCatalog, { type CatalogItem } from './MetamarkColorCatalog';
 import { MCX_COLORS, MCX_FINISHES, MCX_BLACK_CODES } from '../../lib/data/metamarkMcxColors';
 import { M7_COLORS, M7_FAMILIES, M7_WIDTHS_MM } from '../../lib/data/metamark7Colors';
 
-const WHATSAPP = '5511920707565';
-
 const normalize = (s: string) =>
   s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 
-const quoteUrl = (line: string, code: string, name: string) =>
-  `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(
-    `Olá! Vi a linha ${line} no site da NZ e quero um orçamento da cor ${code} ${name}.`,
-  )}`;
+const quoteMsg = (line: string, code: string, name: string) =>
+  `Olá! Vi a linha ${line} no site da NZ e quero um orçamento da cor ${code} ${name}.`;
 
 const COLOR_DISCLAIMER =
   'Imagens e valores de cor são ilustrativos e representativos: o resultado final varia conforme iluminação, superfície de aplicação e calibragem da sua tela. Solicite uma amostra física antes de fechar o projeto.';
@@ -220,7 +216,7 @@ export function MetamarkMcx() {
           searchPlaceholder="Buscar cor ou código (ex.: MCX-59, Blue Abyss)…"
           shopPath={(item) => `/loja/${item.id}`}
           disclaimer={COLOR_DISCLAIMER}
-          whatsappUrl={(item) => quoteUrl('MetaCast MCX', item.code, item.name)}
+          mensagemOrcamento={(item) => quoteMsg('MetaCast MCX', item.code, item.name)}
         />
       </WrapProductPage>
     </>
@@ -403,7 +399,7 @@ export function MetamarkM7() {
           searchPlaceholder="Buscar cor, código ou Pantone (ex.: M7-196, Graphite, 447C)…"
           shopPath={(item) => `/loja/${item.id}`}
           disclaimer={COLOR_DISCLAIMER}
-          whatsappUrl={(item) => quoteUrl('Metamark 7 Series', item.code, item.name)}
+          mensagemOrcamento={(item) => quoteMsg('Metamark 7 Series', item.code, item.name)}
         />
       </WrapProductPage>
     </>

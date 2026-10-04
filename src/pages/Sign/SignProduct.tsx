@@ -4,6 +4,7 @@ import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { getFamilyBySlug, averyFamilies } from './averyLines';
 import styles from './SignProduct.module.css';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -25,7 +26,6 @@ const cardStagger = {
   show: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
 };
 
-const WHATSAPP_URL = 'https://wa.me/message/3DBGPIZF4EMWO1';
 
 export default function SignProduct() {
   const { slug } = useParams<{ slug: string }>();
@@ -131,14 +131,12 @@ export default function SignProduct() {
             </motion.div>
 
             <motion.div className={styles.heroCta} variants={fadeUpItem}>
-              <a
-                href={WHATSAPP_URL}
+              <LinkVendas
+                mensagem={`Olá! Vim pelo site e quero falar com o time NZSIGN sobre ${family.name}.`}
                 className={styles.ctaPrimary}
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 FALAR COM O TIME NZSIGN
-              </a>
+              </LinkVendas>
               <a href="#detalhes" className={styles.ctaSecondary}>
                 VER DETALHES TÉCNICOS
               </a>
@@ -312,14 +310,12 @@ export default function SignProduct() {
             Atendimento direto com nosso time NZSIGN. Cotações por bobina, pedidos recortados, especificação técnica e suporte de aplicação.
           </motion.p>
           <motion.div className={styles.ctaButtons} variants={fadeUpItem}>
-            <a
-              href={WHATSAPP_URL}
+            <LinkVendas
+              mensagem={`Olá! Vim pelo site e quero falar com o time NZSIGN sobre ${family.name}.`}
               className={styles.ctaPrimary}
-              target="_blank"
-              rel="noopener noreferrer"
             >
               ENTRAR EM CONTATO
-            </a>
+            </LinkVendas>
             <Link to="/sign" className={styles.ctaSecondary}>
               VER TODAS AS LINHAS
             </Link>

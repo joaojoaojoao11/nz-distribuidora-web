@@ -25,7 +25,6 @@ export const INTERLAGOS = {
   INSTAGRAM_URL: 'https://www.instagram.com/nzgroup.br',
   /** Mesmo destinatário já usado no resto do site (FormSubmit já ativado). */
   EMAIL_LEAD: 'joaovitor@nzdistribuidora.com.br',
-  WHATSAPP_URL: 'https://wa.me/message/3DBGPIZF4EMWO1',
 } as const;
 
 export const PERFIS = [
@@ -92,7 +91,7 @@ export const LINHAS = [
     desc: 'Materiais que não estão disponíveis no mercado nacional, trazidos direto pela NZ.',
     resumo: 'Materiais que ninguém mais tem no Brasil, trazidos sob demanda.',
     img: '/assets/images/interlagos/importacao.webp',
-    href: INTERLAGOS.WHATSAPP_URL,
+    href: '#contato', // externo: abre a Central de Vendas (Interlagos.tsx)
     externo: true,
     cta: 'Falar com especialista',
   },

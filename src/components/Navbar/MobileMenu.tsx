@@ -20,10 +20,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { useModalLock } from '../../hooks/useModalLock';
 import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { buildNavItems } from './navItems';
+import { useContatoVendas } from '../ContatoVendas/contexto';
 import styles from './MobileMenu.module.css';
 
-const WHATSAPP_URL =
-  'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20cheguei%20pelo%20site%20da%20NZ.';
 
 interface Props {
   onClose: () => void;
@@ -36,6 +35,7 @@ export default function MobileMenu({ onClose, isAdmin, logado, contagens }: Prop
   const { pathname } = useLocation();
   const itens = buildNavItems(contagens);
   const carrinho = useCarrinho();
+  const { abrir: abrirContato } = useContatoVendas();
 
   // Trava a rolagem do fundo (do jeito que o iOS respeita), faz o Voltar do
   // Android fechar o menu em vez de sair da página, e esconde o botão
@@ -116,10 +116,13 @@ export default function MobileMenu({ onClose, isAdmin, logado, contagens }: Prop
           {logado ? 'Minha conta' : 'Entrar'}
         </Link>
         <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={onClose}
+          href="#contato"
+          role="button"
+          onClick={(e) => {
+            e.preventDefault();
+            onClose();
+            abrirContato('Olá, cheguei pelo site da NZ.');
+          }}
           className={styles.whats}
         >
           Falar no WhatsApp

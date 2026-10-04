@@ -6,6 +6,7 @@ import AveryBlock from './AveryBlock';
 import MetamarkBlock from './MetamarkBlock';
 import { metamarkSkus } from './metamarkMd80';
 import styles from './Sign.module.css';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -151,14 +152,12 @@ export default function Sign() {
             Atendimento direto com nosso time de comunicação visual. Cotações por bobina, pedidos recortados, suporte técnico de aplicação.
           </motion.p>
           <motion.div className={styles.ctaButtons} variants={fadeUpItem}>
-            <a
-              href="https://wa.me/message/3DBGPIZF4EMWO1"
+            <LinkVendas
+              mensagem="Olá! Vim pelo site e quero um orçamento de comunicação visual."
               className={styles.ctaPrimary}
-              target="_blank"
-              rel="noopener noreferrer"
             >
               FALAR COM NOSSO TIME
-            </a>
+            </LinkVendas>
             {/* TODO: habilitar quando catálogo PDF estiver disponível em /assets/docs/nzsign_catalogo_avery.pdf */}
             {/* <a href="/assets/docs/nzsign_catalogo_avery.pdf" className={styles.ctaSecondary} target="_blank" rel="noopener noreferrer">
               BAIXAR CATÁLOGO COMPLETO

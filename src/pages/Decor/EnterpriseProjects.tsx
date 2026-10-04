@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { staggerContainer, fadeUpItem, cardStagger, scaleReveal } from './variants';
 import styles from './EnterpriseProjects.module.css';
+import { DECOR, linkWhatsApp } from '../../lib/contatos';
 
-const WHATSAPP_PROJETOS_URL = 'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20tenho%20um%20projeto%20de%20hotelaria%20ou%20franquia%20e%20quero%20execu%C3%A7%C3%A3o%20com%20garantia%20total%20NZDecor.';
+const WHATSAPP_PROJETOS_URL = linkWhatsApp(DECOR, 'Olá, tenho um projeto de hotelaria ou franquia e quero execução com garantia total NZDecor.');
 
 const pillars = [
   {

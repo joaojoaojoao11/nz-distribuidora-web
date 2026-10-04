@@ -28,6 +28,8 @@ import Avaliacoes from './Avaliacoes';
 import FichaTecnica, { DescricaoDoProduto } from './FichaTecnica';
 import { ShopCard } from './ShopCard';
 import { useLimiteNome } from './useLimiteNome';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+import { DECOR, linkWhatsApp } from '../../lib/contatos';
 import styles from './LojaProduct.module.css';
 
 const VERTICAL_PATH: Record<string, string> = {
@@ -37,10 +39,9 @@ const VERTICAL_PATH: Record<string, string> = {
   DECOR: '/decor',
 };
 
-function whatsappUrl(item: ShopItem): string {
+function mensagemOrcamento(item: ShopItem): string {
   const codigo = item.code ? ` (${item.code})` : '';
-  const texto = `Olá, tenho interesse em ${item.name}${codigo} — ${item.brand}. Pode me passar disponibilidade e orçamento?`;
-  return `https://wa.me/5511920707565?text=${encodeURIComponent(texto)}`;
+  return `Olá, tenho interesse em ${item.name}${codigo} — ${item.brand}. Pode me passar disponibilidade e orçamento?`;
 }
 
 export default function LojaProduct() {
@@ -397,14 +398,24 @@ function ProductView({
           )}
 
           <div className={styles.ctaBlock}>
-            <a
-              href={whatsappUrl(item)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={podeComprar ? styles.ctaSecondary : styles.ctaPrimary}
-            >
-              {podeComprar ? 'Falar com um vendedor' : 'PEDIR ORÇAMENTO'}
-            </a>
+            {item.vertical === 'DECOR' ? (
+              // NZDECOR: direto para a Daniela
+              <a
+                href={linkWhatsApp(DECOR, mensagemOrcamento(item))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={podeComprar ? styles.ctaSecondary : styles.ctaPrimary}
+              >
+                {podeComprar ? 'Falar com um vendedor' : 'PEDIR ORÇAMENTO'}
+              </a>
+            ) : (
+              <LinkVendas
+                mensagem={mensagemOrcamento(item)}
+                className={podeComprar ? styles.ctaSecondary : styles.ctaPrimary}
+              >
+                {podeComprar ? 'Falar com um vendedor' : 'PEDIR ORÇAMENTO'}
+              </LinkVendas>
+            )}
             <p className={styles.ctaNote}>
               {podeComprar
                 ? 'Dúvida de aplicação, quantidade ou prazo? Chame no WhatsApp.'
@@ -414,7 +425,7 @@ function ProductView({
 
           <Disponibilidade slug={item.slug} nome={item.name} />
 
-          <PrazoEntrega slug={item.sourceId} lineKey={item.lineKey} />
+          <PrazoEntrega slug={item.sourceId} lineKey={item.lineKey} decor={item.vertical === 'DECOR'} />
 
           {/* Discreto e no fim: quem chega aqui já leu a página e viu o que
               está errado. Não pede login — quem mais enxerga foto trocada é o

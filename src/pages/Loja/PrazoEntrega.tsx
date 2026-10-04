@@ -17,11 +17,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { LineKey } from '../../lib/shop/types';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+import { DECOR, linkWhatsApp } from '../../lib/contatos';
 import styles from './PrazoEntrega.module.css';
 
 const CEP_STORAGE_KEY = 'nz:cep';
-const WHATSAPP_URL =
-  'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20quero%20saber%20o%20prazo%20de%20entrega%20de%20um%20produto.';
+const MENSAGEM_FRETE = 'Olá, quero saber o prazo e o valor do frete de um produto.';
 
 const QTD_MIN = 1;
 const QTD_MAX = 50;
@@ -98,7 +99,7 @@ function formatarCep(valor: string): string {
   return digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
 }
 
-export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey: LineKey }) {
+export default function PrazoEntrega({ slug, lineKey, decor = false }: { slug: string; lineKey: LineKey; decor?: boolean }) {
   // O CEP fica guardado para não ser pedido de novo a cada produto visitado.
   // Lido no inicializador, não num efeito: já está disponível no primeiro
   // render e não dispara um segundo.
@@ -398,9 +399,13 @@ export default function PrazoEntrega({ slug, lineKey }: { slug: string; lineKey:
               Prazo estimado em dias úteis a partir da confirmação do pedido, já incluindo a
               expedição, para <strong>{estado.dados.quantidade ?? qtd} volume(s)</strong>.{' '}
               <strong>Valores de frete sob consulta</strong> —{' '}
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                fale com a gente
-              </a>
+              {decor ? (
+                <a href={linkWhatsApp(DECOR, MENSAGEM_FRETE)} target="_blank" rel="noopener noreferrer">
+                  fale com a gente
+                </a>
+              ) : (
+                <LinkVendas mensagem={MENSAGEM_FRETE}>fale com a gente</LinkVendas>
+              )}
               .
             </p>
           )}

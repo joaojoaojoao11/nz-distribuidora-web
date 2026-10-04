@@ -12,10 +12,10 @@ import { supabase } from '../../lib/supabase';
 import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { useFavoritos } from '../../lib/shop/listasPessoais';
 import { BRL, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
-import { SITE_WHATSAPP } from '../../lib/siteConfig';
 import { gruposVisiveis } from './painelNav';
 import { PAGAMENTO_LABEL, STATUS_LABEL, type PedidoResumo } from './pedidoRotulos';
 import styles from './PainelInicio.module.css';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 
 export default function PainelInicio() {
   const { user, isAdmin, isApproved, cadastroCompleto } = useAuth();
@@ -97,9 +97,9 @@ export default function PainelInicio() {
           </p>
         )}
         {!isApproved && !isAdmin && (
-          <a className={styles.falarNz} href={SITE_WHATSAPP} target="_blank" rel="noopener noreferrer">
+          <LinkVendas className={styles.falarNz} mensagem="Olá! Sou cliente e estou no meu painel do site da NZ.">
             Falar com a NZ
-          </a>
+          </LinkVendas>
         )}
       </section>
 

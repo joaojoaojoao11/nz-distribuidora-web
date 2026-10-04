@@ -5,7 +5,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 10050; /* acima dos painéis de página (oferta PPF 9999, Metamark e Interlagos 10000) */
   display: grid;
   place-items: center;
   padding: 1.5rem;
@@ -121,6 +121,7 @@
   border-radius: 14px;
   color: #fff;
   text-align: left;
+  text-decoration: none;
   transition: all var(--transition-smooth);
   overflow: hidden;
 }

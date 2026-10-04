@@ -17,6 +17,7 @@ import {
   finishesData,
   camadas,
 } from './flowGlossData';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 const productSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Product",
@@ -364,10 +365,10 @@ export default function FlowGloss() {
               </form>
             )}
             <div className={styles.whatsappDivider}>Ou se preferir</div>
-            <a href="https://wa.me/message/3DBGPIZF4EMWO1" target="_blank" rel="noreferrer" className={styles.whatsappLink}>
+            <LinkVendas mensagem="Olá! Vim pelo site e quero um orçamento do NZ PPF Flow Gloss." className={styles.whatsappLink}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path fill="currentColor" d="M187.58 144.84l-32-16a8 8 0 0 0-8 .5l-14.69 9.8a40.55 40.55 0 0 1-38.33-38.33l9.8-14.69a8 8 0 0 0 .5-8l-16-32A8 8 0 0 0 80 40a48 48 0 0 0-48 48c0 71.01 56.99 128 128 128a48 48 0 0 0 48-48a8 8 0 0 0-6.42-7.16Z"/></svg>
               CHAMAR NO WHATSAPP
-            </a>
+            </LinkVendas>
           </motion.div>
         </div>
       )}

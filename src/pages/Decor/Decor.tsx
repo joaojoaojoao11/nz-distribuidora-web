@@ -8,8 +8,9 @@ import TechFeatures from './TechFeatures';
 import ApplicationGrid from './ApplicationGrid';
 import EnterpriseProjects from './EnterpriseProjects';
 import styles from './Decor.module.css';
+import { DECOR, linkWhatsApp } from '../../lib/contatos';
 
-const WHATSAPP_URL = 'https://wa.me/5511920707565?text=Ol%C3%A1%2C%20quero%20iniciar%20consultoria%20decorativa%20NZDecor.%20Meu%20projeto%20%C3%A9...';
+const WHATSAPP_URL = linkWhatsApp(DECOR, 'Olá, quero iniciar consultoria decorativa NZDecor. Meu projeto é...');
 const CONTACT_EMAIL = 'daniela@nzdistribuidora.com.br';
 
 export default function Decor() {

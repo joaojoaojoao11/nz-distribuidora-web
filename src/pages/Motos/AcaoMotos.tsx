@@ -10,9 +10,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../../components/SEO/SEO';
-import { SITE_URL, SITE_WHATSAPP } from '../../lib/siteConfig';
+import { SITE_URL } from '../../lib/siteConfig';
 import { CORES_MOTO, fotoMoto, type CorMoto } from './motosCores';
 import styles from './AcaoMotos.module.css';
+import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 
 const METRAGEM = [
   { tipo: 'Naked', metros: '2 a 3 m', detalhe: 'Tanque, laterais, rabeta e paralama' },
@@ -45,9 +46,9 @@ export default function AcaoMotos() {
           <div className={styles.ctas}>
             <Link className={styles.ctaPrimario} to="/loja?promo=moto">Ver as cores na loja</Link>
             <a className={styles.ctaSecundario} href="#cores">Ver as {CORES_MOTO.length} cores</a>
-            <a className={styles.ctaSecundario} href={SITE_WHATSAPP} target="_blank" rel="noopener noreferrer">
+            <LinkVendas className={styles.ctaSecundario} mensagem="Olá! Vim pela Ação envelopamento de moto e quero escolher minha cor.">
               Chamar no WhatsApp
-            </a>
+            </LinkVendas>
           </div>
         </div>
       </section>
@@ -84,9 +85,9 @@ export default function AcaoMotos() {
       <section className={styles.final}>
         <h2 className={styles.secaoTitulo}>Escolheu a cor?</h2>
         <p className={styles.sub}>Mande o modelo da moto e a cor. A gente separa a metragem e envia.</p>
-        <a className={styles.ctaPrimario} href={SITE_WHATSAPP} target="_blank" rel="noopener noreferrer">
+        <LinkVendas className={styles.ctaPrimario} mensagem="Olá! Vim pela Ação envelopamento de moto e quero escolher minha cor.">
           Falar com a NZ no WhatsApp
-        </a>
+        </LinkVendas>
       </section>
     </main>
   );

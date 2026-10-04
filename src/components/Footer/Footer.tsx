@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Phone, EnvelopeSimple, MapPin, InstagramLogo, WhatsappLogo } from '@phosphor-icons/react';
+import { LinkVendas } from '../ContatoVendas/ContatoVendas';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -19,9 +20,9 @@ export default function Footer() {
               <a href="https://www.instagram.com/nzgroup.br?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="Instagram">
                 <InstagramLogo weight="regular" />
               </a>
-              <a href="https://wa.me/message/3DBGPIZF4EMWO1" target="_blank" rel="noreferrer" className={styles.socialIcon} aria-label="WhatsApp">
+              <LinkVendas className={styles.socialIcon} aria-label="WhatsApp">
                 <WhatsappLogo weight="regular" />
-              </a>
+              </LinkVendas>
             </div>
           </div>
 
@@ -46,9 +47,9 @@ export default function Footer() {
               <li><Link to="/blog">Blog</Link></li>
               <li><Link to="/encontre-aplicador">Encontre um Aplicador</Link></li>
               <li>
-                <a href="https://wa.me/message/3DBGPIZF4EMWO1" target="_blank" rel="noreferrer">
+                <LinkVendas mensagem="Olá! Quero ser um aplicador credenciado NZ.">
                   Seja um Aplicador
-                </a>
+                </LinkVendas>
               </li>
             </ul>
           </div>
@@ -59,7 +60,7 @@ export default function Footer() {
             <ul className={styles.contactList}>
               <li>
                 <Phone className={styles.contactIcon} weight="light" />
-                <span>+55 11 91890-7565</span>
+                <LinkVendas className={styles.contactLink}>Central de Vendas · WhatsApp</LinkVendas>
               </li>
               <li>
                 <EnvelopeSimple className={styles.contactIcon} weight="light" />
@@ -70,10 +71,10 @@ export default function Footer() {
                 <span>Atendimento em todo o Brasil</span>
               </li>
             </ul>
-            <a href="https://wa.me/message/3DBGPIZF4EMWO1" target="_blank" rel="noreferrer" className={styles.ctaButton}>
+            <LinkVendas className={styles.ctaButton}>
               <WhatsappLogo weight="fill" className={styles.ctaBtnIcon} />
               Falar com Consultor
-            </a>
+            </LinkVendas>
           </div>
         </div>
         
