@@ -12927,5 +12927,746 @@
         "nota": "detalhe do flake"
       }
     ]
+  },
+  "oracal-670-white-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Mercedes-Benz Sprinter panel van envelopado em ORACAL 670RA 010G White Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030511_2c965155-c23f-4b2f-82e8-a69387d24cf0.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031450_84776017-6c97-4214-8093-17c6e60c71bf.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031449_ecf122fb-63f3-4def-93ee-87e0c1757d85.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #E6E9EE (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Mercedes-Benz Sprinter panel van (2023) on black steel wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a clean cool white, hex #E6E9EE - pure white with the faintest cool tint, not cream, not grey, not blue.\n2. CHROMA: almost none, about 3 percent.\n3. BRIGHTNESS: very bright, about 93 percent on the lit panels, a soft light grey of about 72 percent in shadow.",
+      "carro_cenario": "the white concrete arches and pale paving of the Oscar Niemeyer Auditorium at Ibirapuera Park, Sao Paulo, grey sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-010g): Mercedes-Benz Sprinter panel van White brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-yellow-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Fiat Fiorino panel van envelopado em ORACAL 670RA 021G Yellow Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030513_603783b4-a257-4bfc-886d-7c49a0bd5ac2.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031446_f5fd22c8-472e-4d87-87b1-243018df3000.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031447_a757b4d0-28d0-4e4f-bf68-f244f666c4f8.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #FEC500 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Fiat Fiorino panel van (2022) on silver steel wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a pure warm golden yellow, hex #FEC500 (hue about 47) - a rich sunflower yellow, not lemon, not orange, not amber.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: very bright, about 98 percent on the lit panels, about 70 percent golden yellow in shadow.",
+      "carro_cenario": "the grey granite paving of the Praca dos Tres Poderes in Brasilia, white marble modernist buildings, deep blue sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-021g): Fiat Fiorino panel van Yellow brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-brimstone-yellow-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Renault Kangoo van envelopado em ORACAL 670RA 025G Brimstone Yellow Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030512_292eaa73-dc28-49b2-9ea6-bc141cf34fc3.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031448_4d619908-fc98-4c44-88ad-498f0297283c.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031449_e290d191-a091-4b75-90f3-12482af039d5.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #F2E210 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Renault Kangoo van (2022) on black plastic wheel covers",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a bright lemon yellow, hex #F2E210 (hue about 56) - a clean sulphur yellow leaning very slightly green, not golden, not lime green.\n2. CHROMA: very high, about 93 percent.\n3. BRIGHTNESS: very bright, about 95 percent on the lit panels, about 70 percent in shadow.",
+      "carro_cenario": "the grey concrete quay of the Port of Santos, Sao Paulo, grey harbour cranes far in the distance, no containers near the van, open sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-025g): Renault Kangoo van Brimstone Yellow brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-dark-red-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Volkswagen Virtus sedan envelopado em ORACAL 670RA 030G Dark Red Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030512_275deb83-a41d-4880-96ad-6713c1fceaf7.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031451_d49c149a-6555-4a31-b40a-acdc5a2db983.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031448_323205c6-e917-4ad8-a188-fb3e2d512068.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #900E16 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Volkswagen Virtus sedan (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep wine burgundy red, hex #900E16 (hue about 356) - a dark saturated red, not brown, not purple, not bright red.\n2. CHROMA: very high, about 90 percent.\n3. BRIGHTNESS: medium-dark, about 56 percent on the lit panels, about 30 percent deep burgundy in shadow.",
+      "carro_cenario": "the glass and white concrete office towers along Avenida Faria Lima, Sao Paulo, grey stone pavement, open sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-030g): Volkswagen Virtus sedan Dark Red brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#900E16",
+    "familia": "vermelho",
+    "sat_min_cena": 0.35
+  },
+  "oracal-670-red-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Chevrolet Montana compact pickup envelopado em ORACAL 670RA 031G Red Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030514_2e186b60-34e0-4267-8cb5-5d94c2209aa8.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031451_81e5b608-0deb-4595-be4b-2a3e9dbae6f1.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031451_2c817bf1-029a-458d-8ef6-d5a54a09346d.png",
+        "nota": "perfil"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031513_994c6c57-527e-4d9f-b9e0-c7de7885af65.png",
+        "nota": "macro do brilho"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #B0000D (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Chevrolet Montana compact pickup (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a pure strong signal red, hex #B0000D (hue about 356) - a full deep red, not orange, not pink, not burgundy.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: medium, about 69 percent on the lit panels, about 40 percent deep red in shadow.",
+      "carro_cenario": "a grey asphalt lay-by on the Rodovia dos Imigrantes high in the Serra do Mar, grey concrete viaduct pillars, distant green mountains, clear day; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-031g): Chevrolet Montana compact pickup Red brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-light-red-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Chevrolet Onix hatchback envelopado em ORACAL 670RA 032G Light Red Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030514_b750ff9d-774f-4742-86b0-32000256a98c.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031447_b612cace-6c84-4a8e-a960-ca021bca605b.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031448_9cbbb493-aa29-474d-828b-566bb5422712.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #C91100 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Chevrolet Onix hatchback (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a bright vermilion red, hex #C91100 (hue about 5) - a fiery red with a slight orange lean, not pink, not dark.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: bright, about 79 percent on the lit panels, about 48 percent in shadow.",
+      "carro_cenario": "the white curved concrete of the Pampulha modernist complex in Belo Horizonte, pale stone paving, lake behind, open sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-032g): Chevrolet Onix hatchback Light Red brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-pastel-orange-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Volkswagen Saveiro pickup envelopado em ORACAL 670RA 035G Pastel Orange Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030602_78107c7e-9310-4850-b6fe-a8b878483568.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031638_7148a40e-4c01-47d9-8d77-722f767cac1b.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031639_eba3d6cf-a424-4cd5-8dae-66bae12a8e85.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #FC6C00 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Volkswagen Saveiro pickup (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a vivid pure orange, hex #FC6C00 (hue about 26) - a full traffic orange, not pale, not pastel, not red, not yellow.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: very bright, about 98 percent on the lit panels, about 62 percent in shadow.",
+      "carro_cenario": "the grey concrete access road beneath the white cable-stayed Octavio Frias de Oliveira bridge in Sao Paulo, open sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-035g): Volkswagen Saveiro pickup Pastel Orange brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-violet-m": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Hyundai HB20 hatchback envelopado em ORACAL 670RA 040M Violet Matte",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030603_6a7db195-b2aa-4782-85c5-dc33578f2f6e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031640_1d8e4dfb-4ad7-46f0-aee6-753a7b485c99.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031637_0ff545d4-065a-47b1-976a-5ecf87eb6316.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #5D2C68 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Hyundai HB20 hatchback (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep plum violet, hex #5D2C68 (hue about 289) - a red-leaning purple, not blue-violet, not pink.\n2. CHROMA: medium-high, about 58 percent.\n3. BRIGHTNESS: medium-dark, about 44 percent on the lit panels (matte reads a little lighter), about 28 percent in shadow.",
+      "carro_cenario": "the grey cobblestone streets of historic Ouro Preto, Minas Gerais, white colonial facades, open sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-040m): Hyundai HB20 hatchback Violet fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#5D2C68",
+    "familia": "roxo"
+  },
+  "oracal-670-orange-red-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Ford Ranger double-cab pickup envelopado em ORACAL 670RA 047G Orange Red Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030602_2bf67456-3cf1-431e-8de4-86fcba433fee.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031639_425f3e0f-d2d3-4f99-aff5-b999b9ad02f1.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031638_b5943575-cd55-4521-914b-1c80eac56864.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #D33100 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Ford Ranger double-cab pickup (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a strong red-orange, hex #D33100 (hue about 14) - halfway between red and orange, not pure red, not pure orange.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: bright, about 83 percent on the lit panels, about 50 percent in shadow.",
+      "carro_cenario": "a pale grey limestone quarry road in Minas Gerais, grey rock walls, white dust, open sky; no rust, no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-047g): Ford Ranger double-cab pickup Orange Red brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-light-blue-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Fiat Ducato panel van envelopado em ORACAL 670RA 053G Light Blue Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030604_b0a6b63c-6719-4f75-8e8d-1b7e7bc15240.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031640_b894e480-c543-4c96-809a-8b4ca5095320.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031638_0dd02483-75d4-42c0-9805-a1aa034278c0.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #0089C3 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Fiat Ducato panel van (2022) on silver steel wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a strong azure blue, hex #0089C3 (hue about 198) - a clear deep cyan-blue, not navy, not turquoise, not pale.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: medium-bright, about 76 percent on the lit panels, about 45 percent in shadow.",
+      "carro_cenario": "a red-earth farm road in the interior of Parana, harvested fields, low camera with only a narrow strip of sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-053g): Fiat Ducato panel van Light Blue brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-mint-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Fiat Doblo compact van envelopado em ORACAL 670RA 055G Mint Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030604_5313a26a-449c-4e1d-b82a-9045c997399e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031638_99d1846c-6b7f-4920-955c-3e621a3d4380.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031639_951b4b9a-7a7a-4d5d-9aca-fc5969b47eba.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #5FCDB7 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Fiat Doblo compact van (2021) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a soft aqua green, hex #5FCDB7 (hue about 168) - a turquoise-leaning green, not blue, not mint ice cream pastel, not emerald.\n2. CHROMA: medium, about 54 percent.\n3. BRIGHTNESS: bright, about 80 percent on the lit panels, about 55 percent in shadow.",
+      "carro_cenario": "the ochre and white colonial walls and stone paving of the historic centre of Cidade de Goias, no plants, open sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-055g): Fiat Doblo compact van Mint brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-ice-blue-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Toyota Hilux double-cab pickup envelopado em ORACAL 670RA 056G Ice Blue Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030603_44073317-ca4e-4d91-b945-9224a59bdd18.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031638_94dc3aae-79db-4eb6-98f3-96c3c6db853e.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031639_40641814-57a1-464f-bb19-8eb0f694aabb.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #3DA1D2 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Toyota Hilux double-cab pickup (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a clear medium sky blue, hex #3DA1D2 (hue about 200) - a saturated mid blue, NOT pale, not icy white-blue, not turquoise.\n2. CHROMA: high, about 71 percent.\n3. BRIGHTNESS: bright, about 82 percent on the lit panels, about 52 percent in shadow.",
+      "carro_cenario": "the red-orange sandstone towers of Vila Velha State Park in Ponta Grossa, Parana, dry grass, low camera with only a narrow strip of sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-056g): Toyota Hilux double-cab pickup Ice Blue brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-dark-green-m": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Volkswagen Amarok double-cab pickup envelopado em ORACAL 670RA 060M Dark Green Matte",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030551_cccad9da-e7db-41d2-9236-006ce99f5912.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_30595020-95ee-4b30-8ceb-6abb105049f3.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031643_fb7fb600-b078-430c-bc95-1fcf5a5e8695.png",
+        "nota": "perfil"
+      },
+      {
+        "n": 5,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031513_e0875d3d-aa63-44f7-8495-705b4a7289e5.png",
+        "nota": "macro do fosco"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #004028 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Volkswagen Amarok double-cab pickup (2022) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a very deep bottle green, hex #004028 (hue about 158) - a dark forest green with a slight blue lean, not olive, not black.\n2. CHROMA: very high, about 100 percent.\n3. BRIGHTNESS: dark, about 28 percent on the lit panels (matte reads a little lighter), about 14 percent in shadow.",
+      "carro_cenario": "the bare grey granite walls and stone floor of the Pedreira Paulo Leminski quarry in Curitiba, no plants in frame; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-060m): Volkswagen Amarok double-cab pickup Dark Green fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#004028",
+    "familia": "verde"
+  },
+  "oracal-670-yellow-green-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Renault Master panel van envelopado em ORACAL 670RA 064G Yellow Green Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030549_2f65cb23-1556-4999-b6fd-83ffcbc14e16.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_dd0943a9-ad15-4df3-801a-d61dccb40d52.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031643_f0a52058-ee6b-4020-b2fc-1a5d6d6b5e83.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #289901 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Renault Master panel van (2022) on silver steel wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a vivid grass green, hex #289901 (hue about 105) - a strong yellowish green, not lime, not emerald, not olive.\n2. CHROMA: maximum, about 99 percent.\n3. BRIGHTNESS: medium, about 60 percent on the lit panels, about 34 percent in shadow.",
+      "carro_cenario": "the pale stone forecourt of the Estacao da Luz railway station in Sao Paulo, red brick and clock tower, no plants, open sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-064g): Renault Master panel van Yellow Green brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#289901",
+    "familia": "verde"
+  },
+  "oracal-670-turquoise-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Citroen Berlingo van envelopado em ORACAL 670RA 066G Turquoise Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030552_5eb26b8a-62f4-4fd3-b849-3c49776fbe6e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_1072cb8b-820b-421f-8527-5b93e0a7089d.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_cad4a05c-ae1f-469e-be76-fc6c86c1bdfa.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #00818C (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Citroen Berlingo van (2022) on silver steel wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep teal turquoise, hex #00818C (hue about 185) - a strong blue-green petrol tone, not light aqua, not blue.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: medium-dark, about 55 percent on the lit panels, about 30 percent in shadow.",
+      "carro_cenario": "the white stucco facades with dark wooden window frames and grey stone streets of historic Pirenopolis, Goias, open sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-066g): Citroen Berlingo van Turquoise brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-black-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Peugeot Expert panel van envelopado em ORACAL 670RA 070G Black Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030551_d4344402-09b2-4bad-b203-682549b876db.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031643_89ec5268-37da-4c98-a12a-ea318b05f745.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_67257bba-c3a0-436a-a15f-f1a6cb4c28fe.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #0D0E11 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Peugeot Expert panel van (2022) on bright silver steel wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep neutral jet black, hex #0D0E11.\n2. CHROMA: none.\n3. BRIGHTNESS: very dark: about 10 percent soft charcoal on the panels facing the sky, pure black in shadow.",
+      "carro_cenario": "the grey concrete deck and pillars of the Minhocao elevated highway in Sao Paulo on a car-free day, grey buildings; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-070g): Peugeot Expert panel van Black brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-black-m": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Mitsubishi L200 Triton double-cab pickup envelopado em ORACAL 670RA 070M Black Matte",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030551_1f8d3733-2f2a-4622-97e2-5e86ad8ded80.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031644_5335715d-dba3-4123-bea7-da453820cec1.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_079a14b7-1d41-45e9-9655-1194c86b1995.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #0D0E11 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Mitsubishi L200 Triton double-cab pickup (2023) on bright silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep neutral black, hex #0D0E11.\n2. CHROMA: none.\n3. BRIGHTNESS: very dark: about 14 percent soft charcoal on the panels facing the sky (matte reads a little lighter), near black in shadow.",
+      "carro_cenario": "the grey basalt cobblestones in front of the old harbour warehouses of Cais Maua in Porto Alegre, grey sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-070m): Mitsubishi L200 Triton double-cab pickup Black fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-light-grey-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Nissan Versa sedan envelopado em ORACAL 670RA 072G Light Grey Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030550_af88aa6e-e2bb-46b6-954a-97fcef460988.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031643_493829ec-9113-46cd-97c3-a77d5ca26dcb.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031644_642bd53b-fcab-4fea-bbe4-75f9630f0a14.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #BFC2C0 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Nissan Versa sedan (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral light grey, hex #BFC2C0 - a pure solid light grey, NOT metallic, not silver, not white, not beige, not blue.\n2. CHROMA: none.\n3. BRIGHTNESS: light, about 76 percent on the lit panels, about 52 percent in shadow.",
+      "carro_cenario": "the white concrete curves of the Oscar Niemeyer Museum (Museu do Olho) in Curitiba, grey paving, grey sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-072g): Nissan Versa sedan Light Grey brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-dark-grey-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Nissan Frontier double-cab pickup envelopado em ORACAL 670RA 073G Dark Grey Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030554_19a6dc58-be92-4d2a-acd7-0bc80e37aa9e.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031446_953a6371-e3d4-4c8d-8064-eaf4f76f3b57.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031450_c5265bea-6457-4b64-8f14-55c11bdc6b47.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #4B4C4C (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Nissan Frontier double-cab pickup (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral dark graphite grey, hex #4B4C4C - a pure solid grey, NOT metallic, not blue, not brown.\n2. CHROMA: none.\n3. BRIGHTNESS: dark, about 30 percent on the lit panels, about 16 percent in shadow.",
+      "carro_cenario": "the grey concrete crest road and spillways of the Itaipu dam in Foz do Iguacu, grey sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-073g): Nissan Frontier double-cab pickup Dark Grey brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-dark-grey-m": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Fiat Toro pickup envelopado em ORACAL 670RA 073M Dark Grey Matte",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030555_d8626c20-e999-431f-8136-8c6918092915.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031445_9c318182-86f1-4d74-aa54-3a5b7a025d46.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031450_7c026abe-69be-4800-be3a-e422d6b46d78.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #4B4C4C (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Fiat Toro pickup (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral dark graphite grey, hex #4B4C4C - a pure grey, not blue, not brown.\n2. CHROMA: none.\n3. BRIGHTNESS: dark, about 34 percent on the lit panels (matte reads a little lighter), about 20 percent in shadow.",
+      "carro_cenario": "the empty grey concrete parade avenue of the Anhembi Sambadrome in Sao Paulo, bare stands, grey sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-073m): Fiat Toro pickup Dark Grey fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-telegrey-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Iveco Daily panel van envelopado em ORACAL 670RA 076G Telegrey Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030553_6ae1b1bf-02dc-44ad-9044-81dd15e2c0ba.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031446_c5389142-3045-42e3-a226-094b7b8b2303.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031445_6f847474-09c4-4fcb-9db3-9cdb1f697c7f.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #818689 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Iveco Daily panel van (2022) on silver steel wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral medium grey with a faint cool tint, hex #818689 - a solid grey, NOT metallic, not blue, not green.\n2. CHROMA: very low, about 6 percent.\n3. BRIGHTNESS: medium, about 54 percent on the lit panels, about 32 percent in shadow.",
+      "carro_cenario": "the grey cobblestone yard of the old railway workshops of the Fepasa complex in Jundiai, grey industrial sheds; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-076g): Iveco Daily panel van Telegrey brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-telegrey-m": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Volkswagen Delivery light truck envelopado em ORACAL 670RA 076M Telegrey Matte",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030557_6eba1ec7-56f3-457f-9475-922fe2020ee2.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031447_44fe8aa4-254a-40bd-94c1-6e21de647b36.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031451_b808d8f0-31da-45f7-be29-affca99f021e.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #818689 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Volkswagen Delivery light truck (2022), cab and box body, on silver steel wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral medium grey with a faint cool tint, hex #818689 - a pure grey, not blue, not green.\n2. CHROMA: very low, about 6 percent.\n3. BRIGHTNESS: medium, about 58 percent on the lit panels (matte reads a little lighter), about 36 percent in shadow.",
+      "carro_cenario": "the empty grey concrete truck yard of the CEAGESP wholesale market in Sao Paulo, early morning; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-076m): Volkswagen Delivery light truck Telegrey fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-sky-blue-m": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Renault Oroch pickup envelopado em ORACAL 670RA 084M Sky Blue Matte",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030555_4900e157-d3c7-49bd-8435-dc9e7734f4df.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031449_ab0798ae-807d-494e-bf47-bcd9c0d519e7.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031446_70eb4b9c-2312-4cf3-a609-6278047bed52.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #0075BB (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Renault Oroch pickup (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a strong medium blue, hex #0075BB (hue about 202) - a saturated azure blue, not navy, not pale sky, not turquoise.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: medium, about 75 percent on the lit panels (matte reads a little lighter), about 45 percent in shadow.",
+      "carro_cenario": "the red-brick walls of the old Matarazzo factory buildings in Sao Paulo, grey cobblestones, only a narrow strip of sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-084m): Renault Oroch pickup Sky Blue fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+  },
+  "oracal-670-deep-sea-blue-g": {
+    "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
+    "url_base": "/assets/images/shop/oracal-670ra/aplicacao",
+    "alt_base": "Jeep Compass SUV envelopado em ORACAL 670RA 562G Deep Sea Blue Gloss",
+    "fotos": [
+      {
+        "n": 2,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030554_e7a6b8f8-4693-4173-88e1-176d33062c0f.png",
+        "nota": "frontal 3/4 baixa"
+      },
+      {
+        "n": 3,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031450_197867f0-c7c8-4909-83c9-118c527a2a6c.png",
+        "nota": "traseira 3/4 baixa"
+      },
+      {
+        "n": 4,
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031448_10eed083-482b-4189-87fa-d4ae15c86184.png",
+        "nota": "perfil"
+      }
+    ],
+    "nota_cor": "Alvo = hex oficial Orafol #131E3A (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "prompts": {
+      "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
+      "carro": "Jeep Compass SUV (2023) on silver alloy wheels",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep navy blue, hex #131E3A (hue about 223) - a dark midnight blue, not black, not purple.\n2. CHROMA: high, about 67 percent.\n3. BRIGHTNESS: very dark, about 23 percent on the lit panels, about 10 percent in shadow.",
+      "carro_cenario": "the grey stone paving under the curving white facade of the Copan building in Sao Paulo, grey sky; no other vehicles, no people"
+    },
+    "mensagem": "feat(670ra-562g): Jeep Compass SUV Deep Sea Blue brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#131E3A",
+    "familia": "azul"
   }
 }
