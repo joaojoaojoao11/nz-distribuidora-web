@@ -131,7 +131,7 @@ Manuais completos (leia antes de gerar qualquer coisa):
 | MetaCast MCX | 12, 54, 63, 65, 66, 73, 87, 96, 97 com fotos de carro. O João pediu (21/09) que só essas fiquem ativas no site — confira se as outras MCX estão inativas. |
 | **Speed Wrapping — todas as 18 linhas** | **246 de 246 cores no site, 100%** (capa nova + 4 fotos, conferidas no ar por md5). Lotes 7 a 12 (01 a 03/10). Painel: https://claude.ai/artifact/7HSvVJWFgpHP4hrrCMt7hs. Andamento cor a cor em `docs/STATUS_CORES_SPEED.md`. |
 | Speed Wrapping fora da conta | Linha **EGB** (inativa no NZERP, oculta na loja, pasta do Drive "INATIVA · EGB") e 6 pastas sem nome nem produto (EDG-022, 028, 029, EGF-008, 016, 020) — decisão do João, 03/10. |
-| **ORACAL 670RA (05/10)** | **24 de 24** com capa nova + 3 fotos de carro de frota (macro na 031G e na 060M) + 37 fotos REAIS de 18 cores (Sign House, placas borradas). Tom e hex pelas fotos reais do Drive da Sign House (verdade absoluta, regra do João). Pendente: trocar as 72 imagens antigas da página `/wrap/oracal-670ra/:cor`; capa do 070M ainda parece brilhante. |
+| **ORACAL 670RA (05/10)** | **24 de 24** com capa nova + 3 fotos de carro de frota (macro na 031G e na 060M) + 37 fotos REAIS de 18 cores (Sign House, placas borradas). Tom e hex pelas fotos reais do Drive da Sign House (verdade absoluta, regra do João). Página da linha `/wrap/oracal-670ra/:cor` com as mesmas fotos (72 imagens antigas apagadas, `df85fee`). Pendente: capa do 070M ainda parece brilhante. |
 | Demais linhas (SH, 651, 6510, Meta 7, NZWRAP, PPF, Etherna) | Capas de rolo feitas em set/2026 (objetivo do João: nenhum produto sem capa — confira na loja rolando a página). Fotos de carro: não iniciadas. |
 
 **Pendências abertas:**
