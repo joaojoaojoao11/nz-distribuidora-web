@@ -201,15 +201,22 @@
 }
 
 .grid {
-  display: flex;
-  flex-direction: column;
-  gap: 4rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
 }
 
 .gridItem {
   position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
+  aspect-ratio: 3/2;
   border-radius: 12px;
   overflow: hidden;
   background: #111;
@@ -246,6 +253,14 @@
 
 .gridItem:hover .overlay {
   opacity: 1;
+}
+
+/* celular/tablet: sem hover, o rótulo (ex.: "Foto real · instalador") fica sempre visível */
+@media (hover: none) {
+  .overlay {
+    opacity: 1;
+    padding: 1rem;
+  }
 }
 
 .overlay span {
