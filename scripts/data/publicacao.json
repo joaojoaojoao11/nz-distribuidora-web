@@ -13025,31 +13025,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030512_275deb83-a41d-4880-96ad-6713c1fceaf7.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140633_5d78f7c6-0493-4ff8-9f72-cbe0be427c38.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031451_d49c149a-6555-4a31-b40a-acdc5a2db983.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144448_446f3dd0-885d-47c6-a7ce-1af5c0dacad5.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031448_323205c6-e917-4ad8-a188-fb3e2d512068.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144446_e27a393d-bb16-4420-b463-4efe2dfca053.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #900E16 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #B82126 medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Volkswagen Virtus sedan (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep wine burgundy red, hex #900E16 (hue about 356) - a dark saturated red, not brown, not purple, not bright red.\n2. CHROMA: very high, about 90 percent.\n3. BRIGHTNESS: medium-dark, about 56 percent on the lit panels, about 30 percent deep burgundy in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a strong classic red, hex #B82126 (hue about 358) - a rich slightly deep red like a hot-hatch factory red; NOT wine, NOT burgundy, not orange, not pink.\n2. CHROMA: high, about 82 percent.\n3. BRIGHTNESS: medium-bright, about 72 percent on the lit panels, about 42 percent in shadow.",
       "carro_cenario": "the glass and white concrete office towers along Avenida Faria Lima, Sao Paulo, grey stone pavement, open sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-030g): Volkswagen Virtus sedan Dark Red brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-    "leitura": "#900E16",
-    "familia": "vermelho",
-    "sat_min_cena": 0.35
+    "mensagem": "fix(670ra-030g): Volkswagen Virtus sedan Dark Red brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-red-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13058,33 +13055,33 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030514_2e186b60-34e0-4267-8cb5-5d94c2209aa8.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140634_bbc5e0af-4bea-455c-8cf4-3363efeefd9f.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031451_81e5b608-0deb-4595-be4b-2a3e9dbae6f1.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144444_71fd3146-4ba8-4407-9b91-838c4cd54bc3.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031451_2c817bf1-029a-458d-8ef6-d5a54a09346d.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144445_3458e1d8-39b4-4b5e-8b3a-0e7a73ebb9a0.png",
         "nota": "perfil"
       },
       {
         "n": 5,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031513_994c6c57-527e-4d9f-b9e0-c7de7885af65.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144700_be3ba6e6-2fc0-4c46-b1de-2ac9358effdf.png",
         "nota": "macro do brilho"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #B0000D (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #DC352C medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Chevrolet Montana compact pickup (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a pure strong signal red, hex #B0000D (hue about 356) - a full deep red, not orange, not pink, not burgundy.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: medium, about 69 percent on the lit panels, about 40 percent deep red in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a bright signal red with a slight warm lean, hex #DC352C (hue about 3) - a fire-engine red; NOT crimson, NOT dark, not pink, not orange.\n2. CHROMA: high, about 80 percent.\n3. BRIGHTNESS: bright, about 86 percent on the lit panels, about 52 percent in shadow.",
       "carro_cenario": "a grey asphalt lay-by on the Rodovia dos Imigrantes high in the Serra do Mar, grey concrete viaduct pillars, distant green mountains, clear day; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-031g): Chevrolet Montana compact pickup Red brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-031g): Chevrolet Montana compact pickup Red brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-light-red-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13123,28 +13120,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030602_78107c7e-9310-4850-b6fe-a8b878483568.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140634_bc5af984-2214-41be-97ec-c06415fbb8f1.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031638_7148a40e-4c01-47d9-8d77-722f767cac1b.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144447_e271bd94-eaaf-4c51-b0f2-869e0f1a1546.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031639_eba3d6cf-a424-4cd5-8dae-66bae12a8e85.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144446_157a3042-c3a4-4ff9-a698-5fb1754bb6f7.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #FC6C00 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #EB851E medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Volkswagen Saveiro pickup (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a vivid pure orange, hex #FC6C00 (hue about 26) - a full traffic orange, not pale, not pastel, not red, not yellow.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: very bright, about 98 percent on the lit panels, about 62 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a bright warm tangerine orange, hex #EB851E (hue about 30) - an orange that leans toward yellow; NOT red-orange, NOT traffic orange, not yellow, not brown.\n2. CHROMA: high, about 87 percent.\n3. BRIGHTNESS: very bright, about 92 percent on the lit panels, about 58 percent in shadow.",
       "carro_cenario": "the grey concrete access road beneath the white cable-stayed Octavio Frias de Oliveira bridge in Sao Paulo, open sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-035g): Volkswagen Saveiro pickup Pastel Orange brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-035g): Volkswagen Saveiro pickup Pastel Orange brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-violet-m": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13153,30 +13150,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030603_6a7db195-b2aa-4782-85c5-dc33578f2f6e.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140635_7ca6fd3e-0eb0-47e6-9131-f9b030daf72c.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031640_1d8e4dfb-4ad7-46f0-aee6-753a7b485c99.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144446_651d506c-fec0-4e4a-87b5-4714d5965889.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031637_0ff545d4-065a-47b1-976a-5ecf87eb6316.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144447_7eae991e-d1d9-46bd-95f9-31b672ac4153.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #5D2C68 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #8A51BF medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Hyundai HB20 hatchback (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep plum violet, hex #5D2C68 (hue about 289) - a red-leaning purple, not blue-violet, not pink.\n2. CHROMA: medium-high, about 58 percent.\n3. BRIGHTNESS: medium-dark, about 44 percent on the lit panels (matte reads a little lighter), about 28 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a bright medium violet, hex #8A51BF (hue about 271) - an amethyst / lavender purple leaning slightly blue; NOT dark plum, NOT aubergine, not pink, not blue.\n2. CHROMA: medium, about 58 percent.\n3. BRIGHTNESS: medium-bright, about 75 percent on the lit panels, about 48 percent in shadow.",
       "carro_cenario": "the grey cobblestone streets of historic Ouro Preto, Minas Gerais, white colonial facades, open sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-040m): Hyundai HB20 hatchback Violet fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-    "leitura": "#5D2C68",
-    "familia": "roxo"
+    "mensagem": "fix(670ra-040m): Hyundai HB20 hatchback Violet fosco no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-orange-red-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13215,28 +13210,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030604_b0a6b63c-6719-4f75-8e8d-1b7e7bc15240.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140633_6e31a39b-8f20-4d88-9b76-6f4957179467.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031640_b894e480-c543-4c96-809a-8b4ca5095320.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144446_c60cbc2c-5d24-4eb0-baad-23362b711035.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031638_0dd02483-75d4-42c0-9805-a1aa034278c0.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144445_d30c5ea7-84c6-4d88-9962-7941a1c845e1.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #0089C3 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #2DA2E0 medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Fiat Ducato panel van (2022) on silver steel wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a strong azure blue, hex #0089C3 (hue about 198) - a clear deep cyan-blue, not navy, not turquoise, not pale.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: medium-bright, about 76 percent on the lit panels, about 45 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a bright clear azure blue, hex #2DA2E0 (hue about 201) - a light racing / sky azure; NOT navy, NOT deep blue, not turquoise, not pale.\n2. CHROMA: high, about 80 percent.\n3. BRIGHTNESS: bright, about 88 percent on the lit panels, about 55 percent in shadow.",
       "carro_cenario": "a red-earth farm road in the interior of Parana, harvested fields, low camera with only a narrow strip of sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-053g): Fiat Ducato panel van Light Blue brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-053g): Fiat Ducato panel van Light Blue brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-mint-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13275,28 +13270,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030603_44073317-ca4e-4d91-b945-9224a59bdd18.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140632_b38beebb-9d07-48c1-8c43-57272a93d2ea.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031638_94dc3aae-79db-4eb6-98f3-96c3c6db853e.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144447_6d0bd19f-2a38-4a10-8830-e46b6f3acfe0.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031639_40641814-57a1-464f-bb19-8eb0f694aabb.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144444_321f57ef-1ebe-4aa5-8788-d14e1ac0623d.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #3DA1D2 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #75B2E0 medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto A aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Toyota Hilux double-cab pickup (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a clear medium sky blue, hex #3DA1D2 (hue about 200) - a saturated mid blue, NOT pale, not icy white-blue, not turquoise.\n2. CHROMA: high, about 71 percent.\n3. BRIGHTNESS: bright, about 82 percent on the lit panels, about 52 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a soft pale ice blue, hex #75B2E0 (hue about 206) - a gentle baby blue; NOT saturated azure, NOT medium blue, not grey, not turquoise.\n2. CHROMA: low-medium, about 48 percent.\n3. BRIGHTNESS: bright, about 88 percent on the lit panels, about 62 percent in shadow.",
       "carro_cenario": "the red-orange sandstone towers of Vila Velha State Park in Ponta Grossa, Parana, dry grass, low camera with only a narrow strip of sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-056g): Toyota Hilux double-cab pickup Ice Blue brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-056g): Toyota Hilux double-cab pickup Ice Blue brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-dark-green-m": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13305,35 +13300,33 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030551_cccad9da-e7db-41d2-9236-006ce99f5912.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_141654_419d07af-940b-44a6-8a58-468199edf9bb.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_30595020-95ee-4b30-8ceb-6abb105049f3.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144555_ebeca667-d141-45f5-aed2-29220eb24793.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031643_fb7fb600-b078-430c-bc95-1fcf5a5e8695.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144555_3ff89f6f-e6af-4e93-b3a7-fa2bba84c2ed.png",
         "nota": "perfil"
       },
       {
         "n": 5,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031513_e0875d3d-aa63-44f7-8495-705b4a7289e5.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144703_3dd99133-257b-4d8a-aad3-d38aa41a7a09.png",
         "nota": "macro do fosco"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #004028 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #3D6652 medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto C aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Volkswagen Amarok double-cab pickup (2022) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a very deep bottle green, hex #004028 (hue about 158) - a dark forest green with a slight blue lean, not olive, not black.\n2. CHROMA: very high, about 100 percent.\n3. BRIGHTNESS: dark, about 28 percent on the lit panels (matte reads a little lighter), about 14 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a forest green, hex #3D6652 (hue about 150) - clearly GREEN, like the matte green of a modern German sports saloon, with only a slight grey softness; NOT grey, NOT olive, NOT bottle green, not teal, not black.\n2. CHROMA: medium, about 50 percent - the green must read clearly even on the panels in shadow.\n3. BRIGHTNESS: medium-dark, about 42 percent on the lit panels (matte reads a little lighter), about 26 percent in shadow.",
       "carro_cenario": "the bare grey granite walls and stone floor of the Pedreira Paulo Leminski quarry in Curitiba, no plants in frame; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-060m): Volkswagen Amarok double-cab pickup Dark Green fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-    "leitura": "#004028",
-    "familia": "verde"
+    "mensagem": "fix(670ra-060m): Volkswagen Amarok double-cab pickup Dark Green fosco no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-yellow-green-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13342,29 +13335,29 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030549_2f65cb23-1556-4999-b6fd-83ffcbc14e16.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140733_8196ff92-fdbe-4abe-8afb-113029e66ea4.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_dd0943a9-ad15-4df3-801a-d61dccb40d52.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144553_76da5af4-2e8e-4f31-8825-64d7e40f90dd.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031643_f0a52058-ee6b-4020-b2fc-1a5d6d6b5e83.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144556_6d3abc85-a883-4155-b2d7-08766ad3b648.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #289901 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #49C42F medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Renault Master panel van (2022) on silver steel wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a vivid grass green, hex #289901 (hue about 105) - a strong yellowish green, not lime, not emerald, not olive.\n2. CHROMA: maximum, about 99 percent.\n3. BRIGHTNESS: medium, about 60 percent on the lit panels, about 34 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a vivid bright lime-grass green, hex #49C42F (hue about 110) - a luminous yellowish green; NOT dark grass green, not neon yellow, not emerald.\n2. CHROMA: high, about 76 percent.\n3. BRIGHTNESS: bright, about 80 percent on the lit panels, about 48 percent in shadow.",
       "carro_cenario": "the pale stone forecourt of the Estacao da Luz railway station in Sao Paulo, red brick and clock tower, no plants, open sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-064g): Renault Master panel van Yellow Green brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-    "leitura": "#289901",
+    "mensagem": "fix(670ra-064g): Renault Master panel van Yellow Green brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+    "leitura": "#49C42F",
     "familia": "verde"
   },
   "oracal-670-turquoise-g": {
@@ -13374,28 +13367,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030552_5eb26b8a-62f4-4fd3-b849-3c49776fbe6e.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140735_345ecbce-a571-4461-9ed9-e6b4c294fc72.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_1072cb8b-820b-421f-8527-5b93e0a7089d.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144557_ffd24b12-7ab4-4430-baf5-8872148334f8.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_cad4a05c-ae1f-469e-be76-fc6c86c1bdfa.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144555_d64d7ab2-08c5-4e3b-a01c-6c48fe7ce2e6.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #00818C (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #2FB8D6 medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Citroen Berlingo van (2022) on silver steel wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep teal turquoise, hex #00818C (hue about 185) - a strong blue-green petrol tone, not light aqua, not blue.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: medium-dark, about 55 percent on the lit panels, about 30 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a bright light turquoise, hex #2FB8D6 (hue about 191) - a clear tropical-water cyan; NOT dark petrol, NOT teal, not blue, not green.\n2. CHROMA: high, about 78 percent.\n3. BRIGHTNESS: bright, about 84 percent on the lit panels, about 52 percent in shadow.",
       "carro_cenario": "the white stucco facades with dark wooden window frames and grey stone streets of historic Pirenopolis, Goias, open sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-066g): Citroen Berlingo van Turquoise brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-066g): Citroen Berlingo van Turquoise brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-black-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13434,28 +13427,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030551_1f8d3733-2f2a-4622-97e2-5e86ad8ded80.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_034247_bf8a39e5-006f-4c88-8a9d-c5535162f23a.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031644_5335715d-dba3-4123-bea7-da453820cec1.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_122917_404bfc63-731b-43ae-84a2-37d09e5f7011.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031642_079a14b7-1d41-45e9-9655-1194c86b1995.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_122914_fad83b12-6c3d-4ee3-b36c-0badd41576fb.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #0D0E11 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = hex oficial Orafol #0D0E11 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Fosco v2 (brilho baixo nas curvas), piloto A aprovado pelo Joao em 05/10/2026; sem correcao de cor (a correcao quebra o brilho do fosco).",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Mitsubishi L200 Triton double-cab pickup (2023) on bright silver alloy wheels",
       "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep neutral black, hex #0D0E11.\n2. CHROMA: none.\n3. BRIGHTNESS: very dark: about 14 percent soft charcoal on the panels facing the sky (matte reads a little lighter), near black in shadow.",
       "carro_cenario": "the grey basalt cobblestones in front of the old harbour warehouses of Cais Maua in Porto Alegre, grey sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-070m): Mitsubishi L200 Triton double-cab pickup Black fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-070m): Mitsubishi L200 Triton double-cab pickup Black fosco refeito - brilho baixo nas curvas, sem efeito aveludado\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-light-grey-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13494,28 +13487,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030554_19a6dc58-be92-4d2a-acd7-0bc80e37aa9e.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140731_d278db76-0a2e-479c-96fe-f0023de2e6e7.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031446_953a6371-e3d4-4c8d-8064-eaf4f76f3b57.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144554_c8517d7a-20cb-4cb7-914a-cf55a86ecf14.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031450_c5265bea-6457-4b64-8f14-55c11bdc6b47.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144558_e4cd5ed0-cd86-4230-859a-617d4821eae8.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #4B4C4C (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #777B7F medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Nissan Frontier double-cab pickup (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral dark graphite grey, hex #4B4C4C - a pure solid grey, NOT metallic, not blue, not brown.\n2. CHROMA: none.\n3. BRIGHTNESS: dark, about 30 percent on the lit panels, about 16 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral medium grey with a faint cool tint, hex #777B7F - a solid grey, NOT metallic, NOT dark graphite, not silver, not blue.\n2. CHROMA: very low, about 6 percent.\n3. BRIGHTNESS: medium, about 55 percent on the lit panels, about 32 percent in shadow.",
       "carro_cenario": "the grey concrete crest road and spillways of the Itaipu dam in Foz do Iguacu, grey sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-073g): Nissan Frontier double-cab pickup Dark Grey brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-073g): Nissan Frontier double-cab pickup Dark Grey brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-dark-grey-m": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13524,28 +13517,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030555_d8626c20-e999-431f-8136-8c6918092915.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140737_2cb270f0-d319-489b-9195-27d16697a81f.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031445_9c318182-86f1-4d74-aa54-3a5b7a025d46.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144558_07190081-78bb-40cb-b91d-a1bbdc45d7f8.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031450_7c026abe-69be-4800-be3a-e422d6b46d78.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144554_dc487ac3-2b0c-44e1-a621-fae1fa58d61e.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #4B4C4C (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #777B7F medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto A aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Fiat Toro pickup (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral dark graphite grey, hex #4B4C4C - a pure grey, not blue, not brown.\n2. CHROMA: none.\n3. BRIGHTNESS: dark, about 34 percent on the lit panels (matte reads a little lighter), about 20 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral medium grey with a faint cool tint, hex #777B7F - a pure grey, NOT dark graphite, not silver, not blue.\n2. CHROMA: very low, about 6 percent.\n3. BRIGHTNESS: medium, about 55 percent on the lit panels (matte reads a little lighter), about 34 percent in shadow.",
       "carro_cenario": "the empty grey concrete parade avenue of the Anhembi Sambadrome in Sao Paulo, bare stands, grey sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-073m): Fiat Toro pickup Dark Grey fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-073m): Fiat Toro pickup Dark Grey fosco no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-telegrey-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13554,28 +13547,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030553_6ae1b1bf-02dc-44ad-9044-81dd15e2c0ba.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140742_667e0b9c-57f9-4e42-b96a-80db59b1d764.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031446_c5389142-3045-42e3-a226-094b7b8b2303.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144554_3e15fcab-3600-4123-91b4-f7960af3a3af.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031445_6f847474-09c4-4fcb-9db3-9cdb1f697c7f.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144557_6b41b03e-cf3c-41d0-bf33-876e4de811c0.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #818689 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #B4B6B3 medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto A aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Iveco Daily panel van (2022) on silver steel wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral medium grey with a faint cool tint, hex #818689 - a solid grey, NOT metallic, not blue, not green.\n2. CHROMA: very low, about 6 percent.\n3. BRIGHTNESS: medium, about 54 percent on the lit panels, about 32 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a light neutral grey, hex #B4B6B3 - like light concrete, a solid grey, NOT metallic, not silver, not white, not beige.\n2. CHROMA: almost none, about 2 percent.\n3. BRIGHTNESS: light, about 74 percent on the lit panels, about 50 percent in shadow.",
       "carro_cenario": "the grey cobblestone yard of the old railway workshops of the Fepasa complex in Jundiai, grey industrial sheds; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-076g): Iveco Daily panel van Telegrey brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-076g): Iveco Daily panel van Telegrey brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-telegrey-m": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13584,28 +13577,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030557_6eba1ec7-56f3-457f-9475-922fe2020ee2.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140830_3ffe918d-23b0-46fb-a0b6-d7fe37862379.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031447_44fe8aa4-254a-40bd-94c1-6e21de647b36.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144659_80e1e506-093b-4507-ba70-5807e833c4da.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031451_b808d8f0-31da-45f7-be29-affca99f021e.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144702_36f6d7d9-db05-4e37-8b80-f4958f230457.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #818689 (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #B4B6B3 medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Volkswagen Delivery light truck (2022), cab and box body, on silver steel wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a neutral medium grey with a faint cool tint, hex #818689 - a pure grey, not blue, not green.\n2. CHROMA: very low, about 6 percent.\n3. BRIGHTNESS: medium, about 58 percent on the lit panels (matte reads a little lighter), about 36 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a light neutral grey, hex #B4B6B3 - like light concrete, a pure grey, not silver, not white, not beige.\n2. CHROMA: almost none, about 2 percent.\n3. BRIGHTNESS: light, about 76 percent on the lit panels (matte reads a little lighter), about 52 percent in shadow.",
       "carro_cenario": "the empty grey concrete truck yard of the CEAGESP wholesale market in Sao Paulo, early morning; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-076m): Volkswagen Delivery light truck Telegrey fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-076m): Volkswagen Delivery light truck Telegrey fosco no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-sky-blue-m": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13614,28 +13607,28 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030555_4900e157-d3c7-49bd-8435-dc9e7734f4df.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140827_e4832358-f59c-4fde-8761-9f2d66bbbfd8.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031449_ab0798ae-807d-494e-bf47-bcd9c0d519e7.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144701_bf9bf952-0981-4825-86e4-b4e96f54b0d5.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031446_70eb4b9c-2312-4cf3-a609-6278047bed52.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144659_0fd83c08-4f49-477a-90a6-02955269546c.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #0075BB (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto A aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #2E99E6 medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto B aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Renault Oroch pickup (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a strong medium blue, hex #0075BB (hue about 202) - a saturated azure blue, not navy, not pale sky, not turquoise.\n2. CHROMA: maximum, about 100 percent.\n3. BRIGHTNESS: medium, about 75 percent on the lit panels (matte reads a little lighter), about 45 percent in shadow.",
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a bright sky blue, hex #2E99E6 (hue about 205) - a clear light azure; NOT navy, NOT deep blue, not pale, not turquoise.\n2. CHROMA: high, about 80 percent.\n3. BRIGHTNESS: bright, about 88 percent on the lit panels (matte reads a little lighter), about 56 percent in shadow.",
       "carro_cenario": "the red-brick walls of the old Matarazzo factory buildings in Sao Paulo, grey cobblestones, only a narrow strip of sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-084m): Renault Oroch pickup Sky Blue fosco - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    "mensagem": "fix(670ra-084m): Renault Oroch pickup Sky Blue fosco no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   },
   "oracal-670-deep-sea-blue-g": {
     "destino": "public/assets/images/shop/oracal-670ra/aplicacao",
@@ -13644,29 +13637,27 @@
     "fotos": [
       {
         "n": 2,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_030554_e7a6b8f8-4693-4173-88e1-176d33062c0f.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_140829_f4392d75-f213-45c2-b047-d54565567041.png",
         "nota": "frontal 3/4 baixa"
       },
       {
         "n": 3,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031450_197867f0-c7c8-4909-83c9-118c527a2a6c.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144700_7b9ff7ed-f55f-4293-a320-d688bffdc22c.png",
         "nota": "traseira 3/4 baixa"
       },
       {
         "n": 4,
-        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_031448_10eed083-482b-4189-87fa-d4ae15c86184.png",
+        "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3C6CMYD1bdLQB0k7dtFHNX97iFG/hf_20261005_144659_695d0dcd-c741-4459-aa11-99ab3b07e5b4.png",
         "nota": "perfil"
       }
     ],
-    "nota_cor": "Alvo = hex oficial Orafol #131E3A (via 651, docs/ORACAL_670RA_MAPEAMENTO.md); sem amostra fisica. Piloto B aprovado pelo Joao em 05/10/2026 (lote 670RA, carros de frota).",
+    "nota_cor": "Alvo = tom REAL #284B9E medido nas fotos reais da Sign House (Drive 'Fotos e Videos', verdade absoluta definida pelo Joao em 05/10/2026); piloto A aprovado. Ver casos/670ra/2026-10-05_tons-reais-signhouse.md.",
     "prompts": {
       "modelo": "gpt_image_2 medium 3:2 · fotos 3/4 com o piloto aprovado como referencia",
       "carro": "Jeep Compass SUV (2023) on silver alloy wheels",
-      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep navy blue, hex #131E3A (hue about 223) - a dark midnight blue, not black, not purple.\n2. CHROMA: high, about 67 percent.\n3. BRIGHTNESS: very dark, about 23 percent on the lit panels, about 10 percent in shadow.",
-      "carro_cenario": "the grey stone paving under the curving white facade of the Copan building in Sao Paulo, grey sky; no other vehicles, no people"
+      "carro_cor": "COLOR - three separate instructions:\n1. HUE: a deep royal blue, hex #284B9E (hue about 222) - a rich cobalt blue; NOT near-black navy, not purple, not bright azure.\n2. CHROMA: high, about 75 percent.\n3. BRIGHTNESS: medium, about 62 percent on the lit panels, about 35 percent in shadow.",
+      "carro_cenario": "the grey stone paving under the curving white facade of the Copan building in Sao Paulo, open sky; no other vehicles, no people"
     },
-    "mensagem": "feat(670ra-562g): Jeep Compass SUV Deep Sea Blue brilho - fotos de aplicacao\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
-    "leitura": "#131E3A",
-    "familia": "azul"
+    "mensagem": "fix(670ra-562g): Jeep Compass SUV Deep Sea Blue brilho no tom real das fotos da Sign House\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
   }
 }
