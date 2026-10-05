@@ -803,6 +803,37 @@ contra o sol os estilhaços refletem forte e parecem verniz. Regra: em carbono, 
 o recorte de textura tem que mostrar a base fosca (EGF-018 v2: `3f26a272`). Na dúvida, perguntar
 ao João o acabamento antes do piloto.
 
+### ORACAL 670RA: foto real manda no tom, e fosco não é veludo (05/10)
+
+24 cores, carros de frota/comercial (tabela em `docs/ORACAL_670RA_MAPEAMENTO.md`). Três lições, todas
+pagas com rodada refeita:
+
+- **Hex "oficial" emprestado de outra linha errou 15 de 24.** O alvo inicial veio do ORACAL 651
+  (mesma numeração Orafol). O Drive da Sign House tem uma pasta de **fotos reais de carros envelopados
+  por cor** (`Fotos e Vídeos`, id `1rvbWyT_fKEFU892U8Dj3KlSXB-IsrL_2`), e o João definiu: **essas fotos
+  são verdade absoluta; se o tom difere, a foto gerada está errada** (capa e carro). No geral o filme real é
+  **mais claro**, e às vezes tem outro tom: 040M violeta claro, não ameixa; 066G turquesa, não petróleo;
+  562G azul-royal, não marinho quase preto; 073 cinza médio, não grafite.
+  - Como medir: só fotos do carro **já envelopado e de dia** (fora: "antes", noite, adesivo, decalque).
+  - Matiz e saturação nos trechos de cor pura (S acima do percentil 60, sem reflexo branco); valor no
+    painel iluminado.
+  - Conferir a amostra ao lado do recorte e ajustar a olho.
+  - Scripts em `NZ-AGENTES/CLEDNA/casos/670ra/drive_signhouse/` (o conector do Drive não lista a pasta;
+    `embeddedfolderview?id=` e `thumbnail?id=…&sz=w2000` funcionam sem login).
+- **Cor mais clara que o piloto não se corrige, regera.** `manterValor` não clareia foto, e a gama não
+  **desce** saturação de pixel em S=1. Capa que precisa perder saturação: multiplicar S (sem estouro); a
+  gama só serve para subir. Capa laranja clara (035G) passa do teto `val_max` 0,80 e a máscara sai vazia:
+  usar 0,97.
+- **Fosco não é veludo.** O prompt "NO gloss, NO reflections, NO sheen… like fine suede" gerou lataria
+  aveludada, e o João reprovou. Fosco de verdade tem **brilho baixo, largo e difuso nas curvas que viram
+  para a luz** (copa do capô, vinco das portas, topo dos para-lamas), sem reflexo nítido, com painel plano
+  uniforme e superfície de plástico liso. Texto pronto em `FIN['M']` de `scripts/670ra/rascunho670.py`.
+  **Foto fosca não passa pela correção de cor:** o brilho do fosco tem S baixo, fica fora da máscara e a
+  lataria sai remendada.
+- **Fotos reais também entram na galeria** (pedido do João): 37 fotos de 18 cores em
+  `public/assets/images/shop/oracal-670ra/reais/<slug>-rN.jpg`, recorte 3:2 1024×688, **placas borradas**,
+  entre as fotos geradas e as de moto, com alt "Foto real: … (trabalho de instalador, Sign House)".
+
 ### Engenharia reversa: cor sem amostra no Drive (lote 12, 03/10)
 
 15 cores sem foto do cartão. Nada de chutar pelo nome — o caminho que funcionou (0 pilotos refeitos):

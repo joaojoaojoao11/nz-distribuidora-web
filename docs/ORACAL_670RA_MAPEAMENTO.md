@@ -27,6 +27,45 @@ espelho; aqui não é. É o traço visual que identifica a linha.
 
 ---
 
+## ATUALIZAÇÃO 05/10/2026 — a verdade de tom são as fotos reais da Sign House
+
+O "hex oficial via 651" desta página (seções abaixo) **errou 15 das 24 cores**. O Drive da Sign House
+tem fotos reais de carros envelopados com a 670RA, uma pasta por cor (`Fotos e Vídeos`, id
+`1rvbWyT_fKEFU892U8Dj3KlSXB-IsrL_2`), e o João definiu: **essas fotos são a verdade absoluta de tom, para
+capas e carros**. Valores em produção (`produtos.hex` e `web_catalog_products.hex_code`; backup do anterior em
+`NZ-AGENTES/CLEDNA/casos/670ra/backup_hex_antes_tons_2026-10-05.json`):
+
+| Cor | Tom real | Antes (via 651) | Observação |
+|---|---|---|---|
+| 030G Dark Red | `#B82126` | `#900E16` | vermelho cheio (Golf GTI), não vinho |
+| 031G Red | `#DC352C` | `#B0000D` | vermelho vivo |
+| 032G Light Red | `#DB0A0D` | `#C91100` | só a capa mudou |
+| 035G Pastel Orange | `#EB851E` | `#FC6C00` | tangerina, puxa para o amarelo |
+| 040M Violet | `#8A51BF` | `#5D2C68` | violeta claro, não ameixa |
+| 053G Light Blue | `#2DA2E0` | `#0089C3` | azul-celeste |
+| 055G Mint | `#54CBC1` | `#5FCDB7` | só a capa mudou |
+| 056G Ice Blue | `#75B2E0` | `#3DA1D2` | azul-bebê |
+| 060M Dark Green | `#3D6652` | `#004028` | verde da BMW M5, não verde-garrafa |
+| 064G Yellow Green | `#49C42F` | `#289901` | verde-limão |
+| 066G Turquoise | `#2FB8D6` | `#00818C` | turquesa claro, não petróleo |
+| 073G / 073M Dark Grey | `#777B7F` | `#4B4C4C` | cinza médio, não grafite |
+| 076G / 076M Telegrey | `#B4B6B3` | `#818689` | cinza claro |
+| 084M Sky Blue | `#2E99E6` | `#0075BB` | azul-céu (Polo GTS) |
+| 562G Deep Sea Blue | `#284B9E` | `#131E3A` | azul-royal (GLA), não marinho |
+
+Ficaram no valor via 651 porque batem com as fotos: 010G, 021G, 025G, 047G, 070G, 070M e 072G.
+010G, 025G, 047G, 070G e 076G não têm pasta com foto usável.
+
+**Fosco:** o perfil abaixo dizia "sem imagem espelhada, luz difusa", e o prompt que saiu disso gerou
+lataria aveludada. Fosco real tem **brilho baixo e largo nas curvas** voltadas para a luz (ver
+`FOTOS_DE_COR_AUTOMOTIVA.md`, lição "ORACAL 670RA: foto real manda no tom, e fosco não é veludo").
+
+**Estado:** 24 cores com capa e 3 fotos de carro (macro na 031G e na 060M), mais 37 fotos reais de 18 cores
+na galeria (`public/assets/images/shop/oracal-670ra/reais/`). Manifesto em `scripts/data/publicacao.json`;
+casos e scripts em `NZ-AGENTES/CLEDNA/casos/670ra/` e `scripts/670ra/`.
+
+---
+
 ## A descoberta que precede tudo: o hex do banco está errado
 
 O campo `hex` das 24 cores da 670RA **não são os valores da Orafol**. São
