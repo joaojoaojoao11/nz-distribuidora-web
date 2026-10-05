@@ -157,6 +157,55 @@ Manuais completos (leia antes de gerar qualquer coisa):
   mensagem pronta). Em PDF/arte, ponha os 3 botões (Vendas 1/2/3). O link curto
   `wa.me/message/3DBG…` e o número 95325-8757 saíram do site.
 
+## 3.5 Redes sociais — Instagram pelo Metricool (desde 04/10/2026)
+
+**Conhecimento (leia antes de criar post):** em `NZMARKETING - CLEDNA/_CONHECIMENTO/aprendizados-cursos/`
+- `2026-10-05_instagram-guia-cledna.md` — algoritmo (tempo assistido, envios, curtidas por alcance),
+  formato × objetivo, limites (legenda ~125/~55 visíveis, **5 hashtags no máximo**, bio 150, nome 30),
+  ganchos, texto que vende, SEO/Google, métricas.
+- `2026-10-05_referencias-da-decada.md` — livros/métodos 2014–2026, Brasil, linha do tempo do
+  Instagram, dados (Opinion Box, DataReportal, Socialinsider, Buffer) e o que funciona no setor.
+- `2026-10-03_texto-de-reels-que-o-joao-aprova.md` — o que o João aprova em texto.
+
+**Páginas (privadas, do João):**
+- **Agenda de Postagens NZ** — https://claude.ai/artifact/3yhNiMDmkLPf15irFXNqZN — banco `posts`
+  (data, hora, conta, formato, serie, status ideia|producao|aprovacao|agendado|publicado, titulo,
+  responsavel, pasta, pendencias[{texto,feito}], notas). Atualizar pelo `ArtifactData` (batch, com
+  `if_version`). Status "Aguardando João" **não** é aprovação.
+- **Estratégia Instagram NZ** — https://claude.ai/artifact/L3uvjLTxtTDsCGw77Z84N8 — posicionamento
+  proposto, públicos, pilares (Transformação 35 · Pergunta de Cliente 25 · Prova 15 · Comunidade 15 ·
+  Oferta 10), séries fixas (Cor do Mês, Pergunta de Cliente, Teste NZPPF, #FeitoComNZ, Tem hoje),
+  semana tipo (ter/qui/sex 18h, sáb 10h), 90 dias, métricas.
+
+**Metricool:** conta do João (grátis: 1 marca, 20 posts/mês, conector do Claude incluso). A marca se
+chama "nzppf" mas está conectada ao **@nzgroup.br** (`blogId` **7242246**, fuso America/Sao_Paulo;
+Página do Facebook ligada a ela — confirmar se é a da NZ GROUP). @nzppf/@joaowrap só no plano pago.
+O conector **não apaga** post (só cria, altera e lê); bio, comentários, DMs e figurinhas de story
+são com o João no app.
+
+**Fluxo que funcionou (story publicado em 04/10 23h41):**
+1. Arte por código (PIL, Inter, padrão NZ) em `POSTAGENS/<nnn>/` — feed 1080×1350, story/reels
+   1080×1920 (nada nos 250 px de cima nem nos 420 de baixo).
+2. Converter para **JPG** e subir no bucket público **`social-media`** do Supabase do site
+   (`instagram/<conta>/<nnn-pasta>/<arquivo>`, limite 50 MB; helper `scratchpad/moto/loja_q.py`).
+3. `createScheduledPost` com `blogId 7242246`, `providers [{network:"instagram"}]`,
+   `instagramData {type: POST|REEL|STORY|TRIAL_REEL, isAiGenerated: true}` (fotos de IA),
+   `text` (story sozinho: **sem** text), `firstCommentText` com o link, `mediaAltText` com
+   palavra-chave por imagem, `publicationDate` no fuso de São Paulo, `autoPublish: true`.
+4. Conferir com `getScheduledPosts` (status PENDING → PUBLISHED com `publicUrl`) e mandar o link.
+5. Atualizar a Agenda (status, link) e o diário.
+
+**Regras:** nada vai ao ar sem o **"pode postar" do João no chat**, post a post. Postar no melhor
+horário (18h–19h hoje), nunca de madrugada — se ele pedir "agora", ofereça story. Sem "pedaço",
+sem preço em vídeo, "Ação …", 5 hashtags, nada que não dê para provar, sem repost de terceiros
+(publicar em colaboração).
+
+**Estado em 04/10:** carrossel da Ação moto agendado para **seg 05/10 18h** (Metricool id
+388156338, `POSTAGENS/007-carrossel-acao-moto`); reels da ação (`005`) proposto para ter 07/10 18h
+(falta música e "pode postar"). Pendências do João: garantia de 3 anos valer para todas as cores
+da ação; link da bio do @nzgroup.br → `/acao-moto`; nome/bio/destaques do perfil (proposta na
+Estratégia); quem grava o pátio; condição da Cor do Mês; verba de anúncio.
+
 ## 4. Outras frentes da Cledna (histórico e onde está)
 
 - **Pasta de trabalho:** `C:\Users\joaov\OneDrive\Área de Trabalho\AUTOMAÇÕES\NZMARKETING - CLEDNA\`
