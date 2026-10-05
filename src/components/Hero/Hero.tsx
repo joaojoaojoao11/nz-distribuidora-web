@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import HeroPromoMoto from './HeroPromoMoto';
 import styles from './Hero.module.css';
 
 export default function Hero() {
@@ -99,6 +100,9 @@ export default function Hero() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Anúncio da Ação envelopamento de moto */}
+      <HeroPromoMoto />
 
       {/* Scroll Indicator */}
       <motion.div

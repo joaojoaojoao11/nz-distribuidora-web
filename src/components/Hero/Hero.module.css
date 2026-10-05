@@ -110,4 +110,9 @@
     font-size: 0.7rem;
     letter-spacing: 0.25em;
   }
+
+  /* o anúncio da ação ocupa a base do hero no celular */
+  .scrollIndicator {
+    display: none;
+  }
 }
