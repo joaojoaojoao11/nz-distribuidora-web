@@ -19,7 +19,7 @@ export const tabelaTecnica = [
   { icon: CamadaIcon, info: 'Estruturação', spec: 'Multicamadas', detalhe: 'Projetada para não rasgar no tensionamento grave.' },
   { icon: RepelenciaIcon, info: 'Top Coating', spec: 'Proteção Acelerada', detalhe: 'Camada de fechamento superior com repelência hidrofóbica.' },
   { icon: CertoIcon, info: 'Cola (Adesivo)', spec: 'Easy-Tack Reposicionável', detalhe: 'Garante zero marcas de tração e flexibilidade ao aplicador.' },
-  { icon: RegeneracaoIcon, info: 'Garantia Comprovada', spec: '3 Anos', detalhe: 'Certificação formal da fábrica para blindar a sua loja.' }
+  { icon: RegeneracaoIcon, info: 'Garantia Comprovada', spec: '4 Anos', detalhe: 'Certificação formal da fábrica para blindar a sua loja.' }
 ];
 
 export const benchmarkData = [
@@ -33,7 +33,7 @@ export const diferenciais = [
   { icon: CertoIcon, title: 'Matemática da Oficina', desc: 'Com o custo de um PVC premium e qualidade de um TPU avançado, seu markup dobra na instalação sem retorno pra garantia.', accent: '80% TPU / 20% PVC', image: '/assets/images/core_catalog_car.png' },
   { icon: RepelenciaIcon, title: 'Coating Super Premium', desc: 'O cliente final exige repelência, água rolando do capô e sujeira indo embora rápido. O Top Coat do Core entrega exatamente isso.', accent: 'Hidrofobia', image: '/assets/images/core_water.png' },
   { icon: CamadaIcon, title: 'Adesivo Tolerante (Easy-Tack)', desc: 'A cola não agride a pintura no tracionamento e não trava em excesso no capô. O instalador ganha horas no fim da semana.', accent: 'Instalação Ágil', image: '/assets/images/core_clear_gloss.png' },
-  { icon: EscudoVazioIcon, title: 'Garantia Blindada de 3 Anos', desc: 'Você vende o serviço de olhos fechados. Uma garantia de entrada que destrói a vida útil da maoria dos vinis TPH do mercado.', accent: 'Segurança Financeira', image: '/assets/images/core_hero.png' }
+  { icon: EscudoVazioIcon, title: 'Garantia Blindada de 4 Anos', desc: 'Você vende o serviço de olhos fechados. Uma garantia de entrada que destrói a vida útil da maoria dos vinis TPH do mercado.', accent: 'Segurança Financeira', image: '/assets/images/core_hero.png' }
 ];
 
 export const finishesData = [

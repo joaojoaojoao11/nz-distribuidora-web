@@ -174,13 +174,13 @@ export const PPF_PORTFOLIOS: Record<string, PpfPortfolioConfig> = {
   'core-gloss': {
     slug: 'core-gloss',
     name: 'NZPPF Core Gloss',
-    tagline: 'Híbrido 80/20 · 175μ | 3 Anos de Garantia',
+    tagline: 'Híbrido 80/20 · 175μ | 4 Anos de Garantia',
     accent: '#4A7C59',
     accentRgb: '74, 124, 89',
     heroImage: '/assets/images/core_catalog_car.png',
     badges: [
       { value: '175μ', label: 'Espessura' },
-      { value: '3 anos', label: 'Garantia de fábrica' },
+      { value: '4 anos', label: 'Garantia de fábrica' },
       { value: '80/20', label: 'TPU premium + PVC' },
       { value: '4', label: 'Acabamentos' },
     ],
@@ -192,7 +192,7 @@ export const PPF_PORTFOLIOS: Record<string, PpfPortfolioConfig> = {
         'Desenvolvemos um blend exato de 80% de TPU premium para garantir elasticidade e proteção real, fundido a 20% de PVC de alta resistência. O resultado? O melhor ticket médio que a sua operação de volume já teve.',
       ],
       quote:
-        'O ativo da sua operação não é uma película barata. É previsibilidade de aplicação, nenhuma bolha, cliente feliz e garantia de 3 ANOS certificada pela marca que sustenta sua operação: a NZ.',
+        'O ativo da sua operação não é uma película barata. É previsibilidade de aplicação, nenhuma bolha, cliente feliz e garantia de 4 ANOS certificada pela marca que sustenta sua operação: a NZ.',
     },
     tecnologia: {
       title: 'O blend que resolve a bancada',

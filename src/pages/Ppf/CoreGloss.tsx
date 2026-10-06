@@ -10,7 +10,7 @@ import PpfPortfolioButton from './PpfPortfolioButton';
 import { SITE_URL } from '../../lib/siteConfig';
 import { supabase } from '../../lib/supabase';
 
-const seoDescription = 'PPF híbrido projetado para máxima rentabilidade do instalador. 175μ, 3 anos de garantia e o melhor custo-benefício da linha NZPPF.';
+const seoDescription = 'PPF híbrido projetado para máxima rentabilidade do instalador. 175μ, 4 anos de garantia e o melhor custo-benefício da linha NZPPF.';
 const productSchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Product",
@@ -88,7 +88,7 @@ export default function CoreGloss() {
   return (
     <div className={styles.page}>
       <SEO
-        title="NZPPF Core Gloss — PPF 175μ com 3 Anos de Garantia"
+        title="NZPPF Core Gloss — PPF 175μ com 4 Anos de Garantia"
         description={seoDescription}
         canonicalUrl="/ppf/core-gloss"
         schema={productSchema}
@@ -150,7 +150,7 @@ export default function CoreGloss() {
             </motion.div>
             <motion.div className={styles.manifestoHighlight} variants={slideFromRight}>
               <div className={styles.highlightQuote} style={{ borderLeftColor: coreColor, background: 'linear-gradient(90deg, rgba(74, 124, 89, 0.08) 0%, rgba(14, 14, 18, 0) 100%)' }}>
-                <p>O ativo da sua operação não é uma película barata. É previsibilidade de aplicação, nenhuma bolha, cliente feliz e garantia de <strong>3 anos certificada</strong> pela marca que sustenta sua operação: a NZ.</p>
+                <p>O ativo da sua operação não é uma película barata. É previsibilidade de aplicação, nenhuma bolha, cliente feliz e garantia de <strong>4 anos certificada</strong> pela marca que sustenta sua operação: a NZ.</p>
               </div>
             </motion.div>
           </div>
@@ -169,7 +169,7 @@ export default function CoreGloss() {
             </div>
             <div className={styles.techLayers}>
               {[
-                { name: 'Garantia de 3 Anos (Certificada)', desc: 'Não é promessa de boca. Você vende com tranquilidade, e o cliente sai protegido. Zera o seu risco natural com retornos.' },
+                { name: 'Garantia de 4 Anos (Certificada)', desc: 'Não é promessa de boca. Você vende com tranquilidade, e o cliente sai protegido. Zera o seu risco natural com retornos.' },
                 { name: 'O Fim do Desperdício no Corte', desc: 'Material híbrido pensado para esticar firmemente em quinas de caminhonetes, ancorando sem criar dedos (fingers) mortos.' },
                 { name: 'Top Coat Ocultador', desc: 'Um revestimento robusto acima do Core projetado para esconder pequenas imperfeições de "casca de laranja" em pinturas castigadas.' }
               ].map((layer, i) => (

@@ -28,9 +28,9 @@ export const PPF_FAQS: Record<string, PpfFaqItem[]> = {
     { question: 'Como ativar a garantia do Flow Gloss?', answer: 'A aplicação por instalador credenciado NZ gera a apólice oficial com QR code — sem ela, não há garantia de fábrica.' },
   ],
   '/ppf/core-gloss': [
-    { question: 'Qual a espessura e a garantia do NZPPF Core Gloss?', answer: 'O Core Gloss tem 175 micras e 3 anos de garantia — a porta de entrada da proteção NZPPF.' },
+    { question: 'Qual a espessura e a garantia do NZPPF Core Gloss?', answer: 'O Core Gloss tem 175 micras e 4 anos de garantia — a porta de entrada da proteção NZPPF.' },
     { question: 'Vale a pena o Core Gloss em vez de não usar PPF?', answer: 'Sim: mesmo a linha de entrada absorve riscos e pedradas que iriam direto para a pintura, preservando o valor de revenda do veículo.' },
-    { question: 'O Core Gloss serve para frota?', answer: 'É a linha ideal para volume: custo acessível no atacado e proteção real por 3 anos.' },
+    { question: 'O Core Gloss serve para frota?', answer: 'É a linha ideal para volume: custo acessível no atacado e proteção real por 4 anos.' },
     { question: 'Quem aplica o Core Gloss com garantia?', answer: 'Instaladores credenciados NZ, que registram a apólice oficial na hora da aplicação.' },
   ],
   '/ppf/headlight': [

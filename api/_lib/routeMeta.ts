@@ -35,8 +35,8 @@ export const routeMeta: Record<string, RouteMeta> = {
     description: 'Nova formulação G2: TPU técnico de 2ª geração com top coat nano-hidrofóbico, agora em 185μ. Mais corpo, mais proteção e 7 anos de garantia — a linha intermediária de performance da NZPPF.',
   },
   '/ppf/core-gloss': {
-    title: 'NZPPF Core Gloss — PPF 175μ com 3 Anos de Garantia',
-    description: 'PPF híbrido projetado para máxima rentabilidade do instalador. 175μ, 3 anos de garantia e o melhor custo-benefício da linha NZPPF.',
+    title: 'NZPPF Core Gloss — PPF 175μ com 4 Anos de Garantia',
+    description: 'PPF híbrido projetado para máxima rentabilidade do instalador. 175μ, 4 anos de garantia e o melhor custo-benefício da linha NZPPF.',
   },
   '/ppf/headlight': {
     title: 'NZ PPF Headlight — Película para Faróis com 10 Anos de Garantia',

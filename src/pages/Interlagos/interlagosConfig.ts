@@ -69,7 +69,7 @@ export const LINHAS = [
     nome: 'NZPPF',
     titulo: 'Proteção de pintura',
     desc: 'PPF em TPU com regeneração térmica, hidrofobia e até 12 anos de garantia.',
-    resumo: 'Seis linhas, de 175μ a 190μ, com garantia de 3 a 12 anos.',
+    resumo: 'Seis linhas, de 150μ a 190μ, com garantia de 2 a 12 anos.',
     img: '/assets/images/interlagos/nzppf.webp',
     href: '/ppf',
     externo: false,

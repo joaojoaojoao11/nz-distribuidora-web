@@ -64,10 +64,10 @@ const productLines = [
     slug: 'core-gloss',
     title: 'NZPPF CORE GLOSS',
     subtitle: 'Combinação Híbrida Inteligente | Alta Rentabilidade',
-    description: 'O melhor custo-benefício. Híbrido projetado para máxima rentabilidade da base sem retorno por bolhas ou trincas fortes. 3 Anos de Garantia.',
+    description: 'O melhor custo-benefício. Híbrido projetado para máxima rentabilidade da base sem retorno por bolhas ou trincas fortes. 4 Anos de Garantia.',
     image: '/assets/images/core_catalog_car.png',
     thickness: '175μ',
-    warranty: '3 ANOS',
+    warranty: '4 ANOS',
     available: true
   },
   {
@@ -100,7 +100,7 @@ const comparisonData = [
     id: 'core',
     name: 'CORE',
     thickness: '175μ',
-    warranty: '3 Anos',
+    warranty: '4 Anos',
     metrics: [
       { label: 'Brilho', value: 70 },
       { label: 'Durabilidade', value: 60 },

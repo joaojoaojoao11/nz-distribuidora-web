@@ -11,7 +11,7 @@ LINHAS OFICIAIS NZPPF (PPF = Paint Protection Film):
   Técnico G2 (2ª geração) com top coat nano-hidrofóbico — foi esse conjunto que
   elevou a garantia de 4 para 7 anos. NUNCA cite os 175μm nem os 4 anos antigos
   como specs atuais.
-- NZPPF CORE GLOSS: 175μm, garantia de 3 ANOS. Entrada / volume.
+- NZPPF CORE GLOSS: 175μm, garantia de 4 ANOS. Entrada / volume.
 - NZ PPF HEADLIGHT: aplicação em faróis, garantia de 10 ANOS.
 - NZ PPF WINDSHIELD: aplicação em para-brisas, 190μm, garantia de 2 ANOS.
 

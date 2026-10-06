@@ -10,7 +10,7 @@ type View = 'idle' | 'loading' | 'preview' | 'error';
 const EXAMPLE_PROMPTS = [
   'Gerador de Stories Black Friday para Luxury com 50% off, anúncio direto.',
   'Post de lançamento da linha Headlight Dark Black, tom aspiracional e sofisticado.',
-  'Anúncio promocional do Core para revendas — preço acessível, garantia 3 anos.',
+  'Anúncio promocional do Core para revendas — preço acessível, garantia 4 anos.',
   'Post técnico do Windshield falando de compatibilidade ADAS e proteção anti-impacto.',
 ];
 

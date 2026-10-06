@@ -78,7 +78,7 @@ export const LINE_PROFILES: Record<string, LineProfile> = {
     imageSubject:
       'Mainstream popular-premium Brazilian car (Hyundai Creta or HB20, Jeep Renegade or Compass, Toyota Corolla Cross, VW T-Cross, Honda HR-V), realistic everyday street or driveway',
     factsContext:
-      'Híbrido 80/20 (80% TPU premium + 20% PVC). Espessura 175μ. Adesivo Easy-Tack reposicionável. Top-coat hidrofóbico contra chuva ácida. Garantia de 3 anos. Otimizado pra absorver impactos.',
+      'Híbrido 80/20 (80% TPU premium + 20% PVC). Espessura 175μ. Adesivo Easy-Tack reposicionável. Top-coat hidrofóbico contra chuva ácida. Garantia de 4 anos. Otimizado pra absorver impactos.',
   },
   'headlight': {
     slug: 'headlight',

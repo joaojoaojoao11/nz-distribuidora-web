@@ -247,7 +247,7 @@ const rawProductLines: ProductLine[] = [
     slug: 'core-gloss',
     title: 'NZ PPF CORE GLOSS',
     shortName: 'CORE',
-    subtitle: 'Híbrido 80/20 · 175µ · 3 anos',
+    subtitle: 'Híbrido 80/20 · 175µ · 4 anos',
     sectionTitle: 'O Mercado Exigia Preço. Nós Entregamos Engenharia.',
     bodyParagraphs: [
       'Híbrido 80/20 TPU+PVC. Proteção real contra pedras. Preço que cabe no planejamento.',
@@ -257,14 +257,14 @@ const rawProductLines: ProductLine[] = [
     closingLine: 'O orçamento muda. A engenharia não.',
     image: '/assets/images/core_catalog_car.png',
     thickness: '175μ',
-    warranty: '3 ANOS',
+    warranty: '4 ANOS',
     accent: '#4A7C59',
     tone: 'green',
     highlights: [
       { label: 'Composição', value: '80/20 TPU/PVC' },
       { label: 'Espessura', value: '175 µ' },
       { label: 'Adesivo', value: 'Easy-Tack' },
-      { label: 'Garantia', value: '3 anos' }
+      { label: 'Garantia', value: '4 anos' }
     ],
     architecture: [
       { num: '01', title: 'Híbrido 80/20',     desc: '80% TPU + 20% PVC.',         icon: ICON.escudoBraco },
@@ -417,7 +417,7 @@ export const productLines: ProductLine[] = deepSanitize(rawProductLines);
 
 const rawBenchmarkLines: BenchmarkLine[] = [
   {
-    id: 'core', name: 'CORE', thickness: '175μ', warranty: '3 Anos', accent: '#4A7C59',
+    id: 'core', name: 'CORE', thickness: '175μ', warranty: '4 Anos', accent: '#4A7C59',
     metrics: [
       { label: 'Brilho', value: 70 },
       { label: 'Durabilidade', value: 60 },
