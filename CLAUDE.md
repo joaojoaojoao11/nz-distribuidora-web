@@ -14,7 +14,7 @@ publicação (`scripts/publicar-cor.mjs`) e as pendências.
 Quando aparecer algo que **o João** precisa fazer, decidir ou aprovar (ex.: "pode postar",
 decisão do perfil, gravação), pergunte numa linha no fim da resposta se vai para a agenda da
 **Joana**, já com a prioridade (urgente · prioridade · sem prioridade). Só mande com o "sim"
-dele, nunca item financeiro, por `SendMessage` para a sessão "Joana assistente pessoal". Regra
+dele, nunca item financeiro, por `SendMessage` para a sessão "NZASSISTENTE - JOANA". Regra
 completa e formato do recado: `CLAUDE.md` do NZERP (`2NZERPUPDATE30`), seção "Agenda do João".
 
 ## Regras rápidas do repositório
