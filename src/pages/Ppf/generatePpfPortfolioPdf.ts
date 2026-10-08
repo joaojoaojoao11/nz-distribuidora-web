@@ -79,7 +79,9 @@ async function preloadImages(root: HTMLElement): Promise<void> {
       const img = new Image();
       img.src = src;
       try {
-        await img.decode();
+        // Com a aba em segundo plano o Chrome adia o decode() sem prazo: quem
+        // clicou e trocou de aba ficaria preso. Quatro segundos e segue.
+        await Promise.race([img.decode(), new Promise<void>((r) => setTimeout(r, 4000))]);
       } catch {
         await new Promise<void>((resolve) => {
           if (img.complete) return resolve();

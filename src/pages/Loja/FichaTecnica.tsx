@@ -22,8 +22,9 @@ const VISIVEIS = 6;
 /**
  * Fontes sem `specs` (as cores criadas do ERP) ganham ficha sintética do que
  * existir. Estava dentro do LojaProduct; veio junto para cá porque é camada A.
+ * Exportada para o mostruário em PDF sair com a mesma ficha da tela.
  */
-function varianteSintetica(item: ShopItem): ShopSpec[] {
+export function varianteSintetica(item: ShopItem): ShopSpec[] {
   return [
     ...(item.code ? [{ label: 'Código', value: item.code }] : []),
     ...(item.finishLabel ? [{ label: 'Acabamento', value: item.finishLabel }] : []),

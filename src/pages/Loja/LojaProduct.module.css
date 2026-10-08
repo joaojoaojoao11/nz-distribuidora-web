@@ -371,6 +371,37 @@
   }
 }
 
+/* Mostruário em PDF: secundário, fora do bloco de compra. */
+.mostruario {
+  display: block;
+  width: 100%;
+  margin: -0.4rem 0 1.2rem;
+  padding: 0.75rem 1.2rem;
+  border: 1px solid var(--border-light);
+  border-radius: 9px;
+  background: none;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-snappy);
+}
+
+.mostruario:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (hover: hover) {
+  .mostruario:hover:not(:disabled) {
+    border-color: var(--accent-red);
+  }
+}
+
 .ctaNote {
   margin-top: 0.7rem;
   font-size: 0.74rem;

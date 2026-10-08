@@ -29,6 +29,7 @@ import FichaTecnica, { DescricaoDoProduto } from './FichaTecnica';
 import { ShopCard } from './ShopCard';
 import { useLimiteNome } from './useLimiteNome';
 import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+import BotaoMostruario from './mostruario/BotaoMostruario';
 import { DECOR, linkWhatsApp } from '../../lib/contatos';
 import styles from './LojaProduct.module.css';
 
@@ -422,6 +423,12 @@ function ProductView({
                 : 'Atendemos instaladores e revendas em todo o Brasil.'}
             </p>
           </div>
+
+          {/* Mostruário em PDF com todas as fotos do anúncio, para apresentar a
+              cor ao cliente. Usa a galeria inteira, mesmo na Promoção Moto. */}
+          {item.kind !== 'linha' && (
+            <BotaoMostruario item={item} midias={todasMidias} className={styles.mostruario} />
+          )}
 
           <Disponibilidade slug={item.slug} nome={item.name} decor={item.vertical === 'DECOR'} />
 

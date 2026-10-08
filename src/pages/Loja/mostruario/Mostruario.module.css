@@ -1,0 +1,361 @@
+/* Mostruário da cor — páginas A4 @150 DPI (1240 × 1754), rasterizadas em
+   escala 2 pelo gerador do portfólio. Cores fixas de propósito: é um
+   impresso, não segue o tema claro/escuro do site. Padrão NZ: preto,
+   off-white, vermelho só no filete. */
+
+.palco {
+  position: fixed;
+  left: -20000px;
+  top: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.pagina {
+  width: 1240px;
+  height: 1754px;
+  position: relative;
+  overflow: hidden;
+  background: #08080a;
+  color: #f7f5f2;
+  font-family: var(--font-body, 'Inter', system-ui, sans-serif);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ------------------------------------------------------------ capa */
+
+.capaTopo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 64px 88px 44px;
+}
+
+.logoMoldura {
+  display: inline-block;
+  overflow: hidden;
+  flex: none;
+}
+
+.logoMoldura img {
+  display: block;
+  max-width: none;
+}
+
+.selo {
+  font-family: var(--font-tech, 'Space Grotesk', sans-serif);
+  font-size: 20px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #a1a1a6;
+}
+
+.capaFoto {
+  width: 1240px;
+  overflow: hidden;
+  flex: none;
+  background: #111114;
+}
+
+.capaFoto img {
+  display: block;
+}
+
+.capaTexto {
+  padding: 56px 88px 0;
+  flex: 1;
+}
+
+.linhaRotulo {
+  margin: 0 0 14px;
+  font-family: var(--font-tech, 'Space Grotesk', sans-serif);
+  font-size: 22px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #a1a1a6;
+}
+
+.nome {
+  margin: 0;
+  padding-left: 30px;
+  border-left: 10px solid #d11e1e;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 76px;
+  font-weight: 600;
+  line-height: 1.08;
+  color: #f7f5f2;
+}
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin: 34px 0 30px;
+}
+
+.codigo,
+.etiqueta,
+.hex {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: 26px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.codigo {
+  background: #f7f5f2;
+  color: #08080a;
+  font-family: var(--font-tech, 'Space Grotesk', sans-serif);
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.etiqueta,
+.hex {
+  border: 2px solid #3a3a3f;
+  color: #cdcdd0;
+}
+
+.bolinha {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #f7f5f2;
+}
+
+.textoCapa {
+  margin: 0;
+  max-width: 1000px;
+  font-size: 27px;
+  line-height: 1.5;
+  color: #cdcdd0;
+}
+
+/* ------------------------------------------------------------ cabeçalho e rodapé */
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 56px 88px 0;
+  height: 150px;
+  box-sizing: border-box;
+  flex: none;
+}
+
+.cabecalhoCor {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 24px;
+  font-weight: 500;
+  color: #cdcdd0;
+}
+
+.cabecalhoCodigo {
+  font-family: var(--font-tech, 'Space Grotesk', sans-serif);
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #a1a1a6;
+}
+
+.rodape {
+  position: absolute;
+  left: 88px;
+  right: 88px;
+  bottom: 52px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 19px;
+  letter-spacing: 1px;
+  color: #6b6b70;
+}
+
+/* ------------------------------------------------------------ fotos */
+
+.areaFotos {
+  padding: 20px 88px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.linhaFotos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fotos {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+}
+
+.foto {
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #111114;
+}
+
+.foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.legenda {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 40px 18px 14px;
+  background: linear-gradient(to top, rgba(8, 8, 10, 0.85), rgba(8, 8, 10, 0));
+  font-size: 19px;
+  line-height: 1.3;
+  color: #f7f5f2;
+}
+
+.legendaUnica {
+  margin: 14px 0 0;
+  font-size: 20px;
+  color: #a1a1a6;
+}
+
+/* ------------------------------------------------------------ ficha e contato */
+
+.final {
+  padding: 20px 88px 150px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Aviso e contato descem para o pé da página: com ficha curta, o conteúdo
+   não fica todo no alto com um vazio embaixo. */
+.fecho {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.h2 {
+  margin: 0 0 18px;
+  padding-left: 22px;
+  border-left: 8px solid #d11e1e;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.15;
+  color: #f7f5f2;
+}
+
+.paragrafo {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.5;
+  color: #cdcdd0;
+}
+
+.ficha {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 48px;
+}
+
+.fichaItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 0;
+  border-bottom: 2px solid #232327;
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.fichaItem dt {
+  color: #a1a1a6;
+}
+
+.fichaItem dd {
+  margin: 0;
+  text-align: right;
+  color: #f7f5f2;
+}
+
+.aviso {
+  margin: 0;
+  padding: 22px 26px;
+  border: 2px solid #3a3a3f;
+  border-radius: 12px;
+  font-size: 22px;
+  line-height: 1.45;
+  color: #cdcdd0;
+}
+
+.contato {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+}
+
+.contatoTexto {
+  flex: 1;
+}
+
+.telefones {
+  list-style: none;
+  margin: 0 0 18px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.telefones li {
+  display: flex;
+  gap: 18px;
+  font-size: 26px;
+  color: #a1a1a6;
+}
+
+.telefones strong {
+  color: #f7f5f2;
+  font-weight: 600;
+}
+
+.endereco {
+  margin: 0;
+  font-size: 21px;
+  line-height: 1.5;
+  color: #a1a1a6;
+}
+
+.qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-size: 19px;
+  color: #a1a1a6;
+}
+
+.qr img {
+  width: 220px;
+  height: 220px;
+  border-radius: 8px;
+}
