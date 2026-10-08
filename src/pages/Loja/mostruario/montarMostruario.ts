@@ -6,6 +6,11 @@
 // tem (nome, linha, acabamento, ficha), e o PDF é montado no navegador com o
 // mesmo motor do portfólio NZPPF (src/pages/Ppf/generatePpfPortfolioPdf.ts).
 //
+// Duas versões (João, mesmo dia): COM o contato da NZ e SEM contato. O
+// instalador muitas vezes não quer que o dono do carro conheça a fonte; a
+// versão sem contato não leva logo, nome, site, telefone, QR nem o código
+// interno da NZ — só a marca e o código do fabricante.
+//
 // As fotos são baixadas aqui e viram `blob:` (mesma origem). Assim o
 // html2canvas nunca esbarra em CORS das fotos que moram no Storage do
 // Supabase, e já sabemos a proporção de cada uma para diagramar as páginas.
@@ -15,11 +20,14 @@ import type { FichaDoProduto } from '../../../lib/shop/linhas';
 import type { MidiaPublica, ShopItem, ShopSpec } from '../../../lib/shop/types';
 import { DECOR, VENDAS, type Contato } from '../../../lib/contatos';
 
+type TipoFoto = 'aplicacao' | 'amostra' | 'produto';
+
 export interface FotoMostruario {
   src: string;
   /** largura / altura */
   ar: number;
   legenda: string | null;
+  tipo: TipoFoto;
 }
 
 export interface FotoNaLinha extends FotoMostruario {
@@ -33,25 +41,35 @@ export interface LinhaDeFotos {
   legendaUnica: string | null;
 }
 
+export interface PaginaDeFotos {
+  titulo: string;
+  subtitulo: string | null;
+  linhas: LinhaDeFotos[];
+}
+
+export interface Detalhe {
+  rotulo: string;
+  valor: string;
+}
+
 export interface DadosMostruario {
-  nome: string;
+  comContato: boolean;
+  marca: string;
+  titulo: string;
   codigo: string | null;
-  linha: string;
-  acabamento: string | null;
-  familia: string | null;
+  detalhes: Detalhe[];
   hex: string | null;
-  textoCapa: string;
-  sobre: string | null;
+  introducao: string;
   capa: FotoMostruario | null;
-  paginasDeFotos: LinhaDeFotos[][];
+  paginasDeFotos: PaginaDeFotos[];
+  produto: FotoMostruario | null;
   ficha: ShopSpec[];
-  fichaLinhaLabel: string | null;
-  fichaLinha: ShopSpec[];
   aplicacoes: string[];
-  cuidados: string | null;
+  sobre: string | null;
+  sobreTitulo: string;
+  aviso: string;
   url: string;
-  urlCurta: string;
-  qr: string;
+  qr: string | null;
   contatos: Contato[];
   data: string;
 }
@@ -59,20 +77,43 @@ export interface DadosMostruario {
 // Diagramação, em px da página A4 @150 DPI (1240 × 1754).
 const LARGURA_UTIL = 1064;
 const GAP = 28;
-const ALTURA_ALVO = 600;
-const ALTURA_MAX = 640;
+const ALTURA_ALVO = 580;
+const ALTURA_MAX = 610;
 const ALTURA_LEGENDA = 44;
 const ESPACO_ENTRE_LINHAS = 36;
-const ALTURA_UTIL_PAGINA = 1500;
-/** Ficha da linha pode ter 16 itens; na última página cabem estes. */
+/** Área de fotos de uma página, já descontado o título da seção. */
+const ALTURA_UTIL_PAGINA = 1400;
+/** A ficha da linha pode ter 16 itens; na última página cabem estes. */
 const MAX_FICHA = 12;
 
 const SITE = 'https://www.nzgroup.com.br';
 
+/** Siglas que continuam em caixa alta quando o nome vem todo maiúsculo. */
+const SIGLAS = new Set(['PET', 'PVC', 'PPF', 'TPU', 'UV', 'RA', 'II', 'III', 'XL', 'HD', 'NZ']);
+
+function capitalizar(palavra: string): string {
+  if (SIGLAS.has(palavra.toUpperCase())) return palavra.toUpperCase();
+  const p = palavra.toLowerCase();
+  // McLaren, McQueen
+  if (/^mc[a-z]/.test(p)) return 'Mc' + p.charAt(2).toUpperCase() + p.slice(3);
+  return p.charAt(0).toUpperCase() + p.slice(1);
+}
+
+/**
+ * "EMT 020 SATIN METALLIC MATT MIST BLUE" → código "EMT-020" e título
+ * "Satin Metallic Matt Mist Blue". Nome que já vem em caixa mista fica como está.
+ */
+export function separarNome(nome: string, codigo: string | null): { titulo: string; codigo: string | null } {
+  const m = nome.match(/^([A-Za-z]{2,5})[\s-]?(\d{2,4})\s+(.+)$/);
+  const resto = m ? m[3] : nome;
+  const caixaAlta = resto === resto.toUpperCase();
+  const titulo = caixaAlta ? resto.split(/\s+/).map(capitalizar).join(' ') : resto;
+  return { titulo, codigo: m ? `${m[1].toUpperCase()}-${m[2]}` : codigo };
+}
+
 /** "Mercedes-Benz EQS envelopado em … — perfil puro" → "Mercedes-Benz EQS · perfil puro". */
 export function legendaCurta(alt: string | null): string | null {
   if (!alt) return null;
-  if (/amostra/i.test(alt)) return 'Foto real da amostra';
   const [antes, depois] = alt.split(' — ');
   const assunto = antes.split(/\s+envelopad[oa]s?\s+/i)[0].trim();
   if (depois) return `${assunto} · ${depois.trim()}`;
@@ -84,7 +125,7 @@ export function legendaCurta(alt: string | null): string | null {
  * mais perto de ALTURA_ALVO, sem passar de ALTURA_MAX. No empate, mais fotos
  * na linha (duas amostras em pé lado a lado, e não uma por linha).
  */
-export function montarLinhas(fotos: FotoMostruario[]): LinhaDeFotos[] {
+export function montarLinhas(fotos: FotoMostruario[], alvo = ALTURA_ALVO): LinhaDeFotos[] {
   const grupos: FotoMostruario[][] = [];
   let i = 0;
   while (i < fotos.length) {
@@ -93,7 +134,7 @@ export function montarLinhas(fotos: FotoMostruario[]): LinhaDeFotos[] {
     for (let k = 1; k <= 4 && i + k <= fotos.length; k++) {
       const soma = fotos.slice(i, i + k).reduce((s, f) => s + f.ar, 0);
       const h = Math.min(ALTURA_MAX, (LARGURA_UTIL - GAP * (k - 1)) / soma);
-      const dif = Math.abs(h - ALTURA_ALVO) + (h < 300 ? 1000 : 0);
+      const dif = Math.abs(h - alvo) + (h < 300 ? 1000 : 0);
       if (dif <= melhorDif) {
         melhorDif = dif;
         melhorK = k;
@@ -126,7 +167,7 @@ function alturaDaLinha(l: LinhaDeFotos): number {
   return l.altura + (temLegenda ? ALTURA_LEGENDA : 0) + ESPACO_ENTRE_LINHAS;
 }
 
-export function paginar(linhas: LinhaDeFotos[]): LinhaDeFotos[][] {
+function paginar(linhas: LinhaDeFotos[]): LinhaDeFotos[][] {
   const paginas: LinhaDeFotos[][] = [];
   let atual: LinhaDeFotos[] = [];
   let usado = 0;
@@ -144,7 +185,7 @@ export function paginar(linhas: LinhaDeFotos[]): LinhaDeFotos[][] {
   return paginas;
 }
 
-async function carregar(m: MidiaPublica): Promise<FotoMostruario | null> {
+async function carregar(m: MidiaPublica, imagemPrincipal: string | null): Promise<FotoMostruario | null> {
   try {
     const r = await fetch(m.url, { mode: 'cors' });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -159,7 +200,10 @@ async function carregar(m: MidiaPublica): Promise<FotoMostruario | null> {
       img.src = src;
     });
     if (!img.naturalWidth || !img.naturalHeight) throw new Error('imagem vazia');
-    return { src, ar: img.naturalWidth / img.naturalHeight, legenda: legendaCurta(m.alt) };
+    const amostra = /amostra/i.test(m.alt ?? '');
+    const tipo: TipoFoto = amostra ? 'amostra' : m.url === imagemPrincipal ? 'produto' : 'aplicacao';
+    // A amostra já tem título de seção; legenda repetida em cada foto só polui.
+    return { src, ar: img.naturalWidth / img.naturalHeight, legenda: amostra ? null : legendaCurta(m.alt), tipo };
   } catch (e) {
     // Uma foto que não carrega não derruba o mostruário: sai sem ela.
     console.warn('Mostruário: foto ignorada', m.url, e);
@@ -167,16 +211,23 @@ async function carregar(m: MidiaPublica): Promise<FotoMostruario | null> {
   }
 }
 
-/** Texto padrão da capa. Só com dado que a página já tem — nada inventado. */
-function textoDaCapa(nome: string, codigo: string | null, linha: string, acabamento: string | null, temAmostra: boolean): string {
-  const partes = [`${nome}${codigo ? ` (${codigo})` : ''} é uma cor da linha ${linha}${acabamento ? `, acabamento ${acabamento.toLowerCase()}` : ''}.`];
-  partes.push(
-    temAmostra
-      ? 'Aqui estão as fotos da cor publicadas na loja da NZ, com a foto real da amostra na mão.'
-      : 'Aqui estão as fotos da cor publicadas na loja da NZ.'
-  );
-  partes.push('Tela e impressão alteram a cor: a amostra física é a única referência fiel.');
-  return partes.join(' ');
+function ocupacao(pagina: LinhaDeFotos[]): number {
+  return pagina.reduce((s, l) => s + alturaDaLinha(l), 0) / ALTURA_UTIL_PAGINA;
+}
+
+/**
+ * Fotos grandes primeiro. Se a última página ficar com menos da metade
+ * ocupada (3 fotos de carro = 2 + 1 sozinha), tenta o arranjo compacto — duas
+ * deitadas lado a lado — e fica com ele quando economiza página.
+ */
+function secao(titulo: string, subtitulo: string | null, fotos: FotoMostruario[]): PaginaDeFotos[] {
+  if (!fotos.length) return [];
+  let paginas = paginar(montarLinhas(fotos));
+  if (paginas.length > 1 && ocupacao(paginas[paginas.length - 1]) < 0.5) {
+    const compacto = paginar(montarLinhas(fotos, 340));
+    if (compacto.length < paginas.length) paginas = compacto;
+  }
+  return paginas.map((linhas) => ({ titulo, subtitulo, linhas }));
 }
 
 export interface Preparado {
@@ -189,48 +240,78 @@ export async function prepararMostruario(
   item: ShopItem,
   midias: MidiaPublica[],
   ficha: FichaDoProduto,
-  rotulos: { familia: string | null }
+  rotulos: { familia: string | null; acabamento: string | null },
+  comContato: boolean
 ): Promise<Preparado> {
   const imagens = midias.filter((m) => m.tipo === 'imagem');
-  const carregadas = (await Promise.all(imagens.map(carregar))).filter((f): f is FotoMostruario => f !== null);
+  const carregadas = (await Promise.all(imagens.map((m) => carregar(m, item.image)))).filter(
+    (f): f is FotoMostruario => f !== null
+  );
   if (!carregadas.length) throw new Error('nenhuma foto carregou');
 
-  // Capa: a primeira foto deitada (o carro aplicado apresenta melhor a cor do
-  // que o rolo no fundo branco, que vai para as páginas de fotos).
-  const iCapa = Math.max(0, carregadas.findIndex((f) => f.ar >= 1.25));
-  const capa = carregadas[iCapa];
-  const resto = carregadas.filter((_, i) => i !== iCapa);
-  const url = `${SITE}/loja/${item.slug}`;
-  const qr = await QRCode.toDataURL(url, { margin: 1, width: 360, color: { dark: '#000000', light: '#ffffff' } });
+  // Capa: a primeira foto da cor aplicada, deitada. O carro apresenta a cor
+  // melhor do que o rolo no fundo branco, que vai para a página do material.
+  const deitada = (f: FotoMostruario) => f.ar >= 1.25;
+  const capa =
+    carregadas.find((f) => f.tipo === 'aplicacao' && deitada(f)) ?? carregadas.find(deitada) ?? carregadas[0];
+  const resto = carregadas.filter((f) => f !== capa);
+  const produto = resto.find((f) => f.tipo === 'produto') ?? null;
+  const aplicacao = resto.filter((f) => f.tipo === 'aplicacao');
+  const amostras = resto.filter((f) => f.tipo === 'amostra');
 
-  const linha = item.line ?? item.brand;
-  const temAmostra = imagens.some((m) => /amostra/i.test(m.alt ?? ''));
-  const fichaLinha = ficha.linha.slice(0, MAX_FICHA);
+  const { titulo, codigo } = separarNome(item.name, item.code);
+  const largura = item.larguraM && item.larguraM > 0 ? `${String(item.larguraM).replace('.', ',')} m` : null;
+  // A marca já é o sobretítulo da capa; a linha só entra quando diz outra coisa.
+  const linha = item.line && item.line !== item.brand ? item.line : null;
+  const detalhes: Detalhe[] = [
+    ...(linha ? [{ rotulo: 'Linha', valor: linha }] : []),
+    ...(rotulos.acabamento ? [{ rotulo: 'Acabamento', valor: rotulos.acabamento }] : []),
+    ...(rotulos.familia ? [{ rotulo: 'Cor', valor: rotulos.familia }] : []),
+    ...(largura ? [{ rotulo: 'Largura do rolo', valor: largura }] : []),
+  ].slice(0, 4);
+
+  // Na versão sem contato sai o código interno da NZ (SPW…); o do fabricante
+  // já está no cabeçalho da capa.
+  const fichaCompleta = [...ficha.variante, ...ficha.linha.slice(0, MAX_FICHA)].filter(
+    (s) => comContato || !/^c[oó]digo/i.test(s.label)
+  );
+
+  const url = `${SITE}/loja/${item.slug}`;
+  const qr = comContato
+    ? await QRCode.toDataURL(url, { margin: 1, width: 360, color: { dark: '#000000', light: '#ffffff' } })
+    : null;
 
   const dados: DadosMostruario = {
-    nome: item.name,
-    codigo: item.code,
-    linha,
-    acabamento: item.finishLabel,
-    familia: rotulos.familia,
+    comContato,
+    marca: item.brand,
+    titulo,
+    codigo,
+    detalhes,
     hex: item.hex,
-    textoCapa: textoDaCapa(item.name, item.code, linha, item.finishLabel, temAmostra),
-    sobre: ficha.descricao,
+    introducao:
+      amostras.length > 0
+        ? 'Fotos da cor aplicada e da amostra real, para escolher com segurança. Tela e impressão alteram a cor: confira sempre a amostra física.'
+        : 'Fotos da cor aplicada, para escolher com segurança. Tela e impressão alteram a cor: confira sempre a amostra física.',
     capa,
-    paginasDeFotos: paginar(montarLinhas(resto)),
-    ficha: ficha.variante,
-    fichaLinhaLabel: ficha.linhaLabel,
-    fichaLinha,
+    paginasDeFotos: [
+      ...secao('A cor aplicada', null, aplicacao),
+      ...secao('A amostra real', 'Foto na mão, sem filtro: é o que mais se aproxima da cor ao vivo.', amostras),
+    ],
+    produto,
+    ficha: fichaCompleta,
     aplicacoes: ficha.aplicacoes,
-    cuidados: ficha.cuidados,
+    sobre: ficha.descricao,
+    sobreTitulo: ficha.linhaLabel ? `Sobre a linha ${ficha.linhaLabel}` : 'Sobre a cor',
+    aviso: comContato
+      ? 'As cores em tela e em impressão são aproximadas. A amostra física é a única referência fiel: peça a sua junto com o orçamento.'
+      : 'As cores em tela e em impressão são aproximadas. A amostra física é a única referência fiel: peça para ver a amostra antes de fechar.',
     url,
-    urlCurta: `nzgroup.com.br/loja/${item.slug}`,
     qr,
-    contatos: item.vertical === 'DECOR' ? [DECOR] : VENDAS,
+    contatos: comContato ? (item.vertical === 'DECOR' ? [DECOR] : VENDAS) : [],
     data: new Date().toLocaleDateString('pt-BR'),
   };
 
-  const base = [item.code, item.name]
+  const base = [codigo, titulo]
     .filter(Boolean)
     .join(' ')
     .normalize('NFD')
@@ -240,7 +321,7 @@ export async function prepararMostruario(
 
   return {
     dados,
-    arquivo: `Mostruario_NZ_${base || 'cor'}.pdf`,
+    arquivo: comContato ? `Mostruario_NZ_${base || 'cor'}.pdf` : `Mostruario_${base || 'cor'}.pdf`,
     liberar: () => carregadas.forEach((f) => URL.revokeObjectURL(f.src)),
   };
 }

@@ -425,10 +425,9 @@ function ProductView({
           </div>
 
           {/* Mostruário em PDF com todas as fotos do anúncio, para apresentar a
-              cor ao cliente. Usa a galeria inteira, mesmo na Promoção Moto. */}
-          {item.kind !== 'linha' && (
-            <BotaoMostruario item={item} midias={todasMidias} className={styles.mostruario} />
-          )}
+              cor ao cliente (com ou sem o contato da NZ). Usa a galeria
+              inteira, mesmo na Promoção Moto. */}
+          {item.kind !== 'linha' && <BotaoMostruario item={item} midias={todasMidias} />}
 
           <Disponibilidade slug={item.slug} nome={item.name} decor={item.vertical === 'DECOR'} />
 

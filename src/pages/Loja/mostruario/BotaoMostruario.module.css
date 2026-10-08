@@ -1,0 +1,60 @@
+/* Bloco do mostruário em PDF na página do produto: secundário, logo abaixo
+   do bloco de orçamento. Tokens do site (tema claro e escuro). */
+
+.bloco {
+  margin: -0.4rem 0 1.2rem;
+  padding: 0.85rem 0.9rem 0.8rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+}
+
+.titulo {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.opcoes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.opcao {
+  flex: 1 1 0;
+  min-height: 42px;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  background: none;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-snappy);
+}
+
+.opcao:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (hover: hover) {
+  .opcao:hover:not(:disabled) {
+    border-color: var(--accent-red);
+  }
+}
+
+.nota {
+  margin: 0.6rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
