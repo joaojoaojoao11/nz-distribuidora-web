@@ -267,6 +267,55 @@
 
 .chip:hover { background: rgba(209, 30, 30, 0.2); }
 
+/* ------------------------------------------------------------- acabamento */
+
+.acabamentos {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.acabamentosTitulo {
+  padding: 0;
+  margin-bottom: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Opção desligada é neutra; ligada vira o mesmo vermelho do chip de filtro. */
+.chipOpcao {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0.25rem 0.7rem;
+  border-radius: 99px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  cursor: pointer;
+  transition: border-color var(--transition-snappy), background var(--transition-snappy), color var(--transition-snappy);
+}
+
+.chipOpcao:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.chipOpcaoAtiva,
+.chipOpcaoAtiva:hover {
+  border-color: var(--accent-red);
+  background: rgba(209, 30, 30, 0.14);
+  color: var(--text-primary);
+}
+
+.chipOpcao:focus-visible {
+  outline: 2px solid var(--accent-red);
+  outline-offset: 2px;
+}
+
 /* ------------------------------------------------------------- rodapé */
 
 .manual {
@@ -346,7 +395,8 @@
   .zona,
   .principal,
   .cancelar,
-  .botaoSec {
+  .botaoSec,
+  .chipOpcao {
     transition: none;
   }
 }

@@ -26,7 +26,7 @@ import { closeModal, useModalLock } from '../../hooks/useModalLock';
 import { reduzirImagem } from '../../lib/imagem/reduzir';
 import { analisarImagem, corNoPonto, type ImagemAnalisada } from '../../lib/shop/color/paletaNavegador';
 import { COLOR_LABEL } from '../../lib/shop/color/lexicon';
-import { FINISH_LABEL, type FinishId } from '../../lib/shop/finish/tree';
+import { FINISH_LABEL, FINISH_ORDER, type FinishId } from '../../lib/shop/finish/tree';
 import { PATTERN_LABEL, type PatternFamilyId } from '../../lib/shop/pattern/taxonomy';
 import {
   imagemDoDataTransfer,
@@ -39,6 +39,11 @@ import styles from './LenteImagem.module.css';
 interface Props {
   /** Foto que chegou por arrastar/colar. `null` = o painel pede uma. */
   arquivoInicial: File | null;
+  /**
+   * Acabamentos já filtrados na loja. O painel começa com eles marcados: o
+   * que a pessoa vê nos chips é exatamente o que vai valer na busca.
+   */
+  acabamentosIniciais?: FinishId[];
   onFechar: () => void;
   /** `hex` sem `#`, minúsculo; `null` só no caso do filme transparente. */
   onBuscar: (hex: string | null, extras?: ExtrasDaLente) => void;
@@ -46,6 +51,12 @@ interface Props {
 
 /** Lado maior da foto que vai ao modelo e serve de pré-visualização. */
 const LADO_ENVIO = 768;
+
+/**
+ * Acabamentos que a pessoa pode pedir junto com a cor. "Transparente" fica de
+ * fora: não existe cor de filme transparente para procurar.
+ */
+const ACABAMENTOS_LENTE: FinishId[] = FINISH_ORDER.filter((f) => f !== 'transparente');
 
 type Leitura = EstadoLeitura | { estado: 'consultando' };
 
@@ -61,7 +72,7 @@ function mensagemDeErro(e: unknown): string {
   return 'Não consegui ler esta imagem. Se for HEIC do iPhone, tire um print da foto ou converta para JPG.';
 }
 
-export default function LenteImagem({ arquivoInicial, onFechar, onBuscar }: Props) {
+export default function LenteImagem({ arquivoInicial, acabamentosIniciais, onFechar, onBuscar }: Props) {
   const [arquivo, setArquivo] = useState<File | null>(arquivoInicial);
   // Prop nova (colou outra imagem com o painel aberto) vira arquivo novo —
   // derivado no render, não em efeito.
@@ -76,10 +87,13 @@ export default function LenteImagem({ arquivoInicial, onFechar, onBuscar }: Prop
   const [leitura, setLeitura] = useState<Leitura | null>(null);
   const [escolhida, setEscolhida] = useState<string | null>(null);
   const [pontoHex, setPontoHex] = useState<string | null>(null);
-  const [acabamentos, setAcabamentos] = useState<FinishId[]>([]);
+  // Acabamento é escolha da pessoa, não da foto: sobrevive à troca de imagem.
+  // A leitura do modelo só preenche enquanto ninguém mexeu nos chips.
+  const [acabamentos, setAcabamentos] = useState<FinishId[]>(() => acabamentosIniciais ?? []);
+  const tocouAcabamento = useRef(false);
   const [padrao, setPadrao] = useState<PatternFamilyId | null>(null);
   const [arrastando, setArrastando] = useState(false);
-  // Trocar de arquivo zera tudo o que era do anterior — no render.
+  // Trocar de arquivo zera o que era do anterior — no render.
   const [arquivoVisto, setArquivoVisto] = useState<File | null>(arquivoInicial);
   if (arquivoVisto !== arquivo) {
     setArquivoVisto(arquivo);
@@ -88,7 +102,6 @@ export default function LenteImagem({ arquivoInicial, onFechar, onBuscar }: Prop
     setLeitura(null);
     setEscolhida(null);
     setPontoHex(null);
-    setAcabamentos([]);
     setPadrao(null);
   }
 
@@ -134,7 +147,7 @@ export default function LenteImagem({ arquivoInicial, onFechar, onBuscar }: Prop
         if (!vivo) return;
         setLeitura(r);
         if (r.estado === 'ok') {
-          setAcabamentos(r.leitura.acabamentos);
+          if (!tocouAcabamento.current) setAcabamentos(r.leitura.acabamentos);
           setPadrao(r.leitura.familiaPadrao);
         }
       } catch (e) {
@@ -153,11 +166,18 @@ export default function LenteImagem({ arquivoInicial, onFechar, onBuscar }: Prop
   const leituraOk = leitura?.estado === 'ok' ? leitura.leitura : null;
   const transparente = Boolean(leituraOk?.transparente);
 
-  // Só manda extras quando o modelo leu: sem leitura, os filtros da pessoa
-  // ficam como estão.
-  const extras: ExtrasDaLente | undefined = leituraOk
-    ? { finishes: acabamentos, patterns: padrao ? [padrao] : [] }
-    : undefined;
+  // Acabamento sempre vai: os chips mostram exatamente o que vale (vazio =
+  // qualquer). Padrão só quando o modelo leu — sem leitura, o filtro de padrão
+  // que a pessoa já tinha fica como está.
+  const extras: ExtrasDaLente = {
+    finishes: acabamentos,
+    ...(leituraOk ? { patterns: padrao ? [padrao] : [] } : {}),
+  };
+
+  const alternarAcabamento = (f: FinishId) => {
+    tocouAcabamento.current = true;
+    setAcabamentos((l) => (l.includes(f) ? l.filter((x) => x !== f) : [...l, f]));
+  };
 
   const receberArquivo = (f: File | null) => {
     if (f) setArquivo(f);
@@ -314,30 +334,17 @@ export default function LenteImagem({ arquivoInicial, onFechar, onBuscar }: Prop
                     <div className={styles.leitura}>
                       <span className={styles.leituraTitulo}>Entendi:</span>{' '}
                       <span className={styles.leituraTexto}>{leituraOk.descricao || familiasTexto}</span>
-                      {(acabamentos.length > 0 || padrao) && (
+                      {padrao && (
                         <div className={styles.chips}>
-                          {acabamentos.map((a) => (
-                            <button
-                              key={a}
-                              type="button"
-                              className={styles.chip}
-                              onClick={() => setAcabamentos((l) => l.filter((x) => x !== a))}
-                              aria-label={`Tirar o filtro ${FINISH_LABEL[a]}`}
-                            >
-                              {FINISH_LABEL[a]} <span aria-hidden="true">✕</span>
-                            </button>
-                          ))}
-                          {padrao && (
-                            <button
-                              type="button"
-                              className={styles.chip}
-                              onClick={() => setPadrao(null)}
-                              aria-label={`Tirar o filtro ${PATTERN_LABEL[padrao]}`}
-                            >
-                              {PATTERN_LABEL[padrao]} <span aria-hidden="true">✕</span>
-                            </button>
-                          )}
-                          <span className={styles.dica}>entram junto com a cor · toque para tirar</span>
+                          <button
+                            type="button"
+                            className={styles.chip}
+                            onClick={() => setPadrao(null)}
+                            aria-label={`Tirar o filtro ${PATTERN_LABEL[padrao]}`}
+                          >
+                            {PATTERN_LABEL[padrao]} <span aria-hidden="true">✕</span>
+                          </button>
+                          <span className={styles.dica}>entra junto com a cor · toque para tirar</span>
                         </div>
                       )}
                     </div>
@@ -362,6 +369,33 @@ export default function LenteImagem({ arquivoInicial, onFechar, onBuscar }: Prop
             )}
           </div>
         )}
+
+        {/* Acabamento: o que a foto não diz com segurança (fosco × brilhante ×
+            metálico), a pessoa diz. Multi-escolha; nenhum marcado = qualquer. */}
+        <fieldset className={styles.acabamentos}>
+          <legend className={styles.acabamentosTitulo}>
+            Acabamento{' '}
+            <span className={styles.dica}>
+              {acabamentos.length ? `· ${acabamentos.map((a) => FINISH_LABEL[a]).join(', ')}` : '· qualquer'}
+            </span>
+          </legend>
+          <div className={styles.chips}>
+            {ACABAMENTOS_LENTE.map((f) => {
+              const ativo = acabamentos.includes(f);
+              return (
+                <button
+                  key={f}
+                  type="button"
+                  className={`${styles.chipOpcao} ${ativo ? styles.chipOpcaoAtiva : ''}`}
+                  aria-pressed={ativo}
+                  onClick={() => alternarAcabamento(f)}
+                >
+                  {FINISH_LABEL[f]}
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
 
         <label className={styles.manual}>
           <Pipette size={14} strokeWidth={1.8} aria-hidden="true" />

@@ -967,6 +967,7 @@ export default function Loja() {
         <Suspense fallback={null}>
           <LenteImagem
             arquivoInicial={lente.arquivo}
+            acabamentosIniciais={filters.finishes}
             onFechar={fecharLente}
             onBuscar={(hex, extras) => {
               fecharLente();
