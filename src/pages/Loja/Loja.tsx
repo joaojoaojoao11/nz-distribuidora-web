@@ -10,7 +10,7 @@
 // responsivo), quebraria o Ctrl+F do navegador e complicaria a restauração de
 // scroll ao voltar de um produto.
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigationType, useParams } from 'react-router-dom';
 import { SCROLL_KEY_PREFIX } from '../../components/ScrollToTop';
 import SEO from '../../components/SEO/SEO';
@@ -20,19 +20,33 @@ import { getShopItem, useShopCatalog } from '../../lib/shop/store';
 import { usePrecosLote } from '../../lib/shop/precos';
 import { usePatio } from '../../lib/shop/patio';
 import { usePromoMoto } from '../../lib/shop/promoMoto';
-import { Motorbike } from 'lucide-react';
+import { Camera, Motorbike } from 'lucide-react';
 import { useSelecaoRemota } from '../../lib/shop/selecoes';
 import { MAX_SELECAO } from '../../lib/shop/selecoes/regras';
 import SelecaoConfig from './SelecaoConfig';
 import type { ShopItem } from '../../lib/shop/types';
 import { computeFacets } from '../../lib/shop/facets';
-import { applyFilters, hasActiveFilters, type SortMode } from '../../lib/shop/search/match';
+import {
+  applyFilters,
+  distanciaDeCor,
+  hasActiveFilters,
+  semelhancaDe,
+  type Semelhanca,
+  type SortMode,
+} from '../../lib/shop/search/match';
+import { COLOR_LABEL } from '../../lib/shop/color/lexicon';
+import { bucketFromHex } from '../../lib/shop/color/hsl';
+import { dataTransferTemArquivo, imagemDoDataTransfer } from '../../lib/shop/lente';
 import { ShopCard } from './ShopCard';
 import ShopFilters from './ShopFilters';
 import { useLimiteNome } from './useLimiteNome';
 import { useShopFilters, type FilterGroup } from './useShopFilters';
 import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 import styles from './Loja.module.css';
+
+// A Lente (busca por imagem) só carrega quando alguém a abre: canvas, k-means
+// e o painel não pesam para quem só digita.
+const LenteImagem = lazy(() => import('../../components/Loja/LenteImagem'));
 
 const PAGE_SIZE = 60;
 /** Cards com imagem prioritária — o suficiente para preencher a primeira dobra. */
@@ -53,7 +67,11 @@ const SORT_LABEL: Record<SortMode, string> = {
   codigo: 'Código',
   cor: 'Cor',
   estoque: 'Disponibilidade',
+  parecido: 'Mais parecidas',
 };
+
+/** Quantos cards do topo ganham o selo "parecida" na busca por imagem. */
+const SELOS_PARECIDA = 12;
 
 /** Pausa entre a última tecla e a atualização da URL/lista. */
 const DEBOUNCE_BUSCA_MS = 150;
@@ -100,6 +118,7 @@ export default function Loja() {
     setQuery,
     toggle,
     setSort,
+    setHexAlvo,
     clearAll,
     activeChips,
     activeCount,
@@ -114,6 +133,16 @@ export default function Loja() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [curando, setCurando] = useState(false);
   const [configAberta, setConfigAberta] = useState(false);
+
+  // Busca por imagem. `arquivo` chega por arrastar ou colar; pelo botão vem
+  // null e o painel pede a foto.
+  const [lente, setLente] = useState<{ aberta: boolean; arquivo: File | null }>({
+    aberta: false,
+    arquivo: null,
+  });
+  const [arrastando, setArrastando] = useState(false);
+  const abrirLente = (arquivo: File | null = null) => setLente({ aberta: true, arquivo });
+  const fecharLente = () => setLente({ aberta: false, arquivo: null });
 
   // Seleção enviada a um cliente (/loja/s/<token>). Diferente do `?sel=` antigo
   // em duas coisas: a lista mora no banco (então cabe título, validade e
@@ -223,13 +252,15 @@ export default function Loja() {
   // Roda no mesmo flush em que a trava do painel devolve o scroll antigo —
   // cleanups do filho antes dos efeitos do pai — então este scrollTo é o que
   // fica. Nenhum setState aqui.
+  // A Lente entra na mesma regra: buscar por uma foto fecha o painel e pede o
+  // topo da lista nova.
   useEffect(() => {
-    if (sheetOpen || !rolarAoTopoDosResultados.current) return;
+    if (sheetOpen || lente.aberta || !rolarAoTopoDosResultados.current) return;
     rolarAoTopoDosResultados.current = false;
     const topo =
       (mainRef.current?.getBoundingClientRect().top ?? 0) + window.scrollY - OFFSET_TOPO_RESULTADOS;
     window.scrollTo(0, Math.max(0, topo));
-  }, [sheetOpen]);
+  }, [sheetOpen, lente.aberta]);
 
   // Busca com pausa: cada tecla reescrevia a URL, re-filtrava 505 itens e
   // recalculava todas as facetas — com o teclado aberto num Android
@@ -326,7 +357,43 @@ export default function Loja() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // Ctrl+V com uma imagem na área de transferência abre a Lente com ela, em
+  // qualquer ponto da loja — menos dentro de outro campo de texto, onde colar
+  // é digitar. Com o painel já aberto, a imagem nova substitui a anterior.
+  useEffect(() => {
+    if (emSelecao) return;
+    const onPaste = (e: ClipboardEvent) => {
+      const alvo = e.target as HTMLElement | null;
+      const emCampo =
+        alvo &&
+        alvo !== searchRef.current &&
+        (['INPUT', 'TEXTAREA', 'SELECT'].includes(alvo.tagName) || alvo.isContentEditable);
+      if (emCampo) return;
+      const arquivo = imagemDoDataTransfer(e.clipboardData);
+      if (!arquivo) return;
+      e.preventDefault();
+      setLente({ aberta: true, arquivo });
+    };
+    document.addEventListener('paste', onPaste);
+    return () => document.removeEventListener('paste', onPaste);
+  }, [emSelecao]);
+
   const shown = results.slice(0, visible);
+
+  // Selo "parecida" nos primeiros cards da busca por imagem. Calculado aqui,
+  // uma vez por lista, para o card continuar sem conta nenhuma.
+  const hexAlvo = emSelecao ? null : filtrosEfetivos.hexAlvo;
+  const familiaDoAlvo = hexAlvo ? (bucketFromHex(hexAlvo)?.family ?? null) : null;
+  const semelhancas = useMemo(() => {
+    if (!hexAlvo) return null;
+    const mapa = new Map<string, Semelhanca>();
+    for (const item of results.slice(0, SELOS_PARECIDA)) {
+      const de = distanciaDeCor(item, hexAlvo);
+      const s = de === null ? null : semelhancaDe(de);
+      if (s) mapa.set(item.slug, s);
+    }
+    return mapa;
+  }, [results, hexAlvo]);
   // Uma requisição de preço por página de cards, não uma por card. Dentro de
   // uma seleção com preço, o token vai junto: é ele que libera o valor para
   // quem não tem cadastro e aplica o acréscimo, tudo decidido no servidor.
@@ -488,7 +555,27 @@ export default function Loja() {
       {!emSelecao && (
       <div className={styles.searchBar} ref={searchBarRef}>
         <div className={`container ${styles.searchInner}`}>
-          <div className={styles.searchWrap}>
+          <div
+            className={`${styles.searchWrap} ${arrastando ? styles.searchWrapArrasto : ''}`}
+            // Soltar uma imagem sobre a busca abre a Lente com ela — o gesto
+            // mais direto que existe para "procure isto".
+            onDragOver={(e) => {
+              if (!dataTransferTemArquivo(e.dataTransfer)) return;
+              e.preventDefault();
+              if (!arrastando) setArrastando(true);
+            }}
+            onDragLeave={(e) => {
+              if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+              setArrastando(false);
+            }}
+            onDrop={(e) => {
+              const arquivo = imagemDoDataTransfer(e.dataTransfer);
+              setArrastando(false);
+              if (!arquivo) return;
+              e.preventDefault();
+              abrirLente(arquivo);
+            }}
+          >
             <svg
               className={styles.searchIcon}
               viewBox="0 0 24 24"
@@ -528,6 +615,15 @@ export default function Loja() {
             ) : (
               <kbd className={styles.searchKbd}>/</kbd>
             )}
+            <button
+              type="button"
+              className={styles.searchLente}
+              onClick={() => abrirLente()}
+              aria-label="Buscar por imagem"
+              title="Buscar por imagem: arraste, cole ou escolha uma foto"
+            >
+              <Camera size={18} strokeWidth={1.8} aria-hidden="true" />
+            </button>
           </div>
 
           <button
@@ -578,11 +674,14 @@ export default function Loja() {
               onChange={(e) => setSort(e.target.value as SortMode)}
               aria-label="Ordenar por"
             >
-              {(Object.keys(SORT_LABEL) as SortMode[]).map((s) => (
-                <option key={s} value={s}>
-                  {SORT_LABEL[s]}
-                </option>
-              ))}
+              {/* "Mais parecidas" só existe com uma cor alvo; sem ela, não ordena nada. */}
+              {(Object.keys(SORT_LABEL) as SortMode[])
+                .filter((s) => s !== 'parecido' || Boolean(filters.hexAlvo))
+                .map((s) => (
+                  <option key={s} value={s}>
+                    {SORT_LABEL[s]}
+                  </option>
+                ))}
             </select>
           </label>
         </div>
@@ -627,9 +726,16 @@ export default function Loja() {
                     type="button"
                     className={styles.chip}
                     onClick={() =>
-                      chip.group === 'q' ? limparBusca() : toggle(chip.group as FilterGroup, chip.id)
+                      chip.group === 'q'
+                        ? limparBusca()
+                        : chip.group === 'hex'
+                          ? setHexAlvo(null)
+                          : toggle(chip.group as FilterGroup, chip.id)
                     }
                   >
+                    {chip.group === 'hex' && (
+                      <span className={styles.chipSwatch} style={{ background: `#${chip.id}` }} aria-hidden="true" />
+                    )}
                     {chip.label}
                     <span className={styles.chipX} aria-hidden="true">
                       ✕
@@ -774,6 +880,7 @@ export default function Loja() {
                     limiteNome={limiteNome}
                     selecao={tokenDePreco}
                     promo={emPromo ? promo?.get(item.slug) : undefined}
+                    parecida={semelhancas?.get(item.slug)}
                   />
                 ))}
               </div>
@@ -797,16 +904,29 @@ export default function Loja() {
                   ? 'Carregando a ação…'
                   : emPromo
                     ? `Nenhuma cor da ação${filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.`
-                    : `Nenhum produto encontrado${filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.`}
+                    : hexAlvo
+                      ? `Nenhuma cor tão próxima de #${hexAlvo.toUpperCase()}${contagemAtiva > 1 || filters.q.trim() ? ' com esses filtros' : ''}.`
+                      : `Nenhum produto encontrado${filters.q ? ` para “${filters.q}”` : ' com esses filtros'}.`}
               </p>
               <p className={styles.emptyHint}>
-                Tente uma cor ("azul fosco"), uma marca ("metamark") ou um código. Se não achar,
-                fale com a gente — temos acesso ao portfólio completo dos nossos fornecedores.
+                {hexAlvo
+                  ? 'A cor da foto depende da luz. Veja a família inteira, ou abra a foto de novo e toque em outro ponto.'
+                  : 'Tente uma cor ("azul fosco"), uma marca ("metamark") ou um código. Se não achar, fale com a gente — temos acesso ao portfólio completo dos nossos fornecedores.'}
               </p>
               <div className={styles.emptyActions}>
-                <button type="button" className={styles.emptyClear} onClick={clearAll}>
-                  LIMPAR FILTROS
-                </button>
+                {hexAlvo && familiaDoAlvo ? (
+                  <button
+                    type="button"
+                    className={styles.emptyClear}
+                    onClick={() => setHexAlvo(null, { colors: [familiaDoAlvo] })}
+                  >
+                    VER {COLOR_LABEL[familiaDoAlvo].toUpperCase()}
+                  </button>
+                ) : (
+                  <button type="button" className={styles.emptyClear} onClick={clearAll}>
+                    LIMPAR FILTROS
+                  </button>
+                )}
                 <LinkVendas mensagem={MENSAGEM_LOJA} className={styles.emptyWhats}>
                   FALAR COM A NZ →
                 </LinkVendas>
@@ -841,6 +961,20 @@ export default function Loja() {
             clearExcluded();
           }}
         />
+      )}
+
+      {lente.aberta && (
+        <Suspense fallback={null}>
+          <LenteImagem
+            arquivoInicial={lente.arquivo}
+            onFechar={fecharLente}
+            onBuscar={(hex, extras) => {
+              fecharLente();
+              setHexAlvo(hex, extras);
+              rolarAoTopoDosResultados.current = true;
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );

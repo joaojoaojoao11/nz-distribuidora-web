@@ -26,6 +26,7 @@ import {
   processarVideo,
   type Midia,
 } from '../../lib/admin/midia';
+import { analisarImagem } from '../../lib/shop/color/paletaNavegador';
 import styles from './GaleriaEditor.module.css';
 
 interface Props {
@@ -71,6 +72,31 @@ export default function GaleriaEditor({ produtoId, slug, onMudou }: Props) {
   useEffect(() => {
     void carregar();
   }, [carregar]);
+
+  // Busca por imagem: a cor de busca do produto (produtos.hex_amostra) vem da
+  // foto de capa. Recalcula aqui, no navegador, sempre que a capa muda — com o
+  // MESMO algoritmo do script de amostragem (scripts/amostrar-hex-fotos.mjs).
+  // Sem isto, produto novo só ganharia cor de busca na próxima rodada do script.
+  // Falha em silêncio de propósito: a capa já foi salva; a amostra é bônus.
+  const amostrarCapa = async (url: string) => {
+    try {
+      const res = await fetch(url, { mode: 'cors' });
+      if (!res.ok) return;
+      const { paleta } = await analisarImagem(await res.blob(), 'catalogo');
+      if (!paleta.length) return;
+      await supabase
+        .from('produtos')
+        .update({
+          hex_amostra: paleta[0].hex,
+          paleta_amostra: paleta.slice(0, 4).map((c) => ({ hex: c.hex, peso: Number(c.peso.toFixed(3)) })),
+          amostra_em: new Date().toISOString(),
+          amostra_origem: 'foto-capa',
+        })
+        .eq('id', produtoId);
+    } catch {
+      // Sem rede, sem CORS ou sem canvas: fica a amostra anterior.
+    }
+  };
 
   // ------------------------------------------------------------- upload
   const receber = async (arquivos: File[]) => {
@@ -124,6 +150,7 @@ export default function GaleriaEditor({ produtoId, slug, onMudou }: Props) {
             origem: 'upload',
           });
           if (error) throw new MidiaErro(error.message);
+          if (seraCapa) void amostrarCapa(url);
         }
         setFila((f) => f.filter((x) => x.id !== chave));
       } catch (e) {
@@ -161,6 +188,7 @@ export default function GaleriaEditor({ produtoId, slug, onMudou }: Props) {
     await supabase.from('produto_midia').update({ capa: false }).eq('produto_id', produtoId).eq('capa', true);
     const { error } = await supabase.from('produto_midia').update({ capa: true }).eq('id', m.id);
     if (error) setErro(error.message);
+    else void amostrarCapa(m.url);
     await carregar();
   };
 

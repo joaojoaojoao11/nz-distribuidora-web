@@ -147,7 +147,8 @@
 
 .searchInput {
   width: 100%;
-  padding: 0.72rem 2.6rem 0.72rem 2.5rem;
+  /* À direita cabem a câmera (44px) e o ✕ ou o `/`. */
+  padding: 0.72rem 6.2rem 0.72rem 2.5rem;
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
   border-radius: 9px;
@@ -182,7 +183,8 @@
 /* O ✕ tinha ~12×20px; errar o toque focava o input e abria o teclado. Agora
    ocupa a altura toda do campo numa coluna de 44px. */
 .searchClear {
-  right: 0;
+  /* À esquerda da câmera. */
+  right: 44px;
   width: 44px;
   height: 100%;
   display: grid;
@@ -190,6 +192,7 @@
 }
 
 .searchKbd {
+  right: calc(44px + 0.7rem);
   font-family: var(--font-tech);
   font-size: 0.68rem;
   padding: 0.05rem 0.36rem;
@@ -201,6 +204,44 @@
   .searchClear:hover {
     color: var(--text-primary);
   }
+}
+
+/* Busca por imagem: a câmera ocupa a coluna da direita do campo, com os
+   mesmos 44px de toque do ✕. */
+.searchLente {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 44px;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  border-left: 1px solid var(--border-light);
+  border-radius: 0 9px 9px 0;
+  transition: color var(--transition-snappy), background var(--transition-snappy);
+}
+
+@media (hover: hover) {
+  .searchLente:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.searchLente:focus-visible {
+  outline: 2px solid var(--accent-red);
+  outline-offset: -2px;
+}
+
+/* Arrastando uma imagem sobre a barra: o campo inteiro vira alvo. */
+.searchWrapArrasto .searchInput {
+  border-color: var(--accent-red);
+  box-shadow: 0 0 0 3px rgba(209, 30, 30, 0.18);
+}
+
+.searchWrapArrasto .searchLente {
+  color: var(--accent-red);
 }
 
 .filterBtn {
@@ -335,6 +376,15 @@
 .chipX {
   color: var(--text-muted);
   font-size: 0.65rem;
+}
+
+/* Bolinha de cor no chip da busca por imagem. */
+.chipSwatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  flex: none;
 }
 
 .chipClearAll {

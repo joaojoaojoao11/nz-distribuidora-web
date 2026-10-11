@@ -12,6 +12,8 @@
 //    azul" e "clicou no chip Azul" divergiriam com o tempo.
 
 import { parseShopQuery, type ParsedQuery } from './parseQuery';
+import { deltaE2000, hexToLab } from '../color/lab';
+import { bucketFromHex } from '../color/hsl';
 import type { ColorFamilyId } from '../color/lexicon';
 import type { FinishId } from '../finish/tree';
 import { finishDescendants } from '../finish/tree';
@@ -49,7 +51,9 @@ export type SortMode =
   | 'nome-desc'
   | 'codigo'
   | 'cor'
-  | 'estoque';
+  | 'estoque'
+  /** Busca por imagem: ΔE2000 crescente até `hexAlvo`. Sem alvo não ordena nada. */
+  | 'parecido';
 
 export interface FilterState {
   q: string;
@@ -72,6 +76,13 @@ export interface FilterState {
    * zero produto em vez da lista.
    */
   patio: SinalPatio[];
+  /**
+   * Busca por imagem: hex alvo (6 dígitos, sem `#`). Com ele, item sem cor de
+   * busca sai, item longe demais (ΔE2000 > LIMIAR_PARECIDO) sai, e 'relevancia'
+   * passa a ordenar por semelhança. Vive na URL (`?cor_hex=`): a busca por foto
+   * é compartilhável sem a foto.
+   */
+  hexAlvo: string | null;
   sort: SortMode;
 }
 
@@ -86,11 +97,13 @@ export const EMPTY_FILTERS: FilterState = {
   kinds: [],
   estoque: [],
   patio: [],
+  hexAlvo: null,
   sort: 'relevancia',
 };
 
 export function hasActiveFilters(f: FilterState): boolean {
   return (
+    Boolean(f.hexAlvo) ||
     f.q.trim().length > 0 ||
     f.verticals.length > 0 ||
     f.brands.length > 0 ||
@@ -244,11 +257,87 @@ export function scoreItem(
   return score;
 }
 
+// ------------------------------------------------------------ busca por imagem
+
+/**
+ * ΔE2000 acima disto a cor já é "outra" para quem procura. 28 cabe uma mudança
+ * de tom sob luz ruim sem deixar entrar a família vizinha inteira; o autoteste
+ * (scripts/test-lente.mjs) confere que a própria foto do produto fica bem abaixo.
+ */
+export const LIMIAR_PARECIDO = 28;
+/** Até aqui o selo é "muito parecida". */
+export const LIMIAR_MUITO_PARECIDA = 10;
+/** Até aqui, "parecida". Acima, dentro do limiar, entra na lista sem selo. */
+export const LIMIAR_PARECIDA = 20;
+
+export type Semelhanca = 'muito' | 'sim';
+
+export function semelhancaDe(de: number): Semelhanca | null {
+  if (de <= LIMIAR_MUITO_PARECIDA) return 'muito';
+  if (de <= LIMIAR_PARECIDA) return 'sim';
+  return null;
+}
+
+/** Hex principal contra o qual a Lente mede: o campo dedicado, ou o hex publicado. */
+export function hexDeBusca(item: ShopItem): string | null {
+  return item.hexBusca !== undefined ? item.hexBusca : item.hex;
+}
+
+/**
+ * As cores que representam o item na busca por imagem: o hex principal e, se
+ * for outra, a amostrada da foto. Duas verdades sobre o mesmo produto — a cor
+ * sob luz ideal e a cor como a foto sai. A foto do cliente também é foto;
+ * medir só contra o hex publicado fazia o produto perder para vizinhos cuja
+ * cor veio de foto (autoteste: top-3 de 77%).
+ */
+export function coresDeBusca(item: ShopItem): string[] {
+  const lista: string[] = [];
+  const principal = hexDeBusca(item);
+  if (principal) lista.push(principal);
+  const amostra = item.hexAmostra;
+  if (amostra && amostra.toLowerCase() !== principal?.toLowerCase()) lista.push(amostra);
+  return lista;
+}
+
+// As facetas chamam applyFilters dezenas de vezes por troca de filtro, e
+// ΔE2000 tem trigonometria. O catálogo tem no máximo algumas centenas de hex
+// distintos: com um alvo fixo, cada hex é calculado uma vez e reaproveitado.
+const cacheDe = { alvo: '', alvoLab: null as ReturnType<typeof hexToLab>, mapa: new Map<string, number>() };
+
+function deDoHex(hex: string): number | null {
+  const chave = hex.toLowerCase();
+  const memo = cacheDe.mapa.get(chave);
+  if (memo !== undefined) return memo;
+  const lb = hexToLab(chave);
+  if (!lb || !cacheDe.alvoLab) return null;
+  const de = deltaE2000(cacheDe.alvoLab, lb);
+  cacheDe.mapa.set(chave, de);
+  return de;
+}
+
+/** Menor ΔE2000 entre as cores de busca do item e `alvoHex`. `null` se o item não tem cor. */
+export function distanciaDeCor(item: ShopItem, alvoHex: string): number | null {
+  const alvo = alvoHex.toLowerCase();
+  if (cacheDe.alvo !== alvo) {
+    cacheDe.alvo = alvo;
+    cacheDe.alvoLab = hexToLab(alvo);
+    cacheDe.mapa.clear();
+  }
+  let melhor: number | null = null;
+  for (const hex of coresDeBusca(item)) {
+    const de = deDoHex(hex);
+    if (de !== null && (melhor === null || de < melhor)) melhor = de;
+  }
+  return melhor;
+}
+
 interface Scored {
   item: ShopItem;
   score: number;
   /** 0 foto · 1 swatch · 2 nada. Ver coverRank em ./ordem. */
   cover: number;
+  /** ΔE2000 até o hex alvo; 0 quando não há busca por imagem. */
+  de: number;
 }
 
 /**
@@ -274,11 +363,24 @@ export function applyFilters(
     pq.subcolors.length > 0 &&
     items.some((i) => pq.subcolors.some((s) => i.colorSubfamilies.includes(s)));
 
+  // Busca por imagem: corte por distância de cor e pontuação pela proximidade.
+  // A família do alvo (pelo mesmo bucketing que classifica o catálogo) dá um
+  // empurrão a quem está na mesma família — desempata o que ΔE sozinho deixa
+  // junto na fronteira (um azul-petróleo entre azuis e verdes).
+  const alvoValido = f.hexAlvo ? hexToLab(f.hexAlvo) !== null : false;
+  const familiaAlvo = alvoValido && f.hexAlvo ? (bucketFromHex(f.hexAlvo)?.family ?? null) : null;
+
   const scored: Scored[] = [];
   for (const item of items) {
     // Estoque é corte, não pontuação: quem pediu pronta entrega não quer ver
     // sob encomenda no fim da lista.
     if (f.estoque.length && !f.estoque.includes(item.nivelEstoque ?? 'sob-encomenda')) continue;
+    let de = 0;
+    if (alvoValido && f.hexAlvo) {
+      const d = distanciaDeCor(item, f.hexAlvo);
+      if (d === null || d > LIMIAR_PARECIDO) continue;
+      de = d;
+    }
     // Pátio: mesmo corte, e OU entre as bolinhas — marcar duas é "tem rolo
     // fechado OU tem ponta", como em toda faceta multivalor daqui.
     if (
@@ -290,7 +392,13 @@ export function applyFilters(
       continue;
     }
     const score = scoreItem(item, pq, f.kinds, strictSubcolor);
-    if (score !== null) scored.push({ item, score, cover: coverRank(item) });
+    if (score === null) continue;
+    let total = score;
+    if (alvoValido) {
+      total += Math.round(60 * (1 - de / LIMIAR_PARECIDO));
+      if (familiaAlvo && item.colorFamilies[0] === familiaAlvo) total += 8;
+    }
+    scored.push({ item, score: total, cover: coverRank(item), de });
   }
 
   // Item sem capa vai para o fim em TODOS os modos: é regra do catálogo, não
@@ -302,7 +410,14 @@ export function applyFilters(
   // A vitrine (SH Wrapping, Oracal 651/670, Speed Wrapping). Ver LINHAS_DESTAQUE.
   const vitrine = (a: Scored, b: Scored) => destaqueRank(a.item) - destaqueRank(b.item);
 
-  switch (f.sort) {
+  // Com hex alvo, "relevância" É semelhança: quem mandou uma foto quer o mais
+  // parecido primeiro, não a vitrine.
+  const modo: SortMode = f.sort === 'relevancia' && alvoValido ? 'parecido' : f.sort;
+
+  switch (modo) {
+    case 'parecido':
+      scored.sort((a, b) => a.de - b.de || capa(a, b) || compareCatalogo(a.item, b.item));
+      break;
     case 'nome':
       scored.sort((a, b) => capa(a, b) || COLLATOR.compare(a.item.name, b.item.name));
       break;

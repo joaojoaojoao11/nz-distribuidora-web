@@ -35,6 +35,7 @@ import selecoes from '../_lib/handlers/selecoes.js';
 import ocorrencias from '../_lib/handlers/ocorrencias.js';
 import patio from '../_lib/handlers/patio.js';
 import promoMoto from '../_lib/handlers/promoMoto.js';
+import lente from '../_lib/handlers/lente.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -81,6 +82,10 @@ const ROTAS: Record<string, Handler> = {
   // Promoção Moto da loja: cores com pedaço aberto (pátio ou parceiro) e foto
   // de moto, com os metros de cada pedaço. Público, cache de 5 min na CDN.
   'promo-moto': promoMoto,
+  // Busca por imagem: lê a foto com modelo de visão e devolve acabamento,
+  // padrão e família no vocabulário da loja. Público, atrás de flag e de
+  // limite por IP; a imagem nunca é gravada.
+  lente,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

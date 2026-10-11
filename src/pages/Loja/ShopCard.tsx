@@ -12,6 +12,7 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import type { ShopItem } from '../../lib/shop/types';
+import type { Semelhanca } from '../../lib/shop/search/match';
 import EstoqueDots from './EstoqueDots';
 import type { ItemPromoMoto } from '../../lib/shop/promoMoto';
 import Preco from './Preco';
@@ -51,6 +52,11 @@ interface Props {
    * preço mostra só o metro. O tamanho do pedaço não aparece (João, 03/10).
    */
   promo?: ItemPromoMoto;
+  /**
+   * Busca por imagem: quão perto da cor da foto este item está. A Loja calcula
+   * só para os primeiros cards (SELOS_PARECIDA); o card não faz conta.
+   */
+  parecida?: Semelhanca;
 }
 
 function swatchBackground(hex: string): string {
@@ -65,7 +71,7 @@ function swatchBackground(hex: string): string {
 const mesmoRotulo = (a: string, b: string) =>
   a.trim().replace(/\s+/g, ' ').toLowerCase() === b.trim().replace(/\s+/g, ' ').toLowerCase();
 
-function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao, promo }: Props) {
+function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao, promo, parecida }: Props) {
   // Na promoção a capa é a moto: o rolo não vende a ideia de envelopar a moto.
   const imagem = promo?.fotos[0] ?? item.image;
   const hasImage = Boolean(imagem);
@@ -119,6 +125,13 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
         )}
         {!promo && item.nivelEstoque === 'ultimas-unidades' && (
           <span className={`${styles.estoque} ${styles.estoqueUltimas}`}>Últimas unidades</span>
+        )}
+
+        {/* Busca por imagem: o selo fica no canto oposto ao de estoque. */}
+        {parecida && !promo && (
+          <span className={`${styles.parecida} ${parecida === 'muito' ? styles.parecidaMuito : ''}`}>
+            {parecida === 'muito' ? 'Muito parecida' : 'Parecida'}
+          </span>
         )}
 
         {onRemove && (

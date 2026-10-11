@@ -80,6 +80,12 @@ export interface LojaCatalogoRow {
   unidade: string | null;
   nivel_estoque: NivelEstoque | null;
   atualizado_em: string | null;
+  /**
+   * Cor amostrada da foto (migrations/2026-10-10_lente_busca_por_imagem.sql).
+   * Opcionais: respostas cacheadas da versão anterior da view não as têm.
+   */
+  hex_amostra?: string | null;
+  paleta_amostra?: { hex: string; peso: number }[] | null;
 }
 
 const APLICACOES: readonly Aplicacao[] = ['automotivo', 'arquitetonico', 'comunicacao-visual'];
@@ -196,6 +202,10 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     // continua com as URLs de sempre, sem alt nem dimensão.
     media: mediaResolvida,
     hex: row.hex,
+    // Busca por imagem. Transparente não tem cor de busca: o hex publicado de
+    // um PPF é o da base, não o que se vê.
+    hexBusca: row.transparente ? null : (row.hex ?? row.hex_inferido ?? row.hex_amostra ?? null),
+    hexAmostra: row.transparente ? null : (row.hex_amostra ?? null),
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,
     colorConfidence: color.confidence,

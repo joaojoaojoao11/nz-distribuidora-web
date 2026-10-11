@@ -18,6 +18,7 @@ import { isPatternFamilyId, type PatternFamilyId } from '../../lib/shop/pattern/
 import type { BrandKey, ItemKind, LineKey, NivelEstoque, SinalPatio, Vertical } from '../../lib/shop/types';
 import { ESTOQUE_LABEL, PATIO_LABEL } from '../../lib/shop/facets';
 import { LINHA_LABEL } from '../../lib/shop/erp/mapa';
+import type { ExtrasDaLente } from '../../lib/shop/lente';
 
 const PARAM = {
   q: 'q',
@@ -31,6 +32,11 @@ const PARAM = {
   estoque: 'estoque',
   /** As bolinhas do card (rolo fechado / ponta). Só admin enxerga o grupo. */
   patio: 'patio',
+  /**
+   * Busca por imagem: o hex alvo, 6 dígitos sem `#`. A foto nunca vai na URL;
+   * a cor vai — e é o que deixa "me manda as parecidas com esta" ser um link.
+   */
+  hex: 'cor_hex',
   sort: 'sort',
   /** Slugs removidos à mão durante a curadoria. Some quando vira seleção. */
   out: 'fora',
@@ -64,6 +70,7 @@ const SORTS: SortMode[] = [
   'codigo',
   'cor',
   'estoque',
+  'parecido',
 ];
 
 function readList(params: URLSearchParams, key: string): string[] {
@@ -73,6 +80,13 @@ function readList(params: URLSearchParams, key: string): string[] {
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
+}
+
+/** `#3A6EA5`, `3a6ea5` → `3a6ea5`; qualquer outra coisa → null. */
+function lerHex(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const v = raw.trim().replace(/^#/, '').toLowerCase();
+  return /^[0-9a-f]{6}$/.test(v) ? v : null;
 }
 
 export interface UseShopFilters {
@@ -94,6 +108,11 @@ export interface UseShopFilters {
   setQuery: (q: string) => void;
   toggle: (group: FilterGroup, id: string) => void;
   setSort: (sort: SortMode) => void;
+  /**
+   * Busca por imagem. `hex` sem `#`; `null` tira a cor. `extras` substitui
+   * acabamento/padrão/família quando a Lente leu a foto com o modelo.
+   */
+  setHexAlvo: (hex: string | null, extras?: ExtrasDaLente) => void;
   clearGroup: (group: FilterGroup) => void;
   clearAll: () => void;
   activeChips: ActiveChip[];
@@ -112,7 +131,8 @@ export type FilterGroup =
   | 'patio';
 
 export interface ActiveChip {
-  group: FilterGroup | 'q';
+  /** 'hex' é o chip da busca por imagem; `id` é o hex sem `#`. */
+  group: FilterGroup | 'q' | 'hex';
   id: string;
   label: string;
 }
@@ -149,6 +169,7 @@ export function useShopFilters(): UseShopFilters {
       patio: readList(params, PARAM.patio).filter((p): p is SinalPatio =>
         PATIO_KEYS.includes(p as SinalPatio)
       ),
+      hexAlvo: lerHex(params.get(PARAM.hex)),
       sort: sortRaw && SORTS.includes(sortRaw) ? sortRaw : 'relevancia',
     };
   }, [params]);
@@ -166,6 +187,7 @@ export function useShopFilters(): UseShopFilters {
       if (next.kinds.length) out.set(PARAM.kind, next.kinds.join(','));
       if (next.estoque.length) out.set(PARAM.estoque, next.estoque.join(','));
       if (next.patio.length) out.set(PARAM.patio, next.patio.join(','));
+      if (next.hexAlvo) out.set(PARAM.hex, next.hexAlvo);
       if (next.sort !== 'relevancia') out.set(PARAM.sort, next.sort);
       // A curadoria sobrevive à troca de filtro: quem tirou um item continua
       // sem ele ao estreitar a busca.
@@ -188,6 +210,23 @@ export function useShopFilters(): UseShopFilters {
   );
 
   const setSort = useCallback((sort: SortMode) => commit({ ...filters, sort }), [commit, filters]);
+
+  const setHexAlvo = useCallback(
+    (hex: string | null, extras?: ExtrasDaLente) => {
+      const limpo = hex ? lerHex(hex) : null;
+      // Só chaves definidas entram: um `colors: undefined` derrubaria o commit.
+      const ajuste: Partial<FilterState> = {};
+      if (extras?.colors) ajuste.colors = extras.colors;
+      if (extras?.finishes) ajuste.finishes = extras.finishes;
+      if (extras?.patterns) ajuste.patterns = extras.patterns;
+      // Cor nova volta a 'relevancia', que com alvo É "mais parecidas". Tirar a
+      // cor desfaz um 'parecido' explícito — sem alvo ele não ordena nada.
+      const sort: SortMode =
+        limpo ? 'relevancia' : filters.sort === 'parecido' ? 'relevancia' : filters.sort;
+      commit({ ...filters, ...ajuste, hexAlvo: limpo, sort });
+    },
+    [commit, filters]
+  );
 
   const clearGroup = useCallback(
     (group: FilterGroup) => commit({ ...filters, [group]: [] } as FilterState),
@@ -243,6 +282,9 @@ export function useShopFilters(): UseShopFilters {
   const activeChips = useMemo<ActiveChip[]>(() => {
     const chips: ActiveChip[] = [];
     if (filters.q.trim()) chips.push({ group: 'q', id: filters.q, label: `“${filters.q}”` });
+    if (filters.hexAlvo) {
+      chips.push({ group: 'hex', id: filters.hexAlvo, label: `Parecido com #${filters.hexAlvo.toUpperCase()}` });
+    }
     for (const v of filters.verticals) chips.push({ group: 'verticals', id: v, label: v });
     for (const c of filters.colors) {
       chips.push({ group: 'colors', id: c, label: COLOR_LABEL[c] });
@@ -266,6 +308,7 @@ export function useShopFilters(): UseShopFilters {
   }, [filters]);
 
   const activeCount =
+    (filters.hexAlvo ? 1 : 0) +
     filters.verticals.length +
     filters.colors.length +
     filters.finishes.length +
@@ -286,6 +329,7 @@ export function useShopFilters(): UseShopFilters {
     setQuery,
     toggle,
     setSort,
+    setHexAlvo,
     clearGroup,
     promoMoto,
     setPromoMoto,

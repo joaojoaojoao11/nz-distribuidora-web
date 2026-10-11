@@ -145,6 +145,22 @@ export interface ShopItem {
   media?: MidiaPublica[];
 
   hex: string | null;
+  /**
+   * Hex que a BUSCA POR IMAGEM usa para medir distância de cor. Precedência:
+   * hex publicado › hex inferido do chip › hex amostrado da foto. Pode ser
+   * estimativa — por isso é um campo à parte: nunca vira swatch nem família.
+   * Filme transparente fica `null` (o hex não representa a aparência).
+   * Opcional porque só o adapter do banco preenche; `hexDeBusca()` em
+   * search/match.ts cai para `hex` quando falta.
+   */
+  hexBusca?: string | null;
+  /**
+   * Cor amostrada da FOTO do produto (produtos.hex_amostra), quando existe.
+   * É a segunda verdade da busca por imagem: o hex publicado é a cor sob luz
+   * ideal; este é como a foto do produto sai. A foto do cliente também é foto,
+   * então a Lente mede contra os dois e fica com o mais perto. Só a Lente lê.
+   */
+  hexAmostra?: string | null;
   /** Famílias de cor; a primária é `[0]`. Vazio para padrões sem cor identificável. */
   colorFamilies: ColorFamilyId[];
   colorSubfamilies: ColorSubfamilyId[];

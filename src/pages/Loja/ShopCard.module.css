@@ -326,3 +326,29 @@
   background: rgba(217, 119, 6, 0.85);
   color: #fff;
 }
+
+/* Selo da busca por imagem — canto esquerdo de baixo, longe do badge de
+   estoque (direita, em cima) e do × da curadoria. */
+.parecida {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0.16rem 0.45rem;
+  border-radius: 5px;
+  border: 1px solid var(--border-strong);
+  background: rgba(8, 8, 8, 0.72);
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.58rem;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.parecidaMuito {
+  background: rgba(209, 30, 30, 0.86);
+  border-color: transparent;
+  color: #fff;
+}

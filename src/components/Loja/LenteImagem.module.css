@@ -1,0 +1,352 @@
+/* Painel da busca por imagem. Mesma gramática da telinha de seleção
+   (SelecaoConfig): véu escuro, caixa reta, um botão vermelho por tela. */
+
+.veu {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.caixa {
+  width: min(32rem, 100%);
+  max-height: min(92vh, 50rem);
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-strong);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  outline: none;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text-secondary);
+}
+
+.titulo {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.fechar {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  /* 44px de alvo numa caixa de 1rem de glifo. */
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  margin-right: -0.6rem;
+}
+
+.fechar:hover { color: var(--text-primary); }
+
+/* ------------------------------------------------------------- zona */
+
+.zona {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1.6rem 1rem 1.3rem;
+  border: 1px dashed var(--border-strong);
+  color: var(--text-muted);
+  text-align: center;
+  transition: border-color var(--transition-snappy), background var(--transition-snappy);
+}
+
+.zonaArrasto {
+  border-color: var(--accent-red);
+  background: rgba(209, 30, 30, 0.08);
+  color: var(--text-primary);
+}
+
+.zonaTitulo {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.zonaTexto {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.zonaAcoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.botaoSec {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0.6rem 0.95rem;
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background var(--transition-snappy);
+}
+
+.botaoSec:hover { background: rgba(255, 255, 255, 0.06); }
+.botaoSec:focus-within { outline: 2px solid var(--accent-red); outline-offset: 2px; }
+
+/* O input continua no DOM (teclado e leitor de tela chegam nele); só não ocupa lugar. */
+.inputOculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* A câmera direta só faz sentido onde há câmera na mão. */
+.tirarFoto { display: none; }
+@media (pointer: coarse) {
+  .tirarFoto { display: inline-flex; }
+}
+
+/* ------------------------------------------------------------- lida */
+
+.lida {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.processando {
+  margin: 0;
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.preview {
+  display: block;
+  max-width: 100%;
+  max-height: 40vh;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  border: 1px solid var(--border-light);
+  cursor: crosshair;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.paleta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.swatch {
+  width: 48px;
+  height: 44px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  display: grid;
+  place-items: end center;
+  padding-bottom: 0.15rem;
+  cursor: pointer;
+  color: #fff;
+  transition: transform var(--transition-snappy), border-color var(--transition-snappy);
+}
+
+.swatch:hover { transform: translateY(-1px); }
+
+.swatchAtiva {
+  border-color: var(--accent-red);
+  box-shadow: 0 0 0 2px rgba(209, 30, 30, 0.35);
+}
+
+.swatchPeso {
+  font-family: var(--font-tech);
+  font-size: 0.55rem;
+  letter-spacing: 0.4px;
+  padding: 0 0.25rem;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+}
+
+.corAtiva {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.corAtivaSwatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.corAtivaHex {
+  font-family: var(--font-tech);
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.dica {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.leitura {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid var(--accent-red);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.leituraTitulo {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.leituraTexto { color: var(--text-secondary); }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 36px;
+  padding: 0.25rem 0.65rem;
+  border-radius: 99px;
+  border: 1px solid var(--accent-red);
+  background: rgba(209, 30, 30, 0.1);
+  color: var(--text-primary);
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+
+.chip:hover { background: rgba(209, 30, 30, 0.2); }
+
+/* ------------------------------------------------------------- rodapé */
+
+.manual {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.manualInput {
+  margin-left: auto;
+  width: 44px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  cursor: pointer;
+}
+
+.aviso {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.erro {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--accent-red);
+}
+
+.acoes {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.cancelar {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--transition-snappy);
+}
+
+.cancelar:hover { color: var(--text-primary); }
+
+.principal {
+  flex: 1 1 auto;
+  background: var(--accent-red);
+  border: 1px solid var(--accent-red);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--transition-snappy);
+}
+
+.principal:hover:not(:disabled) { background: var(--accent-red-hover); }
+.principal:disabled { opacity: 0.45; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+  .swatch,
+  .zona,
+  .principal,
+  .cancelar,
+  .botaoSec {
+    transition: none;
+  }
+}
