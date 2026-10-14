@@ -80,7 +80,7 @@ const rawProductLines: ProductLine[] = [
     ],
     closingTagline: 'PARA QUEM EXIGE O ABSOLUTO',
     closingLine: 'Não é proteção. É declaração.',
-    image: '/assets/images/luxury_lambo.png',
+    image: '/assets/images/ppf/galeria/luxury/nzppf-luxury-clear-gloss-1-carro.jpg',
     thickness: '190μ',
     warranty: '12 ANOS',
     accent: '#D4AF37',
@@ -104,21 +104,21 @@ const rawProductLines: ProductLine[] = [
           name: 'GLOSS',
           anchor: 'O brilho que vira presença.',
           desc: 'Espelhamento vitrificado, profundidade cristalina sob qualquer luz.',
-          image: '/assets/images/nzppf_super_brilho.png',
+          image: '/assets/images/ppf/galeria/luxury/nzppf-luxury-clear-gloss-2-reflexo.jpg',
           swatch: '#F5F5F7'
         },
         {
           name: 'MATTE',
           anchor: 'Silêncio premium.',
           desc: 'Aveludado, discreto, sofisticado. Luxo verdadeiro não grita.',
-          image: '/assets/images/nzppf_matte.png',
+          image: '/assets/images/ppf/galeria/luxury/nzppf-luxury-clear-matte-1-carro.jpg',
           swatch: '#2E2E30'
         },
         {
           name: 'BLACK',
           anchor: 'Luxo absoluto. Profundidade inegociável.',
           desc: 'Preto vitrificado profundo. Cada centímetro comunica presença.',
-          image: '/assets/images/nzppf_black.png',
+          image: '/assets/images/ppf/galeria/luxury/nzppf-luxury-black-gloss-1-carro.jpg',
           swatch: '#0A0A0A'
         }
       ]

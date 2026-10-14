@@ -35,7 +35,7 @@ export const diferenciais = [
 ];
 
 export const finishesCarousel = [
-  { src: '/assets/images/nzppf_super_brilho.png', title: 'GLOSS', sub: 'Brilho espelhado vitrificado' },
-  { src: '/assets/images/nzppf_matte.png', title: 'MATTE', sub: 'Toque suave aveludado' },
-  { src: '/assets/images/nzppf_black.png', title: 'BLACK', sub: 'Luxo absoluto profundo' }
+  { src: '/assets/images/ppf/galeria/luxury/nzppf-luxury-clear-gloss-2-reflexo.jpg', title: 'GLOSS', sub: 'Brilho espelhado vitrificado' },
+  { src: '/assets/images/ppf/galeria/luxury/nzppf-luxury-clear-matte-1-carro.jpg', title: 'MATTE', sub: 'Toque suave aveludado' },
+  { src: '/assets/images/ppf/galeria/luxury/nzppf-luxury-black-gloss-1-carro.jpg', title: 'BLACK', sub: 'Luxo absoluto profundo' }
 ];

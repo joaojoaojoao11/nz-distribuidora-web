@@ -1509,12 +1509,9 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
   'nz-nzppf-prime-clear-gloss-nzp05': '/assets/images/ppf/galeria/prime/nzppf-prime-clear-gloss-1-carro.jpg',
   'nz-nzppf-prime-clear-matte-nzp06': '/assets/images/ppf/galeria/prime/nzppf-prime-clear-matte-1-carro.jpg',
   'nz-nzppf-prime-black-gloss-nzp07': '/assets/images/ppf/galeria/prime/nzppf-prime-black-gloss-1-carro.jpg',
-  'nz-nzppf-luxury-clear-gloss-nzp08': '/assets/images/luxury_lambo.png',
-  // NZP09 e NZP10 estavam trocadas: o water-beading e' um carro preto espelhado
-  // (gloss) e o hero-luxury-car e' uma Aventador preta fosca (matte). Cada uma
-  // foi pro acabamento que a foto realmente mostra.
-  'nz-nzppf-luxury-clear-matte-nzp09': '/assets/images/hero-luxury-car.jpg',
-  'nz-nzppf-luxury-black-gloss-nzp10': '/assets/images/luxury-water-beading.jpg',
+  'nz-nzppf-luxury-clear-gloss-nzp08': '/assets/images/ppf/galeria/luxury/nzppf-luxury-clear-gloss-1-carro.jpg',
+  'nz-nzppf-luxury-clear-matte-nzp09': '/assets/images/ppf/galeria/luxury/nzppf-luxury-clear-matte-1-carro.jpg',
+  'nz-nzppf-luxury-black-gloss-nzp10': '/assets/images/ppf/galeria/luxury/nzppf-luxury-black-gloss-1-carro.jpg',
   'nz-nzppf-core-clear-matte-nzp11': '/assets/images/core_clear_matte.png',
   'nz-nzppf-core-clear-gloss-nzp12': '/assets/images/core_clear_gloss.png',
   'nz-nzppf-core-black-gloss-nzp13': '/assets/images/core_black_gloss.png',
