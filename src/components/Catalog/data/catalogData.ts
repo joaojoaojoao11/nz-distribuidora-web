@@ -136,7 +136,7 @@ const rawProductLines: ProductLine[] = [
     ],
     closingTagline: 'EQUILÍBRIO PREMIUM',
     closingLine: 'O custo do erro é maior que o custo do correto.',
-    image: '/assets/images/nzppf_prime_hero.png',
+    image: '/assets/images/ppf/galeria/prime/nzppf-prime-clear-gloss-1-carro.jpg',
     thickness: '190μ',
     warranty: '10 ANOS',
     accent: '#4A90D9',
@@ -160,21 +160,21 @@ const rawProductLines: ProductLine[] = [
           name: 'GLOSS',
           anchor: 'Brilho que sustenta o tempo.',
           desc: 'Reflexo intenso e uniforme com hidrofobia nano-dúplex.',
-          image: '/assets/images/nzppf_prime_brilho.png',
+          image: '/assets/images/ppf/galeria/prime/nzppf-prime-clear-gloss-2-reflexo.jpg',
           swatch: '#F0F0F4'
         },
         {
           name: 'MATTE',
           anchor: 'Elegância que escolhe não competir.',
           desc: 'Aveludado, acetinado. Diferenciação com intenção.',
-          image: '/assets/images/nzppf_prime_matte.jpg',
+          image: '/assets/images/ppf/galeria/prime/nzppf-prime-clear-matte-1-carro.jpg',
           swatch: '#2B2D30'
         },
         {
           name: 'BLACK PIANO',
           anchor: 'Profundidade espelhada. Absoluta.',
           desc: 'Preto vitrificado de instrumento de alta categoria.',
-          image: '/assets/images/nzppf_prime_black.jpg',
+          image: '/assets/images/ppf/galeria/prime/nzppf-prime-black-gloss-1-carro.jpg',
           swatch: '#050505'
         }
       ]

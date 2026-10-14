@@ -35,7 +35,7 @@ export const diferenciais = [
 ];
 
 export const finishesData = [
-  { src: '/assets/images/nzppf_prime_brilho.png', title: 'GLOSS', sub: 'Brilho intenso e uniforme' },
-  { src: '/assets/images/nzppf_prime_matte.jpg', title: 'MATTE', sub: 'Toque suave aveludado' },
-  { src: '/assets/images/nzppf_prime_black.jpg', title: 'BLACK PIANO', sub: 'Profundidade absoluta espelhada' }
+  { src: '/assets/images/ppf/galeria/prime/nzppf-prime-clear-gloss-2-reflexo.jpg', title: 'GLOSS', sub: 'Brilho intenso e uniforme' },
+  { src: '/assets/images/ppf/galeria/prime/nzppf-prime-clear-matte-1-carro.jpg', title: 'MATTE', sub: 'Toque suave aveludado' },
+  { src: '/assets/images/ppf/galeria/prime/nzppf-prime-black-gloss-1-carro.jpg', title: 'BLACK PIANO', sub: 'Profundidade absoluta espelhada' }
 ];

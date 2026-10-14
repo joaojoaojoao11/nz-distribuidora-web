@@ -1506,9 +1506,9 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
   'nz-nzppf-flow-clear-matte-nzp02': '/assets/images/flow_clear_matte.png',
   'nz-nzppf-flow-black-gloss-nzp03': '/assets/images/flow_black_gloss.png',
   'nz-nzppf-flow-black-matte-nzp04': '/assets/images/flow_black_matte.png',
-  'nz-nzppf-prime-clear-gloss-nzp05': '/assets/images/nzppf_prime_brilho.png',
-  'nz-nzppf-prime-clear-matte-nzp06': '/assets/images/nzppf_prime_matte.jpg',
-  'nz-nzppf-prime-black-gloss-nzp07': '/assets/images/nzppf_prime_black.jpg',
+  'nz-nzppf-prime-clear-gloss-nzp05': '/assets/images/ppf/galeria/prime/nzppf-prime-clear-gloss-1-carro.jpg',
+  'nz-nzppf-prime-clear-matte-nzp06': '/assets/images/ppf/galeria/prime/nzppf-prime-clear-matte-1-carro.jpg',
+  'nz-nzppf-prime-black-gloss-nzp07': '/assets/images/ppf/galeria/prime/nzppf-prime-black-gloss-1-carro.jpg',
   'nz-nzppf-luxury-clear-gloss-nzp08': '/assets/images/luxury_lambo.png',
   // NZP09 e NZP10 estavam trocadas: o water-beading e' um carro preto espelhado
   // (gloss) e o hero-luxury-car e' uma Aventador preta fosca (matte). Cada uma
@@ -1522,7 +1522,7 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
   'nz-nzppf-windshield-nzp16': '/assets/images/nzppf_windshield_hero.png',
   'nz-ppf-black-piano-de-uma-bobina-84565478': '/assets/images/nzppf_black.png',
   // NZP010 e' o mesmo filme do NZP05 em 1,82 m — reusa o hero brilhante da Prime.
-  'nz-nzppf-prime-clear-gloss-1-82-nzp010': '/assets/images/nzppf_prime_brilho.png',
+  'nz-nzppf-prime-clear-gloss-1-82-nzp010': '/assets/images/ppf/galeria/prime/nzppf-prime-clear-gloss-1-carro.jpg',
   // Kit cortado pra L200: picape brilhante da Core, unica foto de picape gloss.
   'nz-ppf-cortado-l200-ppfl200': '/assets/images/core_clear_gloss.png',
 };
