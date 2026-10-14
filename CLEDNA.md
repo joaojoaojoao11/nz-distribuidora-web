@@ -213,6 +213,12 @@ Estratégia); quem grava o pátio; condição da Cor do Mês; verba de anúncio.
   — leia o `README.md` de lá (regras da casa: `_CONHECIMENTO` é o cérebro, `_TESTES` zona de
   queima, `POSTAGENS/<nnn>` em andamento, `_ENTREGUES` publicado, nomes `NN_tema_HEADLINE.png`).
   Logos oficiais: `JOAO - MATERIAIS INSERIDOS MANUALMENTE\NOVO LOGO 2026 - svg` e `_CONHECIMENTO/marca/`.
+  **É a pasta-mãe da Cledna (regra 6 da `NZ-AGENTES`, 14/10/2026):** índice em
+  `00 - LEIA-ME - O QUE TEM AQUI.txt`. Peça pronta para o João postar vai em `PRONTOS PARA POSTAR\`;
+  material que o João trouxe (logos NZSIGN, catálogo Corel, catálogo físico) em
+  `JOAO - MATERIAIS INSERIDOS MANUALMENTE\`; prévia de conferência de fotos de cor em
+  `FOTOS DE COR DA LOJA\`, **nunca** em `scripts/output` deste repositório. Nada solto na raiz da
+  Área de Trabalho e nada de imagem, PDF ou vídeo neste repositório fora de `public/`.
 - **Brand system:** `FIRECRAL/NZ_BRAND_SYSTEM.md`, `NZ_BRAND_TOKENS.json`, `NZ_LUXURY_DESIGN.md`,
   `NZ_PLAYBOOK_VISUAL_REELS.md`. Cada linha NZPPF tem cor própria — **nunca use vermelho na
   Luxury** (erro já cometido). Luxury = carbono + dourado, minimalista.
