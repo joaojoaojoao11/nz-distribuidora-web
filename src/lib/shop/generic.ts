@@ -1502,10 +1502,10 @@ export const ERP_ROLL_IMAGES: Record<string, string> = {
   // por variante (clear/black × gloss/matte). Prime usa 3 heros da linha
   // (brilho/matte/black). Luxury reusa assets do hero da linha. Windshield e
   // Piano reusam seus heros correspondentes.
-  'nz-nzppf-flow-clear-gloss-nzp01': '/assets/images/flow_clear_gloss.png',
-  'nz-nzppf-flow-clear-matte-nzp02': '/assets/images/flow_clear_matte.png',
-  'nz-nzppf-flow-black-gloss-nzp03': '/assets/images/flow_black_gloss.png',
-  'nz-nzppf-flow-black-matte-nzp04': '/assets/images/flow_black_matte.png',
+  'nz-nzppf-flow-clear-gloss-nzp01': '/assets/images/ppf/galeria/flow/nzppf-flow-clear-gloss-1-carro.jpg',
+  'nz-nzppf-flow-clear-matte-nzp02': '/assets/images/ppf/galeria/flow/nzppf-flow-clear-matte-1-carro.jpg',
+  'nz-nzppf-flow-black-gloss-nzp03': '/assets/images/ppf/galeria/flow/nzppf-flow-black-gloss-1-carro.jpg',
+  'nz-nzppf-flow-black-matte-nzp04': '/assets/images/ppf/galeria/flow/nzppf-flow-black-matte-1-carro.jpg',
   'nz-nzppf-prime-clear-gloss-nzp05': '/assets/images/ppf/galeria/prime/nzppf-prime-clear-gloss-1-carro.jpg',
   'nz-nzppf-prime-clear-matte-nzp06': '/assets/images/ppf/galeria/prime/nzppf-prime-clear-matte-1-carro.jpg',
   'nz-nzppf-prime-black-gloss-nzp07': '/assets/images/ppf/galeria/prime/nzppf-prime-black-gloss-1-carro.jpg',

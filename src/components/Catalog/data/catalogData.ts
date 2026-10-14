@@ -192,7 +192,7 @@ const rawProductLines: ProductLine[] = [
     ],
     closingTagline: 'INTERMEDIÁRIO DE PERFORMANCE',
     closingLine: 'Mais corpo, mais proteção e 7 anos de garantia.',
-    image: '/assets/images/flow_haval.png',
+    image: '/assets/images/ppf/galeria/flow/nzppf-flow-clear-gloss-1-carro.jpg',
     thickness: '185μ',
     warranty: '7 ANOS',
     accent: '#d11e1e',
@@ -216,28 +216,28 @@ const rawProductLines: ProductLine[] = [
           name: 'CLEAR GLOSS',
           anchor: 'A cor original, potencializada.',
           desc: 'Transparente brilhante que realça a pintura de fábrica.',
-          image: '/assets/images/flow_clear_gloss_haval.png',
+          image: '/assets/images/ppf/galeria/flow/nzppf-flow-clear-gloss-2-reflexo.jpg',
           swatch: '#EAEAEE'
         },
         {
           name: 'CLEAR MATTE',
           anchor: 'O fosco que suaviza sem apagar.',
           desc: 'Acetinado macio, aveludado. Pintura mais contida.',
-          image: '/assets/images/flow_clear_matte_haval.png',
+          image: '/assets/images/ppf/galeria/flow/nzppf-flow-clear-matte-1-carro.jpg',
           swatch: '#AAAAAE'
         },
         {
           name: 'BLACK GLOSS',
           anchor: 'O Black Piano por um valor justo.',
           desc: 'Preto espelhado com máximo escurecimento.',
-          image: '/assets/images/flow_black_gloss_haval.png',
+          image: '/assets/images/ppf/galeria/flow/nzppf-flow-black-gloss-1-carro.jpg',
           swatch: '#0A0A0A'
         },
         {
           name: 'BLACK MATTE',
           anchor: 'Presença furtiva. Intenção clara.',
           desc: 'Preto fosco profundo, absorção de luz dramática.',
-          image: '/assets/images/flow_black_matte_haval.png',
+          image: '/assets/images/ppf/galeria/flow/nzppf-flow-black-matte-1-carro.jpg',
           swatch: '#1A1A1A'
         }
       ]

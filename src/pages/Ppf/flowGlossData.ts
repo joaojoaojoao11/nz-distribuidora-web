@@ -69,10 +69,10 @@ export interface Finish {
 }
 
 export const finishesData: Finish[] = [
-  { src: '/assets/images/flow_clear_gloss_haval.png', title: 'Clear Gloss', sub: 'Transparente Brilho: conserva a cor original com espelhamento intenso — agora com o top coat G2, que segura o reflexo por mais tempo.', tech: 'TPU G2 185μ • Base Incolor' },
-  { src: '/assets/images/flow_clear_matte_haval.png', title: 'Clear Matte', sub: 'Transparente Fosco: transforma a pintura original em um acetinado macio sob a luz, com a repelência reforçada da nova formulação.', tech: 'TPU G2 185μ • Micro Texturizado', soldOut: true },
-  { src: '/assets/images/flow_black_gloss_haval.png', title: 'Black Gloss', sub: 'Opaco Brilho: Efeito Black Piano absoluto. Máximo escurecimento bloqueando a matriz de cor inferior.', tech: 'TPU G2 185μ • Base Pigmentada', soldOut: true },
-  { src: '/assets/images/flow_black_matte_haval.png', title: 'Black Matte', sub: 'Opaco Fosco: Absorção de luz dramática. Aparência furtiva e agressiva.', tech: 'TPU G2 185μ • Base Negra Fosca', soldOut: true },
+  { src: '/assets/images/ppf/galeria/flow/nzppf-flow-clear-gloss-2-reflexo.jpg', title: 'Clear Gloss', sub: 'Transparente Brilho: conserva a cor original com espelhamento intenso — agora com o top coat G2, que segura o reflexo por mais tempo.', tech: 'TPU G2 185μ • Base Incolor' },
+  { src: '/assets/images/ppf/galeria/flow/nzppf-flow-clear-matte-1-carro.jpg', title: 'Clear Matte', sub: 'Transparente Fosco: transforma a pintura original em um acetinado macio sob a luz, com a repelência reforçada da nova formulação.', tech: 'TPU G2 185μ • Micro Texturizado', soldOut: true },
+  { src: '/assets/images/ppf/galeria/flow/nzppf-flow-black-gloss-1-carro.jpg', title: 'Black Gloss', sub: 'Opaco Brilho: Efeito Black Piano absoluto. Máximo escurecimento bloqueando a matriz de cor inferior.', tech: 'TPU G2 185μ • Base Pigmentada', soldOut: true },
+  { src: '/assets/images/ppf/galeria/flow/nzppf-flow-black-matte-1-carro.jpg', title: 'Black Matte', sub: 'Opaco Fosco: Absorção de luz dramática. Aparência furtiva e agressiva.', tech: 'TPU G2 185μ • Base Negra Fosca', soldOut: true },
 ];
 
 /** Camadas da arquitetura do filme (seção Tecnologia). */
