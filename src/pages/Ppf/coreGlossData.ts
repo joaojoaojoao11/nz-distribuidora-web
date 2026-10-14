@@ -37,8 +37,8 @@ export const diferenciais = [
 ];
 
 export const finishesData = [
-  { src: '/assets/images/core_clear_gloss.png', title: 'Core Gloss', sub: 'O clássico inquestionável. Brilho espelhado, correção de orange-peel e proteção transparente e absoluta contra arranhões do tempo.', tech: 'Blend TPU/PVC Brilho' },
-  { src: '/assets/images/core_clear_matte.png', title: 'Core Matte', sub: 'Fosco acetinado bruto. Transforma o aspecto do carro com uma difusão macia e furtiva.', tech: 'Blend TPU/PVC Fosco' },
-  { src: '/assets/images/core_black_gloss.png', title: 'Core Black', sub: 'Preto puro absoluto refletivo. Bloqueia a luz original da carroceria entregando visual de fibra envernizada.', tech: 'Blend Black Pigmentado' },
-  { src: '/assets/images/core_black_matte.png', title: 'Core Black Matte', sub: 'Dark Stealth. O topo da agressividade visual na linha Core com absorção opaca implacável.', tech: 'Blend Black Matte' }
+  { src: '/assets/images/ppf/galeria/core/nzppf-core-clear-gloss-2-reflexo.jpg', title: 'Core Gloss', sub: 'O clássico inquestionável. Brilho espelhado, correção de orange-peel e proteção transparente e absoluta contra arranhões do tempo.', tech: 'Blend TPU/PVC Brilho' },
+  { src: '/assets/images/ppf/galeria/core/nzppf-core-clear-matte-1-carro.jpg', title: 'Core Matte', sub: 'Fosco acetinado bruto. Transforma o aspecto do carro com uma difusão macia e furtiva.', tech: 'Blend TPU/PVC Fosco' },
+  { src: '/assets/images/ppf/galeria/core/nzppf-core-black-gloss-1-carro.jpg', title: 'Core Black', sub: 'Preto puro absoluto refletivo. Bloqueia a luz original da carroceria entregando visual de fibra envernizada.', tech: 'Blend Black Pigmentado' },
+  { src: '/assets/images/ppf/galeria/core/nzppf-core-black-matte-1-carro.jpg', title: 'Core Black Matte', sub: 'Dark Stealth. O topo da agressividade visual na linha Core com absorção opaca implacável.', tech: 'Blend Black Matte' }
 ];

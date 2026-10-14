@@ -255,7 +255,7 @@ const rawProductLines: ProductLine[] = [
     ],
     closingTagline: 'ENGENHARIA ACESSÍVEL',
     closingLine: 'O orçamento muda. A engenharia não.',
-    image: '/assets/images/core_catalog_car.png',
+    image: '/assets/images/ppf/galeria/core/nzppf-core-clear-gloss-1-carro.jpg',
     thickness: '175μ',
     warranty: '4 ANOS',
     accent: '#4A7C59',
@@ -279,28 +279,28 @@ const rawProductLines: ProductLine[] = [
           name: 'CORE GLOSS',
           anchor: 'Brilho honesto. Proteção inteligente.',
           desc: 'Espelhado que corrige orange-peel e devolve brilho.',
-          image: '/assets/images/core_clear_gloss.png',
+          image: '/assets/images/ppf/galeria/core/nzppf-core-clear-gloss-2-reflexo.jpg',
           swatch: '#E8E8EC'
         },
         {
           name: 'CORE MATTE',
           anchor: 'Fosco bruto. Estética com atitude.',
           desc: 'Acetinado bruto, difusão macia. Discrição com personalidade.',
-          image: '/assets/images/core_clear_matte.png',
+          image: '/assets/images/ppf/galeria/core/nzppf-core-clear-matte-1-carro.jpg',
           swatch: '#8E9092'
         },
         {
           name: 'CORE BLACK',
           anchor: 'Preto puro. Reflexo de fibra envernizada.',
           desc: 'Opaco reflexivo com aparência de carbono envernizado.',
-          image: '/assets/images/core_black_gloss.png',
+          image: '/assets/images/ppf/galeria/core/nzppf-core-black-gloss-1-carro.jpg',
           swatch: '#0A0A0A'
         },
         {
           name: 'CORE BLACK MATTE',
           anchor: 'Dark Stealth. Absorção implacável.',
           desc: 'Preto fosco profundo, opacidade dramática.',
-          image: '/assets/images/core_black_matte.png',
+          image: '/assets/images/ppf/galeria/core/nzppf-core-black-matte-1-carro.jpg',
           swatch: '#1C1C1E'
         }
       ]
