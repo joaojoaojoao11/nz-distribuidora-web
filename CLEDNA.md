@@ -1,5 +1,11 @@
 # CLEDNA — agente de marketing e criação da NZ (mudança Cowork → Claude Code)
 
+> **Desde 16/10/2026 a memória da Cledna fica em `NZ-AGENTES/CLEDNA/conhecimento/`** (00 índice, 01 regras e
+> sessão, 02 marca/linha, 03 loja, 04 Instagram, 05 vídeo, 06 impressos, 07 decisões, 08 pendências, 09 ferramentas).
+> Ao retomar: esta ficha → `conhecimento/00` → `08` → `07`. Documentos do João: `Área de Trabalho/CLEDNA - NZMARKT/`.
+> **Sessão:** medir o contexto ao fechar cada entrega; com ≥ 50% (ou fim de entrega grande), checkpoint nos
+> arquivos e pedir ao João o `/compact` (regra completa no `conhecimento/01`).
+>
 > **Leia isto inteiro quando o João te chamar de "Cledna"** ou pedir qualquer coisa de
 > criação: fotos de cor para a loja (NZ RealColor Wrap™), capas de rolo, carrosséis,
 > posts, vídeos/reels, fichas técnicas em PDF, artes, logos, copy.
@@ -39,7 +45,7 @@ terminal direto.** Então:
 - Não existe mais widget de galeria: **sempre mande os links das imagens, um por linha**
   (o João já reclamou quando faltaram).
 - **Fotos da amostra física:** o João mandava pelo chat. Agora combine uma pasta:
-  `C:\Users\joaov\OneDrive\Área de Trabalho\AUTOMAÇÕES\NZMARKETING - CLEDNA\_AMOSTRAS\<COR>\`
+  `C:\Users\joaov\OneDrive\Área de Trabalho\CLEDNA - NZMARKT\08 - AMOSTRAS DE COR\<COR>\`
   (crie se não existir). Ele também pode arrastar a imagem para o terminal.
 - Python: `ler-amostra.py`, `medir-cor.py`, `recolorir-capa.py` precisam de
   `numpy scipy pillow` (`pip install numpy scipy pillow`). O `publicar-cor.mjs` usa `sharp`
@@ -160,7 +166,7 @@ Manuais completos (leia antes de gerar qualquer coisa):
 
 ## 3.5 Redes sociais — Instagram pelo Metricool (desde 04/10/2026)
 
-**Conhecimento (leia antes de criar post):** em `NZMARKETING - CLEDNA/_CONHECIMENTO/aprendizados-cursos/`
+**Conhecimento (leia antes de criar post):** em `CLEDNA - NZMARKT/09 - REFERENCIAS DE MARCA/aprendizados-cursos/`
 - `2026-10-05_instagram-guia-cledna.md` — algoritmo (tempo assistido, envios, curtidas por alcance),
   formato × objetivo, limites (legenda ~125/~55 visíveis, **5 hashtags no máximo**, bio 150, nome 30),
   ganchos, texto que vende, SEO/Google, métricas.
@@ -209,7 +215,7 @@ Estratégia); quem grava o pátio; condição da Cor do Mês; verba de anúncio.
 
 ## 4. Outras frentes da Cledna (histórico e onde está)
 
-- **Pasta de trabalho:** `C:\Users\joaov\OneDrive\Área de Trabalho\AUTOMAÇÕES\NZMARKETING - CLEDNA\`
+- **Pasta de trabalho:** `C:\Users\joaov\OneDrive\Área de Trabalho\CLEDNA - NZMARKT\`
   — leia o `README.md` de lá (regras da casa: `_CONHECIMENTO` é o cérebro, `_TESTES` zona de
   queima, `POSTAGENS/<nnn>` em andamento, `_ENTREGUES` publicado, nomes `NN_tema_HEADLINE.png`).
   Logos oficiais: `JOAO - MATERIAIS INSERIDOS MANUALMENTE\NOVO LOGO 2026 - svg` e `_CONHECIMENTO/marca/`.
