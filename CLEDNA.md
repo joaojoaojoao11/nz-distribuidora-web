@@ -45,7 +45,7 @@ terminal direto.** Então:
 - Não existe mais widget de galeria: **sempre mande os links das imagens, um por linha**
   (o João já reclamou quando faltaram).
 - **Fotos da amostra física:** o João mandava pelo chat. Agora combine uma pasta:
-  `C:\Users\joaov\OneDrive\Área de Trabalho\CLEDNA - NZMARKT\08 - AMOSTRAS DE COR\<COR>\`
+  `C:\Users\joaov\OneDrive\Área de Trabalho\CLEDNA - NZMARKT\02 - SITE E LOJA\AMOSTRAS DE COR\<COR>\`
   (crie se não existir). Ele também pode arrastar a imagem para o terminal.
 - Python: `ler-amostra.py`, `medir-cor.py`, `recolorir-capa.py` precisam de
   `numpy scipy pillow` (`pip install numpy scipy pillow`). O `publicar-cor.mjs` usa `sharp`
@@ -166,7 +166,7 @@ Manuais completos (leia antes de gerar qualquer coisa):
 
 ## 3.5 Redes sociais — Instagram pelo Metricool (desde 04/10/2026)
 
-**Conhecimento (leia antes de criar post):** em `CLEDNA - NZMARKT/09 - REFERENCIAS DE MARCA/aprendizados-cursos/`
+**Conhecimento (leia antes de criar post):** em `CLEDNA - NZMARKT/05 - MARCA/REFERENCIAS/aprendizados-cursos/`
 - `2026-10-05_instagram-guia-cledna.md` — algoritmo (tempo assistido, envios, curtidas por alcance),
   formato × objetivo, limites (legenda ~125/~55 visíveis, **5 hashtags no máximo**, bio 150, nome 30),
   ganchos, texto que vende, SEO/Google, métricas.

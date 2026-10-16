@@ -10,7 +10,7 @@
  *   node scripts/drive-cores.mjs baixar EDG-020  baixa as fotos da amostra dessa cor
  *
  * As fotos vão para a pasta de amostras da Cledna (CLEDNA.md §1):
- *   ~/OneDrive/Área de Trabalho/CLEDNA - NZMARKT/08 - AMOSTRAS DE COR/<COD>/
+ *   ~/OneDrive/Área de Trabalho/CLEDNA - NZMARKT/02 - SITE E LOJA/AMOSTRAS DE COR/<COD>/
  */
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import os from 'node:os';
