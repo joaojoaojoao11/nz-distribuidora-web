@@ -20,10 +20,15 @@ body[data-nz-modal] .container {
 }
 
 /* Página com barra fixa no rodapé do celular (useBarraFixa): o botão sobe
-   para não cobrir o botão principal da barra. */
+   para não cobrir o botão principal da barra — ou some, num formulário,
+   onde ele caía em cima dos campos. */
 @media (max-width: 900px) {
   body[data-nz-barra] .container {
     bottom: calc(5.6rem + env(safe-area-inset-bottom));
+  }
+
+  body[data-nz-barra='ocultar'] .container {
+    display: none;
   }
 }
 

@@ -1,0 +1,301 @@
+/* Admin → Garantias. Mesma régua da Central (AdminCentral.module.css): fundo
+   preto, cantos retos, borda de 1px translúcida e a faixa colorida na lateral
+   do item, que aqui é o status — âmbar espera aprovação, verde vale, vermelho
+   foi recusada. */
+
+.faixaAtencao,
+.faixaInfo {
+  margin: 0 0 1rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.faixaAtencao {
+  color: #f5c46b;
+  border-color: rgba(245, 166, 35, 0.35);
+  background: rgba(245, 166, 35, 0.07);
+}
+
+.faixaInfo {
+  color: #a1a1a6;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.faixaAtencao code {
+  padding: 0 0.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.resumo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-width: 7rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cartao:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cartaoAtivo {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cartaoNumero {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.numeroPendente {
+  color: #f5a623;
+}
+
+.cartaoRotulo {
+  font-size: 0.7rem;
+  color: #a1a1a6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.busca {
+  flex: 1 1 16rem;
+  align-self: center;
+  max-width: 26rem;
+  min-height: 40px;
+  padding: 0 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left-width: 3px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.faixa_pendente {
+  border-left-color: #f5a623;
+}
+
+.faixa_aprovada {
+  border-left-color: #25d366;
+}
+
+.faixa_recusada {
+  border-left-color: #ff4444;
+}
+
+.itemTopo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.itemCabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.itemTitulo {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.itemMeta {
+  font-size: 0.72rem;
+  color: #6e6e73;
+  letter-spacing: 0.3px;
+}
+
+.chip {
+  flex-shrink: 0;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid;
+  font-size: 0.68rem;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.chipPendente {
+  color: #f5a623;
+  border-color: rgba(245, 166, 35, 0.4);
+  background: rgba(245, 166, 35, 0.08);
+}
+
+.chipAprovada {
+  color: #25d366;
+  border-color: rgba(37, 211, 102, 0.4);
+  background: rgba(37, 211, 102, 0.08);
+}
+
+.chipRecusada {
+  color: #ff4444;
+  border-color: rgba(255, 68, 68, 0.4);
+  background: rgba(255, 68, 68, 0.08);
+}
+
+.pares {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.55rem 1.25rem;
+  margin: 0.75rem 0 0;
+}
+
+.pares div {
+  min-width: 0;
+}
+
+.pares dt {
+  font-size: 0.66rem;
+  color: #6e6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pares dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.82rem;
+  color: #e5e5e7;
+  overflow-wrap: anywhere;
+}
+
+.parLargo {
+  grid-column: 1 / -1;
+}
+
+.retornoOk,
+.retornoErro {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+}
+
+.retornoOk {
+  color: #25d366;
+}
+
+.retornoErro {
+  color: #ff6b6b;
+}
+
+.acoes,
+.painel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.acoes a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.acoes button,
+.acoes a,
+.painel button {
+  margin-right: 0;
+}
+
+.acoes button:disabled,
+.painel button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.excluir {
+  margin-left: auto;
+  color: #6e6e73;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.excluir:hover {
+  color: #ff4444;
+  border-color: rgba(255, 68, 68, 0.4);
+}
+
+.painel {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.painelAcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.marcar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #e5e5e7;
+  cursor: pointer;
+}
+
+.marcar input {
+  width: 16px;
+  height: 16px;
+  accent-color: #25d366;
+}
+
+.campo {
+  width: 100%;
+  max-width: 28rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 0.85rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.nota {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #a1a1a6;
+}

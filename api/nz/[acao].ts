@@ -36,6 +36,7 @@ import ocorrencias from '../_lib/handlers/ocorrencias.js';
 import patio from '../_lib/handlers/patio.js';
 import promoMoto from '../_lib/handlers/promoMoto.js';
 import lente from '../_lib/handlers/lente.js';
+import garantia from '../_lib/handlers/garantia.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -86,6 +87,9 @@ const ROTAS: Record<string, Handler> = {
   // padrão e família no vocabulário da loja. Público, atrás de flag e de
   // limite por IP; a imagem nunca é gravada.
   lente,
+  // Registro de garantia (público, vira protocolo pendente), aprovação e envio
+  // do certificado por e-mail (admin), e o PNG do QR que vai no e-mail.
+  garantia,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

@@ -92,11 +92,13 @@
   color: var(--text-primary);
 }
 
-.progressoTexto {
-  display: none;
-  margin: 0.55rem 0 0;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+.passoNumero {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-tech);
+  font-size: 0.62rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 /* --------------------------------------------------------------- layout */
@@ -114,6 +116,7 @@
 
 .palco {
   min-width: 0;
+  overflow-x: clip;
   padding: 1.5rem;
   border: 1px solid var(--border-light);
   border-radius: 14px;
@@ -523,6 +526,7 @@
 
 .areasTitulo {
   margin: 0;
+  scroll-margin-top: 88px;
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--text-primary);
@@ -705,6 +709,31 @@
   transition: border-color var(--transition-snappy), box-shadow var(--transition-snappy);
 }
 
+.campo select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 2.2rem;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a1a1a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 1rem;
+}
+
+/* Só no iPhone/iPad: o campo de data nativo ignora a largura e centraliza o
+   valor; vazio, ele ainda encolhe de altura. */
+@supports (-webkit-touch-callout: none) {
+  .campo input[type='date'] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    text-align: left;
+  }
+
+  .campo input[type='date']::-webkit-date-and-time-value {
+    text-align: left;
+  }
+}
+
 .campo input::placeholder {
   color: var(--text-muted);
 }
@@ -773,6 +802,50 @@
 .usarDados span {
   font-size: 0.78rem;
   color: var(--text-muted);
+}
+
+.local {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.1rem 0 0;
+  font-size: 0.86rem;
+  color: var(--text-primary);
+}
+
+.local svg {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.localAlterar,
+.semCep {
+  min-height: 32px;
+  padding: 0 0.2rem;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.semCep {
+  align-self: flex-start;
+  padding: 0;
+}
+
+.localAlterar:hover,
+.semCep:hover {
+  color: var(--text-primary);
+}
+
+.cidadeUf {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px;
+  gap: 0.85rem;
+  min-width: 0;
 }
 
 .marcar {
@@ -901,6 +974,67 @@
 
 .eyebrow + .emitidoTopo {
   margin-top: 0.7rem;
+}
+
+.protocoloIcone {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+}
+
+.passosProtocolo {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.passosProtocolo li {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.passosProtocolo strong {
+  display: block;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.passoMarca {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.passoFeito .passoMarca {
+  border-color: var(--accent-red);
+  background: var(--accent-red);
+  color: #fff;
+}
+
+/* Honeypot: fora da tela e fora do teclado. Robô preenche; gente não vê. */
+.mel {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
 }
 
 .emitidoTitulo {
@@ -1106,9 +1240,51 @@
   border-radius: 16px 16px 0 0;
   background: var(--bg-secondary);
   overscroll-behavior: contain;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: subir 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fundo {
+  animation: aparecer 0.2s ease-out;
+}
+
+@keyframes subir {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* A alça: puxar para baixo fecha. Área de toque maior que o traço. */
+.folhaAlca {
+  display: flex;
+  justify-content: center;
+  margin: -0.75rem -1rem 0;
+  padding: 0.6rem 0 0.35rem;
+  touch-action: none;
+  cursor: grab;
+}
+
+.folhaAlca span {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-strong);
 }
 
 .folhaTopo {
+  touch-action: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1216,8 +1392,8 @@
 
   .barra .primario {
     flex-shrink: 0;
-    min-width: 132px;
-    padding: 0 1.1rem;
+    min-width: 120px;
+    padding: 0 1rem;
   }
 }
 
@@ -1246,8 +1422,36 @@
     gap: 0;
   }
 
-  .progressoTexto {
-    display: block;
+  /* Do 2º passo em diante o título grande sai da frente (fica para leitor de
+     tela): o que importa é o título do passo, logo abaixo da barra. */
+  .topoCompacto {
+    margin-bottom: 1.1rem;
+  }
+
+  .topoCompacto .titulo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .topoCompacto .progresso {
+    margin-top: 0.7rem;
+  }
+
+  .pagina {
+    padding-top: 5.4rem;
+  }
+
+  .rotulo {
+    font-size: 0.68rem;
+  }
+
+  .atalho,
+  .kit {
+    min-height: 40px;
   }
 
   .palco {
@@ -1304,6 +1508,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .folha,
+  .fundo {
+    animation: none;
+    transition: none;
+  }
+
   .etapa::before,
   .linha,
   .opcao,

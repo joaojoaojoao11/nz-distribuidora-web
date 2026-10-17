@@ -1,5 +1,5 @@
-// Revisão — o que vai para o certificado, bloco a bloco, com "alterar" ao
-// lado. No computador a prévia do certificado já está na lateral; no celular
+// Revisão — o que vai para o certificado depois da aprovação, bloco a bloco,
+// com "alterar" ao lado. No computador a prévia do certificado já está na lateral; no celular
 // ela aparece aqui, acima dos blocos.
 
 import Certificado, { type DadosCertificado } from '../Certificado';
@@ -64,7 +64,8 @@ export default function Revisao({ r, previa, onAlterar }: Props) {
         ))}
       </ul>
       <p className={styles.aviso}>
-        Depois de emitido, o certificado fica vinculado à placa e ao CPF informados — eles não mudam mais.
+        Ao enviar, a NZ confere o registro com o aplicador. Aprovado, o certificado chega em{' '}
+        <strong>{r.email.trim().toLowerCase()}</strong>, vinculado à placa e ao CPF acima.
       </p>
     </>
   );

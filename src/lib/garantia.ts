@@ -6,10 +6,12 @@
 // NZPPF): valia sempre a cópia fixa. Agora a cópia fixa é a fonte, assumida, e
 // o formulário, o certificado, o validador e o painel leem daqui.
 //
-// O formato gravado NÃO muda: o Admin → Garantias (PDF), o `validar_garantia`
-// e o `minhas_garantias` dependem dele. `tipo_servico` só aceita os três
-// valores do CHECK do banco.
+// Desde 17/10/2026 o registro vira PROTOCOLO: quem grava é o servidor
+// (/api/nz/garantia), que valida de novo, decide os anos e gera o código; o
+// certificado só vale depois que alguém do admin aprova. Daqui sai só o que o
+// formulário manda. `tipo_servico` só aceita os três valores do CHECK do banco.
 
+import { supabase } from './supabase';
 import { formatarCpfCnpj, somenteDigitos, validarCpfCnpj } from './documento';
 import { formatarTelefone, telefoneOk } from './shop/conta';
 import { formatarCep } from './shop/checkout';
@@ -219,6 +221,25 @@ function dataValida(iso: string): boolean {
   return d.getFullYear() === Number(m[1]) && d.getMonth() === Number(m[2]) - 1 && d.getDate() === Number(m[3]);
 }
 
+/**
+ * CPF ou CNPJ com a pontuação aparecendo enquanto digita (o teclado numérico
+ * do celular não tem ponto nem barra). Até 11 dígitos é CPF; passou, CNPJ.
+ */
+export function digitandoDocumento(v: string): string {
+  const d = v.replace(/\D/g, '').slice(0, 14);
+  if (d.length <= 11) {
+    return d
+      .replace(/^(\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+      .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+  }
+  return d
+    .replace(/^(\d{2})(\d)/, '$1.$2')
+    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+    .replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4')
+    .replace(/^(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})(\d)/, '$1.$2.$3/$4-$5');
+}
+
 // ----------------------------------------------------------------- placa
 
 const PLACA_ANTIGA = /^[A-Z]{3}\d{4}$/;
@@ -287,7 +308,8 @@ export function errosDoPasso(passo: Passo, r: Rascunho): Erros {
   if (passo === 'proprietario') {
     if (!validarCpfCnpj(r.cpf)) e.cpf = 'CPF ou CNPJ inválido.';
     if (r.nome.trim().length < 3) e.nome = 'Informe o nome completo.';
-    if (r.email.trim() && !EMAIL.test(r.email.trim())) e.email = 'E-mail inválido.';
+    // Obrigatório: é por ele que o certificado chega depois da aprovação.
+    if (!EMAIL.test(r.email.trim())) e.email = r.email.trim() ? 'E-mail inválido.' : 'Informe o e-mail: o certificado chega por ele.';
     if (r.telefone.trim() && !telefoneOk(r.telefone)) e.telefone = 'Telefone com DDD.';
     if (r.uf && r.uf.length !== 2) e.uf = 'UF com 2 letras.';
     if (r.impresso) {
@@ -312,17 +334,6 @@ export function primeiroPassoPendente(r: Rascunho): Passo {
 
 // ------------------------------------------------------------------ envio
 
-/** NZ-DDMMAAAA-PLACA-XXXXX, o formato de sempre. */
-export function gerarCodigo(dataISO: string, placa: string): string {
-  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(dataISO);
-  const data = m ? `${m[3]}${m[2]}${m[1]}` : '';
-  const alfabeto = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const bytes = new Uint8Array(5);
-  crypto.getRandomValues(bytes);
-  const sufixo = Array.from(bytes, (b) => alfabeto[b % alfabeto.length]).join('');
-  return `NZ-${data}-${limparPlaca(placa)}-${sufixo}`;
-}
-
 export function garantiaDoRascunho(r: Rascunho): { anos: number; durabilidade: number } {
   const l = linhaPorId(r.linhaId);
   return { anos: l?.garantiaAnos ?? 0, durabilidade: l?.durabilidadeAnos ?? 0 };
@@ -334,8 +345,11 @@ export function produtoDoRascunho(r: Rascunho): string {
   return l.tipo === 'NZWrap' ? r.material.trim() : l.nome;
 }
 
-/** A linha de `garantias_nz` — mesmas colunas e formatos de antes. */
-export function montarPayload(r: Rascunho, codigo: string) {
+/**
+ * O que o formulário manda para /api/nz/garantia (op 'registrar'). O servidor
+ * confere tudo de novo e decide os anos; os daqui são só para a tela.
+ */
+export function montarPayload(r: Rascunho) {
   const l = linhaPorId(r.linhaId);
   const { anos, durabilidade } = garantiaDoRascunho(r);
   const comEndereco = r.impresso;
@@ -359,7 +373,6 @@ export function montarPayload(r: Rascunho, codigo: string) {
     linha_escolhida: l?.tipo ?? '',
     tipo_servico: r.servico,
     areas_protegidas: r.servico === 'Total/Full' ? ['Veículo Completo'] : r.servico === 'Movel/Eletro' ? ['Item Completo'] : r.areas,
-    codigo_autenticacao: codigo,
     garantia_anos: anos,
     durabilidade_anos: durabilidade,
   };
@@ -368,3 +381,85 @@ export function montarPayload(r: Rascunho, codigo: string) {
 export function urlDeValidacao(codigo: string): string {
   return `${window.location.origin}/validar-garantia?id=${encodeURIComponent(codigo)}`;
 }
+
+export interface ProtocoloRecebido {
+  protocolo: string;
+  criadoEm: string;
+  /** O e-mail com o protocolo saiu para o cliente. */
+  emailCliente: boolean;
+}
+
+const ERRO_DO_SERVIDOR: Record<string, string> = {
+  'documento-invalido': 'Confira o CPF ou CNPJ do proprietário.',
+  'email-invalido': 'Confira o e-mail do proprietário.',
+  'placa-invalida': 'Confira a placa ou o chassi.',
+  'data-invalida': 'Confira a data da aplicação.',
+  'muitos-registros': 'Muitos registros em pouco tempo. Tente de novo daqui a pouco.',
+};
+
+export async function registrarGarantia(r: Rascunho, mel: string): Promise<ProtocoloRecebido> {
+  let resposta: Response;
+  try {
+    resposta = await fetch('/api/nz/garantia', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ op: 'registrar', dados: montarPayload(r), site: mel }),
+    });
+  } catch {
+    throw new Error('Sem conexão. Confira a internet e tente de novo.');
+  }
+  const j = (await resposta.json().catch(() => ({}))) as Partial<ProtocoloRecebido> & { error?: string };
+  if (!resposta.ok || !j.protocolo) {
+    throw new Error(ERRO_DO_SERVIDOR[j.error ?? ''] ?? 'Não conseguimos registrar agora. Tente de novo — se continuar, fale com a NZ pelo WhatsApp.');
+  }
+  return { protocolo: j.protocolo, criadoEm: j.criadoEm ?? new Date().toISOString(), emailCliente: Boolean(j.emailCliente) };
+}
+
+/** "17/10/2026, 17:21" no fuso de Brasília. */
+export function dataHoraBr(iso: string): string {
+  return new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+// ------------------------------------------------------------------ admin
+
+export class GarantiaAdminError extends Error {
+  codigo: string;
+  constructor(codigo: string) {
+    super(codigo);
+    this.codigo = codigo;
+  }
+}
+
+/** Ações de admin em /api/nz/garantia (aprovar, recusar, enviar, config), com a sessão. */
+export async function chamarGarantiaAdmin<T>(body: Record<string, unknown>): Promise<T> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new GarantiaAdminError('login-necessario');
+  let r: Response;
+  try {
+    r = await fetch('/api/nz/garantia', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new GarantiaAdminError('sem-conexao');
+  }
+  const j = (await r.json().catch(() => ({}))) as Record<string, unknown>;
+  if (!r.ok && !('envio' in j)) throw new GarantiaAdminError(typeof j.error === 'string' ? j.error : `http-${r.status}`);
+  return j as T;
+}
+
+export const TEXTO_ERRO_ADMIN: Record<string, string> = {
+  'login-necessario': 'Sua sessão expirou. Entre de novo.',
+  'sem-conexao': 'Sem conexão com o servidor.',
+  'so-admin': 'Só administradores podem fazer isso.',
+  'ja-aprovada': 'Esta garantia já estava aprovada.',
+  'so-pendente': 'Só dá para recusar garantia pendente.',
+  'nao-aprovada': 'Aprove a garantia antes de enviar o certificado.',
+  'motivo-curto': 'Escreva o motivo da recusa.',
+  'email-invalido': 'E-mail inválido.',
+  'nao-configurado': 'O e-mail do site ainda não está configurado (falta a RESEND_API_KEY na Vercel).',
+  recusado: 'O serviço de e-mail recusou o envio.',
+  'falha-rede': 'O serviço de e-mail não respondeu. Tente de novo.',
+};

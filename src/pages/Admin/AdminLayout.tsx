@@ -40,7 +40,8 @@ export default function AdminLayout() {
   const carregarBadges = useCallback(async () => {
     const [{ count: clientes }, { count: garantias }, { count: central }] = await Promise.all([
       supabase.from('user_profiles').select('id', { count: 'exact', head: true }).neq('role', 'admin').eq('is_approved', false),
-      supabase.from('garantias_nz').select('id', { count: 'exact', head: true }).eq('certificado_gerado', false),
+      // Garantia para aprovar: o registro nasce pendente (protocolo) desde 17/10/2026.
+      supabase.from('garantias_nz').select('id', { count: 'exact', head: true }).eq('status', 'pendente'),
       supabase.from('ocorrencias').select('id', { count: 'exact', head: true }).eq('status', 'aberta'),
     ]);
     let promo = 0;

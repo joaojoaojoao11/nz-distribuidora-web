@@ -7,6 +7,9 @@
 //
 // Se o cliente registrou a garantia com outro CPF/e-mail, nada aparece. A tela
 // diz isso em vez de fingir que ele não tem garantia nenhuma.
+//
+// Desde 17/10/2026 o registro é um protocolo que a NZ aprova: a RPC devolve o
+// status e só entrega o código (com que se abre o certificado) de aprovada.
 
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -17,6 +20,8 @@ import styles from './Painel.module.css';
 
 interface Garantia {
   id: string;
+  protocolo: string | null;
+  status: 'pendente' | 'aprovada' | 'recusada' | null;
   produto_nome: string | null;
   linha_escolhida: string | null;
   tipo_servico: string | null;
@@ -26,7 +31,7 @@ interface Garantia {
   data_aplicacao: string | null;
   garantia_anos: number | null;
   durabilidade_anos: number | null;
-  codigo_autenticacao: string;
+  codigo_autenticacao: string | null;
   certificado_gerado: boolean | null;
   pdf_url: string | null;
 }
@@ -76,10 +81,8 @@ export default function PainelGarantias() {
           </div>
 
           <div className={styles.cartaoStatus}>
-            <span
-              className={`${styles.pagChip} ${g.certificado_gerado ? styles.pagOk : styles.pagPendente}`}
-            >
-              {g.certificado_gerado ? 'Certificado emitido' : 'Em processamento'}
+            <span className={`${styles.pagChip} ${g.status === 'aprovada' ? styles.pagOk : g.status === 'recusada' ? styles.pagRuim : styles.pagPendente}`}>
+              {g.status === 'aprovada' ? 'Certificado emitido' : g.status === 'recusada' ? 'Não aprovada' : 'Em análise'}
             </span>
             <span>
               {g.veiculo_modelo ?? '—'}
@@ -94,9 +97,16 @@ export default function PainelGarantias() {
               {validaAte(g.data_aplicacao, g.garantia_anos) ? <small> · válida até {validaAte(g.data_aplicacao, g.garantia_anos)}</small> : null}
             </span>
             <div className={styles.cartaoAcoes}>
-              <Link className={styles.botaoSecundario} to={`/validar-garantia?id=${encodeURIComponent(g.codigo_autenticacao)}`}>
-                Ver certificado
-              </Link>
+              {g.codigo_autenticacao ? (
+                <Link className={styles.botaoSecundario} to={`/validar-garantia?id=${encodeURIComponent(g.codigo_autenticacao)}`}>
+                  Ver certificado
+                </Link>
+              ) : (
+                <span className={styles.mudo}>
+                  {g.status === 'recusada' ? 'Fale com a NZ pelo WhatsApp' : 'A NZ está conferindo'}
+                  {g.protocolo ? ` · protocolo ${g.protocolo}` : ''}
+                </span>
+              )}
               {g.pdf_url && (
                 <a className={styles.botaoSecundario} href={g.pdf_url} target="_blank" rel="noopener noreferrer">
                   Baixar PDF

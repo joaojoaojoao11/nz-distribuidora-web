@@ -1,5 +1,6 @@
 // /registro-garantia — registrar a garantia de uma aplicação NZPPF ou de um
-// envelopamento e emitir o certificado na hora.
+// envelopamento. Desde 17/10/2026 o fim é um PROTOCOLO: o certificado só sai
+// depois que alguém do admin aprova, e chega por e-mail (/api/nz/garantia).
 //
 // Redesenho de 17/10/2026 (plano em FIRECRAL/PLANO_REGISTRO_GARANTIA.md). Uma
 // pergunta por tela, na ordem em que a pessoa sabe a resposta: produto →
@@ -13,7 +14,8 @@
 //   - o rascunho fica no sessionStorage: recarregar não apaga o que foi digitado;
 //   - toda troca de passo sobe a página e põe o foco no título — antes o
 //     passo seguinte abria rolado e, no fim, o certificado ficava fora da tela;
-//   - o que é gravado em `garantias_nz` é o mesmo de antes (lib/garantia.ts).
+//   - quem grava é o servidor (valida de novo, decide os anos, gera o código
+//     e avisa a NZ por e-mail); a tabela não aceita mais insert do navegador.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -21,14 +23,13 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import SEO from '../../components/SEO/SEO';
 import { useAuth } from '../../contexts/AuthContext';
-import { supabase } from '../../lib/supabase';
 import Certificado, { type DadosCertificado } from './Certificado';
 import PassoProduto from './registro/PassoProduto';
 import PassoCobertura from './registro/PassoCobertura';
 import PassoVeiculo from './registro/PassoVeiculo';
 import PassoProprietario, { type MeusDados } from './registro/PassoProprietario';
 import Revisao from './registro/Revisao';
-import Emitido from './registro/Emitido';
+import Protocolo from './registro/Protocolo';
 import Cuidados from './registro/Cuidados';
 import BarraDoPasso from './registro/BarraDoPasso';
 import {
@@ -38,16 +39,14 @@ import {
   ehMovel,
   errosDoPasso,
   garantiaDoRascunho,
-  gerarCodigo,
   guardarUltimoAplicador,
   hojeISO,
   lerRascunho,
   lerUltimoAplicador,
   linhaPorId,
-  montarPayload,
-  nomeDeExibicao,
   primeiroPassoPendente,
   produtoDoRascunho,
+  registrarGarantia,
   salvarRascunho,
   type Erros,
   type LinhaGarantia,
@@ -77,7 +76,7 @@ function textosDoPasso(passo: Passo, movel: boolean): { titulo: string; sub: str
     case 'proprietario':
       return { titulo: 'Proprietário', sub: 'Os dados de quem é dono. A garantia fica vinculada a este CPF ou CNPJ.' };
     case 'revisao':
-      return { titulo: 'Confira antes de emitir', sub: 'É assim que o certificado vai sair.' };
+      return { titulo: 'Confira antes de enviar', sub: 'É assim que o certificado vai sair depois da aprovação.' };
   }
 }
 
@@ -101,24 +100,6 @@ function previaDe(r: Rascunho): DadosCertificado {
   };
 }
 
-// Aviso por e-mail ao João — o mesmo de antes, fora do caminho do cliente.
-function notificar(p: ReturnType<typeof montarPayload>) {
-  void fetch('https://formsubmit.co/ajax/joaovitor@nzdistribuidora.com.br', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({
-      _subject: 'Nova Garantia Registrada',
-      Veiculo: p.veiculo_modelo,
-      Placa_Chassi: p.veiculo_placa_chassi,
-      Cliente_CPF: p.cliente_cpf,
-      Instalador: p.aplicador_nome,
-      Produto: p.produto_nome,
-      Servico: p.tipo_servico,
-      Codigo_Hash: p.codigo_autenticacao,
-    }),
-  }).catch(() => {});
-}
-
 export default function WarrantyRegistration() {
   const { user, profile } = useAuth();
   const [params, setParams] = useSearchParams();
@@ -130,7 +111,9 @@ export default function WarrantyRegistration() {
   const [tentou, setTentou] = useState<Partial<Record<Passo, boolean>>>({});
   const [enviando, setEnviando] = useState(false);
   const [erroEnvio, setErroEnvio] = useState('');
-  const [emitido, setEmitido] = useState<{ dados: DadosCertificado & { codigo: string }; email: string } | null>(null);
+  const [recebido, setRecebido] = useState<{ protocolo: string; criadoEm: string; emailEnviado: boolean; dados: DadosCertificado; email: string } | null>(null);
+  // Honeypot: robô preenche todo campo que encontra; gente não vê este.
+  const [mel, setMel] = useState('');
   const titulo = useRef<HTMLHeadingElement>(null);
   const primeiraVez = useRef(true);
 
@@ -145,6 +128,15 @@ export default function WarrantyRegistration() {
   const mostrar = Boolean(tentou[passo]);
   const previa = previaDe(r);
 
+  // Direção da troca (avançar entra pela direita, voltar pela esquerda) —
+  // o padrão do React para "estado derivado do anterior", sem efeito.
+  const [ultimoIndice, setUltimoIndice] = useState(indice);
+  const [direcao, setDirecao] = useState(1);
+  if (indice !== ultimoIndice) {
+    setDirecao(indice > ultimoIndice ? 1 : -1);
+    setUltimoIndice(indice);
+  }
+
   useEffect(() => {
     salvarRascunho(r);
   }, [r]);
@@ -156,7 +148,7 @@ export default function WarrantyRegistration() {
     }
     window.scrollTo({ top: 0 });
     titulo.current?.focus({ preventScroll: true });
-  }, [passo, emitido]);
+  }, [passo, recebido]);
 
   const mudar = useCallback((patch: Partial<Rascunho>) => setR((x) => ({ ...x, ...patch })), []);
 
@@ -193,6 +185,24 @@ export default function WarrantyRegistration() {
     ir(PASSOS[indice + 1]);
   };
 
+  // "Próximo" do teclado do celular: Enter num campo vai para o campo
+  // seguinte; no último, fecha o teclado e tenta avançar o passo. Sem isso a
+  // pessoa tinha de fechar o teclado e tocar no campo seguinte, um a um.
+  const teclaNoFormulario = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key !== 'Enter' || e.defaultPrevented || e.nativeEvent.isComposing) return;
+    const alvo = e.target;
+    if (!(alvo instanceof HTMLInputElement) || alvo.type === 'checkbox') return;
+    e.preventDefault();
+    const campos = [...e.currentTarget.querySelectorAll<HTMLElement>('input:not([type="checkbox"]):not([disabled]), select:not([disabled])')];
+    const proximo = campos[campos.indexOf(alvo) + 1];
+    if (proximo) {
+      proximo.focus();
+      return;
+    }
+    alvo.blur();
+    avancar();
+  };
+
   // Escolha única avança sozinha, com um respiro para o toque aparecer.
   const depois = (fn: () => void) => window.setTimeout(fn, reduzir ? 0 : 220);
 
@@ -223,13 +233,17 @@ export default function WarrantyRegistration() {
   const escolherServico = (s: TipoServico) => {
     if (s === 'Parcial') {
       setR((x) => ({ ...x, servico: 'Parcial', areas: x.servico === 'Parcial' ? x.areas : [] }));
+      // No celular as peças abrem abaixo da dobra: leva a pessoa até elas.
+      if (window.matchMedia('(max-width: 900px)').matches) {
+        window.setTimeout(() => document.getElementById('titulo-areas')?.scrollIntoView({ block: 'start', behavior: reduzir ? 'auto' : 'smooth' }), 60);
+      }
       return;
     }
     mudar({ servico: s, areas: [] });
     depois(() => ir('veiculo'));
   };
 
-  const emitir = async () => {
+  const enviar = async () => {
     for (const p of PASSOS) {
       if (p === 'revisao') break;
       if (Object.keys(errosDoPasso(p, r)).length) {
@@ -240,27 +254,23 @@ export default function WarrantyRegistration() {
     }
     setEnviando(true);
     setErroEnvio('');
-    const codigo = gerarCodigo(r.data, r.placa);
-    const payload = montarPayload(r, codigo);
-    const { error } = await supabase.from('garantias_nz').insert([payload]);
-    if (error) {
-      console.error('Registro de garantia:', error);
-      setErroEnvio('Não conseguimos registrar agora. Confira a conexão e tente de novo — se continuar, fale com a NZ pelo WhatsApp.');
+    try {
+      const resposta = await registrarGarantia(r, mel);
+      guardarUltimoAplicador(r.aplicador);
+      setRecebido({ ...resposta, emailEnviado: resposta.emailCliente, dados: previaDe(r), email: r.email.trim().toLowerCase() });
+      apagarRascunho();
+      setR({ ...RASCUNHO_VAZIO, data: hojeISO(), aplicador: r.aplicador.trim() });
+      setTentou({});
+      setParams({}, { replace: true });
+    } catch (e) {
+      setErroEnvio(e instanceof Error ? e.message : 'Não conseguimos registrar agora.');
+    } finally {
       setEnviando(false);
-      return;
     }
-    notificar(payload);
-    guardarUltimoAplicador(r.aplicador);
-    setEmitido({ dados: { ...previaDe(r), codigo, placa: payload.veiculo_placa_chassi }, email: payload.cliente_email });
-    apagarRascunho();
-    setR({ ...RASCUNHO_VAZIO, data: hojeISO(), aplicador: r.aplicador.trim() });
-    setTentou({});
-    setEnviando(false);
-    setParams({}, { replace: true });
   };
 
   const outra = () => {
-    setEmitido(null);
+    setRecebido(null);
     setErroEnvio('');
   };
 
@@ -273,7 +283,7 @@ export default function WarrantyRegistration() {
   // -------------------------------------------------------------- ação do passo
   const acao: { rotulo: string; onClick: () => void; carregando?: boolean } | null =
     passo === 'revisao'
-      ? { rotulo: enviando ? 'Emitindo…' : 'Emitir certificado', onClick: () => void emitir(), carregando: enviando }
+      ? { rotulo: enviando ? 'Enviando…' : 'Enviar para aprovação', onClick: () => void enviar(), carregando: enviando }
       : passo === 'produto' && !linha
         ? null
         : passo === 'cobertura' && !r.servico
@@ -281,7 +291,10 @@ export default function WarrantyRegistration() {
           : { rotulo: passo === 'proprietario' ? 'Revisar' : 'Continuar', onClick: avancar };
 
   const { titulo: tituloPasso, sub } = textosDoPasso(passo, movel);
-  const resumoBarra = linha ? `${nomeDeExibicao(produtoDoRascunho(r)) || linha.rotulo} · ${linha.garantiaAnos} anos` : 'Escolha o que foi aplicado';
+  // Curto, para caber ao lado do botão numa tela de 360 px: "Luxury · 12 anos".
+  const resumoBarra = linha
+    ? `${linha.tipo === 'PPF' ? linha.rotulo : r.material.trim() || linha.rotulo} · ${linha.garantiaAnos} anos`
+    : 'Escolha o que foi aplicado';
   const rotuloPasso = passo === 'revisao' ? 'Revisão' : `Passo ${indice + 1} de 4`;
 
   const props = { r, mudar, erros, mostrar };
@@ -290,16 +303,16 @@ export default function WarrantyRegistration() {
     <div className={styles.pagina}>
       <SEO
         title="Registro de Garantia NZPPF — Certificado Digital"
-        description="Registre a garantia da sua película NZPPF ou do envelopamento NZWRAP. O certificado sai na hora, com código único e QR para conferência pública."
+        description="Registre a garantia da sua película NZPPF ou do envelopamento NZWRAP. A NZ confere o registro e envia o certificado por e-mail, com código único e QR para conferência pública."
         canonicalUrl="/registro-garantia"
       />
 
-      {!emitido && (
-        <header className={styles.topo}>
+      {!recebido && (
+        <header className={passo === 'produto' ? styles.topo : `${styles.topo} ${styles.topoCompacto}`}>
           <p className={styles.eyebrow}>Garantia NZ</p>
           <h1 className={styles.titulo}>Registrar garantia</h1>
           {passo === 'produto' && (
-            <p className={styles.lede}>Leva dois minutos. O certificado sai na hora, com um código que qualquer pessoa pode conferir.</p>
+            <p className={styles.lede}>Leva dois minutos. A NZ confere o registro com o aplicador e envia o certificado por e-mail.</p>
           )}
           <ol className={styles.progresso} aria-label="Etapas">
             {ETAPAS.map((e, i) => {
@@ -321,14 +334,21 @@ export default function WarrantyRegistration() {
               );
             })}
           </ol>
-          <p className={styles.progressoTexto}>{passo === 'revisao' ? 'Revisão final' : `${indice + 1} de 4 · ${tituloPasso}`}</p>
         </header>
       )}
 
-      {emitido ? (
+      {recebido ? (
         <div className={`${styles.layout} ${styles.layoutUnico}`}>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}>
-            <Emitido dados={emitido.dados} email={emitido.email} logado={Boolean(user)} onOutra={outra} />
+            <Protocolo
+              protocolo={recebido.protocolo}
+              criadoEm={recebido.criadoEm}
+              dados={recebido.dados}
+              email={recebido.email}
+              emailEnviado={recebido.emailEnviado}
+              logado={Boolean(user)}
+              onOutra={outra}
+            />
           </motion.div>
         </div>
       ) : (
@@ -337,20 +357,26 @@ export default function WarrantyRegistration() {
             <section className={styles.palco} aria-labelledby="titulo-passo">
               <motion.div
                 key={passo}
-                initial={reduzir ? { opacity: 0 } : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={reduzir ? { opacity: 0 } : { opacity: 0, x: 24 * direcao }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               >
+                <p className={styles.passoNumero}>{passo === 'revisao' ? 'Revisão' : `Passo ${indice + 1} de 4`}</p>
                 <h2 className={styles.passoTitulo} id="titulo-passo" ref={titulo} tabIndex={-1}>
                   {tituloPasso}
                 </h2>
                 <p className={styles.passoSub}>{sub}</p>
 
-                {passo === 'produto' && <PassoProduto {...props} onEscolher={escolherLinha} />}
-                {passo === 'cobertura' && <PassoCobertura {...props} onEscolher={escolherServico} />}
-                {passo === 'veiculo' && <PassoVeiculo {...props} aplicadorDaConta={aplicadorDaConta} />}
-                {passo === 'proprietario' && <PassoProprietario {...props} meusDados={meusDados} />}
-                {passo === 'revisao' && <Revisao r={r} previa={previa} onAlterar={(p) => ir(p)} />}
+                <form noValidate onSubmit={(e) => e.preventDefault()} onKeyDown={teclaNoFormulario}>
+                  {passo === 'produto' && <PassoProduto {...props} onEscolher={escolherLinha} />}
+                  {passo === 'cobertura' && <PassoCobertura {...props} onEscolher={escolherServico} />}
+                  {passo === 'veiculo' && <PassoVeiculo {...props} aplicadorDaConta={aplicadorDaConta} />}
+                  {passo === 'proprietario' && <PassoProprietario {...props} meusDados={meusDados} />}
+                  {passo === 'revisao' && <Revisao r={r} previa={previa} onAlterar={(p) => ir(p)} />}
+                  {passo === 'revisao' && (
+                    <input className={styles.mel} name="site" tabIndex={-1} autoComplete="off" aria-hidden="true" value={mel} onChange={(e) => setMel(e.target.value)} />
+                  )}
+                </form>
 
                 {erroEnvio && passo === 'revisao' && (
                   <p className={styles.erroGeral} role="alert">
@@ -380,7 +406,7 @@ export default function WarrantyRegistration() {
               <p className={styles.lateralRotulo}>Prévia do certificado</p>
               <Certificado dados={previa} compacto />
               <p className={styles.confianca}>
-                Cada certificado recebe um código único. Qualquer pessoa confere a garantia em{' '}
+                O certificado sai depois que a NZ confere o registro, com um código único que qualquer pessoa confere em{' '}
                 <a href="/validar-garantia">nzgroup.com.br/validar-garantia</a>.
               </p>
             </aside>
