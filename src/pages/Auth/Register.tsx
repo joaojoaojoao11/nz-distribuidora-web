@@ -28,7 +28,17 @@ export default function Register() {
   const next = new URLSearchParams(location.search).get('next');
   const destino = next && next.startsWith('/') && !next.startsWith('//') ? next : null;
 
-  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', role: 'client', company: '', documento: '', ie: '' });
+  // ?email= vem do certificado de garantia recém-emitido ("Criar conta").
+  const [form, setForm] = useState(() => ({
+    name: '',
+    email: new URLSearchParams(location.search).get('email')?.trim().toLowerCase() ?? '',
+    phone: '',
+    password: '',
+    role: 'client',
+    company: '',
+    documento: '',
+    ie: '',
+  }));
   const [verSenha, setVerSenha] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);

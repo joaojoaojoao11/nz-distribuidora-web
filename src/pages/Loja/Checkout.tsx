@@ -15,6 +15,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useBarraFixa } from '../../hooks/useBarraFixa';
 import { supabase } from '../../lib/supabase';
 import { visitanteId } from '../../lib/afiliado';
 import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
@@ -69,6 +70,8 @@ export default function Checkout() {
   const { user, profile, loading, isApproved, isAdmin } = useAuth();
   const itens = useCarrinho();
   const navigate = useNavigate();
+  // A barra "Total + Pagar" do celular: o botão do WhatsApp sobe acima dela.
+  useBarraFixa(Boolean(user) && itens.length > 0);
 
   const [end, setEnd] = useState<Endereco>(VAZIO);
   const [endCarregado, setEndCarregado] = useState(false);

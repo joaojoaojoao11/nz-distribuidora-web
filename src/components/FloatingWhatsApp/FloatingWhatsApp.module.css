@@ -19,6 +19,14 @@ body[data-nz-modal] .container {
   display: none;
 }
 
+/* Página com barra fixa no rodapé do celular (useBarraFixa): o botão sobe
+   para não cobrir o botão principal da barra. */
+@media (max-width: 900px) {
+  body[data-nz-barra] .container {
+    bottom: calc(5.6rem + env(safe-area-inset-bottom));
+  }
+}
+
 .menu {
   margin-bottom: 1rem;
   background: rgba(15, 15, 18, 0.85);

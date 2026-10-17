@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { formatarDataISO, nomeDeExibicao, validaAte } from '../../lib/garantia';
 import styles from './Painel.module.css';
 
 interface Garantia {
@@ -69,10 +70,9 @@ export default function PainelGarantias() {
       {lista.map((g) => (
         <li key={g.id} className={styles.cartaoPedido}>
           <div className={styles.cartaoTopo}>
-            <span className={styles.cartaoNumero}>{g.produto_nome ?? g.linha_escolhida ?? 'Garantia NZ'}</span>
-            <span className={styles.cartaoData}>
-              {g.data_aplicacao ? new Date(g.data_aplicacao).toLocaleDateString('pt-BR') : '—'}
-            </span>
+            <span className={styles.cartaoNumero}>{g.produto_nome ? nomeDeExibicao(g.produto_nome) : g.linha_escolhida ?? 'Garantia NZ'}</span>
+            {/* `new Date('2026-10-15')` é meia-noite UTC: no Brasil virava o dia 14. */}
+            <span className={styles.cartaoData}>{formatarDataISO(g.data_aplicacao) || '—'}</span>
           </div>
 
           <div className={styles.cartaoStatus}>
@@ -91,7 +91,7 @@ export default function PainelGarantias() {
           <div className={styles.cartaoRodape}>
             <span className={styles.cartaoTotal}>
               {g.garantia_anos ? `${g.garantia_anos} anos` : '—'}
-              {g.durabilidade_anos ? <small> · vida útil {g.durabilidade_anos} anos</small> : null}
+              {validaAte(g.data_aplicacao, g.garantia_anos) ? <small> · válida até {validaAte(g.data_aplicacao, g.garantia_anos)}</small> : null}
             </span>
             <div className={styles.cartaoAcoes}>
               <Link className={styles.botaoSecundario} to={`/validar-garantia?id=${encodeURIComponent(g.codigo_autenticacao)}`}>
