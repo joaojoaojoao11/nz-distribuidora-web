@@ -35,6 +35,7 @@ function valorTexto(lead: PromoLead, col: PromoColuna): string {
     case 'instagram': return `@${raw}`;
     case 'bool': return raw ? 'Sim' : 'Não';
     default:
+      if (col.rotulos) return col.rotulos[String(raw)] || String(raw);
       return col.key === 'perfil' ? (PERFIL_LABELS[String(raw)] || String(raw)) : String(raw);
   }
 }
@@ -115,11 +116,15 @@ export default function AdminPromoPages() {
         if (String(l[statusCol] ?? '') !== filtroStatus) return false;
       }
       if (!termo) return true;
-      return ['nome', 'telefone', 'instagram', 'email', 'cidade'].some(k =>
+      return ['nome', 'telefone', 'whatsapp', 'instagram', 'email', 'cidade'].some(k =>
         String(l[k] ?? '').toLowerCase().includes(termo),
       );
     });
   }, [leads, busca, filtroStatus, campanha]);
+
+  // Etiqueta de envio só faz sentido em campanha com brinde (tem endereço).
+  const temEndereco = campanha?.colunas.some(c => c.tipo === 'endereco') ?? false;
+  const colunasExtras = (campanha?.statusColuna ? 1 : 0) + (temEndereco ? 1 : 0);
 
   const colunasVisiveis = useMemo(
     () => campanha?.colunas.filter(c => !c.soCsv) ?? [],
@@ -295,7 +300,7 @@ export default function AdminPromoPages() {
                 <tr>
                   {colunasVisiveis.map(c => <th key={c.key}>{c.label}</th>)}
                   {campanha.statusColuna && <th>Brinde</th>}
-                  <th>Etiqueta</th>
+                  {temEndereco && <th>Etiqueta</th>}
                 </tr>
               </thead>
               <tbody>
@@ -322,27 +327,29 @@ export default function AdminPromoPages() {
                         </select>
                       </td>
                     )}
-                    <td>
-                      <button
-                        className={styles.actionBtn}
-                        onClick={() => void copiar(etiquetaEnvio(l), `etq-${l.id}`)}
-                        title="Copiar nome + endereço + telefone para colar na etiqueta"
-                      >
-                        {copiado === `etq-${l.id}` ? 'Copiado' : 'Copiar'}
-                      </button>
-                    </td>
+                    {temEndereco && (
+                      <td>
+                        <button
+                          className={styles.actionBtn}
+                          onClick={() => void copiar(etiquetaEnvio(l), `etq-${l.id}`)}
+                          title="Copiar nome + endereço + telefone para colar na etiqueta"
+                        >
+                          {copiado === `etq-${l.id}` ? 'Copiado' : 'Copiar'}
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
                 {loading && (
                   <tr>
-                    <td colSpan={colunasVisiveis.length + 2} className={styles.emptyState}>
+                    <td colSpan={colunasVisiveis.length + colunasExtras} className={styles.emptyState}>
                       Carregando...
                     </td>
                   </tr>
                 )}
                 {!loading && leadsFiltrados.length === 0 && (
                   <tr>
-                    <td colSpan={colunasVisiveis.length + 2} className={styles.emptyState}>
+                    <td colSpan={colunasVisiveis.length + colunasExtras} className={styles.emptyState}>
                       {leads.length === 0
                         ? 'Nenhum cadastro ainda nesta campanha.'
                         : 'Nenhum cadastro bate com o filtro.'}

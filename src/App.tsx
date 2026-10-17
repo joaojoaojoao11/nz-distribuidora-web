@@ -58,6 +58,11 @@ function RedirecionaM7() {
   const { search } = useLocation();
   return <Navigate to={`/sign/metamark-7-series${search}`} replace />;
 }
+/** /clas -> /colecao sem perder ?utm_* e #clã (o 302 de verdade está no vercel.json). */
+function RedirecionaClas() {
+  const { search, hash } = useLocation();
+  return <Navigate to={`/colecao${search}${hash}`} replace />;
+}
 function RedirecionaCor651() {
   const { id } = useParams();
   return <Navigate to={`/sign/oracal-651/${id ?? ''}`} replace />;
@@ -106,6 +111,7 @@ const AdminCentral = lazy(() => import('./pages/Admin/AdminCentral'));
 const WarrantyRegistration = lazy(() => import('./pages/Warranty/WarrantyRegistration'));
 const WarrantyValidator = lazy(() => import('./pages/Warranty/WarrantyValidator'));
 const Interlagos = lazy(() => import('./pages/Interlagos/Interlagos'));
+const Colecao = lazy(() => import('./pages/Colecao/Colecao'));
 const PpfPromo = lazy(() => import('./pages/Links/PpfPromo'));
 const NzGroupPromo = lazy(() => import('./pages/Links/NzGroupPromo'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -249,6 +255,9 @@ function App() {
                   <Route path="/blog" element={<BlogList />} />
                   <Route path="/blog/:slug" element={<BlogPost />} />
                   <Route path="/interlagos" element={<Interlagos />} />
+                  {/* Coleção NZPPF 2026 · Os Clãs. /clas redireciona (vercel.json + SPA abaixo). */}
+                  <Route path="/colecao" element={<Colecao />} />
+                  <Route path="/clas" element={<RedirecionaClas />} />
                   <Route path="/registro-garantia" element={<WarrantyRegistration />} />
                   <Route path="/validar-garantia" element={<WarrantyValidator />} />
                   <Route path="/contato" element={<Contact />} />

@@ -50,6 +50,7 @@ const crumbLabels: Record<string, string> = {
   '/wrap/oracal-670ra': 'Oracal 670RA',
   '/wrap/metamark-mcx': 'Metamark MCX',
   '/wrap/motos': 'Ação Envelopamento de Moto',
+  '/colecao': 'Coleção NZPPF 2026',
   '/sign/metamark-7-series': 'Metamark Série 7',
   '/ppf/luxury-gloss': 'Luxury Gloss',
   '/ppf/prime-gloss': 'Prime Gloss',
@@ -65,6 +66,7 @@ const catalogPaths = new Set([
   '/ppf', '/wrap', '/sign', '/decor', '/decor/sh', '/decor/etherna', '/blog',
   '/wrap/nzwrap-premium', '/wrap/sh-colors', '/wrap/oracal-970ra', '/sign/oracal-651',
   '/wrap/oracal-670ra', '/wrap/metamark-mcx', '/sign/metamark-7-series',
+  '/colecao',
 ]);
 
 function crumbsFor(path: string, leafLabel?: string): Array<[string, string]> {

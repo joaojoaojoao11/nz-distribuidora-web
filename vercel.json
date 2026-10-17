@@ -36,6 +36,11 @@
       "permanent": false
     },
     {
+      "source": "/clas",
+      "destination": "/colecao",
+      "permanent": false
+    },
+    {
       "source": "/blog/nzppf-guia-completo-linhas-protecao-carro-sao-paulo",
       "destination": "/blog/comparativo-nzppf-guia-tecnico-instaladores-donos-carro-sp",
       "permanent": true

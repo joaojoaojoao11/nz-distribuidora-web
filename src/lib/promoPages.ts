@@ -15,6 +15,8 @@ export interface PromoColuna {
   tipo?: ColunaTipo;
   /** Fora da tabela na tela, mas presente na exportação CSV. */
   soCsv?: boolean;
+  /** Rótulo legível para valores gravados como código (ex.: slug do clã). */
+  rotulos?: Record<string, string>;
 }
 
 export interface PromoPage {
@@ -71,6 +73,36 @@ export const PROMO_PAGES: readonly PromoPage[] = [
       { key: 'created_at', label: 'Data', tipo: 'data' },
     ],
     qrUrl: 'https://www.nzgroup.com.br/interlagos?utm_source=qrcode&utm_medium=evento&utm_campaign=festival_interlagos_2026',
+    ativa: true,
+  },
+  {
+    id: 'colecao-nzppf-2026',
+    nome: 'Coleção NZPPF 2026 · Os Clãs',
+    descricao: 'Lista de espera das 5 camisetas da coleção. Lançamento quinta, 29/10/2026, às 18h: quem está na lista recebe o aviso primeiro no WhatsApp.',
+    path: '/colecao',
+    aliases: ['/clas'],
+    periodo: '19 a 29 de outubro de 2026',
+    local: 'Site e Instagram @nzppf',
+    tabela: 'leads_colecao_2026',
+    colunas: [
+      { key: 'nome', label: 'Nome' },
+      { key: 'whatsapp', label: 'WhatsApp', tipo: 'telefone' },
+      {
+        key: 'cla',
+        label: 'Clã',
+        rotulos: {
+          'sol-nascente': 'Nº 01 · Sol Nascente',
+          detalhe: 'Nº 02 · Detalhe',
+          'meia-noite': 'Nº 03 · Meia-Noite',
+          fumaca: 'Nº 04 · Fumaça',
+          'night-riders': 'Nº 05 · Night Riders',
+        },
+      },
+      { key: 'origem', label: 'Origem' },
+      { key: 'utm_campaign', label: 'Campanha', soCsv: true },
+      { key: 'created_at', label: 'Data', tipo: 'data' },
+    ],
+    qrUrl: 'https://www.nzgroup.com.br/colecao?utm_source=qr&utm_campaign=colecao2026',
     ativa: true,
   },
 ];

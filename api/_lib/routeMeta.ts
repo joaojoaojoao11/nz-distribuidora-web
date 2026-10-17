@@ -7,6 +7,8 @@ export interface RouteMeta {
   title: string;
   description: string;
   noindex?: boolean;
+  /** URL absoluta da imagem de compartilhamento (og:image). Sem ela, vale a padrão. */
+  image?: string;
 }
 
 export const routeMeta: Record<string, RouteMeta> = {
@@ -129,6 +131,13 @@ export const routeMeta: Record<string, RouteMeta> = {
   '/termos': {
     title: 'Termos de Uso',
     description: 'Condições de uso do site da NZ Distribuidora: conteúdo, garantias, registro de produtos e responsabilidades.',
+  },
+  // Campanha: Coleção NZPPF 2026 · Os Clãs (lançamento 29/10/2026, 18h). Espelha o
+  // SEO de src/pages/Colecao/colecaoConfig.ts (SEO_TITULO / SEO_DESCRICAO).
+  '/colecao': {
+    title: 'Coleção NZPPF 2026 · Os Clãs',
+    description: 'Cinco camisetas pretas, cinco clãs. Conheça a Coleção NZPPF 2026, leia a lenda de cada estampa e entre na lista do lançamento: quinta, 29/10, às 18h.',
+    image: 'https://www.nzgroup.com.br/assets/images/colecao-2026/fila-5-clas.webp',
   },
   // Campanha de evento: página de QR Code do estande, não deve ser indexada
   // (o brinde é para quem está no festival), mas precisa de OG para compartilhamento.

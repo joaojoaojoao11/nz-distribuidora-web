@@ -40,6 +40,7 @@ export default async function handler(_req: Request) {
     '/wrap/oracal-670ra',
     '/wrap/metamark-mcx',
     '/wrap/motos',
+    '/colecao',
     '/sign/metamark-7-series',
     '/sign',
     '/decor',

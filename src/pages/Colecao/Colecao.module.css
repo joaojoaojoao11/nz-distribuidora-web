@@ -1,0 +1,1301 @@
+/* Coleção NZPPF 2026 · Os Clãs — escuro, cinematográfico, celular primeiro.
+   Cada seção de clã recebe --cla (acento), --cla-texto (texto sobre o
+   acento) e --cla-brilho (luz de fundo) por style inline, de colecaoConfig.ts. */
+
+.page {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  /* `clip` não cria contêiner de rolagem: corta sobra lateral sem quebrar
+     o position: sticky da foto dos clãs. */
+  overflow-x: clip;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.semFoco:focus {
+  outline: none;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.secTitulo {
+  margin: 12px 0 16px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(2rem, 7.5vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.intro {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* ------------------------------------------------------------- botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 52px;
+  max-width: 100%;
+  padding: 0.7rem 1.6rem;
+  border-radius: 999px;
+  font-family: var(--font-tech);
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition:
+    background-color var(--transition-snappy),
+    border-color var(--transition-snappy),
+    transform var(--transition-snappy),
+    box-shadow var(--transition-snappy);
+}
+
+.btn svg {
+  flex-shrink: 0;
+}
+
+.btn:focus-visible,
+.cartao:focus-visible,
+.lendaResumo:focus-visible,
+.galeriaRolagem:focus-visible,
+.linkTexto:focus-visible {
+  outline: 2px solid var(--cla, #f5f5f7);
+  outline-offset: 3px;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.btnPrimario {
+  background: #f5f5f7;
+  color: #050505;
+}
+
+.btnSecundario {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(5, 5, 5, 0.3);
+  color: #f5f5f7;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.btnCla {
+  background: var(--cla, #f5f5f7);
+  color: var(--cla-texto, #050505);
+  letter-spacing: 0.06em;
+}
+
+@media (hover: hover) {
+  .btnPrimario:hover:not(:disabled) {
+    background: #fff;
+    transform: translateY(-1px);
+  }
+
+  .btnSecundario:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .btnCla:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 30px var(--cla-brilho, rgba(255, 255, 255, 0.15));
+  }
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Celular: os dois botões lado a lado, para caber na primeira tela. */
+@media (max-width: 479px) {
+  .ctas .btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+  }
+}
+
+/* --------------------------------------------------------------- hero */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #000;
+}
+
+.heroMidia {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroVeu {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(5, 5, 5, 0) 18%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0) 26%, rgba(5, 5, 5, 0.62) 44%, rgba(5, 5, 5, 0.9) 66%, var(--bg-primary) 100%);
+}
+
+/* Tela deitada: o vídeo 16:9 mostra as 5 camisetas lado a lado — escurece a
+   esquerda, onde fica o texto, e deixa as da direita aparecerem. */
+@media (orientation: landscape) {
+  .heroVeu {
+    background:
+      linear-gradient(90deg, rgba(5, 5, 5, 0.94) 0%, rgba(5, 5, 5, 0.8) 30%, rgba(5, 5, 5, 0.35) 48%, rgba(5, 5, 5, 0) 64%),
+      linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(5, 5, 5, 0) 20%),
+      linear-gradient(180deg, rgba(5, 5, 5, 0) 50%, rgba(5, 5, 5, 0.7) 80%, var(--bg-primary) 100%);
+  }
+}
+
+.heroConteudo {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 16px 36px;
+  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.55);
+}
+
+.heroConteudo .btn {
+  text-shadow: none;
+}
+
+.heroTitulo {
+  margin: 14px 0 14px;
+  max-width: 9ch;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(2.75rem, 12.5vw, 6.75rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.heroSub {
+  margin: 0 0 22px;
+  max-width: 34ch;
+  font-size: clamp(1rem, 3.6vw, 1.2rem);
+  line-height: 1.5;
+  color: rgba(245, 245, 247, 0.86);
+}
+
+.heroContagem {
+  margin-bottom: 22px;
+}
+
+.heroData {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  font-family: var(--font-tech);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.heroData::before {
+  content: '';
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e0322b;
+  box-shadow: 0 0 0 4px rgba(224, 50, 43, 0.22);
+  animation: pulso 2.2s ease-in-out infinite;
+}
+
+@keyframes pulso {
+  50% {
+    box-shadow: 0 0 0 7px rgba(224, 50, 43, 0);
+  }
+}
+
+.heroStatus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 0 0 22px;
+  font-family: var(--font-tech);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+}
+
+.heroStatusSelo {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f5f5f7;
+  color: #050505;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Celular: o botão flutuante do WhatsApp mora no canto de baixo — os botões
+   do hero sobem para não ficar embaixo dele. */
+@media (max-width: 767px) {
+  .heroConteudo {
+    padding-bottom: 84px;
+  }
+
+  .heroTitulo {
+    margin: 10px 0 10px;
+  }
+
+  .heroSub,
+  .heroContagem,
+  .heroStatus {
+    margin-bottom: 18px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .heroConteudo {
+    padding-bottom: 72px;
+  }
+}
+
+/* ------------------------------------------------ qual é o seu clã? */
+.escolha {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 16px 8px;
+  scroll-margin-top: 16px;
+}
+
+.cartoes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartoes > li {
+  min-width: 0;
+}
+
+@media (min-width: 560px) {
+  .cartoes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .cartoes {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.cartao {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 18px 16px 16px;
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--cla-brilho), rgba(255, 255, 255, 0.015) 60%);
+  overflow: hidden;
+  transition: border-color var(--transition-snappy), transform var(--transition-snappy);
+}
+
+.cartao::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--cla);
+}
+
+@media (hover: hover) {
+  .cartao:hover {
+    border-color: var(--cla);
+    transform: translateY(-2px);
+  }
+}
+
+.cartaoSimbolo {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  aspect-ratio: 3 / 1;
+  margin: 4px 0 10px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.cartaoNum {
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cla);
+}
+
+.cartaoNome {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.cartaoDica {
+  font-size: 0.93rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.cartaoIr {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 10px;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------ seção do clã */
+.cla {
+  position: relative;
+  isolation: isolate;
+  padding-top: 96px;
+  /* Negativo: ao pular para o clã, a foto encosta logo abaixo do menu fixo
+     (pula o respiro de cima da seção). */
+  scroll-margin-top: -32px;
+}
+
+@media (min-width: 1024px) {
+  .cla {
+    scroll-margin-top: -8px;
+  }
+}
+
+.cla::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: -1;
+  height: 70%;
+  max-height: 900px;
+  pointer-events: none;
+  background: radial-gradient(70% 50% at 15% 22%, var(--cla-brilho), transparent 70%);
+  /* A luz nasce aos poucos: sem isto a borda de cima da seção vira uma linha. */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 220px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 220px);
+}
+
+.claInvertida::before {
+  background: radial-gradient(70% 50% at 85% 22%, var(--cla-brilho), transparent 70%);
+}
+
+.claGrade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Celular: a foto vai de ponta a ponta. */
+.claArte {
+  position: relative;
+  margin: 0 -16px;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #0b0b0d;
+}
+
+.claArte img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.claArte::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 38%;
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0), rgba(5, 5, 5, 0.85));
+  pointer-events: none;
+}
+
+.claArteNum {
+  position: absolute;
+  z-index: 1;
+  left: 16px;
+  bottom: 6px;
+  font-family: var(--font-tech);
+  font-weight: 700;
+  font-size: clamp(4.5rem, 24vw, 8rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--cla);
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55);
+}
+
+@media (min-width: 600px) {
+  .claArte {
+    width: 100%;
+    max-width: 540px;
+    margin: 0;
+    border: 1px solid var(--border-light);
+    border-radius: 22px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .claGrade {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 64px;
+    align-items: start;
+  }
+
+  /* A foto acompanha a leitura do texto ao lado. */
+  .claArte {
+    position: sticky;
+    top: 104px;
+  }
+
+  .claInvertida .claArte {
+    order: 2;
+  }
+}
+
+.claTexto {
+  min-width: 0;
+}
+
+.claNumero {
+  margin: 0;
+  font-family: var(--font-tech);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--cla);
+}
+
+.claNome {
+  margin: 10px 0 0;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(2.3rem, 9vw, 4.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.bloco {
+  margin-top: 36px;
+}
+
+.blocoTitulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.blocoTitulo::before {
+  content: '';
+  flex-shrink: 0;
+  width: 18px;
+  height: 2px;
+  background: var(--cla);
+}
+
+.texto p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.72;
+  color: rgba(245, 245, 247, 0.82);
+}
+
+.texto p + p {
+  margin-top: 14px;
+}
+
+.texto strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.texto em {
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+/* Ficha: rótulo à esquerda, valor à direita. */
+.ficha {
+  margin: 0;
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.fichaLinha {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 12px;
+  padding: 13px 16px;
+}
+
+.fichaLinha + .fichaLinha {
+  border-top: 1px solid var(--border-light);
+}
+
+.fichaLinha dt {
+  padding-top: 3px;
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.fichaLinha dd {
+  margin: 0;
+  font-size: 0.97rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+@media (min-width: 600px) {
+  .fichaLinha {
+    grid-template-columns: 9rem minmax(0, 1fr);
+    padding: 14px 20px;
+  }
+}
+
+.citacao {
+  margin: 0 0 16px;
+  padding: 4px 0 4px 18px;
+  border-left: 2px solid var(--cla);
+}
+
+.citacao p {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 4.4vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+/* Lenda: <details>, fechada no celular e aberta no computador. */
+.lenda {
+  margin-top: 36px;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.lendaResumo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 6px 0;
+  list-style: none;
+  cursor: pointer;
+}
+
+.lendaResumo::-webkit-details-marker {
+  display: none;
+}
+
+.lendaResumo .blocoTitulo {
+  margin: 0;
+}
+
+.lendaAcao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.lendaAcao svg {
+  transition: transform 0.25s ease;
+}
+
+.lenda[open] .lendaAcao svg {
+  transform: rotate(180deg);
+}
+
+.lendaCorpo {
+  padding: 4px 0 24px;
+}
+
+.lendaCorpo p:first-child::first-letter {
+  float: left;
+  margin: 6px 10px 0 0;
+  font-family: var(--font-heading);
+  font-size: 3.3rem;
+  font-weight: 700;
+  line-height: 0.85;
+  color: var(--cla);
+}
+
+.claCta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+@media (max-width: 479px) {
+  .claCta .btn {
+    width: 100%;
+  }
+}
+
+.claNota {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.claPreco {
+  font-family: var(--font-tech);
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+/* Galeria: rola de lado no celular, grade de 6 no computador. */
+.galeria {
+  max-width: 1200px;
+  margin: 48px auto 0;
+  padding: 0 16px;
+}
+
+.galeriaTitulo {
+  margin: 0 0 14px;
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.galeriaRolagem {
+  margin: 0 -16px;
+  padding: 0 16px 10px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.galeriaLista {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 46%;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.galeriaLista > li {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 600px) {
+  .galeriaLista {
+    grid-auto-columns: 30%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .galeriaRolagem {
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .galeriaLista {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+.galeriaItem {
+  margin: 0;
+}
+
+.galeriaQuadro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  background: #0c0c0e;
+  overflow: hidden;
+}
+
+.galeriaQuadro img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.conter {
+  background: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.07), #0a0a0b 72%);
+}
+
+.conter img {
+  width: 86%;
+  height: 86%;
+  object-fit: contain;
+}
+
+.galeriaItem figcaption {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+/* ------------------------------------------------------------- o kit */
+.kit {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 16px 0;
+}
+
+.kitGrade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
+}
+
+@media (min-width: 1024px) {
+  .kitGrade {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 64px;
+    align-items: center;
+  }
+}
+
+.kitLista {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kitLista li {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border-light);
+}
+
+.kitLista li:last-child {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.kitLista strong {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+
+.kitLista span:not(.kitNum) {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+
+.kitNum {
+  padding-top: 4px;
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.kitPreco {
+  margin: 20px 0 0;
+  font-family: var(--font-tech);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+}
+
+.kitFotos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kitFotos > li {
+  min-width: 0;
+}
+
+.kitFotos figure {
+  margin: 0;
+}
+
+.kitQuadro {
+  aspect-ratio: 9 / 16;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  background: #0c0c0e;
+  overflow: hidden;
+}
+
+.kitQuadro img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.kitFotos figcaption {
+  margin-top: 8px;
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+@media (min-width: 600px) {
+  .kitFotos {
+    gap: 14px;
+    padding-bottom: 28px;
+  }
+
+  /* Tríptico desencontrado. */
+  .kitFotos > li:nth-child(2) {
+    transform: translateY(28px);
+  }
+}
+
+/* ---------------------------------------------------------- o filme */
+.filme {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 16px 0;
+}
+
+.filmeGrade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 28px;
+  text-align: center;
+}
+
+.filmeTexto .intro {
+  margin: 0 auto;
+}
+
+.filmeQuadro {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 9 / 16;
+  border: 1px solid var(--border-strong);
+  border-radius: 22px;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.filmeVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+@media (min-width: 1024px) {
+  .filmeGrade {
+    grid-template-columns: minmax(0, 1fr) auto;
+    justify-items: start;
+    align-items: center;
+    gap: 64px;
+    text-align: left;
+  }
+
+  .filmeTexto .intro {
+    margin: 0;
+  }
+
+  /* Cabe inteiro na altura da tela. */
+  .filmeQuadro {
+    width: min(400px, calc(80vh * 9 / 16));
+  }
+}
+
+/* --------------------------------------------------- lista de espera */
+.lista {
+  padding: 120px 16px 120px;
+  scroll-margin-top: -24px;
+}
+
+.listaGrade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .listaGrade {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
+    gap: 64px;
+    align-items: center;
+  }
+}
+
+.listaContagem {
+  margin-top: 24px;
+}
+
+.listaCartao {
+  position: relative;
+  padding: 24px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 22px;
+  background:
+    radial-gradient(120% 60% at 50% 0%, var(--cla-brilho, rgba(255, 255, 255, 0.04)), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+@media (min-width: 600px) {
+  .listaCartao {
+    padding: 32px;
+  }
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.campo {
+  display: grid;
+  gap: 6px;
+}
+
+.campo label {
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: rgba(5, 5, 5, 0.6);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  /* 16px: abaixo disso o iPhone dá zoom ao focar. */
+  font-size: 16px;
+  /* Foco vindo da validação não pode parar atrás do menu fixo. */
+  scroll-margin: 120px 0 32px;
+  transition: border-color var(--transition-snappy), box-shadow var(--transition-snappy);
+}
+
+.campo input::placeholder {
+  color: var(--text-muted);
+}
+
+.campo input:focus-visible,
+.campo select:focus-visible {
+  outline: none;
+  border-color: var(--cla, #f5f5f7);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.campo [aria-invalid='true'] {
+  border-color: #ff6b6b;
+}
+
+.selectCaixa {
+  position: relative;
+}
+
+.selectCaixa select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 44px;
+  cursor: pointer;
+}
+
+.selectCaixa select option {
+  background: #111;
+  color: #f5f5f7;
+}
+
+.selectCaixa svg {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.campoErro {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: #ff8a80;
+}
+
+.aceite {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.aceite input {
+  width: 22px;
+  height: 22px;
+  margin: 2px 0 0;
+  scroll-margin: 120px 0 32px;
+  accent-color: var(--cla, #f5f5f7);
+  cursor: pointer;
+}
+
+.aceite label {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: rgba(245, 245, 247, 0.86);
+  cursor: pointer;
+}
+
+.privacidade {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.privacidade a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.formErro {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 90, 90, 0.35);
+  border-radius: 12px;
+  background: rgba(255, 90, 90, 0.08);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #ffb4ab;
+}
+
+.formErro svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.btnEnviar {
+  width: 100%;
+}
+
+.girando {
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sucesso {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  text-align: center;
+}
+
+.sucessoIcone {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--cla, #f5f5f7);
+  color: var(--cla-texto, #050505);
+}
+
+.sucessoTitulo {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.sucesso p {
+  margin: 0;
+  max-width: 34ch;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.sucessoCla strong {
+  color: var(--cla, var(--text-primary));
+}
+
+.linkTexto {
+  min-height: 44px;
+  padding: 0 8px;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ------------------------------------------- fechamento pós-lançamento */
+.final {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 16px 120px;
+  text-align: center;
+}
+
+.final .intro {
+  margin: 0 auto 24px;
+}
+
+.final .ctas {
+  justify-content: center;
+}
+
+/* ------------------------------------------------- movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .heroData::before,
+  .girando {
+    animation: none;
+  }
+
+  .btn,
+  .cartao,
+  .lendaAcao svg {
+    transition: none;
+  }
+}
