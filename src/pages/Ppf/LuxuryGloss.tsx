@@ -6,7 +6,7 @@ import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
 import PpfPortfolioButton from './PpfPortfolioButton';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './LuxuryGloss.module.css';
-import { supabase } from '../../lib/supabase';
+import { enviarLead } from '../../lib/leads';
 
 const seoDescription = 'PPF TPU alifático com nano-revestimento japonês: +32% de brilho, regeneração térmica e autolimpeza. 190μ e 12 anos de garantia. Para instaladores exigentes.';
 const productSchema = JSON.stringify({
@@ -74,12 +74,7 @@ export default function LuxuryGloss() {
     e.preventDefault();
     setSubmitStatus('loading');
     try {
-      await supabase.from('leads').insert({ name: formData.name, email: formData.email, phone: formData.phone, source: 'NZPPF Luxury - Cupom Surpresa' });
-      await fetch('https://formsubmit.co/ajax/joaovitor@nzdistribuidora.com.br', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ Nome: formData.name, Whatsapp: formData.phone, Email: formData.email, _subject: 'Novo Lead: Cupom Surpresa NZPPF Luxury' })
-      });
+      await enviarLead('cupom', { name: formData.name, email: formData.email, phone: formData.phone, source: 'NZPPF Luxury - Cupom Surpresa' });
       setSubmitStatus('success');
       setTimeout(() => { setIsOfferModalOpen(false); setSubmitStatus('idle'); }, 3000);
     } catch (error) { console.error(error); setSubmitStatus('error'); }

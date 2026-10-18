@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { supabase } from '../../lib/supabase';
+import { enviarLead } from '../../lib/leads';
 import BrazilMap from '../../components/BrazilMap/BrazilMap';
 import SEO from '../../components/SEO/SEO';
 import styles from './FindInstaller.module.css';
@@ -221,10 +221,10 @@ export default function FindInstaller() {
     const state = placeRef.current?.state || parsed.state;
     const city = placeRef.current?.city || parsed.city;
     try {
-      // supabase-js não lança em erro de RLS/rede: devolve { error }. Antes o
-      // insert falhava em silêncio e a tela de sucesso aparecia mesmo assim —
-      // o lead se perdia sem ninguém saber.
-      const { error } = await supabase.from('installer_leads').insert({
+      // Grava pelo servidor (/api/nz/lead), que também avisa a NZ por e-mail.
+      // Antes o lead ia direto para uma tabela que nenhuma tela mostrava e
+      // ninguém era avisado.
+      await enviarLead('aplicador', {
         full_name: fullName.trim(),
         whatsapp,
         state: state || null,
@@ -233,7 +233,6 @@ export default function FindInstaller() {
         service_type: serviceType,
         notes: notes.trim() || null,
       });
-      if (error) throw error;
       setSubmittedName(fullName.trim().split(' ')[0]);
       setSuccess(true);
     } catch (err) {

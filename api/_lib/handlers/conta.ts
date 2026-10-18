@@ -28,6 +28,7 @@ import { consultarDocumento, registrarLog, vincularComErp, type PerfilVinculo } 
 import { emailVerificado } from '../conta/emailVerificado.js';
 import { clienteDoUsuario, pedidosDoCliente, titulosDoCliente } from '../conta/erpHistorico.js';
 import { atribuirTitulos, titulosSemDono } from '../conta/atribuirTitulos.js';
+import { avisarCadastroNovo } from '../avisos.js';
 
 export const SITE_URL = 'https://www.nzgroup.com.br';
 
@@ -138,6 +139,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (op === 'pos-cadastro') {
     const r = await vincularComErp(site, perfil, { confirmado: await emailVerificado(site, userId) });
+    // Conta nova no site: e-mail para a NZ uma vez por usuário (o pós-cadastro
+    // roda de novo em outros logins; a chave segura). Admin não avisa.
+    if (perfil.role !== 'admin') {
+      await avisarCadastroNovo(site, {
+        userId,
+        perfil,
+        aprovado: Boolean(perfil.is_approved) || r.aprovouAgora,
+        jaCliente: r.jaCliente,
+      });
+    }
     res.status(200).json(r);
     return;
   }

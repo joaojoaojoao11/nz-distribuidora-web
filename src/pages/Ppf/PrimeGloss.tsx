@@ -6,7 +6,7 @@ import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
 import PpfPortfolioButton from './PpfPortfolioButton';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './PrimeGloss.module.css';
-import { supabase } from '../../lib/supabase';
+import { enviarLead } from '../../lib/leads';
 
 const seoDescription = 'PPF de TPU 100% virgem com revestimento nano-dúplex, regeneração térmica e repelência. 190μ e 10 anos de garantia para proteção de pintura premium.';
 const productSchema = JSON.stringify({
@@ -75,12 +75,7 @@ export default function PrimeGloss() {
     e.preventDefault();
     setSubmitStatus('loading');
     try {
-      await supabase.from('leads').insert({ name: formData.name, email: formData.email, phone: formData.phone, source: 'NZPPF Prime - Cupom Surpresa' });
-      await fetch('https://formsubmit.co/ajax/joaovitor@nzdistribuidora.com.br', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ Nome: formData.name, Whatsapp: formData.phone, Email: formData.email, _subject: 'Novo Lead: Cupom Surpresa NZPPF Prime' })
-      });
+      await enviarLead('cupom', { name: formData.name, email: formData.email, phone: formData.phone, source: 'NZPPF Prime - Cupom Surpresa' });
       setSubmitStatus('success');
       setTimeout(() => { setIsOfferModalOpen(false); setSubmitStatus('idle'); }, 3000);
     } catch (error) { console.error(error); setSubmitStatus('error'); }

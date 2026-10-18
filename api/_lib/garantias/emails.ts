@@ -7,16 +7,17 @@
 // Fundo escuro com `bgcolor` nas tabelas — é o que o Outlook respeita.
 //
 // O visual segue o certificado do site: tinta preta, rótulos pequenos, um
-// botão vermelho, e o dourado uma vez só, no selo dos anos.
+// botão vermelho, e o dourado uma vez só, no selo dos anos. As peças de
+// layout são exportadas para os avisos à NZ (api/_lib/avisos.ts).
 
 import { esc } from '../email.js';
 import { dataBr, dataHoraBr, fotoDaGarantia, mascararEmail, nomeDeExibicao, primeiroNome, textoDaCobertura, validaAte, type Garantia } from './dados.js';
 
 export const SITE = (process.env.SITE_URL || 'https://www.nzgroup.com.br').replace(/\/$/, '');
 
-const FONTE = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const MONO = "'SFMono-Regular', Menlo, Consolas, 'Courier New', monospace";
-const COR = {
+export const FONTE = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+export const MONO = "'SFMono-Regular', Menlo, Consolas, 'Courier New', monospace";
+export const COR = {
   fundo: '#050505',
   cartao: '#0e0e0e',
   documento: '#080808',
@@ -43,7 +44,7 @@ const logoDaLinha = (g: Pick<Garantia, 'linha_escolhida'>) =>
 
 // ------------------------------------------------------------------ peças
 
-function rotulo(t: string, cor = COR.mudo): string {
+export function rotulo(t: string, cor = COR.mudo): string {
   return `<div style="font-family:${FONTE};font-size:10px;line-height:14px;letter-spacing:1.6px;text-transform:uppercase;color:${cor};">${esc(t)}</div>`;
 }
 
@@ -54,7 +55,7 @@ function dado(titulo: string, valor: string, largo = false): string {
   </td>`;
 }
 
-function botao(texto: string, href: string): string {
+export function botao(texto: string, href: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0;">
     <tr><td bgcolor="${COR.vermelho}" style="border-radius:10px;">
       <a href="${esc(href)}" target="_blank" style="display:inline-block;padding:16px 28px;font-family:${FONTE};font-size:13px;font-weight:bold;letter-spacing:1.6px;text-transform:uppercase;color:#ffffff;text-decoration:none;border-radius:10px;">${esc(texto)}</a>
@@ -62,7 +63,7 @@ function botao(texto: string, href: string): string {
   </table>`;
 }
 
-function divisoria(): string {
+export function divisoria(): string {
   return `<tr><td style="padding:0;"><div style="height:1px;line-height:1px;font-size:1px;background:${COR.borda};">&nbsp;</div></td></tr>`;
 }
 
@@ -81,7 +82,7 @@ function rodape(protocolo: string, motivo: string): string {
   </td></tr>`;
 }
 
-function pagina(titulo: string, preheader: string, corpo: string): string {
+export function pagina(titulo: string, preheader: string, corpo: string): string {
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -115,7 +116,7 @@ ${corpo}
 </html>`;
 }
 
-function topo(direita: string): string {
+export function topo(direita: string): string {
   return `<tr><td style="padding:0 4px 18px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
       <td valign="middle"><img src="${SITE}/assets/email/logo-nz.png" width="66" height="28" alt="NZ" style="display:block;width:66px;height:28px;border:0;outline:none;" /></td>

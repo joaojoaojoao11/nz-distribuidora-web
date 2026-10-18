@@ -22,6 +22,7 @@ import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'node:crypto';
 import { resolverPapelDetalhado, type Db } from '../papel.js';
 import { abrirOcorrencia } from '../ocorrencias.js';
+import { avisarProblema } from '../avisos.js';
 import { estaAgendado } from '../loja/visibilidade.js';
 
 const MOTIVOS: Record<string, string> = {
@@ -158,6 +159,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(500).json({ error: 'nao-consegui-registrar' });
     return;
   }
+  await avisarProblema(site, {
+    produto: produto.nome ?? slug,
+    slug,
+    motivo: MOTIVOS[motivo]!,
+    mensagem,
+    contato: contatoFinal,
+    url: typeof body.url === 'string' ? body.url.slice(0, 500) : '',
+    temImagem: Boolean(imagemPath),
+  });
   res.status(200).json({ ok: true });
 }
 

@@ -17,6 +17,7 @@
     "checkout:test": "node scripts/test-checkout.mjs",
     "conta:test": "node scripts/test-conta.mjs",
     "garantia:test": "node scripts/test-garantia.mjs",
+    "avisos:test": "node scripts/test-avisos.mjs",
     "midia:test": "node scripts/test-midia.mjs",
     "carrinho:test": "node scripts/test-carrinho.mjs",
     "painel:test": "node scripts/test-painel.mjs",

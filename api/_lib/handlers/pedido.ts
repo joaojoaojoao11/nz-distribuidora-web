@@ -22,6 +22,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado } from '../papel.js';
+import { avisarPedidoNovo } from '../avisos.js';
 import {
   carregarPerfil,
   codigoDoAfiliado,
@@ -162,6 +163,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     .update({ status: 'SOLICITADO', erp_envio: 'pendente', status_atualizado_em: new Date().toISOString() })
     .eq('id', pedido.id);
   if (cupom.codigo) await site.rpc('cupom_consumir', { p_codigo: cupom.codigo });
+
+  // Ninguém ficava sabendo do pedido parado esperando despacho: agora chega
+  // um e-mail para a NZ. Nunca derruba o pedido (avisos.ts).
+  await avisarPedidoNovo(site, {
+    pedidoId: pedido.id,
+    numero: pedido.numero,
+    cliente: perfil,
+    itens: linhas.map((l) => ({ nome: l.produto.nome, sku: l.e.sku, qtd: l.item.qtd, unidade: l.item.unidade, total: l.total })),
+    subtotal,
+    desconto: cupom.desconto,
+    total: totalEstimado,
+    cupom: cupom.codigo,
+    afiliado: afiliadoCodigo,
+    frete,
+    observacoes,
+  });
 
   res.status(200).json({ ok: true, numero: pedido.numero, status: 'SOLICITADO', totalEstimado, desconto: cupom.desconto, afiliado: afiliadoCodigo });
 }

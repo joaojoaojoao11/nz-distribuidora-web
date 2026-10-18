@@ -37,6 +37,7 @@ import patio from '../_lib/handlers/patio.js';
 import promoMoto from '../_lib/handlers/promoMoto.js';
 import lente from '../_lib/handlers/lente.js';
 import garantia from '../_lib/handlers/garantia.js';
+import lead from '../_lib/handlers/lead.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -90,6 +91,9 @@ const ROTAS: Record<string, Handler> = {
   // Registro de garantia (público, vira protocolo pendente), aprovação e envio
   // do certificado por e-mail (admin), e o PNG do QR que vai no e-mail.
   garantia,
+  // Pedido de aplicador e cupom surpresa das páginas NZPPF. Público, com
+  // honeypot e limite por IP; grava e avisa a NZ por e-mail.
+  lead,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

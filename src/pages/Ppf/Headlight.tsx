@@ -6,7 +6,7 @@ import PpfFaqSection from '../../components/Ppf/PpfFaqSection';
 import PpfPortfolioButton from './PpfPortfolioButton';
 import { SITE_URL } from '../../lib/siteConfig';
 import styles from './Headlight.module.css';
-import { supabase } from '../../lib/supabase';
+import { enviarLead } from '../../lib/leads';
 
 const seoDescription = 'PPF para faróis com estabilização UV em 3 tonalidades. Personalize o farol sem comprometer a luminosidade. 10 anos de garantia NZPPF.';
 const productSchema = JSON.stringify({
@@ -74,12 +74,7 @@ export default function Headlight() {
     e.preventDefault();
     setSubmitStatus('loading');
     try {
-      await supabase.from('leads').insert({ name: formData.name, email: formData.email, phone: formData.phone, source: 'NZPPF Headlight - Cupom Surpresa' });
-      await fetch('https://formsubmit.co/ajax/joaovitor@nzdistribuidora.com.br', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ Nome: formData.name, Whatsapp: formData.phone, Email: formData.email, _subject: 'Novo Lead: Cupom Surpresa NZPPF Headlight' })
-      });
+      await enviarLead('cupom', { name: formData.name, email: formData.email, phone: formData.phone, source: 'NZPPF Headlight - Cupom Surpresa' });
       setSubmitStatus('success');
       setTimeout(() => { setIsOfferModalOpen(false); setSubmitStatus('idle'); }, 3000);
     } catch (error) { console.error(error); setSubmitStatus('error'); }

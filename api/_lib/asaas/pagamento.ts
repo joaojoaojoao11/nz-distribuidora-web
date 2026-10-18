@@ -16,6 +16,7 @@
 
 import type { Db } from '../papel.js';
 import { despacharAoErp } from '../pedido/despachoErp.js';
+import { avisarPagamentoConfirmado, type ClienteAviso } from '../avisos.js';
 import {
   asaasEnv,
   AsaasError,
@@ -430,6 +431,22 @@ export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dado
   // tenta de novo — o pedido não pode quebrar por causa disso.
   const d = await despacharAoErp(site, p.pedido_id, 'pago');
   if (!d.ok && d.estado === 'erro') console.warn('[pagamento] ERP não avisado (cron tenta de novo):', d.message);
+
+  // E-mail para a NZ, uma vez por cobrança (a chave segura webhook + cron).
+  const { data: pedAviso } = await site.from('pedidos').select('numero, user_id').eq('id', p.pedido_id).maybeSingle();
+  const pa = pedAviso as { numero: number | null; user_id: string | null } | null;
+  const { data: cliAviso } = pa?.user_id
+    ? await site.from('user_profiles').select('full_name, company_name, email, phone, address_city, address_state').eq('id', pa.user_id).maybeSingle()
+    : { data: null };
+  await avisarPagamentoConfirmado(site, {
+    pagamentoId: p.id,
+    numero: pa?.numero ?? null,
+    cliente: (cliAviso as ClienteAviso | null) ?? null,
+    valor: Number(p.valor),
+    forma: p.forma,
+    parcelas: p.parcelas,
+    erp: { ok: d.ok, estado: d.estado, quoteNumber: d.quoteNumber ?? null },
+  });
   return { ...p, ...patch };
 }
 
