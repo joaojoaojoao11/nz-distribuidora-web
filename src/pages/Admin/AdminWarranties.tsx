@@ -449,130 +449,248 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
 }
 
 // ------------------------------------------------------------------ PDF
-// O certificado em PDF (A4 deitado) do Admin antigo, para a via impressa.
-// Corrigido: a data da aplicação passava por new Date() e saía um dia antes.
+// O certificado em PDF e a etiqueta de envio, IGUAIS ao Admin anterior
+// (restaurados de 7410907 a pedido do João — o layout de impressão não muda
+// sem autorização dele). Diferenças, só as obrigatórias: campos que agora podem
+// vir nulos e a data da aplicação, que passava por new Date() e saía um dia
+// antes no Brasil.
 
-async function baixarPdf(w: Warranty) {
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  doc.setFillColor(15, 15, 17);
+async function baixarPdf(warranty: Warranty) {
+  const doc = new jsPDF({
+    orientation: 'landscape',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  // Background
+  doc.setFillColor(15, 15, 17); // tactical dark
   doc.rect(0, 0, 297, 210, 'F');
-  doc.setDrawColor(212, 175, 55);
+
+  // Inner Border
+  doc.setDrawColor(212, 175, 55); // Gold
   doc.setLineWidth(0.5);
   doc.rect(10, 10, 277, 190);
-
+  
+  // Header text
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(26);
   doc.text('CERTIFICADO OFICIAL DE GARANTIA', 20, 30);
+  
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(11);
   doc.setTextColor(180, 180, 180);
-  doc.text(`NZ DISTRIBUIDORA E IMPORTADORA LTDA  |  PROTOCOLO ${w.protocolo ?? ''}`, 20, 38);
+  doc.text('NZ DISTRIBUIDORA E IMPORTADORA LTDA | SISTEMA DE AUTENTICAÇÃO E RASTREABILIDADE', 20, 38);
+
   doc.setDrawColor(100, 100, 100);
   doc.setLineWidth(0.2);
   doc.line(20, 48, 277, 48);
 
-  const par = (rotulo: string, valor: string, x: number, y: number, tamanho = 14) => {
+  // Grid details
+  const drawLabelValue = (label: string, value: string, x: number, y: number) => {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
-    doc.text(rotulo, x, y);
-    doc.setFontSize(tamanho);
+    doc.text(label, x, y);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
     doc.setTextColor(255, 255, 255);
-    doc.text(doc.splitTextToSize(valor, 80), x, y + 7);
+    // Limit length or generic text wrap if needed, but these are short
+    doc.text(value, x, y + 7);
   };
 
+  // ROW 1: PROPRIETÁRIO (DESTAQUE MÁXIMO)
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8);
   doc.setTextColor(130, 130, 130);
-  doc.text('PROPRIETÁRIO', 20, 65);
+  doc.text('PROPRIETÁRIO DO VEÍCULO', 20, 65);
+  
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
-  doc.setTextColor(212, 175, 55);
-  doc.text((w.cliente_nome_completo || 'NÃO INFORMADO').toUpperCase(), 20, 73);
+  doc.setTextColor(212, 175, 55); // Destaque Ouro NZ
+  doc.text(warranty.cliente_nome_completo ? warranty.cliente_nome_completo.toUpperCase() : 'NÃO INFORMADO', 20, 73);
+
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(200, 200, 200);
-  doc.text(`DOCUMENTO: ${w.cliente_cpf}`, 20, 79);
+  doc.text(`DOCUMENTO REGISTRADO: ${warranty.cliente_cpf}`, 20, 79);
 
-  par(w.tipo_servico === 'Movel/Eletro' ? 'ITEM' : 'VEÍCULO', w.veiculo_modelo.toUpperCase(), 20, 95);
-  par(w.tipo_servico === 'Movel/Eletro' ? 'IDENTIFICAÇÃO' : 'PLACA / CHASSI', w.veiculo_placa_chassi.toUpperCase(), 110, 95);
-  par('PRODUTO', nomeDeExibicao(w.produto_nome).toUpperCase(), 190, 95);
-  par('APLICADO POR', w.aplicador_nome.toUpperCase(), 20, 115);
-  par('DATA DA APLICAÇÃO', formatarDataISO(w.data_aplicacao), 190, 115);
-  const cobertura = textoDaCobertura(w.tipo_servico ?? '', (w.areas_protegidas ?? []).filter((a) => a !== 'Veículo Completo' && a !== 'Item Completo')).toUpperCase();
-  par('COBERTURA', cobertura, 110, 115, cobertura.length > 40 ? 9 : 12);
+  // ROW 2: INFO VEÍCULO E PRODUTO
+  drawLabelValue('VEÍCULO (MODELO)', warranty.veiculo_modelo.toUpperCase(), 20, 95);
+  drawLabelValue('PLACA / CHASSI', warranty.veiculo_placa_chassi.toUpperCase(), 110, 95);
+  drawLabelValue('PRODUTO / LINHA', (warranty.produto_nome || warranty.linha_escolhida || '').toUpperCase(), 180, 95);
+  
+  // ROW 3: INSTALADOR E SERVICO
+  drawLabelValue('ESTÚDIO APLICADOR OFICIAL', warranty.aplicador_nome.toUpperCase(), 20, 115);
+  drawLabelValue('DATA DE APLICAÇÃO', formatarDataISO(warranty.data_aplicacao), 180, 115);
 
-  const anos = w.garantia_anos || 0;
-  const termos =
-    w.linha_escolhida === 'NZWrap'
-      ? `Garantia NZ contra defeitos de fabricação do vinil: ${anos} anos a partir da data de aplicação${validaAte(w.data_aplicacao, anos) ? ` (até ${validaAte(w.data_aplicacao, anos)})` : ''}, sujeita às manutenções preventivas corretas.`
-      : `Garantia NZPPF: ${anos} anos a partir da data de aplicação${validaAte(w.data_aplicacao, anos) ? ` (até ${validaAte(w.data_aplicacao, anos)})` : ''} contra amarelamento precoce, delaminação e rachaduras sob condições normais de uso, preservadas as manutenções e excluídos polimentos agressivos.`;
+  let servicoText = (warranty.tipo_servico ?? '').toUpperCase();
+  if ((warranty.tipo_servico ?? '').toUpperCase() === 'PARCIAL' && warranty.areas_protegidas && warranty.areas_protegidas.length > 0) {
+    servicoText += ` (${warranty.areas_protegidas.join(', ')})`.toUpperCase();
+  }
+  
+  let servicoFontSize = 14;
+  if (servicoText.length > 30) servicoFontSize = 10;
+  if (servicoText.length > 50) servicoFontSize = 8;
+  
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(130, 130, 130);
+  doc.text('TIPO DE SERVIÇO / COBERTURA', 110, 115);
+  doc.setFontSize(servicoFontSize);
+  doc.setTextColor(255, 255, 255);
+  const splitServico = doc.splitTextToSize(servicoText, 65);
+  doc.text(splitServico, 110, 122);
+
+  // Dynamic Warranty Terms Text
+  const termsTitle = 'TERMOS DE COBERTURA OFICIAL';
+  
+  const garAnos = warranty.garantia_anos || 0;
+  const durAnos = warranty.durabilidade_anos || 0;
+  
+  let termsText = '';
+
+  if ((warranty.linha_escolhida ?? '').toUpperCase() === 'NZWRAP') {
+    termsText = `Garantia oficial NZWrap contra defeitos de fabricação. Cobertura válida por ${garAnos || 3} ANOS a partir da data de aplicação, sujeita às avaliações técnicas e manutenções preventivas corretas. Expectativa de durabilidade: ${durAnos || 5} ANOS.`;
+  } else {
+    termsText = `Garantia Autêntica NZPPF: ${garAnos} ANOS de cobertura oficial contra amarelamento precoce, delaminação e rachaduras estruturais sob condições normais de uso. Expectativa de Vida Útil e Durabilidade: ${durAnos} ANOS, desde que preservadas as manutenções trimestrais exigidas e excluindo polimentos agressivos.`;
+  }
+
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   doc.setTextColor(212, 175, 55);
-  doc.text('TERMOS DE COBERTURA', 20, 142);
+  doc.text(termsTitle, 20, 142);
+  
   doc.setFontSize(10);
   doc.setTextColor(180, 180, 180);
-  doc.text(termos, 20, 148, { maxWidth: 250, lineHeightFactor: 1.5 });
+  doc.text(termsText, 20, 148, { maxWidth: 250, lineHeightFactor: 1.5 });
 
+  // Auth box
   doc.setFillColor(25, 25, 28);
   doc.rect(20, 160, 257, 30, 'F');
+  doc.setDrawColor(50, 50, 50);
+  doc.rect(20, 160, 257, 30);
+  
   doc.setFont('courier', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(150, 150, 150);
-  doc.text('CÓDIGO DO CERTIFICADO — CONFIRA EM NZGROUP.COM.BR/VALIDAR-GARANTIA', 25, 170);
+  doc.text('HASH DE ATIVAÇÃO / CÓDIGO DE SEGURANÇA ÚNICO:', 25, 170);
+  
   doc.setFont('courier', 'bold');
   doc.setFontSize(18);
-  doc.setTextColor(212, 175, 55);
-  doc.text(w.codigo_autenticacao, 25, 182);
+  doc.setTextColor(212, 175, 55); // Gold highlight
+  doc.text(warranty.codigo_autenticacao, 25, 182);
+
   try {
-    const qr = await QRCode.toDataURL(urlDeValidacao(w.codigo_autenticacao), { errorCorrectionLevel: 'H', margin: 0 });
-    doc.addImage(qr, 'PNG', 244, 162, 26, 26);
-  } catch {
-    /* sem QR o PDF ainda serve */
+    const validationUrl = `${window.location.origin}/validar-garantia?id=${warranty.codigo_autenticacao}`;
+    const qrDataUrl = await QRCode.toDataURL(validationUrl, {
+      errorCorrectionLevel: 'H',
+      margin: 0,
+      color: {
+        dark: '#000000',
+        light: '#ffffff'
+      }
+    });
+    doc.addImage(qrDataUrl, 'PNG', 236, 161, 28, 28);
+  } catch (qrErr) {
+    console.error("Erro ao gerar QR Code:", qrErr);
   }
-  doc.save(`Certificado_NZ_${w.protocolo ?? w.codigo_autenticacao}.pdf`);
+
+  try {
+    const logoUrl = (warranty.linha_escolhida ?? '').toUpperCase() === 'NZWRAP' 
+      ? '/assets/simbolos/LOGO-NZWRAP-BRANCO.svg' 
+      : '/assets/simbolos/LOGO-NZPPF-BRANCO.svg';
+
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    await new Promise<void>((resolve) => {
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1080;
+        canvas.height = 1080;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL('image/png');
+          // Posiciona a logo no lado superior direito, grande.
+          // A largura total da border é 287mm. x=230, y=10.
+          doc.addImage(dataUrl, 'PNG', 230, 8, 52, 52);
+        }
+        resolve();
+      };
+      img.onerror = () => resolve(); // resolve silently to not break download
+      img.src = logoUrl;
+    });
+  } catch(e) {
+    console.error('Falha ao carregar a logo para o PDF', e);
+  }
+
+  doc.save(`Certificado_NZ_${warranty.codigo_autenticacao}.pdf`);
+  return doc.output('blob');
 }
 
-function etiqueta(w: Warranty) {
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+function etiqueta(warranty: Warranty) {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4' 
+  });
+
+  // Outer Box for cutting (100x150 mm Thermal Label Ratio)
   doc.setLineWidth(0.5);
   doc.rect(5, 5, 100, 150);
+
+  // Header - Remetente
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
-  doc.text('REMETENTE', 10, 15);
+  doc.text('REMETENTE (SENDER)', 10, 15);
+  
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   doc.text('NZ DISTRIBUIDORA DE ADESIVOS LTDA', 10, 21);
+  
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.text('RUA FELIX ALVINO DA SILVA - 65', 10, 26);
   doc.text('VILA DO CONDE - BARUERI - SP', 10, 31);
   doc.text('CEP: 06445-140', 10, 36);
-  doc.line(5, 42, 105, 42);
+
+  doc.line(5, 42, 105, 42); // Line separator
+
+  // Body - Destinatario
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
-  doc.text('DESTINATÁRIO', 10, 48);
+  doc.text('DESTINATÁRIO (RECEIVER)', 10, 48);
+
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
-  const nome = doc.splitTextToSize((w.cliente_nome_completo || 'N/A').toUpperCase(), 90);
-  doc.text(nome, 10, 56);
+  const nomeDest = doc.splitTextToSize(warranty.cliente_nome_completo?.toUpperCase() || 'N/A', 90);
+  doc.text(nomeDest, 10, 56);
+
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(11);
-  let y = 56 + nome.length * 6;
-  const end = doc.splitTextToSize(`${w.cliente_endereco ?? ''}, ${w.cliente_numero ?? ''}${w.cliente_complemento ? ` - ${w.cliente_complemento}` : ''}`.toUpperCase(), 90);
-  doc.text(end, 10, y);
-  y += end.length * 5;
-  doc.text(`BAIRRO: ${(w.cliente_bairro || 'N/A').toUpperCase()}`, 10, y);
-  y += 6;
-  doc.text(`${(w.cliente_cidade ?? '').toUpperCase()} - ${(w.cliente_estado ?? '').toUpperCase()}`, 10, y);
-  y += 6;
+  let startY = 56 + (nomeDest.length * 6);
+  
+  const enderecoFormatado = `${warranty.cliente_endereco || ''}, ${warranty.cliente_numero || ''} ${warranty.cliente_complemento ? '- ' + warranty.cliente_complemento : ''}`;
+  const endArr = doc.splitTextToSize(enderecoFormatado.toUpperCase(), 90);
+  doc.text(endArr, 10, startY);
+  startY += (endArr.length * 5);
+
+  doc.text(`BAIRRO: ${warranty.cliente_bairro?.toUpperCase() || 'N/A'}`, 10, startY);
+  startY += 6;
+  doc.text(`${warranty.cliente_cidade?.toUpperCase()} - ${warranty.cliente_estado?.toUpperCase()}`, 10, startY);
+  startY += 6;
+  
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
-  doc.text(`CEP: ${w.cliente_cep || 'N/A'}`, 10, y + 4);
-  if (w.cliente_telefone) {
+  doc.text(`CEP: ${warranty.cliente_cep || 'N/A'}`, 10, startY + 4);
+
+  if (warranty.cliente_telefone) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
-    doc.text(`TEL: ${w.cliente_telefone}`, 10, y + 14);
+    doc.text(`TEL: ${warranty.cliente_telefone}`, 10, startY + 14);
   }
-  doc.save(`Etiqueta_NZ_${w.protocolo ?? w.codigo_autenticacao}.pdf`);
+
+  doc.save(`Etiqueta_Envio_NZ_${warranty.codigo_autenticacao}.pdf`);
 }
