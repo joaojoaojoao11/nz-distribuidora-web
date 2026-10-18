@@ -1,6 +1,6 @@
 -- Coleção NZPPF 2026 · Os Clãs — DADOS da loja (fase C do plano).
 --
--- >>> NÃO APLICAR antes do deploy da fase B (código) estar no ar. <<<
+-- APLICADA em 18/10/2026, depois do deploy da fase B (commit f28d003).
 -- Até lá as 20 camisetas continuam com oculto_manual = true (fora da loja).
 --
 -- Plano: NZ-AGENTES/CLEDNA/casos/2026-10-17_loja-vestuario-plano.md (seção 3.2).
