@@ -62,6 +62,8 @@ function fakeDb({ contagem = 0 } = {}) {
       if (st.op === 'insert') {
         const novo = Array.isArray(st.payload) ? st.payload[0] : st.payload;
         if (t === 'avisos_enviados' && linhas.some((l) => l.chave === novo.chave)) return { data: null, error: { code: '23505', message: 'dup' } };
+        // Espelha o NOT NULL de leads.email/phone do banco.
+        if (t === 'leads' && (novo.email == null || novo.phone == null)) return { data: null, error: { code: '23502', message: 'null value' } };
         linhas.push({ ...novo });
         return { data: novo, error: null };
       }
@@ -205,6 +207,7 @@ ok('limite por IP: 429', (await chamar({ op: 'aplicador', dados: APLICADOR }, fa
   previas['cupom'] = ultimo().html;
 }
 ok('cupom de origem estranha: 400', (await chamar({ op: 'cupom', dados: { name: 'Ana', email: 'a@b.com', source: 'qualquer' } })).res.json?.error === 'origem-invalida');
+ok('cupom só com telefone grava (e-mail vazio, não nulo)', (await chamar({ op: 'cupom', dados: { name: 'Ana', email: '', phone: '(11) 98888-7777', source: 'NZPPF Prime - Cupom Surpresa' } })).res.status === 200);
 ok('cupom sem e-mail e sem telefone: 400', (await chamar({ op: 'cupom', dados: { name: 'Ana', source: 'NZPPF Prime - Cupom Surpresa' } })).res.json?.error === 'contato-invalido');
 
 // ---------------------------------------------------------------- prévias

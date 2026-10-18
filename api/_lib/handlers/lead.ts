@@ -99,7 +99,8 @@ async function cupom(site: Db, res: VercelResponse, d: Record<string, unknown>, 
     return;
   }
 
-  const { error } = await site.from('leads').insert({ name: nome, email: email || null, phone: telefone || null, source: origem, ip_hash: ipHash });
+  // `email` e `phone` são NOT NULL na tabela: vazio vai como '' (como antes).
+  const { error } = await site.from('leads').insert({ name: nome, email, phone: telefone, source: origem, ip_hash: ipHash });
   if (error) {
     console.error('[lead] cupom não gravou:', error.message);
     res.status(500).json({ error: 'nao-consegui-registrar' });
