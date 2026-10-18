@@ -120,7 +120,7 @@ ok('impresso sem número barra', erro({ cliente_cep: '06454-000', cliente_endere
 }
 
 // --------------------------------------------------------------- handler
-function fakeDb({ admin = false, contagem = 0 } = {}) {
+function fakeDb({ admin = false, contagem = 0, comPdf = true } = {}) {
   const tabela = [];
   const updates = [];
   let seq = 9;
@@ -162,6 +162,14 @@ function fakeDb({ admin = false, contagem = 0 } = {}) {
   return {
     tabela,
     updates,
+    storage: {
+      from: (bucket) => ({
+        createSignedUrl: async (nome) =>
+          comPdf && bucket === 'certificados'
+            ? { data: { signedUrl: `https://fake.supabase.co/storage/v1/object/sign/certificados/${nome}?token=t` }, error: null }
+            : { data: null, error: { message: 'Object not found' } },
+      }),
+    },
     from: (t) => (t === 'user_profiles' ? { select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { role: admin ? 'admin' : 'client', is_approved: true } }) }) }) } : builder()),
     auth: { getUser: async () => ({ data: { user: { id: 'u-admin' } } }) },
   };
@@ -261,6 +269,9 @@ process.env.RESEND_API_KEY = 're_teste';
   ok('aprovar com enviar manda o certificado', Boolean(cert) && res.json.envio?.ok === true && cert.corpo.to[0] === 'cliente@exemplo.com');
   ok('envio fica registrado', db.tabela[0].envios_certificado === 1 && db.tabela[0].certificado_enviado_para === 'cliente@exemplo.com');
   ok('certificado leva o QR do servidor', cert.corpo.html.includes('/api/nz/garantia?op=qr&amp;c=') || cert.corpo.html.includes('/api/nz/garantia?op=qr&c='));
+  const anexo = cert.corpo.attachments?.[0];
+  ok('certificado vai com o PDF oficial em anexo', Boolean(anexo) && anexo.filename === `Certificado_NZ_${db.tabela[0].codigo_autenticacao}.pdf` && anexo.path.includes('/certificados/'), JSON.stringify(anexo));
+  ok('e-mail avisa que o PDF está anexado', cert.corpo.html.includes('anexado a este e-mail') && cert.corpo.text.includes('anexado'));
 
   const de2 = chamada({ op: 'aprovar', id }, { auth: 'Bearer x' });
   await handler(de2.req, de2.r);
@@ -270,6 +281,20 @@ process.env.RESEND_API_KEY = 're_teste';
   const env = chamada({ op: 'enviar', id, para: 'Outro@Exemplo.com' }, { auth: 'Bearer x' });
   await handler(env.req, env.r);
   ok('reenviar para e-mail corrigido atualiza o cadastro', env.res.status === 200 && db.tabela[0].cliente_email === 'outro@exemplo.com' && db.tabela[0].envios_certificado === 2);
+}
+{
+  // Sem o PDF no bucket o e-mail não sai: nunca manda certificado sem o arquivo oficial.
+  const db = fakeDb({ admin: true, comPdf: false });
+  globalThis.__fakeDb = db;
+  const reg = chamada({ op: 'registrar', dados: BASE });
+  await handler(reg.req, reg.r);
+  const id = db.tabela[0].id;
+  const apr = chamada({ op: 'aprovar', id }, { auth: 'Bearer x' });
+  await handler(apr.req, apr.r);
+  enviados.length = 0;
+  const env = chamada({ op: 'enviar', id }, { auth: 'Bearer x' });
+  await handler(env.req, env.r);
+  ok('sem o PDF no bucket: não envia e diz o motivo', env.res.status === 502 && env.res.json.envio?.motivo === 'sem-pdf' && enviados.length === 0);
 }
 {
   const db = fakeDb({ admin: true });

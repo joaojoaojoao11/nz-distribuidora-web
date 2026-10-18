@@ -167,8 +167,21 @@ async function buscar(site: Db, id: unknown): Promise<Garantia | null> {
 async function enviarCertificado(site: Db, g: Garantia, paraBruto: unknown): Promise<{ ok: boolean; para: string; motivo?: string; garantia: Garantia }> {
   const para = (typeof paraBruto === 'string' && paraBruto.trim() ? paraBruto : g.cliente_email ?? '').trim().toLowerCase();
   if (!EMAIL_VALIDO.test(para)) return { ok: false, para, motivo: 'email-invalido', garantia: g };
+  // O certificado oficial em PDF vai anexado: é o arquivo que o Admin gera
+  // (src/pages/Admin/certificadoPdf.ts) e guarda no bucket privado
+  // `certificados` antes de pedir o envio. O Resend baixa pela URL assinada.
+  const nomePdf = `${g.codigo_autenticacao}.pdf`;
+  const { data: assinado, error: erroPdf } = await site.storage.from('certificados').createSignedUrl(nomePdf, 900);
+  if (erroPdf || !assinado?.signedUrl) return { ok: false, para, motivo: 'sem-pdf', garantia: g };
   const m = emailCertificado(g);
-  const r = await enviarEmail({ para, assunto: m.assunto, html: m.html, texto: m.texto, responderPara: responderPara() });
+  const r = await enviarEmail({
+    para,
+    assunto: m.assunto,
+    html: m.html,
+    texto: m.texto,
+    responderPara: responderPara(),
+    anexos: [{ nome: `Certificado_NZ_${g.codigo_autenticacao}.pdf`, caminho: assinado.signedUrl }],
+  });
   if (!r.ok) return { ok: false, para, motivo: r.motivo, garantia: g };
 
   // Admin corrigiu o e-mail na hora de enviar: o cadastro passa a ter o certo.

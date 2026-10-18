@@ -20,6 +20,8 @@ export interface Email {
   html: string;
   texto: string;
   responderPara?: string;
+  /** `caminho` é uma URL que o Resend baixa (ex.: URL assinada do Storage). */
+  anexos?: { nome: string; caminho: string }[];
 }
 
 export type ResultadoEmail = { ok: true; id: string | null } | { ok: false; motivo: 'nao-configurado' | 'recusado' | 'falha-rede'; detalhe?: string };
@@ -46,8 +48,10 @@ export async function enviarEmail(e: Email): Promise<ResultadoEmail> {
         html: e.html,
         text: e.texto,
         ...(e.responderPara ? { reply_to: e.responderPara } : {}),
+        ...(e.anexos?.length ? { attachments: e.anexos.map((a) => ({ filename: a.nome, path: a.caminho })) } : {}),
       }),
-      signal: AbortSignal.timeout(TEMPO_MAXIMO_MS),
+      // Com anexo o Resend baixa o arquivo antes de responder: mais tempo.
+      signal: AbortSignal.timeout(e.anexos?.length ? 25000 : TEMPO_MAXIMO_MS),
     });
     const j = (await r.json().catch(() => ({}))) as { id?: string; message?: string; name?: string };
     if (!r.ok) {

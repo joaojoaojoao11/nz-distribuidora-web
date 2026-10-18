@@ -462,4 +462,6 @@ export const TEXTO_ERRO_ADMIN: Record<string, string> = {
   'nao-configurado': 'O e-mail do site ainda não está configurado (falta a RESEND_API_KEY na Vercel).',
   recusado: 'O serviço de e-mail recusou o envio.',
   'falha-rede': 'O serviço de e-mail não respondeu. Tente de novo.',
+  'pdf-upload': 'Não consegui guardar o PDF para anexar. Tente de novo.',
+  'sem-pdf': 'O PDF do certificado não chegou ao servidor. Tente enviar de novo.',
 };

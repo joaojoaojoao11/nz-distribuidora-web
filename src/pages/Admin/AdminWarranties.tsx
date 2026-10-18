@@ -8,6 +8,10 @@
 // O certificado oficial em PDF é o MESMO arquivo de sempre (certificadoPdf.ts,
 // código congelado do Admin antigo). Como o antigo "GERAR", aprovar gera e
 // baixa o PDF no computador de quem aprovou; "Baixar certificado" gera de novo.
+//
+// Enviar por e-mail manda ESSE arquivo em anexo. Ele tem ~4,8 MB — mais do que
+// a Vercel aceita no corpo de uma requisição — então o navegador do admin o
+// guarda no bucket PRIVADO `certificados` e o servidor anexa de lá.
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
@@ -182,15 +186,38 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
     }
   };
 
+  // Gera o PDF oficial (também baixa uma cópia, como sempre) e o guarda para o
+  // servidor anexar ao e-mail.
+  const prepararAnexo = async (w: Warranty) => {
+    const blob = await baixarPdf(w);
+    const { error } = await supabase.storage
+      .from('certificados')
+      .upload(`${w.codigo_autenticacao}.pdf`, blob, { upsert: true, contentType: 'application/pdf' });
+    if (error) throw new GarantiaAdminError('pdf-upload');
+  };
+
+  const enviarComAnexo = async (w: Warranty, sucessoAprovacao = '') => {
+    setOcupado(w.id);
+    try {
+      await prepararAnexo(w);
+    } catch (e) {
+      setRetorno({ id: w.id, ok: false, texto: `${sucessoAprovacao}${textoErro(e)}` });
+      setOcupado(null);
+      return;
+    }
+    await executar(w, { op: 'enviar', para }, (r) => (r.envio?.ok ? `${sucessoAprovacao}Certificado enviado para ${r.envio.para}, com o PDF em anexo.` : sucessoAprovacao));
+  };
+
   const aprovar = async (w: Warranty) => {
-    const r = await executar(w, { op: 'aprovar', enviar: enviarJunto, para }, (x) =>
-      x.envio?.ok ? `Aprovada. Certificado enviado para ${x.envio.para}. O PDF foi baixado.` : 'Garantia aprovada. O PDF do certificado foi baixado.'
-    );
+    const mandar = enviarJunto && Boolean(config?.email);
+    const r = await executar(w, { op: 'aprovar', enviar: false }, () => 'Garantia aprovada. O PDF do certificado foi baixado.');
+    if (r?.garantia?.status !== 'aprovada') return;
     // Como o "GERAR" antigo: aprovou, o certificado oficial sai em PDF na hora.
-    if (r?.garantia?.status === 'aprovada') await baixarPdf(r.garantia);
+    if (mandar) await enviarComAnexo(r.garantia, 'Aprovada. ');
+    else await baixarPdf(r.garantia);
   };
   const recusar = (w: Warranty) => executar(w, { op: 'recusar', motivo }, () => 'Garantia recusada.');
-  const enviar = (w: Warranty) => executar(w, { op: 'enviar', para }, (r) => (r.envio?.ok ? `Certificado enviado para ${r.envio.para}.` : ''));
+  const enviar = (w: Warranty) => enviarComAnexo(w);
 
   const excluir = async (w: Warranty) => {
     if (!window.confirm(`Excluir de vez a garantia ${w.protocolo ?? ''} (${w.veiculo_placa_chassi})? Não dá para desfazer.`)) return;
@@ -453,7 +480,7 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
 
 // A linha do banco vai como veio, igual o Admin antigo passava — o gerador é
 // o mesmo, então o arquivo sai o mesmo.
-function baixarPdf(w: Warranty) {
+function baixarPdf(w: Warranty): Promise<Blob> {
   return gerarCertificadoPdf(w as unknown as CertificadoPdf);
 }
 

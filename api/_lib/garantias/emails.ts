@@ -172,8 +172,9 @@ ${topo('Certificado de garantia')}
       </h1>
       <p style="margin:0 0 26px;font-family:${FONTE};font-size:15px;line-height:24px;color:${COR.secundario};">
         A NZ conferiu a aplicação de <strong style="color:${COR.texto};">${esc(produto)}</strong> no seu ${item}
-        <strong style="color:${COR.texto};">${esc(g.veiculo_modelo)}</strong> e aprovou a garantia. Este é o seu certificado:
-        ele já vale e qualquer pessoa pode conferi-lo pelo código ou pelo QR.
+        <strong style="color:${COR.texto};">${esc(g.veiculo_modelo)}</strong> e aprovou a garantia.
+        <strong style="color:${COR.texto};">O certificado oficial está anexado a este e-mail, em PDF.</strong>
+        Ele já vale e qualquer pessoa pode conferi-lo pelo código ou pelo QR.
       </p>
     </td></tr>
 
@@ -184,7 +185,7 @@ ${topo('Certificado de garantia')}
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
             <td valign="top">
               <img src="${logoDaLinha(g)}" width="${g.linha_escolhida === 'NZWrap' ? 86 : 89}" height="16" alt="${g.linha_escolhida === 'NZWrap' ? 'NZWRAP' : 'NZPPF'}" style="display:block;width:${g.linha_escolhida === 'NZWrap' ? 86 : 89}px;height:16px;border:0;outline:none;" />
-              <div style="padding-top:10px;">${rotulo('Certificado de garantia')}</div>
+              <div style="padding-top:10px;">${rotulo('Resumo da garantia')}</div>
             </td>
             <td valign="top" align="right" width="84">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right"><tr>
@@ -230,9 +231,9 @@ ${topo('Certificado de garantia')}
     </td></tr>
 
     <tr><td class="px" style="padding:28px 36px 8px;">
-      ${botao('Ver meu certificado', url)}
+      ${botao('Conferir no site', url)}
       <p style="margin:14px 0 0;font-family:${FONTE};font-size:13px;line-height:20px;color:${COR.mudo};">
-        Para guardar em PDF, abra o certificado e toque em <span style="color:${COR.secundario};">Salvar PDF ou imprimir</span>.
+        Guarde o PDF anexado: é o seu certificado oficial de garantia.
       </p>
     </td></tr>
 
@@ -264,8 +265,9 @@ ${rodape(g.protocolo, 'Você recebeu este e-mail porque uma garantia foi registr
     `Cobertura: ${textoDaCobertura(g.tipo_servico, g.areas_protegidas)}`,
     `Aplicado por ${g.aplicador_nome} em ${dataBr(g.data_aplicacao)}.`,
     '',
+    'O certificado oficial está anexado a este e-mail, em PDF.',
     `Código do certificado: ${g.codigo_autenticacao}`,
-    `Ver o certificado: ${url}`,
+    `Conferir no site: ${url}`,
     '',
     `NZ Distribuidora · ${SITE.replace(/^https?:\/\//, '')} · protocolo ${g.protocolo}`,
   ].join('\n');
