@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import HeroPromoMoto from './HeroPromoMoto';
+import HeroColecao from './HeroColecao';
 import styles from './Hero.module.css';
 
 export default function Hero() {
@@ -103,6 +104,9 @@ export default function Hero() {
 
       {/* Anúncio da Ação envelopamento de moto */}
       <HeroPromoMoto />
+
+      {/* Aviso da Coleção NZPPF 2026 · Os Clãs */}
+      <HeroColecao />
 
       {/* Scroll Indicator */}
       <motion.div

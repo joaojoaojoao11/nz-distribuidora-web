@@ -1,0 +1,174 @@
+/* Aviso da Coleção NZPPF 2026 no hero da home. Mesmo vidro do anúncio da ação
+   de moto (HeroPromoMoto), que fica no canto inferior esquerdo. Computador:
+   canto inferior direito, acima do botão do WhatsApp. Tela menor: faixa
+   compacta no alto do hero, para não empilhar com o anúncio de moto. */
+
+.wrap {
+  position: absolute;
+  right: clamp(16px, 4vw, 56px);
+  /* botão do WhatsApp: 54px a 1,5rem da base */
+  bottom: calc(1.5rem + 54px + 20px);
+  z-index: 5;
+  width: 380px;
+}
+
+.card {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(10, 10, 10, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.8);
+  color: #f7f5f2;
+  text-decoration: none;
+  transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(10, 10, 10, 0.82);
+  transform: translateY(-2px);
+}
+
+.card:focus-visible {
+  outline: 2px solid #f7f5f2;
+  outline-offset: 3px;
+}
+
+/* Camiseta no cabide (4:5), trocando entre as 5. */
+.fotos {
+  position: relative;
+  flex: 0 0 92px;
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+}
+
+.foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 0.9s ease, transform 2.8s ease-out;
+}
+
+.fotoAtiva {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.texto {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  gap: 3px;
+}
+
+/* Filete vermelho: o único vermelho do aviso (padrão NZ). */
+.eyebrow {
+  position: relative;
+  padding-left: 12px;
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  color: #c8c8cc;
+}
+
+.eyebrow::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 12px;
+  transform: translateY(-50%);
+  background: var(--accent-red);
+}
+
+.titulo {
+  font-family: var(--font-heading);
+  font-size: 1.18rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.sub {
+  font-size: 0.78rem;
+  font-weight: 300;
+  line-height: 1.35;
+  color: #c8c8cc;
+}
+
+.cta {
+  margin-top: 6px;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #f7f5f2;
+}
+
+.cta span {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .cta span {
+  transform: translateX(4px);
+}
+
+/* Até 1199px os dois anúncios não cabem lado a lado: este sobe para o alto. */
+@media (max-width: 1199px) {
+  .wrap {
+    left: 16px;
+    right: 16px;
+    top: calc(80px + 12px);
+    bottom: auto;
+    width: auto;
+    max-width: 520px;
+  }
+
+  .card {
+    gap: 12px;
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .fotos {
+    flex-basis: 52px;
+    border-radius: 9px;
+  }
+
+  .titulo {
+    font-size: 0.98rem;
+  }
+
+  .sub {
+    font-size: 0.72rem;
+  }
+
+  .cta {
+    margin-top: 2px;
+    font-size: 0.66rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foto,
+  .card,
+  .cta span {
+    transition: opacity 0.3s ease;
+    transform: none;
+  }
+}

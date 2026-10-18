@@ -105,6 +105,17 @@
   align-items: center;
 }
 
+/* Ponto vermelho de "novo" no link da Coleção NZPPF 2026. */
+.navNovo {
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  box-shadow: 0 0 8px rgba(209, 30, 30, 0.7);
+  flex: 0 0 auto;
+}
+
 .navLogo {
   height: 80px;
   width: auto;
@@ -515,6 +526,38 @@
  * nenhuma — e não cabia mesmo antes, a barra é que saía da tela em silêncio,
  * levando junto o botão de entrar. Melhor um hambúrguer honesto do que um menu
  * cortado. */
+/* De 1200 a 1399px: 12 itens de primeiro nível (com a Coleção, 17/10/2026)
+   só cabem com os textos um pouco mais justos; sem isto, o carrinho e o
+   "Entrar" saíam pela direita em 1200–1300px. */
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .links {
+    gap: clamp(0.55rem, 0.95vw, 1.2rem);
+  }
+
+  .navLink {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* 1200–1299px (notebook de 1280): ainda mais justo, e a margem lateral da barra
+   cai para o mínimo. */
+@media (min-width: 1200px) and (max-width: 1299px) {
+  .navContainer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .links {
+    gap: 0.5rem;
+  }
+
+  .navLink {
+    font-size: 0.74rem;
+    letter-spacing: 0.3px;
+  }
+}
+
 @media (max-width: 1199px) {
   .hamburger {
     display: flex;

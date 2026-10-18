@@ -55,6 +55,7 @@ export function buildNavItems(contagens: { shDecor: number; etherna: number }): 
         { label: 'Etherna', to: '/decor/etherna', hint: `${contagens.etherna} padrões` },
       ],
     },
+    { label: 'Coleção NZPPF 2026', to: '/colecao' },
     { label: 'Empresa', to: '/sobre' },
     { label: 'Blog', to: '/blog' },
     { label: 'Encontre um aplicador', to: '/encontre-aplicador' },

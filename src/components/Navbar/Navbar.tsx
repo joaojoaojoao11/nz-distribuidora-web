@@ -224,6 +224,10 @@ export default function Navbar() {
               </Link>
             </div>
           </div>
+          <Link to="/colecao" className={`${styles.navLink} ${location.pathname === '/colecao' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
+            COLEÇÃO
+            <span className={styles.navNovo} aria-hidden="true" />
+          </Link>
           <Link to="/sobre" className={`${styles.navLink} ${location.pathname === '/sobre' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
             EMPRESA
           </Link>
