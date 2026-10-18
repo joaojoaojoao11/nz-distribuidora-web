@@ -166,7 +166,7 @@ async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
   if (!supabaseUrl || !supabaseKey) return null;
   try {
     const res = await fetch(
-      `${supabaseUrl}/rest/v1/loja_catalogo?slug=eq.${encodeURIComponent(slug.toLowerCase())}&select=slug,linha_key,nome,marca_exibicao,vertical,codigo,imagem,linha_label,acabamento_label,descricao,seo_titulo,seo_descricao,legacy_path&limit=1`,
+      `${supabaseUrl}/rest/v1/loja_catalogo?slug=eq.${encodeURIComponent(slug.toLowerCase())}&select=slug,linha_key,nome,marca_exibicao,vertical,codigo,imagem,linha_label,acabamento_label,descricao,seo_titulo,seo_descricao,legacy_path,pai_slug&limit=1`,
       { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } },
     );
     if (!res.ok) return null;
@@ -174,6 +174,8 @@ async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
       slug: string; nome: string; marca_exibicao: string | null; vertical: string; codigo: string | null;
       linha_key: string; imagem: string | null; linha_label: string | null; acabamento_label: string | null;
       descricao: string | null; seo_titulo: string | null; seo_descricao: string | null; legacy_path: string | null;
+      /** Tamanho de uma peça (P/G/GG): a página canônica é a da vitrine (M). */
+      pai_slug?: string | null;
     }[];
     const r = rows?.[0];
     if (!r) return null;
@@ -195,8 +197,8 @@ async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
       title,
       description,
       image: r.imagem,
-      selfCanonical: !r.legacy_path,
-      legacyPath: r.legacy_path,
+      selfCanonical: !r.legacy_path && !r.pai_slug,
+      legacyPath: r.pai_slug ? `/loja/${r.pai_slug}` : r.legacy_path,
     };
   } catch {
     return null;

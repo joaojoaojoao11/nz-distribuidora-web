@@ -20,6 +20,7 @@ import { closeModal, temSentinela, useModalLock } from '../../hooks/useModalLock
 import { alterarQuantidade, removerDoCarrinho, totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { fecharPainelCarrinho, usePainelCarrinho } from '../../lib/shop/painelCarrinho';
 import { BRL, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
+import { PASSO, precoUnitario, rotuloQtd } from '../../lib/shop/unidade';
 import styles from './MiniCarrinho.module.css';
 
 export default function MiniCarrinho() {
@@ -55,7 +56,7 @@ export default function MiniCarrinho() {
   let total: number | null = 0;
   for (const i of itens) {
     const p = precos.get(i.slug);
-    const unit = i.unidade === 'rolo' ? p?.rolo : p?.metro;
+    const unit = precoUnitario(i.unidade, p);
     if (unit == null) {
       total = null;
       break;
@@ -93,7 +94,7 @@ export default function MiniCarrinho() {
           <ul className={styles.lista}>
             {itens.map((i) => {
               const p = precos.get(i.slug);
-              const unit = i.unidade === 'rolo' ? p?.rolo : p?.metro;
+              const unit = precoUnitario(i.unidade, p);
               const novo = painel.destaque?.slug === i.slug && painel.destaque.unidade === i.unidade;
               return (
                 <li key={`${i.slug}|${i.unidade}`} className={novo ? styles.itemNovo : styles.item}>
@@ -106,21 +107,21 @@ export default function MiniCarrinho() {
                     </Link>
                     <span className={styles.meta}>
                       {i.qtd.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}{' '}
-                      {i.unidade === 'rolo' ? (i.qtd > 1 ? 'rolos fechados' : 'rolo fechado') : 'm'}
+                      {rotuloQtd(i.unidade, i.qtd)}
                       {unit != null ? ` · ${BRL.format(Number(unit) * i.qtd)}` : ''}
                     </span>
                     <span className={styles.acoes}>
                       <button
                         type="button"
                         aria-label={`Diminuir ${i.nome}`}
-                        onClick={() => alterarQuantidade(i.slug, i.unidade, i.qtd - (i.unidade === 'rolo' ? 1 : 0.5))}
+                        onClick={() => alterarQuantidade(i.slug, i.unidade, i.qtd - PASSO[i.unidade])}
                       >
                         −
                       </button>
                       <button
                         type="button"
                         aria-label={`Aumentar ${i.nome}`}
-                        onClick={() => alterarQuantidade(i.slug, i.unidade, i.qtd + (i.unidade === 'rolo' ? 1 : 0.5))}
+                        onClick={() => alterarQuantidade(i.slug, i.unidade, i.qtd + PASSO[i.unidade])}
                       >
                         +
                       </button>

@@ -22,8 +22,10 @@ export type Vertical = 'PPF' | 'WRAP' | 'SIGN' | 'DECOR';
  * - `cor`    uma cor de um filme (Oracal 651 White, M7-108 Imitation Gold)
  * - `padrao` uma textura decorativa (Madeira Carvalho Areia)
  * - `linha`  uma família técnica sem SKU de cor (Avery MPI, NZPPF Luxury Gloss)
+ * - `vestuario` peça vendida por unidade e tamanho (camisetas NZPPF). Não tem
+ *   cor de filme nem acabamento: fica fora do filtro de cor e da busca por imagem.
  */
-export type ItemKind = 'cor' | 'padrao' | 'linha';
+export type ItemKind = 'cor' | 'padrao' | 'linha' | 'vestuario';
 
 export type Aplicacao = 'automotivo' | 'arquitetonico' | 'comunicacao-visual';
 
@@ -203,8 +205,26 @@ export interface ShopItem {
    * importante: quando é 'M2', `metragemPadrao` guarda ÁREA, não comprimento.
    * São 64 SKUs com 1,52 × 22,86 M2 — e 22,86 é m² (1,524 × 15). Sem este
    * campo, a ficha rotularia isso como "metragem do rolo: 22,86 m".
+   * 'UN' = vende por peça (camiseta): sem rolo, sem metro, quantidade inteira.
    */
   unidadeVenda?: string | null;
+
+  // --- variantes (tamanho) e publicação agendada — coleção de vestuário.
+
+  /**
+   * Tamanho de uma peça (P/G/GG): slug da VITRINE (o tamanho M), que é o
+   * único que aparece na lista. `null` na vitrine e em todo o resto.
+   */
+  paiSlug?: string | null;
+  /** Rótulo do tamanho: 'PP' | 'P' | 'M' | 'G' | 'GG' | 'XGG'. */
+  variante?: string | null;
+  /**
+   * ISO da publicação agendada, só nos itens que chegaram pela PRÉVIA do
+   * admin (`loja_catalogo_previa`). Visitante nunca recebe estes itens.
+   */
+  agendadoPara?: string | null;
+  /** Preço de vitrine (sem login) — só vestuário. Ver catalogo.ts. */
+  precoPublico?: number | null;
 }
 
 /** Prefixo de slug por fonte. Resolve as 3 colisões reais entre etherna e sh-decor. */

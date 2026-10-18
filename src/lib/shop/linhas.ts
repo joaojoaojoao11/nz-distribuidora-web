@@ -170,6 +170,9 @@ const nf = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
  * número errado em 174 produtos.
  */
 export function fichaDoRolo(item: ShopItem): ShopSpec[] {
+  // Peça (camiseta, unidade 'UN'): não tem rolo. O ERP guarda metragem 1 por
+  // peça, e sem esta linha a ficha publicaria "Metragem do rolo: 1 m".
+  if ((item.unidadeVenda ?? '').toUpperCase() === 'UN' || item.kind === 'vestuario') return [];
   const linhas: ShopSpec[] = [];
   if (item.larguraM && item.larguraM > 0) {
     linhas.push({ label: 'Largura do rolo', value: `${nf.format(item.larguraM)} m` });

@@ -21,6 +21,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapel, type Papel } from '../papel.js';
 import { lerEstoqueParceiro, type EstoqueParceiro } from '../estoqueParceiro.js';
+import { estaAgendado } from '../loja/visibilidade.js';
 
 type Nivel = 'pronta-entrega' | 'ultimas-unidades' | 'sob-encomenda';
 
@@ -28,6 +29,8 @@ interface Produto {
   slug: string;
   erp_sku: string | null;
   tipo_vinculo: string;
+  /** Agendado: para quem não é admin, o slug "não existe" ainda. */
+  publicar_em: string | null;
 }
 
 interface Espelho {
@@ -40,6 +43,8 @@ interface Espelho {
   largura_m: number | null;
   metragem_padrao: number | null;
   estoque_minimo: number | null;
+  /** 'UN' = peça: o saldo é contado em unidades, não em metros. */
+  unidade: string | null;
   sincronizado_em: string;
   estoque_atualizado_em: string | null;
 }
@@ -75,7 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { data: produtosData } = await site
     .from('produtos')
-    .select('slug, erp_sku, tipo_vinculo')
+    .select('slug, erp_sku, tipo_vinculo, publicar_em')
     .in('slug', slugs);
   const produtos = (produtosData ?? []) as Produto[];
 
@@ -83,7 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { data: espelhoData } = skus.length
     ? await site
         .from('erp_produtos')
-        .select('sku, nome, ativo, saldo_ml, rolos_fechados, rolos_abertos, largura_m, metragem_padrao, estoque_minimo, sincronizado_em, estoque_atualizado_em')
+        .select('sku, nome, ativo, saldo_ml, rolos_fechados, rolos_abertos, largura_m, metragem_padrao, estoque_minimo, unidade, sincronizado_em, estoque_atualizado_em')
         .in('sku', skus)
     : { data: [] };
   const espelhoPorSku = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
@@ -122,6 +127,7 @@ async function montar(
   parceiros?: EstoqueParceiro[]
 ) {
   if (!p || !p.erp_sku) return { mapeado: false };
+  if (papel !== 'admin' && estaAgendado(p.publicar_em)) return { mapeado: false };
   if (!e) return { mapeado: true, semDados: true };
 
   const nivel = classificar(e, limiteGlobal);
@@ -141,6 +147,9 @@ async function montar(
       rolosAbertos: e.rolos_abertos,
       larguraM: e.largura_m,
       metragemPadrao: e.metragem_padrao,
+      // 'UN': `metrosLineares` é, na verdade, o número de peças (o ERP guarda
+      // tudo em ML com metragem 1 por peça). A tela mostra "un.".
+      unidade: e.unidade ?? 'ML',
     };
   }
 

@@ -9,7 +9,10 @@ import { catalogoAtual } from './store';
 import type { ShopItem } from './types';
 
 export function relatedItems(item: ShopItem, limit = 8): ShopItem[] {
-  const SHOP_ITEMS = catalogoAtual();
+  // Camiseta e filme não se misturam: a camiseta sugere as outras da coleção,
+  // e um rolo de PPF (mesma vertical, mesma marca NZPPF) nunca sugere camiseta.
+  const ehVestuario = item.kind === 'vestuario';
+  const SHOP_ITEMS = catalogoAtual().filter((c) => (c.kind === 'vestuario') === ehVestuario);
   const out: ShopItem[] = [];
   const seen = new Set<string>([item.slug]);
 

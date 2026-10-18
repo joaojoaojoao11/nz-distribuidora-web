@@ -213,6 +213,18 @@
   min-width: 0;
 }
 
+/* Prévia do admin: produto agendado, ainda fora do ar para os clientes. */
+.agendado {
+  margin: 0 0 0.85rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px dashed var(--accent-red);
+  border-radius: 8px;
+  background: rgba(209, 30, 30, 0.08);
+  color: var(--text-primary);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
 .lineLabel {
   display: block;
   font-family: var(--font-tech);

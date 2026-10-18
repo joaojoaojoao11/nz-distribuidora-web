@@ -85,7 +85,13 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
   // "SPEED WRAPPING". Sem a repetição sobra a folga que o nome precisa.
   const linha = item.line ?? item.brand;
   const rotuloMeta = item.finishLabel ?? item.subtitle ?? item.brand;
-  const meta = rotuloMeta && !mesmoRotulo(rotuloMeta, linha) ? rotuloMeta : null;
+  // Prévia do admin: produto agendado aparece marcado como tal na lista.
+  const agendado = item.agendadoPara
+    ? `Agendado · ${new Date(item.agendadoPara).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}`
+    : null;
+  const meta = agendado ?? (rotuloMeta && !mesmoRotulo(rotuloMeta, linha) ? rotuloMeta : null);
+  // Camiseta: o código da vitrine é o SKU do tamanho M — no card enganaria.
+  const codigo = item.kind === 'vestuario' ? null : item.code;
 
   return (
     <Link
@@ -172,9 +178,9 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
             de estoque dividem esta linha — sobre a foto elas sumiriam no meio
             do badge de disponibilidade e do × da curadoria. Só admin as recebe
             (a decisão é do servidor, ver EstoqueDots). */}
-        {item.code ? (
+        {codigo ? (
           <span className={styles.codeLinha}>
-            <span className={styles.code}>{item.code}</span>
+            <span className={styles.code}>{codigo}</span>
             {item.kind !== 'linha' && <EstoqueDots slug={item.slug} selecao={selecao} />}
           </span>
         ) : (
@@ -192,6 +198,7 @@ function ShopCardBase({ item, eager = false, onRemove, from, limiteNome, selecao
             selecao={selecao}
             soMetro={Boolean(promo)}
             publico={promo ? { metro: promo.metro, metroCheio: promo.metroCheio } : undefined}
+            precoPublico={item.precoPublico}
           />}
       </div>
     </Link>

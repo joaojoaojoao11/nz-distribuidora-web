@@ -6,7 +6,9 @@
 //
 //   1. cada item vira volumes: rolo fechado = `qtd` volumes do perfil da linha;
 //      metros fracionados = 1 volume do mesmo perfil (o corte viaja no mesmo
-//      tubo; sai um pouco caro para 1 m, mas nunca barato demais);
+//      tubo; sai um pouco caro para 1 m, mas nunca barato demais); peça
+//      ('un', camiseta) = `qtd` PEÇAS — o perfil de peça (itens_por_volume > 1)
+//      converte peças em envelopes dentro de `cotar` (prazo.ts);
 //   2. volumes agrupam por perfil; cada grupo é cotado com a rotina que já
 //      existe (com cache) — uma chamada por transportadora por perfil;
 //   3. uma opção (transportadora + serviço) só é oferecida se atende TODOS os
@@ -16,7 +18,7 @@
 // comprador precisa do valor para pagar. A vitrine continua sem valor.
 
 import type { Db } from '../papel.js';
-import { cotar, type Carrier, type CotacaoInterna, type ShippingProfile } from '../handlers/prazo.js';
+import { cotar, diasDeProducao, type Carrier, type CotacaoInterna, type ShippingProfile } from '../handlers/prazo.js';
 import type { Linha } from '../pedido/precificar.js';
 
 export interface OpcaoFrete {
@@ -66,6 +68,12 @@ export interface ResultadoFreteCarrinho {
   /** Itens sem perfil de embalagem — o carrinho não pode ser cotado. */
   semPerfil: string[];
   motivos: string[];
+  /**
+   * Maior número de dias de produção entre os perfis do carrinho (pré-venda).
+   * Já está somado no `dias` de cada opção de transportadora; vem à parte para
+   * a nota do pedido e para a retirada.
+   */
+  diasProducao: number;
 }
 
 export async function cotarCarrinho(site: Db, linhas: Linha[], cep: string, subtotal: number, cfg: ConfigFrete): Promise<ResultadoFreteCarrinho> {
@@ -84,13 +92,18 @@ export async function cotarCarrinho(site: Db, linhas: Linha[], cep: string, subt
       semPerfil.push(l.produto.slug);
       continue;
     }
-    const volumes = l.item.unidade === 'rolo' ? Math.ceil(l.item.qtd) : 1;
+    // Peça conta PEÇAS (o perfil de peça agrupa em envelopes em `cotar`).
+    const volumes =
+      l.item.unidade === 'rolo' ? Math.ceil(l.item.qtd) : l.item.unidade === 'un' ? Math.max(1, Math.round(l.item.qtd)) : 1;
     const g = grupos.get(perfil.id) ?? { perfil, qtd: 0 };
     g.qtd += volumes;
     grupos.set(perfil.id, g);
   }
+  const diasProducao = Math.max(0, ...[...grupos.values()].map((g) => diasDeProducao(g.perfil)));
+  // Retirada de item em pré-venda também espera a produção.
+  for (const o of opcoes) if (o.retirada) o.dias = diasProducao;
   if (semPerfil.length || !grupos.size || !/^\d{8}$/.test(cep)) {
-    return { opcoes, semPerfil, motivos: [] };
+    return { opcoes, semPerfil, motivos: [], diasProducao };
   }
 
   const { data: carriersData } = await site
@@ -149,5 +162,5 @@ export async function cotarCarrinho(site: Db, linhas: Linha[], cep: string, subt
 
   // Retirada primeiro; depois do mais barato ao mais caro, e no empate o mais rápido.
   opcoes.sort((a, b) => Number(Boolean(b.retirada)) - Number(Boolean(a.retirada)) || a.valor - b.valor || a.dias - b.dias);
-  return { opcoes, semPerfil, motivos };
+  return { opcoes, semPerfil, motivos, diasProducao };
 }

@@ -51,6 +51,7 @@ import {
   resolverCupom,
   safeJson,
   type Linha,
+  notaPreVenda,
   type Perfil,
 } from '../pedido/precificar.js';
 
@@ -120,8 +121,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    if (op === 'resumo') await opResumo(site, userId, body, cfg, res);
-    else if (op === 'pagar') await opPagar(site, userId, body, cfg, req, res);
+    // `admin`: prévia de produto agendado (publicar_em no futuro) — ver precificar.
+    if (op === 'resumo') await opResumo(site, userId, body, cfg, res, papel === 'admin');
+    else if (op === 'pagar') await opPagar(site, userId, body, cfg, req, res, papel === 'admin');
     else if (op === 'novo-pagamento') await opNovoPagamento(site, userId, body, cfg, req, res);
     else res.status(400).json({ error: 'op-desconhecida', disponiveis: ['resumo', 'pagar', 'status', 'novo-pagamento'] });
   } catch (err) {
@@ -132,14 +134,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 // ================================================================ resumo
 
-async function opResumo(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, res: VercelResponse) {
+async function opResumo(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, res: VercelResponse, admin = false) {
   const itens = normalizarItens(body.itens);
   if (!itens.length) {
     res.status(400).json({ error: 'sem-itens' });
     return;
   }
   const { perfil, faltando } = await carregarPerfil(site, userId);
-  const { linhas, invalidos, subtotal } = await precificar(site, itens);
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin });
   const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotal, userId);
   const cepBruto = typeof body.cep === 'string' ? body.cep : perfil?.address_zip ?? '';
   const cep = cepBruto.replace(/\D/g, '');
@@ -212,7 +214,7 @@ async function limiteCartao(site: Db, userId: string, ip: string): Promise<boole
   return Number(porUser ?? 0) >= 3 || Number(porIp ?? 0) >= 10;
 }
 
-async function opPagar(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, req: VercelRequest, res: VercelResponse) {
+async function opPagar(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, req: VercelRequest, res: VercelResponse, admin = false) {
   const itens = normalizarItens(body.itens);
   if (!itens.length) {
     res.status(400).json({ error: 'sem-itens' });
@@ -235,7 +237,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     return;
   }
 
-  const { linhas, invalidos, subtotal } = await precificar(site, itens);
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin });
   if (invalidos.length) {
     res.status(400).json({ error: 'itens-invalidos', invalidos });
     return;
@@ -361,6 +363,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     `Pedido #${pedido.numero} feito no site nzgroup.com.br por ${perfil.email ?? ''}.`,
     `PAGAMENTO ONLINE (Asaas): ${FORMA_LABEL[escolha.forma]}${escolha.parcelas > 1 ? ` em ${escolha.parcelas}x` : ''} — ${cobranca.pagamento.status === 'pago' ? 'PAGO' : 'aguardando pagamento'}. Total R$ ${total.toFixed(2)}.`,
     frete.retirada ? 'Entrega: RETIRADA em São Paulo.' : `Frete: ${frete.nome} — ${frete.dias} dias úteis — R$ ${frete.valor.toFixed(2)} (cobrado do cliente).`,
+    notaPreVenda(linhas, cotacao.diasProducao),
     cupom.codigo ? `Cupom ${cupom.codigo}${cupom.desconto ? ` (desconto R$ ${cupom.desconto.toFixed(2)})` : ''}.` : null,
     afiliadoCodigo ? `Indicado por ${afiliadoCodigo}.` : null,
     ...linhas.filter((l) => l.item.lpns?.length).map((l) => `${l.e.sku}: rolos pedidos ${l.item.lpns!.join(', ')}.`),

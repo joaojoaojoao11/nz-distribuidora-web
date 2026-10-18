@@ -9,11 +9,17 @@
 //
 // A parte de COMPRAR (unidade, quantidade, subtotal, botão) mora em
 // `Comprar.tsx`: aqui é só a tabela de preço.
+//
+// PEÇA (unidade 'UN', camisetas da coleção): uma linha "Por unidade" no lugar
+// de rolo e metro. E é o único caso em que o preço aparece SEM login
+// (`precoPublico`, só vestuário — decisão D9 do plano da coleção): o mesmo
+// valor já está na página /colecao. Comprar continua pedindo login.
 
 import { Link, useLocation } from 'react-router-dom';
 import { BRL, usePreco } from '../../lib/shop/precos';
 import { mensagemDaSelecao } from '../../lib/shop/selecoes';
 import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+import { vendePorUnidade } from '../../lib/shop/unidade';
 import Comprar, { type ProdutoDoCarrinho } from './Comprar';
 import styles from './Preco.module.css';
 
@@ -36,9 +42,13 @@ interface Props {
    * entrou (João, 03/10). Vem do /api/nz/promo-moto. Comprar segue pedindo login.
    */
   publico?: { metro: number | null | undefined; metroCheio: number | null | undefined };
+  /** Peça de vestuário: preço por unidade que vale para quem ainda não entrou. */
+  precoPublico?: number | null;
+  /** Repassado ao `Comprar`: falta escolher algo (o tamanho) antes de comprar. */
+  bloqueioCompra?: string;
 }
 
-export default function Preco({ slug, variante, produto, selecao, soMetro = false, publico }: Props) {
+export default function Preco({ slug, variante, produto, selecao, soMetro = false, publico, precoPublico, bloqueioCompra }: Props) {
   const { estado, papel, item } = usePreco(slug, selecao);
   const location = useLocation();
   const next = encodeURIComponent(`${location.pathname}${location.search}`);
@@ -66,6 +76,26 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
             {de && <s className={styles.cheio}>{de}</s>}
             {por}
           </span>
+        </div>
+        <Link to={`/login?next=${next}`} className={styles.entrar} onClick={(e) => e.stopPropagation()}>
+          Entre para comprar
+        </Link>
+      </div>
+    );
+  }
+
+  // Vestuário para quem não entrou: o preço da peça, e o login só para comprar.
+  if ((estado === 'anonimo' || foraDaSelecao) && precoPublico) {
+    const valor = BRL.format(Number(precoPublico));
+    return variante === 'card' ? (
+      <span className={styles.card}>
+        <strong>{valor}</strong>
+      </span>
+    ) : (
+      <div className={styles.bloco}>
+        <div className={styles.linha}>
+          <span className={styles.rotulo}>Por unidade</span>
+          <span className={styles.valor}>{valor}</span>
         </div>
         <Link to={`/login?next=${next}`} className={styles.entrar} onClick={(e) => e.stopPropagation()}>
           Entre para comprar
@@ -104,11 +134,15 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
   const metro = item.metro != null ? BRL.format(Number(item.metro)) : null;
   // Promoção Moto: "de R$ X por R$ Y o metro" — o checkout cobra o Y.
   const metroCheio = item.metroCheio != null ? BRL.format(Number(item.metroCheio)) : null;
+  // Peça: o ERP repete o mesmo valor em rolo e metro; o que vale é o da peça.
+  const porPeca = vendePorUnidade(item.unidade);
 
   if (variante === 'card') {
     return (
       <span className={styles.card}>
-        {soMetro ? (
+        {porPeca ? (
+          rolo && <strong>{rolo}</strong>
+        ) : soMetro ? (
           metro && (
             <>
               {metroCheio && <s className={styles.cheio}>{metroCheio}</s>}
@@ -139,11 +173,18 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
 
   // Com as duas unidades, quem mostra o preço é o seletor de `Comprar` — repetir
   // a tabela em cima dele só faria o mesmo número aparecer duas vezes na tela.
-  const mostrarTabela = !produto || viaSelecao || !(rolo && metro);
+  const mostrarTabela = !produto || viaSelecao || porPeca || !(rolo && metro);
 
   return (
     <div className={styles.bloco}>
-      {mostrarTabela && rolo && (
+      {porPeca && rolo && (
+        <div className={styles.linha}>
+          <span className={styles.rotulo}>Por unidade</span>
+          <span className={styles.valor}>{rolo}</span>
+          {item.roloVarejo != null && <span className={styles.minimo}>varejo {BRL.format(Number(item.roloVarejo))}</span>}
+        </div>
+      )}
+      {!porPeca && mostrarTabela && rolo && (
         <div className={styles.linha}>
           <span className={styles.rotulo}>
             Rolo fechado{item.metragemPadrao ? ` · ${item.metragemPadrao} m` : ''}
@@ -153,7 +194,7 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
           {item.roloVarejo != null && <span className={styles.minimo}>varejo {BRL.format(Number(item.roloVarejo))}</span>}
         </div>
       )}
-      {mostrarTabela && metro && (
+      {!porPeca && mostrarTabela && metro && (
         <div className={styles.linha}>
           <span className={styles.rotulo}>Metro linear (fracionado){metroCheio ? ' · ação moto' : ''}</span>
           <span className={styles.valor}>
@@ -193,6 +234,7 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
           slug={slug}
           produto={produto}
           preco={item}
+          bloqueio={bloqueioCompra}
           separador={
             mostrarTabela || Boolean(item.promocao) || Boolean(item.usandoVarejo) || item.roloVarejo != null || item.metroVarejo != null
           }

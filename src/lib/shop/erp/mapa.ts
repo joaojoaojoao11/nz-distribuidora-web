@@ -101,6 +101,7 @@ export type LinhaErp =
   | 'next'
   | 'avery-adpro'
   | 'nz-farol'
+  | 'vestuario'
   | 'diversos';
 
 export const LINHA_LABEL: Record<LinhaErp, string> = {
@@ -121,6 +122,9 @@ export const LINHA_LABEL: Record<LinhaErp, string> = {
   next: 'SHNext PPF',
   'avery-adpro': 'Avery AD Pro',
   'nz-farol': 'NZ Película de Farol',
+  // Camisetas NZPPF (categoria VESTUÁRIO no ERP). O perfil de frete próprio
+  // (envelope, dias de produção) é ligado a esta linha em Admin → Logística.
+  vestuario: 'Coleção NZPPF 2026',
   diversos: 'Diversos',
 };
 
@@ -131,6 +135,11 @@ export function linhaDeMarca(row: ErpSkuBasico): { linha: LinhaErp; brandKey: Br
   const sku = row.sku.toUpperCase();
   const cat = (row.categoria ?? '').trim().toUpperCase();
 
+  // Vestuário vem antes de tudo: a marca é NZPPF, e a regra "NZ + PPF*" lá
+  // embaixo jogaria a camiseta na linha de rolos de PPF (e no frete do rolo).
+  if (cat === 'VESTUÁRIO' || cat === 'VESTUARIO') {
+    return { linha: 'vestuario', brandKey: 'nz', marcaExibicao: 'NZPPF' };
+  }
   if (m === 'SPEED WRAPPING') return { linha: 'speed-wrapping', brandKey: 'speed', marcaExibicao: 'Speed Wrapping' };
   if (m === 'NZWRAP') return { linha: 'nzwrap-import', brandKey: 'nz', marcaExibicao: 'NZWRAP' };
   if (m === 'SH WRAPPING') return { linha: 'sh-wrapping', brandKey: 'sh', marcaExibicao: 'SH Wrapping' };
@@ -186,9 +195,36 @@ export function aplicacoesDeVertical(v: VerticalErp): ('automotivo' | 'arquiteto
   return ['automotivo'];
 }
 
-/** Linha do produto 'erp-auto' inteira, pronta para gravar em `produtos`. */
+/**
+ * Linha do produto 'erp-auto' inteira, pronta para gravar em `produtos`.
+ *
+ * VESTUÁRIO nasce DESPUBLICADO (incidente de 17/10/2026: as 20 camisetas da
+ * coleção entraram no ERP e o sync as publicou como "WRAP / Diversos", com
+ * preço e compra, 12 dias antes do lançamento). Peça de coleção só vai ao ar
+ * pelo cadastro manual, com data (`publicar_em`).
+ */
 export function produtoAutoDeSku(row: ErpSkuBasico) {
   const { linha, brandKey, marcaExibicao } = linhaDeMarca(row);
+  if (linha === 'vestuario') {
+    return {
+      slug: slugErp(row),
+      erp_sku: row.sku,
+      tipo_vinculo: 'proprio' as const,
+      nome: nomeExibicaoErp(row),
+      subtitulo: LINHA_LABEL[linha],
+      marca_exibicao: marcaExibicao,
+      brand_key: brandKey,
+      linha_key: linha,
+      linha_label: LINHA_LABEL[linha],
+      vertical: 'PPF' as VerticalErp,
+      kind: 'vestuario' as const,
+      aplicacoes: [] as ('automotivo' | 'arquitetonico' | 'comunicacao-visual')[],
+      codigo: row.sku,
+      publicado: false,
+      origem: 'erp-auto' as const,
+      fonte_original: 'erp',
+    };
+  }
   // Oracal 651 e Metamark 7 Series sao vinil de recorte e sinalizacao: vao para NZSIGN mesmo com categoria ENVELOPAMENTO no ERP (Joao, 03/10/2026).
   const vertical = linha === 'oracal-651' || linha === 'm7' ? 'SIGN' : verticalDeCategoria(row.categoria, row.marca);
   return {

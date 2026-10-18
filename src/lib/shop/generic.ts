@@ -39,6 +39,8 @@ export const GENERIC_IMAGE_BY_LINE: Record<LinhaErp, string> = {
   next: '/assets/images/shop/generic/next.webp',
   'avery-adpro': '/assets/images/shop/generic/avery-adpro.webp',
   'nz-farol': '/assets/images/shop/generic/nz-farol.webp',
+  // Coleção NZPPF 2026: os 5 clãs lado a lado (só aparece em peça sem foto).
+  vestuario: '/assets/images/colecao-2026/fila-5-clas.webp',
   diversos: '/assets/images/shop/generic/diversos.webp',
 };
 

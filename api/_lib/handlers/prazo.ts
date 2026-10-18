@@ -22,6 +22,10 @@ import { getAdapter } from '../carriers/index.js';
 import { fatorCubagem, pesoTaxavel } from '../carriers/cubagem.js';
 import { CarrierError, normalizarResultados } from '../carriers/types.js';
 import { resolverPapel, type Db } from '../papel.js';
+import { diasDeProducao, volumesDoPerfil } from '../frete/pecas.js';
+
+// O carrinho (frete/carrinho.ts) usa daqui; a regra mora em frete/pecas.ts.
+export { diasDeProducao, volumesDoPerfil };
 
 const CEP_RE = /^[0-9]{8}$/;
 const CACHE_DIAS = 7;
@@ -59,7 +63,20 @@ export interface ShippingProfile {
   largura_cm: number;
   altura_cm: number;
   valor_declarado?: number;
+  /**
+   * Dias úteis de produção somados ao prazo da transportadora (pré-venda da
+   * coleção). Os perfis de rolo ficam com 0. Migration 2026-10-17c.
+   */
+  dias_producao?: number;
+  /**
+   * Perfil de PEÇA (camiseta): quantas cabem num volume. Com mais de 1, a
+   * quantidade recebida por `cotar` é de PEÇAS, não de volumes. Rolo = 1.
+   */
+  itens_por_volume?: number;
+  /** Peso de cada peça além da primeira dentro do mesmo volume (kg). */
+  peso_adicional_kg?: number;
 }
+
 
 export interface Carrier {
   slug: string;
@@ -244,7 +261,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     res.status(200).json({
       prazos,
-      formato: { id: profile.id, nome: profile.nome },
+      // `diasProducao`: a página explica que o prazo já inclui a produção
+      // (pré-venda). Não é dado comercial — peso e medida continuam fora.
+      // `porPeca`: perfil de peça (camiseta) — a quantidade é de peças, não de volumes.
+      formato: {
+        id: profile.id,
+        nome: profile.nome,
+        diasProducao: diasDeProducao(profile),
+        porPeca: (Number(profile.itens_por_volume) || 1) > 1,
+      },
       formatos,
       quantidade: qtd,
       // O front usa isto só para explicar de onde vem o valor exibido; o dado
@@ -403,7 +428,10 @@ export async function cotar(
         transportadora: l.transportadora ?? undefined,
         servicoNome: l.servico_nome ?? undefined,
       }),
-      dias: l.prazo_dias + carrier.dias_manuseio,
+      // Transportadora + manuseio + produção (pré-venda; 0 nos rolos). O cache
+      // guarda só os dias da transportadora, então mudar a produção no painel
+      // vale na hora, sem invalidar nada.
+      dias: l.prazo_dias + carrier.dias_manuseio + diasDeProducao(profile),
       // O cache não guarda a modalidade da transportadora simples; a do
       // cadastro é a mesma coisa, e sem isso a resposta mudava de formato
       // entre o primeiro visitante (com modalidade) e todos os seguintes.
@@ -422,8 +450,11 @@ export async function cotar(
   if (!adapter) throw new CarrierError(carrier.slug, 'Adapter não encontrado');
   if (!adapter.isConfigured()) throw new CarrierError(carrier.slug, 'Credencial não configurada');
 
-  const peso = pesoTaxavel(profile, qtd, fatorCubagem(carrier.config));
-  const valorDeclarado = Number(profile.valor_declarado ?? 100) * qtd;
+  // Perfil de peça: `qtd` são peças, que viram volumes aqui. A chave do cache
+  // continua sendo `qtd` (peças), então 1 e 2 camisetas não se confundem.
+  const { perfil: efetivo, volumes } = volumesDoPerfil(profile, qtd);
+  const peso = pesoTaxavel(efetivo, volumes, fatorCubagem(carrier.config));
+  const valorDeclarado = Number(efetivo.valor_declarado ?? 100) * volumes;
 
   const cotacoes = normalizarResultados(
     await adapter.quoteDeadline({
@@ -433,7 +464,7 @@ export async function cotar(
       pesoKg: peso.pesoKg,
       // Peso real, para quem recebe as dimensões e cuba do lado de lá (ME).
       pesoRealKg: peso.pesoReal,
-      quantidade: qtd,
+      quantidade: volumes,
       comprimentoCm: Number(profile.comprimento_cm),
       larguraCm: Number(profile.largura_cm),
       alturaCm: Number(profile.altura_cm),
@@ -479,7 +510,7 @@ export async function cotar(
   return cotacoes.map((c) => ({
     carrier: carrier.slug,
     nome: rotulo(carrier.nome, c),
-    dias: c.dias + carrier.dias_manuseio,
+    dias: c.dias + carrier.dias_manuseio + diasDeProducao(profile),
     modalidade: c.modalidade,
     servico: c.servico,
     servicoNome: c.servicoNome,

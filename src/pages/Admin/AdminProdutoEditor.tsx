@@ -39,7 +39,7 @@ interface Produto {
   linha_key: string;
   linha_label: string | null;
   vertical: 'PPF' | 'WRAP' | 'SIGN' | 'DECOR';
-  kind: 'cor' | 'padrao' | 'linha';
+  kind: 'cor' | 'padrao' | 'linha' | 'vestuario';
   codigo: string | null;
   imagem: string | null;
   hex: string | null;
@@ -594,6 +594,7 @@ export default function AdminProdutoEditor() {
                       <option value="cor">Cor</option>
                       <option value="padrao">Padrão</option>
                       <option value="linha">Linha técnica</option>
+                      <option value="vestuario">Vestuário (por unidade e tamanho)</option>
                     </select>
                   </div>
                   <div className={styles.campo}>

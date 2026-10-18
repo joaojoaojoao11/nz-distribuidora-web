@@ -23,6 +23,8 @@ const build = spawnSync(
     join(ROOT, 'node_modules/esbuild/bin/esbuild'),
     'src/lib/shop/carrinho.ts',
     'src/lib/shop/painelCarrinho.ts',
+    // Régua de unidade (rolo, metro, peça) que o carrinho importa.
+    'src/lib/shop/unidade.ts',
     `--outdir=${outDir}`,
     '--format=esm',
     '--platform=node',
@@ -55,6 +57,8 @@ writeFileSync(
   readFileSync(arq, 'utf8')
     .replace(/"\.\.\/supabase"|'\.\.\/supabase'/g, '"./supabase-falso.js"')
     .replace(/from\s*"react"|from\s*'react'/g, 'from "./react-falso.js"')
+    // ESM no node exige a extensão no specifier relativo.
+    .replace(/"\.\/unidade"|'\.\/unidade'/g, '"./unidade.js"')
 );
 const arqPainel = join(outDir, 'painelCarrinho.js');
 writeFileSync(arqPainel, readFileSync(arqPainel, 'utf8').replace(/from\s*"react"|from\s*'react'/g, 'from "./react-falso.js"'));
@@ -98,6 +102,27 @@ ok(
     { slug: 'b', unidade: 'metro', qtd: 7, lpns: [] },
   ]) === 3
 );
+
+ok(
+  'peça conta a quantidade (2 camisetas = 2)',
+  totalItensCarrinho([
+    { slug: 'cam-g', unidade: 'un', qtd: 2, lpns: [] },
+    { slug: 'b', unidade: 'metro', qtd: 7, lpns: [] },
+  ]) === 3
+);
+
+// ============================================================== peça
+console.log('\n=== PEÇA (UN) ===');
+limparCarrinho();
+adicionarAoCarrinho({ ...produto('cam-g'), unidade: 'un', qtd: 2.4 });
+ok('peça entra inteira', useCarrinho()[0]?.qtd === 2);
+adicionarAoCarrinho({ ...produto('cam-g'), unidade: 'un', qtd: 9 });
+ok('somar peça respeita o teto de 10', useCarrinho().length === 1 && useCarrinho()[0].qtd === 10);
+alterarQuantidade('cam-g', 'un', 3.7);
+ok('alterar peça arredonda', useCarrinho()[0].qtd === 4);
+adicionarAoCarrinho({ ...produto('cam-g'), unidade: 'rolo', qtd: 1 });
+ok('mesmo slug em outra unidade é outra linha', useCarrinho().length === 2);
+limparCarrinho();
 
 // ============================================================== itens
 console.log('\n=== ITENS ===');

@@ -12,6 +12,7 @@ import { supabase } from '../../lib/supabase';
 import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { useFavoritos } from '../../lib/shop/listasPessoais';
 import { BRL, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
+import { precoUnitario } from '../../lib/shop/unidade';
 import { gruposVisiveis } from './painelNav';
 import { PAGAMENTO_LABEL, STATUS_LABEL, type PedidoResumo } from './pedidoRotulos';
 import styles from './PainelInicio.module.css';
@@ -56,7 +57,7 @@ export default function PainelInicio() {
   let totalCarrinho: number | null = 0;
   for (const i of carrinho) {
     const p = precos.get(i.slug);
-    const unit = i.unidade === 'rolo' ? p?.rolo : p?.metro;
+    const unit = precoUnitario(i.unidade, p);
     if (unit == null) {
       totalCarrinho = null;
       break;

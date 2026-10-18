@@ -1,7 +1,7 @@
 // Carrinho da LOJA — no navegador, por usuário.
 //
-// Guarda só o que identifica o item: slug, quantidade, unidade (rolo fechado
-// ou metro) e, para o admin, os LPNs escolhidos. Nada de preço: o preço é
+// Guarda só o que identifica o item: slug, quantidade, unidade (rolo fechado,
+// metro ou peça — ver unidade.ts) e, para o admin, os LPNs escolhidos. Nada de preço: o preço é
 // recalculado no servidor na hora de enviar o pedido (api/nz/pedido) e
 // exibido pelo mesmo endpoint de preços da loja.
 //
@@ -16,8 +16,9 @@
 
 import { useSyncExternalStore } from 'react';
 import { supabase } from '../supabase';
+import { ajustarQtd, contaNoCracha, MAX_UN, type UnidadeVenda } from './unidade';
 
-export type UnidadeCarrinho = 'rolo' | 'metro';
+export type UnidadeCarrinho = UnidadeVenda;
 
 export interface ItemCarrinho {
   slug: string;
@@ -68,6 +69,11 @@ function publicar(novos: ItemCarrinho[]) {
 
 const chave = (slug: string, unidade: UnidadeCarrinho) => `${slug}|${unidade}`;
 
+/** Soma de quantidades: peça é inteira e tem teto (MAX_UN); o resto, 2 casas. */
+function somar(unidade: UnidadeCarrinho, a: number, b: number): number {
+  return unidade === 'un' ? Math.min(MAX_UN, Math.round(a + b)) : Math.round((a + b) * 100) / 100;
+}
+
 /** Junta duas listas somando a quantidade dos itens iguais (slug + unidade). */
 function fundir(a: readonly ItemCarrinho[], b: readonly ItemCarrinho[]): ItemCarrinho[] {
   const mapa = new Map<string, ItemCarrinho>();
@@ -77,7 +83,7 @@ function fundir(a: readonly ItemCarrinho[], b: readonly ItemCarrinho[]): ItemCar
     mapa.set(
       k,
       ja
-        ? { ...ja, qtd: Math.round((ja.qtd + i.qtd) * 100) / 100, lpns: [...new Set([...ja.lpns, ...i.lpns])] }
+        ? { ...ja, qtd: somar(ja.unidade, ja.qtd, i.qtd), lpns: [...new Set([...ja.lpns, ...i.lpns])] }
         : { ...i }
     );
   }
@@ -115,12 +121,12 @@ assinarAuth();
 export function adicionarAoCarrinho(item: Omit<ItemCarrinho, 'qtd' | 'lpns'> & { qtd?: number; lpns?: string[] }) {
   const k = chave(item.slug, item.unidade);
   const existente = itens.find((i) => chave(i.slug, i.unidade) === k);
-  const qtd = Math.max(0.5, Number(item.qtd ?? 1));
+  const qtd = item.unidade === 'un' ? ajustarQtd('un', Number(item.qtd ?? 1)) : Math.max(0.5, Number(item.qtd ?? 1));
   if (existente) {
     publicar(
       itens.map((i) =>
         chave(i.slug, i.unidade) === k
-          ? { ...i, qtd: Math.round((i.qtd + qtd) * 100) / 100, lpns: [...new Set([...i.lpns, ...(item.lpns ?? [])])] }
+          ? { ...i, qtd: somar(i.unidade, i.qtd, qtd), lpns: [...new Set([...i.lpns, ...(item.lpns ?? [])])] }
           : i
       )
     );
@@ -134,7 +140,8 @@ export function alterarQuantidade(slug: string, unidade: UnidadeCarrinho, qtd: n
     removerDoCarrinho(slug, unidade);
     return;
   }
-  publicar(itens.map((i) => (chave(i.slug, i.unidade) === chave(slug, unidade) ? { ...i, qtd: Math.round(qtd * 100) / 100 } : i)));
+  const nova = unidade === 'un' ? ajustarQtd('un', qtd) : Math.round(qtd * 100) / 100;
+  publicar(itens.map((i) => (chave(i.slug, i.unidade) === chave(slug, unidade) ? { ...i, qtd: nova } : i)));
 }
 
 export function removerDoCarrinho(slug: string, unidade: UnidadeCarrinho) {
@@ -185,12 +192,13 @@ export function useCarrinho(): ItemCarrinho[] {
 }
 
 /**
- * Quantos itens o cliente entende que tem no carrinho: cada rolo conta um
- * (3 rolos = 3), e uma linha de metro conta um só — "12,5" no crachá seria
- * ruído. Antes isto devolvia o número de LINHAS, então 5 rolos mostravam "1".
+ * Quantos itens o cliente entende que tem no carrinho: cada rolo e cada peça
+ * contam um (3 rolos = 3, 2 camisetas = 2), e uma linha de metro conta um só —
+ * "12,5" no crachá seria ruído. Antes isto devolvia o número de LINHAS, então
+ * 5 rolos mostravam "1".
  */
 export function totalItensCarrinho(lista: readonly ItemCarrinho[] = itens): number {
   let n = 0;
-  for (const i of lista) n += i.unidade === 'rolo' ? Math.max(1, Math.round(i.qtd)) : 1;
+  for (const i of lista) n += contaNoCracha(i.unidade, i.qtd);
   return n;
 }

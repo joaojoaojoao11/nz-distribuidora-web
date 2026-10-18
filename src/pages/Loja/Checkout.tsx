@@ -22,6 +22,7 @@ import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '
 import { formatarTelefone, telefoneOk, UFS } from '../../lib/shop/conta';
 import { limparCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { BRL } from '../../lib/shop/precos';
+import { rotuloQtd } from '../../lib/shop/unidade';
 import {
   buscarCep,
   cartaoParaEnvio,
@@ -475,7 +476,7 @@ export default function Checkout() {
                 <span className={styles.itemNome}>
                   {i.nome}
                   <small>
-                    {i.qtd} {i.unidade === 'rolo' ? (i.qtd === 1 ? 'rolo fechado' : 'rolos fechados') : 'm'}
+                    {i.qtd} {rotuloQtd(i.unidade, i.qtd)}
                   </small>
                 </span>
                 <span>{i.total ? BRL.format(i.total) : '—'}</span>

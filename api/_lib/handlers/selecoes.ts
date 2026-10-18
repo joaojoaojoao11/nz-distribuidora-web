@@ -23,6 +23,7 @@ import { createClient } from '@supabase/supabase-js';
 import { randomBytes } from 'node:crypto';
 import { resolverPapelDetalhado, type Db } from '../papel.js';
 import { SITE_URL } from './conta.js';
+import { estaAgendado } from '../loja/visibilidade.js';
 
 /** Teto de itens numa seleção. Espelha MAX_SELECAO no cliente e o check do banco. */
 const MAX_SLUGS = 300;
@@ -134,9 +135,15 @@ async function opCriar(site: Db, userId: string, body: Record<string, unknown>, 
   // Slug que não existe no cadastro viraria um buraco na lista do cliente: o
   // card simplesmente não apareceria e ninguém saberia por quê. Melhor devolver
   // quais caíram fora e deixar o vendedor decidir.
-  const { data: existentesData, error: erroProdutos } = await site.from('produtos').select('slug').in('slug', pedidos);
+  const { data: existentesData, error: erroProdutos } = await site.from('produtos').select('slug, publicar_em').in('slug', pedidos);
   if (erroProdutos) throw new Error(`leitura de produtos: ${erroProdutos.message}`);
-  const existentes = new Set(((existentesData ?? []) as { slug: string }[]).map((p) => p.slug));
+  // Produto agendado (antes do lançamento) também cai em `ignorados`: o link da
+  // seleção é aberto por cliente, e a vitrine ainda não o mostra.
+  const existentes = new Set(
+    ((existentesData ?? []) as { slug: string; publicar_em: string | null }[])
+      .filter((p) => !estaAgendado(p.publicar_em))
+      .map((p) => p.slug)
+  );
 
   // A ORDEM é a que o vendedor montou, não a do banco: ele curou a lista.
   const slugs = pedidos.filter((s) => existentes.has(s));

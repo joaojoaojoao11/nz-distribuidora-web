@@ -22,6 +22,7 @@ import { createClient } from '@supabase/supabase-js';
 import { createHash } from 'node:crypto';
 import { resolverPapelDetalhado, type Db } from '../papel.js';
 import { abrirOcorrencia } from '../ocorrencias.js';
+import { estaAgendado } from '../loja/visibilidade.js';
 
 const MOTIVOS: Record<string, string> = {
   preco: 'Preço não aparece ou está errado',
@@ -99,11 +100,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // linha que ninguém consegue abrir na Central.
   const { data: produtoData } = await site
     .from('produtos')
-    .select('slug, nome, erp_sku')
+    .select('slug, nome, erp_sku, publicar_em')
     .eq('slug', slug)
     .maybeSingle();
-  const produto = produtoData as { slug: string; nome: string | null; erp_sku: string | null } | null;
-  if (!produto) {
+  const produto = produtoData as { slug: string; nome: string | null; erp_sku: string | null; publicar_em: string | null } | null;
+  // Agendado (antes do lançamento) responde igual a inexistente: o endpoint é
+  // público e não pode servir de oráculo do que vem por aí.
+  if (!produto || estaAgendado(produto.publicar_em)) {
     res.status(404).json({ error: 'produto-nao-encontrado' });
     return;
   }

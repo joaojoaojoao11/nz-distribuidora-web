@@ -6,9 +6,10 @@
 // Textos aprovados pela Cledna em 17/10/2026 ("Textos dos clas (para
 // aprovar).md", pasta 02 - SITE E LOJA). Marcação: *trecho* vira itálico.
 //
-// Depois do lançamento: preencha `lojaSlug` de cada clã com o slug do produto
-// na loja (/loja/<slug>). Enquanto estiver vazio, o "Comprar" leva para
-// LOJA_COLECAO_URL.
+// `lojaSlug` de cada clã = slug da VITRINE na loja (o tamanho M; os outros
+// tamanhos são escolhidos na própria página). Os produtos estão agendados no
+// banco para a MESMA hora de LANCAMENTO (`produtos.publicar_em`): se mudar a
+// data aqui, mude lá também (migrations/2026-10-17d_colecao_2026_dados.sql).
 // ─────────────────────────────────────────────────────────────
 
 /** Quinta, 29/10/2026, 18h (horário de Brasília, sem horário de verão). */
@@ -21,8 +22,8 @@ export const PRECO = 'R$ 189';
 export const PRECO_NUMERO = 189;
 export const TAMANHOS = ['P', 'M', 'G', 'GG'] as const;
 
-/** Destino do "Comprar" quando o clã ainda não tem produto próprio na loja. */
-export const LOJA_COLECAO_URL = '/loja?colecao=2026';
+/** A coleção inteira na loja (filtro pela linha `vestuario`). */
+export const LOJA_COLECAO_URL = '/loja?linha=vestuario';
 
 /** Tabela de leads no Supabase (migrations/2026-10-17_leads_colecao_2026.sql). */
 export const TABELA_LEADS = 'leads_colecao_2026';
@@ -85,6 +86,7 @@ export const CLAS: readonly Cla[] = [
     camisa: 'TRUE PROTECT',
     nome: 'Clã do Sol Nascente',
     slug: 'sol-nascente',
+    lojaSlug: 'camiseta-nzppf-2026-01-true-protect',
     cor: '#E0322B',
     corTexto: '#FFFFFF',
     dica: 'Acorda antes do sol.',
@@ -117,6 +119,7 @@ export const CLAS: readonly Cla[] = [
     camisa: 'PROTECTED',
     nome: 'Clã do Detalhe',
     slug: 'detalhe',
+    lojaSlug: 'camiseta-nzppf-2026-02-protected',
     cor: '#EFEADF',
     corTexto: '#0A0A0A',
     dica: 'Repara em tudo.',
@@ -149,6 +152,7 @@ export const CLAS: readonly Cla[] = [
     camisa: 'SHINE AFTER DARK',
     nome: 'Clã da Meia-Noite',
     slug: 'meia-noite',
+    lojaSlug: 'camiseta-nzppf-2026-03-shine-after-dark',
     cor: '#19C3FF',
     corTexto: '#0A0A0A',
     dica: 'Só brilha depois da meia-noite.',
@@ -181,6 +185,7 @@ export const CLAS: readonly Cla[] = [
     camisa: 'PPF',
     nome: 'Clã da Fumaça',
     slug: 'fumaca',
+    lojaSlug: 'camiseta-nzppf-2026-04-ppf',
     cor: '#E0322B',
     corTexto: '#FFFFFF',
     dica: 'Não sabe o que é devagar.',
@@ -213,6 +218,7 @@ export const CLAS: readonly Cla[] = [
     camisa: 'EMOTION & PROTECT',
     nome: 'Clã dos Night Riders',
     slug: 'night-riders',
+    lojaSlug: 'camiseta-nzppf-2026-05-emotion-protect',
     cor: '#FF2BD6',
     corTexto: '#0A0A0A',
     dica: 'Equilibra emoção e juízo.',

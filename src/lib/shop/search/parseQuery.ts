@@ -154,6 +154,16 @@ const LINE_SYNONYMS: Record<string, LineKey> = {
   farol: 'nz-farol',
   'pelicula de farol': 'nz-farol',
   headlight: 'nz-farol',
+  // Coleção NZPPF 2026 (camisetas). "colecao" sozinho fica de fora: a loja
+  // também fala em coleção de cores.
+  camiseta: 'vestuario',
+  camisetas: 'vestuario',
+  camisa: 'vestuario',
+  camisas: 'vestuario',
+  vestuario: 'vestuario',
+  clas: 'vestuario',
+  'os clas': 'vestuario',
+  'colecao nzppf': 'vestuario',
 };
 
 const VERTICAL_SYNONYMS: Record<string, Vertical> = {

@@ -7,6 +7,15 @@
 // alguém puser preço na view, este endpoint o publicaria para o mundo; a
 // trava é lá, e o teste de F3 confere que a resposta não tem campo "preco".
 //
+// ÚNICA EXCEÇÃO, de propósito (17/10/2026, decisão D9 do plano da coleção):
+// `preco_publico`, preenchido SÓ para `kind = 'vestuario'` (camisetas NZPPF).
+// É o mesmo valor que o checkout cobra de todo mundo e que já está na página
+// /colecao. Para rolo e metro a coluna é sempre nula.
+//
+// Produto AGENDADO (`publicar_em` no futuro) não sai daqui: a view já filtra.
+// Para a vitrine virar na hora exata, a borda não pode guardar este JSON além
+// do próximo lançamento — ver `segundosAteLancamento` abaixo.
+//
 // Cache na CDN da Vercel: 5 min fresco, 1 h servindo o antigo enquanto
 // revalida. O sync do ERP roda a cada 5 min, então o site fica no máximo ~10
 // min atrás do ERP sem nenhum visitante esperar a consulta.
@@ -14,6 +23,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { ehLinhaOculta } from '../lojaOcultos.js';
+import type { Db } from '../papel.js';
 
 const PAGE = 1000;
 
@@ -63,6 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     .order('linha_key', { ascending: true });
 
   const nocache = req.query.nocache === '1';
+  const ateLancamento = await segundosAteLancamento(site);
   // A JANELA DE DESATUALIZACAO E' UMA DECISAO DE PRODUTO, NAO DE PERFORMANCE.
   //
   // Era `s-maxage=300, stale-while-revalidate=3600`: a borda podia servir uma
@@ -73,9 +84,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // origem roda no maximo uma vez por minuto por regiao — nao e' custo.
   //
   // `?nocache=1` pula tudo: e' o que o painel usa depois de salvar.
+  //
+  // Lançamento agendado a menos de 3 min (a janela normal inteira): a cópia
+  // vence exatamente na hora e não é servida "stale" depois — senão a
+  // coleção apareceria às 18:03 em vez de 18:00.
+  const janelaNormal = 60 + 120;
   res.setHeader(
     'Cache-Control',
-    nocache ? 'no-store' : 'public, s-maxage=60, stale-while-revalidate=120, max-age=30'
+    nocache
+      ? 'no-store'
+      : ateLancamento != null && ateLancamento < janelaNormal
+        ? `public, s-maxage=${Math.max(1, ateLancamento)}, max-age=0`
+        : 'public, s-maxage=60, stale-while-revalidate=120, max-age=30'
   );
   res.status(200).json({
     geradoEm: new Date().toISOString(),
@@ -85,4 +105,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ? []
       : (linhas ?? []).filter((l) => !ehLinhaOculta((l as { linha_key?: string }).linha_key)),
   });
+}
+
+/**
+ * Segundos até o próximo `produtos.publicar_em` futuro, ou `null` se não há
+ * nada agendado. Falha de leitura = `null` (cache normal): o pior caso é a
+ * vitrine virar até 3 min depois, nunca antes.
+ */
+async function segundosAteLancamento(site: Db): Promise<number | null> {
+  try {
+    const { data, error } = await site
+      .from('produtos')
+      .select('publicar_em')
+      .gt('publicar_em', new Date().toISOString())
+      .order('publicar_em', { ascending: true })
+      .limit(1);
+    if (error || !data?.length) return null;
+    const t = Date.parse((data[0] as { publicar_em: string }).publicar_em);
+    return Number.isFinite(t) ? Math.ceil((t - Date.now()) / 1000) : null;
+  } catch {
+    return null;
+  }
 }

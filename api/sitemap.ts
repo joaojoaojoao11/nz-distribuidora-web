@@ -125,6 +125,23 @@ export default async function handler(_req: Request) {
     sitemapContent += `  </url>\n`;
   }
 
+  // Vitrines da coleção de vestuário (camisetas NZPPF). Vêm da view pública,
+  // que já respeita `publicar_em`: antes do lançamento a lista volta vazia e as
+  // URLs entram sozinhas depois. Só a vitrine (sem `pai_slug`); os tamanhos
+  // apontam o canonical para ela.
+  const { data: vestuario } = await supabase
+    .from('loja_catalogo')
+    .select('slug')
+    .eq('kind', 'vestuario')
+    .is('pai_slug', null);
+  for (const row of (vestuario ?? []) as { slug: string }[]) {
+    sitemapContent += `  <url>\n`;
+    sitemapContent += `    <loc>${baseUrl}/loja/${row.slug}</loc>\n`;
+    sitemapContent += `    <changefreq>weekly</changefreq>\n`;
+    sitemapContent += `    <priority>0.7</priority>\n`;
+    sitemapContent += `  </url>\n`;
+  }
+
   // Páginas de produto da LOJA que são auto-canônicas: as 129 cores Metamark
   // 7 Series e MetaCast MCX, que até aqui só existiam como ?cor=<slug> dentro
   // do catálogo e não eram indexáveis como entidade própria. Os demais itens

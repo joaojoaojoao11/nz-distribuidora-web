@@ -22,6 +22,7 @@ import { visitanteId } from '../../lib/afiliado';
 import { alterarQuantidade, limparCarrinho, removerDoCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { BRL, usePreco, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
 import type { ItemCarrinho } from '../../lib/shop/carrinho';
+import { MINIMO, PASSO, precoUnitario, sufixoPreco } from '../../lib/shop/unidade';
 import styles from './Carrinho.module.css';
 
 interface Endereco {
@@ -274,7 +275,7 @@ export default function Carrinho() {
 
 function Linha({ item }: { item: ItemCarrinho }) {
   const { item: preco } = usePreco(item.slug);
-  const unit = item.unidade === 'rolo' ? preco?.rolo : preco?.metro;
+  const unit = precoUnitario(item.unidade, preco);
   const subtotal = unit != null ? Number(unit) * item.qtd : null;
   return (
     <li className={styles.item}>
@@ -287,27 +288,31 @@ function Linha({ item }: { item: ItemCarrinho }) {
         </Link>
         <span className={styles.itemMeta}>
           {item.codigo ? `${item.codigo} · ` : ''}
-          {item.unidade === 'rolo' ? `rolo fechado${preco?.metragemPadrao ? ` de ${preco.metragemPadrao} m` : ''}` : 'metro linear'}
+          {item.unidade === 'rolo'
+            ? `rolo fechado${preco?.metragemPadrao ? ` de ${preco.metragemPadrao} m` : ''}`
+            : item.unidade === 'un'
+              ? 'por unidade'
+              : 'metro linear'}
           {item.lpns.length ? ` · rolos ${item.lpns.join(', ')}` : ''}
         </span>
         {unit != null && (
           <span className={styles.itemPreco}>
-            {BRL.format(Number(unit))} / {item.unidade === 'rolo' ? 'rolo' : 'm'}
+            {BRL.format(Number(unit))} / {sufixoPreco(item.unidade)}
           </span>
         )}
       </div>
       <div className={styles.qtd}>
-        <button type="button" aria-label="Menos" onClick={() => alterarQuantidade(item.slug, item.unidade, item.qtd - (item.unidade === 'rolo' ? 1 : 0.5))}>
+        <button type="button" aria-label="Menos" onClick={() => alterarQuantidade(item.slug, item.unidade, item.qtd - PASSO[item.unidade])}>
           −
         </button>
         <input
           type="number"
-          min={item.unidade === 'rolo' ? 1 : 0.5}
-          step={item.unidade === 'rolo' ? 1 : 0.5}
+          min={MINIMO[item.unidade]}
+          step={PASSO[item.unidade]}
           value={item.qtd}
           onChange={(e) => alterarQuantidade(item.slug, item.unidade, Number(e.target.value))}
         />
-        <button type="button" aria-label="Mais" onClick={() => alterarQuantidade(item.slug, item.unidade, item.qtd + (item.unidade === 'rolo' ? 1 : 0.5))}>
+        <button type="button" aria-label="Mais" onClick={() => alterarQuantidade(item.slug, item.unidade, item.qtd + PASSO[item.unidade])}>
           +
         </button>
       </div>
@@ -326,7 +331,7 @@ function Total({ itens, cupom }: { itens: ItemCarrinho[]; cupom: { valido: boole
     let s = 0;
     for (const i of itens) {
       const p = mapa.get(i.slug);
-      const unit = i.unidade === 'rolo' ? p?.rolo : p?.metro;
+      const unit = precoUnitario(i.unidade, p);
       if (unit == null) return null;
       s += Number(unit) * i.qtd;
     }

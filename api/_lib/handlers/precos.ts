@@ -34,11 +34,14 @@ import { lerSelecaoPorToken, selecaoAtiva } from './selecoes.js';
 import { aplicarAcrescimo } from '../pedido/dinheiro.js';
 import { lerEstoqueParceiro } from '../estoqueParceiro.js';
 import { lerPromoMoto, precoMetroPromo, type PromoMoto } from '../promoMotoDados.js';
+import { estaAgendado } from '../loja/visibilidade.js';
 
 interface Produto {
   slug: string;
   erp_sku: string | null;
   tipo_vinculo: string;
+  /** Agendado (ex.: coleção antes do lançamento): só o admin vê o preço. */
+  publicar_em: string | null;
 }
 
 interface Espelho {
@@ -116,7 +119,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const { data: produtosData } = await site
     .from('produtos')
-    .select('slug, erp_sku, tipo_vinculo')
+    .select('slug, erp_sku, tipo_vinculo, publicar_em')
     .in('slug', slugs);
   const produtos = (produtosData ?? []) as Produto[];
 
@@ -154,7 +157,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const p = produtos.find((x) => x.slug === slug);
     const e = p?.erp_sku ? porSku.get(p.erp_sku) : undefined;
-    if (!p || !e || !e.ativo) {
+    if (!p || !e || !e.ativo || (papel !== 'admin' && estaAgendado(p.publicar_em))) {
       itens[slug] = { disponivel: false };
       continue;
     }

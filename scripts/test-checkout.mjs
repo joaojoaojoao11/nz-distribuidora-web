@@ -34,6 +34,10 @@ const build = spawnSync(
     // mesma régua de arredondamento.
     'api/_lib/pedido/dinheiro.ts',
     'api/_lib/conta/completude.ts',
+    // `precificar` importa os dois abaixo (Promoção Moto; peça e agendamento
+    // da coleção). Sem eles na lista, o import quebrava antes do 1º teste.
+    'api/_lib/promoMotoDados.ts',
+    'api/_lib/loja/visibilidade.ts',
     `--outdir=${outDir}`,
     '--format=esm',
     '--platform=node',
@@ -123,7 +127,7 @@ function fakeDb(dados = {}) {
 
 const { criarPagamento, parcelasDisponiveis, statusDoEvento, statusDoAsaas, expirarSeVencido, marcarPago } = await import(pathToFileURL(join(outDir, 'asaas/pagamento.js')).href);
 const { somarDiasUteis, hojeBr, ipDoCliente, sanitizarPagamento } = await import(pathToFileURL(join(outDir, 'asaas/cliente.js')).href);
-const { normalizarItens } = await import(pathToFileURL(join(outDir, 'pedido/precificar.js')).href);
+const { normalizarItens, precificar, montarPayloadErp, itensParaGravar, notaPreVenda } = await import(pathToFileURL(join(outDir, 'pedido/precificar.js')).href);
 const webhook = await import(pathToFileURL(join(outDir, 'handlers/asaas.js')).href);
 
 const CFG = { checkout_ativo: true, pix_expira_min: 30, boleto_vencimento_dias: 3, boleto_multa_pct: 2, boleto_juros_mes_pct: 1, boleto_minimo: 0, cartao_max_parcelas: 6, cartao_parcela_minima: 100, retirada_ativa: true, retirada_endereco: '', pedido_minimo: 0, frete_gratis_acima: null };
@@ -285,6 +289,70 @@ console.log('\n=== EXPIRAÇÃO DO PIX ===');
   const db = fakeDb();
   const r = await expirarSeVencido(db, { id: 'x', pedido_id: 'y', forma: 'PIX', status: 'aguardando', valor: 1, expira_em: new Date(Date.now() + 60_000).toISOString() });
   ok('Pix dentro do prazo: intocado', r.status === 'aguardando' && db.escritas.length === 0);
+}
+
+// ============================================ peça (unidade 'un') — coleção
+console.log('\n=== PEÇA (UN) E AGENDAMENTO ===');
+{
+  const n = normalizarItens([
+    { slug: 'cam-g', qtd: 2.6, unidade: 'un' },
+    { slug: 'cam-gg', qtd: 99, unidade: 'un' },
+    { slug: 'cam-p', qtd: 0.4, unidade: 'un' },
+    { slug: 'x', qtd: 1, unidade: 'caixa' },
+  ]);
+  ok('peça: arredonda para inteiro', n.find((i) => i.slug === 'cam-g')?.qtd === 3);
+  ok('peça: teto de 10 por item', n.find((i) => i.slug === 'cam-gg')?.qtd === 10);
+  ok('peça: mínimo 1', n.find((i) => i.slug === 'cam-p')?.qtd === 1);
+  ok('unidade desconhecida continua descartada', !n.some((i) => i.slug === 'x'));
+}
+{
+  const futuro = new Date(Date.now() + 86_400_000).toISOString();
+  const passado = new Date(Date.now() - 86_400_000).toISOString();
+  const db = fakeDb({
+    produtos: [
+      { id: 'p1', slug: 'cam-g', nome: 'Camiseta G', erp_sku: 'NZPPFCAM01G', tipo_vinculo: 'proprio', linha_key: 'vestuario', publicar_em: passado },
+      { id: 'p2', slug: 'cam-agendada', nome: 'Camiseta M', erp_sku: 'NZPPFCAM01M', tipo_vinculo: 'proprio', linha_key: 'vestuario', publicar_em: futuro },
+      { id: 'p3', slug: 'rolo-x', nome: 'Rolo X', erp_sku: 'ROLO1', tipo_vinculo: 'proprio', linha_key: 'ppf', publicar_em: null },
+      { id: 'p4', slug: 'espatula', nome: 'Espátula', erp_sku: 'NZE01', tipo_vinculo: 'proprio', linha_key: 'diversos', publicar_em: null },
+    ],
+    erp_produtos: [
+      { sku: 'NZPPFCAM01G', nome: 'CAMISETA NZPPF 2026 Nº 01 TRUE PROTECT G', ativo: true, metragem_padrao: 1, preco_rolo: 189, preco_metro: 189, saldo_ml: 0, unidade: 'UN' },
+      { sku: 'NZPPFCAM01M', nome: 'CAMISETA NZPPF 2026 Nº 01 TRUE PROTECT M', ativo: true, metragem_padrao: 1, preco_rolo: 189, preco_metro: 189, saldo_ml: 0, unidade: 'UN' },
+      { sku: 'ROLO1', nome: 'ROLO X 1,52 X 15M', ativo: true, metragem_padrao: 15, preco_rolo: 3000, preco_metro: 250, saldo_ml: 40, unidade: 'ML' },
+      { sku: 'NZE01', nome: 'ESPÁTULA', ativo: true, metragem_padrao: 0.2, preco_rolo: 30, preco_metro: 30, saldo_ml: 5, unidade: 'UN' },
+    ],
+    loja_config: [{ id: 1 }],
+  });
+
+  const a = await precificar(db, [{ slug: 'cam-g', qtd: 2, unidade: 'un' }, { slug: 'rolo-x', qtd: 1, unidade: 'rolo' }]);
+  const cam = a.linhas.find((l) => l.produto.slug === 'cam-g');
+  const rolo = a.linhas.find((l) => l.produto.slug === 'rolo-x');
+  ok('peça: preço por peça = preco_rolo', cam?.unitPrice === 189 && cam?.qtyMt === 2 && cam?.total === 378);
+  ok('rolo continua em metros (15 m × 200/m)', rolo?.qtyMt === 15 && rolo?.unitPrice === 200 && rolo?.total === 3000);
+  ok('subtotal soma os dois', a.subtotal === 3378 && a.invalidos.length === 0);
+
+  const payload = montarPayloadErp({ pedidoId: 'ped-x', perfil: PERFIL, linhas: a.linhas, total: 3378, notas: '', cupom: null, afiliadoCodigo: null, frete: { tipo: 'CIF', valor: 0, transportadora: '', prazoDias: 0 } });
+  const itCam = payload.items.find((i) => i.sku === 'NZPPFCAM01G');
+  const itRolo = payload.items.find((i) => i.sku === 'ROLO1');
+  ok('ERP: peça vai como UN, qty = peças, nome do ERP com o tamanho', itCam?.unit === 'UN' && itCam?.qty === 2 && itCam?.unitPrice === 189 && itCam?.name.endsWith(' G'));
+  ok('ERP: peça sem estoque vai como DROP', itCam?.availabilityTag === 'DROP');
+  ok('ERP: rolo segue MT e "(1 rolo fechado)"', itRolo?.unit === 'MT' && /1 rolo fechado/.test(itRolo?.name ?? ''));
+  const gravar = itensParaGravar('ped-x', a.linhas);
+  ok('pedido_itens: peça grava unidade un e preço por peça', gravar.some((g) => g.unidade === 'un' && g.preco_unit_estimado === 189 && g.qtd === 2));
+  const nota = notaPreVenda(a.linhas, 5);
+  ok('nota de pré-venda cita o SKU e os dias de produção', Boolean(nota) && nota.includes('NZPPFCAM01G ×2') && nota.includes('5 dias úteis'));
+  ok('rolo com estoque não gera nota de pré-venda', notaPreVenda([rolo]) === null);
+
+  const b = await precificar(db, [{ slug: 'cam-g', qtd: 1, unidade: 'metro' }, { slug: 'rolo-x', qtd: 1, unidade: 'un' }]);
+  ok('camiseta como metro é recusada; rolo como peça também', b.linhas.length === 0 && b.invalidos.includes('cam-g') && b.invalidos.includes('rolo-x'));
+
+  const c = await precificar(db, [{ slug: 'cam-agendada', qtd: 1, unidade: 'un' }]);
+  ok('agendado: cliente não precifica', c.linhas.length === 0 && c.invalidos.includes('cam-agendada'));
+  const d = await precificar(db, [{ slug: 'cam-agendada', qtd: 1, unidade: 'un' }], { admin: true });
+  ok('agendado: admin precifica (prévia)', d.linhas.length === 1 && d.subtotal === 189);
+
+  const e = await precificar(db, [{ slug: 'espatula', qtd: 1, unidade: 'un' }]);
+  ok('peça com metragem ≠ 1 fica de fora (o Tiny dividiria a quantidade)', e.linhas.length === 0 && e.invalidos.includes('espatula'));
 }
 
 rmSync(outDir, { recursive: true, force: true });

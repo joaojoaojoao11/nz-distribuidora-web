@@ -29,6 +29,7 @@ import {
   itensParaGravar,
   montarPayloadErp,
   normalizarItens,
+  notaPreVenda,
   precificar,
   resolverAfiliado,
   resolverCupom,
@@ -78,7 +79,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const { linhas, invalidos, subtotal } = await precificar(site, itens);
+  // `admin`: prévia de produto agendado (publicar_em no futuro) — ver precificar.
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin: papel === 'admin' });
   if (invalidos.length) {
     res.status(400).json({ error: 'itens-invalidos', invalidos });
     return;
@@ -130,6 +132,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     cupom.codigo ? `Cupom ${cupom.codigo}${cupom.desconto ? ` (desconto estimado R$ ${cupom.desconto.toFixed(2)})` : ''}.` : null,
     afiliadoCodigo ? `Indicado por ${afiliadoCodigo}.` : null,
     frete && typeof frete.prazoDias === 'number' ? `Frete estimado no site: ${frete.transportadora ?? ''} ${frete.prazoDias} dias úteis${typeof frete.valor === 'number' ? ` R$ ${Number(frete.valor).toFixed(2)}` : ''}.` : null,
+    notaPreVenda(linhas),
     ...linhas.filter((l) => l.item.lpns?.length).map((l) => `${l.e.sku}: rolos pedidos ${l.item.lpns!.join(', ')}.`),
     observacoes ? `Obs. do cliente: ${observacoes}` : null,
   ]

@@ -7,16 +7,25 @@
 // Unidade no ERP: metro linear ('MT'). Rolo fechado = metragem_padrao metros ao
 // preço de atacado por metro (preco_rolo ÷ metragem); fracionado = metros ao
 // preco_metro. É a régua do simulador da tabela de preço do NZERP.
+//
+// Unidade 'un' (desde 17/10/2026, Coleção NZPPF 2026): SKU com unidade 'UN' no
+// ERP vende por PEÇA — quantidade inteira, preço = preco_rolo, e vai ao ERP como
+// `unit: 'UN'`. A coerência é obrigatória nos dois sentidos: SKU 'UN' só compra
+// como 'un', e 'un' só vale para SKU 'UN' (antes, uma camiseta passava como
+// "0,5 metro").
 
 import type { Db } from '../papel.js';
 import { faltandoNoCadastro } from '../conta/completude.js';
 import { r2 } from './dinheiro.js';
 import { lerPromoMoto, precoMetroPromo, type PromoMoto } from '../promoMotoDados.js';
+import { estaAgendado, vendePorUnidade } from '../loja/visibilidade.js';
+
+export type UnidadePedido = 'rolo' | 'metro' | 'un';
 
 export interface ItemPedido {
   slug: string;
   qtd: number;
-  unidade: 'rolo' | 'metro';
+  unidade: UnidadePedido;
   lpns?: string[];
 }
 
@@ -29,6 +38,8 @@ export interface Produto {
   tipo_vinculo: string;
   linha_key: string | null;
   shipping_profile_id: string | null;
+  /** Publicação agendada: até esta data só o admin precifica (prévia). */
+  publicar_em?: string | null;
 }
 
 export interface Espelho {
@@ -39,6 +50,8 @@ export interface Espelho {
   preco_rolo: number | null;
   preco_metro: number | null;
   saldo_ml: number;
+  /** 'ML' | 'M2' | 'UN' — 'UN' vende por peça. */
+  unidade?: string | null;
 }
 
 export interface Perfil {
@@ -68,14 +81,16 @@ export interface Linha {
   produto: Produto;
   e: Espelho;
   item: ItemPedido;
-  /** R$ por metro linear (é o que vai ao ERP). */
+  /** R$ por metro linear (é o que vai ao ERP); na unidade 'un', R$ por peça. */
   unitPrice: number;
-  /** Metros lineares totais da linha. */
+  /** Metros lineares totais da linha; na unidade 'un', o número de peças. */
   qtyMt: number;
   total: number;
 }
 
 export const MAX_ITENS = 40;
+/** Teto de peças por item (por tamanho) num pedido — decisão de 17/10/2026. */
+export const MAX_UN = 10;
 
 // Mora em dinheiro.ts desde que as seleções passaram a precisar da mesma régua.
 export { r2 };
@@ -85,11 +100,21 @@ export function normalizarItens(bruto: unknown): ItemPedido[] {
   const lista = Array.isArray(bruto) ? (bruto as unknown[]) : [];
   return lista
     .map((x) => x as Partial<ItemPedido>)
-    .filter((x) => typeof x.slug === 'string' && typeof x.qtd === 'number' && x.qtd > 0 && (x.unidade === 'rolo' || x.unidade === 'metro'))
+    .filter(
+      (x) =>
+        typeof x.slug === 'string' &&
+        typeof x.qtd === 'number' &&
+        x.qtd > 0 &&
+        (x.unidade === 'rolo' || x.unidade === 'metro' || x.unidade === 'un')
+    )
     .map((x) => ({
       slug: String(x.slug).trim().toLowerCase(),
-      qtd: Math.min(r2(Number(x.qtd)), x.unidade === 'rolo' ? 50 : 500),
-      unidade: x.unidade as 'rolo' | 'metro',
+      // Peça é inteira (no mínimo 1); rolo e metro seguem como sempre.
+      qtd:
+        x.unidade === 'un'
+          ? Math.min(Math.max(1, Math.round(Number(x.qtd))), MAX_UN)
+          : Math.min(r2(Number(x.qtd)), x.unidade === 'rolo' ? 50 : 500),
+      unidade: x.unidade as UnidadePedido,
       lpns: Array.isArray(x.lpns) ? (x.lpns as unknown[]).filter((l): l is string => typeof l === 'string').slice(0, 20) : [],
     }))
     .slice(0, MAX_ITENS);
@@ -109,17 +134,28 @@ export async function carregarPerfil(site: Db, userId: string): Promise<{ perfil
   return { perfil, faltando: faltandoNoCadastro(perfil) };
 }
 
-/** slug → produto → SKU físico → preço de tabela. Itens sem tudo isso voltam em `invalidos`. */
-export async function precificar(site: Db, itens: ItemPedido[]): Promise<{ linhas: Linha[]; invalidos: string[]; subtotal: number }> {
+/**
+ * slug → produto → SKU físico → preço de tabela. Itens sem tudo isso voltam em `invalidos`.
+ *
+ * `admin`: a prévia antes do lançamento — só o admin precifica produto com
+ * `publicar_em` no futuro.
+ */
+export async function precificar(
+  site: Db,
+  itens: ItemPedido[],
+  opts: { admin?: boolean } = {}
+): Promise<{ linhas: Linha[]; invalidos: string[]; subtotal: number }> {
   const slugs = [...new Set(itens.map((i) => i.slug))];
   const { data: produtosData } = await site
     .from('produtos')
-    .select('id, slug, nome, codigo, erp_sku, tipo_vinculo, linha_key, shipping_profile_id')
+    // `*` e não a lista: `publicar_em` nasceu em 17/10/2026 e nomear coluna que
+    // ainda não existe derruba a consulta inteira (mesma nota de prazo.ts).
+    .select('*')
     .in('slug', slugs);
   const produtos = (produtosData ?? []) as Produto[];
   const skus = [...new Set(produtos.map((p) => p.erp_sku).filter((s): s is string => !!s))];
   const { data: espelhoData } = skus.length
-    ? await site.from('erp_produtos').select('sku, nome, ativo, metragem_padrao, preco_rolo, preco_metro, saldo_ml').in('sku', skus)
+    ? await site.from('erp_produtos').select('sku, nome, ativo, metragem_padrao, preco_rolo, preco_metro, saldo_ml, unidade').in('sku', skus)
     : { data: [] };
   const espelho = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
 
@@ -143,8 +179,29 @@ export async function precificar(site: Db, itens: ItemPedido[]): Promise<{ linha
       invalidos.push(item.slug);
       continue;
     }
+    // Agendado (ex.: a coleção antes das 18h do lançamento): só a prévia do admin.
+    if (!opts.admin && estaAgendado(p.publicar_em)) {
+      invalidos.push(item.slug);
+      continue;
+    }
+    // Peça × metro: a unidade do pedido tem de bater com a do ERP.
+    const porPeca = vendePorUnidade(e.unidade);
+    if (porPeca !== (item.unidade === 'un')) {
+      invalidos.push(item.slug);
+      continue;
+    }
     const metragem = Number(e.metragem_padrao) || 0;
-    if (item.unidade === 'rolo') {
+    if (item.unidade === 'un') {
+      // O Tiny (NZERP, tinyService) converte UN dividindo a quantidade pela
+      // metragem do SKU: com metragem diferente de 1 a quantidade sairia errada
+      // na nota. As camisetas têm 1; o resto fica de fora até alguém olhar.
+      if (!(Number(e.preco_rolo) > 0) || (e.metragem_padrao != null && Number(e.metragem_padrao) !== 1)) {
+        invalidos.push(item.slug);
+        continue;
+      }
+      const unitPrice = r2(Number(e.preco_rolo));
+      linhas.push({ produto: p, e, item, unitPrice, qtyMt: item.qtd, total: r2(unitPrice * item.qtd) });
+    } else if (item.unidade === 'rolo') {
       // `> 0`, nao `!= null`: preco zero e' cadastro incompleto do ERP e nao
       // pode virar linha de pedido. Mesma regra do /api/nz/precos.
       if (!(Number(e.preco_rolo) > 0) || metragem <= 0) {
@@ -304,7 +361,8 @@ export function montarPayloadErp(args: {
       sku: l.e.sku,
       name: `${l.e.nome ?? l.produto.nome}${l.item.unidade === 'rolo' ? ` (${l.item.qtd} rolo${l.item.qtd > 1 ? 's' : ''} fechado${l.item.qtd > 1 ? 's' : ''})` : ''}`,
       qty: l.qtyMt,
-      unit: 'MT',
+      // Peça vai como UN (o nome do ERP já traz o tamanho); o resto, metro linear.
+      unit: l.item.unidade === 'un' ? 'UN' : 'MT',
       unitPrice: l.unitPrice,
       total: l.total,
       availabilityTag: Number(l.e.saldo_ml) > 0.01 ? 'ESTOQUE' : 'DROP',
@@ -316,6 +374,20 @@ export function montarPayloadErp(args: {
     cupom: args.cupom ?? '',
     afiliado_codigo: args.afiliadoCodigo ?? '',
   };
+}
+
+/**
+ * Peça vendida sem estoque (pré-venda da coleção): a expedição precisa saber
+ * que o item ainda vai ser produzido, e quantos dias de produção o prazo
+ * prometido ao cliente já inclui (perfil de embalagem, Admin → Logística).
+ * Vai nas notas do orçamento no NZERP.
+ */
+export function notaPreVenda(linhas: Linha[], diasProducao = 0): string | null {
+  const semEstoque = linhas.filter((l) => l.item.unidade === 'un' && !(Number(l.e.saldo_ml) > 0.01));
+  if (!semEstoque.length) return null;
+  const itens = semEstoque.map((l) => `${l.e.sku} ×${l.item.qtd}`).join(', ');
+  const producao = diasProducao > 0 ? ` O prazo informado ao cliente inclui ${diasProducao} dias úteis de produção.` : '';
+  return `PRÉ-VENDA (sem estoque na compra): ${itens}.${producao}`;
 }
 
 /** Linhas de pedido_itens a partir das linhas precificadas. */

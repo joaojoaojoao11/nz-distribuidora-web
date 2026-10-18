@@ -6,6 +6,7 @@
 
 import { supabase } from '../supabase';
 import { validarCpfCnpj } from '../documento';
+import type { UnidadeVenda } from './unidade';
 
 export type Forma = 'PIX' | 'BOLETO' | 'CREDIT_CARD';
 export type StatusPagamento = 'aguardando' | 'em_analise' | 'pago' | 'recusado' | 'expirado' | 'vencido' | 'estornado' | 'cancelado' | 'nenhum';
@@ -22,7 +23,7 @@ export interface OpcaoFrete {
 
 export interface Resumo {
   checkoutAtivo: boolean;
-  itens: { slug: string; nome: string; unidade: 'rolo' | 'metro'; qtd: number; unit: number; total: number; metragem: number | null }[];
+  itens: { slug: string; nome: string; unidade: UnidadeVenda; qtd: number; unit: number; total: number; metragem: number | null }[];
   invalidos: string[];
   subtotal: number;
   desconto: number;

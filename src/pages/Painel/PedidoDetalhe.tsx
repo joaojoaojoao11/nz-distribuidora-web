@@ -13,6 +13,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { BRL } from '../../lib/shop/precos';
+import { rotuloQtd, sufixoPreco, type UnidadeVenda } from '../../lib/shop/unidade';
 import {
   cartaoParaEnvio,
   chamarCheckout,
@@ -164,8 +165,8 @@ export default function PedidoDetalhe() {
               <span className={styles.itemNome}>
                 {i.slug ? <Link to={`/loja/${i.slug}`}>{i.nome}</Link> : i.nome}
                 <small>
-                  {i.qtd} {i.unidade === 'rolo' ? (i.qtd === 1 ? 'rolo fechado' : 'rolos fechados') : 'm'}
-                  {i.unit != null ? ` · ${BRL.format(i.unit)} / ${i.unidade === 'rolo' ? 'rolo' : 'm'}` : ''}
+                  {i.qtd} {rotuloQtd(i.unidade as UnidadeVenda, i.qtd)}
+                  {i.unit != null ? ` · ${BRL.format(i.unit)} / ${sufixoPreco(i.unidade as UnidadeVenda)}` : ''}
                 </small>
               </span>
               <span className={styles.itemTotal}>{i.unit != null ? BRL.format(i.unit * i.qtd) : ''}</span>

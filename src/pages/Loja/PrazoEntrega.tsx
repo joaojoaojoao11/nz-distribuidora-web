@@ -80,7 +80,11 @@ async function buscarEndereco(cep: string, signal: AbortSignal): Promise<Enderec
 
 interface Resposta {
   prazos: Prazo[];
-  formato: Formato;
+  /**
+   * `diasProducao`: dias úteis de produção JÁ SOMADOS nos prazos (pré-venda da
+   * coleção). `porPeca`: a quantidade cotada é de peças (camiseta), não de volumes.
+   */
+  formato: Formato & { diasProducao?: number; porPeca?: boolean };
   formatos: Formato[];
   quantidade?: number;
   papel?: string;
@@ -387,17 +391,32 @@ export default function PrazoEntrega({ slug, lineKey, decor = false }: { slug: s
             ))}
           </ul>
 
+          {(estado.dados.formato.diasProducao ?? 0) > 0 && (
+            <p className={styles.nota}>
+              <strong>Pré-venda:</strong> o prazo já inclui {estado.dados.formato.diasProducao} dias úteis de
+              produção da peça.
+            </p>
+          )}
+
           {mostraValor ? (
             <p className={styles.nota}>
               Prazo em dias úteis a partir da confirmação do pedido, já incluindo a expedição.
-              Valores cotados para <strong>{estado.dados.quantidade ?? qtd} volume(s)</strong> deste
+              Valores cotados para{' '}
+              <strong>
+                {estado.dados.quantidade ?? qtd} {estado.dados.formato.porPeca ? 'peça(s)' : 'volume(s)'}
+              </strong>{' '}
+              deste
               formato. <strong>O valor do frete aparece apenas para o login administrativo</strong> —
               o cliente vê somente o prazo.
             </p>
           ) : (
             <p className={styles.nota}>
               Prazo estimado em dias úteis a partir da confirmação do pedido, já incluindo a
-              expedição, para <strong>{estado.dados.quantidade ?? qtd} volume(s)</strong>.{' '}
+              expedição, para{' '}
+              <strong>
+                {estado.dados.quantidade ?? qtd} {estado.dados.formato.porPeca ? 'peça(s)' : 'volume(s)'}
+              </strong>
+              .{' '}
               <strong>Valores de frete sob consulta</strong> —{' '}
               {decor ? (
                 <a href={linkWhatsApp(DECOR, MENSAGEM_FRETE)} target="_blank" rel="noopener noreferrer">

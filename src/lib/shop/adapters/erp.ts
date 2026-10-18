@@ -86,6 +86,16 @@ export interface LojaCatalogoRow {
    */
   hex_amostra?: string | null;
   paleta_amostra?: { hex: string; peso: number }[] | null;
+  /**
+   * Coleção de vestuário (migrations/2026-10-17c_loja_vestuario.sql).
+   * Opcionais pelo mesmo motivo: cópia cacheada da versão anterior da view.
+   * `publicar_em` na view pública é sempre passado (ou nulo); no futuro, só
+   * na prévia do admin (`loja_catalogo_previa`).
+   */
+  publicar_em?: string | null;
+  variante?: string | null;
+  pai_slug?: string | null;
+  preco_publico?: number | string | null;
 }
 
 const APLICACOES: readonly Aplicacao[] = ['automotivo', 'arquitetonico', 'comunicacao-visual'];
@@ -115,16 +125,21 @@ function patternDe(row: LojaCatalogoRow): PatternFamilyId | null {
 
 
 export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<string, string>): ShopItem {
-  const finish = finishesDe(row);
-  const color = resolveColor({
-    name: row.nome,
-    code: row.codigo ?? row.erp_sku,
-    hex: row.transparente ? null : row.hex,
-    declaredFamily: (row.cor_declarada as ColorFamilyId | null) ?? null,
-    inferredHex: row.hex_inferido,
-    transparent: Boolean(row.transparente),
-    finishes: finish.ids,
-  });
+  // Vestuário (camiseta) não é filme: "o nome manda" leria "SHINE AFTER DARK"
+  // como brilho e escuro, e a camiseta cairia no filtro de cor e na Lente.
+  const vestuario = row.kind === 'vestuario';
+  const finish = vestuario ? { ids: [] as FinishId[], label: null } : finishesDe(row);
+  const color = vestuario
+    ? { families: [], subfamilies: [], confidence: null }
+    : resolveColor({
+        name: row.nome,
+        code: row.codigo ?? row.erp_sku,
+        hex: row.transparente ? null : row.hex,
+        declaredFamily: (row.cor_declarada as ColorFamilyId | null) ?? null,
+        inferredHex: row.hex_inferido,
+        transparent: Boolean(row.transparente),
+        finishes: finish.ids,
+      });
 
   const aplicacoes = (row.aplicacoes ?? []).filter((a): a is Aplicacao =>
     (APLICACOES as readonly string[]).includes(a)
@@ -204,14 +219,14 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     hex: row.hex,
     // Busca por imagem. Transparente não tem cor de busca: o hex publicado de
     // um PPF é o da base, não o que se vê.
-    hexBusca: row.transparente ? null : (row.hex ?? row.hex_inferido ?? row.hex_amostra ?? null),
-    hexAmostra: row.transparente ? null : (row.hex_amostra ?? null),
+    hexBusca: row.transparente || vestuario ? null : (row.hex ?? row.hex_inferido ?? row.hex_amostra ?? null),
+    hexAmostra: row.transparente || vestuario ? null : (row.hex_amostra ?? null),
     colorFamilies: color.families,
     colorSubfamilies: color.subfamilies,
     colorConfidence: color.confidence,
     finishes: finish.ids,
     finishLabel: finish.label,
-    patternFamily: patternDe(row),
+    patternFamily: vestuario ? null : patternDe(row),
     specs,
     badges: row.badges ?? [],
     garantiaAnos: row.garantia_anos,
@@ -236,6 +251,13 @@ export function lojaRowToShopItem(row: LojaCatalogoRow, slugPorId?: ReadonlyMap<
     larguraM: row.largura_m,
     metragemPadrao: row.metragem_padrao,
     unidadeVenda: row.unidade,
+    // Tamanho: a view já resolve o slug do pai; o mapa por id cobre a cópia
+    // cacheada de antes da coluna existir.
+    paiSlug: row.pai_slug ?? (row.pai_id ? (slugPorId?.get(row.pai_id) ?? null) : null),
+    variante: row.variante ?? null,
+    // Só a prévia do admin traz data no futuro; na vitrine pública é passado ou nulo.
+    agendadoPara: row.publicar_em && Date.parse(row.publicar_em) > Date.now() ? row.publicar_em : null,
+    precoPublico: row.preco_publico != null && Number(row.preco_publico) > 0 ? Number(row.preco_publico) : null,
   };
 }
 

@@ -42,6 +42,8 @@ interface Resposta {
     rolosAbertos: number;
     larguraM: number | null;
     metragemPadrao: number | null;
+    /** 'UN' = peça: `metrosLineares` é o número de peças. */
+    unidade?: string;
   };
   lpns?: Lpn[] | { erro: string };
   estoqueMinimo?: number | null;
@@ -58,7 +60,22 @@ const ROTULO: Record<Nivel, string> = {
   'sob-encomenda': 'Sob encomenda',
 };
 
-export default function Disponibilidade({ slug, nome, decor = false }: { slug: string; nome?: string; decor?: boolean }) {
+/**
+ * `peca`: camiseta da coleção (vendida por unidade). Sem estoque ela está em
+ * PRÉ-VENDA — a compra é liberada e a peça é produzida (decisão do João,
+ * 17/10/2026) —, e o saldo, quando aparece, é em unidades, não em metros/rolos.
+ */
+export default function Disponibilidade({
+  slug,
+  nome,
+  decor = false,
+  peca = false,
+}: {
+  slug: string;
+  nome?: string;
+  decor?: boolean;
+  peca?: boolean;
+}) {
   const [dados, setDados] = useState<Resposta | null>(null);
   // Seleção do admin nos botões "comprar de uma vez": N rolos fechados e/ou
   // pontas específicas. Vira o texto do pedido no WhatsApp até o carrinho
@@ -132,7 +149,9 @@ export default function Disponibilidade({ slug, nome, decor = false }: { slug: s
         )}
       </h2>
 
-      <span className={`${styles.badge} ${styles[nivel]}`}>{ROTULO[nivel]}</span>
+      <span className={`${styles.badge} ${styles[nivel]}`}>
+        {peca && nivel === 'sob-encomenda' ? 'Pré-venda' : peca && nivel === 'pronta-entrega' ? 'Pronta entrega' : ROTULO[nivel]}
+      </span>
       {dados.rotuloErp && (
         <span
           className={`${styles.badge} ${dados.rotuloErp === 'ESTOQUE' ? styles['pronta-entrega'] : styles['sob-encomenda']}`}
@@ -143,7 +162,15 @@ export default function Disponibilidade({ slug, nome, decor = false }: { slug: s
       )}
 
       {/* Nível lojista: números reais. Só chega aqui se o servidor mandou. */}
-      {dados.saldo && (
+      {dados.saldo && peca && (
+        <dl className={styles.saldo}>
+          <div className={styles.saldoRow}>
+            <dt>Disponível</dt>
+            <dd>{dados.saldo.metrosLineares.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} un.</dd>
+          </div>
+        </dl>
+      )}
+      {dados.saldo && !peca && (
         <dl className={styles.saldo}>
           <div className={styles.saldoRow}>
             <dt>Disponível</dt>
@@ -188,7 +215,7 @@ export default function Disponibilidade({ slug, nome, decor = false }: { slug: s
 
       {/* Nível admin: botões por quantidade. Sem reserva — é o que está no
           pátio AGORA; quem fecha o pedido é o vendedor no ERP. */}
-      {dados.papel === 'admin' && (rolosFechados.length > 0 || rolosAbertos.length > 0) && (
+      {!peca && dados.papel === 'admin' && (rolosFechados.length > 0 || rolosAbertos.length > 0) && (
         <div className={styles.compra}>
           <p className={styles.compraTitulo}>Comprar de uma vez <span>disponível agora · sem reserva</span></p>
           {rolosFechados.length > 0 && (

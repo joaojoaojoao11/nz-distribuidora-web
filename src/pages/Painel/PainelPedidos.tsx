@@ -120,7 +120,8 @@ export default function PainelPedidos() {
         codigo: i.codigo,
         imagem: i.imagem,
         hex: i.hex,
-        unidade: (i.unidade === 'rolo' ? 'rolo' : 'metro') as UnidadeCarrinho,
+        // "Comprar de novo": peça volta como peça (antes, tudo que não era rolo virava metro).
+        unidade: (i.unidade === 'rolo' ? 'rolo' : i.unidade === 'un' ? 'un' : 'metro') as UnidadeCarrinho,
         qtd: Number(i.qtd),
       });
     }

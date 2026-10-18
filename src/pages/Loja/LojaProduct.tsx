@@ -7,11 +7,13 @@
 // nenhum buraco no layout.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { VERTICAL_LABEL } from '../../lib/shop/catalog';
-import { atualizarItemDoBanco, getShopItem, useCatalogoEstado, useShopCatalog } from '../../lib/shop/store';
+import { atualizarItemDoBanco, getShopItem, useCatalogoEstado, useEstadoPrevia, useShopCatalog, variantesDe } from '../../lib/shop/store';
+import { useAuth } from '../../contexts/AuthContext';
+import SeletorTamanho from './SeletorTamanho';
 import { buildShopItemSchema } from '../../lib/shop/schema';
 import { relatedItems } from '../../lib/shop/related';
 import { usePrecosMapa } from '../../lib/shop/precos';
@@ -53,6 +55,8 @@ export default function LojaProduct() {
   // de o JSON responder.
   useShopCatalog();
   const estado = useCatalogoEstado();
+  const estadoPrevia = useEstadoPrevia();
+  const { isAdmin, loading: authCarregando } = useAuth();
   const item = getShopItem(slug);
 
   // A LISTA pode estar alguns minutos atrasada (o JSON do catálogo é cacheado
@@ -69,7 +73,18 @@ export default function LojaProduct() {
   // o banco não respondeu, não decide — o estático pode não ter o slug.
   if (!item) {
     if (estado === 'estatico' || estado === 'carregando') return null;
+    // Admin abrindo um produto AGENDADO (prévia): ele só chega pela RPC da
+    // prévia, depois do login. Espera antes de desistir do slug.
+    if (authCarregando || (isAdmin && estadoPrevia !== 'pronta')) return null;
     return <Navigate to="/loja" replace />;
+  }
+
+  // Tamanho de uma peça (P/G/GG): a página é a da vitrine, com o tamanho já
+  // escolhido. Um endereço por produto — o canonical já aponta para lá.
+  if (item.paiSlug) {
+    const busca = new URLSearchParams(location.search);
+    if (item.variante) busca.set('tam', item.variante);
+    return <Navigate to={`/loja/${item.paiSlug}?${busca.toString()}`} replace />;
   }
 
   const from = (location.state as { from?: string } | null)?.from;
@@ -108,6 +123,29 @@ function ProductView({
   promoMoto?: boolean;
 }) {
   const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+
+  // Tamanhos (camisetas): a vitrine e os filhos dela. Assina o catálogo para
+  // recalcular quando os tamanhos chegarem (leitura direta do banco).
+  const catalogo = useShopCatalog();
+  const variantes = useMemo(
+    () => variantesDe(item.slug),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [item.slug, catalogo]
+  );
+  const temTamanhos = variantes.length > 1;
+  const tam = (params.get('tam') ?? '').toUpperCase();
+  const escolhida = temTamanhos ? (variantes.find((v) => (v.variante ?? '').toUpperCase() === tam) ?? null) : null;
+  // O SKU que preço, disponibilidade e carrinho usam. Sem tamanho escolhido,
+  // o preço mostrado é o da vitrine (todos os tamanhos custam o mesmo) e o
+  // botão de compra espera a escolha.
+  const ativo = escolhida ?? item;
+  const escolherTamanho = (v: ShopItem) => {
+    const prox = new URLSearchParams(params);
+    if (v.variante) prox.set('tam', v.variante);
+    setParams(prox, { replace: true });
+  };
+
   // Mesmo corte de nome da listagem: os relacionados usam os mesmos cards e
   // têm de cortar no mesmo ponto.
   const relacionadosRef = useRef<HTMLDivElement>(null);
@@ -121,7 +159,7 @@ function ProductView({
   // uma coisa: quando a pessoa PODE comprar, o WhatsApp deixa de ser o botão
   // vermelho da tela — o botão vermelho passa a ser "Adicionar ao carrinho".
   const { estado: estadoPreco, itens: mapaPrecos } = usePrecosMapa(selecao);
-  const precoItem = mapaPrecos.get(item.slug);
+  const precoItem = mapaPrecos.get(ativo.slug);
   const podeComprar =
     item.kind !== 'linha' &&
     estadoPreco === 'ok' &&
@@ -359,7 +397,12 @@ function ProductView({
         <nav className={styles.breadcrumb} aria-label="Trilha de navegação">
           <Link to="/loja">LOJA</Link>
           <span className={styles.sep}>·</span>
-          <Link to={VERTICAL_PATH[item.vertical]}>{VERTICAL_LABEL[item.vertical]}</Link>
+          {/* Camiseta: a "casa" dela é a página da coleção, não a vertical PPF. */}
+          {item.kind === 'vestuario' ? (
+            <Link to="/colecao">COLEÇÃO NZPPF 2026</Link>
+          ) : (
+            <Link to={VERTICAL_PATH[item.vertical]}>{VERTICAL_LABEL[item.vertical]}</Link>
+          )}
           <span className={styles.sep}>·</span>
           <span className={styles.current}>{item.name}</span>
         </nav>
@@ -369,10 +412,27 @@ function ProductView({
         {renderMedia()}
 
         <div className={styles.info}>
+          {/* Prévia do admin: o produto ainda não está no ar para ninguém mais. */}
+          {item.agendadoPara && (
+            <p className={styles.agendado} role="status">
+              Agendado · entra no ar em{' '}
+              {new Date(item.agendadoPara).toLocaleString('pt-BR', {
+                timeZone: 'America/Sao_Paulo',
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+              . Só o admin vê esta página.
+            </p>
+          )}
           <span className={styles.lineLabel}>{item.line ?? item.brand}</span>
           <h1 className={styles.title}>{item.name}</h1>
           <div className={styles.codeLinha}>
-            {item.code && <span className={styles.code}>{item.code}</span>}
+            {/* Peça com tamanhos: o código é o do tamanho escolhido (SKU próprio). */}
+            {(temTamanhos ? escolhida?.code : item.code) && (
+              <span className={styles.code}>{temTamanhos ? escolhida?.code : item.code}</span>
+            )}
             <button
               type="button"
               className={favorito ? styles.favoritoAtivo : styles.favorito}
@@ -388,13 +448,25 @@ function ProductView({
 
           <DescricaoDoProduto item={item} className={styles.description} />
 
+          {temTamanhos && (
+            <SeletorTamanho variantes={variantes} escolhido={escolhida?.slug ?? null} onEscolher={escolherTamanho} />
+          )}
+
           {item.kind !== 'linha' && (
             <Preco
-              slug={item.slug}
+              slug={ativo.slug}
               variante="pagina"
-              produto={{ nome: item.name, codigo: item.code, imagem: item.image, hex: item.hex }}
+              produto={{
+                // No carrinho a linha precisa dizer o tamanho; a foto é a da vitrine.
+                nome: escolhida?.variante ? `${item.name} · TAM. ${escolhida.variante}` : item.name,
+                codigo: ativo.code,
+                imagem: item.image,
+                hex: item.hex,
+              }}
               selecao={selecao}
               publico={promoItem ? { metro: promoItem.metro, metroCheio: promoItem.metroCheio } : undefined}
+              precoPublico={item.precoPublico}
+              bloqueioCompra={temTamanhos && !escolhida ? 'Escolha o tamanho' : undefined}
             />
           )}
 
@@ -427,9 +499,11 @@ function ProductView({
           {/* Mostruário em PDF com todas as fotos do anúncio, para apresentar a
               cor ao cliente (com ou sem o contato da NZ). Usa a galeria
               inteira, mesmo na Promoção Moto. */}
-          {item.kind !== 'linha' && <BotaoMostruario item={item} midias={todasMidias} />}
+          {/* O mostruário é de cor de filme (PDF para apresentar a cor ao cliente):
+              não se aplica a camiseta. */}
+          {item.kind !== 'linha' && item.kind !== 'vestuario' && <BotaoMostruario item={item} midias={todasMidias} />}
 
-          <Disponibilidade slug={item.slug} nome={item.name} decor={item.vertical === 'DECOR'} />
+          <Disponibilidade slug={ativo.slug} nome={item.name} decor={item.vertical === 'DECOR'} peca={item.kind === 'vestuario'} />
 
           <PrazoEntrega slug={item.sourceId} lineKey={item.lineKey} decor={item.vertical === 'DECOR'} />
 

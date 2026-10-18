@@ -87,6 +87,7 @@ const KIND_LABEL: Record<ItemKind, string> = {
   cor: 'Cores',
   padrao: 'Padrões',
   linha: 'Linhas técnicas',
+  vestuario: 'Vestuário',
 };
 
 /**

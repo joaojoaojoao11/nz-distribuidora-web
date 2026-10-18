@@ -188,8 +188,17 @@
   touch-action: manipulation;
 }
 
+/* Travado até a escolha que falta (o tamanho da camiseta): o texto do botão
+   diz o que fazer, então ele fica legível, só sem o vermelho de ação. */
+.adicionar:disabled {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  border: 1px solid var(--border-strong);
+  cursor: not-allowed;
+}
+
 @media (hover: hover) {
-  .adicionar:hover {
+  .adicionar:not(:disabled):hover {
     background: var(--accent-red-hover);
   }
 }

@@ -1,0 +1,68 @@
+/* Seletor de tamanho — mesma linguagem do seletor rolo/metro (Comprar.module.css). */
+
+.bloco {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.cabeca {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.rotulo {
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.escolha {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.opcoes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.opcao,
+.opcaoAtiva {
+  /* 44 px: alvo de toque confortável no celular (loja:alvos). */
+  min-height: 44px;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition-snappy), background var(--transition-snappy);
+  touch-action: manipulation;
+}
+
+.opcaoAtiva {
+  border-color: var(--accent-red);
+  background: rgba(209, 30, 30, 0.08);
+  color: var(--text-primary);
+}
+
+@media (hover: hover) {
+  .opcao:hover {
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+}
+
+.opcao:focus-visible,
+.opcaoAtiva:focus-visible {
+  outline: 2px solid var(--accent-red);
+  outline-offset: 2px;
+}

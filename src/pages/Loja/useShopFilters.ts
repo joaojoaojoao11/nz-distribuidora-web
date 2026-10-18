@@ -55,12 +55,13 @@ const KIND_CHIP: Record<ItemKind, string> = {
   cor: 'Cores',
   padrao: 'Padrões',
   linha: 'Linhas técnicas',
+  vestuario: 'Vestuário',
 };
 
 const VERTICALS: Vertical[] = ['PPF', 'WRAP', 'SIGN', 'DECOR'];
 const BRAND_KEYS: BrandKey[] = ['nz', 'sh', 'metamark', 'orafol', 'avery', 'etherna', 'speed', 'nar', 'outro'];
 const LINE_KEYS = Object.keys(LINHA_LABEL) as LineKey[];
-const KINDS: ItemKind[] = ['cor', 'padrao', 'linha'];
+const KINDS: ItemKind[] = ['cor', 'padrao', 'linha', 'vestuario'];
 const PATIO_KEYS: SinalPatio[] = ['rolo-fechado', 'ponta-aberta', 'parceiro'];
 const SORTS: SortMode[] = [
   'relevancia',

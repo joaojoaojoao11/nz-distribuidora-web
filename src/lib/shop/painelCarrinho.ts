@@ -6,10 +6,11 @@
 // página do produto e quem desenha é a Navbar, que é irmã dela na árvore.
 
 import { useSyncExternalStore } from 'react';
+import type { UnidadeVenda } from './unidade';
 
 export interface PainelAberto {
   /** Item que acabou de entrar, para o painel destacá-lo. */
-  destaque: { slug: string; unidade: 'rolo' | 'metro' } | null;
+  destaque: { slug: string; unidade: UnidadeVenda } | null;
 }
 
 let estado: PainelAberto | null = null;

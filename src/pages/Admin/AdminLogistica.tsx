@@ -32,6 +32,12 @@ interface Perfil {
   valor_declarado: number | null;
   observacao: string | null;
   ativo: boolean;
+  /** Dias úteis de produção somados ao prazo da transportadora (pré-venda). Rolos: 0. */
+  dias_producao?: number | null;
+  /** Perfil de peça (camiseta): quantas cabem num volume. Rolos: 1. */
+  itens_por_volume?: number | null;
+  /** Peso de cada peça além da primeira no mesmo volume. */
+  peso_adicional_kg?: number | null;
 }
 
 interface PerfilLinha {
@@ -120,6 +126,9 @@ const FORM_VAZIO = {
   altura_cm: '',
   valor_declarado: '100',
   observacao: '',
+  dias_producao: '0',
+  itens_por_volume: '1',
+  peso_adicional_kg: '0',
 };
 
 export default function AdminLogistica() {
@@ -217,6 +226,9 @@ export default function AdminLogistica() {
         altura_cm: String(perfil.altura_cm),
         valor_declarado: String(perfil.valor_declarado ?? 100),
         observacao: perfil.observacao ?? '',
+        dias_producao: String(perfil.dias_producao ?? 0),
+        itens_por_volume: String(perfil.itens_por_volume ?? 1),
+        peso_adicional_kg: String(perfil.peso_adicional_kg ?? 0),
       });
     } else {
       setEditando(null);
@@ -240,6 +252,9 @@ export default function AdminLogistica() {
       altura_cm: parseFloat(form.altura_cm) || 0,
       valor_declarado: parseFloat(form.valor_declarado) || 100,
       observacao: form.observacao.trim() || null,
+      dias_producao: Math.max(0, Math.floor(Number(form.dias_producao) || 0)),
+      itens_por_volume: Math.max(1, Math.floor(Number(form.itens_por_volume) || 1)),
+      peso_adicional_kg: Math.max(0, parseFloat(form.peso_adicional_kg) || 0),
     };
 
     const { error } = editando
@@ -458,7 +473,17 @@ export default function AdminLogistica() {
                   <tr key={p.id}>
                     <td>{p.nome}</td>
                     <td>{p.formato}</td>
-                    <td>{p.peso_kg} kg</td>
+                    <td>
+                      {p.peso_kg} kg
+                      {(p.itens_por_volume ?? 1) > 1 && (
+                        <small style={{ display: 'block', color: '#6b6b70' }}>
+                          até {p.itens_por_volume} peças · +{p.peso_adicional_kg ?? 0} kg/peça
+                        </small>
+                      )}
+                      {(p.dias_producao ?? 0) > 0 && (
+                        <small style={{ display: 'block', color: '#6b6b70' }}>+{p.dias_producao} d de produção</small>
+                      )}
+                    </td>
                     <td>
                       {p.comprimento_cm} × {p.largura_cm} × {p.altura_cm}
                     </td>
@@ -1041,6 +1066,53 @@ export default function AdminLogistica() {
                 <small style={{ color: '#6b6b70', fontSize: '0.72rem' }}>
                   Valor de NF aproximado de UMA unidade. A transportadora usa isso para o seguro
                   embutido no frete. Não é preço de venda e não sai do ERP.
+                </small>
+              </div>
+              <div className={styles.createField}>
+                <label className={styles.adminLabel}>Dias de produção</label>
+                <input
+                  className={styles.adminInput}
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="90"
+                  value={form.dias_producao}
+                  onChange={(e) => setForm({ ...form, dias_producao: e.target.value })}
+                />
+                <small style={{ color: '#6b6b70', fontSize: '0.72rem' }}>
+                  Dias úteis somados ao prazo da transportadora, na página do produto e no
+                  checkout. Para peça em pré-venda (camiseta da coleção). Rolo: 0. Quando a
+                  tiragem estiver pronta, volte para 0.
+                </small>
+              </div>
+              <div className={styles.createField}>
+                <label className={styles.adminLabel}>Peças por volume</label>
+                <input
+                  className={styles.adminInput}
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="50"
+                  value={form.itens_por_volume}
+                  onChange={(e) => setForm({ ...form, itens_por_volume: e.target.value })}
+                />
+                <small style={{ color: '#6b6b70', fontSize: '0.72rem' }}>
+                  Rolo: 1 (cada unidade é um volume). Camiseta: quantas cabem no mesmo
+                  envelope — o peso acima é o do envelope com UMA peça.
+                </small>
+              </div>
+              <div className={styles.createField}>
+                <label className={styles.adminLabel}>Peso por peça extra (kg)</label>
+                <input
+                  className={styles.adminInput}
+                  type="number"
+                  step="0.001"
+                  min="0"
+                  value={form.peso_adicional_kg}
+                  onChange={(e) => setForm({ ...form, peso_adicional_kg: e.target.value })}
+                />
+                <small style={{ color: '#6b6b70', fontSize: '0.72rem' }}>
+                  Só vale com mais de 1 peça por volume. Ex.: 3 camisetas = peso + 2 × este valor.
                 </small>
               </div>
               <div className={styles.createField} style={{ gridColumn: '1 / -1' }}>

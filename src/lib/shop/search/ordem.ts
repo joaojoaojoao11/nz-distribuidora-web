@@ -50,6 +50,7 @@ export const LINE_ORDER: LineKey[] = [
   'nzwrap-import',
   'ppf',
   'nz-farol',
+  'vestuario',
   'm7',
   'mcx',
   'md80',

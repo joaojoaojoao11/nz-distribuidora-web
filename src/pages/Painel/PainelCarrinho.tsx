@@ -11,6 +11,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { alterarQuantidade, limparCarrinho, removerDoCarrinho, totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { BRL, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
+import { PASSO, precoUnitario, rotuloQtd } from '../../lib/shop/unidade';
 import styles from './Painel.module.css';
 
 export default function PainelCarrinho() {
@@ -54,7 +55,7 @@ export default function PainelCarrinho() {
   let total: number | null = 0;
   for (const i of itens) {
     const p = precos.get(i.slug);
-    const unit = i.unidade === 'rolo' ? p?.rolo : p?.metro;
+    const unit = precoUnitario(i.unidade, p);
     if (unit == null) {
       total = null;
       break;
@@ -74,8 +75,8 @@ export default function PainelCarrinho() {
       <ul className={styles.itensCarrinho}>
         {itens.map((i) => {
           const p = precos.get(i.slug);
-          const unit = i.unidade === 'rolo' ? p?.rolo : p?.metro;
-          const passo = i.unidade === 'rolo' ? 1 : 0.5;
+          const unit = precoUnitario(i.unidade, p);
+          const passo = PASSO[i.unidade];
           return (
             <li key={`${i.slug}|${i.unidade}`} className={styles.itemCarrinho}>
               <Link to={`/loja/${i.slug}`} className={styles.itemFoto} aria-hidden="true" tabIndex={-1}>
@@ -87,7 +88,7 @@ export default function PainelCarrinho() {
                 </Link>
                 <span className={styles.itemMeta}>
                   {i.qtd.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}{' '}
-                  {i.unidade === 'rolo' ? (i.qtd > 1 ? 'rolos fechados' : 'rolo fechado') : 'm'}
+                  {rotuloQtd(i.unidade, i.qtd)}
                   {unit != null ? ` · ${BRL.format(Number(unit) * i.qtd)}` : ''}
                 </span>
               </div>

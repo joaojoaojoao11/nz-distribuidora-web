@@ -346,6 +346,34 @@ try {
   ok('HTTP 429 cita o limite de 250/min', e.message.includes('250'), e.message);
 }
 
+// ------------------------------------------------ peça (camiseta da coleção)
+console.log('\n=== PEÇA: ENVELOPES E DIAS DE PRODUÇÃO ===');
+{
+  // Compilado à parte: entrar na lista de cima mudaria a árvore de saída
+  // (carriers/ e frete/) e quebraria os imports de jadlog.js/melhorenvio.js.
+  const b2 = spawnSync(
+    process.execPath,
+    [join(ROOT, 'node_modules/esbuild/bin/esbuild'), 'api/_lib/frete/pecas.ts', `--outfile=${join(outDir, 'pecas.js')}`, '--format=esm', '--platform=node', '--log-level=error'],
+    { cwd: ROOT, encoding: 'utf8' }
+  );
+  ok('esbuild de frete/pecas.ts', b2.status === 0, b2.stderr);
+  const { volumesDoPerfil, diasDeProducao } = await import(pathToFileURL(join(outDir, 'pecas.js')).href);
+  const camiseta = { peso_kg: 0.35, comprimento_cm: 30, largura_cm: 25, altura_cm: 4, valor_declarado: 189, itens_por_volume: 3, peso_adicional_kg: 0.25, dias_producao: 0 };
+  const rolo = { peso_kg: 11.912, comprimento_cm: 160, largura_cm: 14, altura_cm: 14, valor_declarado: 100 };
+  const um = volumesDoPerfil(camiseta, 1);
+  ok('1 camiseta = 1 envelope de 0,35 kg', um.volumes === 1 && um.perfil.peso_kg === 0.35 && um.perfil.valor_declarado === 189);
+  const tres = volumesDoPerfil(camiseta, 3);
+  ok('3 camisetas = 1 envelope de 0,85 kg', tres.volumes === 1 && tres.perfil.peso_kg === 0.85 && tres.perfil.valor_declarado === 567);
+  const quatro = volumesDoPerfil(camiseta, 4);
+  ok('4 camisetas = 2 envelopes de 2 (0,6 kg cada)', quatro.volumes === 2 && quatro.perfil.peso_kg === 0.6);
+  const r = volumesDoPerfil(rolo, 3);
+  ok('perfil de rolo passa intacto (qtd = volumes)', r.volumes === 3 && r.perfil === rolo);
+  ok('dias de produção: rolo sem a coluna = 0', diasDeProducao(rolo) === 0);
+  ok('dias de produção: 5 = 5; negativo ou lixo = 0', diasDeProducao({ dias_producao: 5 }) === 5 && diasDeProducao({ dias_producao: -2 }) === 0 && diasDeProducao({ dias_producao: 'x' }) === 0);
+  const peso = pesoTaxavel(tres.perfil, tres.volumes, 6000);
+  ok('envelope de 3: o peso real 0,85 vence o cubado 0,5', peso.pesoKg === 0.85 && peso.pesoCubado === 0.5);
+}
+
 rmSync(outDir, { recursive: true, force: true });
 console.log(`\n${falhas === 0 ? 'TUDO OK' : falhas + ' FALHA(S)'}`);
 process.exit(falhas === 0 ? 0 : 1);
