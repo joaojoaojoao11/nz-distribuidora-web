@@ -101,6 +101,8 @@ export interface Rascunho {
   modelo: string;
   data: string;
   aplicador: string;
+  /** Código do selo NZPPF do batente (opcional), como a pessoa digitou. */
+  selo: string;
   cpf: string;
   nome: string;
   email: string;
@@ -124,6 +126,7 @@ export const RASCUNHO_VAZIO: Rascunho = {
   modelo: '',
   data: '',
   aplicador: '',
+  selo: '',
   cpf: '',
   nome: '',
   email: '',
@@ -304,6 +307,7 @@ export function errosDoPasso(passo: Passo, r: Rascunho): Erros {
     else if (r.data > hojeISO()) e.data = 'A data não pode ser no futuro.';
     else if (r.data < '2015-01-01') e.data = 'Confira o ano.';
     if (r.aplicador.trim().length < 2) e.aplicador = 'Informe quem aplicou.';
+    if (r.selo.trim() && !seloOk(r.selo)) e.selo = 'O código do selo tem 8 letras e números, como 7KQ2-XM9P.';
   }
   if (passo === 'proprietario') {
     if (!validarCpfCnpj(r.cpf)) e.cpf = 'CPF ou CNPJ inválido.';
@@ -368,6 +372,7 @@ export function montarPayload(r: Rascunho) {
     veiculo_placa_chassi: ehMovel(r) ? r.placa.trim() : formatarPlaca(r.placa),
     veiculo_modelo: r.modelo.trim(),
     aplicador_nome: r.aplicador.trim(),
+    selo_codigo: limparSelo(r.selo),
     data_aplicacao: r.data,
     produto_nome: produtoDoRascunho(r) || (l?.tipo ?? ''),
     linha_escolhida: l?.tipo ?? '',
@@ -376,6 +381,26 @@ export function montarPayload(r: Rascunho) {
     garantia_anos: anos,
     durabilidade_anos: durabilidade,
   };
+}
+
+// ------------------------------------------------------------- selo do batente
+// O adesivo NZPPF colado no batente da porta. O código (8 caracteres, sem 0, O,
+// 1 e I) é o mesmo do QR do selo, que abre /s/<código>. Banco:
+// migrations/2026-10-19_selos_garantia.sql.
+
+/** Caixa-alta, sem hífen nem espaço; aceita o endereço inteiro do QR. */
+export function limparSelo(v: string): string {
+  return v.replace(/^.*\/s\//i, '').replace(/[^0-9a-z]/gi, '').toUpperCase();
+}
+
+export function seloOk(v: string): boolean {
+  return /^[2-9A-HJ-NP-Z]{8}$/.test(limparSelo(v));
+}
+
+/** 7KQ2XM9P → 7KQ2-XM9P (enquanto digita, o hífen entra no 5º caractere). */
+export function formatarSelo(v: string): string {
+  const c = limparSelo(v).slice(0, 8);
+  return c.length > 4 ? `${c.slice(0, 4)}-${c.slice(4)}` : c;
 }
 
 export function urlDeValidacao(codigo: string): string {
@@ -395,6 +420,10 @@ const ERRO_DO_SERVIDOR: Record<string, string> = {
   'placa-invalida': 'Confira a placa ou o chassi.',
   'data-invalida': 'Confira a data da aplicação.',
   'muitos-registros': 'Muitos registros em pouco tempo. Tente de novo daqui a pouco.',
+  'selo-invalido': 'Confira o código do selo: são 8 letras e números, como 7KQ2-XM9P.',
+  'selo-nao-encontrado': 'Este código de selo não está nos registros da NZ. Confira se foi digitado igual ao do selo.',
+  'selo-cancelado': 'Este selo foi cancelado pela NZ. Fale com a NZ pelo WhatsApp.',
+  'selo-em-uso': 'Este selo já está ligado a outra garantia. Confira o código ou fale com a NZ pelo WhatsApp.',
 };
 
 export async function registrarGarantia(r: Rascunho, mel: string): Promise<ProtocoloRecebido> {

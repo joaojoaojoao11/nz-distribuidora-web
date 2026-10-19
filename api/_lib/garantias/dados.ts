@@ -64,6 +64,8 @@ export interface Garantia {
   tipo_servico: string | null;
   areas_protegidas: string[] | null;
   codigo_autenticacao: string;
+  /** Código do selo do batente (8 caracteres, sem hífen) que veio no registro. */
+  selo_codigo?: string | null;
   garantia_anos: number | null;
   durabilidade_anos: number | null;
   created_at: string;
@@ -149,6 +151,19 @@ export type ErroRegistro =
   | 'email-invalido'
   | 'telefone-invalido'
   | 'endereco-incompleto';
+
+/**
+ * Código do selo de garantia como o banco guarda: caixa-alta, sem hífen nem
+ * espaço. Aceita também o endereço inteiro do QR (…/S/7KQ2XM9P). Vazio = sem selo.
+ * Mesma regra de public.selo_normalizar (migrations/2026-10-19_selos_garantia.sql).
+ */
+export function normalizarSelo(v: unknown): string {
+  if (typeof v !== 'string') return '';
+  return v.replace(/^.*\/s\//i, '').replace(/[^0-9a-z]/gi, '').toUpperCase().slice(0, 40);
+}
+
+/** 8 caracteres do alfabeto dos selos (sem 0, O, 1 e I). */
+export const SELO_VALIDO = /^[2-9A-HJ-NP-Z]{8}$/;
 
 /**
  * Confere e normaliza o que veio do formulário. Devolve a linha pronta para

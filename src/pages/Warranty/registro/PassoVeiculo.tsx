@@ -2,7 +2,7 @@
 
 import Campo from './Campo';
 import { ariaDoCampo } from './aria';
-import { digitandoPlaca, ehMovel, formatarPlaca, hojeISO } from '../../../lib/garantia';
+import { digitandoPlaca, ehMovel, formatarPlaca, formatarSelo, hojeISO } from '../../../lib/garantia';
 import type { PropsDoPasso } from './tipos';
 import styles from './Registro.module.css';
 
@@ -86,7 +86,7 @@ export default function PassoVeiculo({ r, mudar, erros, mostrar, aplicadorDaCont
           placeholder="Nome do aplicador credenciado"
           autoCapitalize="words"
           autoComplete="organization"
-          enterKeyHint="done"
+          enterKeyHint="next"
           maxLength={120}
         />
         {aplicadorDaConta && aplicadorDaConta !== r.aplicador.trim() && (
@@ -96,6 +96,29 @@ export default function PassoVeiculo({ r, mudar, erros, mostrar, aplicadorDaCont
             </button>
           </div>
         )}
+      </Campo>
+
+      <Campo
+        id="g-selo"
+        rotulo="Código do selo de garantia"
+        opcional
+        erro={erros.selo}
+        mostrar={mostrar}
+        dica="Está no selo NZPPF colado no batente da porta, embaixo do QR."
+      >
+        <input
+          {...ariaDoCampo('g-selo', erros.selo, mostrar, true)}
+          name="selo"
+          value={r.selo}
+          onChange={(e) => mudar({ selo: formatarSelo(e.target.value) })}
+          placeholder="Ex.: 7KQ2-XM9P"
+          autoCapitalize="characters"
+          autoCorrect="off"
+          spellCheck={false}
+          autoComplete="off"
+          enterKeyHint="done"
+          maxLength={9}
+        />
       </Campo>
     </div>
   );

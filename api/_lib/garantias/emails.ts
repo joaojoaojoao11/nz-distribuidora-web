@@ -360,6 +360,7 @@ export function emailAvisoNz(g: Garantia): Mensagem {
     ['Cobertura', textoDaCobertura(g.tipo_servico, g.areas_protegidas)],
     [g.tipo_servico === 'Movel/Eletro' ? 'Item' : 'Veículo', `${g.veiculo_modelo} · ${g.veiculo_placa_chassi.toUpperCase()}`],
     ['Aplicado por', `${g.aplicador_nome} em ${dataBr(g.data_aplicacao)}`],
+    ...(g.selo_codigo ? ([['Selo do batente', `${g.selo_codigo.slice(0, 4)}-${g.selo_codigo.slice(4)}`]] as [string, string][]) : []),
     ['Proprietário', `${g.cliente_nome_completo ?? ''} · ${g.cliente_cpf}`],
     ['Contato', [g.cliente_email, g.cliente_telefone].filter(Boolean).join(' · ')],
     ['Cidade', [g.cliente_cidade, g.cliente_estado].filter(Boolean).join('/')],

@@ -4,7 +4,7 @@
 
 import Certificado, { type DadosCertificado } from '../Certificado';
 import { formatarCpfCnpj } from '../../../lib/documento';
-import { ehMovel, formatarDataISO, garantiaDoRascunho, nomeDeExibicao, produtoDoRascunho, textoDaCobertura, type Passo, type Rascunho } from '../../../lib/garantia';
+import { ehMovel, formatarDataISO, formatarSelo, garantiaDoRascunho, nomeDeExibicao, produtoDoRascunho, textoDaCobertura, type Passo, type Rascunho } from '../../../lib/garantia';
 import styles from './Registro.module.css';
 
 interface Props {
@@ -25,7 +25,7 @@ export default function Revisao({ r, previa, onAlterar }: Props) {
     {
       passo: 'veiculo',
       titulo: movel ? 'Item e aplicação' : 'Veículo e aplicação',
-      linhas: [`${r.modelo.trim()} · ${r.placa.trim().toUpperCase()}`, `Aplicado por ${r.aplicador.trim()} em ${formatarDataISO(r.data)}`],
+      linhas: [`${r.modelo.trim()} · ${r.placa.trim().toUpperCase()}`, `Aplicado por ${r.aplicador.trim()} em ${formatarDataISO(r.data)}`, ...(r.selo.trim() ? [`Selo ${formatarSelo(r.selo)}`] : [])],
     },
     {
       passo: 'proprietario',

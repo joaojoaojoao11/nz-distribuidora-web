@@ -66,6 +66,8 @@ interface Warranty {
   certificado_enviado_em: string | null;
   certificado_enviado_para: string | null;
   envios_certificado: number | null;
+  /** Selo NZPPF do batente que veio no registro (8 caracteres, sem hífen). */
+  selo_codigo: string | null;
 }
 
 interface Config {
@@ -147,7 +149,7 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
       if (abaAtual !== 'todas' && w.status !== abaAtual) return false;
       if (!termos.length) return true;
       const alvo = normalizar(
-        [w.protocolo, w.veiculo_placa_chassi, w.veiculo_modelo, w.cliente_nome_completo, w.cliente_cpf, w.cliente_email, w.aplicador_nome, w.produto_nome].join(' ')
+        [w.protocolo, w.veiculo_placa_chassi, w.veiculo_modelo, w.cliente_nome_completo, w.cliente_cpf, w.cliente_email, w.aplicador_nome, w.produto_nome, w.selo_codigo ?? ''].join(' ')
       );
       return termos.every((t) => alvo.includes(t));
     });
@@ -323,6 +325,16 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
                       {w.aplicador_nome} em {formatarDataISO(w.data_aplicacao)}
                     </dd>
                   </div>
+                  {w.selo_codigo && (
+                    <div>
+                      <dt>Selo do batente</dt>
+                      <dd>
+                        <a href={`/s/${w.selo_codigo}`} target="_blank" rel="noopener noreferrer">
+                          {w.selo_codigo.slice(0, 4)}-{w.selo_codigo.slice(4)}
+                        </a>
+                      </dd>
+                    </div>
+                  )}
                   <div>
                     <dt>Garantia</dt>
                     <dd>

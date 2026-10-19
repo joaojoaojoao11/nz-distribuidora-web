@@ -276,6 +276,12 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
     if (base) return { ...base, status: 200, canonicalPath: `/${segments[0]}`, type: 'website', schema: [] };
   }
 
+  // /s/:codigo — QR do selo de garantia do batente. O QR imprime /S/ em
+  // caixa-alta; quem decide se o selo existe é a tela (RPC conferir_selo).
+  if (segments[0]?.toLowerCase() === 's' && segments.length === 2) {
+    return { title: 'Selo de garantia NZPPF', description: 'Conferência do selo de garantia NZPPF colado no veículo.', noindex: true, status: 200, canonicalPath: path, type: 'website', schema: [] };
+  }
+
   // /blog/:slug — valida no Supabase; post inexistente = 404 real
   if (segments[0] === 'blog' && segments.length === 2) {
     const meta = await fetchBlogPostMeta(segments[1]);
