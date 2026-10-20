@@ -195,8 +195,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       rolo = baseRolo;
       metro = metroPromo ?? baseMetro;
     } else {
-      rolo = precoParaAcesso(regras, papel, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key, null, 'rolo');
-      metro = precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo, 'metro');
+      rolo = precoParaAcesso(regras, papel, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key, null, 'rolo', slug);
+      metro = precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo, 'metro', slug);
     }
     // Linha escondida para este tipo (Admin → Tipos de acesso): sem preço, e a
     // página do produto explica em vez de ficar muda.
@@ -221,7 +221,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // "De R$ X por R$ Y o metro": o card risca a tabela — a tabela DO TIPO, não
     // o atacado cru (senão o cliente final veria o atacado riscado).
     if (metroPromo != null && metro != null) {
-      const cheio = papel === 'admin' ? baseMetro : precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, null, 'metro');
+      const cheio = papel === 'admin' ? baseMetro : precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, null, 'metro', slug);
       // Tipo que não vê promoção recebe a tabela cheia como preço: não risca nada.
       if (cheio != null && cheio > metro) item.metroCheio = cheio;
     }
@@ -256,8 +256,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (simular) {
         item.linhaKey = p.linha_key;
         item.porTipo = {
-          rolo: precosPorTipo(regras, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key, null, 'rolo'),
-          metro: precosPorTipo(regras, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo, 'metro'),
+          rolo: precosPorTipo(regras, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key, null, 'rolo', slug),
+          metro: precosPorTipo(regras, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo, 'metro', slug),
         };
       }
     }

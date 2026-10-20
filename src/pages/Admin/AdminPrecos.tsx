@@ -21,6 +21,7 @@ type PapelPreco = 'reseller' | 'lojista' | 'client';
 interface RegraRow {
   papel: PapelPreco;
   linha_key: string | null;
+  produto_slug: string | null;
   base: 'atacado' | 'varejo';
   percentual: number;
 }
@@ -48,7 +49,7 @@ export default function AdminPrecos() {
 
   const carregar = useCallback(async () => {
     const [r, v, u] = await Promise.all([
-      supabase.from('precos_acesso').select('papel, linha_key, base, percentual'),
+      supabase.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual'),
       supabase.from('acesso_config').select('papel, linhas_ocultas, ve_rolo, ve_metro, ve_estoque, ve_promocao, pagamento_online, atualizado_em'),
       supabase.from('user_profiles').select('role').limit(1000),
     ]);
@@ -71,11 +72,12 @@ export default function AdminPrecos() {
   const resumo = useMemo(() => {
     const por: Record<string, { preco: string; ve: string }> = {};
     for (const p of TIPOS_CLIENTE) {
-      const geral = regras.find((x) => x.papel === p && !x.linha_key);
-      const proprias = regras.filter((x) => x.papel === p && x.linha_key).length;
+      const geral = regras.find((x) => x.papel === p && !x.linha_key && !x.produto_slug);
+      const proprias = regras.filter((x) => x.papel === p && x.linha_key && !x.produto_slug).length;
+      const produtos = regras.filter((x) => x.papel === p && x.produto_slug).length;
       const base = geral?.base ?? (p === 'client' ? 'varejo' : 'atacado');
       const g = Number(geral?.percentual ?? 0);
-      const preco = `${base === 'varejo' ? 'varejo do ERP' : 'atacado do ERP'}${g > 0 ? ` + ${pct(g)}` : ', sem acréscimo'}${proprias ? ` · ${proprias} linha${proprias > 1 ? 's' : ''} com percentual próprio` : ''}`;
+      const preco = `${base === 'varejo' ? 'varejo do ERP' : 'atacado do ERP'}${g > 0 ? ` + ${pct(g)}` : ', sem acréscimo'}${proprias ? ` · ${proprias} linha${proprias > 1 ? 's' : ''} com percentual próprio` : ''}${produtos ? ` · ${produtos} produto${produtos > 1 ? 's' : ''} com percentual próprio` : ''}`;
       const vr = vis.find((x) => x.papel === p);
       const partes: string[] = [];
       const ocultas = vr?.linhas_ocultas?.length ?? 0;

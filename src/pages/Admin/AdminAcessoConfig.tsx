@@ -2,15 +2,20 @@
 //
 //   Preço         base do ERP (atacado ou varejo), percentual geral e, por
 //                 linha comercial, um percentual só daquela linha (vazio
-//                 herda o geral); simulador com o preço que este tipo vê.
+//                 herda o geral). Dá para marcar várias linhas e aplicar um
+//                 percentual em lote, e clicar numa linha para abrir os
+//                 produtos dela e ajustar um item específico (também com
+//                 seleção e lote). Três níveis: produto > linha > geral.
+//                 Simulador com o preço que este tipo vê.
 //   Visibilidade  o que este tipo vê na loja: linhas comerciais (marcar
 //                 = visível), rolo fechado, metro fracionado, estoque
 //                 detalhado, Promoção Moto e pagamento online.
 //
 // Tudo é salvo de uma vez pelo botão Salvar: precos_acesso (linhas deste
-// papel), acesso_config (uma linha por papel) e precos_acesso_log com o
-// de → para. Quem calcula é o servidor (api/_lib/precos/regraAcesso.ts); o
-// simulador chama /api/nz/precos com `simular` e mostra a resposta dele.
+// papel, nos três níveis), acesso_config (uma linha por papel) e
+// precos_acesso_log com o de → para. Quem calcula é o servidor
+// (api/_lib/precos/regraAcesso.ts); o simulador chama /api/nz/precos com
+// `simular` e mostra a resposta dele.
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -30,6 +35,7 @@ interface RegraRow {
   id: number;
   papel: PapelPreco;
   linha_key: string | null;
+  produto_slug: string | null;
   base: Base;
   percentual: number;
 }
@@ -38,6 +44,12 @@ interface LinhaLoja {
   linha_key: string;
   label: string;
   produtos: number;
+}
+
+interface ProdutoLinha {
+  slug: string;
+  nome: string;
+  codigo: string | null;
 }
 
 interface Vis {
@@ -62,6 +74,14 @@ interface Simulado {
   oculto: boolean;
 }
 
+interface Mudanca {
+  nivel: 'geral' | 'linha' | 'produto';
+  linha: string | null;
+  slug: string | null;
+  de: RegraRow | null;
+  para: { base: Base; percentual: number } | null;
+}
+
 const visPadrao = (papel: PapelPreco): Vis => ({ linhasOcultas: new Set(), veRolo: true, veMetro: true, veEstoque: papel !== 'client', vePromocao: true, pagamentoOnline: true });
 const pctTexto = (v: number) => (Number.isFinite(v) ? String(v).replace('.', ',') : '');
 const pctNumero = (s: string): number | null => {
@@ -70,9 +90,12 @@ const pctNumero = (s: string): number | null => {
   const v = Number(t);
   return Number.isFinite(v) ? Math.round(v * 100) / 100 : NaN;
 };
-const campo: React.CSSProperties = { width: '7.5rem', background: 'rgba(15,15,18,0.8)', color: '#fff', border: '1px solid rgba(255,255,255,0.12)', padding: '0.45rem 0.6rem', fontSize: '0.85rem', borderRadius: 4, textAlign: 'right' };
+const campo: React.CSSProperties = { width: '7rem', background: 'rgba(15,15,18,0.8)', color: '#fff', border: '1px solid rgba(255,255,255,0.12)', padding: '0.4rem 0.55rem', fontSize: '0.85rem', borderRadius: 4, textAlign: 'right' };
 const seletor: React.CSSProperties = { background: 'rgba(15,15,18,0.8)', color: '#fff', border: '1px solid rgba(255,255,255,0.12)', padding: '0.45rem 0.6rem', fontSize: '0.85rem', borderRadius: 4 };
+const caixa: React.CSSProperties = { width: 16, height: 16, cursor: 'pointer' };
 const linhaOpcao: React.CSSProperties = { display: 'flex', alignItems: 'flex-start', gap: '0.75rem', padding: '0.75rem 0', borderBottom: '1px solid rgba(255,255,255,0.06)', cursor: 'pointer' };
+const barraLote: React.CSSProperties = { display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', padding: '0.6rem 0.75rem', border: '1px solid rgba(212,168,83,0.35)', background: 'rgba(212,168,83,0.06)', borderRadius: 6, marginBottom: '0.75rem', fontSize: '0.85rem' };
+const botaoLinha: React.CSSProperties = { background: 'transparent', border: 0, color: '#fff', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left' };
 
 const OPCOES: { k: keyof Omit<Vis, 'linhasOcultas'>; titulo: string; texto: string }[] = [
   { k: 'veRolo', titulo: 'Rolo fechado', texto: 'Vê o preço do rolo fechado e pode comprar rolo. Desligado, só o metro fracionado aparece.' },
@@ -92,12 +115,25 @@ export default function AdminAcessoConfig() {
   const [existeVis, setExisteVis] = useState(false);
   const [geral, setGeral] = useState<{ base: Base; pct: string }>({ base: 'atacado', pct: '0' });
   const [celulas, setCelulas] = useState<Record<string, string>>({});
+  const [celulasProduto, setCelulasProduto] = useState<Record<string, string>>({});
+  const [linhaDoProduto, setLinhaDoProduto] = useState<Record<string, string>>({});
   const [vis, setVis] = useState<Vis>(visPadrao('client'));
   const [contas, setContas] = useState(0);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
   const [msg, setMsg] = useState('');
+  // Lote nas linhas.
+  const [selecionadas, setSelecionadas] = useState<Set<string>>(new Set());
+  const [loteLinhas, setLoteLinhas] = useState('');
+  // Linha aberta (produtos dela) e lote nos produtos.
+  const [aberta, setAberta] = useState<string | null>(null);
+  const [produtosPorLinha, setProdutosPorLinha] = useState<Record<string, ProdutoLinha[]>>({});
+  const [carregandoProdutos, setCarregandoProdutos] = useState<string | null>(null);
+  const [buscaProduto, setBuscaProduto] = useState('');
+  const [selecionadosProd, setSelecionadosProd] = useState<Set<string>>(new Set());
+  const [loteProd, setLoteProd] = useState('');
+  // Simulador.
   const [busca, setBusca] = useState('');
   const [sugestoes, setSugestoes] = useState<{ slug: string; nome: string; linha_key: string | null }[]>([]);
   const [simulado, setSimulado] = useState<Simulado | null>(null);
@@ -112,16 +148,25 @@ export default function AdminAcessoConfig() {
       supabase.from('user_profiles').select('id', { count: 'exact', head: true }).eq('role', papel),
     ]);
     const err = r.error ?? l.error ?? v.error;
-    setErro(err ? `Não carregou: ${err.message} — as migrations 2026-10-20b/c já foram aplicadas?` : '');
+    setErro(err ? `Não carregou: ${err.message} — as migrations 2026-10-20b/c/d já foram aplicadas?` : '');
     const rows = (r.data ?? []) as RegraRow[];
     setRegras(rows);
     setLinhas((l.data ?? []) as LinhaLoja[]);
     setContas(u.count ?? 0);
-    const g = rows.find((x) => !x.linha_key);
+    const g = rows.find((x) => !x.linha_key && !x.produto_slug);
     setGeral({ base: g?.base ?? (papel === 'client' ? 'varejo' : 'atacado'), pct: pctTexto(Number(g?.percentual ?? 0)) });
     const c: Record<string, string> = {};
-    for (const row of rows) if (row.linha_key) c[row.linha_key] = pctTexto(Number(row.percentual));
+    const cp: Record<string, string> = {};
+    const ldp: Record<string, string> = {};
+    for (const row of rows) {
+      if (row.produto_slug) {
+        cp[row.produto_slug] = pctTexto(Number(row.percentual));
+        if (row.linha_key) ldp[row.produto_slug] = row.linha_key;
+      } else if (row.linha_key) c[row.linha_key] = pctTexto(Number(row.percentual));
+    }
     setCelulas(c);
+    setCelulasProduto(cp);
+    setLinhaDoProduto((atual) => ({ ...atual, ...ldp }));
     const vr = v.data as { linhas_ocultas: string[] | null; ve_rolo: boolean; ve_metro: boolean; ve_estoque: boolean; ve_promocao: boolean; pagamento_online: boolean } | null;
     const vInicial: Vis = vr
       ? { linhasOcultas: new Set(vr.linhas_ocultas ?? []), veRolo: vr.ve_rolo, veMetro: vr.ve_metro, veEstoque: vr.ve_estoque, vePromocao: vr.ve_promocao, pagamentoOnline: vr.pagamento_online }
@@ -129,6 +174,8 @@ export default function AdminAcessoConfig() {
     setExisteVis(Boolean(vr));
     setVisSalva(vInicial);
     setVis({ ...vInicial, linhasOcultas: new Set(vInicial.linhasOcultas) });
+    setSelecionadas(new Set());
+    setSelecionadosProd(new Set());
     setCarregando(false);
   }, [papel]);
 
@@ -152,6 +199,30 @@ export default function AdminAcessoConfig() {
     }, 300);
     return () => clearTimeout(t);
   }, [busca]);
+
+  // ------------------------------------------------------- abrir uma linha
+  const abrirLinha = async (k: string) => {
+    if (aberta === k) {
+      setAberta(null);
+      return;
+    }
+    setAberta(k);
+    setBuscaProduto('');
+    setSelecionadosProd(new Set());
+    setLoteProd('');
+    if (produtosPorLinha[k]) return;
+    setCarregandoProdutos(k);
+    const { data, error } = await supabase.from('produtos').select('slug, nome, codigo').eq('linha_key', k).order('nome').range(0, 999);
+    if (error) setErro(`Produtos da linha: ${error.message}`);
+    const lista = (data ?? []) as ProdutoLinha[];
+    setProdutosPorLinha((m) => ({ ...m, [k]: lista }));
+    setLinhaDoProduto((m) => {
+      const n = { ...m };
+      for (const p of lista) n[p.slug] = k;
+      return n;
+    });
+    setCarregandoProdutos(null);
+  };
 
   const simular = async (p: { slug: string; nome: string }) => {
     if (!papel) return;
@@ -188,24 +259,47 @@ export default function AdminAcessoConfig() {
     }
   };
 
-  // ------------------------------------------------------------ mudanças
-  const mudancasPreco = useMemo(() => {
+  // ------------------------------------------------------------ cálculos
+  const pctGeral = pctNumero(geral.pct) ?? 0;
+  const pctDaLinha = (k: string): number => pctNumero(celulas[k] ?? '') ?? pctGeral;
+  const pctDoProduto = (slug: string, k: string): number => pctNumero(celulasProduto[slug] ?? '') ?? pctDaLinha(k);
+  const produtosComRegra = useMemo(() => {
+    const por: Record<string, number> = {};
+    for (const [slug, txt] of Object.entries(celulasProduto)) {
+      if (txt.trim() === '') continue;
+      const k = linhaDoProduto[slug];
+      if (k) por[k] = (por[k] ?? 0) + 1;
+    }
+    return por;
+  }, [celulasProduto, linhaDoProduto]);
+
+  const mudancasPreco = useMemo<Mudanca[]>(() => {
     if (!papel) return [];
-    const lista: { linha: string | null; de: RegraRow | null; para: { base: Base; percentual: number } | null }[] = [];
-    const atual = regras.find((r) => !r.linha_key) ?? null;
-    const g = pctNumero(geral.pct) ?? 0;
-    if (!atual || atual.base !== geral.base || Number(atual.percentual) !== g) lista.push({ linha: null, de: atual, para: { base: geral.base, percentual: g } });
+    const lista: Mudanca[] = [];
+    const atual = regras.find((r) => !r.linha_key && !r.produto_slug) ?? null;
+    if (!atual || atual.base !== geral.base || Number(atual.percentual) !== pctGeral) lista.push({ nivel: 'geral', linha: null, slug: null, de: atual, para: { base: geral.base, percentual: pctGeral } });
     for (const l of linhas) {
-      const row = regras.find((r) => r.linha_key === l.linha_key) ?? null;
+      const row = regras.find((r) => r.linha_key === l.linha_key && !r.produto_slug) ?? null;
       const n = pctNumero(celulas[l.linha_key] ?? '');
       if (n === null) {
-        if (row) lista.push({ linha: l.linha_key, de: row, para: null });
+        if (row) lista.push({ nivel: 'linha', linha: l.linha_key, slug: null, de: row, para: null });
       } else if (!row || Number(row.percentual) !== n) {
-        lista.push({ linha: l.linha_key, de: row, para: { base: geral.base, percentual: n } });
+        lista.push({ nivel: 'linha', linha: l.linha_key, slug: null, de: row, para: { base: geral.base, percentual: n } });
+      }
+    }
+    const slugs = new Set<string>([...regras.filter((r) => r.produto_slug).map((r) => r.produto_slug as string), ...Object.keys(celulasProduto)]);
+    for (const slug of slugs) {
+      const row = regras.find((r) => r.produto_slug === slug) ?? null;
+      const n = pctNumero(celulasProduto[slug] ?? '');
+      const linha = linhaDoProduto[slug] ?? row?.linha_key ?? null;
+      if (n === null) {
+        if (row) lista.push({ nivel: 'produto', linha, slug, de: row, para: null });
+      } else if (!row || Number(row.percentual) !== n) {
+        lista.push({ nivel: 'produto', linha, slug, de: row, para: { base: geral.base, percentual: n } });
       }
     }
     return lista;
-  }, [papel, regras, linhas, geral, celulas]);
+  }, [papel, regras, linhas, geral, pctGeral, celulas, celulasProduto, linhaDoProduto]);
 
   const visMudou = useMemo(() => {
     if (!visSalva) return false;
@@ -223,12 +317,41 @@ export default function AdminAcessoConfig() {
       const v = pctNumero(celulas[l.linha_key] ?? '');
       if (v !== null && (Number.isNaN(v) || v < 0)) ruins.push(l.label);
     }
+    for (const [slug, txt] of Object.entries(celulasProduto)) {
+      const v = pctNumero(txt);
+      if (v !== null && (Number.isNaN(v) || v < 0)) ruins.push(`produto ${slug}`);
+    }
     if (!vis.veRolo && !vis.veMetro) ruins.push('rolo e metro desligados ao mesmo tempo (ninguém conseguiria comprar)');
     return ruins;
-  }, [geral, celulas, linhas, vis]);
+  }, [geral, celulas, celulasProduto, linhas, vis]);
 
   const totalMudancas = mudancasPreco.length + (visMudou ? 1 : 0);
 
+  // ---------------------------------------------------------------- lote
+  const aplicarLoteLinhas = (valor: string) => {
+    if (!selecionadas.size) return;
+    setCelulas((c) => {
+      const n = { ...c };
+      for (const k of selecionadas) n[k] = valor;
+      return n;
+    });
+  };
+  const aplicarLoteProdutos = (valor: string) => {
+    if (!selecionadosProd.size) return;
+    setCelulasProduto((c) => {
+      const n = { ...c };
+      for (const s of selecionadosProd) n[s] = valor;
+      return n;
+    });
+  };
+  const alternar = (set: Set<string>, k: string) => {
+    const n = new Set(set);
+    if (n.has(k)) n.delete(k);
+    else n.add(k);
+    return n;
+  };
+
+  // ---------------------------------------------------------------- salvar
   const salvar = async () => {
     if (!papel) return;
     if (invalidas.length) {
@@ -251,12 +374,12 @@ export default function AdminAcessoConfig() {
       let error: { message: string } | null = null;
       if (m.para === null && m.de) ({ error } = await supabase.from('precos_acesso').delete().eq('id', m.de.id));
       else if (m.para && m.de) ({ error } = await supabase.from('precos_acesso').update({ base: m.para.base, percentual: m.para.percentual, atualizado_em: agora, atualizado_por: quem }).eq('id', m.de.id));
-      else if (m.para) ({ error } = await supabase.from('precos_acesso').insert({ papel, linha_key: m.linha, base: m.para.base, percentual: m.para.percentual, atualizado_em: agora, atualizado_por: quem }));
+      else if (m.para) ({ error } = await supabase.from('precos_acesso').insert({ papel, linha_key: m.linha, produto_slug: m.slug, base: m.para.base, percentual: m.para.percentual, atualizado_em: agora, atualizado_por: quem }));
       if (error) {
-        falhas.push(`${m.linha ?? 'geral'}: ${error.message}`);
+        falhas.push(`${m.slug ?? m.linha ?? 'geral'}: ${error.message}`);
         continue;
       }
-      await supabase.from('precos_acesso_log').insert({ quem, papel, linha_key: m.linha, de: m.de ? { base: m.de.base, percentual: Number(m.de.percentual) } : null, para: m.para });
+      await supabase.from('precos_acesso_log').insert({ quem, papel, linha_key: m.linha, produto_slug: m.slug, de: m.de ? { base: m.de.base, percentual: Number(m.de.percentual) } : null, para: m.para });
     }
     if (visMudou) {
       const para = { papel, linhas_ocultas: [...vis.linhasOcultas], ve_rolo: vis.veRolo, ve_metro: vis.veMetro, ve_estoque: vis.veEstoque, ve_promocao: vis.vePromocao, pagamento_online: vis.pagamentoOnline, atualizado_em: agora, atualizado_por: quem };
@@ -294,13 +417,11 @@ export default function AdminAcessoConfig() {
 
   const metroDe = (v: number | null) => (v != null ? `${BRL.format(v)}/m` : '—');
   const roloDe = (v: number | null) => (v != null ? `${BRL.format(v)}/rolo` : '—');
-  const alternarLinha = (k: string) =>
-    setVis((v) => {
-      const s = new Set(v.linhasOcultas);
-      if (s.has(k)) s.delete(k);
-      else s.add(k);
-      return { ...v, linhasOcultas: s };
-    });
+  const todasSelecionadas = linhas.length > 0 && selecionadas.size === linhas.length;
+  const produtosAbertos = aberta ? produtosPorLinha[aberta] ?? [] : [];
+  const termoProd = buscaProduto.trim().toLowerCase();
+  const produtosFiltrados = termoProd ? produtosAbertos.filter((p) => p.nome.toLowerCase().includes(termoProd) || (p.codigo ?? '').toLowerCase().includes(termoProd) || p.slug.includes(termoProd)) : produtosAbertos;
+  const todosProdSelecionados = produtosFiltrados.length > 0 && produtosFiltrados.every((p) => selecionadosProd.has(p.slug));
 
   return (
     <div>
@@ -347,8 +468,8 @@ export default function AdminAcessoConfig() {
           <div className={styles.tableSection}>
             <h3 className={styles.tableSectionTitle}>Regra geral</h3>
             <p className={styles.tabDescription}>
-              preço = base do ERP × (1 + percentual). A base é o atacado (tabela mínima do NZERP) ou o varejo que o ERP publica. Hoje o ERP publica as
-              duas iguais; o percentual é o que diferencia este tipo.
+              preço = base do ERP × (1 + percentual). Três níveis, do mais específico ao mais geral: <strong>produto</strong> (abra a linha e ajuste um item)
+              &gt; <strong>linha comercial</strong> &gt; <strong>geral</strong>. Vazio herda o nível de cima. A base é sempre a do tipo.
             </p>
             <div className={styles.adminFormRow3}>
               <div className={styles.createField}>
@@ -366,11 +487,37 @@ export default function AdminAcessoConfig() {
           </div>
 
           <div className={styles.tableSection}>
-            <h3 className={styles.tableSectionTitle}>Por linha comercial (vazio = usa o geral)</h3>
+            <h3 className={styles.tableSectionTitle}>Por linha comercial</h3>
+            <p className={styles.tabDescription}>
+              Marque linhas para aplicar um percentual em lote. Clique no nome da linha para abrir os produtos dela e ajustar um item específico.
+            </p>
+
+            {selecionadas.size > 0 && (
+              <div style={barraLote}>
+                <strong style={{ color: '#D4A853' }}>
+                  {selecionadas.size} linha{selecionadas.size > 1 ? 's' : ''} selecionada{selecionadas.size > 1 ? 's' : ''}
+                </strong>
+                <span className={ped.mudo}>→ aplicar</span>
+                <input value={loteLinhas} placeholder="%" style={campo} inputMode="decimal" onChange={(e) => setLoteLinhas(e.target.value)} />
+                <button type="button" className={`${styles.actionBtn} ${styles.actionBtnApprove}`} disabled={pctNumero(loteLinhas) === null || Number.isNaN(pctNumero(loteLinhas))} onClick={() => aplicarLoteLinhas(loteLinhas.trim())}>
+                  Aplicar às selecionadas
+                </button>
+                <button type="button" className={styles.actionBtn} onClick={() => aplicarLoteLinhas('')}>
+                  Limpar (herdar o geral)
+                </button>
+                <button type="button" className={styles.actionBtn} onClick={() => setSelecionadas(new Set())}>
+                  Desmarcar
+                </button>
+              </div>
+            )}
+
             <div className={styles.tableScroll}>
               <table className={styles.table}>
                 <thead>
                   <tr>
+                    <th style={{ width: 36 }}>
+                      <input type="checkbox" style={caixa} checked={todasSelecionadas} onChange={(e) => setSelecionadas(e.target.checked ? new Set(linhas.map((l) => l.linha_key)) : new Set())} title="Marcar todas" />
+                    </th>
                     <th>Linha</th>
                     <th>Produtos</th>
                     <th>Percentual (%)</th>
@@ -379,22 +526,135 @@ export default function AdminAcessoConfig() {
                 </thead>
                 <tbody>
                   {linhas.map((l) => {
-                    const txt = celulas[l.linha_key] ?? '';
-                    const efetivo = pctNumero(txt) ?? pctNumero(geral.pct) ?? 0;
-                    const oculta = vis.linhasOcultas.has(l.linha_key);
+                    const k = l.linha_key;
+                    const txt = celulas[k] ?? '';
+                    const efetivo = pctDaLinha(k);
+                    const oculta = vis.linhasOcultas.has(k);
+                    const comRegra = produtosComRegra[k] ?? 0;
+                    const estaAberta = aberta === k;
                     return (
-                      <tr key={l.linha_key} style={oculta ? { opacity: 0.45 } : undefined}>
-                        <td>
-                          {l.label}
-                          <br />
-                          <small className={ped.mudo}>{l.linha_key}</small>
-                        </td>
-                        <td className={ped.mudo}>{l.produtos}</td>
-                        <td>
-                          <input value={txt} placeholder={`geral ${geral.pct || '0'}`} style={campo} inputMode="decimal" onChange={(e) => setCelulas((c) => ({ ...c, [l.linha_key]: e.target.value }))} />
-                        </td>
-                        <td className={ped.mudo}>{oculta ? 'linha oculta para este tipo' : `${geral.base} + ${Number.isNaN(efetivo) ? '?' : pctTexto(efetivo)}%`}</td>
-                      </tr>
+                      <>
+                        <tr key={k} style={oculta ? { opacity: 0.45 } : undefined}>
+                          <td>
+                            <input type="checkbox" style={caixa} checked={selecionadas.has(k)} onChange={() => setSelecionadas((s) => alternar(s, k))} />
+                          </td>
+                          <td>
+                            <button type="button" style={botaoLinha} onClick={() => void abrirLinha(k)} title="Abrir os produtos desta linha">
+                              <span style={{ display: 'inline-block', width: '1.1em', color: '#D4A853' }}>{estaAberta ? '▾' : '▸'}</span>
+                              {l.label}
+                            </button>
+                            <br />
+                            <small className={ped.mudo} style={{ paddingLeft: '1.1em' }}>
+                              {k}
+                              {comRegra ? ` · ${comRegra} produto${comRegra > 1 ? 's' : ''} com % próprio` : ''}
+                            </small>
+                          </td>
+                          <td className={ped.mudo}>{l.produtos}</td>
+                          <td>
+                            <input value={txt} placeholder={`geral ${geral.pct || '0'}`} style={campo} inputMode="decimal" onChange={(e) => setCelulas((c) => ({ ...c, [k]: e.target.value }))} />
+                          </td>
+                          <td className={ped.mudo}>{oculta ? 'linha oculta para este tipo' : `${geral.base} + ${Number.isNaN(efetivo) ? '?' : pctTexto(efetivo)}%`}</td>
+                        </tr>
+                        {estaAberta && (
+                          <tr key={`${k}-produtos`}>
+                            <td colSpan={5} style={{ background: 'rgba(255,255,255,0.025)', padding: '0.9rem 1rem 1rem 2.2rem' }}>
+                              {carregandoProdutos === k ? (
+                                <p className={ped.mudo}>Carregando produtos…</p>
+                              ) : (
+                                <>
+                                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', alignItems: 'center', marginBottom: '0.6rem' }}>
+                                    <strong style={{ color: '#fff' }}>
+                                      {l.label} · {produtosAbertos.length} produto{produtosAbertos.length === 1 ? '' : 's'}
+                                    </strong>
+                                    <input className={ped.busca} style={{ maxWidth: 320, padding: '0.45rem 0.7rem' }} placeholder="Filtrar por nome, código ou slug" value={buscaProduto} onChange={(e) => setBuscaProduto(e.target.value)} />
+                                    <span className={ped.mudo}>vazio = herda a linha ({pctTexto(efetivo)}%)</span>
+                                  </div>
+                                  {selecionadosProd.size > 0 && (
+                                    <div style={barraLote}>
+                                      <strong style={{ color: '#D4A853' }}>
+                                        {selecionadosProd.size} produto{selecionadosProd.size > 1 ? 's' : ''} selecionado{selecionadosProd.size > 1 ? 's' : ''}
+                                      </strong>
+                                      <span className={ped.mudo}>→ aplicar</span>
+                                      <input value={loteProd} placeholder="%" style={campo} inputMode="decimal" onChange={(e) => setLoteProd(e.target.value)} />
+                                      <button type="button" className={`${styles.actionBtn} ${styles.actionBtnApprove}`} disabled={pctNumero(loteProd) === null || Number.isNaN(pctNumero(loteProd))} onClick={() => aplicarLoteProdutos(loteProd.trim())}>
+                                        Aplicar aos selecionados
+                                      </button>
+                                      <button type="button" className={styles.actionBtn} onClick={() => aplicarLoteProdutos('')}>
+                                        Limpar (herdar a linha)
+                                      </button>
+                                      <button type="button" className={styles.actionBtn} onClick={() => setSelecionadosProd(new Set())}>
+                                        Desmarcar
+                                      </button>
+                                    </div>
+                                  )}
+                                  <table className={styles.table} style={{ fontSize: '0.82rem' }}>
+                                    <thead>
+                                      <tr>
+                                        <th style={{ width: 36 }}>
+                                          <input
+                                            type="checkbox"
+                                            style={caixa}
+                                            checked={todosProdSelecionados}
+                                            onChange={(e) =>
+                                              setSelecionadosProd((s) => {
+                                                const n = new Set(s);
+                                                for (const p of produtosFiltrados) {
+                                                  if (e.target.checked) n.add(p.slug);
+                                                  else n.delete(p.slug);
+                                                }
+                                                return n;
+                                              })
+                                            }
+                                            title="Marcar os produtos listados"
+                                          />
+                                        </th>
+                                        <th>Produto</th>
+                                        <th>Percentual (%)</th>
+                                        <th>Vale</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {produtosFiltrados.map((p) => {
+                                        const t = celulasProduto[p.slug] ?? '';
+                                        const ef = pctDoProduto(p.slug, k);
+                                        return (
+                                          <tr key={p.slug}>
+                                            <td>
+                                              <input type="checkbox" style={caixa} checked={selecionadosProd.has(p.slug)} onChange={() => setSelecionadosProd((s) => alternar(s, p.slug))} />
+                                            </td>
+                                            <td>
+                                              {p.nome}
+                                              <br />
+                                              <small className={ped.mudo}>
+                                                {p.codigo ? `${p.codigo} · ` : ''}
+                                                {p.slug}
+                                              </small>
+                                            </td>
+                                            <td>
+                                              <input value={t} placeholder={`linha ${pctTexto(efetivo)}`} style={campo} inputMode="decimal" onChange={(e) => setCelulasProduto((c) => ({ ...c, [p.slug]: e.target.value }))} />
+                                            </td>
+                                            <td className={ped.mudo}>
+                                              {Number.isNaN(ef) ? '?' : `${geral.base} + ${pctTexto(ef)}%`}
+                                              {t.trim() !== '' ? ' · próprio' : ''}
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
+                                      {produtosFiltrados.length === 0 && (
+                                        <tr>
+                                          <td colSpan={4} className={ped.mudo}>
+                                            {produtosAbertos.length === 0 ? 'Nenhum produto nesta linha.' : 'Nada com esse filtro.'}
+                                          </td>
+                                        </tr>
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </>
+                              )}
+                            </td>
+                          </tr>
+                        )}
+                      </>
                     );
                   })}
                 </tbody>
@@ -497,7 +757,7 @@ export default function AdminAcessoConfig() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.35rem 1rem' }}>
               {linhas.map((l) => (
                 <label key={l.linha_key} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.4rem 0', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={!vis.linhasOcultas.has(l.linha_key)} onChange={() => alternarLinha(l.linha_key)} style={{ width: 16, height: 16 }} />
+                  <input type="checkbox" checked={!vis.linhasOcultas.has(l.linha_key)} onChange={() => setVis((v) => ({ ...v, linhasOcultas: alternar(v.linhasOcultas, l.linha_key) }))} style={caixa} />
                   <span>
                     {l.label} <small className={ped.mudo}>· {l.produtos}</small>
                   </span>

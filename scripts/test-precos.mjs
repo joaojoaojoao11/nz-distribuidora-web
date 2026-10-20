@@ -66,6 +66,22 @@ console.log('\n=== GERAL + POR LINHA ===');
   ok('precosPorTipo: os três de uma vez', t.reseller === 3000 && t.lojista === 3150 && t.client === 4200);
 }
 
+console.log('\n=== POR PRODUTO (produto > linha > geral) ===');
+{
+  const r = montarRegras([
+    { papel: 'client', linha_key: null, base: 'atacado', percentual: 30 },
+    { papel: 'client', linha_key: 'ppf', base: 'atacado', percentual: 40 },
+    { papel: 'client', linha_key: 'ppf', produto_slug: 'luxury-gloss', base: 'atacado', percentual: 10 },
+    { papel: 'lojista', linha_key: null, produto_slug: 'luxury-gloss', base: 'varejo', percentual: 5 },
+  ]);
+  ok('produto com regra própria vence a linha', precoParaAcesso(r, 'client', base, 'ppf', null, 'rolo', 'luxury-gloss') === 3300);
+  ok('outro produto da mesma linha segue a linha', precoParaAcesso(r, 'client', base, 'ppf', null, 'rolo', 'prime-matte') === 4200);
+  ok('sem slug, vale a linha', precoParaAcesso(r, 'client', base, 'ppf', null, 'rolo') === 4200);
+  ok('regra de produto não muda a BASE do tipo (lojista continua no atacado)', precoParaAcesso(r, 'lojista', base, 'ppf', null, 'rolo', 'luxury-gloss') === 3150);
+  ok('regra de produto é por tipo: revendedor não é afetado', precoParaAcesso(r, 'reseller', base, 'ppf', null, 'rolo', 'luxury-gloss') === 3000);
+  ok('regraPara expõe o nível que valeu', regraPara(r, 'client', 'ppf', 'luxury-gloss').produto_slug === 'luxury-gloss' && regraPara(r, 'client', 'ppf', 'x').produto_slug == null);
+}
+
 console.log('\n=== PROMOÇÃO E ARREDONDAMENTO ===');
 {
   const r = montarRegras([{ papel: 'client', linha_key: null, base: 'varejo', percentual: 30 }]);

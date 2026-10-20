@@ -27,6 +27,8 @@ export interface RegraAcesso {
   papel: PapelPreco;
   /** null = regra geral do tipo. */
   linha_key: string | null;
+  /** Preenchido = regra só deste produto (vence a da linha). */
+  produto_slug?: string | null;
   base: BaseRegra;
   percentual: number;
 }
@@ -45,6 +47,8 @@ export interface Regras {
   geral: Record<PapelPreco, RegraAcesso>;
   /** chave `${papel}|${linha_key}` */
   porLinha: Map<string, RegraAcesso>;
+  /** chave `${papel}|${produto_slug}` — vence a linha */
+  porProduto: Map<string, RegraAcesso>;
   vis: Record<PapelPreco, Visibilidade>;
 }
 
@@ -68,6 +72,7 @@ export function regrasPadrao(): Regras {
       client: { papel: 'client', linha_key: null, base: 'varejo', percentual: 0 },
     },
     porLinha: new Map(),
+    porProduto: new Map(),
     vis: visibilidadePadrao(),
   };
 }
@@ -130,10 +135,12 @@ export function montarRegras(linhas: readonly Partial<RegraAcesso>[], vis?: Reco
     const limpa: RegraAcesso = {
       papel: l.papel,
       linha_key: l.linha_key ? String(l.linha_key) : null,
+      produto_slug: l.produto_slug ? String(l.produto_slug) : null,
       base: l.base === 'varejo' ? 'varejo' : 'atacado',
       percentual: Math.max(0, Number(l.percentual) || 0),
     };
-    if (limpa.linha_key) r.porLinha.set(chave(limpa.papel, limpa.linha_key), limpa);
+    if (limpa.produto_slug) r.porProduto.set(chave(limpa.papel, limpa.produto_slug), limpa);
+    else if (limpa.linha_key) r.porLinha.set(chave(limpa.papel, limpa.linha_key), limpa);
     else r.geral[limpa.papel] = limpa;
   }
   return r;
@@ -143,7 +150,7 @@ export function montarRegras(linhas: readonly Partial<RegraAcesso>[], vis?: Reco
 export async function carregarRegras(site: Db): Promise<Regras> {
   const vis = await carregarVisibilidade(site);
   try {
-    const { data, error } = await site.from('precos_acesso').select('papel, linha_key, base, percentual');
+    const { data, error } = await site.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual');
     if (error) throw error;
     return montarRegras((data ?? []) as Partial<RegraAcesso>[], vis);
   } catch (err) {
@@ -159,9 +166,14 @@ export function papelDePreco(papel: Papel | string | null | undefined): PapelPre
   return papel === 'reseller' || papel === 'lojista' ? papel : 'client';
 }
 
-/** A regra que vale para um tipo numa linha: a linha só muda o percentual; a base é do tipo. */
-export function regraPara(regras: Regras, papel: PapelPreco, linhaKey: string | null | undefined): RegraAcesso {
+/**
+ * A regra que vale para um tipo num produto: produto > linha > geral. Só o
+ * percentual muda de nível para nível; a base é sempre a do tipo (geral).
+ */
+export function regraPara(regras: Regras, papel: PapelPreco, linhaKey: string | null | undefined, slug?: string | null): RegraAcesso {
   const geral = regras.geral[papel];
+  const doProduto = slug ? regras.porProduto.get(chave(papel, slug)) : undefined;
+  if (doProduto) return { ...doProduto, base: geral.base };
   const daLinha = linhaKey ? regras.porLinha.get(chave(papel, linhaKey)) : undefined;
   return daLinha ? { ...daLinha, base: geral.base } : geral;
 }
@@ -183,13 +195,13 @@ export type UnidadePreco = 'rolo' | 'metro';
  * esconde (linha oculta, unidade que ele não compra). Com `unidade`, a regra
  * de rolo/metro entra; a de linha oculta entra sempre.
  */
-export function precoParaAcesso(regras: Regras, papel: Papel | PapelPreco | string, base: BasePreco, linhaKey: string | null | undefined, promo?: number | null, unidade?: UnidadePreco): number | null {
+export function precoParaAcesso(regras: Regras, papel: Papel | PapelPreco | string, base: BasePreco, linhaKey: string | null | undefined, promo?: number | null, unidade?: UnidadePreco, slug?: string | null): number | null {
   const pp = papelDePreco(papel);
   const v = regras.vis[pp];
   if (linhaKey && v.linhasOcultas.has(linhaKey)) return null;
   if (unidade === 'rolo' && !v.veRolo) return null;
   if (unidade === 'metro' && !v.veMetro) return null;
-  const r = regraPara(regras, pp, linhaKey);
+  const r = regraPara(regras, pp, linhaKey, slug);
   const atacado = positivo(base.atacado);
   const varejo = positivo(base.varejo);
   const saida = v.vePromocao ? positivo(promo) : null;
@@ -199,10 +211,10 @@ export function precoParaAcesso(regras: Regras, papel: Papel | PapelPreco | stri
 }
 
 /** O mesmo produto nos três tipos — o simulador da tela de preços (só admin). */
-export function precosPorTipo(regras: Regras, base: BasePreco, linhaKey: string | null | undefined, promo?: number | null, unidade?: UnidadePreco): Record<PapelPreco, number | null> {
+export function precosPorTipo(regras: Regras, base: BasePreco, linhaKey: string | null | undefined, promo?: number | null, unidade?: UnidadePreco, slug?: string | null): Record<PapelPreco, number | null> {
   return {
-    reseller: precoParaAcesso(regras, 'reseller', base, linhaKey, promo, unidade),
-    lojista: precoParaAcesso(regras, 'lojista', base, linhaKey, promo, unidade),
-    client: precoParaAcesso(regras, 'client', base, linhaKey, promo, unidade),
+    reseller: precoParaAcesso(regras, 'reseller', base, linhaKey, promo, unidade, slug),
+    lojista: precoParaAcesso(regras, 'lojista', base, linhaKey, promo, unidade, slug),
+    client: precoParaAcesso(regras, 'client', base, linhaKey, promo, unidade, slug),
   };
 }
