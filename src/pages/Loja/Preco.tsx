@@ -128,6 +128,18 @@ export default function Preco({ slug, variante, produto, selecao, soMetro = fals
     );
   }
 
+  // Linha escondida para este tipo de acesso (Admin → Tipos de acesso).
+  if (estado === 'ok' && item?.oculto) {
+    return variante === 'card' ? (
+      <span className={`${styles.card} ${styles.mudo}`}>Indisponível para seu acesso</span>
+    ) : (
+      <div className={styles.bloco}>
+        <span className={styles.analise}>Não disponível para o seu tipo de acesso</span>
+        <p className={styles.nota}>Esta linha não é vendida pelo site para o seu cadastro. Fale com a NZ pelo WhatsApp.</p>
+      </div>
+    );
+  }
+
   if (estado !== 'ok' || !item || !item.disponivel) return null;
 
   const rolo = item.rolo != null ? BRL.format(Number(item.rolo)) : null;

@@ -20,6 +20,7 @@ import { getShopItem, useShopCatalog } from '../../lib/shop/store';
 import { usePrecosLote } from '../../lib/shop/precos';
 import { usePatio } from '../../lib/shop/patio';
 import { usePromoMoto } from '../../lib/shop/promoMoto';
+import { useAcessoConfig } from '../../lib/shop/acesso';
 import { Camera, Motorbike } from 'lucide-react';
 import { useSelecaoRemota } from '../../lib/shop/selecoes';
 import { MAX_SELECAO } from '../../lib/shop/selecoes/regras';
@@ -200,12 +201,15 @@ export default function Loja() {
   // aberto e foto de moto (ver api/_lib/handlers/promoMoto.ts). Os filtros da
   // sidebar continuam valendo DENTRO da promoção. Enquanto o mapa não chega a
   // lista fica vazia — mostrar a loja inteira como se fosse promoção seria pior.
-  const promo = usePromoMoto(promoMoto && !emSelecao);
-  const emPromo = promoMoto && !emSelecao;
-  const catalogo = useMemo(
-    () => (emPromo ? (promo ? SHOP_ITEMS.filter((i) => promo.has(i.slug)) : []) : SHOP_ITEMS),
-    [emPromo, promo, SHOP_ITEMS]
-  );
+  // Tipo de acesso de quem está logado (Admin → Tipos de acesso): linhas
+  // escondidas saem da lista, e a promoção só aparece para quem a vê.
+  const acesso = useAcessoConfig();
+  const emPromo = promoMoto && !emSelecao && acesso.vePromocao;
+  const promo = usePromoMoto(emPromo);
+  const catalogo = useMemo(() => {
+    const base = emPromo ? (promo ? SHOP_ITEMS.filter((i) => promo.has(i.slug)) : []) : SHOP_ITEMS;
+    return acesso.linhasOcultas.size ? base.filter((i) => !acesso.linhasOcultas.has(i.lineKey)) : base;
+  }, [emPromo, promo, SHOP_ITEMS, acesso.linhasOcultas]);
 
   const results = useMemo(() => {
     // A ordem é a do servidor / a da URL: foi a que o vendedor montou.
@@ -496,15 +500,17 @@ export default function Loja() {
             <span className={styles.counterNumber}>{facets.verticals.length}</span>
             <span className={styles.counterLabel}>LINHAS</span>
           </div>
-          <button
-            type="button"
-            className={`${styles.promoBotao} ${promoMoto ? styles.promoBotaoAtivo : ''}`}
-            aria-pressed={promoMoto}
-            onClick={() => setPromoMoto(!promoMoto)}
-          >
-            <Motorbike size={18} strokeWidth={1.8} aria-hidden="true" />
-            Ação envelopamento de moto
-          </button>
+          {acesso.vePromocao && (
+            <button
+              type="button"
+              className={`${styles.promoBotao} ${promoMoto ? styles.promoBotaoAtivo : ''}`}
+              aria-pressed={promoMoto}
+              onClick={() => setPromoMoto(!promoMoto)}
+            >
+              <Motorbike size={18} strokeWidth={1.8} aria-hidden="true" />
+              Ação envelopamento de moto
+            </button>
+          )}
         </div>
       </header>
       )}

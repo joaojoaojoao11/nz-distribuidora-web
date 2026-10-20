@@ -31,6 +31,8 @@ export interface PrecoItem {
    * mostra "de metroCheio por metro". Mesma regra do checkout (servidor).
    */
   metroCheio?: number | null;
+  /** A linha deste produto está escondida para o tipo de acesso de quem pediu. */
+  oculto?: boolean;
   metragemPadrao?: number | null;
   larguraM?: number | null;
   unidade?: string;

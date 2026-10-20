@@ -143,10 +143,19 @@ Desde 20/10/2026 o que cada pessoa VÊ e PAGA depende do tipo de acesso
 `reseller` revendedor, `admin`): `preço = base × (1 + percentual)`, com um
 percentual geral por tipo e, opcionalmente, um por linha comercial
 (`produtos.linha_key`). A tabela é `precos_acesso`, a tela é
-**`/admin/precos`**, e a regra mora numa função só —
-`api/_lib/precos/regraAcesso.ts` — chamada por `/api/nz/precos` (vitrine),
-`pedido/precificar.ts` (pedido e checkout) e `promo-moto` (público = cliente
-final). Admin vê tudo e compra pela base. `npm run precos:test`.
+**`/admin/precos`** (uma linha por tipo; `/admin/precos/:papel` configura),
+e a regra mora numa função só — `api/_lib/precos/regraAcesso.ts` — chamada
+por `/api/nz/precos` (vitrine), `pedido/precificar.ts` (pedido e checkout) e
+`promo-moto` (público = cliente final). Admin vê tudo e compra pela base.
+`npm run precos:test`.
+
+**Visibilidade por tipo** (`acesso_config`, mesma tela, aba Visibilidade):
+linhas comerciais ocultas, rolo fechado, metro fracionado, estoque detalhado,
+Promoção Moto e pagamento online. O servidor aplica tudo (preço nulo e item
+inválido para linha oculta/unidade proibida; nível 2 do estoque; checkout
+desligado para o tipo); o front só evita mostrar o que seria negado
+(`src/lib/shop/acesso.ts` filtra o catálogo de quem está logado). Anônimo
+continua vendo o catálogo público sem preço.
 
 **Ninguém nasce aprovado** (também desde 20/10): o cadastro cria a conta como
 não aprovada e o admin libera em `/admin/clientes`, escolhendo o tipo de

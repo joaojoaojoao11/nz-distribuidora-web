@@ -38,6 +38,7 @@ import {
   type PagamentoRow,
 } from '../asaas/pagamento.js';
 import { despacharAoErp, dispensarDoErp } from '../pedido/despachoErp.js';
+import { carregarVisibilidade, papelDePreco } from '../precos/regraAcesso.js';
 import { cotarCarrinho, type OpcaoFrete } from '../frete/carrinho.js';
 import {
   carregarPerfil,
@@ -111,10 +112,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  if (!cfg.checkout_ativo && papel !== 'admin') {
+  // Pagamento online: a chave geral (loja_config) E a do tipo de acesso
+  // (Admin → Tipos de acesso). Desligado para o tipo, o carrinho oferece só o
+  // orçamento com o vendedor, como quando a loja inteira está desligada.
+  const pagamentoDoTipo = papel === 'admin' || (await carregarVisibilidade(site))[papelDePreco(papel)].pagamentoOnline;
+  if (papel !== 'admin' && (!cfg.checkout_ativo || !pagamentoDoTipo)) {
     res.status(403).json({ error: 'checkout-desligado' });
     return;
   }
+  cfg.checkout_ativo = cfg.checkout_ativo && pagamentoDoTipo;
   if (!asaasConfigurado()) {
     res.status(503).json({ error: 'pagamento-indisponivel', hasAsaasKey: false });
     return;

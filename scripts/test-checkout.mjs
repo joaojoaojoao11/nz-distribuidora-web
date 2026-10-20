@@ -458,6 +458,17 @@ console.log('\n=== PREÇO POR TIPO DE ACESSO (checkout = vitrine) ===');
   ok('checkout = vitrine: a mesma função dá o mesmo número', precoParaAcesso(regras, 'client', { atacado: 3000, varejo: 4000 }, 'ppf') === cli.linhas[0]?.precoRolo);
   const payload = montarPayloadErp({ pedidoId: 'ped-z', perfil: PERFIL, linhas: cli.linhas, total: cli.subtotal, notas: '', cupom: null, afiliadoCodigo: null, frete: { tipo: 'CIF', valor: 0, transportadora: '', prazoDias: 0 } });
   ok('o NZERP recebe o preço cobrado (R$ 320/m), e o orçamento fecha com o pagamento', payload.items[0]?.unitPrice === 320 && payload.items[0]?.total === 4800);
+
+  // Visibilidade por tipo: linha oculta e "não compra rolo" viram item inválido no pedido.
+  db.tabelas.acesso_config = [{ papel: 'client', linhas_ocultas: ['avery'], ve_rolo: false, ve_metro: true, ve_estoque: false, ve_promocao: true, pagamento_online: true }];
+  const ocultoCli = await precificar(db, [{ slug: 'wrap-x', qtd: 2, unidade: 'metro' }], { papel: 'client' });
+  ok('linha oculta para o tipo: item inválido no pedido', ocultoCli.linhas.length === 0 && ocultoCli.invalidos.includes('wrap-x'));
+  const semRolo = await precificar(db, itensRolo, { papel: 'client' });
+  ok('tipo que não compra rolo fechado: rolo inválido', semRolo.linhas.length === 0 && semRolo.invalidos.includes('rolo-ppf'));
+  const metroOk = await precificar(db, [{ slug: 'rolo-ppf', qtd: 2, unidade: 'metro' }], { papel: 'client' });
+  ok('…mas o metro da mesma linha continua valendo', metroOk.linhas.length === 1 && metroOk.linhas[0].unitPrice === 396);
+  const lojOk = await precificar(db, [{ slug: 'wrap-x', qtd: 2, unidade: 'metro' }], { papel: 'lojista' });
+  ok('a regra é por tipo: lojista compra a linha normalmente', lojOk.linhas.length === 1);
 }
 
 rmSync(outDir, { recursive: true, force: true });

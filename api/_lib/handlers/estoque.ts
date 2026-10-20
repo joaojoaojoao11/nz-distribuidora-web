@@ -20,6 +20,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapel, type Papel } from '../papel.js';
+import { carregarVisibilidade, papelDePreco } from '../precos/regraAcesso.js';
 import { lerEstoqueParceiro, type EstoqueParceiro } from '../estoqueParceiro.js';
 import { estaAgendado } from '../loja/visibilidade.js';
 
@@ -77,6 +78,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const site = createClient(siteUrl, siteKey);
   const papel = await resolverPapel(site, req.headers.authorization);
+  // Estoque detalhado (metros, rolos) é por tipo de acesso (Admin → Tipos de
+  // acesso); anônimo nunca; admin sempre.
+  const vis = await carregarVisibilidade(site);
+  const detalhado = papel === 'admin' || (papel !== 'anonimo' && vis[papelDePreco(papel)].veEstoque);
 
   const { data: produtosData } = await site
     .from('produtos')
@@ -108,7 +113,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const p = produtos.find((x) => x.slug === slug);
     const e = p?.erp_sku ? espelhoPorSku.get(p.erp_sku) : undefined;
     const parceiros = p?.erp_sku ? parceiroPorSku.get(p.erp_sku) : undefined;
-    itens[slug] = await montar(p, e, papel, limiteGlobal, parceiros);
+    itens[slug] = await montar(p, e, papel, limiteGlobal, parceiros, detalhado);
   }
 
   // Compatibilidade com o chamador de um produto só: mesmo objeto no topo.
@@ -124,7 +129,8 @@ async function montar(
   e: Espelho | undefined,
   papel: Papel,
   limiteGlobal: number,
-  parceiros?: EstoqueParceiro[]
+  parceiros?: EstoqueParceiro[],
+  detalhado = papel === 'reseller' || papel === 'lojista' || papel === 'admin'
 ) {
   if (!p || !p.erp_sku) return { mapeado: false };
   if (papel !== 'admin' && estaAgendado(p.publicar_em)) return { mapeado: false };
@@ -139,8 +145,8 @@ async function montar(
     atualizadoEm: e.sincronizado_em,
   };
 
-  // --- nível 2: lojista/revendedor aprovado e admin.
-  if (papel === 'reseller' || papel === 'lojista' || papel === 'admin') {
+  // --- nível 2: quem o tipo de acesso permite (padrão: lojista/revendedor) e admin.
+  if (detalhado) {
     r.saldo = {
       metrosLineares: Number(e.saldo_ml),
       rolosFechados: e.rolos_fechados,

@@ -65,8 +65,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // tabela dele, não o atacado.
       itens[slug] = {
         fotos,
-        metro: precoParaAcesso(regras, 'client', base, linha, saida),
-        metroCheio: saida != null ? precoParaAcesso(regras, 'client', base, linha) : null,
+        metro: precoParaAcesso(regras, 'client', base, linha, saida, 'metro'),
+        metroCheio: saida != null ? precoParaAcesso(regras, 'client', base, linha, null, 'metro') : null,
       };
     }
     // Muda quando uma ponta é vendida (sync diário do ERP) ou chega lista nova

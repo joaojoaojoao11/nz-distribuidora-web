@@ -171,10 +171,12 @@ export async function precificar(
   const regras: Regras | null = opts.admin ? null : await carregarRegras(site);
   const papel: Papel = opts.papel ?? 'client';
   const positivo = (v: unknown): number | null => (Number(v) > 0 ? Number(v) : null);
+  // `unidade` leva junto a visibilidade do tipo: linha oculta, "não compra
+  // rolo fechado" ou "não compra fracionado" viram item inválido, igual à vitrine.
   const precoRoloDe = (p: Produto, e: Espelho): number | null =>
-    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_rolo), varejo: positivo(e.preco_rolo_varejo) }, p.linha_key) : positivo(e.preco_rolo);
+    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_rolo), varejo: positivo(e.preco_rolo_varejo) }, p.linha_key, null, 'rolo') : positivo(e.preco_rolo);
   const precoMetroDe = (p: Produto, e: Espelho, saida: number | null): number | null =>
-    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_metro), varejo: positivo(e.preco_metro_varejo) }, p.linha_key, saida) : (saida ?? positivo(e.preco_metro));
+    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_metro), varejo: positivo(e.preco_metro_varejo) }, p.linha_key, saida, 'metro') : (saida ?? positivo(e.preco_metro));
 
   // Promoção Moto: o metro das cores com pedaço sai pelo preço de saída — a
   // MESMA regra que o card mostra (/api/nz/precos). Só no fracionado.
