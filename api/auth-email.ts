@@ -47,16 +47,21 @@ const erro = (http_code: number, message: string) => json({ error: { http_code, 
 async function registrar(tipo: string, ok: boolean, detalhe: string | null): Promise<void> {
   const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
   const chave = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !chave) return;
+  if (!url || !chave) {
+    console.warn('[auth-email] sem URL/chave do Supabase para registrar o envio');
+    return;
+  }
   try {
-    await fetch(`${url}/rest/v1/avisos_enviados`, {
+    const r = await fetch(`${url}/rest/v1/avisos_enviados`, {
       method: 'POST',
       headers: { apikey: chave, Authorization: `Bearer ${chave}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
       body: JSON.stringify({ chave: `auth-${tipo}:${crypto.randomUUID()}`, tipo: `auth-${tipo}`, ok, erro: detalhe }),
       signal: AbortSignal.timeout(3000),
     });
-  } catch {
-    /* o log nunca derruba o envio */
+    if (!r.ok) console.warn('[auth-email] log não gravado:', r.status, (await r.text()).slice(0, 200));
+  } catch (err) {
+    // O log nunca derruba o envio — mas fica no console da Vercel.
+    console.warn('[auth-email] log falhou:', err instanceof Error ? err.message : String(err));
   }
 }
 
@@ -69,7 +74,10 @@ export default async function handler(req: Request): Promise<Response> {
 
   const corpoBruto = await req.text();
   const v = await verificarAssinatura(segredo, lerCabecalhos(req.headers), corpoBruto);
-  if (!v.ok) return erro(401, `assinatura: ${v.motivo}`);
+  if (!v.ok) {
+    console.warn('[auth-email] recusado:', v.motivo);
+    return erro(401, `assinatura: ${v.motivo}`);
+  }
 
   let corpo: Corpo;
   try {
@@ -97,7 +105,10 @@ export default async function handler(req: Request): Promise<Response> {
     supabaseUrl,
   });
 
+  // Só o domínio do destinatário vai para o console: o endereço é dado pessoal.
+  const dominio = email.slice(email.indexOf('@'));
   if (!emails.length) {
+    console.warn('[auth-email] tipo sem modelo:', tipo, dominio);
     await registrar(tipo || 'desconhecido', false, 'tipo sem modelo — nada enviado');
     return json({});
   }
@@ -105,6 +116,7 @@ export default async function handler(req: Request): Promise<Response> {
   const falhas: string[] = [];
   for (const e of emails) {
     const r = await enviarEmail({ para: e.para, assunto: e.assunto, html: e.html, texto: e.texto });
+    console.log('[auth-email]', tipo, dominio, r.ok ? `enviado ${r.id ?? ''}` : `FALHOU ${r.motivo} ${r.detalhe ?? ''}`);
     await registrar(tipo, r.ok, r.ok ? null : `${r.motivo}${r.detalhe ? `: ${r.detalhe}` : ''}`);
     if (!r.ok) falhas.push(r.motivo);
   }

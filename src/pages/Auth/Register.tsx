@@ -49,7 +49,9 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   // Conta criada, e-mail ainda não confirmado: a tela vira "confira sua caixa".
   const [confirmar, setConfirmar] = useState<string | null>(null);
-  const [reenviadoEm, setReenviadoEm] = useState(0);
+  // Reenvio com espera de 60 s (o Supabase também limita; aqui é só para não
+  // deixar a pessoa clicar dez vezes).
+  const [aguardandoReenvio, setAguardandoReenvio] = useState(false);
   const [reenvioMsg, setReenvioMsg] = useState('');
 
   const empresa = ehEmpresa(form.role);
@@ -128,11 +130,12 @@ export default function Register() {
   };
 
   const reenviar = async () => {
-    if (!confirmar || Date.now() - reenviadoEm < 60_000) return;
+    if (!confirmar || aguardandoReenvio) return;
     setReenvioMsg('');
+    setAguardandoReenvio(true);
+    window.setTimeout(() => setAguardandoReenvio(false), 60_000);
     const emailRedirectTo = `${window.location.origin}/login?confirmado=1${destino ? `&next=${encodeURIComponent(destino)}` : ''}`;
     const { error: err } = await supabase.auth.resend({ type: 'signup', email: confirmar, options: { emailRedirectTo } });
-    setReenviadoEm(Date.now());
     setReenvioMsg(err ? textoDoErroAuth(err.message) : 'Enviamos de novo. Pode levar um minuto para chegar.');
   };
 
@@ -150,8 +153,8 @@ export default function Register() {
           </div>
           <p className={styles.hint}>Não chegou? Confira o spam e a pasta de promoções. O link vale 30 minutos.</p>
           {reenvioMsg && <p className={styles.hint}>{reenvioMsg}</p>}
-          <button type="button" className={styles.submitBtn} onClick={() => void reenviar()} disabled={Date.now() - reenviadoEm < 60_000}>
-            REENVIAR E-MAIL
+          <button type="button" className={styles.submitBtn} onClick={() => void reenviar()} disabled={aguardandoReenvio}>
+            {aguardandoReenvio ? 'ENVIADO — AGUARDE 1 MINUTO' : 'REENVIAR E-MAIL'}
           </button>
           <div className={styles.linkRow}>
             E-mail errado?{' '}
