@@ -35,7 +35,8 @@
     "lente:test": "node scripts/test-lente.mjs",
     "lente:ia:test": "node scripts/test-lente-ia.mjs",
     "pedidos:test": "node scripts/test-situacao.mjs",
-    "precos:test": "node scripts/test-precos.mjs"
+    "precos:test": "node scripts/test-precos.mjs",
+    "auth-email:test": "node scripts/test-auth-email.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",
