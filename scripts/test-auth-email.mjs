@@ -29,7 +29,7 @@ if (build.status !== 0) {
   process.exit(1);
 }
 
-const { verificarAssinatura, assinar, lerCabecalhos, segredoBytes } = await import(pathToFileURL(join(outDir, 'auth/webhook.js')).href);
+const { verificarAssinatura, assinar, lerCabecalhos, segredoBytes, derivarSegredo, ROTULO_DERIVACAO } = await import(pathToFileURL(join(outDir, 'auth/webhook.js')).href);
 const { montarEmailsAuth, linkDeVerificacao } = await import(pathToFileURL(join(outDir, 'auth/emails.js')).href);
 
 let falhas = 0;
@@ -60,6 +60,14 @@ console.log('\n=== ASSINATURA ===');
   const h = new Headers({ 'webhook-id': id, 'webhook-timestamp': ts, 'webhook-signature': `v1,${esperada}` });
   ok('lerCabecalhos aceita Headers da Edge', lerCabecalhos(h).id === id && lerCabecalhos(h).signature.endsWith(esperada));
   ok('lerCabecalhos aceita objeto do Node', lerCabecalhos({ 'webhook-id': id, 'webhook-timestamp': ts, 'webhook-signature': `v1,${esperada}` }).timestamp === ts);
+  // Derivação: o mesmo cálculo que scripts/hook-segredo.mjs faz com o Node para configurar o Supabase.
+  const derivado = await derivarSegredo('chave-mestra-de-teste');
+  const referencia = `v1,whsec_${createHmac('sha256', 'chave-mestra-de-teste').update(ROTULO_DERIVACAO).digest('base64')}`;
+  ok('derivarSegredo: determinístico e igual ao HMAC do Node com o rótulo', derivado === referencia && derivado === (await derivarSegredo('chave-mestra-de-teste')));
+  ok('derivarSegredo: chave diferente → segredo diferente', (await derivarSegredo('outra')) !== derivado);
+  const corpo2 = '{"x":1}';
+  const sig2 = await assinar(derivado, 'id2', ts, corpo2);
+  ok('segredo derivado assina e verifica', (await verificarAssinatura(derivado, { id: 'id2', timestamp: ts, signature: `v1,${sig2}` }, corpo2)).ok === true);
 }
 
 console.log('\n=== E-MAILS ===');

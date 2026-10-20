@@ -16,12 +16,14 @@
 // `{ error: { http_code, message } }`, e o Supabase devolve o erro a quem
 // pediu (o usuário vê "não foi possível enviar" e tenta de novo).
 //
-// Segredos: AUTH_HOOK_SECRET ("v1,whsec_…", o mesmo cadastrado no hook),
-// RESEND_API_KEY, SUPABASE_SERVICE_ROLE_KEY (só para a linha de log em
-// avisos_enviados — é por ela que se confere o que saiu).
+// Segredos: o do hook é AUTH_HOOK_SECRET ("v1,whsec_…") se existir; senão é
+// DERIVADO da SUPABASE_SERVICE_ROLE_KEY (webhook.ts, derivarSegredo) — o mesmo
+// valor cadastrado em hook_send_email_secrets. RESEND_API_KEY manda; a chave
+// de serviço grava a linha de log em avisos_enviados (é por ela que se
+// confere o que saiu).
 
 import { enviarEmail } from './_lib/email.js';
-import { lerCabecalhos, verificarAssinatura } from './_lib/auth/webhook.js';
+import { derivarSegredo, lerCabecalhos, verificarAssinatura } from './_lib/auth/webhook.js';
 import { montarEmailsAuth } from './_lib/auth/emails.js';
 
 export const config = { runtime: 'edge' };
@@ -61,8 +63,9 @@ async function registrar(tipo: string, ok: boolean, detalhe: string | null): Pro
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== 'POST') return erro(405, 'Método não permitido.');
 
-  const segredo = process.env.AUTH_HOOK_SECRET;
-  if (!segredo) return erro(500, 'AUTH_HOOK_SECRET ausente');
+  const chaveServico = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const segredo = process.env.AUTH_HOOK_SECRET || (chaveServico ? await derivarSegredo(chaveServico) : '');
+  if (!segredo) return erro(500, 'sem segredo do hook (AUTH_HOOK_SECRET ou SUPABASE_SERVICE_ROLE_KEY)');
 
   const corpoBruto = await req.text();
   const v = await verificarAssinatura(segredo, lerCabecalhos(req.headers), corpoBruto);

@@ -49,6 +49,23 @@ export function segredoBytes(segredo: string): Uint8Array {
   return base64ParaBytes(semPrefixo);
 }
 
+/**
+ * O segredo do hook, derivado da chave de serviço do Supabase (HMAC-SHA256 com
+ * um rótulo fixo). Por que derivar: a Vercel não deixou criar variável nova
+ * pelo MCP, e a função já tem a chave de serviço. Derivar é padrão de KDF —
+ * quem vê o segredo do hook (na configuração do Auth) não chega à chave
+ * mestra. Se a chave de serviço for trocada, o segredo muda: rodar de novo o
+ * patch de configuração (scripts/auth-config.mjs). `AUTH_HOOK_SECRET`, se
+ * existir, tem prioridade (api/auth-email.ts).
+ */
+export const ROTULO_DERIVACAO = 'nz-auth-email-hook-v1';
+
+export async function derivarSegredo(chaveMestra: string): Promise<string> {
+  const chave = await crypto.subtle.importKey('raw', new TextEncoder().encode(chaveMestra), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const bytes = await crypto.subtle.sign('HMAC', chave, new TextEncoder().encode(ROTULO_DERIVACAO));
+  return `v1,whsec_${bytesParaBase64(bytes)}`;
+}
+
 export async function assinar(segredo: string, id: string, timestamp: string, corpo: string): Promise<string> {
   const chave = await crypto.subtle.importKey('raw', segredoBytes(segredo).buffer as ArrayBuffer, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const sig = await crypto.subtle.sign('HMAC', chave, new TextEncoder().encode(`${id}.${timestamp}.${corpo}`));
