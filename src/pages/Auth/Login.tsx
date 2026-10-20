@@ -14,10 +14,14 @@ export default function Login() {
   // ?next=/loja/x — quem veio de "entre para ver o preço" volta para o produto.
   const next = new URLSearchParams(location.search).get('next');
   const destinoSeguro = next && next.startsWith('/') && !next.startsWith('//') ? next : null;
+  // ?confirmado=1 — a pessoa acabou de clicar no e-mail de confirmação.
+  const confirmado = new URLSearchParams(location.search).get('confirmado') === '1';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [verSenha, setVerSenha] = useState(false);
   const [error, setError] = useState('');
+  const [naoConfirmado, setNaoConfirmado] = useState(false);
+  const [reenvioMsg, setReenvioMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [waitingProfile, setWaitingProfile] = useState(false);
   // Rede de segurança: se o perfil nunca chegar (sem linha, RLS, rede), a tela
@@ -48,6 +52,7 @@ export default function Login() {
     const { error: err } = await signIn(email, password);
     if (err) {
       setError(textoDoErroAuth(err));
+      setNaoConfirmado(err.toLowerCase().includes('email not confirmed'));
       setLoading(false);
       return;
     }
@@ -66,6 +71,13 @@ export default function Login() {
       provider: 'google',
       options: { redirectTo: `${window.location.origin}${destinoSeguro ?? '/painel'}` },
     });
+  };
+
+  const reenviarConfirmacao = async () => {
+    setReenvioMsg('');
+    const emailRedirectTo = `${window.location.origin}/login?confirmado=1${destinoSeguro ? `&next=${encodeURIComponent(destinoSeguro)}` : ''}`;
+    const { error: err } = await supabase.auth.resend({ type: 'signup', email: email.trim().toLowerCase(), options: { emailRedirectTo } });
+    setReenvioMsg(err ? textoDoErroAuth(err.message) : 'Enviamos de novo. Confira a caixa de entrada e o spam.');
   };
 
   return (
@@ -87,7 +99,16 @@ export default function Login() {
         )}
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          {confirmado && !error && <div className={styles.okMsg}>E-mail confirmado. Entre com sua senha — a NZ confere o cadastro e libera os preços em até 1 dia útil.</div>}
           {error && <div className={styles.errorMsg}>{error}</div>}
+          {naoConfirmado && (
+            <p className={styles.hint}>
+              <button type="button" className={styles.verSenha} onClick={() => void reenviarConfirmacao()}>
+                Reenviar o e-mail de confirmação
+              </button>
+              {reenvioMsg ? ` — ${reenvioMsg}` : ''}
+            </p>
+          )}
 
           <div className={styles.inputGroup}>
             <label className={styles.label}>E-mail</label>

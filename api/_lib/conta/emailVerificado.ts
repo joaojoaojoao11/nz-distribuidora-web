@@ -8,7 +8,10 @@
 // fechada de propósito.
 import type { Db } from '../papel.js';
 
-export const VIRADA_CONFIRMACAO = new Date('2999-01-01T00:00:00Z');
+// 20/10/2026 20:40 UTC (17:40 em São Paulo): o autoconfirm foi desligado e o
+// Send Email Hook passou a mandar o e-mail de confirmação pelo Resend
+// (api/auth-email.ts). Confirmação anterior a isso era automática, não prova.
+export const VIRADA_CONFIRMACAO = new Date('2026-10-20T20:40:00Z');
 
 export async function emailVerificado(site: Db, userId: string): Promise<boolean> {
   try {

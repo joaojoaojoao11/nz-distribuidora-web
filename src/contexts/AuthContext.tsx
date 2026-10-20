@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
+import { chamarConta } from '../lib/shop/conta';
 import { definirModoAdmin } from '../lib/shop/store';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -31,7 +32,8 @@ interface AuthContextType {
   /** Cadastro com tudo que o pedido precisa (trigger nz_marcar_cadastro_completo). */
   cadastroCompleto: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string, meta: SignUpMeta) => Promise<{ error: string | null }>;
+  /** `semSessao`: a conta foi criada mas precisa confirmar o e-mail antes de entrar. */
+  signUp: (email: string, password: string, meta: SignUpMeta, next?: string | null) => Promise<{ error: string | null; semSessao?: boolean }>;
   signOut: () => Promise<void>;
   recarregarPerfil: () => Promise<void>;
 }
@@ -83,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, s) => {
+    } = supabase.auth.onAuthStateChange((evento, s) => {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
@@ -95,6 +97,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             () => undefined,
             () => undefined
           );
+        }
+        // Pós-cadastro no PRIMEIRO login desta aba: procura o cliente no NZERP,
+        // completa o endereço e avisa a NZ que há cadastro para aprovar. Desde a
+        // confirmação de e-mail (20/10/2026) o cadastro não tem sessão para
+        // chamar isso na hora — então é aqui, quando a pessoa entra pela
+        // primeira vez. O servidor é idempotente (vínculo só se não tem; aviso
+        // sai uma vez por usuário); a chave de sessão só poupa chamadas.
+        if (evento === 'SIGNED_IN') {
+          const chave = `nz:pos-cadastro:${s.user.id}`;
+          let feito = false;
+          try {
+            feito = sessionStorage.getItem(chave) === '1';
+            sessionStorage.setItem(chave, '1');
+          } catch {
+            /* modo privado: chama mesmo assim */
+          }
+          if (!feito) void chamarConta({ op: 'pos-cadastro' }).catch(() => undefined);
         }
       } else {
         setProfile(null);
@@ -120,7 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    * `role: 'admin'` nos metadados é ignorado pelo trigger: admin só nasce de um
    * convite registrado pelo servidor.
    */
-  const signUp = async (email: string, password: string, meta: SignUpMeta) => {
+  const signUp = async (email: string, password: string, meta: SignUpMeta, next?: string | null) => {
     const data: Record<string, string> = {
       full_name: meta.full_name.trim(),
       phone: meta.phone.trim(),
@@ -145,9 +164,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (typeof v === 'string' && v.trim()) data[k] = v.trim();
     }
 
-    const { error } = await supabase.auth.signUp({ email: email.trim().toLowerCase(), password, options: { data } });
+    // Para onde o link de confirmação leva: o login, avisando que confirmou,
+    // e de lá para onde a pessoa queria ir (?next=).
+    const emailRedirectTo = `${window.location.origin}/login?confirmado=1${next ? `&next=${encodeURIComponent(next)}` : ''}`;
+    const { data: criado, error } = await supabase.auth.signUp({ email: email.trim().toLowerCase(), password, options: { data, emailRedirectTo } });
     if (error) return { error: error.message };
-    return { error: null };
+    // Com confirmação de e-mail ligada o Supabase cria a conta e NÃO abre
+    // sessão: a tela de cadastro mostra "confirme seu e-mail".
+    return { error: null, semSessao: !criado.session };
   };
 
   const signOut = async () => {

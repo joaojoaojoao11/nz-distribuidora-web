@@ -91,6 +91,7 @@ export function textoDoErroConta(e: unknown): string {
 export function textoDoErroAuth(msg: string): string {
   const m = msg.toLowerCase();
   if (m.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
+  if (m.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar: procure "Confirme seu e-mail na NZ Group" na caixa de entrada (e no spam).';
   if (m.includes('already registered') || m.includes('already been registered')) return 'Este e-mail já tem conta. Tente entrar ou recuperar a senha.';
   if (m.includes('password should be at least')) return 'A senha precisa de pelo menos 8 caracteres.';
   if (m.includes('email rate limit') || m.includes('over_email_send_rate_limit')) return 'Muitos e-mails em pouco tempo. Espere alguns minutos.';

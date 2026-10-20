@@ -20,7 +20,7 @@ const outDir = mkdtempSync(join(ROOT, 'node_modules/.cache/nz-auth-email-'));
 
 const build = spawnSync(
   process.execPath,
-  [join(ROOT, 'node_modules/esbuild/bin/esbuild'), 'api/_lib/auth/webhook.ts', 'api/_lib/auth/emails.ts', 'api/_lib/email.ts', `--outdir=${outDir}`, '--outbase=api/_lib', '--format=esm', '--platform=node', '--log-level=error'],
+  [join(ROOT, 'node_modules/esbuild/bin/esbuild'), 'api/_lib/auth/webhook.ts', 'api/_lib/auth/emails.ts', 'api/_lib/email.ts', 'api/_lib/conta/limparNaoConfirmados.ts', 'api/_lib/conta/emailVerificado.ts', `--outdir=${outDir}`, '--outbase=api/_lib', '--format=esm', '--platform=node', '--log-level=error'],
   { cwd: ROOT, encoding: 'utf8' }
 );
 if (build.status !== 0) {
@@ -95,6 +95,24 @@ const base = { email: 'cliente@exemplo.com', nome: 'Maria Silva', tokenHash: 'HA
   ok('tipo desconhecido: nada a enviar', montarEmailsAuth({ ...base, tipo: 'xyz' }).length === 0);
   ok('signup sem token_hash: nada a enviar (não manda link quebrado)', montarEmailsAuth({ ...base, tipo: 'signup', tokenHash: null }).length === 0);
   ok('HTML escapa o nome', montarEmailsAuth({ ...base, tipo: 'signup', nome: '<b>X</b>' })[0].html.includes('&lt;b&gt;X&lt;/b&gt;'));
+}
+
+console.log('\n=== LIMPEZA DE CONTAS NÃO CONFIRMADAS ===');
+{
+  const { paraApagar } = await import(pathToFileURL(join(outDir, 'conta/limparNaoConfirmados.js')).href);
+  const virada = new Date('2026-10-20T20:40:00Z');
+  const agora = Date.parse('2026-10-23T12:00:00Z');
+  const h = (n) => new Date(agora - n * 3_600_000).toISOString();
+  const lista = [
+    { id: 'a', email: 'a@x', email_confirmed_at: null, created_at: h(50), last_sign_in_at: null }, // apaga
+    { id: 'b', email: 'b@x', email_confirmed_at: null, created_at: h(10), last_sign_in_at: null }, // nova demais
+    { id: 'c', email: 'c@x', email_confirmed_at: h(49), created_at: h(50), last_sign_in_at: null }, // confirmou
+    { id: 'd', email: 'd@x', email_confirmed_at: null, created_at: '2026-10-01T00:00:00Z', last_sign_in_at: null }, // antes da virada
+    { id: 'e', email: 'e@x', email_confirmed_at: null, created_at: h(60), last_sign_in_at: h(1) }, // entrou (não deveria, mas não apaga)
+  ];
+  const r = paraApagar(lista, agora, 48, virada);
+  ok('apaga só a conta criada depois da virada, há mais de 48 h, nunca confirmada e sem login', r.length === 1 && r[0].id === 'a');
+  ok('data inválida não apaga', paraApagar([{ id: 'z', created_at: 'nada', email_confirmed_at: null }], agora, 48, virada).length === 0);
 }
 
 rmSync(outDir, { recursive: true, force: true });

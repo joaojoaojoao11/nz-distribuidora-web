@@ -32,6 +32,7 @@ import { resolverPapelDetalhado, type Db } from '../papel.js';
 import { normalizarEmail } from '../conta/documento.js';
 import { usuariosErp, type UsuarioErp } from '../conta/erpClientes.js';
 import { registrarLog } from '../conta/vinculo.js';
+import { emailVerificado } from '../conta/emailVerificado.js';
 import { SITE_URL } from './conta.js';
 
 /** ~100 anos: o Supabase não tem "banir para sempre", tem duração. */
@@ -245,7 +246,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { data: existente } = await site.from('user_profiles').select('id, role').ilike('email', u.email).maybeSingle();
     if (existente) {
-      await promover(site, (existente as { id: string }).id, u);
+      // Conta já existe com este e-mail: só vira admin se o e-mail foi PROVADO
+      // (confirmação ligada em 20/10/2026). Senão, qualquer um que criasse
+      // uma conta com o e-mail de um futuro funcionário viraria admin no
+      // clique do convite (achado 4 de PLANO_AUTH_SITE_NZGROUP).
+      const ex = existente as { id: string; role: string };
+      if (ex.role !== 'admin' && !(await emailVerificado(site, ex.id))) {
+        await registrarLog(site, 'convite-conta-nao-verificada', u.email, { erp_user_id: u.id }, userId);
+        res.status(200).json({ status: 'conta-nao-verificada', email: u.email });
+        return;
+      }
+      await promover(site, ex.id, u);
       await registrarLog(site, 'promover-conta-existente', u.email, { erp_user_id: u.id }, userId);
       res.status(200).json({ status: 'promovido', email: u.email });
       return;

@@ -47,6 +47,10 @@ export default function Register() {
   const [verSenha, setVerSenha] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  // Conta criada, e-mail ainda não confirmado: a tela vira "confira sua caixa".
+  const [confirmar, setConfirmar] = useState<string | null>(null);
+  const [reenviadoEm, setReenviadoEm] = useState(0);
+  const [reenvioMsg, setReenvioMsg] = useState('');
 
   const empresa = ehEmpresa(form.role);
   const update = (field: string, value: string) => setForm((p) => ({ ...p, [field]: value }));
@@ -66,7 +70,7 @@ export default function Register() {
     }
 
     setLoading(true);
-    const { error: err } = await signUp(form.email, form.password, {
+    const { error: err, semSessao } = await signUp(form.email, form.password, {
       full_name: form.name,
       phone: form.phone,
       role: form.role,
@@ -80,7 +84,7 @@ export default function Register() {
           return null;
         }
       })(),
-    });
+    }, destino);
 
     if (err) {
       setError(textoDoErroAuth(err));
@@ -88,9 +92,18 @@ export default function Register() {
       return;
     }
 
-    // Agora existe sessão: procura o cliente no NZERP, copia o endereço que a
-    // NZ já tem e avisa a equipe que há cadastro para aprovar.
-    // Best-effort: falhar aqui não impede a conta de existir.
+    // Confirmação de e-mail ligada (20/10/2026): a conta existe, mas só vale
+    // depois do clique no e-mail. O pós-cadastro (vínculo com o NZERP e aviso
+    // à equipe) roda no primeiro login (AuthContext).
+    if (semSessao) {
+      setConfirmar(form.email.trim().toLowerCase());
+      setLoading(false);
+      return;
+    }
+
+    // Sessão aberta na hora (confirmação desligada): procura o cliente no
+    // NZERP, copia o endereço que a NZ já tem e avisa a equipe que há cadastro
+    // para aprovar. Best-effort: falhar aqui não impede a conta de existir.
     const vinculo = await chamarConta<{ aprovouAgora: boolean; jaCliente: boolean; aguardandoConfirmacao?: boolean }>({ op: 'pos-cadastro' }).catch(() => null);
     // Ninguém nasce aprovado: o painel mostra "Cadastro em análise". Quem veio
     // de "entre para ver o preço" volta para lá (e vê o mesmo aviso no preço).
@@ -113,6 +126,46 @@ export default function Register() {
       options: { redirectTo: `${window.location.origin}${destino ?? '/loja'}` },
     });
   };
+
+  const reenviar = async () => {
+    if (!confirmar || Date.now() - reenviadoEm < 60_000) return;
+    setReenvioMsg('');
+    const emailRedirectTo = `${window.location.origin}/login?confirmado=1${destino ? `&next=${encodeURIComponent(destino)}` : ''}`;
+    const { error: err } = await supabase.auth.resend({ type: 'signup', email: confirmar, options: { emailRedirectTo } });
+    setReenviadoEm(Date.now());
+    setReenvioMsg(err ? textoDoErroAuth(err.message) : 'Enviamos de novo. Pode levar um minuto para chegar.');
+  };
+
+  if (confirmar) {
+    return (
+      <div className={styles.authPage}>
+        <div className={styles.authCard}>
+          <h1 className={styles.authTitle}>Confirme seu e-mail</h1>
+          <div className={styles.successMsg}>
+            <h3>Falta um clique</h3>
+            <p>
+              Mandamos um e-mail para <strong>{confirmar}</strong> com o botão "Confirmar meu e-mail". Clique nele para ativar a conta — depois a NZ confere o
+              cadastro e libera os preços em até 1 dia útil.
+            </p>
+          </div>
+          <p className={styles.hint}>Não chegou? Confira o spam e a pasta de promoções. O link vale 30 minutos.</p>
+          {reenvioMsg && <p className={styles.hint}>{reenvioMsg}</p>}
+          <button type="button" className={styles.submitBtn} onClick={() => void reenviar()} disabled={Date.now() - reenviadoEm < 60_000}>
+            REENVIAR E-MAIL
+          </button>
+          <div className={styles.linkRow}>
+            E-mail errado?{' '}
+            <button type="button" className={styles.verSenha} onClick={() => setConfirmar(null)}>
+              Trocar e-mail
+            </button>
+          </div>
+          <Link to="/" className={styles.backToSite}>
+            ← Voltar ao site
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.authPage}>

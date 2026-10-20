@@ -46,6 +46,7 @@ import { produtoAutoDeSku } from '../../../src/lib/shop/erp/mapa.js';
 import { manutencaoCheckout } from '../asaas/manutencao.js';
 import { sincronizarEquipe } from './equipe.js';
 import { atribuirTitulos } from '../conta/atribuirTitulos.js';
+import { limparNaoConfirmados } from '../conta/limparNaoConfirmados.js';
 import { abrirOcorrencia, chavesAbertas, resolverPorChave, resolverVariasChaves } from '../ocorrencias.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -195,6 +196,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // De quem é cada título do contas a receber. Lê o ERP, grava só no site.
     // Uma vez por dia basta: título novo nasce com nota, e nota não é de minuto.
     const titulos = !dry && gatilho !== 'webhook' ? await atribuirTitulos(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // Conta criada há mais de 48 h que nunca confirmou o e-mail: some (20/10/2026).
+    const limpeza = !dry && gatilho !== 'webhook' ? await limparNaoConfirmados(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
 
     if (logId) {
       await site
@@ -213,7 +216,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Sync inteiro passou: se havia uma queixa de sync caído, ela morre aqui.
     if (!dry) await resolverPorChave(site, 'sync-erro', `sync ${gatilho} concluído`);
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos, limpeza });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);

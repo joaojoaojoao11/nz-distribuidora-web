@@ -100,6 +100,7 @@ export default function AdminEquipe() {
   const convidar = (p: Pessoa) =>
     agir(`convite:${p.email}`, { op: 'convidar', erpUserId: p.erpUserId, enviarEmail: porEmail }, (r) => {
       if (r.status === 'promovido') setAviso(`${p.email} já tinha conta no site — virou administrador agora.`);
+      else if (r.status === 'conta-nao-verificada') setAviso(`${p.email} já tem conta no site, mas o e-mail nunca foi confirmado. Peça que a pessoa entre, clique em "reenviar o e-mail de confirmação" e confirme; depois convide de novo.`);
       else if (r.porEmail) setAviso(`Convite enviado para ${p.email}.`);
       else if (typeof r.link === 'string') setLink({ email: p.email, url: r.link });
     });
