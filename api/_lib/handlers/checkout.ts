@@ -97,7 +97,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     await opCancelar(site, userId, papel === 'admin', body, res);
     return;
   }
-  if (op === 'estornar' || op === 'webhook' || op === 'manutencao' || op === 'saude' || op === 'remover-cobranca' || op === 'enviar-erp' || op === 'fila-erp') {
+  if (op === 'estornar' || op === 'webhook' || op === 'manutencao' || op === 'saude' || op === 'remover-cobranca' || op === 'enviar-erp' || op === 'fila-erp' || op === 'resolver-evento') {
     if (papel !== 'admin') {
       res.status(403).json({ error: 'so-admin' });
       return;
@@ -347,7 +347,9 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
   if (!cobranca.ok) {
     await site.from('pedidos').delete().eq('id', pedido.id);
     if (cobranca.erro === 'cartao-recusado') {
-      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado' });
+      // O pedido some, mas o vendedor precisa saber quem tentou e não
+      // conseguiu: valor e motivo ficam na tentativa (Admin → Pedidos).
+      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado', valor: total, motivo: (cobranca.mensagem ?? '').slice(0, 200) || null });
       res.status(402).json({ error: 'cartao-recusado', message: cobranca.mensagem });
     } else {
       res.status(502).json({ error: 'pagamento-indisponivel', message: cobranca.mensagem });
@@ -566,7 +568,7 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
   const cobranca = await criarPagamento(site, { pedido: { id: pedido.id, numero: pedido.numero }, perfil, asaasCustomerId, forma: escolha.forma, total, parcelas: escolha.parcelas, cartao: escolha.cartao, ip, cfg });
   if (!cobranca.ok) {
     if (cobranca.erro === 'cartao-recusado') {
-      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado' });
+      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado', valor: total, motivo: (cobranca.mensagem ?? '').slice(0, 200) || null });
       res.status(402).json({ error: 'cartao-recusado', message: cobranca.mensagem });
     } else res.status(502).json({ error: 'pagamento-indisponivel', message: cobranca.mensagem });
     return;
@@ -721,8 +723,11 @@ async function opsAdmin(site: Db, op: string, body: Record<string, unknown>, res
     const webhooks = await listarWebhooks().catch((e: Error) => ({ erro: e.message }));
     const lista = Array.isArray(webhooks) ? webhooks : [];
     const nosso = lista.find((w) => w.url === WEBHOOK_URL);
-    const { data: ultimo } = await site.from('asaas_eventos').select('id, evento, recebido_em, processado_em, erro').order('recebido_em', { ascending: false }).limit(1).maybeSingle();
-    const { count: comErro } = await site.from('asaas_eventos').select('id', { count: 'exact', head: true }).not('erro', 'is', null);
+    // Só eventos DA LOJA: o webhook recebe a conta Asaas inteira (os boletos
+    // do NZERP também chegam aqui e são ignorados), e o que interessa ao
+    // painel é a última cobrança do site. Erro conta até alguém resolver.
+    const { data: ultimo } = await site.from('asaas_eventos').select('id, evento, recebido_em, processado_em, erro').not('pedido_id', 'is', null).order('recebido_em', { ascending: false }).limit(1).maybeSingle();
+    const { count: comErro } = await site.from('asaas_eventos').select('id', { count: 'exact', head: true }).not('erro', 'is', null).is('resolvido_em', null);
     res.status(200).json({
       ambiente: asaasEnv(),
       hasAsaasKey: asaasConfigurado(),
@@ -781,6 +786,19 @@ async function opsAdmin(site: Db, op: string, body: Record<string, unknown>, res
   if (op === 'manutencao') {
     const r = await manutencaoCheckout(site);
     res.status(200).json({ ok: true, ...r });
+    return;
+  }
+
+  // Evento do webhook com erro que o admin olhou e deu por resolvido: sai do
+  // contador da saúde. O registro fica (auditoria), só ganha a data.
+  if (op === 'resolver-evento') {
+    const id = typeof body.eventoId === 'string' ? body.eventoId.trim().slice(0, 200) : '';
+    if (!id) {
+      res.status(400).json({ error: 'id-invalido' });
+      return;
+    }
+    const { data } = await site.from('asaas_eventos').update({ resolvido_em: new Date().toISOString() }).eq('id', id).select('id');
+    res.status(200).json({ ok: true, resolvido: Array.isArray(data) && data.length > 0 });
     return;
   }
 

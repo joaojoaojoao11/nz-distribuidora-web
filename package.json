@@ -33,7 +33,8 @@
     "selecoes:test": "node scripts/test-selecoes.mjs",
     "shop:amostra": "node scripts/amostrar-hex-fotos.mjs",
     "lente:test": "node scripts/test-lente.mjs",
-    "lente:ia:test": "node scripts/test-lente-ia.mjs"
+    "lente:ia:test": "node scripts/test-lente-ia.mjs",
+    "pedidos:test": "node scripts/test-situacao.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",

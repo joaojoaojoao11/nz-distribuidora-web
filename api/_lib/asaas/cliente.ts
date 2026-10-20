@@ -140,6 +140,8 @@ export interface AsaasPayment {
   nossoNumero?: string | null;
   pixTransaction?: string | null;
   installmentNumber?: number | null;
+  /** Cartão parcelado: id do parcelamento que liga as N cobranças (uma por parcela). */
+  installment?: string | null;
   paymentDate?: string | null;
   confirmedDate?: string | null;
   clientPaymentDate?: string | null;
@@ -191,6 +193,16 @@ export async function criarCliente(dados: NovoCliente): Promise<AsaasCustomer> {
 
 export async function criarCobranca(payload: Record<string, unknown>): Promise<AsaasPayment> {
   return asaasFetch<AsaasPayment>('/payments', { method: 'POST', body: payload });
+}
+
+/**
+ * As cobranças de um parcelamento (cartão em N vezes): o Asaas cria uma por
+ * parcela, cada uma com `pay_` próprio, valor da parcela e líquido da parcela.
+ * O líquido do pedido é a soma das N — não o da primeira.
+ */
+export async function listarParcelas(installmentId: string): Promise<AsaasPayment[]> {
+  const r = await asaasFetch<{ data?: AsaasPayment[] }>(`/payments?installment=${encodeURIComponent(installmentId)}&limit=100`);
+  return (r.data ?? []).filter((p) => !p.deleted);
 }
 
 export async function consultarCobranca(id: string): Promise<AsaasPayment> {

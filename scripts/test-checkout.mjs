@@ -90,7 +90,7 @@ function fakeDb(dados = {}) {
       update: (p) => { st.op = 'update'; st.payload = p; return b; },
       delete: () => { st.op = 'delete'; return b; },
       eq: (k, v) => { st.filtros.push([k, v]); return b; },
-      neq: () => b, in: () => b, gte: () => b, order: () => b, limit: () => b,
+      neq: () => b, in: () => b, gte: () => b, gt: () => b, lt: () => b, lte: () => b, is: () => b, not: () => b, or: () => b, order: () => b, limit: () => b,
       maybeSingle: () => { st.single = true; return b; },
       single: () => { st.single = true; return b; },
       then: (res, rej) => Promise.resolve(exec()).then(res, rej),
@@ -130,7 +130,7 @@ function fakeDb(dados = {}) {
   };
 }
 
-const { criarPagamento, parcelasDisponiveis, statusDoEvento, statusDoAsaas, expirarSeVencido, marcarPago } = await import(pathToFileURL(join(outDir, 'asaas/pagamento.js')).href);
+const { criarPagamento, parcelasDisponiveis, statusDoEvento, statusDoAsaas, expirarSeVencido, marcarPago, valorConfere } = await import(pathToFileURL(join(outDir, 'asaas/pagamento.js')).href);
 const { somarDiasUteis, hojeBr, ipDoCliente, sanitizarPagamento } = await import(pathToFileURL(join(outDir, 'asaas/cliente.js')).href);
 const { normalizarItens, precificar, montarPayloadErp, itensParaGravar, notaPreVenda } = await import(pathToFileURL(join(outDir, 'pedido/precificar.js')).href);
 const webhook = await import(pathToFileURL(join(outDir, 'handlers/asaas.js')).href);
@@ -156,6 +156,9 @@ ok('evento: reprovado pelo risco → recusado', statusDoEvento('PAYMENT_REPROVED
 ok('evento: desconhecido → sem transição', statusDoEvento('PAYMENT_BANK_SLIP_VIEWED', 'BOLETO') === null);
 ok('status Asaas: AWAITING_RISK_ANALYSIS → em_analise', statusDoAsaas('AWAITING_RISK_ANALYSIS', 'CREDIT_CARD') === 'em_analise');
 ok('sanitizar: token do cartão não sobrevive', !('creditCardToken' in (sanitizarPagamento({ creditCard: { creditCardNumber: '8829', creditCardBrand: 'VISA', creditCardToken: 'x' } }).creditCard ?? {})));
+ok('valor confere: cobrança única é o próprio valor', valorConfere({ valor: 100, parcelas: 1 }, 100) && !valorConfere({ valor: 100, parcelas: 1 }, 99.9));
+ok('valor confere: 6x de R$ 3.005,27 aceita 500,87 e a última 500,92', valorConfere({ valor: 3005.27, parcelas: 6 }, 500.87) && valorConfere({ valor: 3005.27, parcelas: 6 }, 500.92));
+ok('valor confere: parcela de outro valor não passa, nem o total', !valorConfere({ valor: 3005.27, parcelas: 6 }, 480) && !valorConfere({ valor: 3005.27, parcelas: 6 }, 3005.27));
 const itens = normalizarItens([{ slug: 'A', qtd: 2, unidade: 'rolo' }, { slug: 'b', qtd: 999, unidade: 'metro' }, { slug: 'c', qtd: -1, unidade: 'rolo' }, { qtd: 1, unidade: 'rolo' }]);
 ok('itens: minúsculo, teto de 500 m, inválidos fora', itens.length === 2 && itens[0].slug === 'a' && itens[1].qtd === 500);
 
@@ -200,10 +203,17 @@ console.log('\n=== COBRANÇA CARTÃO ===');
 const CARTAO = { numero: '5162306219378829', nome: 'MARIA TESTE', mes: '05', ano: '2030', cvv: '318', cpf: '52998224725' };
 {
   const db = fakeDb({ pedidos: [{ id: 'ped-3', cupom: 'NZ-ABC', pagamento_status: 'aguardando', erp_quote_id: null }] });
-  respostas = [{ status: 200, json: PAGAMENTO_DOC({ billingType: 'CREDIT_CARD', status: 'CONFIRMED', value: 900, netValue: 872, confirmedDate: '2026-09-07', creditCard: { creditCardNumber: '8829', creditCardBrand: 'MASTERCARD', creditCardToken: 'a75a1d98-token' } }) }];
+  respostas = [
+    // 3x: o Asaas devolve a 1ª parcela (value = parcela, netValue = líquido DA PARCELA) e o id do parcelamento.
+    { status: 200, json: PAGAMENTO_DOC({ billingType: 'CREDIT_CARD', status: 'CONFIRMED', value: 300, netValue: 290.4, installment: 'ins_3x', installmentNumber: 1, confirmedDate: '2026-09-07', creditCard: { creditCardNumber: '8829', creditCardBrand: 'MASTERCARD', creditCardToken: 'a75a1d98-token' } }) },
+    // marcarPago soma o líquido das 3 parcelas.
+    { status: 200, json: { data: [{ id: 'pay_a', value: 300, netValue: 290.4 }, { id: 'pay_b', value: 300, netValue: 290.4 }, { id: 'pay_c', value: 300, netValue: 290.4 }] } },
+  ];
   chamadas.length = 0;
   const r = await criarPagamento(db, { pedido: { id: 'ped-3', numero: 103 }, perfil: PERFIL, asaasCustomerId: 'cus_000005401844', forma: 'CREDIT_CARD', total: 900, parcelas: 3, cartao: CARTAO, ip: '200.1.2.3', cfg: CFG });
   const post = chamadas[0].body;
+  ok('cartão 3x: guarda o id do parcelamento e busca as parcelas em GET /payments?installment=', db.tabelas.pagamentos[0].asaas_installment_id === 'ins_3x' && chamadas[1]?.url.includes('/payments?installment=ins_3x'));
+  ok('cartão 3x: líquido = soma das 3 parcelas (871,20), não o da 1ª (290,40)', db.tabelas.pagamentos[0].valor_liquido === 871.2);
   ok('cartão: creditCard completo e holderInfo com CPF/CEP/número/telefone', post.creditCard?.number === CARTAO.numero && post.creditCard.expiryYear === '2030' && post.creditCardHolderInfo?.cpfCnpj === CARTAO.cpf && post.creditCardHolderInfo.postalCode === '01310100' && post.creditCardHolderInfo.phone === '11999990000');
   ok('cartão: remoteIp é o do comprador', post.remoteIp === '200.1.2.3');
   ok('cartão 3x: installmentCount + totalValue, sem value', post.installmentCount === 3 && post.totalValue === 900 && post.value === undefined);
@@ -272,6 +282,49 @@ process.env.SUPABASE_SERVICE_ROLE_KEY = 'k';
   const db = fakeDb({ pagamentos: [] });
   const r = await webhook.processar(db, 'PAYMENT_RECEIVED', { id: 'pay_do_erp', status: 'RECEIVED', value: 50 });
   ok('cobrança do NZERP (não é da loja): ignorada', /não é da loja/.test(r.ignorado ?? ''));
+}
+
+// ================================================= WEBHOOK: CARTÃO PARCELADO
+console.log('\n=== WEBHOOK: CARTÃO PARCELADO ===');
+const PARCELADO = () => ({ pagamentos: [{ id: 'pg-6x', pedido_id: 'ped-10', asaas_payment_id: 'pay_p1', asaas_installment_id: 'ins_6x', forma: 'CREDIT_CARD', status: 'pago', valor: 3005.27, parcelas: 6, valor_liquido: 2900, estornado_valor: 0 }], pedidos: [{ id: 'ped-10', cupom: null, pagamento_status: 'pago' }] });
+{
+  const db = fakeDb(PARCELADO());
+  respostas = [{ status: 200, json: PAGAMENTO_DOC({ id: 'pay_p1', billingType: 'CREDIT_CARD', status: 'CONFIRMED', value: 500.87, installment: 'ins_6x', installmentNumber: 1, externalReference: 'ped-10' }) }];
+  const r = await webhook.processar(db, 'PAYMENT_CONFIRMED', { id: 'pay_p1', value: 500.87, installment: 'ins_6x', installmentNumber: 1 });
+  ok('parcela 1 (500,87 de 3.005,27): aceita, sem erro, pedido ligado', !r.erro && r.pedidoId === 'ped-10' && r.parcela === 1 && db.tabelas.pagamentos[0].status === 'pago');
+}
+{
+  const db = fakeDb(PARCELADO());
+  respostas = [{ status: 200, json: PAGAMENTO_DOC({ id: 'pay_p6', billingType: 'CREDIT_CARD', status: 'RECEIVED', value: 500.92, installment: 'ins_6x', installmentNumber: 6, externalReference: 'ped-10' }) }];
+  const r = await webhook.processar(db, 'PAYMENT_RECEIVED', { id: 'pay_p6', value: 500.92, installment: 'ins_6x', installmentNumber: 6 });
+  ok('parcela irmã (outro pay_, mesmo installment): reconhecida pelo parcelamento', !r.erro && r.pedidoId === 'ped-10' && r.parcela === 6 && db.tabelas.pagamentos[0].ultimo_evento === 'PAYMENT_RECEIVED');
+}
+{
+  const db = fakeDb(PARCELADO());
+  respostas = [{ status: 200, json: PAGAMENTO_DOC({ id: 'pay_p3', billingType: 'CREDIT_CARD', status: 'CONFIRMED', value: 480, installment: 'ins_6x', installmentNumber: 3, externalReference: 'ped-10' }) }];
+  const r = await webhook.processar(db, 'PAYMENT_CONFIRMED', { id: 'pay_p3', value: 480, installment: 'ins_6x' });
+  ok('parcela com valor errado (480): erro, e o erro fala da parcela', /parcela de 6/.test(r.erro ?? ''));
+}
+{
+  // Pagamento gravado antes da coluna existir (pedido #10 real): sem installment id.
+  const dados = PARCELADO();
+  dados.pagamentos[0].asaas_installment_id = null;
+  const db = fakeDb(dados);
+  respostas = [{ status: 200, json: PAGAMENTO_DOC({ id: 'pay_p2', billingType: 'CREDIT_CARD', status: 'CONFIRMED', value: 500.87, installment: 'ins_6x', installmentNumber: 2, externalReference: 'ped-10' }) }];
+  const r = await webhook.processar(db, 'PAYMENT_CONFIRMED', { id: 'pay_p2', value: 500.87, installment: 'ins_6x', externalReference: 'ped-10' });
+  ok('parcelado antigo sem o id: casa pelo pedido e guarda o id do parcelamento', !r.erro && r.pedidoId === 'ped-10' && db.tabelas.pagamentos[0].asaas_installment_id === 'ins_6x');
+}
+{
+  const db = fakeDb(PARCELADO());
+  const estorno = (n, v) => [{ status: 200, json: PAGAMENTO_DOC({ id: `pay_p${n}`, billingType: 'CREDIT_CARD', status: 'REFUNDED', value: v, installment: 'ins_6x', installmentNumber: n, externalReference: 'ped-10' }) }];
+  respostas = estorno(1, 500.87);
+  await webhook.processar(db, 'PAYMENT_REFUNDED', { id: 'pay_p1', installment: 'ins_6x' });
+  ok('estorno de UMA parcela: soma no estornado_valor e continua pago', db.tabelas.pagamentos[0].status === 'pago' && db.tabelas.pagamentos[0].estornado_valor === 500.87);
+  for (const [n, v] of [[2, 500.87], [3, 500.87], [4, 500.87], [5, 500.87], [6, 500.92]]) {
+    respostas = estorno(n, v);
+    await webhook.processar(db, 'PAYMENT_REFUNDED', { id: `pay_p${n}`, installment: 'ins_6x' });
+  }
+  ok('estorno das 6 parcelas: vira estornado e o pedido também', db.tabelas.pagamentos[0].status === 'estornado' && db.tabelas.pedidos[0].pagamento_status === 'estornado');
 }
 
 // ============================================================ EXPIRAÇÃO

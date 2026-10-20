@@ -76,6 +76,20 @@ Cada subdiretório em `pages/` representa uma etapa completa injetada no `App.ts
   equipe: preço que o ERP não precificou, SKU novo ou removido, preço que deu um
   salto, e o que clientes informaram pelo botão "Informar um problema" da página
   do produto.
+* **`/admin/pedidos`** — só pedidos, organizados por FILAS (precisa de ação,
+  pagos a separar, aguardando cliente, em andamento, concluídos, não
+  concluídos). A régua que decide a fila é `src/lib/shop/situacaoPedido.ts`
+  (`npm run pedidos:test`) e é a mesma do contador no menu. Cada linha abre
+  **`/admin/pedidos/:numero`** (itens com foto, cliente, cobranças do Asaas,
+  linha do tempo, botões de estorno / enviar ao NZERP / cancelar). Sub-abas:
+  carrinhos parados e cartões recusados.
+* **`/admin/pagamentos`** — Pagamento online (Asaas): ligar/desligar, Pix,
+  boleto, cartão, saúde da integração e eventos do webhook (só os da loja por
+  padrão; a conta Asaas é a mesma do NZERP e os boletos dele também chegam).
+  Retirada em SP e frete grátis ficam em `/admin/logistica`.
+  Até 20/10/2026 tudo isso era uma tela só, e a lista de pedidos nunca abriu:
+  o embed `user_profiles(...)` exigia a FK `pedidos.user_id → user_profiles`
+  (migration `2026-10-20_pedidos_fk_perfil.sql`).
 
 ### API — tudo em `/api/nz/<acao>`
 

@@ -14,6 +14,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { LINHA_LABEL } from '../../lib/shop/erp/mapa';
+import AdminLogisticaEntrega from './AdminLogisticaEntrega';
 import styles from './Admin.module.css';
 
 /** Linhas do catálogo — a lista canônica é LINHA_LABEL em src/lib/shop/erp/mapa.ts. */
@@ -421,6 +422,9 @@ export default function AdminLogistica() {
         quantidade escolhida e cota o frete. <strong>O valor em R$ só aparece para quem está
         logado como admin</strong>; lojista, cliente e visitante veem apenas o prazo em dias úteis.
       </p>
+
+      {/* Retirada em SP e frete grátis: vieram de Pedidos & Pagamentos em 20/10/2026. */}
+      <AdminLogisticaEntrega />
 
       {erro && (
         <div className={styles.createError} style={{ marginBottom: '1rem' }}>

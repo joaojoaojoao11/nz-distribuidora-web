@@ -11,8 +11,8 @@
 //      nunca entra nesta fila — o ERP só recebe o que foi aprovado.
 
 import type { Db } from '../papel.js';
-import { asaasConfigurado, type AsaasPayment } from './cliente.js';
-import { expirarSeVencido, sincronizarComAsaas, type PagamentoRow } from './pagamento.js';
+import { asaasConfigurado, consultarCobranca, type AsaasPayment } from './cliente.js';
+import { expirarSeVencido, liquidoDoPagamento, sincronizarComAsaas, type PagamentoRow } from './pagamento.js';
 import { despacharAoErp } from '../pedido/despachoErp.js';
 import { processar } from '../handlers/asaas.js';
 
@@ -21,13 +21,35 @@ export interface ResultadoManutencao {
   pixExpirados: number;
   pagamentosConsultados: number;
   erpReenviados: number;
+  parceladosCorrigidos: number;
   erros: string[];
 }
 
 export async function manutencaoCheckout(site: Db): Promise<ResultadoManutencao> {
-  const r: ResultadoManutencao = { eventosReprocessados: 0, pixExpirados: 0, pagamentosConsultados: 0, erpReenviados: 0, erros: [] };
+  const r: ResultadoManutencao = { eventosReprocessados: 0, pixExpirados: 0, pagamentosConsultados: 0, erpReenviados: 0, parceladosCorrigidos: 0, erros: [] };
   if (!asaasConfigurado()) return r;
   const agora = new Date().toISOString();
+
+  // 0. cartão parcelado gravado sem o id do parcelamento, ou com o líquido só
+  //    da 1ª parcela (bug até 20/10/2026): busca o id na cobrança e soma o
+  //    líquido das N parcelas. Uma vez por linha; depois a linha sai do filtro.
+  const { data: parcelados } = await site.from('pagamentos').select('*').eq('status', 'pago').gt('parcelas', 1).limit(50);
+  for (const p of (parcelados ?? []) as PagamentoRow[]) {
+    const parcela = Number(p.valor) / Math.max(1, Number(p.parcelas));
+    const liquidoSuspeito = p.valor_liquido == null || Number(p.valor_liquido) < parcela * 1.5;
+    if (p.asaas_installment_id && !liquidoSuspeito) continue;
+    try {
+      let installment = p.asaas_installment_id;
+      if (!installment && p.asaas_payment_id) installment = (await consultarCobranca(p.asaas_payment_id)).installment ?? null;
+      if (!installment) continue;
+      const liquido = await liquidoDoPagamento({ ...p, asaas_installment_id: installment });
+      if (liquido == null) continue;
+      await site.from('pagamentos').update({ asaas_installment_id: installment, valor_liquido: liquido, atualizado_em: agora }).eq('id', p.id);
+      r.parceladosCorrigidos++;
+    } catch (err) {
+      r.erros.push(`parcelado ${p.id}: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
 
   // 1. eventos pendentes (até 50 por rodada, mais antigos primeiro)
   const { data: eventos } = await site
@@ -41,6 +63,29 @@ export async function manutencaoCheckout(site: Db): Promise<ResultadoManutencao>
       const res = await processar(site, ev.evento, ev.payload?.payment ?? null);
       await site.from('asaas_eventos').update({ processado_em: agora, erro: res.erro ?? null, pedido_id: res.pedidoId ?? null }).eq('id', ev.id);
       r.eventosReprocessados++;
+    } catch (err) {
+      r.erros.push(`evento ${ev.id}: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  // 1b. eventos da loja que ficaram com `erro` na última semana e ninguém
+  //     marcou como resolvidos: reprocessa (é idempotente). Se agora passa,
+  //     o erro some sozinho — foi o caso das parcelas do cartão.
+  const seteDias = new Date(Date.now() - 7 * 86_400_000).toISOString();
+  const { data: comErro } = await site
+    .from('asaas_eventos')
+    .select('id, evento, payload')
+    .not('erro', 'is', null)
+    .is('resolvido_em', null)
+    .not('pedido_id', 'is', null)
+    .gte('recebido_em', seteDias)
+    .order('recebido_em', { ascending: true })
+    .limit(50);
+  for (const ev of (comErro ?? []) as { id: string; evento: string; payload: { payment?: AsaasPayment } }[]) {
+    try {
+      const res = await processar(site, ev.evento, ev.payload?.payment ?? null);
+      await site.from('asaas_eventos').update({ processado_em: agora, erro: res.erro ?? null, pedido_id: res.pedidoId ?? null }).eq('id', ev.id);
+      if (!res.erro) r.eventosReprocessados++;
     } catch (err) {
       r.erros.push(`evento ${ev.id}: ${err instanceof Error ? err.message : String(err)}`);
     }

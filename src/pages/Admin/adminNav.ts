@@ -8,7 +8,7 @@ export interface ItemNav {
   icone: string;
   rotulo: string;
   titulo: string;
-  badge?: 'clientes' | 'garantias' | 'promo' | 'central';
+  badge?: 'clientes' | 'garantias' | 'promo' | 'central' | 'pedidos';
 }
 
 interface Grupo {
@@ -23,7 +23,11 @@ export const GRUPOS: Grupo[] = [
     nome: 'Loja',
     itens: [
       { para: '/admin/produtos', icone: '🏷️', rotulo: 'Produtos', titulo: 'Produtos da loja' },
-      { para: '/admin/pedidos', icone: '💳', rotulo: 'Pedidos & Pagamentos', titulo: 'Pedidos & Pagamentos' },
+      // Pedidos é só pedidos desde 20/10/2026; a configuração do checkout e a
+      // integração Asaas foram para "Pagamento online", e a entrega para
+      // Logística. O contador é o que pede um clique + o que está pago esperando.
+      { para: '/admin/pedidos', icone: '🧾', rotulo: 'Pedidos', titulo: 'Pedidos da loja', badge: 'pedidos' },
+      { para: '/admin/pagamentos', icone: '💳', rotulo: 'Pagamento online', titulo: 'Pagamento online (Asaas)' },
       { para: '/admin/logistica', icone: '📦', rotulo: 'Logística', titulo: 'Logística & Transportadoras' },
       { para: '/admin/erp', icone: '🔗', rotulo: 'Integração ERP', titulo: 'Integração NZERP' },
       { para: '/admin/afiliados', icone: '🤝', rotulo: 'Afiliados & Cupons', titulo: 'Afiliados & Cupons' },

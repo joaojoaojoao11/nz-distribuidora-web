@@ -1,104 +1,64 @@
-// Aba Pedidos & Pagamentos do painel admin.
+// Aba Pedidos do admin — só pedidos.
 //
-//   · configuração do checkout (loja_config): ligar/desligar, Pix, boleto,
-//     parcelas, retirada, mínimos;
-//   · saúde da integração Asaas: chave, webhook, último evento, eventos com
-//     erro — e o botão que cria o webhook na conta (a chave só existe no
-//     servidor, então é a API que cria);
-//   · lista de pedidos com o estado do pagamento; detalhe com a cobrança e o
-//     botão de estorno (Pix e cartão; boleto pago se devolve pelo painel Asaas).
+// Até 20/10/2026 esta rota empilhava cinco assuntos (fila do ERP, carrinhos
+// parados, saúde do Asaas, configuração do checkout, eventos do webhook), e a
+// lista em si mostrava um chip de pagamento ao lado do status cru do ERP.
+// Agora:
+//   · a lista é organizada por FILAS (lib/shop/situacaoPedido.ts): o que pede
+//     um clique, o que está pago esperando separação, o que depende do
+//     cliente, o que anda sozinho no NZERP, o que acabou, o que não deu certo;
+//   · cada linha abre /admin/pedidos/:numero — itens, cliente, cobranças,
+//     linha do tempo e os botões;
+//   · configuração do checkout e Asaas foram para /admin/pagamentos; retirada
+//     e frete grátis para /admin/logistica; carrinhos parados e cartões
+//     recusados viraram sub-abas aqui, porque são "venda que não aconteceu".
 //
-// Leitura por RLS de admin direto no Supabase; ações pela API (/api/nz/checkout).
+// E o motivo de a lista ter ficado vazia de 07/09 a 20/10: o embed
+// `user_profiles(...)` exigia uma FK que não existia (migration
+// 2026-10-20_pedidos_fk_perfil.sql), o PostgREST errava e a tela escondia a
+// mensagem no topo. Agora o erro de carga, se houver, aparece dentro da seção.
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { chamarCheckout, textoDoErro, STATUS_PAGAMENTO_LABEL, FORMA_LABEL, type Forma, type StatusPagamento } from '../../lib/shop/checkout';
+import { chamarCheckout, textoDoErro, FORMA_LABEL, type Forma } from '../../lib/shop/checkout';
+import { BRL } from '../../lib/shop/precos';
+import { FILAS, contarFilas, situacaoDoPedido, type Fila, type PedidoSituacao } from '../../lib/shop/situacaoPedido';
 import styles from './Admin.module.css';
+import ped from './AdminPedidos.module.css';
 
-interface Config {
-  checkout_ativo: boolean;
-  pix_expira_min: number;
-  boleto_vencimento_dias: number;
-  boleto_multa_pct: number;
-  boleto_juros_mes_pct: number;
-  boleto_minimo: number;
-  cartao_max_parcelas: number;
-  cartao_parcela_minima: number;
-  retirada_ativa: boolean;
-  retirada_endereco: string;
-  pedido_minimo: number;
-  frete_gratis_acima: number | null;
+interface Perfil {
+  full_name: string | null;
+  company_name: string | null;
+  email: string | null;
+  phone: string | null;
 }
 
-interface Pedido {
+interface PedidoLinha extends PedidoSituacao {
   id: string;
   numero: number;
-  status: string;
-  pagamento_status: StatusPagamento;
-  forma_pagamento: Forma | null;
   total_final: number | null;
   total_estimado: number | null;
-  valor_frete: number;
-  desconto: number;
   cupom: string | null;
-  frete: { nome?: string; retirada?: boolean; dias?: number } | null;
-  erp_quote_number: number | null;
-  erp_pago_em: string | null;
   criado_em: string;
   pago_em: string | null;
-  observacoes: string | null;
-  user_profiles?: { full_name: string | null; email: string | null; phone: string | null } | null;
+  user_profiles: Perfil | null;
 }
 
-interface Pagamento {
-  id: string;
+interface PagamentoResumo {
   pedido_id: string;
-  asaas_payment_id: string | null;
   forma: Forma;
-  status: StatusPagamento;
-  status_asaas: string | null;
-  valor: number;
-  valor_liquido: number | null;
+  status: string;
   parcelas: number;
-  vencimento: string | null;
-  expira_em: string | null;
   cartao_bandeira: string | null;
   cartao_final: string | null;
-  invoice_url: string | null;
-  boleto_url: string | null;
-  pago_em: string | null;
-  estornado_valor: number;
-  ultimo_evento: string | null;
+  expira_em: string | null;
+  vencimento: string | null;
   criado_em: string;
 }
 
-interface Evento {
-  id: string;
-  evento: string;
-  asaas_payment_id: string | null;
-  pedido_id: string | null;
-  recebido_em: string;
-  processado_em: string | null;
-  erro: string | null;
-}
-
-interface Saude {
-  ambiente: string;
-  hasAsaasKey: boolean;
-  hasWebhookToken: boolean;
-  chaveOk: boolean;
-  chaveErro: string | null;
-  webhook: { id: string; enabled: boolean; interrupted: boolean; eventos: number } | null;
-  outrosWebhooks: { name: string; url: string; enabled: boolean; interrupted: boolean }[];
-  ultimoEvento: { id: string; evento: string; recebido_em: string; processado_em: string | null; erro: string | null } | null;
-  eventosComErro: number;
-}
-
-const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-const dt = (s: string | null) => (s ? new Date(s).toLocaleString('pt-BR') : '—');
-
-/** Carrinho parado há N horas, sem pedido depois. O valor é recalculado no
- *  servidor a partir do preço do ERP — não é um número mandado pelo navegador. */
+/** Carrinho parado há N horas, sem pedido depois. O valor é somado no servidor
+ *  a partir do preço do ERP — não é um número mandado pelo navegador. */
 interface Abandonado {
   user_id: string;
   nome: string | null;
@@ -107,570 +67,368 @@ interface Abandonado {
   itens: number;
   valor_estimado: number | null;
   atualizado_em: string;
-  lembrado_em: string | null;
 }
 
-/**
- * Pedido que ainda não virou orçamento no NZERP.
- *
- * Desde 10/09/2026 o ERP só recebe pedido PAGO. Então esta fila é, quase
- * sempre, de duas coisas: solicitações do lojista que negocia antes (status
- * SOLICITADO, esperando o vendedor mandar) e pagos que o ERP recusou na hora
- * (fica o erro, e o cron tenta de novo sozinho).
- */
-interface FilaErp {
-  id: string;
-  numero: number;
-  status: string;
-  pagamentoStatus: string;
-  total: number | null;
-  criadoEm: string;
-  erpEnvio: string;
-  erpEnvioEm: string | null;
-  erpErro: string | null;
-  cliente: string | null;
+/** Cartão recusado: o pedido é apagado na recusa, então o rastro é este. */
+interface Recusa {
+  id: number;
+  user_id: string | null;
+  valor: number | null;
+  motivo: string | null;
+  criado_em: string;
+  perfil: Perfil | null;
 }
+
+interface ContextoAdmin {
+  recarregarBadges: () => Promise<void> | void;
+}
+
+type Aba = 'pedidos' | 'carrinhos' | 'recusados';
+type FiltroFila = Fila | 'todos';
+
+const dt = (s: string | null | undefined) => (s ? new Date(s).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : '—');
+const nomeDo = (p: Perfil | null | undefined) => p?.company_name || p?.full_name || p?.email || '—';
+const SELECT_PEDIDOS =
+  'id, numero, status, pagamento_status, forma_pagamento, erp_envio, erp_envio_erro, erp_pago_em, erp_quote_number, total_final, total_estimado, cupom, criado_em, pago_em, user_profiles(full_name, company_name, email, phone)';
 
 export default function AdminPedidos() {
-  const [config, setConfig] = useState<Config | null>(null);
-  const [pedidos, setPedidos] = useState<Pedido[]>([]);
-  const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
-  const [eventos, setEventos] = useState<Evento[]>([]);
-  const [saude, setSaude] = useState<Saude | null>(null);
+  const navigate = useNavigate();
+  const contexto = useOutletContext<ContextoAdmin | undefined>();
+  const [pedidos, setPedidos] = useState<PedidoLinha[]>([]);
+  const [pagamentos, setPagamentos] = useState<PagamentoResumo[]>([]);
   const [erro, setErro] = useState('');
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(true);
-  const [filtro, setFiltro] = useState<'todos' | 'pagos' | 'aguardando' | 'problema' | 'orcamento'>('todos');
-  const [aberto, setAberto] = useState<string | null>(null);
-  const [ocupado, setOcupado] = useState(false);
+  const [aba, setAba] = useState<Aba>('pedidos');
+  // `null` = a fila ainda não foi escolhida: cai na primeira que tem alguma coisa.
+  const [fila, setFila] = useState<FiltroFila | null>(null);
+  const [busca, setBusca] = useState('');
+  const [ocupado, setOcupado] = useState<number | null>(null);
   const [abandonados, setAbandonados] = useState<Abandonado[]>([]);
   const [horasAbandono, setHorasAbandono] = useState(24);
-  const [fila, setFila] = useState<FilaErp[]>([]);
+  const [recusas, setRecusas] = useState<Recusa[]>([]);
 
   const carregar = useCallback(async () => {
-    const [c, p, g, e] = await Promise.all([
-      supabase.from('loja_config').select('*').eq('id', 1).maybeSingle(),
-      supabase
-        .from('pedidos')
-        .select('id, numero, status, pagamento_status, forma_pagamento, total_final, total_estimado, valor_frete, desconto, cupom, frete, erp_quote_number, erp_pago_em, criado_em, pago_em, observacoes, user_profiles(full_name, email, phone)')
-        .order('criado_em', { ascending: false })
-        .limit(300),
-      supabase.from('pagamentos').select('*').order('criado_em', { ascending: false }).limit(600),
-      supabase.from('asaas_eventos').select('id, evento, asaas_payment_id, pedido_id, recebido_em, processado_em, erro').order('recebido_em', { ascending: false }).limit(100),
+    const [p, g] = await Promise.all([
+      supabase.from('pedidos').select(SELECT_PEDIDOS).order('criado_em', { ascending: false }).limit(300),
+      supabase.from('pagamentos').select('pedido_id, forma, status, parcelas, cartao_bandeira, cartao_final, expira_em, vencimento, criado_em').order('criado_em', { ascending: false }).limit(600),
     ]);
-    // Carrinhos parados: RPC própria, porque o valor precisa ser somado com o
-    // preço do ERP e não pode vir do cliente.
-    const { data: ab } = await supabase.rpc('carrinhos_abandonados', { p_horas: horasAbandono });
-    setAbandonados((ab ?? []) as Abandonado[]);
-    const err = c.error ?? p.error ?? g.error ?? e.error;
-    setErro(err ? `${err.message} — a migration migrations/2026-09-07_checkout_asaas.sql já foi aplicada?` : '');
-    if (c.data) setConfig(c.data as Config);
-    setPedidos((p.data ?? []) as unknown as Pedido[]);
-    setPagamentos((g.data ?? []) as Pagamento[]);
-    setEventos((e.data ?? []) as Evento[]);
+    const err = p.error ?? g.error;
+    setErro(err ? `A lista não carregou: ${err.message}` : '');
+    setPedidos((p.data ?? []) as unknown as PedidoLinha[]);
+    setPagamentos((g.data ?? []) as PagamentoResumo[]);
     setLoading(false);
+  }, []);
+
+  const carregarAbandonados = useCallback(async () => {
+    const { data } = await supabase.rpc('carrinhos_abandonados', { p_horas: horasAbandono });
+    setAbandonados((data ?? []) as Abandonado[]);
   }, [horasAbandono]);
 
-  const carregarSaude = useCallback(async () => {
-    try {
-      setSaude(await chamarCheckout<Saude>({ op: 'saude' }));
-    } catch (e) {
-      setSaude(null);
-      setMsg(`Saúde do Asaas: ${textoDoErro(e)}`);
-    }
+  const carregarRecusas = useCallback(async () => {
+    const desde = new Date(Date.now() - 7 * 86_400_000).toISOString();
+    const { data } = await supabase
+      .from('checkout_tentativas')
+      .select('id, user_id, valor, motivo, criado_em')
+      .eq('resultado', 'recusado')
+      .gte('criado_em', desde)
+      .order('criado_em', { ascending: false })
+      .limit(50);
+    const linhas = (data ?? []) as Omit<Recusa, 'perfil'>[];
+    const ids = [...new Set(linhas.map((l) => l.user_id).filter(Boolean))] as string[];
+    const { data: perfis } = ids.length ? await supabase.from('user_profiles').select('id, full_name, company_name, email, phone').in('id', ids) : { data: [] };
+    const porId = new Map(((perfis ?? []) as (Perfil & { id: string })[]).map((x) => [x.id, x]));
+    setRecusas(linhas.map((l) => ({ ...l, perfil: l.user_id ? porId.get(l.user_id) ?? null : null })));
   }, []);
 
   useEffect(() => {
     void carregar();
-    void carregarSaude();
-  }, [carregar, carregarSaude]);
-
-  const carregarFila = useCallback(async () => {
-    try {
-      const r = await chamarCheckout<{ pedidos: FilaErp[] }>({ op: 'fila-erp' });
-      setFila(r.pedidos ?? []);
-    } catch {
-      setFila([]);
-    }
-  }, []);
+    void carregarRecusas();
+  }, [carregar, carregarRecusas]);
 
   useEffect(() => {
-    void carregarFila();
-  }, [carregarFila]);
+    void carregarAbandonados();
+  }, [carregarAbandonados]);
 
-  const salvarConfig = async (patch: Partial<Config>) => {
-    const { error } = await supabase.from('loja_config').update({ ...patch, atualizado_em: new Date().toISOString() }).eq('id', 1);
-    if (error) setErro(error.message);
-    await carregar();
-  };
-
-  const acao = async (body: Record<string, unknown>, okMsg: (r: Record<string, unknown>) => string) => {
-    setOcupado(true);
-    setMsg('');
-    try {
-      const r = await chamarCheckout<Record<string, unknown>>(body);
-      setMsg(okMsg(r));
-      await Promise.all([carregar(), carregarSaude(), carregarFila()]);
-    } catch (e) {
-      setMsg(textoDoErro(e));
-    } finally {
-      setOcupado(false);
-    }
-  };
-
-  const pagsPorPedido = useMemo(() => {
-    const m = new Map<string, Pagamento[]>();
-    for (const p of pagamentos) m.set(p.pedido_id, [...(m.get(p.pedido_id) ?? []), p]);
+  // Cobrança atual de cada pedido (a mais recente): dá o prazo do Pix/boleto
+  // para a situação e a forma/parcelas/bandeira para a coluna Pagamento.
+  const pagAtual = useMemo(() => {
+    const m = new Map<string, PagamentoResumo>();
+    for (const g of pagamentos) if (!m.has(g.pedido_id)) m.set(g.pedido_id, g);
     return m;
   }, [pagamentos]);
 
-  const visiveis = useMemo(() => {
-    switch (filtro) {
-      case 'pagos':
-        return pedidos.filter((p) => p.pagamento_status === 'pago' || p.pagamento_status === 'estornado');
-      case 'aguardando':
-        return pedidos.filter((p) => p.pagamento_status === 'aguardando' || p.pagamento_status === 'em_analise');
-      case 'problema':
-        return pedidos.filter((p) => ['recusado', 'expirado', 'vencido', 'cancelado'].includes(p.pagamento_status) || (p.pagamento_status === 'pago' && !p.erp_pago_em));
-      case 'orcamento':
-        return pedidos.filter((p) => p.pagamento_status === 'nenhum');
-      default:
-        return pedidos;
-    }
-  }, [pedidos, filtro]);
+  const linhas = useMemo(
+    () =>
+      pedidos.map((p) => {
+        const g = pagAtual.get(p.id);
+        const comPrazo: PedidoLinha = { ...p, expira_em: g?.expira_em ?? null, vencimento: g?.vencimento ?? null };
+        return { pedido: comPrazo, pagamento: g ?? null, situacao: situacaoDoPedido(comPrazo) };
+      }),
+    [pedidos, pagAtual]
+  );
 
-  const badge = (s: StatusPagamento) =>
-    s === 'pago' ? styles.badgeApproved : s === 'aguardando' || s === 'em_analise' ? styles.badgePending : s === 'nenhum' ? '' : styles.badgeAdmin;
+  const contagens = useMemo(() => contarFilas(linhas.map((l) => l.pedido)), [linhas]);
+  const filaAtiva: FiltroFila = fila ?? (contagens.acao > 0 ? 'acao' : contagens.novos > 0 ? 'novos' : 'todos');
+
+  const visiveis = useMemo(() => {
+    const termo = busca.trim().toLowerCase();
+    return linhas.filter(({ pedido, situacao }) => {
+      if (filaAtiva !== 'todos' && situacao.fila !== filaAtiva) return false;
+      if (!termo) return true;
+      const u = pedido.user_profiles;
+      return [String(pedido.numero), u?.full_name, u?.company_name, u?.email, u?.phone, pedido.erp_quote_number ? String(pedido.erp_quote_number) : '', situacao.rotulo]
+        .filter(Boolean)
+        .some((s) => String(s).toLowerCase().includes(termo));
+    });
+  }, [linhas, filaAtiva, busca]);
+
+  const enviarErp = async (numero: number) => {
+    setOcupado(numero);
+    setMsg('');
+    try {
+      const r = await chamarCheckout<{ estado: string; erpQuoteNumber?: number | null; pagamentoConfirmado?: boolean }>({ op: 'enviar-erp', numero });
+      setMsg(r.estado === 'enviado' ? `Pedido #${numero} virou o orçamento ${r.erpQuoteNumber ?? ''} no NZERP.` : r.pagamentoConfirmado ? `NZERP avisado do pagamento do pedido #${numero}.` : `Pedido #${numero} já estava no NZERP.`);
+      await carregar();
+      await contexto?.recarregarBadges();
+    } catch (e) {
+      setMsg(`Pedido #${numero}: ${textoDoErro(e)}`);
+    } finally {
+      setOcupado(null);
+    }
+  };
 
   if (loading) return <p style={{ color: '#a1a1a6' }}>Carregando pedidos…</p>;
+
+  const descricaoFila = filaAtiva === 'todos' ? 'Todos os pedidos, do mais novo ao mais antigo.' : FILAS.find((f) => f.id === filaAtiva)?.descricao;
 
   return (
     <div>
       <p className={styles.tabDescription}>
-        Pedidos da loja e os pagamentos feitos pelo site via <strong>Asaas</strong> (Pix, cartão e boleto). O pagamento
-        confirmado marca o orçamento como <strong>APROVADO</strong> no NZERP; o financeiro vê "PAGO ONLINE" na nota do orçamento.
+        Pedidos feitos no site, pagos online (Asaas) ou enviados como orçamento. Configuração de Pix, boleto e cartão em{' '}
+        <Link to="/admin/pagamentos" style={{ color: '#fff' }}>Pagamento online</Link>; retirada e frete grátis em{' '}
+        <Link to="/admin/logistica" style={{ color: '#fff' }}>Logística</Link>.
       </p>
-      {erro && <p style={{ color: '#ff6b6b' }}>{erro}</p>}
-      {msg && <p style={{ color: '#a1a1a6' }}>{msg}</p>}
 
-      {/* -------------------------------------------------- fila do NZERP */}
-      <div className={styles.tableSection}>
-        <h3 className={styles.tableSectionTitle}>
-          Esperando para ir ao NZERP
-          {fila.length > 0 && <> — {fila.length}</>}
-        </h3>
-        <p className={styles.tabDescription}>
-          Desde 10/09/2026 o NZERP <strong>só recebe pedido pago</strong>. Um Pix gerado e não pago não vira
-          orçamento lá. O que cai aqui é, quase sempre, solicitação de lojista que quer negociar antes
-          (<strong>SOLICITADO</strong>) — o orçamento nasce quando você clicar. Pago com erro o cron reenvia
-          sozinho; o botão só adianta.
-        </p>
-        {fila.length === 0 ? (
-          <p style={{ color: '#a1a1a6' }}>Nada esperando. Tudo que foi pago já está no NZERP.</p>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
+      <div className={styles.periodFilters} style={{ marginBottom: '1.25rem' }}>
+        {(
+          [
+            ['pedidos', `Pedidos (${pedidos.length})`],
+            ['carrinhos', `Carrinhos parados (${abandonados.length})`],
+            ['recusados', `Cartões recusados (${recusas.length})`],
+          ] as [Aba, string][]
+        ).map(([id, rotulo]) => (
+          <button key={id} type="button" className={`${styles.periodBtn} ${aba === id ? styles.periodBtnActive : ''}`} onClick={() => setAba(id)}>
+            {rotulo}
+          </button>
+        ))}
+      </div>
+
+      {msg && <p className={ped.msg}>{msg}</p>}
+
+      {/* ------------------------------------------------------- pedidos */}
+      {aba === 'pedidos' && (
+        <div className={styles.tableSection}>
+          {erro && <p className={ped.aviso}>{erro}</p>}
+
+          <div className={ped.filas}>
+            {FILAS.map((f) => (
+              <button key={f.id} type="button" className={`${ped.fila} ${filaAtiva === f.id ? ped.filaAtiva : ''}`} onClick={() => setFila(f.id)} title={f.descricao}>
+                {f.rotulo}
+                <span className={`${ped.contagem} ${f.id === 'acao' && contagens.acao > 0 && filaAtiva !== 'acao' ? ped.contagemAlerta : ''}`}>{contagens[f.id]}</span>
+              </button>
+            ))}
+            <button type="button" className={`${ped.fila} ${filaAtiva === 'todos' ? ped.filaAtiva : ''}`} onClick={() => setFila('todos')}>
+              Todos<span className={ped.contagem}>{pedidos.length}</span>
+            </button>
+          </div>
+          <p className={ped.filaDescricao}>{descricaoFila}</p>
+
+          <div className={ped.barra}>
+            <input className={ped.busca} placeholder="Buscar por nº, cliente, e-mail, telefone ou nº do orçamento" value={busca} onChange={(e) => setBusca(e.target.value)} />
+            <span className={ped.mudo}>
+              {visiveis.length} de {pedidos.length}
+            </span>
+          </div>
+
+          <div className={styles.tableScroll}>
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>Pedido</th>
+                  <th>#</th>
                   <th>Cliente</th>
+                  <th>Quando</th>
                   <th>Situação</th>
-                  <th>Valor</th>
-                  <th>Desde</th>
+                  <th>Pagamento</th>
+                  <th>NZERP</th>
+                  <th>Total</th>
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {fila.map((f) => (
-                  <tr key={f.id}>
-                    <td>#{f.numero}</td>
-                    <td>{f.cliente ?? '—'}</td>
+                {visiveis.map(({ pedido: p, pagamento: g, situacao: s }) => (
+                  <tr key={p.id} className={ped.linha} onClick={() => navigate(`/admin/pedidos/${p.numero}`)}>
+                    <td>#{p.numero}</td>
                     <td>
-                      {f.status}
-                      {f.pagamentoStatus !== 'nenhum' ? ` · ${STATUS_PAGAMENTO_LABEL[f.pagamentoStatus as StatusPagamento] ?? f.pagamentoStatus}` : ''}
-                      {f.erpErro ? <><br /><span style={{ color: '#ff6b6b' }}>{f.erpErro}</span></> : null}
+                      {nomeDo(p.user_profiles)}
+                      <br />
+                      <small className={ped.mudo}>{p.user_profiles?.email ?? ''}</small>
                     </td>
-                    <td>{f.total != null ? BRL.format(Number(f.total)) : '—'}</td>
-                    <td>{dt(f.criadoEm)}</td>
+                    <td>{dt(p.criado_em)}</td>
                     <td>
-                      <button
-                        type="button"
-                        className={styles.actionBtn}
-                        disabled={ocupado}
-                        onClick={() =>
-                          void acao({ op: 'enviar-erp', numero: f.numero }, (r) =>
-                            r.estado === 'enviado'
-                              ? `Pedido #${f.numero} virou o orçamento ${r.erpQuoteNumber ?? ''} no NZERP.`
-                              : `Pedido #${f.numero} já estava no NZERP.`
-                          )
-                        }
-                      >
-                        Enviar ao NZERP
-                      </button>
+                      <span className={`${ped.chip} ${ped[s.tom]}`}>{s.rotulo}</span>
+                      {s.detalhe && <span className={ped.detalhe}>{s.detalhe}</span>}
+                    </td>
+                    <td>
+                      {p.forma_pagamento ? (
+                        <>
+                          {FORMA_LABEL[p.forma_pagamento as Forma] ?? p.forma_pagamento}
+                          {g && g.parcelas > 1 ? ` ${g.parcelas}x` : ''}
+                          {g?.cartao_bandeira ? (
+                            <>
+                              <br />
+                              <small className={ped.mudo}>
+                                {g.cartao_bandeira} {g.cartao_final}
+                              </small>
+                            </>
+                          ) : null}
+                        </>
+                      ) : (
+                        <span className={ped.mudo}>orçamento</span>
+                      )}
+                    </td>
+                    <td>
+                      {p.erp_quote_number ? (
+                        <>
+                          nº {p.erp_quote_number}
+                          <br />
+                          <small className={ped.mudo}>{p.status}</small>
+                        </>
+                      ) : (
+                        <span className={ped.mudo}>—</span>
+                      )}
+                    </td>
+                    <td>{p.total_final != null ? BRL.format(Number(p.total_final)) : p.total_estimado != null ? `~${BRL.format(Number(p.total_estimado))}` : '—'}</td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      {s.acao === 'enviar-erp' && (
+                        <button type="button" className={`${styles.actionBtn} ${styles.actionBtnApprove}`} disabled={ocupado === p.numero} onClick={() => void enviarErp(p.numero)}>
+                          {ocupado === p.numero ? 'Enviando…' : 'Enviar ao NZERP'}
+                        </button>
+                      )}
+                      <Link to={`/admin/pedidos/${p.numero}`} className={styles.actionBtn} style={{ textDecoration: 'none', display: 'inline-block' }}>
+                        abrir
+                      </Link>
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* --------------------------------------------- carrinhos parados */}
-      <div className={styles.tableSection}>
-        <h3 className={styles.tableSectionTitle}>
-          Carrinhos parados
-          {abandonados.length > 0 && (
-            <> — {abandonados.length} · {BRL.format(abandonados.reduce((t, a) => t + Number(a.valor_estimado ?? 0), 0))} em jogo</>
-          )}
-        </h3>
-        <p className={styles.tabDescription}>
-          Cliente que montou carrinho e não fechou pedido depois. O valor é somado aqui no servidor com o
-          preço do ERP. Passou a existir em 10/09/2026, quando o carrinho deixou de viver só no navegador —
-          antes disso não havia como saber quem desistia.
-        </p>
-        <div className={styles.createField} style={{ maxWidth: 260 }}>
-          <label>Parado há mais de (horas)</label>
-          <input
-            type="number"
-            min={0}
-            value={horasAbandono}
-            onChange={(e) => setHorasAbandono(Math.max(0, Number(e.target.value) || 0))}
-          />
-        </div>
-        {abandonados.length === 0 ? (
-          <p style={{ color: '#a1a1a6' }}>Nenhum carrinho parado nesse intervalo.</p>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Contato</th>
-                  <th>Itens</th>
-                  <th>Valor estimado</th>
-                  <th>Parado desde</th>
-                </tr>
-              </thead>
-              <tbody>
-                {abandonados.map((a) => (
-                  <tr key={a.user_id}>
-                    <td>{a.nome ?? '—'}</td>
-                    <td>
-                      {a.email ?? '—'}
-                      {a.telefone ? <><br />{a.telefone}</> : null}
+                {visiveis.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className={ped.mudo}>
+                      {pedidos.length === 0 ? 'Nenhum pedido ainda.' : busca ? 'Nada com esse termo nesta fila.' : 'Nenhum pedido nesta fila.'}
                     </td>
-                    <td>{a.itens}</td>
-                    <td>{BRL.format(Number(a.valor_estimado ?? 0))}</td>
-                    <td>{dt(a.atualizado_em)}</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
-          </div>
-        )}
-      </div>
-
-      {/* --------------------------------------------------------- saúde */}
-      <div className={styles.tableSection}>
-        <h3 className={styles.tableSectionTitle}>Asaas</h3>
-        {saude ? (
-          <div className={styles.adminFormRow3}>
-            <div>
-              <span className={`${styles.badge} ${saude.hasAsaasKey && saude.chaveOk ? styles.badgeApproved : styles.badgeAdmin}`}>
-                chave {saude.hasAsaasKey ? (saude.chaveOk ? 'OK' : `inválida: ${saude.chaveErro}`) : 'ausente'}
-              </span>{' '}
-              <span className={styles.badge}>{saude.ambiente}</span>
-            </div>
-            <div>
-              {saude.webhook ? (
-                <span className={`${styles.badge} ${saude.webhook.enabled && !saude.webhook.interrupted ? styles.badgeApproved : styles.badgeAdmin}`}>
-                  webhook {saude.webhook.interrupted ? 'FILA PAUSADA — religar no painel Asaas' : saude.webhook.enabled ? `ativo · ${saude.webhook.eventos} eventos` : 'desligado'}
-                </span>
-              ) : (
-                <>
-                  <span className={`${styles.badge} ${styles.badgePending}`}>webhook não cadastrado</span>{' '}
-                  <button type="button" className={styles.actionBtn} disabled={ocupado || !saude.hasWebhookToken} onClick={() => void acao({ op: 'webhook' }, (r) => (r.criado ? 'Webhook criado na conta Asaas.' : 'Webhook já existia.'))}>
-                    Cadastrar webhook
-                  </button>
-                </>
-              )}
-            </div>
-            <div style={{ color: '#a1a1a6', fontSize: '0.8rem' }}>
-              último evento: {saude.ultimoEvento ? `${saude.ultimoEvento.evento} · ${dt(saude.ultimoEvento.recebido_em)}` : 'nenhum'}
-              {saude.eventosComErro > 0 && <> · <span style={{ color: '#ff6b6b' }}>{saude.eventosComErro} com erro</span></>}
-              <br />
-              <button type="button" className={styles.actionBtn} disabled={ocupado} onClick={() => void acao({ op: 'manutencao' }, (r) => `Manutenção: ${r.eventosReprocessados} eventos, ${r.pixExpirados} Pix expirados, ${r.pagamentosConsultados} consultados, ${r.erpReenviados} reenviados ao ERP${Array.isArray(r.erros) && r.erros.length ? ` · ${r.erros.length} erro(s)` : ''}.`)}>
-                Rodar manutenção agora
-              </button>
-            </div>
-          </div>
-        ) : (
-          <p style={{ color: '#a1a1a6' }}>Consultando o Asaas…</p>
-        )}
-      </div>
-
-      {/* -------------------------------------------------------- config */}
-      {config && (
-        <div className={styles.tableSection}>
-          <h3 className={styles.tableSectionTitle}>Checkout</h3>
-          <div className={styles.adminFormRow3}>
-            <div className={styles.createField}>
-              <label>Pagamento online aberto ao público</label>
-              <button
-                type="button"
-                className={`${styles.actionBtn} ${config.checkout_ativo ? styles.actionBtnDeny : styles.actionBtnApprove}`}
-                onClick={() => void salvarConfig({ checkout_ativo: !config.checkout_ativo })}
-              >
-                {config.checkout_ativo ? 'LIGADO — desligar' : 'DESLIGADO — ligar'}
-              </button>
-              <small style={{ color: '#a1a1a6' }}>Desligado, só o admin vê o botão "Fechar pedido e pagar".</small>
-            </div>
-            <div className={styles.createField}>
-              <label>Pix expira em (min)</label>
-              <input type="number" defaultValue={config.pix_expira_min} onBlur={(e) => void salvarConfig({ pix_expira_min: Math.max(5, Number(e.target.value) || 30) })} />
-            </div>
-            <div className={styles.createField}>
-              <label>Boleto vence em (dias úteis)</label>
-              <input type="number" defaultValue={config.boleto_vencimento_dias} onBlur={(e) => void salvarConfig({ boleto_vencimento_dias: Math.max(1, Number(e.target.value) || 3) })} />
-            </div>
-            <div className={styles.createField}>
-              <label>Boleto: multa % / juros % a.m.</label>
-              <div style={{ display: 'flex', gap: 6 }}>
-                <input type="number" step="0.5" defaultValue={config.boleto_multa_pct} onBlur={(e) => void salvarConfig({ boleto_multa_pct: Number(e.target.value) || 0 })} />
-                <input type="number" step="0.5" defaultValue={config.boleto_juros_mes_pct} onBlur={(e) => void salvarConfig({ boleto_juros_mes_pct: Number(e.target.value) || 0 })} />
-              </div>
-            </div>
-            <div className={styles.createField}>
-              <label>Boleto só a partir de (R$)</label>
-              <input type="number" defaultValue={config.boleto_minimo} onBlur={(e) => void salvarConfig({ boleto_minimo: Number(e.target.value) || 0 })} />
-            </div>
-            <div className={styles.createField}>
-              <label>Cartão: parcelas sem juros / parcela mínima (R$)</label>
-              <div style={{ display: 'flex', gap: 6 }}>
-                <input type="number" defaultValue={config.cartao_max_parcelas} onBlur={(e) => void salvarConfig({ cartao_max_parcelas: Math.min(21, Math.max(1, Number(e.target.value) || 1)) })} />
-                <input type="number" defaultValue={config.cartao_parcela_minima} onBlur={(e) => void salvarConfig({ cartao_parcela_minima: Number(e.target.value) || 0 })} />
-              </div>
-            </div>
-            <div className={styles.createField}>
-              <label>Retirada em São Paulo</label>
-              <button type="button" className={styles.actionBtn} onClick={() => void salvarConfig({ retirada_ativa: !config.retirada_ativa })}>
-                {config.retirada_ativa ? 'oferecida — desligar' : 'desligada — ligar'}
-              </button>
-              <input defaultValue={config.retirada_endereco} placeholder="endereço mostrado ao cliente" onBlur={(e) => void salvarConfig({ retirada_endereco: e.target.value })} />
-            </div>
-            <div className={styles.createField}>
-              <label>Pedido mínimo (R$)</label>
-              <input type="number" defaultValue={config.pedido_minimo} onBlur={(e) => void salvarConfig({ pedido_minimo: Number(e.target.value) || 0 })} />
-            </div>
-            <div className={styles.createField}>
-              <label>Frete grátis acima de (R$, vazio = nunca)</label>
-              <input type="number" defaultValue={config.frete_gratis_acima ?? ''} onBlur={(e) => void salvarConfig({ frete_gratis_acima: e.target.value === '' ? null : Number(e.target.value) || null })} />
-            </div>
           </div>
         </div>
       )}
 
-      {/* ------------------------------------------------------- pedidos */}
-      <div className={styles.tableSection}>
-        <h3 className={styles.tableSectionTitle}>Pedidos</h3>
-        <div className={styles.periodFilters}>
-          {(['todos', 'aguardando', 'pagos', 'problema', 'orcamento'] as const).map((f) => (
-            <button key={f} type="button" className={`${styles.periodBtn} ${filtro === f ? styles.periodBtnActive : ''}`} onClick={() => setFiltro(f)}>
-              {f === 'todos' ? 'Todos' : f === 'aguardando' ? 'Aguardando pagamento' : f === 'pagos' ? 'Pagos' : f === 'problema' ? 'Com problema' : 'Orçamento (sem pagamento)'}
-            </button>
-          ))}
-        </div>
-        <div className={styles.tableScroll}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Cliente</th>
-                <th>Quando</th>
-                <th>Pagamento</th>
-                <th>ERP</th>
-                <th>Total</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {visiveis.map((p) => {
-                const pags = pagsPorPedido.get(p.id) ?? [];
-                const atual = pags[0];
-                const abertoAqui = aberto === p.id;
-                return (
-                  <>
-                    <tr key={p.id}>
-                      <td>#{p.numero}</td>
+      {/* --------------------------------------------- carrinhos parados */}
+      {aba === 'carrinhos' && (
+        <div className={styles.tableSection}>
+          <p className={styles.tabDescription}>
+            Cliente que montou carrinho e não fechou pedido depois. O valor é somado no servidor com o preço do ERP.
+            Existe desde 10/09/2026, quando o carrinho deixou de viver só no navegador.
+          </p>
+          <div className={styles.createField} style={{ maxWidth: 260 }}>
+            <label>Parado há mais de (horas)</label>
+            <input type="number" min={0} value={horasAbandono} onChange={(e) => setHorasAbandono(Math.max(0, Number(e.target.value) || 0))} />
+          </div>
+          {abandonados.length === 0 ? (
+            <p className={ped.mudo}>Nenhum carrinho parado nesse intervalo.</p>
+          ) : (
+            <div className={styles.tableScroll}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Contato</th>
+                    <th>Itens</th>
+                    <th>Valor estimado</th>
+                    <th>Parado desde</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {abandonados.map((a) => (
+                    <tr key={a.user_id}>
+                      <td>{a.nome ?? '—'}</td>
                       <td>
-                        {p.user_profiles?.full_name ?? '—'}
-                        <br />
-                        <small style={{ color: '#a1a1a6' }}>{p.user_profiles?.email ?? ''}</small>
-                      </td>
-                      <td>{dt(p.criado_em)}</td>
-                      <td>
-                        <span className={`${styles.badge} ${badge(p.pagamento_status)}`}>{STATUS_PAGAMENTO_LABEL[p.pagamento_status] ?? p.pagamento_status}</span>
-                        {p.forma_pagamento && (
+                        {a.email ?? '—'}
+                        {a.telefone ? (
                           <>
                             <br />
-                            <small style={{ color: '#a1a1a6' }}>
-                              {FORMA_LABEL[p.forma_pagamento]}
-                              {atual?.parcelas && atual.parcelas > 1 ? ` ${atual.parcelas}x` : ''}
-                              {atual?.cartao_bandeira ? ` · ${atual.cartao_bandeira} ${atual.cartao_final}` : ''}
-                            </small>
+                            {a.telefone}
                           </>
-                        )}
+                        ) : null}
                       </td>
-                      <td>
-                        {p.erp_quote_number ? `nº ${p.erp_quote_number} · ${p.status}` : <span className={`${styles.badge} ${styles.badgePending}`}>não enviado</span>}
-                        {p.pagamento_status === 'pago' && !p.erp_pago_em && (
-                          <>
-                            <br />
-                            <span className={`${styles.badge} ${styles.badgePending}`}>ERP não avisado</span>
-                          </>
-                        )}
-                      </td>
-                      <td>{p.total_final != null ? BRL.format(Number(p.total_final)) : p.total_estimado != null ? `~${BRL.format(Number(p.total_estimado))}` : '—'}</td>
-                      <td>
-                        <button type="button" className={styles.actionBtn} onClick={() => setAberto(abertoAqui ? null : p.id)}>
-                          {abertoAqui ? 'fechar' : 'detalhe'}
-                        </button>
-                      </td>
+                      <td>{a.itens}</td>
+                      <td>{BRL.format(Number(a.valor_estimado ?? 0))}</td>
+                      <td>{dt(a.atualizado_em)}</td>
                     </tr>
-                    {abertoAqui && (
-                      <tr key={`${p.id}-d`}>
-                        <td colSpan={7} style={{ background: 'rgba(255,255,255,0.02)' }}>
-                          <div style={{ display: 'grid', gap: 6, fontSize: '0.82rem', color: '#d4d4d8' }}>
-                            <div>
-                              Frete: {p.frete?.retirada ? 'retirada em SP' : `${p.frete?.nome ?? '—'}${p.frete?.dias ? ` · ${p.frete.dias} d.ú.` : ''}`} · {BRL.format(Number(p.valor_frete ?? 0))}
-                              {p.desconto > 0 ? ` · cupom ${p.cupom ?? ''} −${BRL.format(Number(p.desconto))}` : ''}
-                              {' · '}tel {p.user_profiles?.phone ?? '—'}
-                            </div>
-                            {p.observacoes && <div style={{ whiteSpace: 'pre-wrap', color: '#a1a1a6' }}>{p.observacoes}</div>}
-                            {pags.length === 0 ? (
-                              <div style={{ color: '#a1a1a6' }}>Sem cobrança no Asaas (pedido enviado como orçamento).</div>
-                            ) : (
-                              <table className={styles.table} style={{ fontSize: '0.8rem' }}>
-                                <thead>
-                                  <tr>
-                                    <th>Cobrança</th>
-                                    <th>Forma</th>
-                                    <th>Status</th>
-                                    <th>Valor / líquido</th>
-                                    <th>Vencimento / expira</th>
-                                    <th>Pago em</th>
-                                    <th>Último evento</th>
-                                    <th></th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {pags.map((g) => (
-                                    <tr key={g.id}>
-                                      <td>
-                                        {g.invoice_url ? (
-                                          <a href={g.invoice_url} target="_blank" rel="noreferrer" style={{ color: '#fff' }}>
-                                            {g.asaas_payment_id}
-                                          </a>
-                                        ) : (
-                                          g.asaas_payment_id
-                                        )}
-                                      </td>
-                                      <td>
-                                        {FORMA_LABEL[g.forma]}
-                                        {g.parcelas > 1 ? ` ${g.parcelas}x` : ''}
-                                        {g.cartao_bandeira ? ` · ${g.cartao_bandeira} ${g.cartao_final}` : ''}
-                                      </td>
-                                      <td>
-                                        <span className={`${styles.badge} ${badge(g.status)}`}>{STATUS_PAGAMENTO_LABEL[g.status]}</span>
-                                        <br />
-                                        <small style={{ color: '#a1a1a6' }}>{g.status_asaas}</small>
-                                      </td>
-                                      <td>
-                                        {BRL.format(Number(g.valor))}
-                                        {g.valor_liquido != null ? ` / ${BRL.format(Number(g.valor_liquido))}` : ''}
-                                        {Number(g.estornado_valor) > 0 ? ` · estornado ${BRL.format(Number(g.estornado_valor))}` : ''}
-                                      </td>
-                                      <td>{g.forma === 'PIX' ? dt(g.expira_em) : g.vencimento ?? '—'}</td>
-                                      <td>{dt(g.pago_em)}</td>
-                                      <td>{g.ultimo_evento ?? '—'}</td>
-                                      <td>
-                                        {g.status === 'pago' && g.forma !== 'BOLETO' && (
-                                          <button
-                                            type="button"
-                                            className={`${styles.actionBtn} ${styles.actionBtnDeny}`}
-                                            disabled={ocupado}
-                                            onClick={() => {
-                                              const v = window.prompt(`Estornar o pedido #${p.numero}. Valor (vazio = total ${BRL.format(Number(g.valor))}):`, '');
-                                              if (v === null) return;
-                                              const valor = v.trim() ? Number(v.replace(',', '.')) : undefined;
-                                              if (!window.confirm(`Confirmar estorno de ${valor != null ? BRL.format(valor) : 'TODO o valor'}? Não dá para desfazer.`)) return;
-                                              void acao({ op: 'estornar', numero: p.numero, valor }, (r) => (r.total ? 'Estorno total solicitado ao Asaas.' : 'Estorno parcial solicitado ao Asaas.'));
-                                            }}
-                                          >
-                                            estornar
-                                          </button>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                );
-              })}
-              {visiveis.length === 0 && (
-                <tr>
-                  <td colSpan={7} style={{ color: '#a1a1a6' }}>
-                    Nenhum pedido neste filtro.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
-      {/* ------------------------------------------------------- eventos */}
-      <div className={styles.tableSection}>
-        <h3 className={styles.tableSectionTitle}>Eventos do webhook (últimos 100)</h3>
-        <div className={styles.tableScroll}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Quando</th>
-                <th>Evento</th>
-                <th>Cobrança</th>
-                <th>Processado</th>
-                <th>Erro</th>
-              </tr>
-            </thead>
-            <tbody>
-              {eventos.map((e) => (
-                <tr key={e.id}>
-                  <td>{dt(e.recebido_em)}</td>
-                  <td>{e.evento}</td>
-                  <td>{e.asaas_payment_id ?? '—'}</td>
-                  <td>{e.processado_em ? dt(e.processado_em) : <span className={`${styles.badge} ${styles.badgePending}`}>pendente</span>}</td>
-                  <td style={{ color: e.erro ? '#ff6b6b' : undefined }}>{e.erro ?? ''}</td>
-                </tr>
-              ))}
-              {eventos.length === 0 && (
-                <tr>
-                  <td colSpan={5} style={{ color: '#a1a1a6' }}>
-                    Nenhum evento recebido ainda.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      {/* ---------------------------------------------- cartões recusados */}
+      {aba === 'recusados' && (
+        <div className={styles.tableSection}>
+          <p className={styles.tabDescription}>
+            Últimos 7 dias. Cartão recusado apaga o pedido (o cliente tenta de novo no checkout), mas quem tentou e
+            não conseguiu fica aqui — vale ligar e oferecer Pix ou boleto.
+          </p>
+          {recusas.length === 0 ? (
+            <p className={ped.mudo}>Nenhuma recusa nos últimos 7 dias.</p>
+          ) : (
+            <div className={styles.tableScroll}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Quando</th>
+                    <th>Cliente</th>
+                    <th>Contato</th>
+                    <th>Valor</th>
+                    <th>Motivo (Asaas)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recusas.map((r) => (
+                    <tr key={r.id}>
+                      <td>{dt(r.criado_em)}</td>
+                      <td>{nomeDo(r.perfil)}</td>
+                      <td>
+                        {r.perfil?.email ?? '—'}
+                        {r.perfil?.phone ? (
+                          <>
+                            <br />
+                            {r.perfil.phone}
+                          </>
+                        ) : null}
+                      </td>
+                      <td>{r.valor != null ? BRL.format(Number(r.valor)) : '—'}</td>
+                      <td className={ped.mudo}>{r.motivo ?? 'sem detalhe (recusa anterior a 20/10)'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

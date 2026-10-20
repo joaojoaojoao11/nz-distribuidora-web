@@ -16,6 +16,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { PROMO_PAGES } from '../../lib/promoPages';
+import { pedeAtencao, type PedidoSituacao } from '../../lib/shop/situacaoPedido';
 import BuscaGlobal from './BuscaGlobal';
 import { GRUPOS, tituloDaRota, type ItemNav } from './adminNav';
 import styles from './Admin.module.css';
@@ -35,22 +36,26 @@ export default function AdminLayout() {
       return [];
     }
   });
-  const [contagens, setContagens] = useState({ clientes: 0, garantias: 0, promo: 0, central: 0 });
+  const [contagens, setContagens] = useState({ clientes: 0, garantias: 0, promo: 0, central: 0, pedidos: 0 });
 
   const carregarBadges = useCallback(async () => {
-    const [{ count: clientes }, { count: garantias }, { count: central }] = await Promise.all([
+    const [{ count: clientes }, { count: garantias }, { count: central }, { data: pedidosData }] = await Promise.all([
       supabase.from('user_profiles').select('id', { count: 'exact', head: true }).neq('role', 'admin').eq('is_approved', false),
       // Garantia para aprovar: o registro nasce pendente (protocolo) desde 17/10/2026.
       supabase.from('garantias_nz').select('id', { count: 'exact', head: true }).eq('status', 'pendente'),
       supabase.from('ocorrencias').select('id', { count: 'exact', head: true }).eq('status', 'aberta'),
+      // Pedidos: a mesma régua da aba (situacaoPedido) — o que pede um clique e
+      // o que está pago esperando separação. Cancelados nunca contam.
+      supabase.from('pedidos').select('status, pagamento_status, forma_pagamento, erp_envio, erp_pago_em, erp_quote_number').neq('status', 'CANCELADO').order('criado_em', { ascending: false }).limit(500),
     ]);
+    const pedidos = ((pedidosData ?? []) as PedidoSituacao[]).filter((p) => pedeAtencao(p)).length;
     let promo = 0;
     for (const p of PROMO_PAGES) {
       if (!p.statusColuna) continue;
       const { count } = await supabase.from(p.tabela).select('id', { count: 'exact', head: true }).eq(p.statusColuna, 'pendente');
       promo += count ?? 0;
     }
-    setContagens({ clientes: clientes ?? 0, garantias: garantias ?? 0, promo, central: central ?? 0 });
+    setContagens({ clientes: clientes ?? 0, garantias: garantias ?? 0, promo, central: central ?? 0, pedidos });
   }, []);
 
   useEffect(() => {

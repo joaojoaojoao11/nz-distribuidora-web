@@ -19,7 +19,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { timingSafeEqual } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
 import { consultarCobranca, sanitizarPagamento, type AsaasPayment } from '../asaas/cliente.js';
-import { aplicarStatus, statusDoEvento, type PagamentoRow } from '../asaas/pagamento.js';
+import { aplicarStatus, estornoParcial, statusDoEvento, valorConfere, type PagamentoRow } from '../asaas/pagamento.js';
 import type { Db } from '../papel.js';
 
 function tokensEqual(a: string, b: string): boolean {
@@ -105,22 +105,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
  * Aplica um evento a um pagamento da loja. Exportado para o cron reprocessar
  * eventos que ficaram com `erro`.
  */
-export async function processar(site: Db, evento: string, payment: AsaasPayment | null): Promise<{ pedidoId?: string; status?: string; ignorado?: string; erro?: string }> {
+export async function processar(site: Db, evento: string, payment: AsaasPayment | null): Promise<{ pedidoId?: string; status?: string; ignorado?: string; erro?: string; parcela?: number | null }> {
   if (evento.startsWith('ACCESS_TOKEN_')) {
     // Chave desabilitada/expirando: o painel admin lê asaas_eventos e mostra.
     return { ignorado: 'evento de chave, só registrado' };
   }
   if (!payment?.id) return { ignorado: 'sem cobrança' };
 
-  const { data } = await site.from('pagamentos').select('*').eq('asaas_payment_id', payment.id).maybeSingle();
-  const p = data as PagamentoRow | null;
+  const p = await pagamentoDaCobranca(site, payment);
   if (!p) return { ignorado: 'cobrança não é da loja' };
+  const parcelas = Math.max(1, Number(p.parcelas) || 1);
 
   const novo = statusDoEvento(evento, p.forma);
   if (evento === 'PAYMENT_PARTIALLY_REFUNDED') {
-    // Continua pago; só registra quanto voltou.
+    // Continua pago; só registra quanto voltou. Parcelado: a cobrança que
+    // chegou vale uma parcela, e o que voltou dela se soma ao acumulado.
     const atual = await consultarCobranca(payment.id);
-    const estornado = Math.max(0, Number(p.valor) - Number(atual.value ?? p.valor));
+    const cheio = parcelas > 1 ? Math.round((Number(p.valor) / parcelas) * 100) / 100 : Number(p.valor);
+    const voltou = Math.max(0, cheio - Number(atual.value ?? cheio));
+    const estornado = parcelas > 1 ? Math.round((Number(p.estornado_valor ?? 0) + voltou) * 100) / 100 : voltou;
     await site.from('pagamentos').update({ estornado_valor: estornado, ultimo_evento: evento, status_asaas: atual.status, atualizado_em: new Date().toISOString() }).eq('id', p.id);
     return { pedidoId: p.pedido_id, status: p.status };
   }
@@ -147,9 +150,10 @@ export async function processar(site: Db, evento: string, payment: AsaasPayment 
     if (confirmado.externalReference && confirmado.externalReference !== p.pedido_id) {
       return { pedidoId: p.pedido_id, erro: `externalReference ${confirmado.externalReference} ≠ pedido ${p.pedido_id}` };
     }
-    const esperado = Number(p.valor);
+    // Parcelado: cada cobrança do Asaas vale UMA parcela, não o total.
     const recebido = Number(confirmado.value ?? 0);
-    if (Math.abs(esperado - recebido) > 0.01) {
+    if (!valorConfere(p, recebido)) {
+      const esperado = parcelas > 1 ? `${Math.round((Number(p.valor) / parcelas) * 100) / 100} (parcela de ${parcelas})` : String(Number(p.valor));
       return { pedidoId: p.pedido_id, erro: `valor ${recebido} ≠ esperado ${esperado}` };
     }
     const s = confirmado.status;
@@ -157,8 +161,44 @@ export async function processar(site: Db, evento: string, payment: AsaasPayment 
       return { pedidoId: p.pedido_id, erro: `Asaas diz ${s}, evento dizia pago` };
     }
   }
+  if (novo === 'estornado' && parcelas > 1) {
+    // O Asaas estorna parcela a parcela: só vira "estornado" quando todas voltaram.
+    const atualizado = await estornoParcial(site, p, Number(confirmado.value ?? 0), evento, confirmado);
+    return { pedidoId: p.pedido_id, status: atualizado.status, parcela: confirmado.installmentNumber ?? payment.installmentNumber ?? null };
+  }
   const atualizado = await aplicarStatus(site, p, novo, evento, confirmado);
-  return { pedidoId: p.pedido_id, status: atualizado.status };
+  return { pedidoId: p.pedido_id, status: atualizado.status, parcela: parcelas > 1 ? (confirmado.installmentNumber ?? payment.installmentNumber ?? null) : undefined };
+}
+
+/**
+ * A linha de `pagamentos` a que uma cobrança do Asaas pertence.
+ *
+ * Cobrança única: pelo próprio `pay_`. Cartão parcelado: a loja grava só a
+ * 1ª parcela; as irmãs chegam com outro `pay_` e o mesmo `installment`. Para
+ * pagamento gravado antes de a coluna existir, casa pelo pedido
+ * (`externalReference`) e já guarda o id para a próxima.
+ */
+async function pagamentoDaCobranca(site: Db, payment: AsaasPayment): Promise<PagamentoRow | null> {
+  const { data } = await site.from('pagamentos').select('*').eq('asaas_payment_id', payment.id).maybeSingle();
+  if (data) return data as PagamentoRow;
+  if (!payment.installment) return null;
+
+  const { data: irma } = await site.from('pagamentos').select('*').eq('asaas_installment_id', payment.installment).maybeSingle();
+  if (irma) return irma as PagamentoRow;
+
+  if (!payment.externalReference) return null;
+  const { data: doPedido } = await site
+    .from('pagamentos')
+    .select('*')
+    .eq('pedido_id', payment.externalReference)
+    .eq('forma', 'CREDIT_CARD')
+    .order('criado_em', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const cand = doPedido as PagamentoRow | null;
+  if (!cand || Number(cand.parcelas) <= 1 || cand.asaas_installment_id) return null;
+  await site.from('pagamentos').update({ asaas_installment_id: payment.installment }).eq('id', cand.id);
+  return { ...cand, asaas_installment_id: payment.installment };
 }
 
 function safeJson(raw: string): unknown {

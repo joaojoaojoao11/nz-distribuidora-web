@@ -1,0 +1,194 @@
+/* Aba Pedidos do admin: filas, chips de situação, detalhe do pedido. */
+
+.filas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.fila {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+  padding: 0.45rem 0.9rem;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.fila:hover { color: #fff; border-color: rgba(255, 255, 255, 0.25); }
+.filaAtiva { color: #0a0a0c; background: #D4A853; border-color: #D4A853; }
+.filaAtiva .contagem { background: rgba(0, 0, 0, 0.25); color: #0a0a0c; }
+
+.contagem {
+  min-width: 1.4em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ddd;
+  font-size: 0.65rem;
+  text-align: center;
+}
+.contagemAlerta { background: var(--accent-red); color: #fff; }
+
+.filaDescricao {
+  font-size: 0.78rem;
+  color: #777;
+  margin: -0.25rem 0 1rem;
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.busca {
+  flex: 1 1 260px;
+  max-width: 420px;
+  background: rgba(15, 15, 18, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  outline: none;
+}
+.busca:focus { border-color: rgba(255, 68, 68, 0.5); }
+
+/* ---------------------------------------------------------- chip */
+.chip {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid;
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.ok { color: #4ade80; border-color: rgba(22, 163, 74, 0.5); background: rgba(22, 163, 74, 0.08); }
+.atencao { color: #fbbf24; border-color: rgba(217, 119, 6, 0.5); background: rgba(217, 119, 6, 0.08); }
+.erro { color: #f87171; border-color: rgba(220, 38, 38, 0.5); background: rgba(220, 38, 38, 0.1); }
+.info { color: #7cb8ff; border-color: rgba(74, 144, 217, 0.5); background: rgba(74, 144, 217, 0.08); }
+.neutro { color: #9a9a9a; border-color: rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.03); }
+
+.detalhe {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.74rem;
+  color: #8a8a8a;
+}
+
+.linha { cursor: pointer; }
+.linha td:first-child { font-family: var(--font-heading); color: #fff; }
+.mudo { color: #8a8a8a; font-size: 0.78rem; }
+.aviso { color: #f87171; font-size: 0.85rem; margin: 0.5rem 0 1rem; }
+.msg { color: #a1a1a6; font-size: 0.85rem; margin: 0.5rem 0 1rem; }
+
+/* ------------------------------------------------------- detalhe */
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.voltar {
+  display: inline-block;
+  color: #888;
+  font-size: 0.8rem;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+}
+.voltar:hover { color: #fff; }
+.titulo {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  color: #fff;
+  margin: 0 0 0.35rem;
+}
+.topoDireita { text-align: right; }
+.total { font-family: var(--font-heading); font-size: 1.4rem; color: #fff; }
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1.5rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.card {
+  background: rgba(15, 15, 18, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1.1rem 1.25rem;
+  font-size: 0.85rem;
+  color: #d4d4d8;
+  line-height: 1.55;
+}
+.cardTitulo {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 0.6rem;
+}
+.card a { color: #fff; }
+.card small { color: #8a8a8a; }
+
+.thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #1a1a1d;
+  display: inline-block;
+  vertical-align: middle;
+}
+.thumb img, .thumb span { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.85rem;
+}
+.timeline li { position: relative; padding: 0 0 0.9rem 0.6rem; color: #d4d4d8; }
+.timeline li::before {
+  content: '';
+  position: absolute;
+  left: -1.42rem;
+  top: 0.35rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #444;
+}
+.timeline li.feito::before { background: #4ade80; }
+.timeline li.ruim::before { background: #f87171; }
+.timeline li small { display: block; color: #8a8a8a; font-size: 0.75rem; }
+
+.pre { white-space: pre-wrap; color: #a1a1a6; font-size: 0.82rem; }
+
+@media (max-width: 700px) {
+  .topoDireita { text-align: left; }
+}

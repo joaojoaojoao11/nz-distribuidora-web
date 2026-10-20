@@ -26,6 +26,7 @@ import {
   criarCobranca,
   hojeBr,
   linhaDigitavel,
+  listarParcelas,
   qrCodePix,
   removerCobranca,
   sanitizarPagamento,
@@ -87,6 +88,8 @@ export interface PagamentoRow {
   pedido_id: string;
   ambiente: string;
   asaas_payment_id: string | null;
+  /** Cartão parcelado: o id que liga as N cobranças do Asaas (null = cobrança única). */
+  asaas_installment_id: string | null;
   asaas_customer_id: string | null;
   forma: AsaasBillingType;
   status: StatusPagamento;
@@ -269,12 +272,17 @@ export async function criarPagamento(site: Db, a: CriarPagamentoArgs): Promise<R
     pedido_id: a.pedido.id,
     ambiente: asaasEnv(),
     asaas_payment_id: criado.id,
+    // Parcelado: o Asaas devolve a 1ª parcela; as outras N−1 são cobranças
+    // irmãs, ligadas por este id. É por ele que o webhook as reconhece.
+    asaas_installment_id: criado.installment ?? null,
     asaas_customer_id: a.asaasCustomerId,
     forma: a.forma,
     status: 'aguardando',
     status_asaas: criado.status,
     valor: a.total,
-    valor_liquido: criado.netValue ?? null,
+    // Parcelado: `netValue` aqui é só o líquido da 1ª parcela. O do pedido é a
+    // soma das N, calculada em `marcarPago`. Gravar o da 1ª enganaria o ERP.
+    valor_liquido: a.parcelas > 1 ? null : criado.netValue ?? null,
     parcelas: a.parcelas,
     vencimento,
     expira_em: expiraEm,
@@ -371,6 +379,54 @@ export function statusDoEvento(evento: string, forma: string): StatusPagamento |
   }
 }
 
+/**
+ * O valor que chegou bate com a cobrança que a loja conhece?
+ *
+ * Cobrança única: o próprio valor. Parcelado: cada cobrança do Asaas vale UMA
+ * parcela (total ÷ N, com a diferença de arredondamento jogada na última —
+ * R$ 3.005,27 em 6x vira 5 × 500,87 + 500,92). A tolerância cresce com N por
+ * causa dessa sobra.
+ */
+export function valorConfere(p: Pick<PagamentoRow, 'valor' | 'parcelas'>, recebido: number): boolean {
+  const parcelas = Math.max(1, Number(p.parcelas) || 1);
+  const esperado = parcelas > 1 ? Math.round((Number(p.valor) / parcelas) * 100) / 100 : Number(p.valor);
+  const tolerancia = parcelas > 1 ? 0.01 * parcelas + 0.01 : 0.01;
+  return Math.abs(esperado - recebido) <= tolerancia;
+}
+
+/**
+ * Líquido do pagamento. Parcelado: soma do `netValue` das N cobranças do
+ * parcelamento (uma chamada ao Asaas). Se a consulta falhar, devolve `null`
+ * em vez de um número errado — o cron corrige depois (manutenção).
+ */
+export async function liquidoDoPagamento(p: Pick<PagamentoRow, 'parcelas' | 'valor_liquido' | 'asaas_installment_id'>, dados?: AsaasPayment): Promise<number | null> {
+  const parcelas = Math.max(1, Number(p.parcelas) || 1);
+  const installment = p.asaas_installment_id ?? dados?.installment ?? null;
+  if (parcelas <= 1 || !installment) return dados?.netValue ?? p.valor_liquido ?? null;
+  try {
+    const lista = await listarParcelas(installment);
+    if (!lista.length) return null;
+    const soma = lista.reduce((t, x) => t + Number(x.netValue ?? 0), 0);
+    return Math.round(soma * 100) / 100;
+  } catch (err) {
+    console.warn('[pagamento] líquido das parcelas não veio:', err instanceof Error ? err.message : err);
+    return null;
+  }
+}
+
+/**
+ * Estorno de UMA parcela de um cartão parcelado (o Asaas estorna parcela a
+ * parcela). Soma ao que já voltou; quando chega ao total, o pagamento vira
+ * "estornado" de verdade.
+ */
+export async function estornoParcial(site: Db, p: PagamentoRow, valorParcela: number, evento: string, dados?: AsaasPayment): Promise<PagamentoRow> {
+  const acumulado = Math.round((Number(p.estornado_valor ?? 0) + valorParcela) * 100) / 100;
+  if (acumulado >= Number(p.valor) - 0.01) return aplicarStatus(site, p, 'estornado', evento, dados);
+  const patch = { estornado_valor: acumulado, ultimo_evento: evento, status_asaas: dados?.status ?? p.status_asaas, atualizado_em: new Date().toISOString() };
+  await site.from('pagamentos').update(patch).eq('id', p.id);
+  return { ...p, ...patch };
+}
+
 const FINAIS: StatusPagamento[] = ['pago', 'estornado'];
 
 /**
@@ -404,14 +460,19 @@ export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dado
   if (p.status === 'pago' || p.status === 'estornado') return p;
   const agora = new Date().toISOString();
   const pagoEm = dados?.confirmedDate || dados?.paymentDate || dados?.clientPaymentDate || agora;
+  // O Asaas manda só a data. Se é hoje, o momento real é agora (cartão
+  // aprovado na hora, Pix que acabou de cair); se é outro dia, meio-dia.
+  const pagoEmIso = pagoEm.length === 10 ? (pagoEm === hojeBr() ? agora : `${pagoEm}T12:00:00-03:00`) : pagoEm;
+  const installment = p.asaas_installment_id ?? dados?.installment ?? null;
   const patch = {
     status: 'pago' as const,
     status_asaas: dados?.status ?? 'CONFIRMED',
-    valor_liquido: dados?.netValue ?? p.valor_liquido,
+    valor_liquido: await liquidoDoPagamento(p, dados),
+    asaas_installment_id: installment,
     recibo_url: dados?.transactionReceiptUrl ?? p.recibo_url,
     cartao_bandeira: dados?.creditCard?.creditCardBrand ?? p.cartao_bandeira,
     cartao_final: dados?.creditCard?.creditCardNumber ?? p.cartao_final,
-    pago_em: pagoEm.length === 10 ? `${pagoEm}T12:00:00-03:00` : pagoEm,
+    pago_em: pagoEmIso,
     ultimo_evento: evento,
     atualizado_em: agora,
   };
