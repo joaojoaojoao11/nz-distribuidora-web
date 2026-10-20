@@ -153,6 +153,21 @@ não aprovada e o admin libera em `/admin/clientes`, escolhendo o tipo de
 acesso; o cliente recebe e-mail. Aprovar/revogar/mudar tipo passam por
 `/api/nz/conta` (ops `aprovar`, `revogar`, `mudar-tipo`) e ficam em `equipe_log`.
 
+### E-mails do Supabase Auth saem pelo Resend (Send Email Hook)
+
+Confirmação de e-mail, redefinição de senha, convite do painel, link mágico e
+troca de e-mail não saem mais pelo mailer do Supabase: o Auth chama
+**`api/auth-email.ts`** (função EDGE — o runtime Node entrega o corpo já
+parseado e a assinatura Standard Webhooks é sobre os bytes exatos), que
+verifica a assinatura (`api/_lib/auth/webhook.ts`, segredo derivado da chave
+de serviço — `scripts/hook-segredo.mjs` gera o patch de configuração), monta o
+e-mail no modelo NZ (`api/_lib/auth/emails.ts`) e manda pelo Resend. Toda
+chamada deixa linha `auth-<tipo>` em `avisos_enviados`. Desde 20/10/2026
+20:40 UTC o `mailer_autoconfirm` está desligado: a conta só vale depois do
+clique (`VIRADA_CONFIRMACAO` em `api/_lib/conta/emailVerificado.ts`), e o cron
+diário apaga contas criadas depois disso que nunca confirmaram em 48 h
+(`api/_lib/conta/limparNaoConfirmados.ts`). `npm run auth-email:test`.
+
 ---
 
 ## 5. Notas Finais para Agentes (Machine Learning Memory)
