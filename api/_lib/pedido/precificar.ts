@@ -14,9 +14,10 @@
 // como 'un', e 'un' só vale para SKU 'UN' (antes, uma camiseta passava como
 // "0,5 metro").
 
-import type { Db } from '../papel.js';
+import type { Db, Papel } from '../papel.js';
 import { faltandoNoCadastro } from '../conta/completude.js';
 import { r2 } from './dinheiro.js';
+import { carregarRegras, precoParaAcesso, type Regras } from '../precos/regraAcesso.js';
 import { lerPromoMoto, precoMetroPromo, type PromoMoto } from '../promoMotoDados.js';
 import { estaAgendado, vendePorUnidade } from '../loja/visibilidade.js';
 
@@ -49,6 +50,9 @@ export interface Espelho {
   metragem_padrao: number | null;
   preco_rolo: number | null;
   preco_metro: number | null;
+  /** VAREJO do ERP — base do cliente final quando a regra do tipo pede. */
+  preco_rolo_varejo?: number | null;
+  preco_metro_varejo?: number | null;
   saldo_ml: number;
   /** 'ML' | 'M2' | 'UN' — 'UN' vende por peça. */
   unidade?: string | null;
@@ -86,6 +90,8 @@ export interface Linha {
   /** Metros lineares totais da linha; na unidade 'un', o número de peças. */
   qtyMt: number;
   total: number;
+  /** R$ por rolo fechado (ou por peça) JÁ no preço do tipo de acesso — é o que pedido_itens guarda. */
+  precoRolo?: number | null;
 }
 
 export const MAX_ITENS = 40;
@@ -138,12 +144,14 @@ export async function carregarPerfil(site: Db, userId: string): Promise<{ perfil
  * slug → produto → SKU físico → preço de tabela. Itens sem tudo isso voltam em `invalidos`.
  *
  * `admin`: a prévia antes do lançamento — só o admin precifica produto com
- * `publicar_em` no futuro.
+ * `publicar_em` no futuro — e compra pela base (atacado), sem percentual.
+ * `papel`: o tipo de acesso de quem compra; decide o percentual
+ * (precos/regraAcesso.ts — a MESMA função da vitrine). Sem papel = cliente final.
  */
 export async function precificar(
   site: Db,
   itens: ItemPedido[],
-  opts: { admin?: boolean } = {}
+  opts: { admin?: boolean; papel?: Papel } = {}
 ): Promise<{ linhas: Linha[]; invalidos: string[]; subtotal: number }> {
   const slugs = [...new Set(itens.map((i) => i.slug))];
   const { data: produtosData } = await site
@@ -155,9 +163,18 @@ export async function precificar(
   const produtos = (produtosData ?? []) as Produto[];
   const skus = [...new Set(produtos.map((p) => p.erp_sku).filter((s): s is string => !!s))];
   const { data: espelhoData } = skus.length
-    ? await site.from('erp_produtos').select('sku, nome, ativo, metragem_padrao, preco_rolo, preco_metro, saldo_ml, unidade').in('sku', skus)
+    ? await site.from('erp_produtos').select('sku, nome, ativo, metragem_padrao, preco_rolo, preco_metro, preco_rolo_varejo, preco_metro_varejo, saldo_ml, unidade').in('sku', skus)
     : { data: [] };
   const espelho = new Map(((espelhoData ?? []) as unknown as Espelho[]).map((e) => [e.sku, e]));
+
+  // Tipo de acesso: o mesmo percentual da vitrine. Admin compra pela base.
+  const regras: Regras | null = opts.admin ? null : await carregarRegras(site);
+  const papel: Papel = opts.papel ?? 'client';
+  const positivo = (v: unknown): number | null => (Number(v) > 0 ? Number(v) : null);
+  const precoRoloDe = (p: Produto, e: Espelho): number | null =>
+    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_rolo), varejo: positivo(e.preco_rolo_varejo) }, p.linha_key) : positivo(e.preco_rolo);
+  const precoMetroDe = (p: Produto, e: Espelho, saida: number | null): number | null =>
+    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_metro), varejo: positivo(e.preco_metro_varejo) }, p.linha_key, saida) : (saida ?? positivo(e.preco_metro));
 
   // Promoção Moto: o metro das cores com pedaço sai pelo preço de saída — a
   // MESMA regra que o card mostra (/api/nz/precos). Só no fracionado.
@@ -195,28 +212,35 @@ export async function precificar(
       // O Tiny (NZERP, tinyService) converte UN dividindo a quantidade pela
       // metragem do SKU: com metragem diferente de 1 a quantidade sairia errada
       // na nota. As camisetas têm 1; o resto fica de fora até alguém olhar.
-      if (!(Number(e.preco_rolo) > 0) || (e.metragem_padrao != null && Number(e.metragem_padrao) !== 1)) {
+      const peca = precoRoloDe(p, e);
+      if (peca == null || (e.metragem_padrao != null && Number(e.metragem_padrao) !== 1)) {
         invalidos.push(item.slug);
         continue;
       }
-      const unitPrice = r2(Number(e.preco_rolo));
-      linhas.push({ produto: p, e, item, unitPrice, qtyMt: item.qtd, total: r2(unitPrice * item.qtd) });
+      const unitPrice = r2(peca);
+      linhas.push({ produto: p, e, item, unitPrice, qtyMt: item.qtd, total: r2(unitPrice * item.qtd), precoRolo: unitPrice });
     } else if (item.unidade === 'rolo') {
       // `> 0`, nao `!= null`: preco zero e' cadastro incompleto do ERP e nao
       // pode virar linha de pedido. Mesma regra do /api/nz/precos.
-      if (!(Number(e.preco_rolo) > 0) || metragem <= 0) {
+      const rolo = precoRoloDe(p, e);
+      if (rolo == null || metragem <= 0) {
         invalidos.push(item.slug);
         continue;
       }
-      const unitPrice = r2(Number(e.preco_rolo) / metragem);
+      const unitPrice = r2(rolo / metragem);
       const qtyMt = r2(item.qtd * metragem);
-      linhas.push({ produto: p, e, item, unitPrice, qtyMt, total: r2(unitPrice * qtyMt) });
+      linhas.push({ produto: p, e, item, unitPrice, qtyMt, total: r2(unitPrice * qtyMt), precoRolo: rolo });
     } else {
       if (!(Number(e.preco_metro) > 0)) {
         invalidos.push(item.slug);
         continue;
       }
-      const unitPrice = (promo && precoMetroPromo(promo, e.sku, Number(e.preco_metro))) || Number(e.preco_metro);
+      const saida = promo ? precoMetroPromo(promo, e.sku, Number(e.preco_metro)) : null;
+      const unitPrice = precoMetroDe(p, e, saida);
+      if (unitPrice == null) {
+        invalidos.push(item.slug);
+        continue;
+      }
       linhas.push({ produto: p, e, item, unitPrice, qtyMt: item.qtd, total: r2(unitPrice * item.qtd) });
     }
   }
@@ -398,7 +422,8 @@ export function itensParaGravar(pedidoId: string, linhas: Linha[]) {
     erp_sku: l.e.sku,
     qtd: l.item.qtd,
     unidade: l.item.unidade,
-    preco_unit_estimado: l.item.unidade === 'rolo' ? Number(l.e.preco_rolo) : l.unitPrice,
+    // O preço DO TIPO DE ACESSO (o que foi cobrado), não o atacado cru.
+    preco_unit_estimado: l.item.unidade === 'rolo' ? (l.precoRolo ?? Number(l.e.preco_rolo)) : l.unitPrice,
     lpns_solicitados: l.item.lpns ?? [],
   }));
 }

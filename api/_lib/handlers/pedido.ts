@@ -81,7 +81,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // `admin`: prévia de produto agendado (publicar_em no futuro) — ver precificar.
-  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin: papel === 'admin' });
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin: papel === 'admin', papel });
   if (invalidos.length) {
     res.status(400).json({ error: 'itens-invalidos', invalidos });
     return;

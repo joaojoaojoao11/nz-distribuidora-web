@@ -11,6 +11,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { rotuloTipo } from '../../lib/shop/papeis';
 import styles from './Admin.module.css';
 
 interface Afiliado {
@@ -234,7 +235,7 @@ export default function AdminAfiliados() {
                     {a.user_profiles?.full_name ?? '—'}
                     <br />
                     <span style={{ color: '#777', fontSize: '0.72rem' }}>
-                      {a.user_profiles?.email ?? ''} · {a.user_profiles?.role === 'reseller' ? 'lojista' : 'cliente'}
+                      {a.user_profiles?.email ?? ''} · {rotuloTipo(a.user_profiles?.role).toLowerCase()}
                     </span>
                   </td>
                   <td>

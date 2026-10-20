@@ -28,6 +28,7 @@ export const GRUPOS: Grupo[] = [
       // Logística. O contador é o que pede um clique + o que está pago esperando.
       { para: '/admin/pedidos', icone: '🧾', rotulo: 'Pedidos', titulo: 'Pedidos da loja', badge: 'pedidos' },
       { para: '/admin/pagamentos', icone: '💳', rotulo: 'Pagamento online', titulo: 'Pagamento online (Asaas)' },
+      { para: '/admin/precos', icone: '🏷', rotulo: 'Preços por acesso', titulo: 'Preços por tipo de acesso' },
       { para: '/admin/logistica', icone: '📦', rotulo: 'Logística', titulo: 'Logística & Transportadoras' },
       { para: '/admin/erp', icone: '🔗', rotulo: 'Integração ERP', titulo: 'Integração NZERP' },
       { para: '/admin/afiliados', icone: '🤝', rotulo: 'Afiliados & Cupons', titulo: 'Afiliados & Cupons' },

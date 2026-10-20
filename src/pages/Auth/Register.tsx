@@ -6,16 +6,21 @@
 //     com nome e e-mail — foi o que aconteceu com as contas de abril.
 //   · O usuário já sai logado (o projeto tem confirmação automática de e-mail),
 //     então vai para onde queria ir (?next=) em vez de voltar para o login.
-//   · Lojista cujo CNPJ já é cliente da NZ é reconhecido logo depois de criar a
-//     conta (op `pos-cadastro`, que precisa de sessão): o endereço vem do ERP e
-//     o cadastro nasce aprovado, sem esperar liberação manual.
+//   · Lojista/revendedor cujo CNPJ já é cliente da NZ é reconhecido logo depois
+//     de criar a conta (op `pos-cadastro`, que precisa de sessão): o endereço
+//     vem do ERP. A aprovação automática por esse caminho exige e-mail
+//     verificado — enquanto a confirmação de e-mail não existe, é manual.
 //   · Cliente final não precisa de documento aqui — pede-se no checkout.
+//   · Desde 20/10/2026 NINGUÉM nasce aprovado: três tipos (cliente final,
+//     lojista/aplicador, revendedor), e a NZ libera em Admin → Clientes. A tela
+//     promete "até 1 dia útil" e o painel mostra "Cadastro em análise".
 
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
 import { chamarConta, formatarTelefone, telefoneOk, textoDoErroAuth } from '../../lib/shop/conta';
+import { ehEmpresa, TIPO_DESCRICAO, TIPO_LABEL, TIPOS_CLIENTE } from '../../lib/shop/papeis';
 import { supabase } from '../../lib/supabase';
 import styles from './Auth.module.css';
 
@@ -43,7 +48,7 @@ export default function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const lojista = form.role === 'reseller';
+  const empresa = ehEmpresa(form.role);
   const update = (field: string, value: string) => setForm((p) => ({ ...p, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,8 +58,8 @@ export default function Register() {
     if (!form.name.trim() || form.name.trim().length < 3) return setError('Escreva seu nome completo.');
     if (!telefoneOk(form.phone)) return setError('WhatsApp incompleto — com DDD, por favor.');
     if (form.password.length < 8) return setError('A senha precisa de pelo menos 8 caracteres.');
-    if (lojista) {
-      if (!validarCpfCnpj(form.documento) || tipoDocumento(form.documento) !== 'cnpj') return setError('Lojista precisa de CNPJ válido.');
+    if (empresa) {
+      if (!validarCpfCnpj(form.documento) || tipoDocumento(form.documento) !== 'cnpj') return setError('Lojista e revendedor precisam de CNPJ válido.');
       if (!form.company.trim()) return setError('Informe a razão social.');
     } else if (form.documento && !validarCpfCnpj(form.documento)) {
       return setError('CPF/CNPJ inválido — confira os dígitos.');
@@ -84,10 +89,12 @@ export default function Register() {
     }
 
     // Agora existe sessão: procura o cliente no NZERP, copia o endereço que a
-    // NZ já tem e — lojista com CNPJ e e-mail conferindo — aprova na hora.
+    // NZ já tem e avisa a equipe que há cadastro para aprovar.
     // Best-effort: falhar aqui não impede a conta de existir.
     const vinculo = await chamarConta<{ aprovouAgora: boolean; jaCliente: boolean; aguardandoConfirmacao?: boolean }>({ op: 'pos-cadastro' }).catch(() => null);
-    navigate(destino ?? (lojista ? '/painel' : '/loja'), {
+    // Ninguém nasce aprovado: o painel mostra "Cadastro em análise". Quem veio
+    // de "entre para ver o preço" volta para lá (e vê o mesmo aviso no preço).
+    navigate(destino ?? '/painel', {
       replace: true,
       state: {
         recemCadastrado: true,
@@ -111,7 +118,7 @@ export default function Register() {
     <div className={styles.authPage}>
       <div className={styles.authCard}>
         <h1 className={styles.authTitle}>Criar Conta</h1>
-        <p className={styles.authSub}>Cadastre-se para ver preços e comprar pelo site</p>
+        <p className={styles.authSub}>Crie sua conta. A NZ confere o cadastro e libera os preços em até 1 dia útil.</p>
 
         {GOOGLE_ATIVO && (
           <>
@@ -131,18 +138,13 @@ export default function Register() {
           <div className={styles.inputGroup}>
             <label className={styles.label}>Tipo de conta</label>
             <div className={styles.roleSelector}>
-              <button type="button" className={`${styles.roleBtn} ${!lojista ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'client')}>
-                Cliente final
-              </button>
-              <button type="button" className={`${styles.roleBtn} ${lojista ? styles.roleBtnActive : ''}`} onClick={() => update('role', 'reseller')}>
-                Lojista / aplicador
-              </button>
+              {TIPOS_CLIENTE.map((t) => (
+                <button key={t} type="button" className={`${styles.roleBtn} ${form.role === t ? styles.roleBtnActive : ''}`} onClick={() => update('role', t)}>
+                  {TIPO_LABEL[t]}
+                </button>
+              ))}
             </div>
-            <p className={styles.hint}>
-              {lojista
-                ? 'Compra com CNPJ e preço de revenda. A NZ confere o cadastro antes de liberar a tabela.'
-                : 'Compra para você, com preço de varejo. Liberado na hora.'}
-            </p>
+            <p className={styles.hint}>{TIPO_DESCRICAO[form.role as keyof typeof TIPO_DESCRICAO] ?? TIPO_DESCRICAO.client}</p>
           </div>
 
           <div className={styles.inputGroup}>
@@ -158,7 +160,7 @@ export default function Register() {
             />
           </div>
 
-          {lojista && (
+          {empresa && (
             <>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>CNPJ</label>
@@ -171,7 +173,7 @@ export default function Register() {
                   value={formatarCpfCnpj(form.documento)}
                   onChange={(e) => update('documento', e.target.value)}
                 />
-                <p className={styles.hint}>Se este CNPJ já compra na NZ, reconhecemos e liberamos o preço de revenda na hora.</p>
+                <p className={styles.hint}>Se este CNPJ já compra na NZ, a liberação é mais rápida.</p>
               </div>
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Razão social</label>

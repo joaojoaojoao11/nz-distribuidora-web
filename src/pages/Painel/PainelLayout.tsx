@@ -20,6 +20,7 @@ import { supabase } from '../../lib/supabase';
 import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { useFavoritos } from '../../lib/shop/listasPessoais';
 import { gruposVisiveis, tituloDaRota, type Contador } from './painelNav';
+import { rotuloTipo } from '../../lib/shop/papeis';
 import styles from './PainelLayout.module.css';
 
 export type Contagens = Partial<Record<Contador, number>>;
@@ -90,7 +91,7 @@ export default function PainelLayout() {
   }
 
   const naInicial = location.pathname === '/painel' || location.pathname === '/painel/';
-  const papel = isAdmin ? 'Conta da equipe NZ' : profile?.role === 'reseller' ? 'Conta de lojista' : 'Conta de cliente';
+  const papel = isAdmin ? 'Conta da equipe NZ' : `Conta de ${rotuloTipo(profile?.role).toLowerCase()}`;
 
   const numero = (c?: Contador): number | undefined => {
     if (!c) return undefined;

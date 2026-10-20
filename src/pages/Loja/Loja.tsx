@@ -129,7 +129,7 @@ export default function Loja() {
   const location = useLocation();
   const navType = useNavigationType();
   const { token } = useParams<{ token: string }>();
-  const { isAdmin } = useAuth();
+  const { user, isAdmin, isApproved } = useAuth();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [curando, setCurando] = useState(false);
   const [configAberta, setConfigAberta] = useState(false);
@@ -450,6 +450,19 @@ export default function Loja() {
         schema={schema}
         noindex={noindex}
       />
+
+      {/* Logado e ainda não aprovado (desde 20/10/2026 ninguém nasce aprovado):
+          a vitrine aparece, o preço diz "Cadastro em análise", e aqui fica o
+          combinado com o cliente. */}
+      {user && !isApproved && !isAdmin && (
+        <div className={styles.analiseFaixa} role="status">
+          <strong>Cadastro em análise.</strong> A NZ confere seus dados e libera os preços — costuma levar até 1 dia útil. Você recebe um e-mail quando
+          liberar.{' '}
+          <a href="https://wa.me/5511918907565?text=Ol%C3%A1!%20Criei%20minha%20conta%20no%20site%20e%20estou%20aguardando%20a%20libera%C3%A7%C3%A3o." target="_blank" rel="noreferrer">
+            Falar com a NZ
+          </a>
+        </div>
+      )}
 
       {!emSelecao && (
       <header className={styles.hero}>

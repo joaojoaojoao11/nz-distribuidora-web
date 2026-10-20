@@ -43,6 +43,8 @@ const build = spawnSync(
     // da coleção). Sem eles na lista, o import quebrava antes do 1º teste.
     'api/_lib/promoMotoDados.ts',
     'api/_lib/loja/visibilidade.ts',
+    // `precificar` aplica o preço por tipo de acesso (20/10/2026).
+    'api/_lib/precos/regraAcesso.ts',
     `--outdir=${outDir}`,
     '--format=esm',
     '--platform=node',
@@ -411,6 +413,51 @@ console.log('\n=== PEÇA (UN) E AGENDAMENTO ===');
 
   const e = await precificar(db, [{ slug: 'espatula', qtd: 1, unidade: 'un' }]);
   ok('peça com metragem ≠ 1 fica de fora (o Tiny dividiria a quantidade)', e.linhas.length === 0 && e.invalidos.includes('espatula'));
+}
+
+// ======================================== preço por TIPO DE ACESSO no pedido
+console.log('\n=== PREÇO POR TIPO DE ACESSO (checkout = vitrine) ===');
+{
+  const { precoParaAcesso, montarRegras } = await import(pathToFileURL(join(outDir, 'precos/regraAcesso.js')).href);
+  const regrasRows = [
+    { papel: 'reseller', linha_key: null, base: 'atacado', percentual: 0 },
+    { papel: 'lojista', linha_key: null, base: 'atacado', percentual: 10 },
+    { papel: 'client', linha_key: null, base: 'varejo', percentual: 0 },
+    { papel: 'client', linha_key: 'ppf', base: 'varejo', percentual: 20 },
+  ];
+  const db = fakeDb({
+    precos_acesso: regrasRows,
+    produtos: [
+      { id: 'p1', slug: 'rolo-ppf', nome: 'Rolo PPF', erp_sku: 'PPF1', tipo_vinculo: 'proprio', linha_key: 'ppf', publicar_em: null },
+      { id: 'p2', slug: 'wrap-x', nome: 'Wrap X', erp_sku: 'WRAP1', tipo_vinculo: 'proprio', linha_key: 'avery', publicar_em: null },
+    ],
+    erp_produtos: [
+      { sku: 'PPF1', nome: 'PPF 15M', ativo: true, metragem_padrao: 15, preco_rolo: 3000, preco_metro: 250, preco_rolo_varejo: 4000, preco_metro_varejo: 330, saldo_ml: 40, unidade: 'ML' },
+      { sku: 'WRAP1', nome: 'WRAP 10M', ativo: true, metragem_padrao: 10, preco_rolo: 1000, preco_metro: 100, preco_rolo_varejo: 1500, preco_metro_varejo: 140, saldo_ml: 20, unidade: 'ML' },
+    ],
+    loja_config: [{ id: 1 }],
+  });
+  const itensRolo = [{ slug: 'rolo-ppf', qtd: 1, unidade: 'rolo' }];
+  const cli = await precificar(db, itensRolo, { papel: 'client' });
+  ok('cliente final, linha ppf (varejo +20%): rolo R$ 4.800 → R$ 320/m', cli.linhas[0]?.precoRolo === 4800 && cli.linhas[0]?.unitPrice === 320 && cli.subtotal === 4800);
+  const loj = await precificar(db, itensRolo, { papel: 'lojista' });
+  ok('lojista (atacado +10%): rolo R$ 3.300 → R$ 220/m', loj.linhas[0]?.precoRolo === 3300 && loj.linhas[0]?.unitPrice === 220);
+  const rev = await precificar(db, itensRolo, { papel: 'reseller' });
+  ok('revendedor (atacado 0%): R$ 3.000 → R$ 200/m', rev.linhas[0]?.precoRolo === 3000 && rev.linhas[0]?.unitPrice === 200);
+  const adm = await precificar(db, itensRolo, { admin: true, papel: 'admin' });
+  ok('admin compra pela base (atacado), sem percentual', adm.linhas[0]?.unitPrice === 200);
+  const semPapel = await precificar(db, itensRolo, {});
+  ok('sem papel informado = cliente final (o mais alto)', semPapel.linhas[0]?.precoRolo === 4800);
+  const metroCli = await precificar(db, [{ slug: 'wrap-x', qtd: 3, unidade: 'metro' }], { papel: 'client' });
+  ok('metro, cliente final, linha sem regra → varejo geral: R$ 140/m', metroCli.linhas[0]?.unitPrice === 140 && metroCli.subtotal === 420);
+  const metroLoj = await precificar(db, [{ slug: 'wrap-x', qtd: 3, unidade: 'metro' }], { papel: 'lojista' });
+  ok('metro, lojista: R$ 110/m', metroLoj.linhas[0]?.unitPrice === 110);
+  const gravar = itensParaGravar('ped-z', cli.linhas);
+  ok('pedido_itens guarda o preço DO TIPO (4.800), não o atacado cru', gravar[0]?.preco_unit_estimado === 4800);
+  const regras = montarRegras(regrasRows);
+  ok('checkout = vitrine: a mesma função dá o mesmo número', precoParaAcesso(regras, 'client', { atacado: 3000, varejo: 4000 }, 'ppf') === cli.linhas[0]?.precoRolo);
+  const payload = montarPayloadErp({ pedidoId: 'ped-z', perfil: PERFIL, linhas: cli.linhas, total: cli.subtotal, notas: '', cupom: null, afiliadoCodigo: null, frete: { tipo: 'CIF', valor: 0, transportadora: '', prazoDias: 0 } });
+  ok('o NZERP recebe o preço cobrado (R$ 320/m), e o orçamento fecha com o pagamento', payload.items[0]?.unitPrice === 320 && payload.items[0]?.total === 4800);
 }
 
 rmSync(outDir, { recursive: true, force: true });

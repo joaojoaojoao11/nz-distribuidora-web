@@ -54,6 +54,7 @@ import {
   type Rascunho,
   type TipoServico,
 } from '../../lib/garantia';
+import { ehEmpresa } from '../../lib/shop/papeis';
 import styles from './registro/Registro.module.css';
 
 const ETAPAS: { passo: Passo; rotulo: string }[] = [
@@ -278,7 +279,7 @@ export default function WarrantyRegistration() {
   const meusDados: MeusDados | null = user
     ? { nome: profile?.full_name ?? '', cpf: profile?.cpf_cnpj ?? '', email: profile?.email ?? user.email ?? '', telefone: profile?.phone ?? '' }
     : null;
-  const aplicadorDaConta = profile?.role === 'reseller' ? (profile.company_name || profile.full_name || '').trim() : '';
+  const aplicadorDaConta = profile && ehEmpresa(profile.role) ? (profile.company_name || profile.full_name || '').trim() : '';
 
   // -------------------------------------------------------------- ação do passo
   const acao: { rotulo: string; onClick: () => void; carregando?: boolean } | null =

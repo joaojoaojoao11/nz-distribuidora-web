@@ -131,13 +131,27 @@ BANCO para a regressão não voltar.
 O adapter do snapshot estático (`adapters/dbSnapshot.ts`) continua com os mapas:
 ele é o catálogo de emergência, para quando `/api/nz/catalogo` não responde.
 
-### Preço: ATACADO, não varejo
+### Preço: por TIPO DE ACESSO, sobre a base do ERP
 
-`erp_produtos.preco_rolo` e `preco_metro` são o preço de **atacado** — é o que o
-site mostra e cobra. O varejo (a tabela publicada) fica em `preco_*_varejo` e só
-o papel admin recebe. Os nomes na view do ERP enganam: lá `ideal_*` é o varejo e
-`min_*` é o atacado. Quem faz essa escolha é `api/_lib/handlers/sync.ts`
-(`precoDeVenda`), num ponto só.
+`erp_produtos.preco_rolo` e `preco_metro` são o preço de **atacado** (a tabela
+mínima do NZERP); `preco_*_varejo` é a tabela publicada. Os nomes na view do ERP
+enganam: lá `ideal_*` é o varejo e `min_*` é o atacado. Quem faz essa escolha é
+`api/_lib/handlers/sync.ts` (`precoDeVenda`), num ponto só.
+
+Desde 20/10/2026 o que cada pessoa VÊ e PAGA depende do tipo de acesso
+(`user_profiles.role`: `client` cliente final, `lojista` lojista/aplicador,
+`reseller` revendedor, `admin`): `preço = base × (1 + percentual)`, com um
+percentual geral por tipo e, opcionalmente, um por linha comercial
+(`produtos.linha_key`). A tabela é `precos_acesso`, a tela é
+**`/admin/precos`**, e a regra mora numa função só —
+`api/_lib/precos/regraAcesso.ts` — chamada por `/api/nz/precos` (vitrine),
+`pedido/precificar.ts` (pedido e checkout) e `promo-moto` (público = cliente
+final). Admin vê tudo e compra pela base. `npm run precos:test`.
+
+**Ninguém nasce aprovado** (também desde 20/10): o cadastro cria a conta como
+não aprovada e o admin libera em `/admin/clientes`, escolhendo o tipo de
+acesso; o cliente recebe e-mail. Aprovar/revogar/mudar tipo passam por
+`/api/nz/conta` (ops `aprovar`, `revogar`, `mudar-tipo`) e ficam em `equipe_log`.
 
 ---
 

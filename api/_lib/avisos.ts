@@ -63,6 +63,8 @@ export interface Aviso {
   nota?: string;
   /** Responder o e-mail cai no cliente, não no nao-responda. */
   responderPara?: string | null;
+  /** Destino diferente da caixa da NZ (o aviso ao CLIENTE de acesso liberado). */
+  para?: string[];
 }
 
 function montar(a: Aviso): { html: string; texto: string } {
@@ -152,7 +154,7 @@ export async function avisarNz(site: Db | null, a: Aviso): Promise<boolean> {
       if (error) console.warn('[avisos] não reservei a chave, envio assim mesmo:', error.message);
     }
     const { html, texto } = montar(a);
-    const r = await enviarEmail({ para: avisoPara(), assunto: a.assunto, html, texto, ...(a.responderPara ? { responderPara: a.responderPara } : {}) });
+    const r = await enviarEmail({ para: a.para?.length ? a.para : avisoPara(), assunto: a.assunto, html, texto, ...(a.responderPara ? { responderPara: a.responderPara } : {}) });
     if (site) {
       await site.from('avisos_enviados').update({ ok: r.ok, erro: r.ok ? null : r.motivo }).eq('chave', chave);
     }
@@ -283,26 +285,32 @@ export function avisarPagamentoConfirmado(
   });
 }
 
+const TIPO_LABEL: Record<string, string> = { client: 'Cliente final', lojista: 'Lojista / aplicador', reseller: 'Revendedor', admin: 'Administrador' };
+const tipoDe = (role: string | null | undefined) => TIPO_LABEL[role ?? 'client'] ?? TIPO_LABEL.client;
+
+/**
+ * Cadastro novo. Desde 20/10/2026 NINGUÉM nasce aprovado, então o e-mail é um
+ * pedido de ação: "aprovar em Clientes". Quando o vínculo com o ERP já aprovou
+ * (lojista/revendedor reconhecido), vira só um aviso.
+ */
 export function avisarCadastroNovo(
   site: Db,
   p: { userId: string; perfil: ClienteAviso & { role?: string | null; is_approved?: boolean | null }; aprovado: boolean; jaCliente: boolean }
 ) {
-  const lojista = p.perfil.role === 'reseller';
-  const esperando = lojista && !p.aprovado;
+  const tipo = tipoDe(p.perfil.role);
+  const esperando = !p.aprovado;
   return avisarNz(site, {
     tipo: 'cadastro-novo',
     chave: `cadastro:${p.userId}`,
-    assunto: esperando
-      ? `Revendedor esperando aprovação — ${nomeCliente(p.perfil)}`
-      : `Cadastro novo no site — ${nomeCliente(p.perfil)}${lojista ? ' (revendedor)' : ''}`,
-    etiqueta: esperando ? 'Revendedor para aprovar' : 'Cadastro novo',
+    assunto: esperando ? `Cadastro esperando aprovação — ${nomeCliente(p.perfil)} (${tipo})` : `Cadastro novo no site — ${nomeCliente(p.perfil)} (${tipo})`,
+    etiqueta: esperando ? 'Cadastro para aprovar' : 'Cadastro novo',
     corEtiqueta: esperando ? '#fbbf24' : '#60a5fa',
     titulo: nomeCliente(p.perfil),
     subtitulo: esperando
-      ? 'Criou conta de revendedor e está esperando a aprovação para ver preços e comprar.'
-      : `Criou conta ${lojista ? 'de revendedor (aprovada automaticamente)' : 'de cliente'} no site.`,
+      ? `Criou conta de ${tipo.toLowerCase()} e está esperando a aprovação para ver preços e comprar. Combinado com o cliente: até 1 dia útil.`
+      : `Criou conta de ${tipo.toLowerCase()} no site (aprovada automaticamente pelo vínculo com o NZERP).`,
     linhas: [
-      ['Tipo', lojista ? 'Revendedor' : 'Cliente final'],
+      ['Tipo', tipo],
       ['Situação', p.aprovado ? 'Aprovado' : 'Esperando aprovação'],
       ['Nome', p.perfil.full_name ?? ''],
       ['Empresa', p.perfil.company_name ?? ''],
@@ -316,6 +324,36 @@ export function avisarCadastroNovo(
       ...(linkWhats(p.perfil.phone) ? [{ texto: 'Chamar no WhatsApp', href: linkWhats(p.perfil.phone, 'Olá! Aqui é da NZ, vi seu cadastro no site.')! }] : []),
     ],
     responderPara: p.perfil.email,
+  });
+}
+
+/**
+ * Para o CLIENTE: o admin aprovou o cadastro. Sai pelo mesmo modelo, mas para o
+ * e-mail da pessoa, e sem chave — se for revogado e aprovado de novo, avisa de novo.
+ */
+export function avisarClienteAcessoLiberado(site: Db, p: { perfil: ClienteAviso & { role?: string | null }; tipo: string }) {
+  const email = (p.perfil.email ?? '').trim();
+  if (!email.includes('@')) return Promise.resolve(false);
+  const tipo = tipoDe(p.tipo);
+  const nome = (p.perfil.full_name || p.perfil.company_name || '').trim();
+  return avisarNz(site, {
+    tipo: 'acesso-liberado',
+    para: [email],
+    assunto: 'Seu acesso à loja NZ foi liberado',
+    etiqueta: 'Acesso liberado',
+    corEtiqueta: '#4ade80',
+    titulo: nome ? `${nome}, seu cadastro foi aprovado` : 'Seu cadastro foi aprovado',
+    subtitulo: `A NZ conferiu seus dados e liberou o acesso como ${tipo.toLowerCase()}. Os preços já aparecem na loja, e você pode fechar pedido pelo site.`,
+    linhas: [
+      ['Tipo de acesso', tipo],
+      ['Como pagar', 'Pix, cartão em até 6x ou boleto, direto no site'],
+      ['Dúvidas', 'WhatsApp +55 11 91890-7565'],
+    ],
+    botoes: [
+      { texto: 'Entrar na loja', href: `${SITE}/loja` },
+      { texto: 'Minha conta', href: `${SITE}/painel` },
+    ],
+    nota: 'Se você não criou conta no site nzgroup.com.br, ignore este e-mail.',
   });
 }
 

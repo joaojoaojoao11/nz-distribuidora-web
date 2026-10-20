@@ -34,7 +34,8 @@
     "shop:amostra": "node scripts/amostrar-hex-fotos.mjs",
     "lente:test": "node scripts/test-lente.mjs",
     "lente:ia:test": "node scripts/test-lente-ia.mjs",
-    "pedidos:test": "node scripts/test-situacao.mjs"
+    "pedidos:test": "node scripts/test-situacao.mjs",
+    "precos:test": "node scripts/test-precos.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.0",

@@ -35,6 +35,7 @@ import { aplicarAcrescimo } from '../pedido/dinheiro.js';
 import { lerEstoqueParceiro } from '../estoqueParceiro.js';
 import { lerPromoMoto, precoMetroPromo, type PromoMoto } from '../promoMotoDados.js';
 import { estaAgendado } from '../loja/visibilidade.js';
+import { carregarRegras, precoParaAcesso, precosPorTipo } from '../precos/regraAcesso.js';
 
 interface Produto {
   slug: string;
@@ -42,6 +43,8 @@ interface Produto {
   tipo_vinculo: string;
   /** Agendado (ex.: coleção antes do lançamento): só o admin vê o preço. */
   publicar_em: string | null;
+  /** Linha comercial: decide o percentual do tipo de acesso (precos_acesso). */
+  linha_key: string | null;
 }
 
 interface Espelho {
@@ -117,9 +120,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   /** Quem não passaria pela porta acima só enxerga o que está na seleção. */
   const soPelaSelecao = papel === 'anonimo' || !aprovado;
 
+  // TIPO DE ACESSO (20/10/2026): o percentual de cada tipo, geral ou por linha,
+  // vive em precos_acesso e é aplicado AQUI — a mesma função do checkout.
+  // `simular` (só admin): devolve também o preço dos três tipos, para a tela
+  // Admin → Preços por acesso conferir o que cada um vê.
+  const regras = await carregarRegras(site);
+  const simular = papel === 'admin' && body.simular === true;
+
   const { data: produtosData } = await site
     .from('produtos')
-    .select('slug, erp_sku, tipo_vinculo, publicar_em')
+    .select('slug, erp_sku, tipo_vinculo, publicar_em, linha_key')
     .in('slug', slugs);
   const produtos = (produtosData ?? []) as Produto[];
 
@@ -164,16 +174,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Preco zero no espelho e' cadastro incompleto do ERP, nao promocao: SKU que
     // entrou sem passar pelo pricing_engineering. Zero tem que virar ausente,
     // senao o card anuncia "R$ 0,00" e o checkout aceita o pedido de graca.
-    const baseRolo = Number(e.preco_rolo) > 0 ? e.preco_rolo : null;
-    const baseMetro = Number(e.preco_metro) > 0 ? e.preco_metro : null;
+    const baseRolo = Number(e.preco_rolo) > 0 ? Number(e.preco_rolo) : null;
+    const baseMetro = Number(e.preco_metro) > 0 ? Number(e.preco_metro) : null;
+    const varejoRolo = Number(e.preco_rolo_varejo) > 0 ? Number(e.preco_rolo_varejo) : null;
+    const varejoMetro = Number(e.preco_metro_varejo) > 0 ? Number(e.preco_metro_varejo) : null;
 
     // O acréscimo é aplicado AQUI, no servidor. O cliente recebe o número
     // final e nunca o percentual — no navegador não há como recalcular a base.
     const pct = dentroDaSelecao ? Number(selValida?.acrescimo_pct ?? 0) : 0;
-    const rolo = pct > 0 ? aplicarAcrescimo(baseRolo, pct) : baseRolo;
     // Dentro de uma seleção o preço é o negociado; a promoção não se soma a ele.
     const metroPromo = !dentroDaSelecao && promo ? precoMetroPromo(promo, e.sku, baseMetro) : null;
-    const metro = pct > 0 ? aplicarAcrescimo(baseMetro, pct) : (metroPromo ?? baseMetro);
+    let rolo: number | null;
+    let metro: number | null;
+    if (dentroDaSelecao) {
+      // Seleção do vendedor: o acréscimo dela SUBSTITUI o do tipo de acesso.
+      rolo = pct > 0 ? aplicarAcrescimo(baseRolo, pct) : baseRolo;
+      metro = pct > 0 ? aplicarAcrescimo(baseMetro, pct) : baseMetro;
+    } else if (papel === 'admin') {
+      // Admin vê (e compra) pela base, como sempre.
+      rolo = baseRolo;
+      metro = metroPromo ?? baseMetro;
+    } else {
+      rolo = precoParaAcesso(regras, papel, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key);
+      metro = precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo);
+    }
 
     const item: Record<string, unknown> = {
       disponivel: rolo != null || metro != null,
@@ -188,8 +212,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // O cliente precisa saber que aquele valor é o daquela seleção, não a
     // tabela do site — é o que a legenda da tela diz. O percentual não vai.
     if (dentroDaSelecao) item.viaSelecao = true;
-    // "De R$ X por R$ Y o metro": o card risca a tabela.
-    if (metroPromo != null) item.metroCheio = baseMetro;
+    // "De R$ X por R$ Y o metro": o card risca a tabela — a tabela DO TIPO, não
+    // o atacado cru (senão o cliente final veria o atacado riscado).
+    if (metroPromo != null) {
+      item.metroCheio = papel === 'admin' ? baseMetro : precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key);
+    }
 
     // Só admin. Construído campo a campo: o que não entra aqui não sai.
     if (papel === 'admin') {
@@ -216,6 +243,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (dentroDaSelecao && pct > 0) {
         item.base = { rolo: baseRolo, metro: baseMetro };
         item.acrescimoPct = pct;
+      }
+      // O simulador da tela de preços: o que cada tipo vê neste produto.
+      if (simular) {
+        item.linhaKey = p.linha_key;
+        item.porTipo = {
+          rolo: precosPorTipo(regras, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key),
+          metro: precosPorTipo(regras, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo),
+        };
       }
     }
     itens[slug] = item;

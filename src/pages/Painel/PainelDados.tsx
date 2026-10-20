@@ -11,6 +11,7 @@ import { supabase } from '../../lib/supabase';
 import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
 import { buscarCep, formatarCep } from '../../lib/shop/checkout';
 import { faltasDoCadastro, formatarTelefone, telefoneOk, UFS } from '../../lib/shop/conta';
+import { ehEmpresa } from '../../lib/shop/papeis';
 import styles from './Painel.module.css';
 
 interface Perfil {
@@ -85,7 +86,7 @@ export default function PainelDados() {
     void carregar();
   }, [carregar]);
 
-  const lojista = profile?.role === 'reseller';
+  const lojista = ehEmpresa(profile?.role);
   const doc = perfil.cpf_cnpj ?? '';
   const faltando = faltasDoCadastro(perfil);
 

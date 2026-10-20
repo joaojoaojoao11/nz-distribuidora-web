@@ -21,7 +21,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-import { resolverPapelDetalhado, type Db } from '../papel.js';
+import { resolverPapelDetalhado, type Db, type Papel } from '../papel.js';
 import { asaasConfigurado, asaasEnv, consultarCobranca, criarWebhook, estornarCobranca, ipDoCliente, listarWebhooks, removerCobranca } from '../asaas/cliente.js';
 import { manutencaoCheckout } from '../asaas/manutencao.js';
 import {
@@ -122,8 +122,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // `admin`: prévia de produto agendado (publicar_em no futuro) — ver precificar.
-    if (op === 'resumo') await opResumo(site, userId, body, cfg, res, papel === 'admin');
-    else if (op === 'pagar') await opPagar(site, userId, body, cfg, req, res, papel === 'admin');
+    if (op === 'resumo') await opResumo(site, userId, body, cfg, res, papel === 'admin', papel);
+    else if (op === 'pagar') await opPagar(site, userId, body, cfg, req, res, papel === 'admin', papel);
     else if (op === 'novo-pagamento') await opNovoPagamento(site, userId, body, cfg, req, res);
     else res.status(400).json({ error: 'op-desconhecida', disponiveis: ['resumo', 'pagar', 'status', 'novo-pagamento'] });
   } catch (err) {
@@ -134,14 +134,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 // ================================================================ resumo
 
-async function opResumo(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, res: VercelResponse, admin = false) {
+async function opResumo(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, res: VercelResponse, admin = false, papel: Papel = 'client') {
   const itens = normalizarItens(body.itens);
   if (!itens.length) {
     res.status(400).json({ error: 'sem-itens' });
     return;
   }
   const { perfil, faltando } = await carregarPerfil(site, userId);
-  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin });
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin, papel });
   const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotal, userId);
   const cepBruto = typeof body.cep === 'string' ? body.cep : perfil?.address_zip ?? '';
   const cep = cepBruto.replace(/\D/g, '');
@@ -214,7 +214,7 @@ async function limiteCartao(site: Db, userId: string, ip: string): Promise<boole
   return Number(porUser ?? 0) >= 3 || Number(porIp ?? 0) >= 10;
 }
 
-async function opPagar(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, req: VercelRequest, res: VercelResponse, admin = false) {
+async function opPagar(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, req: VercelRequest, res: VercelResponse, admin = false, papel: Papel = 'client') {
   const itens = normalizarItens(body.itens);
   if (!itens.length) {
     res.status(400).json({ error: 'sem-itens' });
@@ -237,7 +237,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     return;
   }
 
-  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin });
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin, papel });
   if (invalidos.length) {
     res.status(400).json({ error: 'itens-invalidos', invalidos });
     return;

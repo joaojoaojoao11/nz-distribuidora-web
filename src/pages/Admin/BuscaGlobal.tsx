@@ -7,6 +7,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import { rotuloTipo } from '../../lib/shop/papeis';
 import styles from './Admin.module.css';
 
 interface Achado {
@@ -64,7 +65,7 @@ export default function BuscaGlobal({ onFechar }: { onFechar: () => void }) {
       ...((cli.data ?? []) as { id: string; full_name: string | null; email: string | null; role: string }[]).map((c) => ({
         tipo: 'cliente' as const,
         titulo: c.full_name || c.email || 'sem nome',
-        detalhe: `${c.email ?? ''} · ${c.role === 'reseller' ? 'lojista' : 'cliente'}`,
+        detalhe: `${c.email ?? ''} · ${rotuloTipo(c.role).toLowerCase()}`,
         destino: '/admin/clientes',
       })),
     ];

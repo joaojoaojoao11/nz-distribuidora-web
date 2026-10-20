@@ -33,7 +33,7 @@ interface Lpn {
 interface Resposta {
   mapeado: boolean;
   semDados?: boolean;
-  papel: 'anonimo' | 'client' | 'reseller' | 'admin';
+  papel: 'anonimo' | 'client' | 'lojista' | 'reseller' | 'admin';
   disponibilidade?: Nivel;
   atualizadoEm?: string;
   saldo?: {

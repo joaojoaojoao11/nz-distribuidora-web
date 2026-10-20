@@ -145,8 +145,9 @@ export async function vincularComErp(
     }
   }
 
-  // Lojista reconhecido: aprova. Cliente final já nasce aprovado.
-  const aprovar = perfil.role === 'reseller' && !perfil.is_approved && cliente.ativo && mesmoEmail;
+  // Lojista/revendedor reconhecido (documento E e-mail verificado conferem com
+  // cliente ativo do NZERP): aprova. Cliente final espera o admin.
+  const aprovar = (perfil.role === 'reseller' || perfil.role === 'lojista') && !perfil.is_approved && cliente.ativo && mesmoEmail;
   if (aprovar) {
     patch.is_approved = true;
     patch.aprovado_em = new Date().toISOString();

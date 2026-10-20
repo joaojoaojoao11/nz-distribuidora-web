@@ -12,6 +12,10 @@
 //   atribuir-titulos    admin   — roda o job que decide de quem é cada título
 //   titulos-sem-dono    admin   — o que sobrou, para atribuir à mão
 //   atribuir-titulo     admin   — atribui um título a um cliente
+//   aprovar             admin   — libera o cadastro (com o tipo de acesso) e
+//                                 avisa o cliente por e-mail
+//   revogar             admin   — tira a aprovação, com motivo
+//   mudar-tipo          admin   — cliente final ↔ lojista ↔ revendedor
 //   recuperar-senha     público — envia o e-mail de redefinição
 //
 // Por que `recuperar-senha` passa pelo servidor em vez de o front chamar o
@@ -28,7 +32,9 @@ import { consultarDocumento, registrarLog, vincularComErp, type PerfilVinculo } 
 import { emailVerificado } from '../conta/emailVerificado.js';
 import { clienteDoUsuario, pedidosDoCliente, titulosDoCliente } from '../conta/erpHistorico.js';
 import { atribuirTitulos, titulosSemDono } from '../conta/atribuirTitulos.js';
-import { avisarCadastroNovo } from '../avisos.js';
+import { avisarCadastroNovo, avisarClienteAcessoLiberado } from '../avisos.js';
+
+const TIPOS_ACESSO = ['client', 'lojista', 'reseller'];
 
 export const SITE_URL = 'https://www.nzgroup.com.br';
 
@@ -193,6 +199,65 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .from('erp_titulo_dono')
       .upsert({ titulo_id: tituloId, erp_client_id: clientId, chave: 'manual', confianca: 'manual', confirmado_por: userId, atualizado_em: new Date().toISOString() }, { onConflict: 'titulo_id' });
     res.status(error ? 500 : 200).json(error ? { error: 'nao-gravou', message: error.message } : { ok: true });
+    return;
+  }
+
+  // Aprovação, revogação e tipo de acesso — só admin e sempre pelo servidor:
+  // grava o motivo, deixa rastro em equipe_log e avisa o cliente por e-mail
+  // quando libera. Até 20/10/2026 o painel escrevia direto na tabela, sem
+  // e-mail e sem log — e o cliente final nem passava por aqui (nascia aprovado).
+  if (op === 'aprovar' || op === 'revogar' || op === 'mudar-tipo') {
+    if (papel !== 'admin') {
+      res.status(403).json({ error: 'apenas-admin' });
+      return;
+    }
+    const alvoId = typeof body.userId === 'string' ? body.userId : '';
+    const { data: alvoData } = await site.from('user_profiles').select(`${CAMPOS_PERFIL}, address_city, address_state`).eq('id', alvoId).maybeSingle();
+    const alvo = alvoData as (PerfilVinculo & { role: string; full_name: string | null; company_name: string | null; phone: string | null; address_city: string | null; address_state: string | null }) | null;
+    if (!alvo) {
+      res.status(404).json({ error: 'perfil-nao-encontrado' });
+      return;
+    }
+    if (alvo.role === 'admin') {
+      // Admin se cria e se tira por equipe.ts (convite), nunca por aqui.
+      res.status(409).json({ error: 'admin-nao-por-aqui' });
+      return;
+    }
+    const tipo = typeof body.tipo === 'string' && TIPOS_ACESSO.includes(body.tipo) ? body.tipo : null;
+    const motivo = typeof body.motivo === 'string' ? body.motivo.trim().slice(0, 300) : '';
+    const patch: Record<string, unknown> = {};
+    if (op === 'aprovar') {
+      patch.is_approved = true;
+      patch.aprovado_em = new Date().toISOString();
+      patch.aprovado_motivo = motivo || 'liberado pelo painel administrativo';
+      if (tipo) patch.role = tipo;
+    } else if (op === 'revogar') {
+      patch.is_approved = false;
+      patch.aprovado_em = null;
+      patch.aprovado_motivo = motivo ? `revogado: ${motivo}` : null;
+    } else {
+      if (!tipo) {
+        res.status(400).json({ error: 'tipo-invalido' });
+        return;
+      }
+      patch.role = tipo;
+    }
+    const { error } = await site.from('user_profiles').update(patch).eq('id', alvoId);
+    if (error) {
+      res.status(500).json({ error: 'nao-gravou', message: error.message });
+      return;
+    }
+    await registrarLog(site, op, normalizarEmail(alvo.email), { de: { role: alvo.role, is_approved: alvo.is_approved }, para: patch, motivo: motivo || null }, userId);
+    let emailEnviado = false;
+    if (op === 'aprovar' && !alvo.is_approved) {
+      emailEnviado = await avisarClienteAcessoLiberado(site, { perfil: alvo, tipo: tipo ?? alvo.role });
+    }
+    res.status(200).json({
+      ok: true,
+      emailEnviado,
+      role: (patch.role as string | undefined) ?? alvo.role,
+      is_approved: op === 'aprovar' ? true : op === 'revogar' ? false : alvo.is_approved,
+    });
     return;
   }
 

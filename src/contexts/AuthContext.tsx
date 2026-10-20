@@ -5,7 +5,8 @@ import type { User, Session } from '@supabase/supabase-js';
 
 interface UserProfile {
   id: string;
-  role: 'admin' | 'reseller' | 'client';
+  /** `lojista` (lojista/aplicador) desde 20/10/2026; `reseller` é o revendedor. */
+  role: 'admin' | 'reseller' | 'lojista' | 'client';
   full_name: string | null;
   company_name: string | null;
   phone: string | null;
@@ -123,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data: Record<string, string> = {
       full_name: meta.full_name.trim(),
       phone: meta.phone.trim(),
-      role: meta.role === 'reseller' ? 'reseller' : 'client',
+      role: meta.role === 'reseller' || meta.role === 'lojista' ? meta.role : 'client',
       aceite_termos_em: 'sim',
     };
     const opcionais: (keyof SignUpMeta)[] = [
@@ -173,7 +174,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile,
     loading,
     isAdmin,
-    isReseller: profile?.role === 'reseller',
+    // Conta de empresa: revendedor ou lojista/aplicador.
+    isReseller: profile?.role === 'reseller' || profile?.role === 'lojista',
     isClient: profile?.role === 'client',
     isApproved: Boolean(profile?.is_approved) || isAdmin,
     cadastroCompleto: Boolean(profile?.cadastro_completo_em),

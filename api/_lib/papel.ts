@@ -17,7 +17,10 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 export type Db = SupabaseClient<any, any, any>;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-export type Papel = 'anonimo' | 'client' | 'reseller' | 'admin';
+// `lojista` (lojista/aplicador) existe desde 20/10/2026; `reseller` é o
+// REVENDEDOR. Os dois são empresa e, aprovados, veem estoque detalhado e o
+// preço do seu tipo (precos/regraAcesso.ts).
+export type Papel = 'anonimo' | 'client' | 'lojista' | 'reseller' | 'admin';
 
 export interface PapelDetalhado {
   papel: Papel;
@@ -55,9 +58,9 @@ export async function resolverPapelDetalhado(site: Db, authHeader: string | unde
       return { papel: 'admin', aprovado: true, userId: user.id };
     }
     const aprovado = Boolean(profile.is_approved);
-    // Lojista não aprovado é tratado como cliente final: a aprovação é o que
-    // libera o dado comercial.
-    if (profile.role === 'reseller' && aprovado) return { papel: 'reseller', aprovado, userId: user.id };
+    // Lojista/revendedor não aprovado é tratado como cliente final: a
+    // aprovação é o que libera o dado comercial.
+    if ((profile.role === 'reseller' || profile.role === 'lojista') && aprovado) return { papel: profile.role, aprovado, userId: user.id };
     return { papel: 'client', aprovado, userId: user.id };
   } catch {
     // Falha ao validar o token (rede, Supabase fora) é ausência de permissão,

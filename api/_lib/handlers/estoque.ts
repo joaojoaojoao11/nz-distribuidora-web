@@ -139,8 +139,8 @@ async function montar(
     atualizadoEm: e.sincronizado_em,
   };
 
-  // --- nível 2: lojista aprovado e admin.
-  if (papel === 'reseller' || papel === 'admin') {
+  // --- nível 2: lojista/revendedor aprovado e admin.
+  if (papel === 'reseller' || papel === 'lojista' || papel === 'admin') {
     r.saldo = {
       metrosLineares: Number(e.saldo_ml),
       rolosFechados: e.rolos_fechados,

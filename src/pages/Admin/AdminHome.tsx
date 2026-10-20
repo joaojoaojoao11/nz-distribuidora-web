@@ -352,6 +352,7 @@ export default function AdminHome() {
 
   const getRoleBadge = (role: string) => {
     if (role === 'admin') return <span className={`${styles.badge} ${styles.badgeAdmin}`}>Admin</span>;
+    if (role === 'lojista') return <span className={`${styles.badge} ${styles.badgeReseller}`}>Lojista</span>;
     if (role === 'reseller') return <span className={`${styles.badge} ${styles.badgeReseller}`}>Revendedor</span>;
     return <span className={styles.badge}>Cliente</span>;
   };

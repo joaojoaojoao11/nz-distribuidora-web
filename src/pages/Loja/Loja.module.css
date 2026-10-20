@@ -1033,3 +1033,18 @@
     align-items: flex-start;
   }
 }
+
+/* Logado e ainda não aprovado: o combinado com o cliente, no topo da loja. */
+.analiseFaixa {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(217, 119, 6, 0.45);
+  border-radius: 10px;
+  background: rgba(217, 119, 6, 0.08);
+  color: #fbbf24;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.analiseFaixa strong { color: #fcd34d; }
+.analiseFaixa a { color: #fff; text-decoration: underline; white-space: nowrap; }

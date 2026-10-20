@@ -168,7 +168,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           foto_url: foto,
           autor_nome: nomeCurto(p.company_name || p.full_name, p.email),
           autor_cidade: cidade,
-          aplicador: p.role === 'reseller',
+          aplicador: p.role === 'reseller' || p.role === 'lojista',
           // Ganha ponto por avaliar, então a página TEM que dizer.
           incentivada: true,
           status: 'pendente',

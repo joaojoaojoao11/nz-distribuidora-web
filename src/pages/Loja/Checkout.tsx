@@ -35,6 +35,7 @@ import {
   type Resumo,
 } from '../../lib/shop/checkout';
 import FormaPagamento, { type EscolhaPagamento } from './FormaPagamento';
+import { ehEmpresa } from '../../lib/shop/papeis';
 import styles from './Checkout.module.css';
 
 interface Endereco {
@@ -192,7 +193,7 @@ export default function Checkout() {
     return lista;
   }, [resumo, total]);
 
-  const lojista = profile?.role === 'reseller';
+  const lojista = ehEmpresa(profile?.role);
   const enderecoOk =
     end.full_name.trim().length >= 3 &&
     telefoneOk(end.phone) &&
