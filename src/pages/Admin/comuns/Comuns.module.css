@@ -1,0 +1,71 @@
+/* Grade de formulário do admin (pedido do João, 21/10/2026: campos
+ * alinhados "certinho um do lado do outro").
+ *
+ * Cada <Campo> ocupa 3 linhas da grade (rótulo · campo · dica) por subgrid:
+ * os rótulos ficam na mesma linha, os campos na mesma linha e as dicas na
+ * mesma linha, mesmo quando um rótulo quebra em duas linhas ou uma dica é
+ * mais longa que a outra. Sem subgrid (navegador antigo), o rótulo ganha
+ * altura fixa de duas linhas e o alinhamento fica quase igual. */
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--campo-min, 200px), 1fr));
+  column-gap: 1rem;
+  row-gap: 0.3rem;
+  align-items: start;
+}
+
+.campo {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-row: span 3;
+  row-gap: 0.3rem;
+  min-width: 0;
+  padding-bottom: 0.6rem;
+}
+
+@supports (grid-template-rows: subgrid) {
+  .grade > .campo {
+    grid-template-rows: subgrid;
+  }
+}
+
+@supports not (grid-template-rows: subgrid) {
+  .grade > .campo > label {
+    min-height: 2.6em;
+  }
+}
+
+.campo > label {
+  display: flex;
+  align-items: flex-end;
+  align-self: end;
+  margin-bottom: 0;
+  line-height: 1.3;
+}
+
+.campo > small {
+  align-self: start;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+/* Campo que ocupa duas colunas (só quando cabe mais de uma coluna). */
+@media (min-width: 640px) {
+  .campoLargo {
+    grid-column: span 2;
+  }
+}
+
+/* Linha pequena embaixo do número do cartão de métrica (ex.: "0 aprovados"). */
+.metricaSub {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 0.25rem;
+}
+
+.metricaValor {
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}

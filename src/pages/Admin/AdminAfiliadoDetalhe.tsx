@@ -224,7 +224,7 @@ export default function AdminAfiliadoDetalhe() {
         itens={[
           { rotulo: 'Disponível na carteira', valor: BRL.format(saldo?.disponivel ?? 0) },
           { rotulo: 'A liberar', valor: BRL.format(saldo?.aLiberar ?? 0) },
-          { rotulo: 'Filiados', valor: `${filiados.length} (${filiados.filter((f) => f.is_approved).length} aprovados)` },
+          { rotulo: 'Filiados', valor: filiados.length, sub: `${filiados.filter((f) => f.is_approved).length} aprovados` },
           { rotulo: 'Filiados que compraram', valor: filiados.filter((f) => f.pedidosFaturados > 0).length },
           { rotulo: 'Total comprado pelos filiados', valor: BRL.format(filiados.reduce((s, f) => s + f.totalComprado, 0)) },
         ]}
@@ -275,16 +275,20 @@ export default function AdminAfiliadoDetalhe() {
       </Secao>
 
       <Secao titulo="Carteira" descricao="O extrato completo, com o filiado que gerou cada comissão (o afiliado vê só 'indicado nº N'). Ajuste manual para acerto, sempre com motivo.">
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'flex-end', marginBottom: '1rem' }}>
-          <Campo label="Ajuste (R$)" dica="positivo credita, negativo debita" largura={160}>
-            <input style={campoEstilo} inputMode="decimal" value={ajuste.valor} onChange={(e) => setAjuste((a) => ({ ...a, valor: e.target.value }))} />
-          </Campo>
-          <Campo label="Motivo" largura={360}>
-            <input style={campoEstilo} value={ajuste.obs} onChange={(e) => setAjuste((a) => ({ ...a, obs: e.target.value }))} />
-          </Campo>
-          <Botao disabled={salvando} onClick={() => void fazerAjuste()}>
-            Lançar ajuste
-          </Botao>
+        <div style={{ maxWidth: 760, marginBottom: '1rem' }}>
+          <Grade min={160}>
+            <Campo label="Ajuste (R$)" dica="positivo credita, negativo debita">
+              <input style={campoEstilo} inputMode="decimal" value={ajuste.valor} onChange={(e) => setAjuste((a) => ({ ...a, valor: e.target.value }))} />
+            </Campo>
+            <Campo label="Motivo" dica="fica no extrato e no log da equipe" colunas={2}>
+              <input style={campoEstilo} value={ajuste.obs} onChange={(e) => setAjuste((a) => ({ ...a, obs: e.target.value }))} />
+            </Campo>
+            <Campo>
+              <Botao disabled={salvando} onClick={() => void fazerAjuste()}>
+                Lançar ajuste
+              </Botao>
+            </Campo>
+          </Grade>
         </div>
         <div className={styles.tableScroll}>
           <table className={styles.table}>

@@ -130,6 +130,7 @@
 
 .mainContent {
   flex: 1;
+  min-width: 0; /* senão a tabela larga empurra o conteúdo além da tela no celular */
   margin-left: 240px;
   padding: 2rem;
 }

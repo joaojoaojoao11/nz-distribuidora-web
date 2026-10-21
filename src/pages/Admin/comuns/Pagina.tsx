@@ -13,10 +13,11 @@
 // Formatação (BRL, datas, percentual) e o estilo dos campos ficam em
 // comuns/formato.ts (o Fast Refresh exige arquivo só de componentes).
 
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../Admin.module.css';
 import ped from '../AdminPedidos.module.css';
+import cs from './Comuns.module.css';
 
 export function PaginaAdmin(p: { titulo: string; descricao?: ReactNode; voltar?: { para: string; rotulo: string }; acoes?: ReactNode; children: ReactNode }) {
   return (
@@ -53,25 +54,32 @@ export function Secao(p: { titulo: string; descricao?: ReactNode; acoes?: ReactN
   );
 }
 
-export function Metricas(p: { itens: { rotulo: string; valor: ReactNode; alerta?: boolean }[] }) {
+/** Cartões de número. `sub` é a linha pequena embaixo do número (ex.: "2 aprovados"). */
+export function Metricas(p: { itens: { rotulo: string; valor: ReactNode; sub?: ReactNode; alerta?: boolean }[] }) {
   return (
     <div className={styles.metricsGrid}>
       {p.itens.map((m) => (
         <div key={m.rotulo} className={styles.metricCard}>
           <div className={styles.metricLabel}>{m.rotulo}</div>
-          <div className={`${styles.metricValue} ${m.alerta ? styles.metricValueWarning : ''}`}>{m.valor}</div>
+          <div className={`${styles.metricValue} ${cs.metricaValor} ${m.alerta ? styles.metricValueWarning : ''}`}>{m.valor}</div>
+          {m.sub != null && <div className={cs.metricaSub}>{m.sub}</div>}
         </div>
       ))}
     </div>
   );
 }
 
-export function Campo(p: { label: string; dica?: string; children: ReactNode; largura?: number | string }) {
+/**
+ * Rótulo + campo + dica. Dentro de <Grade>, rótulos, campos e dicas ficam
+ * cada um na sua linha, alinhados entre as colunas. `label` vazio serve para
+ * pôr um botão na linha dos campos; `colunas={2}` ocupa duas colunas.
+ */
+export function Campo(p: { label?: string; dica?: string; children: ReactNode; colunas?: 1 | 2; largura?: number | string }) {
   return (
-    <div className={styles.createField} style={p.largura ? { width: p.largura, minWidth: 0 } : undefined}>
-      <label>{p.label}</label>
+    <div className={`${styles.createField} ${cs.campo} ${p.colunas === 2 ? cs.campoLargo : ''}`} style={p.largura ? { width: p.largura, minWidth: 0 } : undefined}>
+      <label>{p.label || ' '}</label>
       {p.children}
-      {p.dica && <small className={ped.mudo}>{p.dica}</small>}
+      {p.dica ? <small className={ped.mudo}>{p.dica}</small> : <small />}
     </div>
   );
 }
@@ -103,7 +111,11 @@ export function Avisos(p: { erro?: string; msg?: string }) {
   );
 }
 
-/** Linhas de um formulário em grade responsiva. */
+/** Campos de um formulário em grade responsiva (uma coluna no celular). `min` = largura mínima de cada coluna, em px. */
 export function Grade(p: { children: ReactNode; min?: number }) {
-  return <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(${p.min ?? 200}px, 1fr))`, gap: '0.75rem 1rem', alignItems: 'end' }}>{p.children}</div>;
+  return (
+    <div className={cs.grade} style={{ '--campo-min': `${p.min ?? 200}px` } as CSSProperties}>
+      {p.children}
+    </div>
+  );
 }
