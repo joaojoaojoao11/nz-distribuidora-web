@@ -201,6 +201,11 @@ percentuais ficam em `loja_config` e nas telas do admin: `/admin/afiliados`
 sync libera o que venceu e expira o saldo antigo. Teste: `npm run incentivos:test`.
 A regra única do cupom (nominal, próprio, só conta nova, limite por cliente,
 esgotado) é `motivoCupomInvalido` em `api/_lib/pedido/precificar.ts`.
+**Saldo no checkout** (Fase 3): `api/_lib/incentivos/saldoCheckout.ts` — quanto
+usar (`calcularUsoDeSaldo`, o restante nunca fica abaixo da cobrança mínima),
+reserva pela RPC `carteira_reservar_uso`, devolução quando a cobrança morre ou o
+pedido é cancelado, e o pedido coberto pelo saldo nasce pago (forma `SALDO`,
+sem Asaas). O ERP recebe `cashback_usado`; o contábil disso é a Fase 6.
 
 **Visibilidade por tipo** (`acesso_config`, mesma tela, aba Visibilidade):
 linhas comerciais ocultas, rolo fechado, metro fracionado, estoque detalhado,
