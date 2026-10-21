@@ -91,6 +91,19 @@ Cada subdiretório em `pages/` representa uma etapa completa injetada no `App.ts
   o embed `user_profiles(...)` exigia a FK `pedidos.user_id → user_profiles`
   (migration `2026-10-20_pedidos_fk_perfil.sql`).
 
+### API no localhost: `npm run dev:api`
+
+As funções de `api/` são serverless da Vercel e não rodam no `vite`. Até
+21/10/2026 todo `/api/*` no dev respondia 503 ("API indisponível no Vite
+dev"), e nenhuma tela do admin que depende da API funcionava no localhost.
+Agora `npm run dev:api` (`scripts/dev-api.mjs`, porta 3999) empacota o
+roteador `api/nz/[acao].ts` com o esbuild e o serve com a mesma cara da Vercel;
+o `vite.config.ts` repassa `/api/*` para ele quando está no ar (sem ele, o 503
+continua, com a dica). Lê o `.env` do site e, para o pedido e o checkout
+falarem com o NZERP, as chaves do `.env.local` do NZERP ao lado. Bate nos
+bancos de produção (não existe staging). No NZERP, `.claude/launch.json` tem
+a configuração `site-nz-api`.
+
 ### API — tudo em `/api/nz/<acao>`
 
 O plano Hobby da Vercel permite 12 funções por deployment. Por isso **todo**

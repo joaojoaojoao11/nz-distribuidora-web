@@ -17,6 +17,13 @@ decisão do perfil, gravação), pergunte numa linha no fim da resposta se vai p
 dele, nunca item financeiro, por `SendMessage` para a sessão "NZASSISTENTE - JOANA". Regra
 completa e formato do recado: `CLAUDE.md` do NZERP (`2NZERPUPDATE30`), seção "Agenda do João".
 
+## Localhost com a API
+
+`npm run dev` (Vite, 5173) + `npm run dev:api` (API da loja, 3999) em outro
+terminal: o Vite repassa `/api/*` para a API local e o admin, o painel e o
+checkout funcionam no localhost. Sem a API, `/api/*` responde 503 com a dica.
+Detalhe em `PROJECT_MAP.md` ("API no localhost").
+
 ## Regras rápidas do repositório
 
 - `git add` sempre por caminho explícito — nunca `git add -A` (OneDrive marca dezenas de

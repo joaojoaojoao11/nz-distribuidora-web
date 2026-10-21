@@ -445,6 +445,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
+    if (op === 'cupom-ver') {
+      const codigo = texto(body.codigo, 24).toUpperCase();
+      const { data: c } = await site
+        .from('cupons')
+        .select('codigo, tipo, descricao, desconto_pct, desconto_valor, comissao_pct, dono_user_id, afiliado_user_id, valido_de, valido_ate, limite_usos, usos, usos_por_cliente, so_conta_nova, ativo, criado_em')
+        .eq('codigo', codigo)
+        .maybeSingle();
+      if (!c) {
+        res.status(404).json({ error: 'cupom-nao-encontrado' });
+        return;
+      }
+      const cup = c as { dono_user_id: string | null; afiliado_user_id: string | null };
+      const ids = [cup.dono_user_id, cup.afiliado_user_id].filter((x): x is string => Boolean(x));
+      const { data: perfis } = ids.length ? await site.from('user_profiles').select('id, full_name, company_name, email, cpf_cnpj').in('id', ids) : { data: [] };
+      const perfilDe = new Map(((perfis ?? []) as { id: string; full_name: string | null; company_name: string | null; email: string | null; cpf_cnpj: string | null }[]).map((p) => [p.id, p]));
+      const { data: usos } = await site.from('cupom_usos').select('user_id, pedido_id, usado_em').eq('cupom_codigo', codigo).order('usado_em', { ascending: false }).limit(200);
+      const lu = (usos ?? []) as { user_id: string; pedido_id: string | null; usado_em: string }[];
+      const uids = [...new Set(lu.map((u) => u.user_id))];
+      const pids = lu.map((u) => u.pedido_id).filter((x): x is string => Boolean(x));
+      const [{ data: quem }, { data: peds }] = await Promise.all([
+        uids.length ? site.from('user_profiles').select('id, full_name, email').in('id', uids) : Promise.resolve({ data: [] }),
+        pids.length ? site.from('pedidos').select('id, numero, status, total_final, total_estimado').in('id', pids) : Promise.resolve({ data: [] }),
+      ]);
+      const quemDe = new Map(((quem ?? []) as { id: string; full_name: string | null; email: string | null }[]).map((p) => [p.id, p]));
+      const pedDe = new Map(((peds ?? []) as { id: string; numero: number; status: string; total_final: number | null; total_estimado: number | null }[]).map((p) => [p.id, p]));
+      res.status(200).json({
+        cupom: { ...(c as object), dono: cup.dono_user_id ? perfilDe.get(cup.dono_user_id) ?? null : null, afiliado: cup.afiliado_user_id ? perfilDe.get(cup.afiliado_user_id) ?? null : null },
+        usos: lu.map((u) => ({ ...u, cliente: quemDe.get(u.user_id) ?? null, pedido: u.pedido_id ? pedDe.get(u.pedido_id) ?? null : null })),
+        config: cfg,
+      });
+      return;
+    }
+
     if (op === 'cupom-salvar') {
       const codigo = texto(body.codigo, 24).toUpperCase();
       if (!/^[A-Z0-9][A-Z0-9-]{2,23}$/.test(codigo)) {

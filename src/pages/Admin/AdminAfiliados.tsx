@@ -10,9 +10,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { rotuloTipo } from '../../lib/shop/papeis';
-import { listarAfiliados, salvarAfiliado, salvarConfigIncentivos, type AfiliadoLista, type ConfigIncentivos } from '../../lib/shop/incentivos';
-import { Avisos, Botao, Campo, Chip, Grade, Metricas, PaginaAdmin, Secao } from './comuns/Pagina';
-import { BRL, campoEstilo, dataBR, pctTexto } from './comuns/formato';
+import { listarAfiliados, salvarAfiliado, type AfiliadoLista, type ConfigIncentivos } from '../../lib/shop/incentivos';
+import { Avisos, Botao, Chip, Metricas, PaginaAdmin, Secao } from './comuns/Pagina';
+import { BRL, dataBR, pctTexto } from './comuns/formato';
 import styles from './Admin.module.css';
 import ped from './AdminPedidos.module.css';
 
@@ -28,9 +28,7 @@ export default function AdminAfiliados() {
   const navigate = useNavigate();
   const [lista, setLista] = useState<AfiliadoLista[]>([]);
   const [config, setConfig] = useState<ConfigIncentivos | null>(null);
-  const [form, setForm] = useState<Record<string, string>>({});
   const [carregando, setCarregando] = useState(true);
-  const [salvando, setSalvando] = useState(false);
   const [ocupado, setOcupado] = useState('');
   const [erro, setErro] = useState('');
   const [msg, setMsg] = useState('');
@@ -43,13 +41,6 @@ export default function AdminAfiliados() {
       const r = await listarAfiliados();
       setLista(r.afiliados);
       setConfig(r.config);
-      setForm({
-        pctAtivacaoAfiliado: pctTexto(r.config.pctAtivacaoAfiliado),
-        pctRecorrenciaAfiliado: pctTexto(r.config.pctRecorrenciaAfiliado),
-        descontoCupomAfiliadoPct: pctTexto(r.config.descontoCupomAfiliadoPct),
-        periodicidadePadrao: r.config.periodicidadePadrao,
-        diasAtribuicao: String(r.config.diasAtribuicao),
-      });
       setErro('');
     } catch (e) {
       setErro(e instanceof Error ? e.message : String(e));
@@ -72,37 +63,6 @@ export default function AdminAfiliados() {
       return [a.nome, a.empresa, a.email, a.codigo].some((x) => (x ?? '').toLowerCase().includes(t));
     });
   }, [lista, busca, filtro]);
-
-  const num = (s: string) => {
-    const t = s.trim().replace(',', '.');
-    return t === '' ? null : Number(t);
-  };
-
-  const salvarRegras = async () => {
-    const patch = {
-      pctAtivacaoAfiliado: num(form.pctAtivacaoAfiliado ?? ''),
-      pctRecorrenciaAfiliado: num(form.pctRecorrenciaAfiliado ?? ''),
-      descontoCupomAfiliadoPct: num(form.descontoCupomAfiliadoPct ?? ''),
-      periodicidadePadrao: form.periodicidadePadrao === 'quinzenal' ? 'quinzenal' : 'mensal',
-      diasAtribuicao: num(form.diasAtribuicao ?? ''),
-    };
-    if (Object.values(patch).some((v) => typeof v === 'number' && (!Number.isFinite(v) || v < 0))) {
-      setErro('Percentuais e dias precisam ser números maiores ou iguais a zero.');
-      return;
-    }
-    setSalvando(true);
-    setErro('');
-    setMsg('');
-    try {
-      const r = await salvarConfigIncentivos(patch as Partial<ConfigIncentivos>);
-      setConfig(r.config);
-      setMsg('Regras salvas. Valem para o próximo pedido faturado.');
-    } catch (e) {
-      setErro(e instanceof Error ? e.message : String(e));
-    } finally {
-      setSalvando(false);
-    }
-  };
 
   const mudarStatus = async (a: AfiliadoLista, status: 'aprovado' | 'suspenso' | 'pendente') => {
     setOcupado(a.user_id);
@@ -135,6 +95,11 @@ export default function AdminAfiliados() {
           <Link to="/admin/super-cupons" style={{ color: '#fff' }}>Super cupons</Link>.
         </>
       }
+      acoes={
+        <Link to="/admin/afiliados/regras" className={`${styles.actionBtn} ${styles.actionBtnApprove}`} style={{ textDecoration: 'none', display: 'inline-block' }}>
+          ⚙ Regras gerais
+        </Link>
+      }
     >
       <Avisos erro={erro} msg={msg} />
       <Metricas
@@ -146,37 +111,12 @@ export default function AdminAfiliados() {
           { rotulo: 'Comissões no mês', valor: BRL.format(comissaoMes) },
         ]}
       />
-
-      <Secao
-        titulo="Regras gerais dos afiliados"
-        descricao="Valem para quem não tem valor próprio na tela do afiliado. Valores iniciais são fictícios: ajuste depois de fazer as contas. A trava de margem e a carência ficam em Super cupons."
-        acoes={
-          <Botao variante="principal" disabled={salvando || !config} onClick={() => void salvarRegras()}>
-            {salvando ? 'Salvando…' : 'Salvar regras'}
-          </Botao>
-        }
-      >
-        <Grade min={180}>
-          <Campo label="Ativação (%)" dica="1ª compra faturada de cada filiado">
-            <input style={campoEstilo} inputMode="decimal" value={form.pctAtivacaoAfiliado ?? ''} onChange={(e) => setForm((f) => ({ ...f, pctAtivacaoAfiliado: e.target.value }))} />
-          </Campo>
-          <Campo label="Recorrência (%)" dica="compras seguintes, por período">
-            <input style={campoEstilo} inputMode="decimal" value={form.pctRecorrenciaAfiliado ?? ''} onChange={(e) => setForm((f) => ({ ...f, pctRecorrenciaAfiliado: e.target.value }))} />
-          </Campo>
-          <Campo label="Desconto do cupom do afiliado (%)" dica="o que o filiado ganha ao usar o cupom (0 = só identifica)">
-            <input style={campoEstilo} inputMode="decimal" value={form.descontoCupomAfiliadoPct ?? ''} onChange={(e) => setForm((f) => ({ ...f, descontoCupomAfiliadoPct: e.target.value }))} />
-          </Campo>
-          <Campo label="Periodicidade padrão" dica="o afiliado pode trocar a dele">
-            <select style={campoEstilo} value={form.periodicidadePadrao ?? 'mensal'} onChange={(e) => setForm((f) => ({ ...f, periodicidadePadrao: e.target.value }))}>
-              <option value="mensal">mensal</option>
-              <option value="quinzenal">quinzenal</option>
-            </select>
-          </Campo>
-          <Campo label="Janela do link (dias)" dica="último clique em ?ref= sem cadastro">
-            <input style={campoEstilo} inputMode="numeric" value={form.diasAtribuicao ?? ''} onChange={(e) => setForm((f) => ({ ...f, diasAtribuicao: e.target.value }))} />
-          </Campo>
-        </Grade>
-      </Secao>
+      {config && (
+        <p className={ped.mudo} style={{ marginBottom: '1rem' }}>
+          Regras gerais em vigor: ativação {pctTexto(config.pctAtivacaoAfiliado)}% · recorrência {pctTexto(config.pctRecorrenciaAfiliado)}% ({config.periodicidadePadrao}) · desconto do cupom{' '}
+          {pctTexto(config.descontoCupomAfiliadoPct)}% · carência {config.diasLiberacao} dias · saldo vale {config.mesesValidade} meses.
+        </p>
+      )}
 
       <Secao
         titulo={`Afiliados (${filtrados.length})`}
