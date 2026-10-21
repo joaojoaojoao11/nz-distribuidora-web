@@ -12,5 +12,7 @@ Resumo do que ele cobre no site:
 - **Uso do saldo** no checkout.
 - **Saque Pix**, que vira contas a pagar no ERP sozinho, com corte às 14h.
 - **Afiliados v2:** painel, metas, campanhas e multiplicadores.
+- **Gamificação (21/10):** níveis com tema de corrida, conquistas, comemoração quando o cashback é liberado, missões,
+  sequência mensal, ranking opcional e cartão de compartilhar o cupom — sempre dentro da trava de margem e de um teto mensal.
 
 Regra deste repositório: **nenhum código de cupom, percentual de margem ou dado de cliente em migration ou seed.**
