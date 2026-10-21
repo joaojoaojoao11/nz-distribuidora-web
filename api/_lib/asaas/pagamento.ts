@@ -482,11 +482,16 @@ export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dado
     return null;
   }
 
-  const { data: pedidoData } = await site.from('pedidos').select('id, cupom, pagamento_status, erp_quote_id').eq('id', p.pedido_id).maybeSingle();
-  const pedido = pedidoData as { id: string; cupom: string | null; pagamento_status: string; erp_quote_id: string | null } | null;
+  const { data: pedidoData } = await site.from('pedidos').select('id, cupom, cupom_consumido_em, pagamento_status, erp_quote_id').eq('id', p.pedido_id).maybeSingle();
+  const pedido = pedidoData as { id: string; cupom: string | null; cupom_consumido_em: string | null; pagamento_status: string; erp_quote_id: string | null } | null;
   if (pedido && pedido.pagamento_status !== 'pago') {
     await site.from('pedidos').update({ pagamento_status: 'pago', pago_em: patch.pago_em, forma_pagamento: p.forma }).eq('id', pedido.id);
-    if (pedido.cupom) await site.rpc('cupom_consumir', { p_codigo: pedido.cupom });
+    // O uso do cupom é consumido UMA vez por pedido, no pagamento; a marca
+    // `cupom_consumido_em` é o que impede o sync (FATURADO) de consumir de novo.
+    if (pedido.cupom && !pedido.cupom_consumido_em) {
+      await site.rpc('cupom_consumir', { p_codigo: pedido.cupom });
+      await site.from('pedidos').update({ cupom_consumido_em: agora }).eq('id', pedido.id).is('cupom_consumido_em', null);
+    }
   }
   // Só AGORA o ERP fica sabendo: o pagamento foi aprovado. Se falhar, o cron
   // tenta de novo — o pedido não pode quebrar por causa disso.

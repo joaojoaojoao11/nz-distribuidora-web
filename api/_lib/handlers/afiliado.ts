@@ -7,10 +7,12 @@
 //   comissoes    — geradas quando o pedido vinculado chega a FATURADO no ERP
 //
 // Operações (campo `op` no corpo):
-//   clique     { codigo, visitante }      público — registra o último clique
-//   validar    { codigo }                 público — cupom/afiliado existe e está ativo?
-//   meu        {}                         logado  — devolve (criando se preciso) meu código
-//   comissoes  {}                         logado  — minhas comissões
+//   clique       { codigo, visitante }    público — registra o último clique; devolve a janela (dias)
+//   validar      { codigo }               público — cupom/afiliado existe e está ativo? Cupom com
+//                                         dono (nominal) só vale para o dono logado (B3, 21/10/2026)
+//   meu          {}                       logado  — devolve (criando se preciso) meu código
+//   meus-cupons  {}                       logado  — cupons de que sou afiliado ou dono (B4)
+//   comissoes    {}                       logado  — minhas comissões
 //
 // Tudo que escreve passa por aqui com service role; anon não tem policy
 // nenhuma nessas tabelas. Um visitante não consegue atribuir clique a
@@ -19,6 +21,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado } from '../papel.js';
+import { usosReservados } from '../pedido/precificar.js';
 
 const CODIGO_RE = /^[A-Z0-9][A-Z0-9-]{2,23}$/;
 
@@ -63,11 +66,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     const { data: cupom } = await site
       .from('cupons')
-      .select('codigo, tipo, desconto_pct, desconto_valor, ativo, valido_de, valido_ate, limite_usos, usos')
+      .select('codigo, tipo, desconto_pct, desconto_valor, ativo, valido_de, valido_ate, limite_usos, usos, dono_user_id, afiliado_user_id')
       .eq('codigo', codigo)
       .maybeSingle();
     const c = cupom as
-      | { codigo: string; tipo: string; desconto_pct: number | null; desconto_valor: number | null; ativo: boolean; valido_de: string | null; valido_ate: string | null; limite_usos: number | null; usos: number }
+      | { codigo: string; tipo: string; desconto_pct: number | null; desconto_valor: number | null; ativo: boolean; valido_de: string | null; valido_ate: string | null; limite_usos: number | null; usos: number; dono_user_id: string | null; afiliado_user_id: string | null }
       | null;
     if (!c || !c.ativo) {
       res.status(200).json({ valido: false });
@@ -82,9 +85,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(200).json({ valido: false, motivo: 'expirado' });
       return;
     }
-    if (c.limite_usos != null && c.usos >= c.limite_usos) {
+    if (c.limite_usos != null && c.usos + (await usosReservados(site, c.codigo)) >= c.limite_usos) {
       res.status(200).json({ valido: false, motivo: 'esgotado' });
       return;
+    }
+    // Cupom nominal (com dono) ou de afiliado: só o dono usa o nominal, e
+    // ninguém usa o próprio cupom de afiliado. Quem não está logado só fica
+    // sabendo que o cupom é nominal — o resumo do checkout confere de novo.
+    if (c.dono_user_id || c.afiliado_user_id) {
+      const quem = await resolverPapelDetalhado(site, req.headers.authorization);
+      if (c.dono_user_id && quem.userId !== c.dono_user_id) {
+        res.status(200).json({ valido: false, motivo: 'nominal' });
+        return;
+      }
+      if (c.afiliado_user_id && quem.userId && quem.userId === c.afiliado_user_id) {
+        res.status(200).json({ valido: false, motivo: 'proprio' });
+        return;
+      }
     }
     res.status(200).json({ valido: true, codigo: c.codigo, tipo: c.tipo, descontoPct: c.desconto_pct, descontoValor: c.desconto_valor });
     return;
@@ -103,12 +120,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(200).json({ ok: false });
       return;
     }
-    // Último clique vence (regra decidida: 30 dias, último clique).
+    // Último clique vence. A janela (dias) vem de loja_config.dias_atribuicao e
+    // volta na resposta, para o navegador guardar o mesmo prazo (B6, 21/10/2026).
     const { error } = await site.from('atribuicoes').upsert(
       { visitante_id: visitante, afiliado_user_id: a.user_id, ultimo_clique_em: new Date().toISOString() },
       { onConflict: 'visitante_id' }
     );
-    res.status(200).json({ ok: !error });
+    const { data: cfgClique } = await site.from('loja_config').select('dias_atribuicao').eq('id', 1).maybeSingle();
+    const dias = Number((cfgClique as { dias_atribuicao?: number } | null)?.dias_atribuicao ?? 30) || 30;
+    res.status(200).json({ ok: !error, dias });
     return;
   }
 
@@ -167,6 +187,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
+  if (op === 'meus-cupons') {
+    // "Meus cupons" lia `cupons` direto do navegador, mas a política da tabela é
+    // só de admin: para todo mundo a lista vinha vazia (B4). Aqui, com service
+    // role, saem os cupons de que a pessoa é afiliada ou dona.
+    const { data } = await site
+      .from('cupons')
+      .select('codigo, tipo, desconto_pct, desconto_valor, ativo, valido_ate, usos, limite_usos, dono_user_id, afiliado_user_id')
+      .or(`afiliado_user_id.eq.${userId},dono_user_id.eq.${userId}`)
+      .order('criado_em', { ascending: false })
+      .limit(100);
+    const lista = ((data ?? []) as { codigo: string; tipo: string; desconto_pct: number | null; desconto_valor: number | null; ativo: boolean; valido_ate: string | null; usos: number | null; limite_usos: number | null; dono_user_id: string | null; afiliado_user_id: string | null }[]).map((c) => ({
+      codigo: c.codigo,
+      tipo: c.tipo,
+      desconto_pct: c.desconto_pct,
+      desconto_valor: c.desconto_valor,
+      ativo: c.ativo,
+      valido_ate: c.valido_ate,
+      usos: c.usos,
+      limite_usos: c.limite_usos,
+      // O de afiliado é para DISTRIBUIR (quem usa é o indicado); o nominal é para USAR.
+      papel: c.dono_user_id === userId ? 'dono' : 'afiliado',
+    }));
+    res.status(200).json({ cupons: lista });
+    return;
+  }
+
   if (op === 'comissoes') {
     const { data } = await site
       .from('comissoes')
@@ -180,7 +226,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  res.status(400).json({ error: 'op-desconhecida', disponiveis: ['clique', 'validar', 'meu', 'comissoes'] });
+  res.status(400).json({ error: 'op-desconhecida', disponiveis: ['clique', 'validar', 'meu', 'meus-cupons', 'comissoes'] });
 }
 
 function safeJson(raw: string): Record<string, unknown> {

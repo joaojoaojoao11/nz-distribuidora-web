@@ -1,10 +1,10 @@
 // /painel/pontos — saldo, extrato, campanhas e os cupons já resgatados.
 //
-// O cashback sai como **cupom de valor nominal**, não como dinheiro na conta.
-// Não é economia de esforço: a chave do Asaas foi guardada de propósito sem
-// permissão de saque, e transferência disparada por clique de cliente não é
-// coisa que se faz sem uma conversa sobre fraude e sobre imposto. O cupom
-// resolve hoje e é reversível; ver docs/PLANO_PROVA_SOCIAL.md.
+// O resgate está FECHADO desde 21/10/2026 (B1 do plano de indicação): ele
+// gravava um cupom `tipo='cashback'` que a tabela recusa, então sempre
+// falhava. Na Fase 2 o resgate vira crédito na carteira (D14). A tela mostra as
+// campanhas e o saldo, e diz que o resgate chega em breve; o servidor também
+// recusa (api/_lib/handlers/avaliacoes.ts). Histórico: docs/PLANO_PROVA_SOCIAL.md.
 
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -12,7 +12,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import { BRL } from '../../lib/shop/precos';
 import {
   meusPontos,
-  resgatarCampanha,
   textoDoErro,
   type Campanha,
   type CupomDoCliente,
@@ -38,7 +37,6 @@ export default function PainelPontos() {
   const [cupons, setCupons] = useState<CupomDoCliente[]>([]);
   const [regras, setRegras] = useState<RegrasDePonto | null>(null);
   const [carregando, setCarregando] = useState(true);
-  const [ocupado, setOcupado] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [copiado, setCopiado] = useState<string | null>(null);
 
@@ -61,21 +59,6 @@ export default function PainelPontos() {
   useEffect(() => {
     void carregar();
   }, [carregar]);
-
-  const resgatar = async (c: Campanha) => {
-    if (!window.confirm(`Trocar ${c.pontos} pontos por ${BRL.format(c.valor)} de crédito?`)) return;
-    setOcupado(c.id);
-    setAviso(null);
-    try {
-      const r = await resgatarCampanha(c.id);
-      await carregar();
-      setAviso(`Pronto. Seu cupom é ${r.cupom} — ${BRL.format(r.valor)} de desconto, válido até ${dia(r.validoAte)}.`);
-    } catch (e) {
-      setAviso(textoDoErro(e));
-    } finally {
-      setOcupado(null);
-    }
-  };
 
   const copiar = async (codigo: string) => {
     try {
@@ -118,7 +101,7 @@ export default function PainelPontos() {
         <>
           <h3 className={styles.secaoTitulo}>
             Trocar por crédito
-            <small>O crédito vira um cupom só seu, para usar na próxima compra</small>
+            <small>Em breve o crédito vai direto para a sua conta, para usar na próxima compra. Seus pontos ficam guardados.</small>
           </h3>
           <ul className={styles.cartoes}>
             {campanhas.map((c) => {
@@ -139,14 +122,8 @@ export default function PainelPontos() {
                       {falta > 0 ? (
                         <span className={styles.mudo}>faltam {falta.toLocaleString('pt-BR')} pontos</span>
                       ) : (
-                        <button
-                          type="button"
-                          className={styles.botaoPrincipal}
-                          disabled={ocupado === c.id}
-                          onClick={() => void resgatar(c)}
-                        >
-                          {ocupado === c.id ? 'Resgatando…' : 'Resgatar'}
-                        </button>
+                        // B1: o botão "Resgatar" volta na Fase 2, como crédito na conta.
+                        <span className={styles.mudo}>você já pode trocar · resgate em breve</span>
                       )}
                     </div>
                   </div>

@@ -1,16 +1,21 @@
 // Atribuição de afiliado no cliente.
 //
-// Um link compartilhado chega como ?ref=NZ-ABCDE. Guardamos o código por 30
-// dias (último clique vence) e um id de visitante estável, e avisamos o
-// servidor, que grava em `atribuicoes`. No cadastro o código vira
-// `user_profiles.indicado_por`; no pedido vira `pedidos.afiliado_user_id`
-// (resolvido no servidor pelo código). Nada disto dá acesso a nada: é só
-// para saber quem indicou.
+// Um link compartilhado chega como ?ref=NZ-ABCDE. Guardamos o código pela
+// janela de atribuição (último clique vence) e um id de visitante estável, e
+// avisamos o servidor, que grava em `atribuicoes`. No cadastro o código vai em
+// `indicado_por` e o servidor o resolve para o usuário do afiliado; no pedido
+// vira `pedidos.afiliado_user_id`. Nada disto dá acesso a nada: é só para
+// saber quem indicou.
+//
+// A janela vem do servidor (loja_config.dias_atribuicao, devolvida pelo op
+// `clique`) e fica guardada junto do código; 30 dias é só o padrão enquanto a
+// resposta não chega (B6, 21/10/2026).
 
 const CHAVE_REF = 'nz:ref';
 const CHAVE_REF_EM = 'nz:ref:em';
+const CHAVE_REF_DIAS = 'nz:ref:dias';
 const CHAVE_VISITANTE = 'nz:visitante';
-const DIAS = 30;
+const DIAS_PADRAO = 30;
 
 function ler(chave: string): string | null {
   try {
@@ -42,7 +47,8 @@ export function refVigente(): string | null {
   const ref = ler(CHAVE_REF);
   const em = Number(ler(CHAVE_REF_EM) ?? 0);
   if (!ref || !em) return null;
-  if (Date.now() - em > DIAS * 86400000) return null;
+  const dias = Number(ler(CHAVE_REF_DIAS)) || DIAS_PADRAO;
+  if (Date.now() - em > dias * 86400000) return null;
   return ref;
 }
 
@@ -60,5 +66,10 @@ export function capturarRef(search: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ op: 'clique', codigo, visitante: visitanteId() }),
     keepalive: true,
-  }).catch(() => {});
+  })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j: { ok?: boolean; dias?: number } | null) => {
+      if (j && Number(j.dias) > 0) gravar(CHAVE_REF_DIAS, String(Math.floor(Number(j.dias))));
+    })
+    .catch(() => {});
 }

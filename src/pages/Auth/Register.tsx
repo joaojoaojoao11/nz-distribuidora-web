@@ -18,6 +18,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { refVigente } from '../../lib/afiliado';
 import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
 import { chamarConta, formatarTelefone, telefoneOk, textoDoErroAuth } from '../../lib/shop/conta';
 import { ehEmpresa, TIPO_DESCRICAO, TIPO_LABEL, TIPOS_CLIENTE } from '../../lib/shop/papeis';
@@ -79,13 +80,10 @@ export default function Register() {
       company_name: form.company || undefined,
       cpf_cnpj: form.documento ? somenteDigitos(form.documento) : undefined,
       ie: form.ie || undefined,
-      indicado_por: (() => {
-        try {
-          return window.localStorage.getItem('nz:ref');
-        } catch {
-          return null;
-        }
-      })(),
+      // Código do afiliado que trouxe esta pessoa, só se ainda está na janela
+      // de atribuição. O servidor (handle_new_user) resolve o código para o
+      // usuário do afiliado e grava em user_profiles.indicado_por (B2).
+      indicado_por: refVigente(),
     }, destino);
 
     if (err) {

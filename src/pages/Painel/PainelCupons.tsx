@@ -1,10 +1,10 @@
-// /painel/cupons — o que o cliente pode usar no carrinho.
+// /painel/cupons — os cupons da pessoa e um conferidor de código.
 //
-// Hoje existe um tipo só de cupom no banco: o do afiliado (o próprio código de
-// indicação). Cupom nominal ("a NZ deu 10% para o fulano") ainda não existe —
-// `cupons` não tem coluna de dono, e inventar uma lista falsa seria pior que
-// uma tela honesta. Então: o cupom de indicação, se houver, e um conferidor de
-// código, que é o que resolve a dúvida real ("esse cupom que me passaram vale?").
+// Dois tipos: o cupom de AFILIADO (o próprio código de indicação — quem usa é
+// o indicado) e o cupom NOMINAL (`cupons.dono_user_id`: "a NZ deu 10% para o
+// fulano" — só o dono usa). A lista vem da rota do servidor (op `meus-cupons`):
+// até 21/10/2026 a tela lia `cupons` direto do navegador, e como a política da
+// tabela é só de admin, todo mundo via a lista vazia (B4 do plano de indicação).
 
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -15,12 +15,15 @@ import styles from './Painel.module.css';
 
 interface MeuCupom {
   codigo: string;
+  tipo?: string;
   desconto_pct: number | null;
   desconto_valor: number | null;
   ativo: boolean;
   valido_ate: string | null;
   usos: number | null;
   limite_usos: number | null;
+  /** 'dono' = cupom nominal para EU usar; 'afiliado' = meu código, para DISTRIBUIR. */
+  papel?: 'dono' | 'afiliado';
 }
 
 interface Conferencia {
@@ -41,15 +44,27 @@ export default function PainelCupons() {
   useEffect(() => {
     if (!user) return;
     let vivo = true;
-    void supabase
-      .from('cupons')
-      .select('codigo, desconto_pct, desconto_valor, ativo, valido_ate, usos, limite_usos')
-      .eq('afiliado_user_id', user.id)
-      .then(({ data }) => {
+    void (async () => {
+      try {
+        const { data: sess } = await supabase.auth.getSession();
+        const token = sess.session?.access_token;
+        if (!token) return;
+        const r = await fetch('/api/nz/afiliado', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ op: 'meus-cupons' }),
+        });
         if (!vivo) return;
-        setMeus((data ?? []) as MeuCupom[]);
-        setCarregando(false);
-      });
+        if (r.ok) {
+          const j = (await r.json()) as { cupons?: MeuCupom[] };
+          setMeus(j.cupons ?? []);
+        }
+      } catch {
+        /* sem cupons nesta carga */
+      } finally {
+        if (vivo) setCarregando(false);
+      }
+    })();
     return () => {
       vivo = false;
     };
@@ -96,6 +111,7 @@ export default function PainelCupons() {
                 <div>
                   <span className={styles.cupomCodigo}>{c.codigo}</span>
                   <span className={styles.cupomRegra}>
+                    {c.papel === 'afiliado' ? 'seu código de indicação — quem usa é quem você indica · ' : ''}
                     {desconto(c.desconto_pct, c.desconto_valor)}
                     {c.valido_ate ? ` · até ${new Date(c.valido_ate).toLocaleDateString('pt-BR')}` : ''}
                     {c.limite_usos ? ` · ${c.usos ?? 0}/${c.limite_usos} usos` : ''}

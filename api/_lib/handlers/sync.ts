@@ -620,6 +620,8 @@ interface PedidoErp {
   site_pedido_id: string;
   tiny_order_number: string | null;
   updated_at: string | null;
+  /** Frete cobrado do cliente (ERP ≥ 21/10/2026); nulo em ERP sem a coluna na view. */
+  shipping_cost?: number | null;
 }
 
 const FATURADO_OU_ALEM = new Set(['FATURADO', 'FATURADO_PARCIAL', 'PREPARANDO_ENVIO', 'PRONTO_ENVIO', 'ENVIADO', 'ENTREGUE']);
@@ -628,7 +630,14 @@ const CANCELADOS = new Set(['CANCELADO', 'NAO_APROVADO']);
 async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos: number; atualizados: number; comissoes: number }> {
   let lidos: PedidoErp[] = [];
   try {
-    lidos = await lerTudo<PedidoErp>(erp, 'pedidos_site', 'id, quote_number, status, total, site_pedido_id, tiny_order_number, updated_at', 'id');
+    // `shipping_cost` entrou na view em 21/10/2026 (B6): a base da comissão é
+    // itens − desconto, SEM frete. Num ERP sem a coluna, a leitura cai para a
+    // lista antiga e a base volta a ser o total (comportamento de antes).
+    try {
+      lidos = await lerTudo<PedidoErp>(erp, 'pedidos_site', 'id, quote_number, status, total, site_pedido_id, tiny_order_number, updated_at, shipping_cost', 'id');
+    } catch {
+      lidos = await lerTudo<PedidoErp>(erp, 'pedidos_site', 'id, quote_number, status, total, site_pedido_id, tiny_order_number, updated_at', 'id');
+    }
   } catch (err) {
     // A view nasce na Fase 7; um ERP sem ela não pode derrubar o sync do catálogo.
     console.warn('[erp-sync] pedidos_site indisponível:', err instanceof Error ? err.message : err);
@@ -639,9 +648,10 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
   const ids = lidos.map((p) => p.site_pedido_id);
   const { data: locaisData } = await site
     .from('pedidos')
-    .select('id, status, total_erp, afiliado_user_id, erp_quote_id')
+    .select('id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em')
     .in('id', ids);
-  const locais = new Map(((locaisData ?? []) as { id: string; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null }[]).map((p) => [p.id, p]));
+  type Local = { id: string; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null; cupom: string | null; cupom_consumido_em: string | null };
+  const locais = new Map(((locaisData ?? []) as Local[]).map((p) => [p.id, p]));
 
   const { data: cfg } = await site.from('loja_config').select('percentual_afiliado_padrao').eq('id', 1).maybeSingle();
   const pctPadrao = Number((cfg as { percentual_afiliado_padrao?: number } | null)?.percentual_afiliado_padrao ?? 0);
@@ -662,13 +672,26 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
       if (!error) atualizados++;
     }
 
+    // Orçamento com cupom (sem pagamento online): o uso do cupom é consumido
+    // quando o ERP fatura — uma vez só, pela marca `cupom_consumido_em` (B5).
+    if (local.cupom && !local.cupom_consumido_em && FATURADO_OU_ALEM.has(p.status)) {
+      const { data: marcado } = await site
+        .from('pedidos')
+        .update({ cupom_consumido_em: agora })
+        .eq('id', p.site_pedido_id)
+        .is('cupom_consumido_em', null)
+        .select('id');
+      if ((marcado ?? []).length) await site.rpc('cupom_consumir', { p_codigo: local.cupom });
+    }
+
     if (!local.afiliado_user_id) continue;
 
     if (FATURADO_OU_ALEM.has(p.status)) {
       const { data: af } = await site.from('afiliados').select('percentual, ativo').eq('user_id', local.afiliado_user_id).maybeSingle();
       const a = af as { percentual: number | null; ativo: boolean } | null;
       const pct = Number(a?.percentual ?? pctPadrao);
-      const base = Number(p.total ?? 0);
+      // Base = itens já com o desconto, SEM frete (D4 do plano, conserta o B6).
+      const base = Math.max(0, Number(p.total ?? 0) - Number(p.shipping_cost ?? 0));
       if (!a || !a.ativo || pct <= 0 || base <= 0) continue;
       const valor = Math.round(base * (pct / 100) * 100) / 100;
       // ignoreDuplicates: já existe → não recalcula (o valor pago é o apurado).

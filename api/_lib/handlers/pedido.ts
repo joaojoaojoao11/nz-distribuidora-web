@@ -150,6 +150,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     cupom: cupom.codigo,
     afiliadoCodigo,
     frete: { tipo: 'FOB', valor: 0 },
+    desconto: cupom.desconto,
   });
   await site.from('pedidos').update({ erp_payload: payload }).eq('id', pedido.id);
 
@@ -162,7 +163,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     .from('pedidos')
     .update({ status: 'SOLICITADO', erp_envio: 'pendente', status_atualizado_em: new Date().toISOString() })
     .eq('id', pedido.id);
-  if (cupom.codigo) await site.rpc('cupom_consumir', { p_codigo: cupom.codigo });
+  // O cupom NÃO é consumido aqui (B5, 21/10/2026): o orçamento só o RESERVA
+  // (conta contra o limite em `usosReservados`) e o uso é consumido quando o
+  // ERP fatura o pedido (sync.ts, espelharPedidos). Antes, um orçamento que
+  // nunca virava venda gastava o cupom.
 
   // Ninguém ficava sabendo do pedido parado esperando despacho: agora chega
   // um e-mail para a NZ. Nunca derruba o pedido (avisos.ts).

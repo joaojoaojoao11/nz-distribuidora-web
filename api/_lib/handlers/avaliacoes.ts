@@ -57,6 +57,9 @@ function nomeCurto(completo: string | null | undefined, email: string | null | u
   return antes ? antes.slice(0, 18) : 'Cliente NZ';
 }
 
+/** Resgate de pontos: fechado até virar crédito na carteira (Fase 2 do plano de indicação). */
+const RESGATE_LIGADO = false;
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') {
@@ -211,6 +214,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const campanhaId = texto(body.campanhaId, 60);
       if (!campanhaId) {
         res.status(400).json({ error: 'sem-campanha' });
+        return;
+      }
+      // B1 (21/10/2026): o resgate gravava um cupom `tipo='cashback'`, que a
+      // constraint da tabela recusa — sempre falhava e ainda estornava os
+      // pontos. Fica fechado até a Fase 2, quando o resgate vira crédito na
+      // carteira (D14 do plano). Os pontos continuam acumulando.
+      if (!RESGATE_LIGADO) {
+        res.status(409).json({ ok: false, motivo: 'indisponivel', message: 'O resgate de pontos está sendo refeito: em breve ele vira crédito na sua conta. Seus pontos continuam guardados.' });
         return;
       }
       const r = await resgatar(site, userId, campanhaId);

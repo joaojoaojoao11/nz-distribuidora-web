@@ -16,3 +16,12 @@ Resumo do que ele cobre no site:
   sequência mensal, ranking opcional e cartão de compartilhar o cupom — sempre dentro da trava de margem e de um teto mensal.
 
 Regra deste repositório: **nenhum código de cupom, percentual de margem ou dado de cliente em migration ou seed.**
+
+## Andamento no site
+
+- **Fase 0 (21/10/2026):** implantada. O desconto do cupom vai ao NZERP rateado por item (`items[].desconto` +
+  `desconto_cupom`, `api/_lib/pedido/precificar.ts`); o cadastro resolve o código `NZ-XXXXX` para o usuário do afiliado
+  no gatilho (`migrations/2026-10-21_fase0_indicacao_consertos.sql`); cupom com dono só vale para o dono; "Meus cupons"
+  lê pela rota (`op: meus-cupons`); o orçamento só reserva o uso do cupom (consumo no pagamento ou no faturamento,
+  `pedidos.cupom_consumido_em`); a janela de atribuição vem do servidor; a comissão do afiliado é sem frete; o resgate de
+  pontos fica fechado até a Fase 2. Teste: `npm run cupom:test`.

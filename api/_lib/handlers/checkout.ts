@@ -390,6 +390,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     cupom: cupom.codigo,
     afiliadoCodigo,
     frete: { tipo: frete.retirada ? 'RETIRADA' : 'CIF', valor: frete.valor, transportadora: frete.nome, prazoDias: frete.dias },
+    desconto: cupom.desconto,
   });
   await site.from('pedidos').update({ erp_payload: payloadErp }).eq('id', pedido.id);
 

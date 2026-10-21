@@ -258,13 +258,36 @@ export interface CupomResolvido {
   invalido: boolean;
 }
 
-/** Valida o cupom e calcula o desconto. Ninguém usa o próprio cupom de afiliado. */
+/**
+ * Pedidos que já "seguram" um uso do cupom sem tê-lo consumido: checkout com
+ * cobrança em aberto e orçamento esperando o ERP faturar. Contam contra o
+ * limite de usos (reserva), para o cupom não passar do limite enquanto esses
+ * pedidos não se resolvem. Cancelado, recusado, expirado, vencido, estornado
+ * ou já consumido não contam. (B5 do plano de indicação, 21/10/2026.)
+ */
+export async function usosReservados(site: Db, codigo: string): Promise<number> {
+  const { count } = await site
+    .from('pedidos')
+    .select('id', { count: 'exact', head: true })
+    .eq('cupom', codigo)
+    .is('cupom_consumido_em', null)
+    .neq('status', 'CANCELADO')
+    .or('pagamento_status.is.null,pagamento_status.not.in.(recusado,expirado,vencido,estornado,cancelado)');
+  return Number(count ?? 0);
+}
+
+/**
+ * Valida o cupom e calcula o desconto. Ninguém usa o próprio cupom de afiliado;
+ * cupom com dono (`dono_user_id`, nominal) só vale para o dono (B3). O limite
+ * de usos conta os consumidos (`usos`) mais os reservados por pedidos em
+ * aberto (B5).
+ */
 export async function resolverCupom(site: Db, codigoBruto: string, subtotal: number, userId: string): Promise<CupomResolvido> {
   const codigo = codigoBruto.trim().toUpperCase();
   if (!codigo) return { codigo: null, desconto: 0, afiliadoUserId: null, invalido: false };
   const { data: c } = await site
     .from('cupons')
-    .select('codigo, tipo, desconto_pct, desconto_valor, afiliado_user_id, ativo, valido_de, valido_ate, limite_usos, usos')
+    .select('codigo, tipo, desconto_pct, desconto_valor, afiliado_user_id, dono_user_id, ativo, valido_de, valido_ate, limite_usos, usos')
     .eq('codigo', codigo)
     .maybeSingle();
   const cupom = c as {
@@ -272,6 +295,7 @@ export async function resolverCupom(site: Db, codigoBruto: string, subtotal: num
     desconto_pct: number | null;
     desconto_valor: number | null;
     afiliado_user_id: string | null;
+    dono_user_id: string | null;
     ativo: boolean;
     valido_de: string | null;
     valido_ate: string | null;
@@ -279,14 +303,18 @@ export async function resolverCupom(site: Db, codigoBruto: string, subtotal: num
     usos: number;
   } | null;
   const agora = Date.now();
-  const ok =
-    cupom &&
+  let ok =
+    !!cupom &&
     cupom.ativo &&
     (!cupom.valido_de || Date.parse(cupom.valido_de) <= agora) &&
     (!cupom.valido_ate || Date.parse(cupom.valido_ate) >= agora) &&
-    (cupom.limite_usos == null || cupom.usos < cupom.limite_usos) &&
-    cupom.afiliado_user_id !== userId;
-  if (!ok) return { codigo: null, desconto: 0, afiliadoUserId: null, invalido: true };
+    cupom.afiliado_user_id !== userId &&
+    (!cupom.dono_user_id || cupom.dono_user_id === userId);
+  if (ok && cupom && cupom.limite_usos != null) {
+    const reservados = await usosReservados(site, cupom.codigo);
+    ok = Number(cupom.usos) + reservados < cupom.limite_usos;
+  }
+  if (!ok || !cupom) return { codigo: null, desconto: 0, afiliadoUserId: null, invalido: true };
   let desconto = 0;
   if (cupom.desconto_pct) desconto = r2(subtotal * (Number(cupom.desconto_pct) / 100));
   else if (cupom.desconto_valor) desconto = Math.min(subtotal, Number(cupom.desconto_valor));
@@ -352,6 +380,37 @@ export interface FreteErp {
   prazoDias?: number | null;
 }
 
+/**
+ * Rateia o desconto do cupom pelos itens, proporcional ao total de cada linha,
+ * em centavos. A soma fecha EXATAMENTE no desconto: o resto do arredondamento
+ * vai para a última linha que ainda comporta. Nenhuma linha fica negativa.
+ *
+ * É o que o NZERP grava em `quotes.items[].desconto` e leva para a NF-e como
+ * `vDesc` por item (B7 do plano de indicação, 21/10/2026). Sem desconto, a
+ * lista volta toda em zero e o payload sai igual ao de sempre.
+ */
+export function ratearDesconto(totais: number[], desconto: number): number[] {
+  const d = Math.max(0, r2(Number(desconto) || 0));
+  const base = totais.map((t) => Math.max(0, Number(t) || 0));
+  const soma = r2(base.reduce((s, t) => s + t, 0));
+  if (d <= 0 || soma <= 0) return base.map(() => 0);
+  const alvo = Math.min(d, soma);
+  const cents = Math.round(alvo * 100);
+  // Parte proporcional, truncada para baixo em centavos.
+  const partes = base.map((t) => Math.floor((cents * t) / soma));
+  let resto = cents - partes.reduce((s, p) => s + p, 0);
+  // O que sobrou (sempre < nº de linhas) vai da última para a primeira,
+  // um centavo por vez, só em linha que ainda tem espaço.
+  for (let i = base.length - 1; resto > 0 && i >= 0; i--) {
+    const cabe = Math.round(base[i] * 100) - partes[i];
+    if (cabe <= 0) continue;
+    const leva = Math.min(cabe, resto);
+    partes[i] += leva;
+    resto -= leva;
+  }
+  return partes.map((p) => p / 100);
+}
+
 /** Corpo da RPC site_criar_pedido, igual para os dois caminhos. */
 export function montarPayloadErp(args: {
   pedidoId: string;
@@ -359,13 +418,21 @@ export function montarPayloadErp(args: {
   siteUserId?: string | null;
   perfil: Perfil;
   linhas: Linha[];
+  /** O que o cliente paga: itens − desconto + frete. */
   total: number;
   notas: string;
   cupom: string | null;
   afiliadoCodigo: string | null;
   frete: FreteErp;
+  /** Desconto do cupom, em R$, sobre os itens (nunca sobre o frete). */
+  desconto?: number;
 }) {
   const { perfil, linhas } = args;
+  const descontoTotal = r2(Math.max(0, Number(args.desconto) || 0));
+  const descontos = ratearDesconto(
+    linhas.map((l) => l.total),
+    descontoTotal
+  );
   return {
     site_pedido_id: args.pedidoId,
     site_user_id: args.siteUserId ?? null,
@@ -383,15 +450,18 @@ export function montarPayloadErp(args: {
     uf: perfil.address_state,
     cep: perfil.address_zip,
     endereco_completo: enderecoCompleto(perfil),
-    items: linhas.map((l) => ({
+    items: linhas.map((l, i) => ({
       sku: l.e.sku,
       name: `${l.e.nome ?? l.produto.nome}${l.item.unidade === 'rolo' ? ` (${l.item.qtd} rolo${l.item.qtd > 1 ? 's' : ''} fechado${l.item.qtd > 1 ? 's' : ''})` : ''}`,
       qty: l.qtyMt,
       // Peça vai como UN (o nome do ERP já traz o tamanho); o resto, metro linear.
       unit: l.item.unidade === 'un' ? 'UN' : 'MT',
       unitPrice: l.unitPrice,
+      // Preço cheio: o desconto vai à parte, por item, para a NF sair com vDesc.
       total: l.total,
       availabilityTag: Number(l.e.saldo_ml) > 0.01 ? 'ESTOQUE' : 'DROP',
+      // Só quando há cupom — o pedido sem cupom sai igual ao de sempre.
+      ...(descontos[i] > 0 ? { desconto: descontos[i] } : {}),
     })),
     total: args.total,
     shipping_type: args.frete.tipo === 'RETIRADA' ? 'FOB' : args.frete.tipo,
@@ -399,6 +469,9 @@ export function montarPayloadErp(args: {
     notes: args.notas,
     cupom: args.cupom ?? '',
     afiliado_codigo: args.afiliadoCodigo ?? '',
+    // Total do desconto do cupom (a soma dos `items[].desconto`). O NZERP
+    // (site_criar_pedido v3) grava em quotes.desconto_cupom e confere a soma.
+    desconto_cupom: descontoTotal,
   };
 }
 
