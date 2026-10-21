@@ -31,3 +31,12 @@ Regra deste repositório: **nenhum código de cupom, percentual de margem ou dad
   faixa escolhida na aprovação em `/admin/clientes`, com a etiqueta "indicação de NZ-XXXXX" e a pré-análise do consultor
   (`pre_analises`); o e-mail de aprovação diz a faixa; o nome da faixa é espelhado no cliente do NZERP (só leitura lá).
   Percentuais das faixas NÃO ficam no repositório. Teste: `npm run precos:test`.
+- **Fase 2 (21/10/2026):** implantada. Carteira em R$ (`carteira_movimentos`, razão; escrita só pelo servidor; o
+  cliente lê pela rota, com o indicado por número), super cupom (um por cliente, 1 compra por indicado, só conta nova),
+  cupom nominal, filiação permanente pelo cupom do afiliado, comissão de ativação e de recorrência (mensal/quinzenal),
+  trava de margem (desligada até os números serem confirmados), carência e validade do saldo, cron de
+  liberação/expiração, estorno em cancelamento, resgate de pontos virando crédito. Motor em `api/_lib/incentivos/`,
+  rota `/api/nz/incentivos`. Admin: `/admin/afiliados` (+ `/admin/afiliados/:userId`), `/admin/cupons`,
+  `/admin/super-cupons`, com as peças de `src/pages/Admin/comuns/`. Painel: `/painel/indique` refeito (nível,
+  saldo, super cupom, afiliado, momentos, conquistas, comemoração, extrato). Percentuais, bônus e multiplicadores
+  NÃO ficam no repositório. Teste: `npm run incentivos:test`.

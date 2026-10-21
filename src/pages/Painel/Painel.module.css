@@ -940,3 +940,238 @@
   .linhaExtrato { grid-template-columns: 4.5rem 1fr auto; gap: 0.5rem; }
   .saldoNumero { font-size: 2.1rem; }
 }
+
+/* ===================================================== Indique e ganhe (Fase 2, 21/10/2026)
+   Nível, saldo, super cupom, momentos, conquistas e a comemoração. Celular
+   primeiro; nada só no hover; "reduzir movimento" desliga as animações. */
+.nivelCartao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(209, 30, 30, 0.08), rgba(255, 255, 255, 0.02));
+  margin-bottom: 1rem;
+}
+.nivelTopo {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.nivelTopo > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.nivelIcone {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+.nivelNome {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+}
+.nivelBarra {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.nivelBarraFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent-red, #d11e1e);
+  transition: width 0.8s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nivelBarraFill {
+    transition: none;
+  }
+}
+.saldoLinha {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin: 0.5rem 0 0.75rem;
+}
+.saldoLinha > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+}
+.saldoValor {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.saldoGrande {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0.75rem 0;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--accent-red, #d11e1e);
+}
+.saldoGrande small {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.cupomGrande {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px dashed var(--border-light);
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+}
+.cupomGrande code {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-align: center;
+  word-break: break-all;
+}
+.cupomAcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.cupomAcoes a,
+.cupomAcoes button {
+  min-height: 44px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.passos {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+.momentos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+.momento {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.8rem;
+  border-left: 3px solid var(--accent-red, #d11e1e);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+}
+.momento small {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.conquistas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.6rem;
+}
+.conquista {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+  padding: 0.9rem 0.6rem;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+.conquista small {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+.conquistaIcone {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.conquistaBloqueada {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+.conquistaBonus {
+  color: var(--accent-red, #d11e1e) !important;
+  font-weight: 700;
+}
+.comemoracao {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.72);
+}
+.comemoracaoCaixa {
+  position: relative;
+  width: min(520px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  background: var(--bg-primary, #0a0a0a);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: center;
+}
+.comemoracaoCaixa .momentos,
+.comemoracaoCaixa .conquistas {
+  text-align: left;
+}
+.confete {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 16px;
+}
+.confete i {
+  position: absolute;
+  top: -12px;
+  width: 8px;
+  height: 14px;
+  background: var(--accent-red, #d11e1e);
+  opacity: 0.9;
+  animation: confeteCai 1.5s ease-in forwards;
+}
+.confete i:nth-child(3n) {
+  background: #d4a853;
+}
+.confete i:nth-child(3n + 1) {
+  background: #ffffff;
+}
+@keyframes confeteCai {
+  to {
+    transform: translateY(110vh) rotate(540deg);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confete {
+    display: none;
+  }
+}

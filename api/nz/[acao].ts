@@ -38,6 +38,7 @@ import promoMoto from '../_lib/handlers/promoMoto.js';
 import lente from '../_lib/handlers/lente.js';
 import garantia from '../_lib/handlers/garantia.js';
 import lead from '../_lib/handlers/lead.js';
+import incentivos from '../_lib/handlers/incentivos.js';
 
 type Handler = (req: VercelRequest, res: VercelResponse) => Promise<void> | void;
 
@@ -94,6 +95,10 @@ const ROTAS: Record<string, Handler> = {
   // Pedido de aplicador e cupom surpresa das páginas NZPPF. Público, com
   // honeypot e limite por IP; grava e avisa a NZ por e-mail.
   lead,
+  // Carteira em R$, super cupom, afiliados (ativação/recorrência) e cupons do
+  // admin — Fase 2 do plano de indicação. Logado; o que mexe em dinheiro ou
+  // em dado de terceiro só sai daqui.
+  incentivos,
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

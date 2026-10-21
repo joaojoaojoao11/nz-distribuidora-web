@@ -57,7 +57,11 @@ function nomeCurto(completo: string | null | undefined, email: string | null | u
   return antes ? antes.slice(0, 18) : 'Cliente NZ';
 }
 
-/** Resgate de pontos: fechado até virar crédito na carteira (Fase 2 do plano de indicação). */
+/**
+ * Resgate de pontos por AQUI (cupom nominal): desligado para sempre. Desde a
+ * Fase 2 do plano de indicação (21/10/2026) o resgate vira crédito na carteira
+ * pela rota /api/nz/incentivos (op resgatar-pontos), que é a que o painel chama.
+ */
 const RESGATE_LIGADO = false;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

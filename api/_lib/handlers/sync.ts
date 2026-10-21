@@ -48,6 +48,10 @@ import { sincronizarEquipe } from './equipe.js';
 import { atribuirTitulos } from '../conta/atribuirTitulos.js';
 import { limparNaoConfirmados } from '../conta/limparNaoConfirmados.js';
 import { abrirOcorrencia, chavesAbertas, resolverPorChave, resolverVariasChaves } from '../ocorrencias.js';
+import { carregarConfigIncentivos } from '../incentivos/config.js';
+import { estornarPedido, processarPedidoFaturado } from '../incentivos/motor.js';
+import { manutencaoCarteira } from '../incentivos/carteira.js';
+import { registrarUsoCupom } from '../incentivos/cupomUsos.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Db = SupabaseClient<any, any, any>;
@@ -198,6 +202,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const titulos = !dry && gatilho !== 'webhook' ? await atribuirTitulos(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // Conta criada há mais de 48 h que nunca confirmou o e-mail: some (20/10/2026).
     const limpeza = !dry && gatilho !== 'webhook' ? await limparNaoConfirmados(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // Carteira (Fase 2): libera o que venceu a carência/período e expira o
+    // saldo antigo (D11). Uma vez por dia basta.
+    const carteira = !dry && gatilho !== 'webhook' ? await manutencaoCarteira(site, (await carregarConfigIncentivos(site)).mesesValidade).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
 
     if (logId) {
       await site
@@ -216,7 +223,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Sync inteiro passou: se havia uma queixa de sync caído, ela morre aqui.
     if (!dry) await resolverPorChave(site, 'sync-erro', `sync ${gatilho} concluído`);
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos, limpeza });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos, limpeza, carteira });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);
@@ -648,13 +655,12 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
   const ids = lidos.map((p) => p.site_pedido_id);
   const { data: locaisData } = await site
     .from('pedidos')
-    .select('id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em')
+    .select('id, user_id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em, incentivos_processados_em, incentivos_estornados_em')
     .in('id', ids);
-  type Local = { id: string; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null; cupom: string | null; cupom_consumido_em: string | null };
+  type Local = { id: string; user_id: string | null; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null; cupom: string | null; cupom_consumido_em: string | null; incentivos_processados_em: string | null; incentivos_estornados_em: string | null };
   const locais = new Map(((locaisData ?? []) as Local[]).map((p) => [p.id, p]));
 
-  const { data: cfg } = await site.from('loja_config').select('percentual_afiliado_padrao').eq('id', 1).maybeSingle();
-  const pctPadrao = Number((cfg as { percentual_afiliado_padrao?: number } | null)?.percentual_afiliado_padrao ?? 0);
+  const cfgIncentivos = await carregarConfigIncentivos(site);
 
   let atualizados = 0;
   let comissoes = 0;
@@ -681,29 +687,30 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
         .eq('id', p.site_pedido_id)
         .is('cupom_consumido_em', null)
         .select('id');
-      if ((marcado ?? []).length) await site.rpc('cupom_consumir', { p_codigo: local.cupom });
+      if ((marcado ?? []).length) {
+        await site.rpc('cupom_consumir', { p_codigo: local.cupom });
+        await registrarUsoCupom(site, local.cupom, local.user_id, p.site_pedido_id);
+      }
     }
 
-    if (!local.afiliado_user_id) continue;
-
-    if (FATURADO_OU_ALEM.has(p.status)) {
-      const { data: af } = await site.from('afiliados').select('percentual, ativo').eq('user_id', local.afiliado_user_id).maybeSingle();
-      const a = af as { percentual: number | null; ativo: boolean } | null;
-      const pct = Number(a?.percentual ?? pctPadrao);
-      // Base = itens já com o desconto, SEM frete (D4 do plano, conserta o B6).
-      const base = Math.max(0, Number(p.total ?? 0) - Number(p.shipping_cost ?? 0));
-      if (!a || !a.ativo || pct <= 0 || base <= 0) continue;
-      const valor = Math.round(base * (pct / 100) * 100) / 100;
-      // ignoreDuplicates: já existe → não recalcula (o valor pago é o apurado).
-      const { data: criada } = await site
-        .from('comissoes')
-        .upsert(
-          { pedido_id: p.site_pedido_id, afiliado_user_id: local.afiliado_user_id, base_valor: base, percentual: pct, valor, status: 'apurada', evento_erp: p.status, apurada_em: agora },
-          { onConflict: 'pedido_id,afiliado_user_id', ignoreDuplicates: true }
-        )
-        .select('id');
-      if ((criada ?? []).length) comissoes++;
-    } else if (CANCELADOS.has(p.status)) {
+    // Incentivos (Fase 2, 21/10/2026): super cupom, ativação e recorrência do
+    // afiliado nascem na CARTEIRA quando o ERP fatura — o motor decide quem
+    // ganha o quê (api/_lib/incentivos/motor.ts). A tabela `comissoes` antiga
+    // parou de receber linhas; o que estava lá fica como histórico.
+    if (FATURADO_OU_ALEM.has(p.status) && !local.incentivos_processados_em) {
+      try {
+        const r = await processarPedidoFaturado(site, { pedidoId: p.site_pedido_id, totalErp: Number(p.total ?? 0), freteErp: Number(p.shipping_cost ?? 0), faturadoEm: p.updated_at ? new Date(p.updated_at) : new Date() }, cfgIncentivos);
+        comissoes += r.creditos.length;
+        if (r.cortes.length) console.warn('[erp-sync] trava de margem cortou:', r.cortes.join(' | '));
+      } catch (e) {
+        console.warn('[erp-sync] motor de incentivos falhou no pedido', p.site_pedido_id, e instanceof Error ? e.message : e);
+      }
+    } else if (CANCELADOS.has(p.status) && local.incentivos_processados_em && !local.incentivos_estornados_em) {
+      try {
+        await estornarPedido(site, p.site_pedido_id, `pedido ${p.status} no ERP`);
+      } catch (e) {
+        console.warn('[erp-sync] estorno de incentivos falhou no pedido', p.site_pedido_id, e instanceof Error ? e.message : e);
+      }
       await site
         .from('comissoes')
         .update({ status: 'cancelada', observacao: `pedido ${p.status} no ERP` })

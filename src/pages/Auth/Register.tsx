@@ -44,6 +44,8 @@ export default function Register() {
   // ?email= vem do certificado de garantia recém-emitido ("Criar conta").
   const [form, setForm] = useState(() => ({
     name: '',
+    // Cupom de indicação digitado (afiliado ou super cupom). Vazio = o do link ?ref=.
+    cupom: '',
     email: new URLSearchParams(location.search).get('email')?.trim().toLowerCase() ?? '',
     phone: '',
     password: '',
@@ -87,10 +89,12 @@ export default function Register() {
       company_name: form.company || undefined,
       cpf_cnpj: form.documento ? somenteDigitos(form.documento) : undefined,
       ie: form.ie || undefined,
-      // Código do afiliado que trouxe esta pessoa, só se ainda está na janela
-      // de atribuição. O servidor (handle_new_user) resolve o código para o
-      // usuário do afiliado e grava em user_profiles.indicado_por (B2).
-      indicado_por: refVigente(),
+      // Quem indicou: o cupom digitado vence o do link ?ref= (que só vale na
+      // janela de atribuição). O servidor (handle_new_user) resolve o código
+      // do afiliado para o usuário dele e grava em user_profiles.indicado_por
+      // (B2/D23: filiação permanente). Super cupom digitado aqui não filia —
+      // ele vale na primeira compra, no carrinho.
+      indicado_por: form.cupom.trim().toUpperCase() || refVigente(),
     }, destino);
 
     if (err) {
@@ -219,6 +223,19 @@ export default function Register() {
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
             />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Cupom de indicação (opcional)</label>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="ex.: NZ-ABCDE ou JOAO27"
+              autoComplete="off"
+              value={form.cupom}
+              onChange={(e) => update('cupom', e.target.value.toUpperCase())}
+            />
+            <p className={styles.hint}>Alguém te indicou? Coloque o cupom dele. O cupom de afiliado liga a sua conta a ele; o super cupom de um cliente vale na sua primeira compra.</p>
           </div>
 
           {empresa && (

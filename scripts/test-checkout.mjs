@@ -45,6 +45,9 @@ const build = spawnSync(
     'api/_lib/loja/visibilidade.ts',
     // `precificar` aplica o preço por tipo de acesso (20/10/2026).
     'api/_lib/precos/regraAcesso.ts',
+    // `pagamento` registra o uso do cupom e `precificar` confere o limite por
+    // cliente (Fase 2 do plano de indicação, 21/10/2026).
+    'api/_lib/incentivos/cupomUsos.ts',
     `--outdir=${outDir}`,
     '--format=esm',
     '--platform=node',

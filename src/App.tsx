@@ -101,6 +101,9 @@ const AdminAcessoConfig = lazy(() => import('./pages/Admin/AdminAcessoConfig'));
 const AdminLogistica = lazy(() => import('./pages/Admin/AdminLogistica'));
 const AdminErp = lazy(() => import('./pages/Admin/AdminErp'));
 const AdminAfiliados = lazy(() => import('./pages/Admin/AdminAfiliados'));
+const AdminAfiliadoDetalhe = lazy(() => import('./pages/Admin/AdminAfiliadoDetalhe'));
+const AdminCupons = lazy(() => import('./pages/Admin/AdminCupons'));
+const AdminSuperCupons = lazy(() => import('./pages/Admin/AdminSuperCupons'));
 const AdminAvaliacoes = lazy(() => import('./pages/Admin/AdminAvaliacoes'));
 const AdminBlog = lazy(() => import('./pages/Admin/AdminBlog'));
 const AdminAIBlog = lazy(() => import('./pages/Admin/AdminAIBlog'));
@@ -167,6 +170,9 @@ function App() {
           <Route path="logistica" element={<Suspense fallback={<RouteLoading />}><AdminLogistica /></Suspense>} />
           <Route path="erp" element={<Suspense fallback={<RouteLoading />}><AdminErp /></Suspense>} />
           <Route path="afiliados" element={<Suspense fallback={<RouteLoading />}><AdminAfiliados /></Suspense>} />
+          <Route path="afiliados/:userId" element={<Suspense fallback={<RouteLoading />}><AdminAfiliadoDetalhe /></Suspense>} />
+          <Route path="cupons" element={<Suspense fallback={<RouteLoading />}><AdminCupons /></Suspense>} />
+          <Route path="super-cupons" element={<Suspense fallback={<RouteLoading />}><AdminSuperCupons /></Suspense>} />
           <Route path="avaliacoes" element={<Suspense fallback={<RouteLoading />}><AdminAvaliacoes /></Suspense>} />
           <Route path="blog" element={<Suspense fallback={<RouteLoading />}><AdminBlog /></Suspense>} />
           <Route path="blog-ia" element={<Suspense fallback={<RouteLoading />}><AdminAIBlog /></Suspense>} />

@@ -31,7 +31,11 @@ export const GRUPOS: Grupo[] = [
       { para: '/admin/precos', icone: '🏷', rotulo: 'Tipos de acesso', titulo: 'Tipos de acesso: preço e visibilidade' },
       { para: '/admin/logistica', icone: '📦', rotulo: 'Logística', titulo: 'Logística & Transportadoras' },
       { para: '/admin/erp', icone: '🔗', rotulo: 'Integração ERP', titulo: 'Integração NZERP' },
-      { para: '/admin/afiliados', icone: '🤝', rotulo: 'Afiliados & Cupons', titulo: 'Afiliados & Cupons' },
+      // Três telas desde 21/10/2026 (pedido do João): afiliados (com a tela de
+      // cada um), cupons da NZ (campanha e nominal) e o super cupom dos clientes.
+      { para: '/admin/afiliados', icone: '🤝', rotulo: 'Afiliados', titulo: 'Afiliados' },
+      { para: '/admin/cupons', icone: '🎫', rotulo: 'Cupons', titulo: 'Cupons' },
+      { para: '/admin/super-cupons', icone: '⭐', rotulo: 'Super cupons', titulo: 'Super cupons' },
       { para: '/admin/avaliacoes', icone: '★', rotulo: 'Avaliações', titulo: 'Avaliações & Cashback' },
     ],
   },

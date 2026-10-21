@@ -37,6 +37,7 @@ import {
   safeJson,
 } from '../pedido/precificar.js';
 import { nomeDaFaixa } from '../precos/regraAcesso.js';
+import { filiarSeFaltar } from '../incentivos/motor.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
@@ -95,6 +96,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
   let afiliadoUserId = cupom.afiliadoUserId;
+  // Cupom de afiliado = a "senha" de entrada (D23): quem ainda não tem afiliado
+  // fica filiado a ele agora, para sempre.
+  if (cupom.tipo === 'afiliado' && cupom.afiliadoUserId && !perfil.indicado_por) {
+    if (await filiarSeFaltar(site, userId, cupom.afiliadoUserId)) perfil.indicado_por = cupom.afiliadoUserId;
+  }
   if (!afiliadoUserId) afiliadoUserId = await resolverAfiliado(site, userId, perfil.indicado_por, visitante);
   const afiliadoCodigo = await codigoDoAfiliado(site, afiliadoUserId);
 

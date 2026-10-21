@@ -258,6 +258,80 @@ export interface CupomResolvido {
   afiliadoUserId: string | null;
   /** Só quando o cliente mandou um código e ele não serve. */
   invalido: boolean;
+  /** afiliado | campanha | super | nominal — quem chama decide o que fazer (ex.: filiar). */
+  tipo?: string | null;
+  /** Por que não serviu (para a tela explicar). */
+  motivo?: string | null;
+}
+
+export interface CupomRow {
+  codigo: string;
+  tipo: string;
+  desconto_pct: number | null;
+  desconto_valor: number | null;
+  afiliado_user_id: string | null;
+  dono_user_id: string | null;
+  ativo: boolean;
+  valido_de: string | null;
+  valido_ate: string | null;
+  limite_usos: number | null;
+  usos: number;
+  so_conta_nova: boolean | null;
+  usos_por_cliente: number | null;
+}
+
+export const COLUNAS_CUPOM = 'codigo, tipo, desconto_pct, desconto_valor, afiliado_user_id, dono_user_id, ativo, valido_de, valido_ate, limite_usos, usos, so_conta_nova, usos_por_cliente';
+
+/**
+ * Por que este cupom NÃO vale para esta pessoa (nulo = vale). A mesma régua do
+ * checkout, do orçamento e do "conferir código" (op validar):
+ *   · inativo, fora do prazo, esgotado (usos + reservas);
+ *   · nominal: só o dono; afiliado e super: nunca o próprio dono;
+ *   · "só conta nova": quem já tem compra paga/faturada não usa;
+ *   · limite por cliente (super cupom = 1 compra por indicado).
+ * `userId` nulo = ninguém logado: as regras pessoais ficam como "nominal"/"login".
+ */
+export async function motivoCupomInvalido(site: Db, cupom: CupomRow | null, userId: string | null): Promise<string | null> {
+  if (!cupom || !cupom.ativo) return 'inexistente';
+  const agora = Date.now();
+  if (cupom.valido_de && Date.parse(cupom.valido_de) > agora) return 'ainda-nao-vale';
+  if (cupom.valido_ate && Date.parse(cupom.valido_ate) < agora) return 'expirado';
+  if (cupom.limite_usos != null && Number(cupom.usos) + (await usosReservados(site, cupom.codigo)) >= cupom.limite_usos) return 'esgotado';
+  if (cupom.tipo === 'nominal' || (cupom.tipo === 'campanha' && cupom.dono_user_id)) {
+    if (!userId) return 'login';
+    if (cupom.dono_user_id !== userId) return 'nominal';
+  }
+  if (cupom.tipo === 'super' && userId && cupom.dono_user_id === userId) return 'proprio';
+  if (cupom.tipo === 'afiliado' && userId && cupom.afiliado_user_id === userId) return 'proprio';
+  if (userId && cupom.so_conta_nova) {
+    const { jaComprou } = await import('../incentivos/cupomUsos.js');
+    if (await jaComprou(site, userId)) return 'so-conta-nova';
+  }
+  if (userId && cupom.usos_por_cliente != null) {
+    const { usosDoCliente, reservasDoCliente } = await import('../incentivos/cupomUsos.js');
+    const [u, r] = await Promise.all([usosDoCliente(site, cupom.codigo, userId), reservasDoCliente(site, cupom.codigo, userId)]);
+    if (u + r >= cupom.usos_por_cliente) return 'ja-usou';
+  }
+  return null;
+}
+
+/** Desconto (%) de um cupom de afiliado: o do afiliado, senão o da configuração (D27). */
+async function descontoDoAfiliado(site: Db, afiliadoUserId: string | null): Promise<number> {
+  if (!afiliadoUserId) return 0;
+  const { data: a } = await site.from('afiliados').select('desconto_cupom_pct').eq('user_id', afiliadoUserId).maybeSingle();
+  const proprio = (a as { desconto_cupom_pct?: number | null } | null)?.desconto_cupom_pct;
+  if (proprio != null) return Number(proprio);
+  const { data: c } = await site.from('loja_config').select('desconto_cupom_afiliado_pct').eq('id', 1).maybeSingle();
+  return Number((c as { desconto_cupom_afiliado_pct?: number | null } | null)?.desconto_cupom_afiliado_pct ?? 0);
+}
+
+/** Desconto (%) do super cupom: o do cupom, senão o da configuração. */
+async function descontoDoSuper(site: Db, cupom: CupomRow): Promise<number> {
+  if (cupom.desconto_pct != null) return Number(cupom.desconto_pct);
+  const { data: c } = await site.from('loja_config').select('pct_desconto_indicado, super_cupom_ativo').eq('id', 1).maybeSingle();
+  const cfg = c as { pct_desconto_indicado?: number | null; super_cupom_ativo?: boolean } | null;
+  if (cfg?.super_cupom_ativo === false) return 0;
+  return Number(cfg?.pct_desconto_indicado ?? 5);
 }
 
 /**
@@ -287,40 +361,20 @@ export async function usosReservados(site: Db, codigo: string): Promise<number> 
 export async function resolverCupom(site: Db, codigoBruto: string, subtotal: number, userId: string): Promise<CupomResolvido> {
   const codigo = codigoBruto.trim().toUpperCase();
   if (!codigo) return { codigo: null, desconto: 0, afiliadoUserId: null, invalido: false };
-  const { data: c } = await site
-    .from('cupons')
-    .select('codigo, tipo, desconto_pct, desconto_valor, afiliado_user_id, dono_user_id, ativo, valido_de, valido_ate, limite_usos, usos')
-    .eq('codigo', codigo)
-    .maybeSingle();
-  const cupom = c as {
-    codigo: string;
-    desconto_pct: number | null;
-    desconto_valor: number | null;
-    afiliado_user_id: string | null;
-    dono_user_id: string | null;
-    ativo: boolean;
-    valido_de: string | null;
-    valido_ate: string | null;
-    limite_usos: number | null;
-    usos: number;
-  } | null;
-  const agora = Date.now();
-  let ok =
-    !!cupom &&
-    cupom.ativo &&
-    (!cupom.valido_de || Date.parse(cupom.valido_de) <= agora) &&
-    (!cupom.valido_ate || Date.parse(cupom.valido_ate) >= agora) &&
-    cupom.afiliado_user_id !== userId &&
-    (!cupom.dono_user_id || cupom.dono_user_id === userId);
-  if (ok && cupom && cupom.limite_usos != null) {
-    const reservados = await usosReservados(site, cupom.codigo);
-    ok = Number(cupom.usos) + reservados < cupom.limite_usos;
-  }
-  if (!ok || !cupom) return { codigo: null, desconto: 0, afiliadoUserId: null, invalido: true };
+  const { data: c } = await site.from('cupons').select(COLUNAS_CUPOM).eq('codigo', codigo).maybeSingle();
+  const cupom = (c as CupomRow | null) ?? null;
+  const motivo = await motivoCupomInvalido(site, cupom, userId);
+  if (motivo || !cupom) return { codigo: null, desconto: 0, afiliadoUserId: null, invalido: true, motivo: motivo ?? 'inexistente' };
   let desconto = 0;
-  if (cupom.desconto_pct) desconto = r2(subtotal * (Number(cupom.desconto_pct) / 100));
+  if (cupom.tipo === 'super') {
+    desconto = r2(subtotal * ((await descontoDoSuper(site, cupom)) / 100));
+  } else if (cupom.tipo === 'afiliado' && cupom.desconto_pct == null && cupom.desconto_valor == null) {
+    desconto = r2(subtotal * ((await descontoDoAfiliado(site, cupom.afiliado_user_id)) / 100));
+  } else if (cupom.desconto_pct) desconto = r2(subtotal * (Number(cupom.desconto_pct) / 100));
   else if (cupom.desconto_valor) desconto = Math.min(subtotal, Number(cupom.desconto_valor));
-  return { codigo: cupom.codigo, desconto, afiliadoUserId: cupom.afiliado_user_id, invalido: false };
+  // Super cupom e nominal não atribuem afiliado: o super cupom paga o dono
+  // (cashback, no faturamento) e o nominal é só desconto.
+  return { codigo: cupom.codigo, desconto, afiliadoUserId: cupom.tipo === 'afiliado' ? cupom.afiliado_user_id : null, invalido: false, tipo: cupom.tipo };
 }
 
 /** cupom (já tratado) > indicado_por no cadastro > último clique do visitante. */

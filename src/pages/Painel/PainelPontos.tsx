@@ -1,10 +1,9 @@
 // /painel/pontos — saldo, extrato, campanhas e os cupons já resgatados.
 //
-// O resgate está FECHADO desde 21/10/2026 (B1 do plano de indicação): ele
-// gravava um cupom `tipo='cashback'` que a tabela recusa, então sempre
-// falhava. Na Fase 2 o resgate vira crédito na carteira (D14). A tela mostra as
-// campanhas e o saldo, e diz que o resgate chega em breve; o servidor também
-// recusa (api/_lib/handlers/avaliacoes.ts). Histórico: docs/PLANO_PROVA_SOCIAL.md.
+// Desde a Fase 2 do plano de indicação (21/10/2026) o resgate vira CRÉDITO NA
+// CARTEIRA (D14): os pontos saem daqui e o valor entra em "Indique e ganhe".
+// Antes (até 20/10) o resgate gravava um cupom `tipo='cashback'` que a tabela
+// recusava — sempre falhava (B1). Histórico: docs/PLANO_PROVA_SOCIAL.md.
 
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -12,6 +11,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { BRL } from '../../lib/shop/precos';
 import {
   meusPontos,
+  resgatarCampanha,
   textoDoErro,
   type Campanha,
   type CupomDoCliente,
@@ -37,6 +37,7 @@ export default function PainelPontos() {
   const [cupons, setCupons] = useState<CupomDoCliente[]>([]);
   const [regras, setRegras] = useState<RegrasDePonto | null>(null);
   const [carregando, setCarregando] = useState(true);
+  const [ocupado, setOcupado] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [copiado, setCopiado] = useState<string | null>(null);
 
@@ -59,6 +60,21 @@ export default function PainelPontos() {
   useEffect(() => {
     void carregar();
   }, [carregar]);
+
+  const resgatar = async (c: Campanha) => {
+    if (!window.confirm(`Trocar ${c.pontos} pontos por ${BRL.format(c.valor)} de crédito na sua carteira?`)) return;
+    setOcupado(c.id);
+    setAviso(null);
+    try {
+      const r = await resgatarCampanha(c.id);
+      await carregar();
+      setAviso(`Pronto: ${BRL.format(r.valor)} entraram na sua carteira. Veja em "Indique e ganhe".`);
+    } catch (e) {
+      setAviso(textoDoErro(e));
+    } finally {
+      setOcupado(null);
+    }
+  };
 
   const copiar = async (codigo: string) => {
     try {
@@ -101,7 +117,7 @@ export default function PainelPontos() {
         <>
           <h3 className={styles.secaoTitulo}>
             Trocar por crédito
-            <small>Em breve o crédito vai direto para a sua conta, para usar na próxima compra. Seus pontos ficam guardados.</small>
+            <small>O crédito entra na sua carteira (Indique e ganhe) e vale por 12 meses.</small>
           </h3>
           <ul className={styles.cartoes}>
             {campanhas.map((c) => {
@@ -122,8 +138,9 @@ export default function PainelPontos() {
                       {falta > 0 ? (
                         <span className={styles.mudo}>faltam {falta.toLocaleString('pt-BR')} pontos</span>
                       ) : (
-                        // B1: o botão "Resgatar" volta na Fase 2, como crédito na conta.
-                        <span className={styles.mudo}>você já pode trocar · resgate em breve</span>
+                        <button type="button" className={styles.botaoPrincipal} disabled={ocupado === c.id} onClick={() => void resgatar(c)}>
+                          {ocupado === c.id ? 'Resgatando…' : 'Resgatar'}
+                        </button>
                       )}
                     </div>
                   </div>

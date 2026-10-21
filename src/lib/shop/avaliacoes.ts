@@ -5,6 +5,7 @@
 // fala HTTP e guarda tipos.
 
 import { supabase } from '../supabase';
+import { resgatarPontosNaCarteira } from './incentivos';
 
 export interface ResumoAvaliacoes {
   produto_slug: string;
@@ -158,8 +159,12 @@ export const enviarAvaliacao = (a: { slug: string; nota: number; titulo?: string
 export const meusPontos = () =>
   chamar<{ saldo: number; extrato: MovimentoDePonto[]; campanhas: Campanha[]; cupons: CupomDoCliente[]; regras: RegrasDePonto }>({ op: 'pontos' });
 
-export const resgatarCampanha = (campanhaId: string) =>
-  chamar<{ ok: true; cupom: string; valor: number; pontos: number; validoAte: string; saldo: number }>({ op: 'resgatar', campanhaId });
+/**
+ * Resgate de pontos → CRÉDITO NA CARTEIRA (D14 do plano de indicação,
+ * 21/10/2026). Antes virava um cupom nominal, que a tabela recusava (B1).
+ * A rota é a da carteira (/api/nz/incentivos, op resgatar-pontos).
+ */
+export const resgatarCampanha = (campanhaId: string) => resgatarPontosNaCarteira(campanhaId);
 
 // -------------------------------------------------------------------- admin
 export const filaDeModeracao = (status = 'pendente') =>

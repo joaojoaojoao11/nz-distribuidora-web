@@ -21,7 +21,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado } from '../papel.js';
-import { usosReservados } from '../pedido/precificar.js';
+import { COLUNAS_CUPOM, motivoCupomInvalido, resolverCupom, type CupomRow } from '../pedido/precificar.js';
 
 const CODIGO_RE = /^[A-Z0-9][A-Z0-9-]{2,23}$/;
 
@@ -64,46 +64,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(200).json({ valido: false });
       return;
     }
-    const { data: cupom } = await site
-      .from('cupons')
-      .select('codigo, tipo, desconto_pct, desconto_valor, ativo, valido_de, valido_ate, limite_usos, usos, dono_user_id, afiliado_user_id')
-      .eq('codigo', codigo)
-      .maybeSingle();
-    const c = cupom as
-      | { codigo: string; tipo: string; desconto_pct: number | null; desconto_valor: number | null; ativo: boolean; valido_de: string | null; valido_ate: string | null; limite_usos: number | null; usos: number; dono_user_id: string | null; afiliado_user_id: string | null }
-      | null;
-    if (!c || !c.ativo) {
-      res.status(200).json({ valido: false });
+    // A MESMA régua do checkout (precificar.ts): inativo, prazo, esgotado,
+    // nominal só para o dono, ninguém usa o próprio, "só conta nova" e limite
+    // por cliente (super cupom). Quem não está logado só fica sabendo que o
+    // cupom é pessoal — o resumo do checkout confere de novo.
+    const { data: cupom } = await site.from('cupons').select(COLUNAS_CUPOM).eq('codigo', codigo).maybeSingle();
+    const c = (cupom as CupomRow | null) ?? null;
+    const quem = await resolverPapelDetalhado(site, req.headers.authorization);
+    const motivo = await motivoCupomInvalido(site, c, quem.userId);
+    if (motivo || !c) {
+      res.status(200).json({ valido: false, motivo: motivo === 'inexistente' ? undefined : motivo });
       return;
     }
-    const agora = Date.now();
-    if (c.valido_de && Date.parse(c.valido_de) > agora) {
-      res.status(200).json({ valido: false, motivo: 'ainda-nao-vale' });
-      return;
-    }
-    if (c.valido_ate && Date.parse(c.valido_ate) < agora) {
-      res.status(200).json({ valido: false, motivo: 'expirado' });
-      return;
-    }
-    if (c.limite_usos != null && c.usos + (await usosReservados(site, c.codigo)) >= c.limite_usos) {
-      res.status(200).json({ valido: false, motivo: 'esgotado' });
-      return;
-    }
-    // Cupom nominal (com dono) ou de afiliado: só o dono usa o nominal, e
-    // ninguém usa o próprio cupom de afiliado. Quem não está logado só fica
-    // sabendo que o cupom é nominal — o resumo do checkout confere de novo.
-    if (c.dono_user_id || c.afiliado_user_id) {
-      const quem = await resolverPapelDetalhado(site, req.headers.authorization);
-      if (c.dono_user_id && quem.userId !== c.dono_user_id) {
-        res.status(200).json({ valido: false, motivo: 'nominal' });
-        return;
-      }
-      if (c.afiliado_user_id && quem.userId && quem.userId === c.afiliado_user_id) {
-        res.status(200).json({ valido: false, motivo: 'proprio' });
-        return;
-      }
-    }
-    res.status(200).json({ valido: true, codigo: c.codigo, tipo: c.tipo, descontoPct: c.desconto_pct, descontoValor: c.desconto_valor });
+    // O desconto que a tela mostra é o mesmo que o checkout cobra.
+    const r = quem.userId ? await resolverCupom(site, c.codigo, 100, quem.userId) : null;
+    res.status(200).json({ valido: true, codigo: c.codigo, tipo: c.tipo, descontoPct: r ? r.desconto : c.desconto_pct, descontoValor: c.desconto_valor });
     return;
   }
 
@@ -146,29 +121,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .select('codigo, percentual, ativo, criado_em')
       .eq('user_id', userId)
       .maybeSingle();
-    let af: Af | null = (existente as Af | null) ?? null;
+    const af: Af | null = (existente as Af | null) ?? null;
 
+    // Desde 21/10/2026 (D6) ninguém vira afiliado sozinho: o pedido de adesão
+    // é a op `quero-ser-afiliado` de /api/nz/incentivos, e a NZ aprova em
+    // Admin → Afiliados. Sem afiliado, a resposta diz isso em vez de criar um.
     if (!af) {
-      // Decisão: qualquer logado pode ser afiliado. A aprovação do cadastro
-      // não é pré-requisito para indicar — é para comprar com preço.
-      for (let tentativa = 0; tentativa < 5 && !af; tentativa++) {
-        const codigo = gerarCodigo();
-        const { data, error } = await site
-          .from('afiliados')
-          .insert({ user_id: userId, codigo })
-          .select('codigo, percentual, ativo, criado_em')
-          .single();
-        if (!error && data) af = data as unknown as Af;
-      }
-      if (af) {
-        await site.from('cupons').upsert(
-          { codigo: af.codigo, tipo: 'afiliado', afiliado_user_id: userId, ativo: true },
-          { onConflict: 'codigo' }
-        );
-      }
-    }
-    if (!af) {
-      res.status(500).json({ error: 'nao-consegui-gerar-codigo' });
+      res.status(200).json({ codigo: null, ativo: false, afiliado: false, aprovado });
       return;
     }
 

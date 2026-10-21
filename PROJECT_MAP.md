@@ -159,6 +159,36 @@ Padrão. O seletor de faixas fica em `/admin/precos/:papel`; a escolha por
 pessoa e a pré-análise do consultor (`pre_analises`) ficam em `/admin/clientes`.
 O nome da faixa vai ao NZERP (`clients.faixa_preco_site`, só leitura lá).
 
+### Indicação, cashback e afiliados (desde 21/10/2026)
+
+Uma carteira em R$ por cliente (`carteira_movimentos`, um razão: nunca se
+apaga, só se estorna; saldo = soma por status). **Só o servidor escreve**, e o
+cliente lê pela rota `/api/nz/incentivos` (op `minha-carteira`), que devolve o
+indicado como "indicado nº N", nunca pelo nome. Três fontes de crédito, todas
+geradas quando o NZERP **fatura** o pedido (`sync.ts` → `api/_lib/incentivos/motor.ts`):
+
+- **Super cupom** (`cupons.tipo='super'`): um por cliente aprovado, código fixo
+  (trocável no painel). Quem compra com ele ganha desconto; o dono ganha
+  cashback. Vale uma compra por indicado e só para conta nova (`cupom_usos`).
+- **Afiliado** (`afiliados.status='aprovado'`, aprovado pela NZ): o cupom dele
+  é a "senha" de entrada — quem se cadastra ou compra com ele fica filiado
+  para sempre (`user_profiles.indicado_por` + `filiado_em`). Comissão de
+  **ativação** na primeira compra faturada do filiado e de **recorrência** nas
+  seguintes, apurada por período mensal ou quinzenal (`periodo` no movimento,
+  liberação no fim do período).
+- **Cupom nominal** (`tipo='nominal'`, `dono_user_id`): só desconto, para um
+  cliente da base, criado em `/admin/cupons`.
+
+Carência (D3), validade do saldo (D11), trava de margem (§5 do plano; só
+corta quando ligada e com imposto/comissão embutida preenchidos) e os
+percentuais ficam em `loja_config` e nas telas do admin: `/admin/afiliados`
+(com a tela de cada afiliado em `/admin/afiliados/:userId`), `/admin/cupons` e
+`/admin/super-cupons`. Gamificação G1 (níveis, conquistas, momentos) em
+`api/_lib/incentivos/gamificacao.ts`, calculada no servidor. O cron diário do
+sync libera o que venceu e expira o saldo antigo. Teste: `npm run incentivos:test`.
+A regra única do cupom (nominal, próprio, só conta nova, limite por cliente,
+esgotado) é `motivoCupomInvalido` em `api/_lib/pedido/precificar.ts`.
+
 **Visibilidade por tipo** (`acesso_config`, mesma tela, aba Visibilidade):
 linhas comerciais ocultas, rolo fechado, metro fracionado, estoque detalhado,
 Promoção Moto e pagamento online. O servidor aplica tudo (preço nulo e item

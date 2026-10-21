@@ -39,6 +39,7 @@ import {
 } from '../asaas/pagamento.js';
 import { despacharAoErp, dispensarDoErp } from '../pedido/despachoErp.js';
 import { carregarVisibilidade, nomeDaFaixa, papelDePreco } from '../precos/regraAcesso.js';
+import { filiarSeFaltar } from '../incentivos/motor.js';
 import { cotarCarrinho, type OpcaoFrete } from '../frete/carrinho.js';
 import {
   carregarPerfil,
@@ -288,6 +289,11 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
 
   // ------------------------------------------------------------- afiliado
   let afiliadoUserId = cupom.afiliadoUserId;
+  // Cupom de afiliado = a "senha" de entrada (D23): quem ainda não tem afiliado
+  // fica filiado a ele agora, para sempre.
+  if (cupom.tipo === 'afiliado' && cupom.afiliadoUserId && !perfil.indicado_por) {
+    if (await filiarSeFaltar(site, userId, cupom.afiliadoUserId)) perfil.indicado_por = cupom.afiliadoUserId;
+  }
   if (!afiliadoUserId) {
     afiliadoUserId = await resolverAfiliado(site, userId, perfil.indicado_por, typeof body.visitante === 'string' ? body.visitante.slice(0, 80) : '');
   }

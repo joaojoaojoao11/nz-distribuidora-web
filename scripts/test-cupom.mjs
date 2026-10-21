@@ -31,6 +31,7 @@ const build = spawnSync(
     'api/_lib/promoMotoDados.ts',
     'api/_lib/loja/visibilidade.ts',
     'api/_lib/precos/regraAcesso.ts',
+    'api/_lib/incentivos/cupomUsos.ts',
     `--outdir=${outDir}`,
     '--outbase=api/_lib',
     '--format=esm',
