@@ -79,6 +79,8 @@ export default function AdminAfiliadosRegras() {
         mesesValidade: String(c.mesesValidade),
         tetoMensalPremios: c.tetoMensalPremios == null ? '' : pctTexto(c.tetoMensalPremios),
         estornarConquistaCancelamento: c.estornarConquistaCancelamento ? '1' : '',
+        saldoNoCheckout: c.saldoNoCheckout ? '1' : '',
+        cobrancaMinima: pctTexto(c.cobrancaMinima),
       });
       setNiveis(((n.data ?? []) as Record<string, unknown>[]).map((x) => ({ id: Number(x.id), publico: x.publico as Nivel['publico'], ordem: Number(x.ordem), nome: String(x.nome), icone: String(x.icone ?? ''), criterio_tipo: x.criterio_tipo as Nivel['criterio_tipo'], criterio_valor: pctTexto(Number(x.criterio_valor)), multiplicador: pctTexto(Number(x.multiplicador)), ativo: x.ativo !== false })));
       setConquistas(((q.data ?? []) as Record<string, unknown>[]).map((x) => ({ codigo: String(x.codigo), nome: String(x.nome), descricao: String(x.descricao ?? ''), icone: String(x.icone ?? ''), publico: x.publico as Conquista['publico'], bonus_valor: pctTexto(Number(x.bonus_valor)), ativa: x.ativa !== false, ordem: Number(x.ordem ?? 0) })));
@@ -105,6 +107,8 @@ export default function AdminAfiliadosRegras() {
       mesesValidade: num(form.mesesValidade) ?? 12,
       tetoMensalPremios: num(form.tetoMensalPremios),
       estornarConquistaCancelamento: form.estornarConquistaCancelamento === '1',
+      saldoNoCheckout: form.saldoNoCheckout === '1',
+      cobrancaMinima: num(form.cobrancaMinima) ?? 5,
     };
     if (Object.values(patch).some((v) => typeof v === 'number' && (!Number.isFinite(v) || v < 0))) {
       setErro('Percentuais, dias e valores precisam ser números maiores ou iguais a zero.');
@@ -312,6 +316,15 @@ export default function AdminAfiliadosRegras() {
               <option value="1">sim</option>
               <option value="">não</option>
             </select>
+          </Campo>
+          <Campo label="Usar o saldo no checkout" dica="o cliente abate o pedido com a carteira">
+            <select style={campoEstilo} value={form.saldoNoCheckout ?? '1'} onChange={(e) => setForm((f) => ({ ...f, saldoNoCheckout: e.target.value }))}>
+              <option value="1">sim</option>
+              <option value="">não</option>
+            </select>
+          </Campo>
+          <Campo label="Cobrança mínima no Asaas (R$)" dica="o que sobra após o saldo nunca fica abaixo disso">
+            <input style={campoEstilo} inputMode="decimal" value={form.cobrancaMinima ?? ''} onChange={(e) => setForm((f) => ({ ...f, cobrancaMinima: e.target.value }))} />
           </Campo>
         </Grade>
       </Secao>

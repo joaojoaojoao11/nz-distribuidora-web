@@ -245,7 +245,7 @@ export function avisarPedidoNovo(
   });
 }
 
-const FORMA: Record<string, string> = { PIX: 'Pix', BOLETO: 'Boleto', CREDIT_CARD: 'Cartão de crédito' };
+const FORMA: Record<string, string> = { PIX: 'Pix', BOLETO: 'Boleto', CREDIT_CARD: 'Cartão de crédito', SALDO: 'Saldo da carteira' };
 
 export function avisarPagamentoConfirmado(
   site: Db,

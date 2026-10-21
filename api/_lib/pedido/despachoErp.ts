@@ -57,10 +57,12 @@ interface PedidoDespacho {
   total_final: number | null;
   valor_frete: number;
   pago_em: string | null;
+  /** Saldo da carteira usado (Fase 3): o Asaas cobrou total_final − saldo_usado. */
+  saldo_usado: number | null;
 }
 
 const CAMPOS =
-  'id, numero, user_id, status, erp_quote_id, erp_quote_number, erp_envio, erp_payload, pagamento_status, erp_pago_em, forma_pagamento, total_final, valor_frete, pago_em';
+  'id, numero, user_id, status, erp_quote_id, erp_quote_number, erp_envio, erp_payload, pagamento_status, erp_pago_em, forma_pagamento, total_final, valor_frete, pago_em, saldo_usado';
 
 /**
  * Guarda no perfil qual cliente do ERP corresponde a esta conta. O índice único
@@ -188,7 +190,10 @@ export async function despacharAoErp(site: Db, pedidoId: string, motivo: MotivoD
         site_numero: ped.numero,
         forma: ped.forma_pagamento,
         parcelas: p?.parcelas ?? 1,
-        valor: ped.total_final,
+        // O que o Asaas recebeu de fato; o saldo da carteira vai à parte
+        // (quotes.cashback_usado nasce com o pedido). Contábil: Fase 6.
+        valor: Math.round((Number(ped.total_final ?? 0) - Number(ped.saldo_usado ?? 0)) * 100) / 100,
+        cashback_usado: Math.round(Number(ped.saldo_usado ?? 0) * 100) / 100,
         valor_frete: ped.valor_frete,
         valor_liquido: p?.valor_liquido ?? null,
         asaas_payment_id: p?.asaas_payment_id ?? null,

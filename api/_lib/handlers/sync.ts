@@ -51,6 +51,7 @@ import { abrirOcorrencia, chavesAbertas, resolverPorChave, resolverVariasChaves 
 import { carregarConfigIncentivos } from '../incentivos/config.js';
 import { estornarPedido, processarPedidoFaturado } from '../incentivos/motor.js';
 import { manutencaoCarteira } from '../incentivos/carteira.js';
+import { devolverSaldoDoPedido } from '../incentivos/saldoCheckout.js';
 import { registrarUsoCupom } from '../incentivos/cupomUsos.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -655,9 +656,9 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
   const ids = lidos.map((p) => p.site_pedido_id);
   const { data: locaisData } = await site
     .from('pedidos')
-    .select('id, user_id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em, incentivos_processados_em, incentivos_estornados_em')
+    .select('id, user_id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em, incentivos_processados_em, incentivos_estornados_em, saldo_usado, saldo_movimento_id, saldo_devolvido_em')
     .in('id', ids);
-  type Local = { id: string; user_id: string | null; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null; cupom: string | null; cupom_consumido_em: string | null; incentivos_processados_em: string | null; incentivos_estornados_em: string | null };
+  type Local = { id: string; user_id: string | null; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null; cupom: string | null; cupom_consumido_em: string | null; incentivos_processados_em: string | null; incentivos_estornados_em: string | null; saldo_usado: number | null; saldo_movimento_id: number | null; saldo_devolvido_em: string | null };
   const locais = new Map(((locaisData ?? []) as Local[]).map((p) => [p.id, p]));
 
   const cfgIncentivos = await carregarConfigIncentivos(site);
@@ -691,6 +692,15 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
         await site.rpc('cupom_consumir', { p_codigo: local.cupom });
         await registrarUsoCupom(site, local.cupom, local.user_id, p.site_pedido_id);
       }
+    }
+
+    // Fase 3: pedido cancelado no ERP devolve à carteira o saldo usado nele
+    // (a parte do Asaas é estornada pelo admin). Uma vez só.
+    if (CANCELADOS.has(p.status) && Number(local.saldo_usado ?? 0) > 0 && local.saldo_movimento_id != null && !local.saldo_devolvido_em) {
+      await devolverSaldoDoPedido(site, p.site_pedido_id, `pedido ${p.status} no ERP`).catch((e) => {
+        console.warn('[erp-sync] devolução do saldo falhou no pedido', p.site_pedido_id, e instanceof Error ? e.message : e);
+        return false;
+      });
     }
 
     // Incentivos (Fase 2, 21/10/2026): super cupom, ativação e recorrência do

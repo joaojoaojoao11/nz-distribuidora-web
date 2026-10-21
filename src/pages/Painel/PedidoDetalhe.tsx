@@ -145,7 +145,14 @@ export default function PedidoDetalhe() {
       {/* ------------------------------------------------------ pagamento */}
       {pagamento && <BlocoPagamento p={pagamento} agora={agora} />}
 
-      {pagamento && REABRIVEIS.has(pagamento.status) && <NovoPagamento numero={pedido.numero} total={pedido.total ?? 0} onFeito={carregar} />}
+      {/* Fase 3: pago só com o saldo da carteira — não existe cobrança. */}
+      {!pagamento && pedido.pagamentoStatus === 'pago' && pedido.saldoUsado > 0 && (
+        <section className={styles.bloco}>
+          <p className={styles.aviso}>Pago com o saldo da sua carteira: {BRL.format(pedido.saldoUsado)}. Nada mais a pagar.</p>
+        </section>
+      )}
+
+      {pagamento && REABRIVEIS.has(pagamento.status) && <NovoPagamento numero={pedido.numero} total={pedido.aPagar ?? pedido.total ?? 0} onFeito={carregar} />}
 
       {!pagamento && pedido.pagamentoStatus === 'nenhum' && (
         <section className={styles.bloco}>
@@ -190,6 +197,18 @@ export default function PedidoDetalhe() {
             <span>Total</span>
             <strong>{pedido.total != null ? BRL.format(pedido.total) : '—'}</strong>
           </div>
+          {pedido.saldoUsado > 0 && (
+            <>
+              <div>
+                <span>Saldo da carteira</span>
+                <strong>− {BRL.format(pedido.saldoUsado)}</strong>
+              </div>
+              <div>
+                <span>{pedido.pagamentoStatus === 'pago' ? 'Cobrado' : 'A pagar'}</span>
+                <strong>{BRL.format(pedido.aPagar ?? 0)}</strong>
+              </div>
+            </>
+          )}
         </div>
       </section>
 

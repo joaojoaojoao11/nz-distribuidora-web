@@ -40,6 +40,8 @@ import {
 import { despacharAoErp, dispensarDoErp } from '../pedido/despachoErp.js';
 import { carregarVisibilidade, nomeDaFaixa, papelDePreco } from '../precos/regraAcesso.js';
 import { filiarSeFaltar } from '../incentivos/motor.js';
+import { saldoDe } from '../incentivos/carteira.js';
+import { apagarReservaDoPedido, calcularUsoDeSaldo, devolverSaldoDoPedido, marcarPagoComSaldo, reservarSaldoDoPedido } from '../incentivos/saldoCheckout.js';
 import { cotarCarrinho, type OpcaoFrete } from '../frete/carrinho.js';
 import {
   carregarPerfil,
@@ -122,7 +124,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
   cfg.checkout_ativo = cfg.checkout_ativo && pagamentoDoTipo;
-  if (!asaasConfigurado()) {
+  // Sem Asaas só passa o que não precisa dele: o resumo (que avisa) e o pedido
+  // que o saldo da carteira cobre inteiro (Fase 3). `pagar` confere de novo
+  // quando sobra algo a cobrar; novo pagamento sempre precisa.
+  if (!asaasConfigurado() && op === 'novo-pagamento') {
     res.status(503).json({ error: 'pagamento-indisponivel', hasAsaasKey: false });
     return;
   }
@@ -178,6 +183,10 @@ async function opResumo(site: Db, userId: string, body: Record<string, unknown>,
     },
     faltando,
     endereco: perfil ? enderecoJson(perfil) : null,
+    // Fase 3: saldo da carteira que pode abater o pedido. A tela calcula a
+    // prévia com a mesma regra (calcularUsoDeSaldo); o servidor refaz ao pagar.
+    saldo: cfg.saldo_no_checkout ? { disponivel: (await saldoDe(site, userId)).disponivel, cobrancaMinima: cfg.cobranca_minima } : null,
+    pagamentoOnline: asaasConfigurado(),
   });
 }
 
@@ -227,11 +236,10 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     res.status(400).json({ error: 'sem-itens' });
     return;
   }
-  const escolha = lerEscolha(body);
-  if ('erro' in escolha) {
-    res.status(400).json({ error: escolha.erro });
-    return;
-  }
+  // Fase 3: a forma de pagamento só é obrigatória se sobrar algo a cobrar
+  // depois do saldo da carteira — decidido mais abaixo, com o total em mãos.
+  const escolhaBruta = lerEscolha(body);
+  const usarSaldo = body.usarSaldo === true && cfg.saldo_no_checkout;
   if (body.aceite !== true) {
     res.status(400).json({ error: 'aceite-necessario' });
     return;
@@ -271,19 +279,41 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     res.status(400).json({ error: 'pedido-minimo', minimo: cfg.pedido_minimo });
     return;
   }
-  if (escolha.forma === 'BOLETO' && total < cfg.boleto_minimo) {
-    res.status(400).json({ error: 'boleto-minimo', minimo: cfg.boleto_minimo });
-    return;
+
+  // ------------------------------------------- saldo da carteira (Fase 3)
+  // Quanto do saldo entra é decidido AQUI, com o disponível de agora; a
+  // reserva de verdade acontece depois de gravar o pedido (RPC com lock).
+  let saldoUsar = 0;
+  if (usarSaldo) {
+    const s = await saldoDe(site, userId);
+    saldoUsar = calcularUsoDeSaldo(total, s.disponivel, cfg.cobranca_minima).usar;
   }
-  if (escolha.forma === 'CREDIT_CARD') {
-    const ok = parcelasDisponiveis(total, cfg).some((p) => p.n === escolha.parcelas);
-    if (!ok) {
-      res.status(400).json({ error: 'parcelas-invalidas' });
+  const cobrar = r2(total - saldoUsar);
+  let escolha: Escolha | null = null;
+  if (cobrar > 0) {
+    if ('erro' in escolhaBruta) {
+      res.status(400).json({ error: escolhaBruta.erro });
       return;
     }
-    if (await limiteCartao(site, userId, ip)) {
-      res.status(429).json({ error: 'muitas-tentativas' });
+    escolha = escolhaBruta;
+    if (!asaasConfigurado()) {
+      res.status(503).json({ error: 'pagamento-indisponivel', hasAsaasKey: false });
       return;
+    }
+    if (escolha.forma === 'BOLETO' && cobrar < cfg.boleto_minimo) {
+      res.status(400).json({ error: 'boleto-minimo', minimo: cfg.boleto_minimo });
+      return;
+    }
+    if (escolha.forma === 'CREDIT_CARD') {
+      const ok = parcelasDisponiveis(cobrar, cfg).some((p) => p.n === escolha!.parcelas);
+      if (!ok) {
+        res.status(400).json({ error: 'parcelas-invalidas' });
+        return;
+      }
+      if (await limiteCartao(site, userId, ip)) {
+        res.status(429).json({ error: 'muitas-tentativas' });
+        return;
+      }
     }
   }
 
@@ -301,13 +331,15 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
   const observacoes = typeof body.observacoes === 'string' ? body.observacoes.trim().slice(0, 1000) : '';
 
   // ------------------------------------------------------ cliente no Asaas
-  let asaasCustomerId: string;
-  try {
-    asaasCustomerId = await garantirClienteAsaas(site, userId, perfil);
-  } catch (err) {
-    console.error('[checkout] cliente Asaas:', err instanceof Error ? err.message : err);
-    res.status(502).json({ error: 'pagamento-indisponivel', message: err instanceof Error ? err.message : 'Asaas indisponível' });
-    return;
+  let asaasCustomerId = '';
+  if (escolha) {
+    try {
+      asaasCustomerId = await garantirClienteAsaas(site, userId, perfil);
+    } catch (err) {
+      console.error('[checkout] cliente Asaas:', err instanceof Error ? err.message : err);
+      res.status(502).json({ error: 'pagamento-indisponivel', message: err instanceof Error ? err.message : 'Asaas indisponível' });
+      return;
+    }
   }
 
   // --------------------------------------------------------- grava pedido
@@ -317,7 +349,8 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
       user_id: userId,
       status: 'RASCUNHO',
       pagamento_status: 'aguardando',
-      forma_pagamento: escolha.forma,
+      forma_pagamento: escolha?.forma ?? 'SALDO',
+      saldo_usado: saldoUsar,
       cupom: cupom.codigo,
       afiliado_user_id: afiliadoUserId,
       frete: { id: frete.id, nome: frete.nome, dias: frete.dias, valor: frete.valor, retirada: Boolean(frete.retirada), transportadora: frete.transportadora ?? null, servico: frete.servico ?? null },
@@ -342,41 +375,63 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     return;
   }
 
-  // ------------------------------------------------------------ cobrança
-  if (escolha.forma === 'CREDIT_CARD') {
-    await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'tentativa' });
-  }
-  const cobranca = await criarPagamento(site, {
-    pedido,
-    perfil,
-    asaasCustomerId,
-    forma: escolha.forma,
-    total,
-    parcelas: escolha.parcelas,
-    cartao: escolha.cartao,
-    ip,
-    cfg,
-  });
-  if (!cobranca.ok) {
-    await site.from('pedidos').delete().eq('id', pedido.id);
-    if (cobranca.erro === 'cartao-recusado') {
-      // O pedido some, mas o vendedor precisa saber quem tentou e não
-      // conseguiu: valor e motivo ficam na tentativa (Admin → Pedidos).
-      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado', valor: total, motivo: (cobranca.mensagem ?? '').slice(0, 200) || null });
-      res.status(402).json({ error: 'cartao-recusado', message: cobranca.mensagem });
-    } else {
-      res.status(502).json({ error: 'pagamento-indisponivel', message: cobranca.mensagem });
+  // ------------------------------------------ reserva do saldo (Fase 3)
+  // A RPC trava por pessoa e confere o disponível: se outro checkout levou o
+  // saldo no meio do caminho, este pedido não nasce com saldo que não existe.
+  if (saldoUsar > 0) {
+    const r = await reservarSaldoDoPedido(site, { id: pedido.id, numero: pedido.numero, userId }, saldoUsar);
+    if (!r.ok) {
+      await site.from('pedidos').delete().eq('id', pedido.id);
+      if (r.erro === 'saldo-insuficiente') res.status(409).json({ error: 'saldo-insuficiente' });
+      else res.status(500).json({ error: 'nao-reservou-saldo', message: r.erro });
+      return;
     }
-    return;
   }
-  if (escolha.forma === 'CREDIT_CARD') {
-    await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: cobranca.pagamento.status });
+
+  // ------------------------------------------------------------ cobrança
+  // Só se sobrou algo depois do saldo. Saldo cobrindo tudo: sem Asaas.
+  let pagamentoCriado: PagamentoRow | null = null;
+  if (escolha) {
+    if (escolha.forma === 'CREDIT_CARD') {
+      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'tentativa' });
+    }
+    const cobranca = await criarPagamento(site, {
+      pedido,
+      perfil,
+      asaasCustomerId,
+      forma: escolha.forma,
+      total: cobrar,
+      parcelas: escolha.parcelas,
+      cartao: escolha.cartao,
+      ip,
+      cfg,
+    });
+    if (!cobranca.ok) {
+      // O pedido não vai existir: a reserva do saldo some junto, sem rastro.
+      if (saldoUsar > 0) await apagarReservaDoPedido(site, pedido.id);
+      await site.from('pedidos').delete().eq('id', pedido.id);
+      if (cobranca.erro === 'cartao-recusado') {
+        // O pedido some, mas o vendedor precisa saber quem tentou e não
+        // conseguiu: valor e motivo ficam na tentativa (Admin → Pedidos).
+        await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado', valor: cobrar, motivo: (cobranca.mensagem ?? '').slice(0, 200) || null });
+        res.status(402).json({ error: 'cartao-recusado', message: cobranca.mensagem });
+      } else {
+        res.status(502).json({ error: 'pagamento-indisponivel', message: cobranca.mensagem });
+      }
+      return;
+    }
+    pagamentoCriado = cobranca.pagamento;
+    if (escolha.forma === 'CREDIT_CARD') {
+      await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: cobranca.pagamento.status });
+    }
   }
 
   // ------------------------------------------------------------------ ERP
   const notas = [
     `Pedido #${pedido.numero} feito no site nzgroup.com.br por ${perfil.email ?? ''}.`,
-    `PAGAMENTO ONLINE (Asaas): ${FORMA_LABEL[escolha.forma]}${escolha.parcelas > 1 ? ` em ${escolha.parcelas}x` : ''} — ${cobranca.pagamento.status === 'pago' ? 'PAGO' : 'aguardando pagamento'}. Total R$ ${total.toFixed(2)}.`,
+    escolha
+      ? `PAGAMENTO ONLINE (Asaas): ${FORMA_LABEL[escolha.forma]}${escolha.parcelas > 1 ? ` em ${escolha.parcelas}x` : ''} — ${pagamentoCriado?.status === 'pago' ? 'PAGO' : 'aguardando pagamento'}. Cobrado R$ ${cobrar.toFixed(2)}${saldoUsar > 0 ? ` + R$ ${saldoUsar.toFixed(2)} do saldo da carteira (cashback)` : ''}. Total R$ ${total.toFixed(2)}.`
+      : `PAGO COM O SALDO DA CARTEIRA (cashback): R$ ${saldoUsar.toFixed(2)}. Total R$ ${total.toFixed(2)}. Sem cobrança no Asaas.`,
     frete.retirada ? 'Entrega: RETIRADA em São Paulo.' : `Frete: ${frete.nome} — ${frete.dias} dias úteis — R$ ${frete.valor.toFixed(2)} (cobrado do cliente).`,
     notaPreVenda(linhas, cotacao.diasProducao),
     cupom.codigo ? `Cupom ${cupom.codigo}${cupom.desconto ? ` (desconto R$ ${cupom.desconto.toFixed(2)})` : ''}.` : null,
@@ -399,16 +454,18 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     frete: { tipo: frete.retirada ? 'RETIRADA' : 'CIF', valor: frete.valor, transportadora: frete.nome, prazoDias: frete.dias },
     desconto: cupom.desconto,
     faixaNome: await nomeDaFaixa(site, faixaId),
+    cashbackUsado: saldoUsar,
   });
   await site.from('pedidos').update({ erp_payload: payloadErp }).eq('id', pedido.id);
 
-  // O ERP só é chamado se a cobrança JÁ nasceu paga (cartão aprovado na hora).
-  // Pix e boleto saem daqui com `nao-pago`, de propósito: o orçamento nasce no
-  // webhook, quando o dinheiro entra. O payload fica guardado esperando.
+  // O ERP só é chamado se a cobrança JÁ nasceu paga (cartão aprovado na hora,
+  // ou saldo da carteira cobrindo tudo). Pix e boleto saem daqui com
+  // `nao-pago`, de propósito: o orçamento nasce no webhook, quando o dinheiro
+  // entra. O payload fica guardado esperando.
   let erpQuoteNumber: number | null = null;
   let erpErro: string | null = null;
   try {
-    const d = await despacharAoErp(site, pedido.id, 'pago');
+    const d = escolha ? await despacharAoErp(site, pedido.id, 'pago') : await marcarPagoComSaldo(site, pedido.id);
     erpQuoteNumber = d.quoteNumber ?? null;
     if (!d.ok && d.estado === 'erro') erpErro = d.message ?? 'erp-falhou';
   } catch (err) {
@@ -424,10 +481,12 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     total,
     subtotal,
     desconto: cupom.desconto,
+    saldoUsado: saldoUsar,
+    aPagar: cobrar,
     frete: { id: frete.id, nome: frete.nome, dias: frete.dias, valor: frete.valor, retirada: Boolean(frete.retirada) },
     erpQuoteNumber,
     erpPendente: Boolean(erpErro),
-    pagamento: pagamentoPublico(cobranca.pagamento),
+    pagamento: pagamentoCriado ? pagamentoPublico(pagamentoCriado) : null,
   });
 }
 
@@ -436,7 +495,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
 async function carregarPedidoDoUsuario(site: Db, userId: string, admin: boolean, numero: number) {
   let q = site
     .from('pedidos')
-    .select('id, numero, user_id, status, pagamento_status, forma_pagamento, cupom, frete, endereco, observacoes, valor_frete, desconto, total_estimado, total_final, total_erp, erp_quote_number, erp_quote_id, erp_payload, erp_pago_em, pago_em, criado_em')
+    .select('id, numero, user_id, status, pagamento_status, forma_pagamento, cupom, frete, endereco, observacoes, valor_frete, desconto, total_estimado, total_final, total_erp, erp_quote_number, erp_quote_id, erp_payload, erp_pago_em, pago_em, criado_em, saldo_usado, saldo_devolvido_em')
     .eq('numero', numero);
   if (!admin) q = q.eq('user_id', userId);
   const { data } = await q.maybeSingle();
@@ -462,6 +521,8 @@ async function carregarPedidoDoUsuario(site: Db, userId: string, admin: boolean,
     erp_pago_em: string | null;
     pago_em: string | null;
     criado_em: string;
+    saldo_usado: number | null;
+    saldo_devolvido_em: string | null;
   } | null;
 }
 
@@ -527,6 +588,9 @@ async function opStatus(site: Db, userId: string, admin: boolean, body: Record<s
       valorFrete: Number(pedido.valor_frete ?? 0),
       desconto: Number(pedido.desconto ?? 0),
       total: pedido.total_final != null ? Number(pedido.total_final) : pedido.total_estimado != null ? Number(pedido.total_estimado) : null,
+      // Fase 3: parte paga com o saldo da carteira e o que o Asaas cobra(ou).
+      saldoUsado: Number(pedido.saldo_usado ?? 0),
+      aPagar: pedido.total_final != null ? r2(Number(pedido.total_final) - Number(pedido.saldo_usado ?? 0)) : null,
       erpQuoteNumber: pedido.erp_quote_number,
       pagoEm: pedido.pago_em,
       criadoEm: pedido.criado_em,
@@ -556,7 +620,17 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
     res.status(400).json({ error: escolha.erro });
     return;
   }
-  const total = Number(pedido.total_final);
+  // Fase 3: o saldo reservado voltou à carteira quando a cobrança morreu;
+  // reserva de novo o mesmo valor (se ainda houver) e cobra só o restante.
+  const saldoUsado = r2(Number(pedido.saldo_usado ?? 0));
+  if (saldoUsado > 0 && pedido.saldo_devolvido_em) {
+    const r = await reservarSaldoDoPedido(site, { id: pedido.id, numero: pedido.numero, userId }, saldoUsado);
+    if (!r.ok) {
+      res.status(409).json({ error: r.erro === 'saldo-insuficiente' ? 'saldo-insuficiente' : 'nao-reservou-saldo', message: r.erro });
+      return;
+    }
+  }
+  const total = r2(Number(pedido.total_final) - saldoUsado);
   const ip = ipDoCliente(req.headers as Record<string, string | string[] | undefined>);
   if (escolha.forma === 'BOLETO' && total < cfg.boleto_minimo) {
     res.status(400).json({ error: 'boleto-minimo', minimo: cfg.boleto_minimo });
@@ -586,10 +660,12 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
       await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'recusado', valor: total, motivo: (cobranca.mensagem ?? '').slice(0, 200) || null });
       res.status(402).json({ error: 'cartao-recusado', message: cobranca.mensagem });
     } else res.status(502).json({ error: 'pagamento-indisponivel', message: cobranca.mensagem });
+    // A cobrança não nasceu: o saldo reservado agora volta (uma vez só).
+    if (saldoUsado > 0) await devolverSaldoDoPedido(site, pedido.id, 'nova cobrança falhou').catch(() => false);
     return;
   }
   await site.from('pedidos').update({ forma_pagamento: escolha.forma, pagamento_status: cobranca.pagamento.status }).eq('id', pedido.id);
-  res.status(200).json({ ok: true, numero: pedido.numero, pagamento: pagamentoPublico(cobranca.pagamento) });
+  res.status(200).json({ ok: true, numero: pedido.numero, saldoUsado, aPagar: total, pagamento: pagamentoPublico(cobranca.pagamento) });
 }
 
 // =============================================================== cancelar
@@ -691,6 +767,7 @@ async function opCancelar(site: Db, userId: string, admin: boolean, body: Record
         .eq('id', pedido.id);
       // Nunca chegou ao ERP e não vai mais: sai da fila do cron.
       await dispensarDoErp(site, pedido.id);
+      await devolverSaldoDoPedido(site, pedido.id, 'pedido cancelado').catch(() => false);
       res.status(200).json({ ok: true, cancelados: abertos.length, pedido: 'CANCELADO', semErp: true });
       return;
     }
@@ -703,6 +780,7 @@ async function opCancelar(site: Db, userId: string, admin: boolean, body: Record
     .update({ status: 'CANCELADO', status_atualizado_em: new Date().toISOString() })
     .eq('id', pedido.id);
   await dispensarDoErp(site, pedido.id);
+  await devolverSaldoDoPedido(site, pedido.id, 'pedido cancelado').catch(() => false);
   res.status(200).json({ ok: true, cancelados: abertos.length, pedido: 'CANCELADO' });
 }
 

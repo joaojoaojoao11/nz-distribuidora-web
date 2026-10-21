@@ -258,6 +258,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         comissaoEmbutidaPct: 'comissao_embutida_pct',
         tetoMensalPremios: 'teto_mensal_premios',
         diasAtribuicao: 'dias_atribuicao',
+        cobrancaMinima: 'cobranca_minima',
       };
       for (const [k, col] of Object.entries(mapa)) {
         if (!(k in c)) continue;
@@ -271,6 +272,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if ('travaAtiva' in c) patch.trava_margem_ativa = c.travaAtiva === true;
       if ('superCupomAtivo' in c) patch.super_cupom_ativo = c.superCupomAtivo !== false;
       if ('estornarConquistaCancelamento' in c) patch.estornar_conquista_cancelamento = c.estornarConquistaCancelamento !== false;
+      if ('saldoNoCheckout' in c) patch.saldo_no_checkout = c.saldoNoCheckout !== false;
       if ('periodicidadePadrao' in c) patch.periodicidade_padrao = c.periodicidadePadrao === 'quinzenal' ? 'quinzenal' : 'mensal';
       if ('saqueHoraCorte' in c && /^\d{2}:\d{2}$/.test(String(c.saqueHoraCorte))) patch.saque_hora_corte = String(c.saqueHoraCorte);
       if ('linhasExcluidas' in c) patch.linhas_excluidas = Array.isArray(c.linhasExcluidas) ? (c.linhasExcluidas as unknown[]).map(String).slice(0, 100) : [];

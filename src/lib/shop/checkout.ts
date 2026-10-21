@@ -9,6 +9,8 @@ import { validarCpfCnpj } from '../documento';
 import type { UnidadeVenda } from './unidade';
 
 export type Forma = 'PIX' | 'BOLETO' | 'CREDIT_CARD';
+/** A forma gravada no pedido: as do Asaas ou SALDO (pago só com a carteira, Fase 3). */
+export type FormaPedido = Forma | 'SALDO';
 export type StatusPagamento = 'aguardando' | 'em_analise' | 'pago' | 'recusado' | 'expirado' | 'vencido' | 'estornado' | 'cancelado' | 'nenhum';
 
 export interface OpcaoFrete {
@@ -43,6 +45,29 @@ export interface Resumo {
   };
   faltando: string[];
   endereco: { rua: string | null; numero: string | null; complemento: string | null; bairro: string | null; cidade: string | null; uf: string | null; cep: string | null } | null;
+  /** Fase 3: saldo da carteira que pode abater o pedido (nulo = recurso desligado). */
+  saldo: { disponivel: number; cobrancaMinima: number } | null;
+  /** Asaas configurado neste ambiente (sem ele só passa o pedido coberto pelo saldo). */
+  pagamentoOnline?: boolean;
+}
+
+/**
+ * Quanto do saldo entra num pedido e quanto sobra para cobrar. Cópia da regra
+ * do servidor (api/_lib/incentivos/saldoCheckout.ts) só para a prévia na tela.
+ */
+export function calcularUsoDeSaldo(total: number, disponivel: number, cobrancaMinima: number): { usar: number; cobrar: number } {
+  const r2 = (n: number) => Math.round(n * 100) / 100;
+  const t = r2(Math.max(0, total || 0));
+  const d = r2(Math.max(0, disponivel || 0));
+  const min = r2(Math.max(0, cobrancaMinima || 0));
+  if (t <= 0 || d <= 0) return { usar: 0, cobrar: t };
+  let usar = Math.min(d, t);
+  let cobrar = r2(t - usar);
+  if (cobrar > 0 && cobrar < min) {
+    usar = r2(Math.max(0, t - min));
+    cobrar = r2(t - usar);
+  }
+  return { usar: r2(usar), cobrar };
 }
 
 export interface PagamentoPublico {
@@ -68,13 +93,16 @@ export interface PedidoStatus {
     numero: number;
     status: string;
     pagamentoStatus: StatusPagamento;
-    forma: Forma | null;
+    forma: FormaPedido | null;
     cupom: string | null;
     frete: { id?: string; nome?: string; dias?: number; valor?: number; retirada?: boolean } | null;
     endereco: { rua?: string; numero?: string; complemento?: string; bairro?: string; cidade?: string; uf?: string; cep?: string } | null;
     valorFrete: number;
     desconto: number;
     total: number | null;
+    /** Fase 3: parte paga com o saldo da carteira e o que o Asaas cobra(ou). */
+    saldoUsado: number;
+    aPagar: number | null;
     erpQuoteNumber: number | null;
     pagoEm: string | null;
     criadoEm: string;
@@ -149,6 +177,8 @@ export const ERRO_TEXTO: Record<string, string> = {
   'forma-invalida': 'Escolha a forma de pagamento.',
   'pedido-nao-encontrado': 'Pedido não encontrado.',
   'pedido-nao-aceita-novo-pagamento': 'Este pedido não aceita um novo pagamento.',
+  'saldo-insuficiente': 'Seu saldo mudou e não cobre mais o valor marcado. Revise o pedido.',
+  'nao-reservou-saldo': 'Não consegui reservar o seu saldo agora. Tente de novo.',
   'erro-interno': 'Algo deu errado do nosso lado. Tente de novo.',
 };
 
@@ -170,7 +200,7 @@ export const STATUS_PAGAMENTO_LABEL: Record<StatusPagamento, string> = {
   cancelado: 'Cancelado',
 };
 
-export const FORMA_LABEL: Record<Forma, string> = { PIX: 'Pix', BOLETO: 'Boleto', CREDIT_CARD: 'Cartão de crédito' };
+export const FORMA_LABEL: Record<FormaPedido, string> = { PIX: 'Pix', BOLETO: 'Boleto', CREDIT_CARD: 'Cartão de crédito', SALDO: 'Saldo da carteira' };
 
 // ------------------------------------------------------------- máscaras
 

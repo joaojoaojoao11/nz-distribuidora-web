@@ -43,6 +43,8 @@ interface PedidoRow extends PedidoSituacao {
   total_final: number | null;
   total_estimado: number | null;
   total_erp: number | null;
+  /** Fase 3: parte do pedido paga com o saldo da carteira. */
+  saldo_usado: number | null;
   valor_frete: number;
   desconto: number;
   cupom: string | null;
@@ -130,7 +132,7 @@ export default function AdminPedidoDetalhe() {
     const { data: p, error } = await supabase
       .from('pedidos')
       .select(
-        'id, numero, user_id, status, pagamento_status, forma_pagamento, erp_envio, erp_envio_em, erp_envio_erro, erp_pago_em, erp_quote_number, erp_quote_id, total_final, total_estimado, total_erp, valor_frete, desconto, cupom, frete, endereco, observacoes, criado_em, pago_em, enviado_em, status_atualizado_em, user_profiles(full_name, company_name, email, phone, cpf_cnpj, erp_client_id, created_at)'
+        'id, numero, user_id, status, pagamento_status, forma_pagamento, erp_envio, erp_envio_em, erp_envio_erro, erp_pago_em, erp_quote_number, erp_quote_id, total_final, total_estimado, total_erp, saldo_usado, valor_frete, desconto, cupom, frete, endereco, observacoes, criado_em, pago_em, enviado_em, status_atualizado_em, user_profiles(full_name, company_name, email, phone, cpf_cnpj, erp_client_id, created_at)'
       )
       .eq('numero', n)
       .maybeSingle();
@@ -262,6 +264,7 @@ export default function AdminPedidoDetalhe() {
             {pedido.total_final != null ? 'total cobrado' : 'estimado (orçamento)'}
             {pedido.desconto > 0 ? ` · cupom ${pedido.cupom ?? ''} −${BRL.format(Number(pedido.desconto))}` : ''}
             {Number(pedido.valor_frete) > 0 ? ` · frete ${BRL.format(Number(pedido.valor_frete))}` : ''}
+            {Number(pedido.saldo_usado) > 0 ? ` · saldo da carteira −${BRL.format(Number(pedido.saldo_usado))} (Asaas cobrou ${BRL.format(Number(pedido.total_final ?? 0) - Number(pedido.saldo_usado))})` : ''}
           </span>
         </div>
       </header>

@@ -142,6 +142,8 @@ export interface ConfigIncentivos {
   tetoMensalPremios: number | null;
   diasAtribuicao: number;
   estornarConquistaCancelamento: boolean;
+  saldoNoCheckout: boolean;
+  cobrancaMinima: number;
 }
 
 export interface AfiliadoLista {

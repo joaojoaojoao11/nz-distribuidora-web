@@ -32,6 +32,7 @@ import {
   CheckoutError,
   CARTAO_VAZIO,
   errosDoCartao,
+  calcularUsoDeSaldo,
   type Resumo,
 } from '../../lib/shop/checkout';
 import FormaPagamento, { type EscolhaPagamento } from './FormaPagamento';
@@ -84,6 +85,8 @@ export default function Checkout() {
   const [freteId, setFreteId] = useState('');
   const [pag, setPag] = useState<EscolhaPagamento>({ forma: 'PIX', parcelas: 1, cartao: CARTAO_VAZIO });
   const [aceite, setAceite] = useState(false);
+  // Fase 3: "Usar meu saldo" vem marcado; quem não quiser desmarca.
+  const [usarSaldo, setUsarSaldo] = useState(true);
   const [obs, setObs] = useState('');
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
@@ -180,18 +183,24 @@ export default function Checkout() {
   const frete = resumo?.fretes.find((f) => f.id === freteId) ?? null;
   const totalSemFrete = resumo ? Math.max(0, resumo.subtotal - resumo.desconto) : 0;
   const total = Math.round((totalSemFrete + (frete?.valor ?? 0)) * 100) / 100;
+  // Saldo da carteira (Fase 3): prévia com a mesma regra do servidor. O que
+  // sobra ("a pagar") é o que o Pix/boleto/cartão cobra.
+  const saldoDisponivel = resumo?.saldo?.disponivel ?? 0;
+  const usoSaldo = usarSaldo && saldoDisponivel > 0 ? calcularUsoDeSaldo(total, saldoDisponivel, resumo?.saldo?.cobrancaMinima ?? 5) : { usar: 0, cobrar: total };
+  const aPagar = usoSaldo.cobrar;
+  const soSaldo = usoSaldo.usar > 0 && aPagar === 0;
   const parcelas = useMemo(() => {
-    // O servidor calcula as parcelas sobre itens − cupom; com o frete o valor
-    // muda um pouco. Recalcula aqui só para exibir; o servidor valida ao pagar.
-    if (!resumo) return [{ n: 1, valor: total }];
+    // O servidor calcula as parcelas sobre itens − cupom; com o frete e o
+    // saldo o valor muda. Recalcula aqui só para exibir; o servidor valida ao pagar.
+    if (!resumo) return [{ n: 1, valor: aPagar }];
     const lista: { n: number; valor: number }[] = [];
     for (let n = 1; n <= resumo.config.cartaoMaxParcelas; n++) {
-      const v = Math.round((total / n) * 100) / 100;
+      const v = Math.round((aPagar / n) * 100) / 100;
       if (n > 1 && v < resumo.config.cartaoParcelaMinima) break;
       lista.push({ n, valor: v });
     }
     return lista;
-  }, [resumo, total]);
+  }, [resumo, aPagar]);
 
   const lojista = ehEmpresa(profile?.role);
   const enderecoOk =
@@ -206,7 +215,7 @@ export default function Checkout() {
     end.address_state.trim().length === 2;
   // Cadastro já pronto: o passo 1 abre como resumo, com "Alterar" ao lado.
   const enderecoPronto = endCarregado && Boolean(enderecoOk);
-  const cartaoOk = pag.forma !== 'CREDIT_CARD' || Object.keys(errosDoCartao(pag.cartao)).length === 0;
+  const cartaoOk = soSaldo || pag.forma !== 'CREDIT_CARD' || Object.keys(errosDoCartao(pag.cartao)).length === 0;
   const podePagar = Boolean(resumo && !resumo.invalidos.length && frete && enderecoOk && cartaoOk && aceite && !enviando && !cotando && total > 0);
 
   // -------------------------------------------------------------- pagar
@@ -245,6 +254,7 @@ export default function Checkout() {
         parcelas: pag.forma === 'CREDIT_CARD' ? pag.parcelas : 1,
         cartao: pag.forma === 'CREDIT_CARD' ? cartaoParaEnvio(pag.cartao) : undefined,
         aceite: true,
+        usarSaldo: usarSaldo && usoSaldo.usar > 0,
         observacoes: obs,
         visitante: visitanteId(),
       });
@@ -436,17 +446,30 @@ export default function Checkout() {
             <h2 className={styles.subtitulo}>
               <span className={styles.num}>2</span> Pagamento
             </h2>
-            <FormaPagamento
-              valor={pag}
-              onChange={setPag}
-              parcelas={parcelas}
-              total={total}
-              pixExpiraMin={resumo?.config.pixExpiraMin ?? 30}
-              boletoVencimentoDias={resumo?.config.boletoVencimentoDias ?? 3}
-              boletoMinimo={resumo?.config.boletoMinimo ?? 0}
-              cpfPadrao={somenteDigitos(end.cpf_cnpj)}
-              desabilitado={enviando}
-            />
+            {saldoDisponivel > 0 && (
+              <label className={styles.aceite}>
+                <input type="checkbox" checked={usarSaldo} onChange={(e) => setUsarSaldo(e.target.checked)} disabled={enviando} />
+                <span>
+                  Usar meu saldo da carteira ({BRL.format(saldoDisponivel)} disponível)
+                  {usoSaldo.usar > 0 && usoSaldo.usar < saldoDisponivel && aPagar > 0 ? ` — entram ${BRL.format(usoSaldo.usar)}` : ''}
+                </span>
+              </label>
+            )}
+            {soSaldo ? (
+              <p className={styles.ok}>Seu saldo cobre o pedido inteiro ({BRL.format(usoSaldo.usar)}). Nada a pagar agora: o pedido já nasce pago.</p>
+            ) : (
+              <FormaPagamento
+                valor={pag}
+                onChange={setPag}
+                parcelas={parcelas}
+                total={aPagar}
+                pixExpiraMin={resumo?.config.pixExpiraMin ?? 30}
+                boletoVencimentoDias={resumo?.config.boletoVencimentoDias ?? 3}
+                boletoMinimo={resumo?.config.boletoMinimo ?? 0}
+                cpfPadrao={somenteDigitos(end.cpf_cnpj)}
+                desabilitado={enviando}
+              />
+            )}
           </section>
 
           {/* ------------------------------------------------ 3. revisão */}
@@ -514,15 +537,27 @@ export default function Checkout() {
               <span>Total</span>
               <strong>{resumo ? BRL.format(total) : '…'}</strong>
             </div>
-            {pag.forma === 'CREDIT_CARD' && pag.parcelas > 1 && (
+            {usoSaldo.usar > 0 && (
+              <>
+                <div>
+                  <span>Saldo da carteira</span>
+                  <strong>− {BRL.format(usoSaldo.usar)}</strong>
+                </div>
+                <div className={styles.totalFinal}>
+                  <span>A pagar</span>
+                  <strong>{BRL.format(aPagar)}</strong>
+                </div>
+              </>
+            )}
+            {!soSaldo && pag.forma === 'CREDIT_CARD' && pag.parcelas > 1 && (
               <p className={styles.mudoPequeno}>
-                {pag.parcelas}x de {BRL.format(parcelas.find((p) => p.n === pag.parcelas)?.valor ?? total / pag.parcelas)} sem juros
+                {pag.parcelas}x de {BRL.format(parcelas.find((p) => p.n === pag.parcelas)?.valor ?? aPagar / pag.parcelas)} sem juros
               </p>
             )}
           </div>
 
           <button type="button" className={styles.pagar} onClick={pagar} disabled={!podePagar}>
-            {enviando ? 'Processando…' : pag.forma === 'PIX' ? `Gerar Pix de ${BRL.format(total)}` : pag.forma === 'BOLETO' ? `Gerar boleto de ${BRL.format(total)}` : `Pagar ${BRL.format(total)}`}
+            {enviando ? 'Processando…' : soSaldo ? 'Concluir com meu saldo' : pag.forma === 'PIX' ? `Gerar Pix de ${BRL.format(aPagar)}` : pag.forma === 'BOLETO' ? `Gerar boleto de ${BRL.format(aPagar)}` : `Pagar ${BRL.format(aPagar)}`}
           </button>
           {!podePagar && !enviando && (
             <p className={styles.mudoPequeno}>
@@ -538,11 +573,11 @@ export default function Checkout() {
       {/* Celular: total e botão sempre à mão. */}
       <div className={styles.barra}>
         <div>
-          <span className={styles.barraRotulo}>Total</span>
-          <strong>{resumo ? BRL.format(total) : '…'}</strong>
+          <span className={styles.barraRotulo}>{usoSaldo.usar > 0 ? 'A pagar' : 'Total'}</span>
+          <strong>{resumo ? BRL.format(aPagar) : '…'}</strong>
         </div>
         <button type="button" className={styles.pagar} onClick={pagar} disabled={!podePagar}>
-          {enviando ? 'Processando…' : pag.forma === 'PIX' ? 'Gerar Pix' : pag.forma === 'BOLETO' ? 'Gerar boleto' : 'Pagar'}
+          {enviando ? 'Processando…' : soSaldo ? 'Concluir' : pag.forma === 'PIX' ? 'Gerar Pix' : pag.forma === 'BOLETO' ? 'Gerar boleto' : 'Pagar'}
         </button>
       </div>
     </div>

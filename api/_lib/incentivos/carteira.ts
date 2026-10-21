@@ -130,6 +130,47 @@ export async function debitar(site: Db, d: { userId: string; tipo: 'uso_compra' 
   return { movimento: data as Movimento };
 }
 
+/**
+ * Reserva saldo para um pedido (Fase 3): débito `uso_compra` pela RPC
+ * `carteira_reservar_uso`, que trava por pessoa e confere o disponível na
+ * mesma transação. `erro` = 'saldo-insuficiente' quando não dá.
+ */
+export async function reservarSaldo(site: Db, userId: string, valor: number, pedidoId: string, obs?: string | null): Promise<{ movimentoId: number | null; erro?: string }> {
+  const v = r2(Number(valor) || 0);
+  if (v <= 0) return { movimentoId: null, erro: 'valor-zero' };
+  const { data, error } = await site.rpc('carteira_reservar_uso', { p_user_id: userId, p_valor: v, p_pedido_id: pedidoId, p_obs: obs ?? null });
+  if (error) return { movimentoId: null, erro: /saldo-insuficiente/.test(error.message) ? 'saldo-insuficiente' : error.message };
+  const id = Number(data);
+  return Number.isFinite(id) && id > 0 ? { movimentoId: id } : { movimentoId: null, erro: 'rpc-sem-id' };
+}
+
+/**
+ * Devolve um débito (uso em compra) à carteira: movimento `estorno` POSITIVO
+ * apontando o débito. Um por débito, nunca dois. Devolve true se devolveu agora.
+ */
+export async function devolverDebito(site: Db, movimentoId: number, motivo: string): Promise<boolean> {
+  const { data } = await site.from('carteira_movimentos').select(COLUNAS_MOVIMENTO).eq('id', movimentoId).maybeSingle();
+  const m = data as Movimento | null;
+  if (!m || m.tipo !== 'uso_compra' || Number(m.valor) >= 0) return false;
+  const { data: ja } = await site.from('carteira_movimentos').select('id').eq('referencia_id', m.id).eq('tipo', 'estorno').limit(1);
+  if ((ja ?? []).length) return false;
+  const { error } = await site
+    .from('carteira_movimentos')
+    .insert({ user_id: m.user_id, tipo: 'estorno', valor: Math.abs(Number(m.valor)), status: 'disponivel', liberado_em: new Date().toISOString(), pedido_id: m.pedido_id, referencia_id: m.id, obs: `saldo devolvido: ${motivo}`, criado_por: 'checkout' });
+  return !error;
+}
+
+/**
+ * Apaga uma reserva cujo pedido não chegou a existir (a cobrança falhou e o
+ * pedido foi apagado). É a única exceção ao "nunca apagar, estornar": um
+ * débito e um estorno de um pedido inexistente só sujariam o extrato.
+ */
+export async function apagarReserva(site: Db, movimentoId: number): Promise<void> {
+  const { data: ja } = await site.from('carteira_movimentos').select('id').eq('referencia_id', movimentoId).limit(1);
+  if ((ja ?? []).length) return;
+  await site.from('carteira_movimentos').delete().eq('id', movimentoId).eq('tipo', 'uso_compra');
+}
+
 export async function saldoDe(site: Db, userId: string): Promise<Saldo> {
   const { data } = await site.from('carteira_saldos').select('disponivel, a_liberar, total').eq('user_id', userId).maybeSingle();
   const s = data as { disponivel?: number; a_liberar?: number; total?: number } | null;

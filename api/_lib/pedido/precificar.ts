@@ -492,6 +492,8 @@ export function montarPayloadErp(args: {
   desconto?: number;
   /** Nome da faixa de preço da pessoa (Gold, Platinum…) — o ERP espelha em clients.faixa_preco_site. */
   faixaNome?: string | null;
+  /** Saldo da carteira usado no pedido (Fase 3). O ERP grava em quotes.cashback_usado. */
+  cashbackUsado?: number;
 }) {
   const { perfil, linhas } = args;
   const descontoTotal = r2(Math.max(0, Number(args.desconto) || 0));
@@ -540,6 +542,9 @@ export function montarPayloadErp(args: {
     desconto_cupom: descontoTotal,
     // Faixa de preço (Fase 1): só o nome, para o consultor ver no CRM do ERP.
     faixa_site: args.faixaNome ?? '',
+    // Saldo da carteira usado (Fase 3): o total continua sendo o do pedido; o
+    // Asaas cobra total − cashback_usado. Só vai quando há (pedido sem saldo sai igual).
+    ...(Number(args.cashbackUsado) > 0 ? { cashback_usado: r2(Number(args.cashbackUsado)) } : {}),
   };
 }
 

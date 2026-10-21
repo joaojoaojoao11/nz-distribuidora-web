@@ -18,6 +18,7 @@ import type { Db } from '../papel.js';
 import { despacharAoErp } from '../pedido/despachoErp.js';
 import { avisarPagamentoConfirmado, type ClienteAviso } from '../avisos.js';
 import { registrarUsoCupom } from '../incentivos/cupomUsos.js';
+import { devolverSaldoDoPedido } from '../incentivos/saldoCheckout.js';
 import {
   asaasEnv,
   AsaasError,
@@ -52,6 +53,10 @@ export interface ConfigCheckout {
   retirada_endereco: string;
   pedido_minimo: number;
   frete_gratis_acima: number | null;
+  /** Fase 3: o checkout oferece "Usar meu saldo" (carteira em R$). */
+  saldo_no_checkout: boolean;
+  /** Menor cobrança que o Asaas aceita; o restante após o saldo nunca fica abaixo. */
+  cobranca_minima: number;
 }
 
 export async function carregarConfig(site: Db): Promise<ConfigCheckout> {
@@ -70,6 +75,8 @@ export async function carregarConfig(site: Db): Promise<ConfigCheckout> {
     retirada_endereco: String(c.retirada_endereco ?? ''),
     pedido_minimo: Number(c.pedido_minimo ?? 0),
     frete_gratis_acima: c.frete_gratis_acima == null ? null : Number(c.frete_gratis_acima),
+    saldo_no_checkout: c.saldo_no_checkout !== false,
+    cobranca_minima: Math.max(0, Number(c.cobranca_minima ?? 5) || 0),
   };
 }
 
@@ -453,8 +460,12 @@ export async function aplicarStatus(site: Db, p: PagamentoRow, novo: StatusPagam
   if (novo === 'estornado') patch.estornado_valor = Number(p.valor);
   await site.from('pagamentos').update(patch).eq('id', p.id);
   await site.from('pedidos').update({ pagamento_status: novo }).eq('id', p.pedido_id);
+  // Fase 3: a cobrança morreu (ou foi estornada) → o saldo reservado volta à carteira.
+  if (DEVOLVEM_SALDO.has(novo)) await devolverSaldoDoPedido(site, p.pedido_id, `pagamento ${novo}`).catch(() => false);
   return { ...p, ...(patch as Partial<PagamentoRow>) };
 }
+
+const DEVOLVEM_SALDO = new Set<StatusPagamento>(['expirado', 'recusado', 'vencido', 'cancelado', 'estornado']);
 
 /** Pago: idempotente. Grava, avisa o ERP, consome o cupom. */
 export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dados?: AsaasPayment): Promise<PagamentoRow | null> {

@@ -39,6 +39,10 @@ export interface ConfigIncentivos {
   diasAtribuicao: number;
   /** D29: pedido cancelado devolve a conquista que ele gerou (se o fato caiu) e estorna o bônus dela. */
   estornarConquistaCancelamento: boolean;
+  /** Fase 3: o checkout oferece "Usar meu saldo". */
+  saldoNoCheckout: boolean;
+  /** Fase 3: menor cobrança que o Asaas aceita (R$); o restante após o saldo nunca fica abaixo. */
+  cobrancaMinima: number;
 }
 
 export const CONFIG_PADRAO: ConfigIncentivos = {
@@ -60,10 +64,12 @@ export const CONFIG_PADRAO: ConfigIncentivos = {
   tetoMensalPremios: null,
   diasAtribuicao: 30,
   estornarConquistaCancelamento: true,
+  saldoNoCheckout: true,
+  cobrancaMinima: 5,
 };
 
 export const COLUNAS_CONFIG =
-  'pct_desconto_indicado, pct_cashback_indicador, pct_ativacao_afiliado, pct_recorrencia_afiliado, desconto_cupom_afiliado_pct, dias_liberacao_cashback, meses_validade_cashback, saque_minimo, saque_hora_corte, imposto_pct, comissao_embutida_pct, trava_margem_ativa, linhas_excluidas, periodicidade_padrao, super_cupom_ativo, teto_mensal_premios, dias_atribuicao, estornar_conquista_cancelamento';
+  'pct_desconto_indicado, pct_cashback_indicador, pct_ativacao_afiliado, pct_recorrencia_afiliado, desconto_cupom_afiliado_pct, dias_liberacao_cashback, meses_validade_cashback, saque_minimo, saque_hora_corte, imposto_pct, comissao_embutida_pct, trava_margem_ativa, linhas_excluidas, periodicidade_padrao, super_cupom_ativo, teto_mensal_premios, dias_atribuicao, estornar_conquista_cancelamento, saldo_no_checkout, cobranca_minima';
 
 const num = (v: unknown, padrao: number): number => (v == null || v === '' || !Number.isFinite(Number(v)) ? padrao : Number(v));
 const numOuNulo = (v: unknown): number | null => (v == null || v === '' || !Number.isFinite(Number(v)) ? null : Number(v));
@@ -89,6 +95,8 @@ export function montarConfig(row: Record<string, unknown> | null | undefined): C
     tetoMensalPremios: numOuNulo(r.teto_mensal_premios),
     diasAtribuicao: Math.max(1, Math.floor(num(r.dias_atribuicao, CONFIG_PADRAO.diasAtribuicao))),
     estornarConquistaCancelamento: r.estornar_conquista_cancelamento !== false,
+    saldoNoCheckout: r.saldo_no_checkout !== false,
+    cobrancaMinima: Math.max(0, num(r.cobranca_minima, CONFIG_PADRAO.cobrancaMinima)),
   };
 }
 

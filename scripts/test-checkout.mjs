@@ -48,6 +48,10 @@ const build = spawnSync(
     // `pagamento` registra o uso do cupom e `precificar` confere o limite por
     // cliente (Fase 2 do plano de indicação, 21/10/2026).
     'api/_lib/incentivos/cupomUsos.ts',
+    // Fase 3 (21/10/2026): saldo da carteira no checkout — `pagamento` devolve
+    // a reserva quando a cobrança morre; a regra de quanto usar é pura.
+    'api/_lib/incentivos/saldoCheckout.ts',
+    'api/_lib/incentivos/carteira.ts',
     `--outdir=${outDir}`,
     '--format=esm',
     '--platform=node',
@@ -135,7 +139,7 @@ function fakeDb(dados = {}) {
   };
 }
 
-const { criarPagamento, parcelasDisponiveis, statusDoEvento, statusDoAsaas, expirarSeVencido, marcarPago, valorConfere } = await import(pathToFileURL(join(outDir, 'asaas/pagamento.js')).href);
+const { criarPagamento, parcelasDisponiveis, statusDoEvento, statusDoAsaas, expirarSeVencido, marcarPago, valorConfere, aplicarStatus } = await import(pathToFileURL(join(outDir, 'asaas/pagamento.js')).href);
 const { somarDiasUteis, hojeBr, ipDoCliente, sanitizarPagamento } = await import(pathToFileURL(join(outDir, 'asaas/cliente.js')).href);
 const { normalizarItens, precificar, montarPayloadErp, itensParaGravar, notaPreVenda } = await import(pathToFileURL(join(outDir, 'pedido/precificar.js')).href);
 const webhook = await import(pathToFileURL(join(outDir, 'handlers/asaas.js')).href);
@@ -472,6 +476,57 @@ console.log('\n=== PREÇO POR TIPO DE ACESSO (checkout = vitrine) ===');
   ok('…mas o metro da mesma linha continua valendo', metroOk.linhas.length === 1 && metroOk.linhas[0].unitPrice === 396);
   const lojOk = await precificar(db, [{ slug: 'wrap-x', qtd: 2, unidade: 'metro' }], { papel: 'lojista' });
   ok('a regra é por tipo: lojista compra a linha normalmente', lojOk.linhas.length === 1);
+}
+
+// ======================================== FASE 3: SALDO DA CARTEIRA
+console.log('\n=== FASE 3: SALDO DA CARTEIRA NO CHECKOUT ===');
+{
+  const { calcularUsoDeSaldo, devolverSaldoDoPedido } = await import(pathToFileURL(join(outDir, 'incentivos/saldoCheckout.js')).href);
+  const { devolverDebito, apagarReserva } = await import(pathToFileURL(join(outDir, 'incentivos/carteira.js')).href);
+  const igual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  ok('regra: sem saldo → cobra tudo', igual(calcularUsoDeSaldo(340.46, 0, 5), { usar: 0, cobrar: 340.46 }));
+  ok('regra: saldo cobre tudo → cobra 0 (pedido nasce pago)', igual(calcularUsoDeSaldo(340.46, 400, 5), { usar: 340.46, cobrar: 0 }));
+  ok('regra: saldo parcial → cobra o resto', igual(calcularUsoDeSaldo(340.46, 100, 5), { usar: 100, cobrar: 240.46 }));
+  ok('regra: resto abaixo da cobrança mínima (R$ 5) → segura saldo para a cobrança valer 5', igual(calcularUsoDeSaldo(100, 97, 5), { usar: 95, cobrar: 5 }));
+  ok('regra: saldo exatamente igual ao total → tudo pelo saldo', igual(calcularUsoDeSaldo(100, 100, 5), { usar: 100, cobrar: 0 }));
+  ok('regra: centavos fecham', igual(calcularUsoDeSaldo(99.99, 50.5, 5), { usar: 50.5, cobrar: 49.49 }));
+  ok('regra: mínimo zero → usa tudo que der', igual(calcularUsoDeSaldo(100, 97, 0), { usar: 97, cobrar: 3 }));
+
+  // Devolução da reserva: uma vez só, por mais que se peça.
+  const db = fakeDb({
+    pedidos: [{ id: 'ped-s', numero: 1, user_id: 'u1', saldo_usado: 50, saldo_movimento_id: 7, saldo_devolvido_em: null }],
+    carteira_movimentos: [{ id: 7, user_id: 'u1', tipo: 'uso_compra', valor: -50, status: 'disponivel', pedido_id: 'ped-s' }],
+  });
+  const d1 = await devolverSaldoDoPedido(db, 'ped-s', 'teste');
+  ok('devolver: estorno positivo apontando o débito e pedido marcado', d1 === true && db.tabelas.carteira_movimentos.some((m) => m.tipo === 'estorno' && m.valor === 50 && m.referencia_id === 7 && m.status === 'disponivel') && Boolean(db.tabelas.pedidos[0].saldo_devolvido_em));
+  const d2 = await devolverSaldoDoPedido(db, 'ped-s', 'teste');
+  ok('devolver de novo: nada acontece', d2 === false && db.tabelas.carteira_movimentos.filter((m) => m.tipo === 'estorno').length === 1);
+  ok('devolverDebito direto no mesmo débito: também não dobra', (await devolverDebito(db, 7, 'x')) === false);
+  ok('devolverDebito num crédito: recusa', (await devolverDebito(fakeDb({ carteira_movimentos: [{ id: 1, tipo: 'comissao_ativacao', valor: 10 }] }), 1, 'x')) === false);
+
+  // Pagamento que morre (Pix expirado) devolve o saldo reservado.
+  const db2 = fakeDb({
+    pedidos: [{ id: 'ped-e', numero: 2, user_id: 'u1', pagamento_status: 'aguardando', saldo_usado: 20, saldo_movimento_id: 9, saldo_devolvido_em: null }],
+    pagamentos: [{ id: 'pg-e', pedido_id: 'ped-e', forma: 'PIX', status: 'aguardando', valor: 80, parcelas: 1 }],
+    carteira_movimentos: [{ id: 9, user_id: 'u1', tipo: 'uso_compra', valor: -20, status: 'disponivel', pedido_id: 'ped-e' }],
+  });
+  await aplicarStatus(db2, db2.tabelas.pagamentos[0], 'expirado', 'teste');
+  ok('Pix expirado: pedido expirado e saldo devolvido', db2.tabelas.pedidos[0].pagamento_status === 'expirado' && Boolean(db2.tabelas.pedidos[0].saldo_devolvido_em) && db2.tabelas.carteira_movimentos.some((m) => m.tipo === 'estorno' && m.valor === 20));
+  await aplicarStatus(db2, { ...db2.tabelas.pagamentos[0], status: 'aguardando' }, 'cancelado', 'teste');
+  ok('cancelar depois de expirar não devolve duas vezes', db2.tabelas.carteira_movimentos.filter((m) => m.tipo === 'estorno').length === 1);
+
+  // Pedido que não nasceu (cobrança falhou): a reserva some sem rastro.
+  const db3 = fakeDb({ carteira_movimentos: [{ id: 3, tipo: 'uso_compra', valor: -10 }] });
+  await apagarReserva(db3, 3);
+  ok('reserva de pedido que não nasceu é apagada', db3.tabelas.carteira_movimentos.length === 0);
+  const db4 = fakeDb({ carteira_movimentos: [{ id: 4, tipo: 'uso_compra', valor: -10 }, { id: 5, tipo: 'estorno', valor: 10, referencia_id: 4 }] });
+  await apagarReserva(db4, 4);
+  ok('reserva já devolvida não é apagada', db4.tabelas.carteira_movimentos.length === 2);
+
+  // O ERP recebe o saldo usado (e só quando há).
+  const comSaldo = montarPayloadErp({ pedidoId: 'p', perfil: PERFIL, linhas: [], total: 100, notas: '', cupom: null, afiliadoCodigo: null, frete: { tipo: 'CIF', valor: 0, transportadora: '', prazoDias: 0 }, cashbackUsado: 40 });
+  const semSaldo = montarPayloadErp({ pedidoId: 'p', perfil: PERFIL, linhas: [], total: 100, notas: '', cupom: null, afiliadoCodigo: null, frete: { tipo: 'CIF', valor: 0, transportadora: '', prazoDias: 0 } });
+  ok('payload ao ERP: cashback_usado só quando há saldo usado', comSaldo.cashback_usado === 40 && !('cashback_usado' in semSaldo));
 }
 
 rmSync(outDir, { recursive: true, force: true });
