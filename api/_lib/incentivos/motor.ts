@@ -16,8 +16,8 @@ import type { Db } from '../papel.js';
 import { r2 } from '../pedido/dinheiro.js';
 import { carregarRegras, papelDePreco, regraPara } from '../precos/regraAcesso.js';
 import { creditar, estornarPorPedido, type Movimento } from './carteira.js';
-import type { ConfigIncentivos } from './config.js';
-import { avaliarConquistas, registrarEvento, situacaoNivel } from './gamificacao.js';
+import { carregarConfigIncentivos, type ConfigIncentivos } from './config.js';
+import { avaliarConquistas, devolverConquistasDoPedido, registrarEvento, situacaoNivel } from './gamificacao.js';
 import { chavePeriodo, fimPeriodo } from './periodos.js';
 import { limitarIncentivo } from './trava.js';
 
@@ -205,7 +205,7 @@ export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: Co
     if (r.movimento) creditos.push(r.movimento);
     if (r.movimento && !r.repetido) {
       await registrarEvento(site, c.quem, 'indicado_comprou', { tipo: c.tipo, valor, liberaEm: c.liberaEm.toISOString() });
-      await avaliarConquistas(site, c.quem, cfg, c.tipo !== 'cashback_indicacao').catch(() => []);
+      await avaliarConquistas(site, c.quem, cfg, c.tipo !== 'cashback_indicacao', pedido.id).catch(() => []);
     }
   }
   await marcar();
@@ -213,8 +213,11 @@ export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: Co
 }
 
 /** O pedido foi cancelado/devolvido no ERP: estorna o que ainda não saiu. */
-export async function estornarPedido(site: Db, pedidoId: string, motivo: string): Promise<number> {
+export async function estornarPedido(site: Db, pedidoId: string, motivo: string, cfg?: ConfigIncentivos): Promise<number> {
   const n = await estornarPorPedido(site, pedidoId, motivo);
+  // D29: a conquista que nasceu deste pedido volta (e o bônus dela sai) se o fato caiu.
+  const c = cfg ?? (await carregarConfigIncentivos(site));
+  if (c.estornarConquistaCancelamento) await devolverConquistasDoPedido(site, pedidoId, motivo).catch(() => 0);
   await site.from('pedidos').update({ incentivos_estornados_em: new Date().toISOString() }).eq('id', pedidoId);
   return n;
 }

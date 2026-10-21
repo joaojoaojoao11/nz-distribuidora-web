@@ -18,6 +18,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { chamarCheckout } from '../../lib/shop/checkout';
 import { faltasDoCadastro } from '../../lib/shop/conta';
 import { supabase } from '../../lib/supabase';
+import { textoMotivoCupom, validarCupomNaApi } from '../../lib/shop/incentivos';
 import { visitanteId } from '../../lib/afiliado';
 import { alterarQuantidade, limparCarrinho, removerDoCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { BRL, usePreco, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
@@ -97,8 +98,8 @@ export default function Carrinho() {
       setCupomInfo(null);
       return;
     }
-    const r = await fetch('/api/nz/afiliado', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'validar', codigo }) });
-    setCupomInfo(r.ok ? await r.json() : { valido: false });
+    // Com a sessão: "próprio", "só conta nova" e "já usou" são conferidos aqui, não só no pedido.
+    setCupomInfo(await validarCupomNaApi(codigo));
   };
 
   const enviar = async () => {
@@ -203,7 +204,7 @@ export default function Carrinho() {
                     <small className={cupomInfo.valido ? styles.ok : styles.erro}>
                       {cupomInfo.valido
                         ? `Cupom aplicado${cupomInfo.descontoPct ? ` — ${cupomInfo.descontoPct}%` : cupomInfo.descontoValor ? ` — ${BRL.format(Number(cupomInfo.descontoValor))}` : ''}.`
-                        : 'Cupom inválido.'}
+                        : textoMotivoCupom(cupomInfo.motivo)}
                     </small>
                   )}
                 </label>

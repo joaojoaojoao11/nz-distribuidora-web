@@ -321,7 +321,7 @@ console.log('\n=== RÉGUA DO CUPOM (nominal, super, afiliado) ===');
     { id: 'px', user_id: 'x', cupom: 'CAMP10', cupom_consumido_em: null, status: 'RASCUNHO', pagamento_status: 'aguardando' },
   ];
   const cupom_usos = [{ cupom_codigo: 'JOAO27', user_id: 'jausou', pedido_id: 'p-old' }];
-  const afiliados = [{ user_id: 'afi', desconto_cupom_pct: 2 }];
+  const afiliados = [{ user_id: 'afi', status: 'aprovado', ativo: true, desconto_cupom_pct: 2 }];
   const loja_config = [{ id: 1, pct_desconto_indicado: 5, super_cupom_ativo: true, desconto_cupom_afiliado_pct: 0 }];
   const db = bancoFalso({ cupons, pedidos, cupom_usos, afiliados, loja_config });
   const achar = (c) => cupons.find((x) => x.codigo === c);

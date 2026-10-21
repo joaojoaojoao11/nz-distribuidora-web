@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { textoMotivoCupom, validarCupomNaApi } from '../../lib/shop/incentivos';
 import { BRL } from '../../lib/shop/precos';
 import styles from './Painel.module.css';
 
@@ -30,6 +31,7 @@ interface Conferencia {
   valido: boolean;
   descontoPct?: number | null;
   descontoValor?: number | null;
+  motivo?: string;
 }
 
 export default function PainelCupons() {
@@ -77,12 +79,8 @@ export default function PainelCupons() {
     setConferindo(true);
     setResultado(null);
     try {
-      const r = await fetch('/api/nz/afiliado', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ op: 'validar', codigo: cod }),
-      });
-      setResultado(r.ok ? ((await r.json()) as Conferencia) : { valido: false });
+      // Com a sessão: "próprio", "só conta nova" e "já usou" são conferidos aqui também.
+      setResultado((await validarCupomNaApi(cod)) as Conferencia);
     } catch {
       setResultado({ valido: false });
     } finally {
@@ -157,7 +155,7 @@ export default function PainelCupons() {
           <p className={resultado.valido ? styles.ok : styles.erro}>
             {resultado.valido
               ? `Cupom válido — ${desconto(resultado.descontoPct ?? null, resultado.descontoValor ?? null)}.`
-              : 'Cupom inválido, esgotado ou fora do prazo.'}
+              : textoMotivoCupom(resultado.motivo)}
           </p>
         )}
       </section>

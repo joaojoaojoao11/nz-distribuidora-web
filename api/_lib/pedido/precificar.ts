@@ -302,7 +302,15 @@ export async function motivoCupomInvalido(site: Db, cupom: CupomRow | null, user
     if (cupom.dono_user_id !== userId) return 'nominal';
   }
   if (cupom.tipo === 'super' && userId && cupom.dono_user_id === userId) return 'proprio';
-  if (cupom.tipo === 'afiliado' && userId && cupom.afiliado_user_id === userId) return 'proprio';
+  if (cupom.tipo === 'afiliado') {
+    if (userId && cupom.afiliado_user_id === userId) return 'proprio';
+    // Afiliado ainda pendente, suspenso ou desligado: o cupom dele não entra
+    // (achado do teste de 21/10/2026 — o motor só paga afiliado aprovado e ativo,
+    // então aceitar o cupom antes filiaria o cliente a quem não recebe nada).
+    const { data: a } = await site.from('afiliados').select('status, ativo').eq('user_id', cupom.afiliado_user_id ?? '').maybeSingle();
+    const af = a as { status?: string; ativo?: boolean } | null;
+    if (!af || af.status !== 'aprovado' || af.ativo === false) return 'afiliado-inativo';
+  }
   if (userId && cupom.so_conta_nova) {
     const { jaComprou } = await import('../incentivos/cupomUsos.js');
     if (await jaComprou(site, userId)) return 'so-conta-nova';
@@ -316,7 +324,7 @@ export async function motivoCupomInvalido(site: Db, cupom: CupomRow | null, user
 }
 
 /** Desconto (%) de um cupom de afiliado: o do afiliado, senão o da configuração (D27). */
-async function descontoDoAfiliado(site: Db, afiliadoUserId: string | null): Promise<number> {
+export async function descontoDoAfiliado(site: Db, afiliadoUserId: string | null): Promise<number> {
   if (!afiliadoUserId) return 0;
   const { data: a } = await site.from('afiliados').select('desconto_cupom_pct').eq('user_id', afiliadoUserId).maybeSingle();
   const proprio = (a as { desconto_cupom_pct?: number | null } | null)?.desconto_cupom_pct;
@@ -326,7 +334,7 @@ async function descontoDoAfiliado(site: Db, afiliadoUserId: string | null): Prom
 }
 
 /** Desconto (%) do super cupom: o do cupom, senão o da configuração. */
-async function descontoDoSuper(site: Db, cupom: CupomRow): Promise<number> {
+export async function descontoDoSuper(site: Db, cupom: CupomRow): Promise<number> {
   if (cupom.desconto_pct != null) return Number(cupom.desconto_pct);
   const { data: c } = await site.from('loja_config').select('pct_desconto_indicado, super_cupom_ativo').eq('id', 1).maybeSingle();
   const cfg = c as { pct_desconto_indicado?: number | null; super_cupom_ativo?: boolean } | null;

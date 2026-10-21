@@ -234,8 +234,14 @@ console.log('\n=== B3: CUPOM COM DONO E CUPOM DE AFILIADO ===');
     { codigo: 'CAMPANHA10', tipo: 'campanha', desconto_pct: 10, desconto_valor: null, afiliado_user_id: null, dono_user_id: null, ativo: true, valido_de: null, valido_ate: null, limite_usos: null, usos: 0 },
     { codigo: 'NOMINAL50', tipo: 'campanha', desconto_pct: null, desconto_valor: 50, afiliado_user_id: null, dono_user_id: EU, ativo: true, valido_de: null, valido_ate: null, limite_usos: 1, usos: 0 },
     { codigo: 'NZ-AFIL1', tipo: 'afiliado', desconto_pct: 5, desconto_valor: null, afiliado_user_id: AFILIADO, dono_user_id: null, ativo: true, valido_de: null, valido_ate: null, limite_usos: null, usos: 0 },
+    { codigo: 'NZ-PEND1', tipo: 'afiliado', desconto_pct: 5, desconto_valor: null, afiliado_user_id: 'u-pendente', dono_user_id: null, ativo: true, valido_de: null, valido_ate: null, limite_usos: null, usos: 0 },
   ];
-  const db = bancoFalso({ cupons, pedidos: [] });
+  // O cupom de afiliado só entra com o afiliado APROVADO e ativo (21/10/2026).
+  const afiliados = [
+    { user_id: AFILIADO, status: 'aprovado', ativo: true },
+    { user_id: 'u-pendente', status: 'pendente', ativo: true },
+  ];
+  const db = bancoFalso({ cupons, pedidos: [], afiliados });
   const campanha = await resolverCupom(db, 'campanha10', 200, OUTRO);
   ok('cupom de campanha vale para qualquer um (10% de 200 = 20)', campanha.codigo === 'CAMPANHA10' && campanha.desconto === 20 && !campanha.invalido);
   const dono = await resolverCupom(db, 'NOMINAL50', 200, EU);
@@ -244,6 +250,8 @@ console.log('\n=== B3: CUPOM COM DONO E CUPOM DE AFILIADO ===');
   ok('cupom nominal NÃO vale para outra pessoa', naoDono.invalido && naoDono.codigo === null);
   const proprio = await resolverCupom(db, 'NZ-AFIL1', 200, AFILIADO);
   ok('ninguém usa o próprio cupom de afiliado', proprio.invalido);
+  const pendente = await resolverCupom(db, 'NZ-PEND1', 200, OUTRO);
+  ok('cupom de afiliado ainda PENDENTE não entra (afiliado-inativo)', pendente.invalido && pendente.motivo === 'afiliado-inativo', JSON.stringify(pendente));
   const indicado = await resolverCupom(db, 'NZ-AFIL1', 200, OUTRO);
   ok('o indicado usa o cupom do afiliado e o afiliado é atribuído', indicado.codigo === 'NZ-AFIL1' && indicado.afiliadoUserId === AFILIADO && indicado.desconto === 10);
   const vazio = await resolverCupom(db, '   ', 200, EU);

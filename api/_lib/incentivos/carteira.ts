@@ -153,7 +153,17 @@ export async function estornarPorPedido(site: Db, pedidoId: string, motivo: stri
     .eq('pedido_id', pedidoId)
     .in('tipo', ['cashback_indicacao', 'comissao_ativacao', 'comissao_recorrencia'])
     .in('status', ['a_liberar', 'disponivel']);
-  const creditos = (data ?? []) as Movimento[];
+  return estornarLista(site, (data ?? []) as Movimento[], motivo, pedidoId);
+}
+
+/** Estorna movimentos pelo id (bônus de conquista devolvida, D29). Mesma regra do estorno por pedido. */
+export async function estornarMovimentos(site: Db, ids: number[], motivo: string): Promise<number> {
+  if (!ids.length) return 0;
+  const { data } = await site.from('carteira_movimentos').select(COLUNAS_MOVIMENTO).in('id', ids).in('status', ['a_liberar', 'disponivel']);
+  return estornarLista(site, (data ?? []) as Movimento[], motivo, null);
+}
+
+async function estornarLista(site: Db, creditos: Movimento[], motivo: string, pedidoId: string | null): Promise<number> {
   let tocados = 0;
   const agora = new Date().toISOString();
   for (const m of creditos) {
@@ -167,7 +177,7 @@ export async function estornarPorPedido(site: Db, pedidoId: string, motivo: stri
     if ((ja ?? []).length) continue;
     const { error } = await site
       .from('carteira_movimentos')
-      .insert({ user_id: m.user_id, tipo: 'estorno', valor: -Math.abs(Number(m.valor)), status: 'disponivel', liberado_em: agora, pedido_id: pedidoId, origem_user_id: m.origem_user_id, referencia_id: m.id, obs: `estorno: ${motivo}`, criado_por: 'motor' });
+      .insert({ user_id: m.user_id, tipo: 'estorno', valor: -Math.abs(Number(m.valor)), status: 'disponivel', liberado_em: agora, pedido_id: pedidoId ?? m.pedido_id, origem_user_id: m.origem_user_id, referencia_id: m.id, obs: `estorno: ${motivo}`, criado_por: 'motor' });
     if (!error) tocados++;
   }
   return tocados;

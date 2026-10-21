@@ -37,6 +37,8 @@ export interface ConfigIncentivos {
   /** Teto mensal dos prêmios em dinheiro da gamificação (D18). Nulo = sem prêmio em dinheiro. */
   tetoMensalPremios: number | null;
   diasAtribuicao: number;
+  /** D29: pedido cancelado devolve a conquista que ele gerou (se o fato caiu) e estorna o bônus dela. */
+  estornarConquistaCancelamento: boolean;
 }
 
 export const CONFIG_PADRAO: ConfigIncentivos = {
@@ -57,10 +59,11 @@ export const CONFIG_PADRAO: ConfigIncentivos = {
   superCupomAtivo: true,
   tetoMensalPremios: null,
   diasAtribuicao: 30,
+  estornarConquistaCancelamento: true,
 };
 
 export const COLUNAS_CONFIG =
-  'pct_desconto_indicado, pct_cashback_indicador, pct_ativacao_afiliado, pct_recorrencia_afiliado, desconto_cupom_afiliado_pct, dias_liberacao_cashback, meses_validade_cashback, saque_minimo, saque_hora_corte, imposto_pct, comissao_embutida_pct, trava_margem_ativa, linhas_excluidas, periodicidade_padrao, super_cupom_ativo, teto_mensal_premios, dias_atribuicao';
+  'pct_desconto_indicado, pct_cashback_indicador, pct_ativacao_afiliado, pct_recorrencia_afiliado, desconto_cupom_afiliado_pct, dias_liberacao_cashback, meses_validade_cashback, saque_minimo, saque_hora_corte, imposto_pct, comissao_embutida_pct, trava_margem_ativa, linhas_excluidas, periodicidade_padrao, super_cupom_ativo, teto_mensal_premios, dias_atribuicao, estornar_conquista_cancelamento';
 
 const num = (v: unknown, padrao: number): number => (v == null || v === '' || !Number.isFinite(Number(v)) ? padrao : Number(v));
 const numOuNulo = (v: unknown): number | null => (v == null || v === '' || !Number.isFinite(Number(v)) ? null : Number(v));
@@ -85,6 +88,7 @@ export function montarConfig(row: Record<string, unknown> | null | undefined): C
     superCupomAtivo: r.super_cupom_ativo !== false,
     tetoMensalPremios: numOuNulo(r.teto_mensal_premios),
     diasAtribuicao: Math.max(1, Math.floor(num(r.dias_atribuicao, CONFIG_PADRAO.diasAtribuicao))),
+    estornarConquistaCancelamento: r.estornar_conquista_cancelamento !== false,
   };
 }
 

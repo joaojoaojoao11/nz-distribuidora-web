@@ -21,7 +21,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado } from '../papel.js';
-import { COLUNAS_CUPOM, motivoCupomInvalido, resolverCupom, type CupomRow } from '../pedido/precificar.js';
+import { COLUNAS_CUPOM, descontoDoAfiliado, descontoDoSuper, motivoCupomInvalido, resolverCupom, type CupomRow } from '../pedido/precificar.js';
 
 const CODIGO_RE = /^[A-Z0-9][A-Z0-9-]{2,23}$/;
 
@@ -31,13 +31,7 @@ function normalizarCodigo(raw: unknown): string | null {
   return CODIGO_RE.test(c) ? c : null;
 }
 
-/** NZ- + 5 caracteres sem ambiguidade (sem 0/O, 1/I). */
-function gerarCodigo(): string {
-  const alfabeto = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let s = 'NZ-';
-  for (let i = 0; i < 5; i++) s += alfabeto[Math.floor(Math.random() * alfabeto.length)];
-  return s;
-}
+// O código do afiliado (NZ-XXXXX) nasce em /api/nz/incentivos ("quero-ser-afiliado").
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
@@ -76,9 +70,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(200).json({ valido: false, motivo: motivo === 'inexistente' ? undefined : motivo });
       return;
     }
-    // O desconto que a tela mostra é o mesmo que o checkout cobra.
+    // O desconto que a tela mostra é o mesmo que o checkout cobra. Sem login,
+    // o super cupom e o cupom de afiliado mostram o percentual da regra e avisam
+    // que é preciso entrar (as regras "só conta nova" e "próprio" só se conferem
+    // com a pessoa identificada; o checkout confere de novo).
     const r = quem.userId ? await resolverCupom(site, c.codigo, 100, quem.userId) : null;
-    res.status(200).json({ valido: true, codigo: c.codigo, tipo: c.tipo, descontoPct: r ? r.desconto : c.desconto_pct, descontoValor: c.desconto_valor });
+    let descontoPct: number | null = r ? r.desconto : c.desconto_pct;
+    if (!quem.userId && c.desconto_pct == null) {
+      if (c.tipo === 'super') descontoPct = await descontoDoSuper(site, c);
+      else if (c.tipo === 'afiliado') descontoPct = await descontoDoAfiliado(site, c.afiliado_user_id);
+    }
+    const precisaLogin = !quem.userId && (c.tipo === 'super' || c.tipo === 'afiliado' || Boolean(c.so_conta_nova) || c.usos_por_cliente != null);
+    res.status(200).json({ valido: true, codigo: c.codigo, tipo: c.tipo, descontoPct, descontoValor: c.desconto_valor, precisaLogin });
     return;
   }
 

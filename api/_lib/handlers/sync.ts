@@ -707,7 +707,7 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
       }
     } else if (CANCELADOS.has(p.status) && local.incentivos_processados_em && !local.incentivos_estornados_em) {
       try {
-        await estornarPedido(site, p.site_pedido_id, `pedido ${p.status} no ERP`);
+        await estornarPedido(site, p.site_pedido_id, `pedido ${p.status} no ERP`, cfgIncentivos);
       } catch (e) {
         console.warn('[erp-sync] estorno de incentivos falhou no pedido', p.site_pedido_id, e instanceof Error ? e.message : e);
       }

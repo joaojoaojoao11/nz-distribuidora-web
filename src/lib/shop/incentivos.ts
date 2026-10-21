@@ -100,6 +100,7 @@ export const resgatarPontosNaCarteira = (campanhaId: string) => chamarIncentivos
 
 export const MOMENTO_TEXTO: Record<string, (p: Record<string, unknown>) => string> = {
   indicado_cadastrou: () => 'Alguém se cadastrou com a sua indicação',
+  conquista_devolvida: (p) => `Conquista "${String(p.nome ?? p.codigo ?? '')}" devolvida: o pedido que a gerou foi cancelado`,
   indicado_aprovado: () => 'Um indicado seu foi aprovado',
   indicado_comprou: (p) => `Um indicado comprou: ${BRL(Number(p.valor ?? 0))} a caminho da sua carteira`,
   cashback_liberado: (p) => `${BRL(Number(p.valor ?? 0))} liberados na sua carteira`,
@@ -140,6 +141,7 @@ export interface ConfigIncentivos {
   superCupomAtivo: boolean;
   tetoMensalPremios: number | null;
   diasAtribuicao: number;
+  estornarConquistaCancelamento: boolean;
 }
 
 export interface AfiliadoLista {
@@ -169,6 +171,44 @@ export interface AfiliadoLista {
 
 export const lerConfigIncentivos = () => chamarIncentivos<{ config: ConfigIncentivos }>({ op: 'config-ler' });
 export const salvarConfigIncentivos = (config: Partial<ConfigIncentivos>) => chamarIncentivos<{ ok: boolean; config: ConfigIncentivos }>({ op: 'config-salvar', config });
+
+/** Motivo do `validar` (api/nz/afiliado) em texto para a pessoa. */
+export function textoMotivoCupom(motivo?: string | null): string {
+  switch (motivo) {
+    case 'ainda-nao-vale':
+      return 'Este cupom ainda não começou a valer.';
+    case 'expirado':
+      return 'Este cupom venceu.';
+    case 'esgotado':
+      return 'Este cupom esgotou.';
+    case 'login':
+      return 'Entre na sua conta para usar este cupom.';
+    case 'nominal':
+      return 'Este cupom é de outra pessoa.';
+    case 'proprio':
+      return 'Você não pode usar o seu próprio cupom.';
+    case 'so-conta-nova':
+      return 'Este cupom vale só para a primeira compra.';
+    case 'ja-usou':
+      return 'Você já usou este cupom.';
+    case 'afiliado-inativo':
+      return 'Este cupom não está ativo.';
+    default:
+      return 'Cupom inválido.';
+  }
+}
+
+/** Valida um cupom com a sessão atual (as regras "próprio", "só conta nova" e "já usou" precisam da pessoa). */
+export async function validarCupomNaApi(codigo: string): Promise<{ valido: boolean; tipo?: string; descontoPct?: number | null; descontoValor?: number | null; motivo?: string; precisaLogin?: boolean }> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  const r = await fetch('/api/nz/afiliado', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+    body: JSON.stringify({ op: 'validar', codigo }),
+  });
+  return r.ok ? ((await r.json()) as { valido: boolean }) : { valido: false };
+}
 export const listarAfiliados = () => chamarIncentivos<{ afiliados: AfiliadoLista[]; config: ConfigIncentivos }>({ op: 'afiliados-listar' });
 export const verAfiliado = (userId: string) => chamarIncentivos<Record<string, unknown>>({ op: 'afiliado-ver', userId });
 export const salvarAfiliado = (dados: Record<string, unknown>) => chamarIncentivos<{ ok: boolean }>({ op: 'afiliado-salvar', ...dados });

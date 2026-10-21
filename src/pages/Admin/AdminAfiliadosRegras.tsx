@@ -78,6 +78,7 @@ export default function AdminAfiliadosRegras() {
         diasLiberacao: String(c.diasLiberacao),
         mesesValidade: String(c.mesesValidade),
         tetoMensalPremios: c.tetoMensalPremios == null ? '' : pctTexto(c.tetoMensalPremios),
+        estornarConquistaCancelamento: c.estornarConquistaCancelamento ? '1' : '',
       });
       setNiveis(((n.data ?? []) as Record<string, unknown>[]).map((x) => ({ id: Number(x.id), publico: x.publico as Nivel['publico'], ordem: Number(x.ordem), nome: String(x.nome), icone: String(x.icone ?? ''), criterio_tipo: x.criterio_tipo as Nivel['criterio_tipo'], criterio_valor: pctTexto(Number(x.criterio_valor)), multiplicador: pctTexto(Number(x.multiplicador)), ativo: x.ativo !== false })));
       setConquistas(((q.data ?? []) as Record<string, unknown>[]).map((x) => ({ codigo: String(x.codigo), nome: String(x.nome), descricao: String(x.descricao ?? ''), icone: String(x.icone ?? ''), publico: x.publico as Conquista['publico'], bonus_valor: pctTexto(Number(x.bonus_valor)), ativa: x.ativa !== false, ordem: Number(x.ordem ?? 0) })));
@@ -103,6 +104,7 @@ export default function AdminAfiliadosRegras() {
       diasLiberacao: num(form.diasLiberacao) ?? 7,
       mesesValidade: num(form.mesesValidade) ?? 12,
       tetoMensalPremios: num(form.tetoMensalPremios),
+      estornarConquistaCancelamento: form.estornarConquistaCancelamento === '1',
     };
     if (Object.values(patch).some((v) => typeof v === 'number' && (!Number.isFinite(v) || v < 0))) {
       setErro('Percentuais, dias e valores precisam ser números maiores ou iguais a zero.');
@@ -304,6 +306,12 @@ export default function AdminAfiliadosRegras() {
           </Campo>
           <Campo label="Teto mensal de prêmios (R$)" dica="bônus das conquistas; vazio = sem bônus em dinheiro">
             <input style={campoEstilo} inputMode="decimal" value={form.tetoMensalPremios ?? ''} onChange={(e) => setForm((f) => ({ ...f, tetoMensalPremios: e.target.value }))} />
+          </Campo>
+          <Campo label="Pedido cancelado devolve a conquista" dica="e estorna o bônus dela, se o fato deixou de valer">
+            <select style={campoEstilo} value={form.estornarConquistaCancelamento ?? '1'} onChange={(e) => setForm((f) => ({ ...f, estornarConquistaCancelamento: e.target.value }))}>
+              <option value="1">sim</option>
+              <option value="">não</option>
+            </select>
           </Campo>
         </Grade>
       </Secao>
