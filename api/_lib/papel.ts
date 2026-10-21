@@ -27,6 +27,12 @@ export interface PapelDetalhado {
   /** `is_approved` do perfil. Admin conta como aprovado. Anônimo, false. */
   aprovado: boolean;
   userId: string | null;
+  /**
+   * Faixa de preço dentro do tipo (faixas_preco.id), dada pelo consultor na
+   * aprovação. Nulo = Padrão do tipo. Só vale para aprovado que não é admin
+   * (precos/regraAcesso.ts). Fase 1 do plano de indicação, 21/10/2026.
+   */
+  faixaId: number | null;
 }
 
 /**
@@ -35,7 +41,7 @@ export interface PapelDetalhado {
  * só olham o papel.
  */
 export async function resolverPapelDetalhado(site: Db, authHeader: string | undefined): Promise<PapelDetalhado> {
-  const anonimo: PapelDetalhado = { papel: 'anonimo', aprovado: false, userId: null };
+  const anonimo: PapelDetalhado = { papel: 'anonimo', aprovado: false, userId: null, faixaId: null };
   if (!authHeader?.startsWith('Bearer ')) return anonimo;
 
   try {
@@ -46,22 +52,23 @@ export async function resolverPapelDetalhado(site: Db, authHeader: string | unde
 
     const { data } = await site
       .from('user_profiles')
-      .select('role, is_approved')
+      .select('role, is_approved, faixa_id')
       .eq('id', user.id)
       .maybeSingle();
 
-    const profile = data as { role?: string; is_approved?: boolean } | null;
+    const profile = data as { role?: string; is_approved?: boolean; faixa_id?: number | null } | null;
     if (!profile) return anonimo;
     // Só 'admin': o front (AuthContext, ProtectedRoute) não conhece outro papel
     // de administração, e um papel aceito só aqui entraria na API sem painel.
     if (profile.role === 'admin') {
-      return { papel: 'admin', aprovado: true, userId: user.id };
+      return { papel: 'admin', aprovado: true, userId: user.id, faixaId: null };
     }
     const aprovado = Boolean(profile.is_approved);
+    const faixaId = aprovado && Number(profile.faixa_id) > 0 ? Number(profile.faixa_id) : null;
     // Lojista/revendedor não aprovado é tratado como cliente final: a
     // aprovação é o que libera o dado comercial.
-    if ((profile.role === 'reseller' || profile.role === 'lojista') && aprovado) return { papel: profile.role, aprovado, userId: user.id };
-    return { papel: 'client', aprovado, userId: user.id };
+    if ((profile.role === 'reseller' || profile.role === 'lojista') && aprovado) return { papel: profile.role, aprovado, userId: user.id, faixaId };
+    return { papel: 'client', aprovado, userId: user.id, faixaId };
   } catch {
     // Falha ao validar o token (rede, Supabase fora) é ausência de permissão,
     // nunca elevação: cai para anônimo em vez de derrubar a requisição.

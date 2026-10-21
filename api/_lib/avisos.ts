@@ -331,11 +331,13 @@ export function avisarCadastroNovo(
  * Para o CLIENTE: o admin aprovou o cadastro. Sai pelo mesmo modelo, mas para o
  * e-mail da pessoa, e sem chave — se for revogado e aprovado de novo, avisa de novo.
  */
-export function avisarClienteAcessoLiberado(site: Db, p: { perfil: ClienteAviso & { role?: string | null }; tipo: string }) {
+export function avisarClienteAcessoLiberado(site: Db, p: { perfil: ClienteAviso & { role?: string | null }; tipo: string; faixa?: string | null }) {
   const email = (p.perfil.email ?? '').trim();
   if (!email.includes('@')) return Promise.resolve(false);
   const tipo = tipoDe(p.tipo);
   const nome = (p.perfil.full_name || p.perfil.company_name || '').trim();
+  // Faixa de preço (Fase 1): o e-mail diz a faixa quando o consultor deu uma.
+  const faixa = (p.faixa ?? '').trim();
   return avisarNz(site, {
     tipo: 'acesso-liberado',
     para: [email],
@@ -343,9 +345,9 @@ export function avisarClienteAcessoLiberado(site: Db, p: { perfil: ClienteAviso 
     etiqueta: 'Acesso liberado',
     corEtiqueta: '#4ade80',
     titulo: nome ? `${nome}, seu cadastro foi aprovado` : 'Seu cadastro foi aprovado',
-    subtitulo: `A NZ conferiu seus dados e liberou o acesso como ${tipo.toLowerCase()}. Os preços já aparecem na loja, e você pode fechar pedido pelo site.`,
+    subtitulo: `A NZ conferiu seus dados e liberou o acesso como ${tipo.toLowerCase()}${faixa ? `, na tabela ${faixa}` : ''}. Os preços já aparecem na loja, e você pode fechar pedido pelo site.`,
     linhas: [
-      ['Tipo de acesso', tipo],
+      ['Tipo de acesso', faixa ? `${tipo} · tabela ${faixa}` : tipo],
       ['Como pagar', 'Pix, cartão em até 6x ou boleto, direto no site'],
       ['Dúvidas', 'WhatsApp +55 11 91890-7565'],
     ],

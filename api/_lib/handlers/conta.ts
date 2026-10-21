@@ -12,10 +12,12 @@
 //   atribuir-titulos    admin   — roda o job que decide de quem é cada título
 //   titulos-sem-dono    admin   — o que sobrou, para atribuir à mão
 //   atribuir-titulo     admin   — atribui um título a um cliente
-//   aprovar             admin   — libera o cadastro (com o tipo de acesso) e
-//                                 avisa o cliente por e-mail
+//   aprovar             admin   — libera o cadastro (com o tipo de acesso e a
+//                                 faixa de preço) e avisa o cliente por e-mail
 //   revogar             admin   — tira a aprovação, com motivo
 //   mudar-tipo          admin   — cliente final ↔ lojista ↔ revendedor
+//   mudar-faixa         admin   — faixa de preço dentro do tipo (Padrão, Gold,
+//                                 Platinum ou uma faixa individual) — Fase 1
 //   recuperar-senha     público — envia o e-mail de redefinição
 //
 // Por que `recuperar-senha` passa pelo servidor em vez de o front chamar o
@@ -33,8 +35,41 @@ import { emailVerificado } from '../conta/emailVerificado.js';
 import { clienteDoUsuario, pedidosDoCliente, titulosDoCliente } from '../conta/erpHistorico.js';
 import { atribuirTitulos, titulosSemDono } from '../conta/atribuirTitulos.js';
 import { avisarCadastroNovo, avisarClienteAcessoLiberado } from '../avisos.js';
+import { clienteErp } from '../pedido/despachoErp.js';
 
 const TIPOS_ACESSO = ['client', 'lojista', 'reseller'];
+
+/** Confere que a faixa existe, está ativa e é do tipo. Nulo = Padrão do tipo (sempre vale). */
+async function conferirFaixa(site: Db, faixaId: number | null, papel: string): Promise<{ ok: boolean; nome: string | null; erro?: string }> {
+  if (!faixaId) return { ok: true, nome: null };
+  const { data } = await site.from('faixas_preco').select('id, nome, papel, ativa').eq('id', faixaId).maybeSingle();
+  const f = data as { id: number; nome: string; papel: string; ativa: boolean } | null;
+  if (!f) return { ok: false, nome: null, erro: 'faixa-inexistente' };
+  if (!f.ativa) return { ok: false, nome: null, erro: 'faixa-inativa' };
+  if (f.papel !== papel) return { ok: false, nome: null, erro: 'faixa-de-outro-tipo' };
+  return { ok: true, nome: f.nome };
+}
+
+/**
+ * Espelha o NOME da faixa no cliente do NZERP (clients.faixa_preco_site, só
+ * leitura lá), para o consultor ver no CRM. Nunca derruba a aprovação: sem ERP
+ * ou sem cliente lá, segue; o próximo pedido leva a faixa de novo no payload.
+ */
+async function espelharFaixaNoErp(alvo: { id: string; cpf_cnpj?: string | null; email?: string | null }, faixaNome: string | null): Promise<boolean> {
+  try {
+    const erp = await clienteErp();
+    if (!erp) return false;
+    const { data, error } = await erp.rpc('site_faixa_cliente', { p: { site_user_id: alvo.id, cpf_cnpj: alvo.cpf_cnpj ?? '', email: alvo.email ?? '', faixa: faixaNome ?? '' } });
+    if (error) {
+      console.warn('[conta] faixa não espelhada no ERP:', error.message);
+      return false;
+    }
+    return Boolean((data as { atualizado?: boolean } | null)?.atualizado);
+  } catch (err) {
+    console.warn('[conta] faixa não espelhada no ERP:', err instanceof Error ? err.message : err);
+    return false;
+  }
+}
 
 export const SITE_URL = 'https://www.nzgroup.com.br';
 
@@ -206,14 +241,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // grava o motivo, deixa rastro em equipe_log e avisa o cliente por e-mail
   // quando libera. Até 20/10/2026 o painel escrevia direto na tabela, sem
   // e-mail e sem log — e o cliente final nem passava por aqui (nascia aprovado).
-  if (op === 'aprovar' || op === 'revogar' || op === 'mudar-tipo') {
+  if (op === 'aprovar' || op === 'revogar' || op === 'mudar-tipo' || op === 'mudar-faixa') {
     if (papel !== 'admin') {
       res.status(403).json({ error: 'apenas-admin' });
       return;
     }
     const alvoId = typeof body.userId === 'string' ? body.userId : '';
-    const { data: alvoData } = await site.from('user_profiles').select(`${CAMPOS_PERFIL}, address_city, address_state`).eq('id', alvoId).maybeSingle();
-    const alvo = alvoData as (PerfilVinculo & { role: string; full_name: string | null; company_name: string | null; phone: string | null; address_city: string | null; address_state: string | null }) | null;
+    const { data: alvoData } = await site.from('user_profiles').select(`${CAMPOS_PERFIL}, address_city, address_state, faixa_id`).eq('id', alvoId).maybeSingle();
+    const alvo = alvoData as (PerfilVinculo & { role: string; full_name: string | null; company_name: string | null; phone: string | null; address_city: string | null; address_state: string | null; faixa_id: number | null }) | null;
     if (!alvo) {
       res.status(404).json({ error: 'perfil-nao-encontrado' });
       return;
@@ -225,38 +260,73 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     const tipo = typeof body.tipo === 'string' && TIPOS_ACESSO.includes(body.tipo) ? body.tipo : null;
     const motivo = typeof body.motivo === 'string' ? body.motivo.trim().slice(0, 300) : '';
+    // Faixa de preço (Fase 1): nulo/vazio = Padrão do tipo. Conferida contra a
+    // tabela: existe, está ativa e é do tipo que a pessoa vai ter.
+    const faixaBruta = body.faixaId;
+    const faixaPedida = faixaBruta == null || faixaBruta === '' ? null : Number(faixaBruta);
+    if (faixaPedida !== null && (!Number.isFinite(faixaPedida) || faixaPedida <= 0)) {
+      res.status(400).json({ error: 'faixa-invalida' });
+      return;
+    }
     const patch: Record<string, unknown> = {};
+    let faixaNome: string | null = null;
     if (op === 'aprovar') {
+      const conf = await conferirFaixa(site, faixaPedida, tipo ?? alvo.role);
+      if (!conf.ok) {
+        res.status(400).json({ error: conf.erro });
+        return;
+      }
+      faixaNome = conf.nome;
       patch.is_approved = true;
       patch.aprovado_em = new Date().toISOString();
       patch.aprovado_motivo = motivo || 'liberado pelo painel administrativo';
       if (tipo) patch.role = tipo;
+      patch.faixa_id = faixaPedida;
     } else if (op === 'revogar') {
       patch.is_approved = false;
       patch.aprovado_em = null;
       patch.aprovado_motivo = motivo ? `revogado: ${motivo}` : null;
+    } else if (op === 'mudar-faixa') {
+      const conf = await conferirFaixa(site, faixaPedida, alvo.role);
+      if (!conf.ok) {
+        res.status(400).json({ error: conf.erro });
+        return;
+      }
+      faixaNome = conf.nome;
+      patch.faixa_id = faixaPedida;
     } else {
       if (!tipo) {
         res.status(400).json({ error: 'tipo-invalido' });
         return;
       }
       patch.role = tipo;
+      // A faixa é DO tipo: trocou o tipo, a faixa antiga não serve mais (volta ao Padrão).
+      if (alvo.faixa_id) {
+        const conf = await conferirFaixa(site, Number(alvo.faixa_id), tipo);
+        if (!conf.ok) patch.faixa_id = null;
+        else faixaNome = conf.nome;
+      }
     }
     const { error } = await site.from('user_profiles').update(patch).eq('id', alvoId);
     if (error) {
       res.status(500).json({ error: 'nao-gravou', message: error.message });
       return;
     }
-    await registrarLog(site, op, normalizarEmail(alvo.email), { de: { role: alvo.role, is_approved: alvo.is_approved }, para: patch, motivo: motivo || null }, userId);
+    await registrarLog(site, op, normalizarEmail(alvo.email), { de: { role: alvo.role, is_approved: alvo.is_approved, faixa_id: alvo.faixa_id }, para: patch, motivo: motivo || null }, userId);
     let emailEnviado = false;
     if (op === 'aprovar' && !alvo.is_approved) {
-      emailEnviado = await avisarClienteAcessoLiberado(site, { perfil: alvo, tipo: tipo ?? alvo.role });
+      emailEnviado = await avisarClienteAcessoLiberado(site, { perfil: alvo, tipo: tipo ?? alvo.role, faixa: faixaNome });
     }
+    // Espelho no ERP (só o nome da faixa, para o CRM). Nunca segura a resposta.
+    let faixaNoErp = false;
+    if ('faixa_id' in patch) faixaNoErp = await espelharFaixaNoErp(alvo, faixaNome);
     res.status(200).json({
       ok: true,
       emailEnviado,
       role: (patch.role as string | undefined) ?? alvo.role,
       is_approved: op === 'aprovar' ? true : op === 'revogar' ? false : alvo.is_approved,
+      faixa_id: 'faixa_id' in patch ? (patch.faixa_id as number | null) : alvo.faixa_id,
+      faixaNoErp,
     });
     return;
   }

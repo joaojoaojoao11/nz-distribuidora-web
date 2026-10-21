@@ -6,6 +6,10 @@
 //           substitui a base: o tipo paga saída + o seu percentual.
 //   percentual = o da LINHA do produto para aquele tipo, se houver; senão o
 //           GERAL do tipo. Nunca negativo: ninguém vê abaixo do atacado.
+//   FAIXA (21/10/2026, Fase 1 do plano de indicação): dentro do tipo, a pessoa
+//           pode estar numa faixa (Gold, Platinum, ou uma faixa só dela).
+//           A faixa tem os mesmos três níveis; o que a faixa não define cai
+//           na regra do tipo. A base é sempre a do tipo. Sem faixa = Padrão.
 //
 // Quem chama: /api/nz/precos (vitrine), pedido/precificar.ts (pedido e
 // checkout — o que cobra), promo-moto (público = cliente final). Os três
@@ -31,6 +35,18 @@ export interface RegraAcesso {
   produto_slug?: string | null;
   base: BaseRegra;
   percentual: number;
+  /** Preenchido = regra de uma FAIXA do tipo (faixas_preco.id). Nulo = Padrão. */
+  faixa_id?: number | null;
+}
+
+/** As regras de uma faixa, nos mesmos três níveis do tipo (sem base própria). */
+export interface ConjuntoFaixa {
+  papel: PapelPreco;
+  geral: RegraAcesso | null;
+  /** chave linha_key */
+  porLinha: Map<string, RegraAcesso>;
+  /** chave produto_slug — vence a linha */
+  porProduto: Map<string, RegraAcesso>;
 }
 
 /** O que o tipo VÊ na loja (acesso_config). Admin vê tudo. */
@@ -50,6 +66,8 @@ export interface Regras {
   /** chave `${papel}|${produto_slug}` — vence a linha */
   porProduto: Map<string, RegraAcesso>;
   vis: Record<PapelPreco, Visibilidade>;
+  /** chave faixas_preco.id — as regras de cada faixa */
+  faixas: Map<number, ConjuntoFaixa>;
 }
 
 const chave = (papel: PapelPreco, linha: string) => `${papel}|${linha}`;
@@ -74,6 +92,7 @@ export function regrasPadrao(): Regras {
     porLinha: new Map(),
     porProduto: new Map(),
     vis: visibilidadePadrao(),
+    faixas: new Map(),
   };
 }
 
@@ -132,13 +151,27 @@ export function montarRegras(linhas: readonly Partial<RegraAcesso>[], vis?: Reco
   if (vis) r.vis = vis;
   for (const l of linhas) {
     if (!l.papel || !PAPEIS_PRECO.includes(l.papel)) continue;
+    const faixaId = Number(l.faixa_id) > 0 ? Number(l.faixa_id) : null;
     const limpa: RegraAcesso = {
       papel: l.papel,
       linha_key: l.linha_key ? String(l.linha_key) : null,
       produto_slug: l.produto_slug ? String(l.produto_slug) : null,
       base: l.base === 'varejo' ? 'varejo' : 'atacado',
       percentual: Math.max(0, Number(l.percentual) || 0),
+      faixa_id: faixaId,
     };
+    if (faixaId) {
+      // Regra de FAIXA: fica no conjunto dela, nos mesmos três níveis.
+      let f = r.faixas.get(faixaId);
+      if (!f) {
+        f = { papel: limpa.papel, geral: null, porLinha: new Map(), porProduto: new Map() };
+        r.faixas.set(faixaId, f);
+      }
+      if (limpa.produto_slug) f.porProduto.set(limpa.produto_slug, limpa);
+      else if (limpa.linha_key) f.porLinha.set(limpa.linha_key, limpa);
+      else f.geral = limpa;
+      continue;
+    }
     if (limpa.produto_slug) r.porProduto.set(chave(limpa.papel, limpa.produto_slug), limpa);
     else if (limpa.linha_key) r.porLinha.set(chave(limpa.papel, limpa.linha_key), limpa);
     else r.geral[limpa.papel] = limpa;
@@ -150,7 +183,7 @@ export function montarRegras(linhas: readonly Partial<RegraAcesso>[], vis?: Reco
 export async function carregarRegras(site: Db): Promise<Regras> {
   const vis = await carregarVisibilidade(site);
   try {
-    const { data, error } = await site.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual');
+    const { data, error } = await site.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual, faixa_id');
     if (error) throw error;
     return montarRegras((data ?? []) as Partial<RegraAcesso>[], vis);
   } catch (err) {
@@ -169,13 +202,36 @@ export function papelDePreco(papel: Papel | string | null | undefined): PapelPre
 /**
  * A regra que vale para um tipo num produto: produto > linha > geral. Só o
  * percentual muda de nível para nível; a base é sempre a do tipo (geral).
+ *
+ * Com `faixaId`: primeiro a cadeia da FAIXA (produto > linha > geral da faixa);
+ * se a faixa não diz nada para o produto, cai na cadeia do tipo. Faixa de outro
+ * tipo, inexistente ou vazia = como se não houvesse faixa.
  */
-export function regraPara(regras: Regras, papel: PapelPreco, linhaKey: string | null | undefined, slug?: string | null): RegraAcesso {
+export function regraPara(regras: Regras, papel: PapelPreco, linhaKey: string | null | undefined, slug?: string | null, faixaId?: number | null): RegraAcesso {
   const geral = regras.geral[papel];
+  const f = faixaId ? regras.faixas.get(faixaId) : undefined;
+  if (f && f.papel === papel) {
+    const fp = slug ? f.porProduto.get(slug) : undefined;
+    if (fp) return { ...fp, base: geral.base };
+    const fl = linhaKey ? f.porLinha.get(linhaKey) : undefined;
+    if (fl) return { ...fl, base: geral.base };
+    if (f.geral) return { ...f.geral, base: geral.base };
+  }
   const doProduto = slug ? regras.porProduto.get(chave(papel, slug)) : undefined;
   if (doProduto) return { ...doProduto, base: geral.base };
   const daLinha = linhaKey ? regras.porLinha.get(chave(papel, linhaKey)) : undefined;
   return daLinha ? { ...daLinha, base: geral.base } : geral;
+}
+
+/** Nome da faixa (para o e-mail de aprovação e o espelho no ERP). Nulo = Padrão. */
+export async function nomeDaFaixa(site: Db, faixaId: number | null | undefined): Promise<string | null> {
+  if (!faixaId) return null;
+  try {
+    const { data } = await site.from('faixas_preco').select('nome').eq('id', faixaId).maybeSingle();
+    return (data as { nome?: string } | null)?.nome ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export interface BasePreco {
@@ -195,13 +251,13 @@ export type UnidadePreco = 'rolo' | 'metro';
  * esconde (linha oculta, unidade que ele não compra). Com `unidade`, a regra
  * de rolo/metro entra; a de linha oculta entra sempre.
  */
-export function precoParaAcesso(regras: Regras, papel: Papel | PapelPreco | string, base: BasePreco, linhaKey: string | null | undefined, promo?: number | null, unidade?: UnidadePreco, slug?: string | null): number | null {
+export function precoParaAcesso(regras: Regras, papel: Papel | PapelPreco | string, base: BasePreco, linhaKey: string | null | undefined, promo?: number | null, unidade?: UnidadePreco, slug?: string | null, faixaId?: number | null): number | null {
   const pp = papelDePreco(papel);
   const v = regras.vis[pp];
   if (linhaKey && v.linhasOcultas.has(linhaKey)) return null;
   if (unidade === 'rolo' && !v.veRolo) return null;
   if (unidade === 'metro' && !v.veMetro) return null;
-  const r = regraPara(regras, pp, linhaKey, slug);
+  const r = regraPara(regras, pp, linhaKey, slug, faixaId);
   const atacado = positivo(base.atacado);
   const varejo = positivo(base.varejo);
   const saida = v.vePromocao ? positivo(promo) : null;
@@ -210,11 +266,14 @@ export function precoParaAcesso(regras: Regras, papel: Papel | PapelPreco | stri
   return r.percentual > 0 ? aplicarAcrescimo(b, r.percentual) : r2(b);
 }
 
-/** O mesmo produto nos três tipos — o simulador da tela de preços (só admin). */
-export function precosPorTipo(regras: Regras, base: BasePreco, linhaKey: string | null | undefined, promo?: number | null, unidade?: UnidadePreco, slug?: string | null): Record<PapelPreco, number | null> {
+/**
+ * O mesmo produto nos três tipos — o simulador da tela de preços (só admin).
+ * Com `faixaId`, o tipo dono da faixa sai com a regra dela; os outros, como sempre.
+ */
+export function precosPorTipo(regras: Regras, base: BasePreco, linhaKey: string | null | undefined, promo?: number | null, unidade?: UnidadePreco, slug?: string | null, faixaId?: number | null): Record<PapelPreco, number | null> {
   return {
-    reseller: precoParaAcesso(regras, 'reseller', base, linhaKey, promo, unidade, slug),
-    lojista: precoParaAcesso(regras, 'lojista', base, linhaKey, promo, unidade, slug),
-    client: precoParaAcesso(regras, 'client', base, linhaKey, promo, unidade, slug),
+    reseller: precoParaAcesso(regras, 'reseller', base, linhaKey, promo, unidade, slug, faixaId),
+    lojista: precoParaAcesso(regras, 'lojista', base, linhaKey, promo, unidade, slug, faixaId),
+    client: precoParaAcesso(regras, 'client', base, linhaKey, promo, unidade, slug, faixaId),
   };
 }

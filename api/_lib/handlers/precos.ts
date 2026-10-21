@@ -98,7 +98,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const site = createClient(siteUrl, siteKey);
-  const { papel, aprovado } = await resolverPapelDetalhado(site, req.headers.authorization);
+  const { papel, aprovado, faixaId: faixaDaPessoa } = await resolverPapelDetalhado(site, req.headers.authorization);
 
   // Uma seleção ATIVA que mostra preço é a única forma de alguém sem cadastro
   // ver valor no site. Ela não abre o catálogo: libera exatamente os slugs que
@@ -126,6 +126,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Admin → Preços por acesso conferir o que cada um vê.
   const regras = await carregarRegras(site);
   const simular = papel === 'admin' && body.simular === true;
+  // FAIXA (Fase 1, 21/10/2026): a da pessoa, lida do perfil. No simulador do
+  // admin, a faixa que a tela pediu (`faixaId`), para conferir o que ela vê.
+  const faixaSimulada = simular && Number(body.faixaId) > 0 ? Number(body.faixaId) : null;
+  const faixaId = papel === 'admin' ? null : faixaDaPessoa;
 
   const { data: produtosData } = await site
     .from('produtos')
@@ -195,8 +199,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       rolo = baseRolo;
       metro = metroPromo ?? baseMetro;
     } else {
-      rolo = precoParaAcesso(regras, papel, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key, null, 'rolo', slug);
-      metro = precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo, 'metro', slug);
+      rolo = precoParaAcesso(regras, papel, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key, null, 'rolo', slug, faixaId);
+      metro = precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo, 'metro', slug, faixaId);
     }
     // Linha escondida para este tipo (Admin → Tipos de acesso): sem preço, e a
     // página do produto explica em vez de ficar muda.
@@ -221,7 +225,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // "De R$ X por R$ Y o metro": o card risca a tabela — a tabela DO TIPO, não
     // o atacado cru (senão o cliente final veria o atacado riscado).
     if (metroPromo != null && metro != null) {
-      const cheio = papel === 'admin' ? baseMetro : precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, null, 'metro', slug);
+      const cheio = papel === 'admin' ? baseMetro : precoParaAcesso(regras, papel, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, null, 'metro', slug, faixaId);
       // Tipo que não vê promoção recebe a tabela cheia como preço: não risca nada.
       if (cheio != null && cheio > metro) item.metroCheio = cheio;
     }
@@ -256,8 +260,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (simular) {
         item.linhaKey = p.linha_key;
         item.porTipo = {
-          rolo: precosPorTipo(regras, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key, null, 'rolo', slug),
-          metro: precosPorTipo(regras, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo, 'metro', slug),
+          rolo: precosPorTipo(regras, { atacado: baseRolo, varejo: varejoRolo }, p.linha_key, null, 'rolo', slug, faixaSimulada),
+          metro: precosPorTipo(regras, { atacado: baseMetro, varejo: varejoMetro }, p.linha_key, metroPromo, 'metro', slug, faixaSimulada),
         };
       }
     }

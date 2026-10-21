@@ -91,7 +91,12 @@ ok(
 
 // ============================================ 2. o ERP não é mais escrito à toa
 console.log('\n=== O ERP É SOMENTE LEITURA ===');
-const ESCRITAS_PERMITIDAS = new Set(['site_criar_pedido', 'site_confirmar_pagamento', 'site_cancelar_pedido']);
+// `site_faixa_cliente` (21/10/2026, Fase 1 do plano de indicação): escrita
+// ESTREITA — só `clients.faixa_preco_site`, texto, só leitura no ERP — para o
+// consultor ver no CRM a faixa que o site deu ao cliente. Prevista no plano
+// (NZERP, docs/PLANO_INDICACAO_CASHBACK_AFILIADOS.md, Fase 1) e aprovada pelo
+// João. Qualquer outra RPC nova continua reprovando aqui.
+const ESCRITAS_PERMITIDAS = new Set(['site_criar_pedido', 'site_confirmar_pagamento', 'site_cancelar_pedido', 'site_faixa_cliente']);
 const arquivosApi = spawnSync(process.execPath, ['-e', `
   const { readdirSync, statSync } = require('node:fs');
   const { join } = require('node:path');

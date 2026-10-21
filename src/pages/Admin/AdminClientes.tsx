@@ -10,6 +10,12 @@
 // pessoa vê (Admin → Preços por acesso). Aprovar, revogar e mudar o tipo passam
 // pelo servidor (/api/nz/conta): ficam no equipe_log e o cliente recebe e-mail
 // quando é liberado. Leitura por RLS de admin direto no Supabase.
+//
+// Fase 1 do plano de indicação (21/10/2026): dentro do tipo existe a FAIXA de
+// preço (Padrão, Gold, Platinum ou uma faixa só da pessoa), escolhida aqui na
+// aprovação ou depois (op mudar-faixa). Quem chegou por indicação aparece com a
+// etiqueta "indicação de NZ-XXXXX", e o consultor registra a PRÉ-ANÁLISE
+// (perfil, volume, concorrência, faixa sugerida) na linha aberta do cliente.
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
@@ -44,26 +50,74 @@ interface Cliente {
   address_city: string | null;
   address_state: string | null;
   address_zip: string | null;
+  /** Faixa de preço dentro do tipo (faixas_preco.id). Nulo = Padrão. */
+  faixa_id: number | null;
+  /** Quem indicou (user_profiles.id do afiliado), resolvido no cadastro. */
+  indicado_por: string | null;
 }
+
+interface FaixaRow {
+  id: number;
+  papel: TipoAcesso;
+  nome: string;
+  ordem: number;
+  ativa: boolean;
+}
+
+interface PreAnalise {
+  id: number;
+  user_id: string;
+  consultor: string | null;
+  origem: string | null;
+  volume_mensal_estimado: number | null;
+  perfil: string | null;
+  linhas_interesse: string[] | null;
+  preco_atual_concorrente: string | null;
+  obs: string | null;
+  faixa_sugerida: number | null;
+  faixa_definida: number | null;
+  criado_em: string;
+}
+
+interface FormPre {
+  volume: string;
+  perfil: string;
+  linhas: string;
+  concorrente: string;
+  obs: string;
+  faixa: string;
+}
+
+const PERFIS_PRE: { id: string; label: string }[] = [
+  { id: 'aplicador', label: 'Aplicador' },
+  { id: 'loja', label: 'Loja / revenda local' },
+  { id: 'frota', label: 'Frota / empresa' },
+  { id: 'revenda', label: 'Revendedor / distribuidor' },
+  { id: 'consumidor', label: 'Consumidor final' },
+  { id: 'outro', label: 'Outro' },
+];
 
 interface ContextoAdmin {
   recarregarBadges: () => Promise<void> | void;
 }
 
 const CAMPOS =
-  'id, email, full_name, company_name, phone, cpf_cnpj, ie, role, is_approved, aprovado_em, aprovado_motivo, origem, erp_client_id, erp_candidato_id, erp_candidato_motivo, cadastro_completo_em, ultimo_acesso_em, created_at, address_street, address_number, address_city, address_state, address_zip';
+  'id, email, full_name, company_name, phone, cpf_cnpj, ie, role, is_approved, aprovado_em, aprovado_motivo, origem, erp_client_id, erp_candidato_id, erp_candidato_motivo, cadastro_completo_em, ultimo_acesso_em, created_at, address_street, address_number, address_city, address_state, address_zip, faixa_id, indicado_por';
 
-type Filtro = 'todos' | 'pendentes' | 'client' | 'lojista' | 'reseller' | 'sem-erp' | 'incompletos';
+type Filtro = 'todos' | 'pendentes' | 'indicados' | 'client' | 'lojista' | 'reseller' | 'sem-erp' | 'incompletos';
 
 const FILTROS: { id: Filtro; label: string }[] = [
   { id: 'todos', label: 'Todos' },
   { id: 'pendentes', label: 'Aguardando aprovação' },
+  { id: 'indicados', label: 'Indicados' },
   { id: 'client', label: 'Clientes finais' },
   { id: 'lojista', label: 'Lojistas' },
   { id: 'reseller', label: 'Revendedores' },
   { id: 'sem-erp', label: 'Sem cliente no ERP' },
   { id: 'incompletos', label: 'Cadastro incompleto' },
 ];
+
+const selectEstilo: React.CSSProperties = { background: 'rgba(15,15,18,0.8)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '0.3rem 0.4rem', fontSize: '0.78rem' };
 
 function data(v: string | null): string {
   return v ? new Date(v).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '—';
@@ -88,19 +142,42 @@ export default function AdminClientes() {
   const [aberto, setAberto] = useState<string | null>(null);
   // O tipo escolhido para aprovar alguém pendente (padrão: o que a pessoa pediu).
   const [tipoParaAprovar, setTipoParaAprovar] = useState<Record<string, TipoAcesso>>({});
+  // A faixa escolhida para aprovar ('' = Padrão do tipo).
+  const [faixaParaAprovar, setFaixaParaAprovar] = useState<Record<string, string>>({});
+  const [faixas, setFaixas] = useState<FaixaRow[]>([]);
+  // Código do afiliado que indicou cada conta (só o código, nunca o nome do indicado para o indicador).
+  const [codigoIndicador, setCodigoIndicador] = useState<Record<string, string>>({});
+  const [preAnalises, setPreAnalises] = useState<Record<string, PreAnalise[]>>({});
+  const [formPre, setFormPre] = useState<Record<string, FormPre>>({});
+  const [salvandoPre, setSalvandoPre] = useState('');
 
   const carregar = useCallback(async () => {
     setCarregando(true);
-    const { data: linhas, error } = await supabase
-      .from('user_profiles')
-      .select(CAMPOS)
-      .neq('role', 'admin')
-      .order('created_at', { ascending: false })
-      .limit(1000);
+    const [{ data: linhas, error }, fx, pre] = await Promise.all([
+      supabase.from('user_profiles').select(CAMPOS).neq('role', 'admin').order('created_at', { ascending: false }).limit(1000),
+      supabase.from('faixas_preco').select('id, papel, nome, ordem, ativa').order('ordem').order('nome'),
+      supabase.from('pre_analises').select('*').order('criado_em', { ascending: false }).limit(500),
+    ]);
     if (error) setErro(error.message);
-    setClientes((linhas ?? []) as Cliente[]);
+    const lista = (linhas ?? []) as Cliente[];
+    setClientes(lista);
+    setFaixas((fx.data ?? []) as FaixaRow[]);
+    const porUser: Record<string, PreAnalise[]> = {};
+    for (const p of (pre.data ?? []) as PreAnalise[]) (porUser[p.user_id] ??= []).push(p);
+    setPreAnalises(porUser);
+    // Quem indicou: o código NZ-XXXXX do afiliado (tabela afiliados, RLS de admin).
+    const ids = [...new Set(lista.map((c) => c.indicado_por).filter((x): x is string => Boolean(x)))];
+    if (ids.length) {
+      const { data: afs } = await supabase.from('afiliados').select('user_id, codigo').in('user_id', ids);
+      const m: Record<string, string> = {};
+      for (const a of (afs ?? []) as { user_id: string; codigo: string }[]) m[a.user_id] = a.codigo;
+      setCodigoIndicador(m);
+    } else setCodigoIndicador({});
     setCarregando(false);
   }, []);
+
+  const faixasDoTipo = useCallback((tipo: TipoAcesso, incluir?: number | null) => faixas.filter((f) => f.papel === tipo && (f.ativa || f.id === incluir)), [faixas]);
+  const nomeFaixa = (id: number | null) => (id ? faixas.find((f) => f.id === id)?.nome ?? `#${id}` : 'Padrão');
 
   useEffect(() => {
     void carregar();
@@ -111,6 +188,7 @@ export default function AdminClientes() {
     const digitos = termo.replace(/\D/g, '');
     return clientes.filter((c) => {
       if (filtro === 'pendentes' && c.is_approved) return false;
+      if (filtro === 'indicados' && !c.indicado_por) return false;
       if ((filtro === 'client' || filtro === 'lojista' || filtro === 'reseller') && c.role !== filtro) return false;
       if (filtro === 'sem-erp' && c.erp_client_id) return false;
       if (filtro === 'incompletos' && c.cadastro_completo_em) return false;
@@ -143,8 +221,56 @@ export default function AdminClientes() {
 
   const aprovar = (c: Cliente) => {
     const tipo = tipoParaAprovar[c.id] ?? c.role;
-    void acao(c, { op: 'aprovar', tipo }, (r) => `${c.full_name || c.email} liberado como ${TIPO_LABEL[tipo].toLowerCase()}${r.emailEnviado ? ' — e-mail enviado ao cliente.' : ' (o e-mail não saiu; avise pelo WhatsApp).'}`);
+    const faixaTxt = faixaParaAprovar[c.id] ?? '';
+    const faixaId = faixaTxt ? Number(faixaTxt) : null;
+    void acao(
+      c,
+      { op: 'aprovar', tipo, faixaId },
+      (r) => `${c.full_name || c.email} liberado como ${TIPO_LABEL[tipo].toLowerCase()} · faixa ${nomeFaixa(faixaId)}${r.emailEnviado ? ' — e-mail enviado ao cliente.' : ' (o e-mail não saiu; avise pelo WhatsApp).'}`
+    );
   };
+
+  const mudarFaixa = (c: Cliente, faixaTxt: string) => {
+    const faixaId = faixaTxt ? Number(faixaTxt) : null;
+    if ((c.faixa_id ?? null) === faixaId) return;
+    void acao(c, { op: 'mudar-faixa', faixaId }, (r) => `${c.full_name || c.email} agora está na faixa ${nomeFaixa(faixaId)}.${r.faixaNoErp ? ' Espelhado no NZERP.' : ''}`);
+  };
+
+  const salvarPreAnalise = async (c: Cliente) => {
+    const f = formPre[c.id];
+    if (!f) return;
+    setSalvandoPre(c.id);
+    setErro('');
+    try {
+      const { data: s } = await supabase.auth.getSession();
+      const codigo = c.indicado_por ? codigoIndicador[c.indicado_por] : null;
+      const volume = f.volume.trim() ? Number(f.volume.replace(/\./g, '').replace(',', '.')) : null;
+      const { error } = await supabase.from('pre_analises').insert({
+        user_id: c.id,
+        consultor: s.session?.user.email ?? null,
+        origem: codigo ? `indicação de ${codigo}` : c.indicado_por ? 'indicação' : c.origem,
+        volume_mensal_estimado: volume != null && Number.isFinite(volume) ? volume : null,
+        perfil: f.perfil || null,
+        linhas_interesse: f.linhas.split(',').map((x) => x.trim()).filter(Boolean),
+        preco_atual_concorrente: f.concorrente.trim() || null,
+        obs: f.obs.trim() || null,
+        faixa_sugerida: f.faixa ? Number(f.faixa) : null,
+        faixa_definida: c.is_approved ? c.faixa_id : null,
+      });
+      if (error) throw new Error(error.message);
+      // A faixa sugerida vira a escolhida para aprovar (quem aprova ainda pode mudar).
+      if (!c.is_approved) setFaixaParaAprovar((m) => ({ ...m, [c.id]: f.faixa }));
+      setMsg(`Pré-análise de ${c.full_name || c.email} registrada.`);
+      await carregar();
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSalvandoPre('');
+    }
+  };
+
+  const formPreDe = (c: Cliente): FormPre => formPre[c.id] ?? { volume: '', perfil: '', linhas: '', concorrente: '', obs: '', faixa: faixaParaAprovar[c.id] ?? (c.faixa_id ? String(c.faixa_id) : '') };
+  const setCampoPre = (c: Cliente, campo: keyof FormPre, valor: string) => setFormPre((m) => ({ ...m, [c.id]: { ...formPreDe(c), [campo]: valor } }));
 
   const revogar = (c: Cliente) => {
     const motivo = window.prompt(`Revogar o acesso de ${c.full_name || c.email}? A pessoa deixa de ver preços e comprar. Motivo (opcional):`, '');
@@ -195,6 +321,7 @@ export default function AdminClientes() {
   };
 
   const pendentes = clientes.filter((c) => !c.is_approved).length;
+  const indicadosPendentes = clientes.filter((c) => !c.is_approved && c.indicado_por).length;
 
   return (
     <>
@@ -213,6 +340,10 @@ export default function AdminClientes() {
           <div className={styles.metricCard}>
             <div className={styles.metricLabel}>Aguardando aprovação</div>
             <div className={`${styles.metricValue} ${pendentes ? styles.metricValueWarning : ''}`}>{pendentes}</div>
+          </div>
+          <div className={styles.metricCard}>
+            <div className={styles.metricLabel}>Indicados aguardando</div>
+            <div className={`${styles.metricValue} ${indicadosPendentes ? styles.metricValueWarning : ''}`}>{indicadosPendentes}</div>
           </div>
           <div className={styles.metricCard}>
             <div className={styles.metricLabel}>Vinculadas ao ERP</div>
@@ -259,8 +390,13 @@ export default function AdminClientes() {
                     <td>
                       {c.full_name || '—'}
                       {c.company_name && <div style={{ fontSize: '0.72rem', color: '#777' }}>{c.company_name}</div>}
+                      {c.indicado_por && (
+                        <span className={`${styles.badge} ${styles.badgePending}`} style={{ marginTop: '0.25rem', display: 'inline-block' }} title="Chegou pelo link ou cupom de um afiliado">
+                          indicação de {codigoIndicador[c.indicado_por] ?? 'afiliado'}
+                        </span>
+                      )}
                       {aberto === c.id && (
-                        <div style={{ fontSize: '0.72rem', color: '#888', marginTop: '0.35rem', lineHeight: 1.6 }}>
+                        <div style={{ fontSize: '0.72rem', color: '#888', marginTop: '0.35rem', lineHeight: 1.6 }} onClick={(e) => e.stopPropagation()}>
                           {endereco(c)}
                           {c.address_zip ? ` · CEP ${c.address_zip}` : ''}
                           <br />
@@ -272,6 +408,45 @@ export default function AdminClientes() {
                               {c.aprovado_em ? ` (${data(c.aprovado_em)})` : ''}
                             </>
                           )}
+                          {/* ------------------------------------------- pré-análise */}
+                          <div style={{ marginTop: '0.6rem', padding: '0.6rem 0.75rem', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6, background: 'rgba(255,255,255,0.03)', color: '#bbb' }}>
+                            <strong style={{ color: '#fff' }}>Pré-análise do consultor</strong>
+                            {(preAnalises[c.id] ?? []).slice(0, 1).map((p) => (
+                              <div key={p.id} style={{ marginTop: '0.3rem' }}>
+                                Última: {data(p.criado_em)} por {p.consultor ?? '—'} · perfil {PERFIS_PRE.find((x) => x.id === p.perfil)?.label ?? p.perfil ?? '—'} · volume{' '}
+                                {p.volume_mensal_estimado != null ? `R$ ${Number(p.volume_mensal_estimado).toLocaleString('pt-BR')}/mês` : '—'} · faixa sugerida {nomeFaixa(p.faixa_sugerida)}
+                                {p.linhas_interesse?.length ? ` · linhas: ${p.linhas_interesse.join(', ')}` : ''}
+                                {p.preco_atual_concorrente ? ` · concorrente: ${p.preco_atual_concorrente}` : ''}
+                                {p.obs ? ` · ${p.obs}` : ''}
+                                {(preAnalises[c.id]?.length ?? 0) > 1 ? ` (+${(preAnalises[c.id]?.length ?? 1) - 1} anterior)` : ''}
+                              </div>
+                            ))}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: '0.45rem', marginTop: '0.5rem' }}>
+                              <input placeholder="Volume estimado R$/mês" value={formPreDe(c).volume} inputMode="decimal" style={selectEstilo} onChange={(e) => setCampoPre(c, 'volume', e.target.value)} />
+                              <select value={formPreDe(c).perfil} style={selectEstilo} onChange={(e) => setCampoPre(c, 'perfil', e.target.value)}>
+                                <option value="">perfil…</option>
+                                {PERFIS_PRE.map((p) => (
+                                  <option key={p.id} value={p.id}>
+                                    {p.label}
+                                  </option>
+                                ))}
+                              </select>
+                              <input placeholder="Linhas de interesse (vírgula)" value={formPreDe(c).linhas} style={selectEstilo} onChange={(e) => setCampoPre(c, 'linhas', e.target.value)} />
+                              <input placeholder="Preço atual do concorrente" value={formPreDe(c).concorrente} style={selectEstilo} onChange={(e) => setCampoPre(c, 'concorrente', e.target.value)} />
+                              <select value={formPreDe(c).faixa} style={selectEstilo} onChange={(e) => setCampoPre(c, 'faixa', e.target.value)} title="Faixa sugerida">
+                                <option value="">faixa sugerida: Padrão</option>
+                                {faixasDoTipo(tipoParaAprovar[c.id] ?? c.role).map((f) => (
+                                  <option key={f.id} value={String(f.id)}>
+                                    faixa sugerida: {f.nome}
+                                  </option>
+                                ))}
+                              </select>
+                              <input placeholder="Observações" value={formPreDe(c).obs} style={{ ...selectEstilo, gridColumn: 'span 2' }} onChange={(e) => setCampoPre(c, 'obs', e.target.value)} />
+                              <button type="button" className={`${styles.actionBtn} ${styles.actionBtnApprove}`} disabled={salvandoPre === c.id} onClick={() => void salvarPreAnalise(c)}>
+                                {salvandoPre === c.id ? 'Salvando…' : 'Registrar pré-análise'}
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </td>
@@ -282,14 +457,25 @@ export default function AdminClientes() {
                     <td>{c.cpf_cnpj ? formatarCpfCnpj(c.cpf_cnpj) : '—'}</td>
                     <td onClick={(e) => e.stopPropagation()}>
                       {c.is_approved ? (
-                        // Aprovado: trocar o tipo vale na hora (muda o preço que a pessoa vê).
-                        <select value={c.role} disabled={ocupado === c.id} onChange={(e) => mudarTipo(c, e.target.value as TipoAcesso)} style={{ background: 'rgba(15,15,18,0.8)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '0.3rem 0.4rem', fontSize: '0.78rem' }}>
-                          {TIPOS_CLIENTE.map((t) => (
-                            <option key={t} value={t}>
-                              {TIPO_LABEL[t]}
-                            </option>
-                          ))}
-                        </select>
+                        // Aprovado: trocar o tipo ou a faixa vale na hora (muda o preço que a pessoa vê).
+                        <div style={{ display: 'grid', gap: '0.3rem' }}>
+                          <select value={c.role} disabled={ocupado === c.id} onChange={(e) => mudarTipo(c, e.target.value as TipoAcesso)} style={selectEstilo}>
+                            {TIPOS_CLIENTE.map((t) => (
+                              <option key={t} value={t}>
+                                {TIPO_LABEL[t]}
+                              </option>
+                            ))}
+                          </select>
+                          <select value={c.faixa_id ? String(c.faixa_id) : ''} disabled={ocupado === c.id} onChange={(e) => mudarFaixa(c, e.target.value)} style={selectEstilo} title="Faixa de preço dentro do tipo">
+                            <option value="">faixa: Padrão</option>
+                            {faixasDoTipo(c.role, c.faixa_id).map((f) => (
+                              <option key={f.id} value={String(f.id)}>
+                                faixa: {f.nome}
+                                {f.ativa ? '' : ' (desativada)'}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       ) : (
                         <span className={badgeTipo(c.role)}>{TIPO_LABEL[c.role] ?? c.role}</span>
                       )}
@@ -329,13 +515,26 @@ export default function AdminClientes() {
                         <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
                           <select
                             value={tipoParaAprovar[c.id] ?? c.role}
-                            onChange={(e) => setTipoParaAprovar((m) => ({ ...m, [c.id]: e.target.value as TipoAcesso }))}
-                            style={{ background: 'rgba(15,15,18,0.8)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '0.3rem 0.4rem', fontSize: '0.78rem' }}
+                            onChange={(e) => {
+                              const t = e.target.value as TipoAcesso;
+                              setTipoParaAprovar((m) => ({ ...m, [c.id]: t }));
+                              // A faixa é do tipo: trocou o tipo, volta para Padrão.
+                              setFaixaParaAprovar((m) => ({ ...m, [c.id]: '' }));
+                            }}
+                            style={selectEstilo}
                             title="Aprovar como"
                           >
                             {TIPOS_CLIENTE.map((t) => (
                               <option key={t} value={t}>
                                 {TIPO_LABEL[t]}
+                              </option>
+                            ))}
+                          </select>
+                          <select value={faixaParaAprovar[c.id] ?? ''} onChange={(e) => setFaixaParaAprovar((m) => ({ ...m, [c.id]: e.target.value }))} style={selectEstilo} title="Faixa de preço dentro do tipo (a pré-análise sugere)">
+                            <option value="">faixa: Padrão</option>
+                            {faixasDoTipo(tipoParaAprovar[c.id] ?? c.role).map((f) => (
+                              <option key={f.id} value={String(f.id)}>
+                                faixa: {f.nome}
                               </option>
                             ))}
                           </select>

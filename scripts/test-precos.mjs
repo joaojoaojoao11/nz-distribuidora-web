@@ -112,6 +112,35 @@ console.log('\n=== VISIBILIDADE POR TIPO ===');
   ok('papel inválido na tabela de visibilidade é ignorado', montarVisibilidade([{ papel: 'admin', ve_rolo: false }]).client.veRolo === true);
 }
 
+console.log('\n=== FAIXAS DENTRO DO TIPO (Fase 1, 21/10/2026) ===');
+{
+  // lojista Padrão +10% (ppf +15%); faixa 7 = Gold +7%; faixa 8 = Platinum +4% com ppf +6% e luxury +2%.
+  const r = montarRegras([
+    { papel: 'lojista', linha_key: null, base: 'atacado', percentual: 10 },
+    { papel: 'lojista', linha_key: 'ppf', base: 'atacado', percentual: 15 },
+    { papel: 'lojista', linha_key: null, base: 'atacado', percentual: 7, faixa_id: 7 },
+    { papel: 'lojista', linha_key: null, base: 'atacado', percentual: 4, faixa_id: 8 },
+    { papel: 'lojista', linha_key: 'ppf', base: 'atacado', percentual: 6, faixa_id: 8 },
+    { papel: 'lojista', linha_key: 'ppf', produto_slug: 'luxury-gloss', base: 'atacado', percentual: 2, faixa_id: 8 },
+    // faixa 9 só tem regra de uma linha: fora dela, cai no tipo
+    { papel: 'lojista', linha_key: 'avery', base: 'atacado', percentual: 1, faixa_id: 9 },
+    // faixa 20 é de cliente final: nunca vale para lojista
+    { papel: 'client', linha_key: null, base: 'varejo', percentual: 3, faixa_id: 20 },
+  ]);
+  ok('sem faixa: regra do tipo (Padrão +10%)', precoParaAcesso(r, 'lojista', base, 'avery') === 3300);
+  ok('Gold: geral da faixa (+7%) vence o geral do tipo', precoParaAcesso(r, 'lojista', base, 'avery', null, 'rolo', 'x', 7) === 3210);
+  ok('Gold: geral da faixa vence até a LINHA do tipo (ppf +15% não entra)', precoParaAcesso(r, 'lojista', base, 'ppf', null, 'rolo', 'x', 7) === 3210);
+  ok('Platinum: produto > linha > geral dentro da faixa', precoParaAcesso(r, 'lojista', base, 'ppf', null, 'rolo', 'luxury-gloss', 8) === 3060 && precoParaAcesso(r, 'lojista', base, 'ppf', null, 'rolo', 'outro', 8) === 3180 && precoParaAcesso(r, 'lojista', base, 'avery', null, 'rolo', 'outro', 8) === 3120);
+  ok('faixa que só fala de uma linha: fora dela cai no tipo (ppf +15%)', precoParaAcesso(r, 'lojista', base, 'avery', null, 'rolo', 'x', 9) === 3030 && precoParaAcesso(r, 'lojista', base, 'ppf', null, 'rolo', 'x', 9) === 3450);
+  ok('faixa de outro tipo é ignorada (lojista com faixa 20 = Padrão)', precoParaAcesso(r, 'lojista', base, 'ppf', null, 'rolo', 'x', 20) === 3450);
+  ok('faixa inexistente = Padrão', precoParaAcesso(r, 'lojista', base, 'avery', null, 'rolo', 'x', 999) === 3300);
+  ok('a BASE é sempre a do tipo (cliente final varejo, faixa 20 +3%)', precoParaAcesso(r, 'client', base, 'avery', null, 'rolo', 'x', 20) === 4120);
+  ok('regraPara expõe a faixa que valeu', regraPara(r, 'lojista', 'ppf', 'luxury-gloss', 8).faixa_id === 8 && regraPara(r, 'lojista', 'ppf', 'x', 9).faixa_id == null);
+  const t = precosPorTipo(r, base, 'avery', null, 'rolo', 'x', 7);
+  ok('precosPorTipo com faixa: só o tipo dono da faixa muda', t.lojista === 3210 && t.reseller === 3000 && t.client === 4000);
+  ok('faixa_id como texto vira número', regraPara(montarRegras([{ papel: 'lojista', linha_key: null, base: 'atacado', percentual: 5, faixa_id: '7' }]), 'lojista', null, null, 7).percentual === 5);
+}
+
 console.log('\n=== CARREGAR (falha fechada) ===');
 {
   const dbRuim = { from: () => ({ select: () => ({ then: (res) => res({ data: null, error: { message: 'relation does not exist' } }) }) }) };

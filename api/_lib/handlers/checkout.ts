@@ -38,7 +38,7 @@ import {
   type PagamentoRow,
 } from '../asaas/pagamento.js';
 import { despacharAoErp, dispensarDoErp } from '../pedido/despachoErp.js';
-import { carregarVisibilidade, papelDePreco } from '../precos/regraAcesso.js';
+import { carregarVisibilidade, nomeDaFaixa, papelDePreco } from '../precos/regraAcesso.js';
 import { cotarCarrinho, type OpcaoFrete } from '../frete/carrinho.js';
 import {
   carregarPerfil,
@@ -76,7 +76,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   const site = createClient(siteUrl, siteKey);
 
-  const { papel, aprovado, userId } = await resolverPapelDetalhado(site, req.headers.authorization);
+  const { papel, aprovado, userId, faixaId } = await resolverPapelDetalhado(site, req.headers.authorization);
   if (papel === 'anonimo' || !userId) {
     res.status(401).json({ error: 'login-necessario' });
     return;
@@ -128,8 +128,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // `admin`: prévia de produto agendado (publicar_em no futuro) — ver precificar.
-    if (op === 'resumo') await opResumo(site, userId, body, cfg, res, papel === 'admin', papel);
-    else if (op === 'pagar') await opPagar(site, userId, body, cfg, req, res, papel === 'admin', papel);
+    if (op === 'resumo') await opResumo(site, userId, body, cfg, res, papel === 'admin', papel, faixaId);
+    else if (op === 'pagar') await opPagar(site, userId, body, cfg, req, res, papel === 'admin', papel, faixaId);
     else if (op === 'novo-pagamento') await opNovoPagamento(site, userId, body, cfg, req, res);
     else res.status(400).json({ error: 'op-desconhecida', disponiveis: ['resumo', 'pagar', 'status', 'novo-pagamento'] });
   } catch (err) {
@@ -140,14 +140,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 // ================================================================ resumo
 
-async function opResumo(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, res: VercelResponse, admin = false, papel: Papel = 'client') {
+async function opResumo(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, res: VercelResponse, admin = false, papel: Papel = 'client', faixaId: number | null = null) {
   const itens = normalizarItens(body.itens);
   if (!itens.length) {
     res.status(400).json({ error: 'sem-itens' });
     return;
   }
   const { perfil, faltando } = await carregarPerfil(site, userId);
-  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin, papel });
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin, papel, faixaId });
   const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotal, userId);
   const cepBruto = typeof body.cep === 'string' ? body.cep : perfil?.address_zip ?? '';
   const cep = cepBruto.replace(/\D/g, '');
@@ -220,7 +220,7 @@ async function limiteCartao(site: Db, userId: string, ip: string): Promise<boole
   return Number(porUser ?? 0) >= 3 || Number(porIp ?? 0) >= 10;
 }
 
-async function opPagar(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, req: VercelRequest, res: VercelResponse, admin = false, papel: Papel = 'client') {
+async function opPagar(site: Db, userId: string, body: Record<string, unknown>, cfg: ConfigCheckout, req: VercelRequest, res: VercelResponse, admin = false, papel: Papel = 'client', faixaId: number | null = null) {
   const itens = normalizarItens(body.itens);
   if (!itens.length) {
     res.status(400).json({ error: 'sem-itens' });
@@ -243,7 +243,8 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     return;
   }
 
-  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin, papel });
+  // A faixa de preço da pessoa (Fase 1): o servidor recalcula com a mesma regra da vitrine.
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin, papel, faixaId });
   if (invalidos.length) {
     res.status(400).json({ error: 'itens-invalidos', invalidos });
     return;
@@ -391,6 +392,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     afiliadoCodigo,
     frete: { tipo: frete.retirada ? 'RETIRADA' : 'CIF', valor: frete.valor, transportadora: frete.nome, prazoDias: frete.dias },
     desconto: cupom.desconto,
+    faixaNome: await nomeDaFaixa(site, faixaId),
   });
   await site.from('pedidos').update({ erp_payload: payloadErp }).eq('id', pedido.id);
 

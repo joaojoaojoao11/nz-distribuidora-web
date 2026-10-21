@@ -151,7 +151,7 @@ export async function carregarPerfil(site: Db, userId: string): Promise<{ perfil
 export async function precificar(
   site: Db,
   itens: ItemPedido[],
-  opts: { admin?: boolean; papel?: Papel } = {}
+  opts: { admin?: boolean; papel?: Papel; faixaId?: number | null } = {}
 ): Promise<{ linhas: Linha[]; invalidos: string[]; subtotal: number }> {
   const slugs = [...new Set(itens.map((i) => i.slug))];
   const { data: produtosData } = await site
@@ -170,13 +170,15 @@ export async function precificar(
   // Tipo de acesso: o mesmo percentual da vitrine. Admin compra pela base.
   const regras: Regras | null = opts.admin ? null : await carregarRegras(site);
   const papel: Papel = opts.papel ?? 'client';
+  // A faixa de preço da pessoa (Gold, Platinum, individual…): a mesma da vitrine.
+  const faixaId = opts.faixaId ?? null;
   const positivo = (v: unknown): number | null => (Number(v) > 0 ? Number(v) : null);
   // `unidade` leva junto a visibilidade do tipo: linha oculta, "não compra
   // rolo fechado" ou "não compra fracionado" viram item inválido, igual à vitrine.
   const precoRoloDe = (p: Produto, e: Espelho): number | null =>
-    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_rolo), varejo: positivo(e.preco_rolo_varejo) }, p.linha_key, null, 'rolo', p.slug) : positivo(e.preco_rolo);
+    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_rolo), varejo: positivo(e.preco_rolo_varejo) }, p.linha_key, null, 'rolo', p.slug, faixaId) : positivo(e.preco_rolo);
   const precoMetroDe = (p: Produto, e: Espelho, saida: number | null): number | null =>
-    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_metro), varejo: positivo(e.preco_metro_varejo) }, p.linha_key, saida, 'metro', p.slug) : (saida ?? positivo(e.preco_metro));
+    regras ? precoParaAcesso(regras, papel, { atacado: positivo(e.preco_metro), varejo: positivo(e.preco_metro_varejo) }, p.linha_key, saida, 'metro', p.slug, faixaId) : (saida ?? positivo(e.preco_metro));
 
   // Promoção Moto: o metro das cores com pedaço sai pelo preço de saída — a
   // MESMA regra que o card mostra (/api/nz/precos). Só no fracionado.
@@ -426,6 +428,8 @@ export function montarPayloadErp(args: {
   frete: FreteErp;
   /** Desconto do cupom, em R$, sobre os itens (nunca sobre o frete). */
   desconto?: number;
+  /** Nome da faixa de preço da pessoa (Gold, Platinum…) — o ERP espelha em clients.faixa_preco_site. */
+  faixaNome?: string | null;
 }) {
   const { perfil, linhas } = args;
   const descontoTotal = r2(Math.max(0, Number(args.desconto) || 0));
@@ -472,6 +476,8 @@ export function montarPayloadErp(args: {
     // Total do desconto do cupom (a soma dos `items[].desconto`). O NZERP
     // (site_criar_pedido v3) grava em quotes.desconto_cupom e confere a soma.
     desconto_cupom: descontoTotal,
+    // Faixa de preço (Fase 1): só o nome, para o consultor ver no CRM do ERP.
+    faixa_site: args.faixaNome ?? '',
   };
 }
 

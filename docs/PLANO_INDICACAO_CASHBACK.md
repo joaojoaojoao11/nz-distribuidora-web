@@ -25,3 +25,9 @@ Regra deste repositório: **nenhum código de cupom, percentual de margem ou dad
   lê pela rota (`op: meus-cupons`); o orçamento só reserva o uso do cupom (consumo no pagamento ou no faturamento,
   `pedidos.cupom_consumido_em`); a janela de atribuição vem do servidor; a comissão do afiliado é sem frete; o resgate de
   pontos fica fechado até a Fase 2. Teste: `npm run cupom:test`.
+- **Fase 1 (21/10/2026):** implantada. Faixas de preço dentro do tipo de acesso (`faixas_preco`, `precos_acesso.faixa_id`,
+  `user_profiles.faixa_id`; regra em `api/_lib/precos/regraAcesso.ts`: produto > linha > geral da faixa, senão a regra do
+  tipo; a base é a do tipo); seletor e gestão de faixas em `/admin/precos/:papel` (uma faixa pode ter um único cliente);
+  faixa escolhida na aprovação em `/admin/clientes`, com a etiqueta "indicação de NZ-XXXXX" e a pré-análise do consultor
+  (`pre_analises`); o e-mail de aprovação diz a faixa; o nome da faixa é espelhado no cliente do NZERP (só leitura lá).
+  Percentuais das faixas NÃO ficam no repositório. Teste: `npm run precos:test`.

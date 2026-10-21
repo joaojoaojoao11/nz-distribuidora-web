@@ -149,6 +149,16 @@ por `/api/nz/precos` (vitrine), `pedido/precificar.ts` (pedido e checkout) e
 `promo-moto` (público = cliente final). Admin vê tudo e compra pela base.
 `npm run precos:test`.
 
+**Faixas dentro do tipo** (desde 21/10/2026, Fase 1 do plano de indicação):
+`faixas_preco` (Gold, Platinum, ou uma faixa criada para um único cliente) e
+`precos_acesso.faixa_id`. A pessoa recebe a faixa na aprovação
+(`user_profiles.faixa_id`, só o servidor muda — ops `aprovar` e `mudar-faixa`
+de `/api/nz/conta`). A regra: produto > linha > geral **da faixa**; o que a
+faixa não define cai na regra do tipo; a base é sempre a do tipo. Sem faixa =
+Padrão. O seletor de faixas fica em `/admin/precos/:papel`; a escolha por
+pessoa e a pré-análise do consultor (`pre_analises`) ficam em `/admin/clientes`.
+O nome da faixa vai ao NZERP (`clients.faixa_preco_site`, só leitura lá).
+
 **Visibilidade por tipo** (`acesso_config`, mesma tela, aba Visibilidade):
 linhas comerciais ocultas, rolo fechado, metro fracionado, estoque detalhado,
 Promoção Moto e pagamento online. O servidor aplica tudo (preço nulo e item

@@ -16,6 +16,13 @@
 // precos_acesso_log com o de → para. Quem calcula é o servidor
 // (api/_lib/precos/regraAcesso.ts); o simulador chama /api/nz/precos com
 // `simular` e mostra a resposta dele.
+//
+// FAIXAS (Fase 1 do plano de indicação, 21/10/2026): dentro do tipo existem
+// faixas (Gold, Platinum, ou uma faixa só de uma pessoa). O seletor no topo
+// troca entre "Padrão" (as regras do tipo, como sempre) e cada faixa, que tem
+// os mesmos três níveis. O que a faixa deixa vazio cai na regra do tipo; a
+// base é sempre a do tipo; a visibilidade é do tipo, não da faixa. Quem está
+// em qual faixa se escolhe em Admin → Clientes.
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -38,6 +45,16 @@ interface RegraRow {
   produto_slug: string | null;
   base: Base;
   percentual: number;
+  /** nulo = Padrão do tipo; preenchido = regra desta faixa */
+  faixa_id: number | null;
+}
+
+interface FaixaRow {
+  id: number;
+  nome: string;
+  descricao: string | null;
+  ordem: number;
+  ativa: boolean;
 }
 
 interface LinhaLoja {
@@ -110,6 +127,14 @@ export default function AdminAcessoConfig() {
   const papel = PAPEIS.includes(papelParam as PapelPreco) ? (papelParam as PapelPreco) : null;
   const [aba, setAba] = useState<Aba>('preco');
   const [regras, setRegras] = useState<RegraRow[]>([]);
+  // Faixas do tipo. `faixaSel` nulo = Padrão (as regras do tipo).
+  const [regrasTodas, setRegrasTodas] = useState<RegraRow[]>([]);
+  const [faixas, setFaixas] = useState<FaixaRow[]>([]);
+  const [faixaSel, setFaixaSel] = useState<number | null>(null);
+  const [contasPorFaixa, setContasPorFaixa] = useState<Record<string, number>>({});
+  const [faixaForm, setFaixaForm] = useState<{ nome: string; descricao: string; ordem: string; ativa: boolean }>({ nome: '', descricao: '', ordem: '0', ativa: true });
+  const [novaFaixa, setNovaFaixa] = useState('');
+  const [salvandoFaixa, setSalvandoFaixa] = useState(false);
   const [linhas, setLinhas] = useState<LinhaLoja[]>([]);
   const [visSalva, setVisSalva] = useState<Vis | null>(null);
   const [existeVis, setExisteVis] = useState(false);
@@ -139,34 +164,57 @@ export default function AdminAcessoConfig() {
   const [simulado, setSimulado] = useState<Simulado | null>(null);
   const [simulando, setSimulando] = useState(false);
 
+  /** Põe na tela as regras de UMA faixa (ou do Padrão, f = null). */
+  const aplicarRegras = useCallback(
+    (rows: RegraRow[], f: number | null) => {
+      const minhas = rows.filter((x) => (x.faixa_id ?? null) === f);
+      setRegras(minhas);
+      // A base é sempre a do tipo (regra geral do Padrão), mesmo numa faixa.
+      const gPadrao = rows.find((x) => !x.faixa_id && !x.linha_key && !x.produto_slug);
+      const basePapel: Base = gPadrao?.base ?? (papel === 'client' ? 'varejo' : 'atacado');
+      const g = minhas.find((x) => !x.linha_key && !x.produto_slug);
+      // Padrão: o geral sempre existe (0 quando não há linha). Faixa: vazio = cai na regra do tipo.
+      setGeral({ base: basePapel, pct: g ? pctTexto(Number(g.percentual)) : f ? '' : '0' });
+      const c: Record<string, string> = {};
+      const cp: Record<string, string> = {};
+      const ldp: Record<string, string> = {};
+      for (const row of minhas) {
+        if (row.produto_slug) {
+          cp[row.produto_slug] = pctTexto(Number(row.percentual));
+          if (row.linha_key) ldp[row.produto_slug] = row.linha_key;
+        } else if (row.linha_key) c[row.linha_key] = pctTexto(Number(row.percentual));
+      }
+      setCelulas(c);
+      setCelulasProduto(cp);
+      setLinhaDoProduto((atual) => ({ ...atual, ...ldp }));
+    },
+    [papel]
+  );
+
   const carregar = useCallback(async () => {
     if (!papel) return;
-    const [r, l, v, u] = await Promise.all([
+    const [r, l, v, u, fx, uf] = await Promise.all([
       supabase.from('precos_acesso').select('*').eq('papel', papel).order('linha_key'),
       supabase.rpc('linhas_da_loja'),
       supabase.from('acesso_config').select('*').eq('papel', papel).maybeSingle(),
       supabase.from('user_profiles').select('id', { count: 'exact', head: true }).eq('role', papel),
+      supabase.from('faixas_preco').select('id, nome, descricao, ordem, ativa').eq('papel', papel).order('ordem').order('nome'),
+      supabase.from('user_profiles').select('faixa_id').eq('role', papel).not('faixa_id', 'is', null).limit(1000),
     ]);
-    const err = r.error ?? l.error ?? v.error;
-    setErro(err ? `Não carregou: ${err.message} — as migrations 2026-10-20b/c/d já foram aplicadas?` : '');
+    const err = r.error ?? l.error ?? v.error ?? fx.error;
+    setErro(err ? `Não carregou: ${err.message} — as migrations 2026-10-20b/c/d e 2026-10-21b já foram aplicadas?` : '');
     const rows = (r.data ?? []) as RegraRow[];
-    setRegras(rows);
+    setRegrasTodas(rows);
+    const listaFaixas = (fx.data ?? []) as FaixaRow[];
+    setFaixas(listaFaixas);
+    const cpf: Record<string, number> = {};
+    for (const p of (uf.data ?? []) as { faixa_id: number | null }[]) if (p.faixa_id) cpf[String(p.faixa_id)] = (cpf[String(p.faixa_id)] ?? 0) + 1;
+    setContasPorFaixa(cpf);
+    const fAtual = listaFaixas.find((f) => f.id === faixaSel) ?? null;
+    setFaixaForm(fAtual ? { nome: fAtual.nome, descricao: fAtual.descricao ?? '', ordem: String(fAtual.ordem), ativa: fAtual.ativa } : { nome: '', descricao: '', ordem: '0', ativa: true });
     setLinhas((l.data ?? []) as LinhaLoja[]);
     setContas(u.count ?? 0);
-    const g = rows.find((x) => !x.linha_key && !x.produto_slug);
-    setGeral({ base: g?.base ?? (papel === 'client' ? 'varejo' : 'atacado'), pct: pctTexto(Number(g?.percentual ?? 0)) });
-    const c: Record<string, string> = {};
-    const cp: Record<string, string> = {};
-    const ldp: Record<string, string> = {};
-    for (const row of rows) {
-      if (row.produto_slug) {
-        cp[row.produto_slug] = pctTexto(Number(row.percentual));
-        if (row.linha_key) ldp[row.produto_slug] = row.linha_key;
-      } else if (row.linha_key) c[row.linha_key] = pctTexto(Number(row.percentual));
-    }
-    setCelulas(c);
-    setCelulasProduto(cp);
-    setLinhaDoProduto((atual) => ({ ...atual, ...ldp }));
+    aplicarRegras(rows, faixaSel && fAtual ? faixaSel : null);
     const vr = v.data as { linhas_ocultas: string[] | null; ve_rolo: boolean; ve_metro: boolean; ve_estoque: boolean; ve_promocao: boolean; pagamento_online: boolean } | null;
     const vInicial: Vis = vr
       ? { linhasOcultas: new Set(vr.linhas_ocultas ?? []), veRolo: vr.ve_rolo, veMetro: vr.ve_metro, veEstoque: vr.ve_estoque, vePromocao: vr.ve_promocao, pagamentoOnline: vr.pagamento_online }
@@ -177,11 +225,74 @@ export default function AdminAcessoConfig() {
     setSelecionadas(new Set());
     setSelecionadosProd(new Set());
     setCarregando(false);
-  }, [papel]);
+  }, [papel, faixaSel, aplicarRegras]);
 
   useEffect(() => {
     void carregar();
   }, [carregar]);
+
+  // ------------------------------------------------------------- faixas
+  const faixaAtual = faixaSel ? faixas.find((f) => f.id === faixaSel) ?? null : null;
+  const nomeDoAlvo = faixaAtual ? `${TIPO_LABEL[papel ?? 'client']} · ${faixaAtual.nome}` : `${TIPO_LABEL[papel ?? 'client']} · Padrão`;
+
+  const criarFaixa = async () => {
+    const nome = novaFaixa.trim();
+    if (!papel || !nome) return;
+    setSalvandoFaixa(true);
+    setErro('');
+    const { data: s } = await supabase.auth.getSession();
+    const ordem = faixas.length ? Math.max(...faixas.map((f) => f.ordem)) + 1 : 1;
+    const { data, error } = await supabase.from('faixas_preco').insert({ papel, nome, ordem, ativa: true, atualizado_por: s.session?.user.id ?? null }).select('id').single();
+    setSalvandoFaixa(false);
+    if (error) {
+      setErro(error.message.includes('duplicate') ? `Já existe a faixa "${nome}" neste tipo.` : `Não criou a faixa: ${error.message}`);
+      return;
+    }
+    setNovaFaixa('');
+    setMsg(`Faixa "${nome}" criada. Agora defina os percentuais dela e salve.`);
+    setFaixaSel((data as { id: number }).id);
+  };
+
+  const salvarFaixa = async () => {
+    if (!faixaAtual) return;
+    const nome = faixaForm.nome.trim();
+    if (!nome) {
+      setErro('A faixa precisa de um nome.');
+      return;
+    }
+    setSalvandoFaixa(true);
+    setErro('');
+    const { data: s } = await supabase.auth.getSession();
+    const { error } = await supabase
+      .from('faixas_preco')
+      .update({ nome, descricao: faixaForm.descricao.trim() || null, ordem: Number(faixaForm.ordem) || 0, ativa: faixaForm.ativa, atualizado_em: new Date().toISOString(), atualizado_por: s.session?.user.id ?? null })
+      .eq('id', faixaAtual.id);
+    setSalvandoFaixa(false);
+    if (error) setErro(`Não salvou a faixa: ${error.message}`);
+    else {
+      setMsg('Faixa salva.');
+      await carregar();
+    }
+  };
+
+  const excluirFaixa = async () => {
+    if (!faixaAtual) return;
+    const n = contasPorFaixa[String(faixaAtual.id)] ?? 0;
+    if (n > 0) {
+      setErro(`A faixa "${faixaAtual.nome}" tem ${n} conta${n > 1 ? 's' : ''}. Mude essas contas de faixa em Clientes antes de excluir.`);
+      return;
+    }
+    if (!window.confirm(`Excluir a faixa "${faixaAtual.nome}" e as regras de preço dela? Isso não tem volta.`)) return;
+    setSalvandoFaixa(true);
+    const { error } = await supabase.from('faixas_preco').delete().eq('id', faixaAtual.id);
+    setSalvandoFaixa(false);
+    if (error) setErro(`Não excluiu: ${error.message}`);
+    else {
+      setMsg(`Faixa "${faixaAtual.nome}" excluída.`);
+      esquecerAcessoConfig();
+      setFaixaSel(null);
+    }
+  };
 
   useEffect(() => {
     const termo = busca.trim();
@@ -235,7 +346,8 @@ export default function AdminAcessoConfig() {
       const r = await fetch('/api/nz/precos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-        body: JSON.stringify({ slugs: [p.slug], simular: true }),
+        // Com faixa escolhida, o servidor simula o tipo COM a regra dela.
+        body: JSON.stringify({ slugs: [p.slug], simular: true, faixaId: faixaSel }),
       });
       const j = (await r.json()) as { itens?: Record<string, Record<string, unknown>> };
       const it = j.itens?.[p.slug];
@@ -260,8 +372,21 @@ export default function AdminAcessoConfig() {
   };
 
   // ------------------------------------------------------------ cálculos
-  const pctGeral = pctNumero(geral.pct) ?? 0;
-  const pctDaLinha = (k: string): number => pctNumero(celulas[k] ?? '') ?? pctGeral;
+  // Numa faixa, o que fica vazio cai na regra do TIPO (Padrão): geral vazio →
+  // a linha/geral do Padrão; linha vazia → o geral da faixa, se houver, senão
+  // a linha/geral do Padrão. É a mesma ordem do servidor (regraPara).
+  const padraoGeralPct = useMemo(() => Number(regrasTodas.find((x) => !x.faixa_id && !x.linha_key && !x.produto_slug)?.percentual ?? 0), [regrasTodas]);
+  const padraoLinhaPct = (k: string): number => {
+    const row = regrasTodas.find((x) => !x.faixa_id && x.linha_key === k && !x.produto_slug);
+    return row ? Number(row.percentual) : padraoGeralPct;
+  };
+  const geralVazio = pctNumero(geral.pct) === null;
+  const pctGeral = pctNumero(geral.pct) ?? (faixaSel ? padraoGeralPct : 0);
+  const pctDaLinha = (k: string): number => {
+    const v = pctNumero(celulas[k] ?? '');
+    if (v !== null) return v;
+    return faixaSel && geralVazio ? padraoLinhaPct(k) : pctGeral;
+  };
   const pctDoProduto = (slug: string, k: string): number => pctNumero(celulasProduto[slug] ?? '') ?? pctDaLinha(k);
   const produtosComRegra = useMemo(() => {
     const por: Record<string, number> = {};
@@ -277,7 +402,17 @@ export default function AdminAcessoConfig() {
     if (!papel) return [];
     const lista: Mudanca[] = [];
     const atual = regras.find((r) => !r.linha_key && !r.produto_slug) ?? null;
-    if (!atual || atual.base !== geral.base || Number(atual.percentual) !== pctGeral) lista.push({ nivel: 'geral', linha: null, slug: null, de: atual, para: { base: geral.base, percentual: pctGeral } });
+    const g = pctNumero(geral.pct);
+    if (faixaSel) {
+      // Faixa: o geral é opcional (vazio = apaga a regra geral da faixa).
+      if (g === null) {
+        if (atual) lista.push({ nivel: 'geral', linha: null, slug: null, de: atual, para: null });
+      } else if (!atual || Number(atual.percentual) !== g) {
+        lista.push({ nivel: 'geral', linha: null, slug: null, de: atual, para: { base: geral.base, percentual: g } });
+      }
+    } else if (!atual || atual.base !== geral.base || Number(atual.percentual) !== pctGeral) {
+      lista.push({ nivel: 'geral', linha: null, slug: null, de: atual, para: { base: geral.base, percentual: pctGeral } });
+    }
     for (const l of linhas) {
       const row = regras.find((r) => r.linha_key === l.linha_key && !r.produto_slug) ?? null;
       const n = pctNumero(celulas[l.linha_key] ?? '');
@@ -299,7 +434,7 @@ export default function AdminAcessoConfig() {
       }
     }
     return lista;
-  }, [papel, regras, linhas, geral, pctGeral, celulas, celulasProduto, linhaDoProduto]);
+  }, [papel, faixaSel, regras, linhas, geral, pctGeral, celulas, celulasProduto, linhaDoProduto]);
 
   const visMudou = useMemo(() => {
     if (!visSalva) return false;
@@ -312,7 +447,8 @@ export default function AdminAcessoConfig() {
   const invalidas = useMemo(() => {
     const ruins: string[] = [];
     const g = pctNumero(geral.pct);
-    if (g === null || Number.isNaN(g) || g < 0) ruins.push('percentual geral');
+    // No Padrão o geral é obrigatório; na faixa, vazio significa "cai no tipo".
+    if ((g === null && !faixaSel) || (g !== null && (Number.isNaN(g) || g < 0))) ruins.push('percentual geral');
     for (const l of linhas) {
       const v = pctNumero(celulas[l.linha_key] ?? '');
       if (v !== null && (Number.isNaN(v) || v < 0)) ruins.push(l.label);
@@ -323,7 +459,7 @@ export default function AdminAcessoConfig() {
     }
     if (!vis.veRolo && !vis.veMetro) ruins.push('rolo e metro desligados ao mesmo tempo (ninguém conseguiria comprar)');
     return ruins;
-  }, [geral, celulas, celulasProduto, linhas, vis]);
+  }, [geral, celulas, celulasProduto, linhas, vis, faixaSel]);
 
   const totalMudancas = mudancasPreco.length + (visMudou ? 1 : 0);
 
@@ -362,7 +498,8 @@ export default function AdminAcessoConfig() {
       setMsg('Nada mudou.');
       return;
     }
-    if (!window.confirm(`Salvar as alterações de ${TIPO_LABEL[papel]}? Valem para todo mundo desse tipo no próximo carregamento da loja.`)) return;
+    const alvo = faixaAtual ? `${TIPO_LABEL[papel]} · faixa ${faixaAtual.nome}` : TIPO_LABEL[papel];
+    if (!window.confirm(`Salvar as alterações de ${alvo}? Valem para todo mundo ${faixaAtual ? 'dessa faixa' : 'desse tipo'} no próximo carregamento da loja.`)) return;
     setSalvando(true);
     setErro('');
     setMsg('');
@@ -374,12 +511,12 @@ export default function AdminAcessoConfig() {
       let error: { message: string } | null = null;
       if (m.para === null && m.de) ({ error } = await supabase.from('precos_acesso').delete().eq('id', m.de.id));
       else if (m.para && m.de) ({ error } = await supabase.from('precos_acesso').update({ base: m.para.base, percentual: m.para.percentual, atualizado_em: agora, atualizado_por: quem }).eq('id', m.de.id));
-      else if (m.para) ({ error } = await supabase.from('precos_acesso').insert({ papel, linha_key: m.linha, produto_slug: m.slug, base: m.para.base, percentual: m.para.percentual, atualizado_em: agora, atualizado_por: quem }));
+      else if (m.para) ({ error } = await supabase.from('precos_acesso').insert({ papel, faixa_id: faixaSel, linha_key: m.linha, produto_slug: m.slug, base: m.para.base, percentual: m.para.percentual, atualizado_em: agora, atualizado_por: quem }));
       if (error) {
         falhas.push(`${m.slug ?? m.linha ?? 'geral'}: ${error.message}`);
         continue;
       }
-      await supabase.from('precos_acesso_log').insert({ quem, papel, linha_key: m.linha, produto_slug: m.slug, de: m.de ? { base: m.de.base, percentual: Number(m.de.percentual) } : null, para: m.para });
+      await supabase.from('precos_acesso_log').insert({ quem, papel, faixa_id: faixaSel, linha_key: m.linha, produto_slug: m.slug, de: m.de ? { base: m.de.base, percentual: Number(m.de.percentual) } : null, para: m.para });
     }
     if (visMudou) {
       const para = { papel, linhas_ocultas: [...vis.linhasOcultas], ve_rolo: vis.veRolo, ve_metro: vis.veMetro, ve_estoque: vis.veEstoque, ve_promocao: vis.vePromocao, pagamento_online: vis.pagamentoOnline, atualizado_em: agora, atualizado_por: quem };
@@ -430,9 +567,11 @@ export default function AdminAcessoConfig() {
           <Link to="/admin/precos" className={ped.voltar}>
             ← Tipos de acesso
           </Link>
-          <h2 className={ped.titulo}>{TIPO_LABEL[papel]}</h2>
+          <h2 className={ped.titulo}>{nomeDoAlvo}</h2>
           <p className={ped.mudo}>
-            {TIPO_DESCRICAO[papel]} · {contas} conta{contas === 1 ? '' : 's'}
+            {faixaAtual
+              ? `${faixaAtual.descricao || 'Faixa dentro do tipo.'} · ${contasPorFaixa[String(faixaAtual.id)] ?? 0} conta${(contasPorFaixa[String(faixaAtual.id)] ?? 0) === 1 ? '' : 's'} nesta faixa`
+              : `${TIPO_DESCRICAO[papel]} · ${contas} conta${contas === 1 ? '' : 's'}`}
           </p>
         </div>
         <div className={ped.topoDireita}>
@@ -449,11 +588,76 @@ export default function AdminAcessoConfig() {
       {erro && <p className={ped.aviso}>{erro}</p>}
       {msg && <p className={ped.msg}>{msg}</p>}
 
+      {/* ------------------------------------------------------------ faixas */}
+      <div className={styles.tableSection} style={{ marginBottom: '1rem' }}>
+        <h3 className={styles.tableSectionTitle}>Faixas de {TIPO_LABEL[papel].toLowerCase()}</h3>
+        <p className={styles.tabDescription}>
+          <strong>Padrão</strong> é a regra do tipo, para quem não tem faixa. Cada faixa (Gold, Platinum, ou uma faixa criada para um único cliente) tem os mesmos
+          três níveis; o que a faixa deixar vazio cai na regra do tipo. A base é sempre a do tipo. Quem está em qual faixa se escolhe em{' '}
+          <Link to="/admin/clientes" style={{ color: '#fff' }}>Clientes</Link>.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center' }}>
+          {[{ id: null as number | null, nome: 'Padrão', ativa: true }, ...faixas].map((f) => {
+            const ativo = (f.id ?? null) === faixaSel;
+            const n = f.id ? contasPorFaixa[String(f.id)] ?? 0 : Math.max(0, contas - Object.values(contasPorFaixa).reduce((s, x) => s + x, 0));
+            return (
+              <button
+                key={f.id ?? 'padrao'}
+                type="button"
+                className={`${styles.periodBtn} ${ativo ? styles.periodBtnActive : ''}`}
+                style={f.ativa ? undefined : { opacity: 0.5 }}
+                title={f.ativa ? undefined : 'faixa desativada'}
+                onClick={() => {
+                  if ((f.id ?? null) === faixaSel) return;
+                  if (totalMudancas > 0 && !window.confirm('Há alterações não salvas. Trocar de faixa descarta essas alterações. Continuar?')) return;
+                  if (f.id && aba === 'visibilidade') setAba('preco');
+                  setFaixaSel(f.id ?? null);
+                }}
+              >
+                {f.nome} <small style={{ opacity: 0.7 }}>· {n}</small>
+              </button>
+            );
+          })}
+          <span className={ped.mudo} style={{ marginLeft: '0.25rem' }}>+ nova faixa:</span>
+          <input value={novaFaixa} placeholder="ex.: Diamond, ou o nome do cliente" style={{ ...seletor, width: '16rem' }} onChange={(e) => setNovaFaixa(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && void criarFaixa()} />
+          <button type="button" className={styles.actionBtn} disabled={salvandoFaixa || !novaFaixa.trim()} onClick={() => void criarFaixa()}>
+            Criar
+          </button>
+        </div>
+        {faixaAtual && (
+          <div style={{ marginTop: '0.9rem', display: 'flex', flexWrap: 'wrap', gap: '0.6rem', alignItems: 'flex-end' }}>
+            <div className={styles.createField} style={{ minWidth: 180 }}>
+              <label>Nome da faixa</label>
+              <input value={faixaForm.nome} onChange={(e) => setFaixaForm((f) => ({ ...f, nome: e.target.value }))} />
+            </div>
+            <div className={styles.createField} style={{ minWidth: 280, flex: 1 }}>
+              <label>Descrição (só a equipe vê)</label>
+              <input value={faixaForm.descricao} placeholder="quem entra aqui e por quê" onChange={(e) => setFaixaForm((f) => ({ ...f, descricao: e.target.value }))} />
+            </div>
+            <div className={styles.createField} style={{ width: 90 }}>
+              <label>Ordem</label>
+              <input value={faixaForm.ordem} inputMode="numeric" onChange={(e) => setFaixaForm((f) => ({ ...f, ordem: e.target.value }))} />
+            </div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', paddingBottom: '0.55rem', cursor: 'pointer' }}>
+              <input type="checkbox" style={caixa} checked={faixaForm.ativa} onChange={(e) => setFaixaForm((f) => ({ ...f, ativa: e.target.checked }))} />
+              <span>ativa</span>
+            </label>
+            <button type="button" className={`${styles.actionBtn} ${styles.actionBtnApprove}`} disabled={salvandoFaixa} onClick={() => void salvarFaixa()}>
+              Salvar faixa
+            </button>
+            <button type="button" className={`${styles.actionBtn} ${styles.actionBtnDeny}`} disabled={salvandoFaixa} onClick={() => void excluirFaixa()}>
+              Excluir
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className={styles.periodFilters} style={{ marginBottom: '1.25rem' }}>
         {(
           [
             ['preco', `Preço${mudancasPreco.length ? ` (${mudancasPreco.length})` : ''}`],
-            ['visibilidade', `Visibilidade${visMudou ? ' (•)' : ''}`],
+            // A visibilidade é do TIPO: numa faixa a aba some.
+            ...(faixaSel ? [] : [['visibilidade', `Visibilidade${visMudou ? ' (•)' : ''}`]]),
           ] as [Aba, string][]
         ).map(([id, rotulo]) => (
           <button key={id} type="button" className={`${styles.periodBtn} ${aba === id ? styles.periodBtnActive : ''}`} onClick={() => setAba(id)}>
@@ -466,22 +670,23 @@ export default function AdminAcessoConfig() {
       {aba === 'preco' && (
         <>
           <div className={styles.tableSection}>
-            <h3 className={styles.tableSectionTitle}>Regra geral</h3>
+            <h3 className={styles.tableSectionTitle}>Regra geral{faixaAtual ? ` da faixa ${faixaAtual.nome}` : ''}</h3>
             <p className={styles.tabDescription}>
               preço = base do ERP × (1 + percentual). Três níveis, do mais específico ao mais geral: <strong>produto</strong> (abra a linha e ajuste um item)
-              &gt; <strong>linha comercial</strong> &gt; <strong>geral</strong>. Vazio herda o nível de cima. A base é sempre a do tipo.
+              &gt; <strong>linha comercial</strong> &gt; <strong>geral</strong>. Vazio herda o nível de cima
+              {faixaAtual ? ` — e o que a faixa inteira deixar vazio cai na regra do tipo (Padrão: ${pctTexto(padraoGeralPct)}% geral)` : ''}. A base é sempre a do tipo.
             </p>
             <div className={styles.adminFormRow3}>
               <div className={styles.createField}>
-                <label>Base (tabela do ERP)</label>
-                <select value={geral.base} style={{ ...seletor, width: '100%' }} onChange={(e) => setGeral((g) => ({ ...g, base: e.target.value as Base }))}>
+                <label>Base (tabela do ERP){faixaAtual ? ' — a do tipo' : ''}</label>
+                <select value={geral.base} disabled={Boolean(faixaAtual)} style={{ ...seletor, width: '100%', opacity: faixaAtual ? 0.6 : 1 }} onChange={(e) => setGeral((g) => ({ ...g, base: e.target.value as Base }))}>
                   <option value="atacado">atacado (mínimo)</option>
                   <option value="varejo">varejo (publicado)</option>
                 </select>
               </div>
               <div className={styles.createField}>
                 <label>Percentual geral (%)</label>
-                <input value={geral.pct} inputMode="decimal" onChange={(e) => setGeral((g) => ({ ...g, pct: e.target.value }))} />
+                <input value={geral.pct} placeholder={faixaAtual ? `vazio = do tipo (${pctTexto(padraoGeralPct)})` : undefined} inputMode="decimal" onChange={(e) => setGeral((g) => ({ ...g, pct: e.target.value }))} />
               </div>
             </div>
           </div>
@@ -551,9 +756,12 @@ export default function AdminAcessoConfig() {
                           </td>
                           <td className={ped.mudo}>{l.produtos}</td>
                           <td>
-                            <input value={txt} placeholder={`geral ${geral.pct || '0'}`} style={campo} inputMode="decimal" onChange={(e) => setCelulas((c) => ({ ...c, [k]: e.target.value }))} />
+                            <input value={txt} placeholder={faixaSel && geralVazio ? `tipo ${pctTexto(padraoLinhaPct(k))}` : `geral ${pctTexto(pctGeral)}`} style={campo} inputMode="decimal" onChange={(e) => setCelulas((c) => ({ ...c, [k]: e.target.value }))} />
                           </td>
-                          <td className={ped.mudo}>{oculta ? 'linha oculta para este tipo' : `${geral.base} + ${Number.isNaN(efetivo) ? '?' : pctTexto(efetivo)}%`}</td>
+                          <td className={ped.mudo}>
+                            {oculta ? 'linha oculta para este tipo' : `${geral.base} + ${Number.isNaN(efetivo) ? '?' : pctTexto(efetivo)}%`}
+                            {!oculta && faixaSel && txt.trim() === '' && geralVazio ? ' · do tipo' : ''}
+                          </td>
                         </tr>
                         {estaAberta && (
                           <tr key={`${k}-produtos`}>
@@ -664,7 +872,10 @@ export default function AdminAcessoConfig() {
 
           <div className={styles.tableSection}>
             <h3 className={styles.tableSectionTitle}>Simulador</h3>
-            <p className={styles.tabDescription}>Escolha um produto e veja o que {TIPO_LABEL[papel].toLowerCase()} vê — calculado pelo servidor com as regras já salvas.</p>
+            <p className={styles.tabDescription}>
+              Escolha um produto e veja o que {TIPO_LABEL[papel].toLowerCase()}
+              {faixaAtual ? ` na faixa ${faixaAtual.nome}` : ''} vê — calculado pelo servidor com as regras já salvas.
+            </p>
             <div style={{ position: 'relative', maxWidth: 520 }}>
               <input className={ped.busca} style={{ maxWidth: 'none', width: '100%' }} placeholder="Nome do produto (3 letras ou mais)…" value={busca} onChange={(e) => setBusca(e.target.value)} />
               {sugestoes.length > 0 && (
@@ -701,7 +912,10 @@ export default function AdminAcessoConfig() {
                     </tr>
                     <tr>
                       <td>
-                        <strong>{TIPO_LABEL[papel]} vê</strong>
+                        <strong>
+                          {TIPO_LABEL[papel]}
+                          {faixaAtual ? ` · ${faixaAtual.nome}` : ''} vê
+                        </strong>
                       </td>
                       <td>{roloDe(simulado.doTipo?.rolo ?? null)}</td>
                       <td>{metroDe(simulado.doTipo?.metro ?? null)}</td>

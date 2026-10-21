@@ -24,6 +24,15 @@ interface RegraRow {
   produto_slug: string | null;
   base: 'atacado' | 'varejo';
   percentual: number;
+  faixa_id: number | null;
+}
+
+interface FaixaRow {
+  id: number;
+  papel: PapelPreco;
+  nome: string;
+  ordem: number;
+  ativa: boolean;
 }
 
 interface VisRow {
@@ -43,23 +52,32 @@ const pct = (v: number) => `${String(v).replace('.', ',')}%`;
 export default function AdminPrecos() {
   const [regras, setRegras] = useState<RegraRow[]>([]);
   const [vis, setVis] = useState<VisRow[]>([]);
+  const [faixas, setFaixas] = useState<FaixaRow[]>([]);
   const [contas, setContas] = useState<Record<string, number>>({});
+  const [contasFaixa, setContasFaixa] = useState<Record<string, number>>({});
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
 
   const carregar = useCallback(async () => {
-    const [r, v, u] = await Promise.all([
-      supabase.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual'),
+    const [r, v, u, f] = await Promise.all([
+      supabase.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual, faixa_id'),
       supabase.from('acesso_config').select('papel, linhas_ocultas, ve_rolo, ve_metro, ve_estoque, ve_promocao, pagamento_online, atualizado_em'),
-      supabase.from('user_profiles').select('role').limit(1000),
+      supabase.from('user_profiles').select('role, faixa_id').limit(1000),
+      supabase.from('faixas_preco').select('id, papel, nome, ordem, ativa').order('ordem').order('nome'),
     ]);
-    const err = r.error ?? v.error ?? u.error;
-    setErro(err ? `Não carregou: ${err.message} — as migrations 2026-10-20b/c já foram aplicadas?` : '');
+    const err = r.error ?? v.error ?? u.error ?? f.error;
+    setErro(err ? `Não carregou: ${err.message} — as migrations 2026-10-20b/c e 2026-10-21b já foram aplicadas?` : '');
     setRegras((r.data ?? []) as RegraRow[]);
     setVis((v.data ?? []) as VisRow[]);
+    setFaixas((f.data ?? []) as FaixaRow[]);
     const c: Record<string, number> = {};
-    for (const p of (u.data ?? []) as { role: string }[]) c[p.role] = (c[p.role] ?? 0) + 1;
+    const cf: Record<string, number> = {};
+    for (const p of (u.data ?? []) as { role: string; faixa_id: number | null }[]) {
+      c[p.role] = (c[p.role] ?? 0) + 1;
+      if (p.faixa_id) cf[String(p.faixa_id)] = (cf[String(p.faixa_id)] ?? 0) + 1;
+    }
     setContas(c);
+    setContasFaixa(cf);
     setCarregando(false);
   }, []);
 
@@ -70,14 +88,25 @@ export default function AdminPrecos() {
   }, [carregar]);
 
   const resumo = useMemo(() => {
-    const por: Record<string, { preco: string; ve: string }> = {};
+    const por: Record<string, { preco: string; ve: string; faixas: string }> = {};
     for (const p of TIPOS_CLIENTE) {
-      const geral = regras.find((x) => x.papel === p && !x.linha_key && !x.produto_slug);
-      const proprias = regras.filter((x) => x.papel === p && x.linha_key && !x.produto_slug).length;
-      const produtos = regras.filter((x) => x.papel === p && x.produto_slug).length;
+      // Padrão do tipo = regras sem faixa.
+      const doTipo = regras.filter((x) => x.papel === p && !x.faixa_id);
+      const geral = doTipo.find((x) => !x.linha_key && !x.produto_slug);
+      const proprias = doTipo.filter((x) => x.linha_key && !x.produto_slug).length;
+      const produtos = doTipo.filter((x) => x.produto_slug).length;
       const base = geral?.base ?? (p === 'client' ? 'varejo' : 'atacado');
       const g = Number(geral?.percentual ?? 0);
       const preco = `${base === 'varejo' ? 'varejo do ERP' : 'atacado do ERP'}${g > 0 ? ` + ${pct(g)}` : ', sem acréscimo'}${proprias ? ` · ${proprias} linha${proprias > 1 ? 's' : ''} com percentual próprio` : ''}${produtos ? ` · ${produtos} produto${produtos > 1 ? 's' : ''} com percentual próprio` : ''}`;
+      // Faixas do tipo (Fase 1): nome, percentual geral da faixa e quantas contas.
+      const fx = faixas
+        .filter((f) => f.papel === p)
+        .map((f) => {
+          const gf = regras.find((x) => x.faixa_id === f.id && !x.linha_key && !x.produto_slug);
+          const n = contasFaixa[String(f.id)] ?? 0;
+          const regraTxt = gf ? `+${pct(Number(gf.percentual))}` : regras.some((x) => x.faixa_id === f.id) ? 'só por linha/produto' : 'sem regra (= Padrão)';
+          return `${f.nome} ${regraTxt}${f.ativa ? '' : ' (desativada)'} · ${n}`;
+        });
       const vr = vis.find((x) => x.papel === p);
       const partes: string[] = [];
       const ocultas = vr?.linhas_ocultas?.length ?? 0;
@@ -87,10 +116,10 @@ export default function AdminPrecos() {
       partes.push(vr?.ve_estoque ?? p !== 'client' ? 'estoque detalhado' : 'sem estoque detalhado');
       if (vr && !vr.ve_promocao) partes.push('sem Promoção Moto');
       partes.push(vr && !vr.pagamento_online ? 'sem pagamento online (só orçamento)' : 'pagamento online');
-      por[p] = { preco, ve: partes.join(' · ') };
+      por[p] = { preco, ve: partes.join(' · '), faixas: fx.length ? fx.join(' · ') : 'nenhuma (todo mundo no Padrão)' };
     }
     return por;
-  }, [regras, vis]);
+  }, [regras, vis, faixas, contasFaixa]);
 
   if (carregando) return <p style={{ color: '#a1a1a6' }}>Carregando tipos de acesso…</p>;
 
@@ -99,7 +128,8 @@ export default function AdminPrecos() {
       <p className={styles.tabDescription}>
         Cada pessoa aprovada tem um <strong>tipo de acesso</strong> (escolhido em <Link to="/admin/clientes" style={{ color: '#fff' }}>Clientes</Link>). O tipo
         decide o <strong>preço</strong> que ela vê (base do ERP + percentual, geral ou por linha) e o <strong>que ela vê</strong> na loja (linhas, rolo ou metro,
-        estoque detalhado, promoção, pagamento online). Abra um tipo para configurar.
+        estoque detalhado, promoção, pagamento online). Dentro do tipo, as <strong>faixas</strong> (Gold, Platinum ou uma faixa só de um cliente) dão um
+        percentual diferente a quem o consultor colocar nelas. Abra um tipo para configurar.
       </p>
       {erro && <p className={ped.aviso}>{erro}</p>}
 
@@ -127,6 +157,12 @@ export default function AdminPrecos() {
                   <span className={ped.mudo}>Vê: </span>
                   {ehAdmin ? 'tudo' : resumo[p]?.ve}
                 </div>
+                {!ehAdmin && (
+                  <div>
+                    <span className={ped.mudo}>Faixas: </span>
+                    {resumo[p]?.faixas}
+                  </div>
+                )}
               </div>
               <div>
                 {ehAdmin ? (

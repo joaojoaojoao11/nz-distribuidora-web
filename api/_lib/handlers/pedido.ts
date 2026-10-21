@@ -36,6 +36,7 @@ import {
   resolverCupom,
   safeJson,
 } from '../pedido/precificar.js';
+import { nomeDaFaixa } from '../precos/regraAcesso.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
@@ -54,7 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   const site = createClient(siteUrl, siteKey);
 
-  const { papel, aprovado, userId } = await resolverPapelDetalhado(site, req.headers.authorization);
+  const { papel, aprovado, userId, faixaId } = await resolverPapelDetalhado(site, req.headers.authorization);
   if (papel === 'anonimo' || !userId) {
     res.status(401).json({ error: 'login-necessario' });
     return;
@@ -81,7 +82,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // `admin`: prévia de produto agendado (publicar_em no futuro) — ver precificar.
-  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin: papel === 'admin', papel });
+  // `faixaId`: a faixa de preço da pessoa (Fase 1) — a mesma da vitrine.
+  const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin: papel === 'admin', papel, faixaId });
   if (invalidos.length) {
     res.status(400).json({ error: 'itens-invalidos', invalidos });
     return;
@@ -151,6 +153,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     afiliadoCodigo,
     frete: { tipo: 'FOB', valor: 0 },
     desconto: cupom.desconto,
+    faixaNome: await nomeDaFaixa(site, faixaId),
   });
   await site.from('pedidos').update({ erp_payload: payload }).eq('id', pedido.id);
 
