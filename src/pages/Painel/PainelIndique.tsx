@@ -13,10 +13,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { BRL } from '../../lib/shop/precos';
-import { IncentivoError, marcarMomentosVistos, minhaCarteira, mudarMinhaPeriodicidade, quererSerAfiliado, STATUS_MOVIMENTO, textoDoMomento, trocarSuperCupom, type MinhaCarteira } from '../../lib/shop/incentivos';
+import { IncentivoError, marcarMomentosVistos, minhaCarteira, mudarMinhaPeriodicidade, PIX_TIPO_LABEL, PIX_TIPOS_LISTA, quererSerAfiliado, salvarPix, solicitarSaque, STATUS_MOVIMENTO, STATUS_SAQUE, textoDoMomento, trocarSuperCupom, type MinhaCarteira, type PixTipo } from '../../lib/shop/incentivos';
 import styles from './Painel.module.css';
 
-const dia = (s: string | null) => (s ? new Date(s).toLocaleDateString('pt-BR') : '');
+const dia = (s: string | null) => (s ? (s.length === 10 ? s.split('-').reverse().join('/') : new Date(s).toLocaleDateString('pt-BR')) : '');
 
 function usaReducaoDeMovimento(): boolean {
   try {
@@ -257,9 +257,12 @@ export default function PainelIndique() {
           </div>
         </div>
         <p className={styles.mudo}>
-          O saldo vale por {regras.mesesValidade} meses. Em breve: usar o saldo no checkout e sacar por Pix (mínimo {BRL.format(regras.saqueMinimo)}).
+          O saldo vale por {regras.mesesValidade} meses. Use no checkout ("Usar meu saldo") ou saque por Pix logo abaixo.
         </p>
       </section>
+
+      {/* ------------------------------------------------------- saque Pix */}
+      <BlocoSaque dados={dados} onMudou={carregar} />
 
       {/* ------------------------------------------------------- super cupom */}
       <section className={styles.bloco}>
@@ -441,5 +444,157 @@ export default function PainelIndique() {
         )}
       </section>
     </>
+  );
+}
+
+// ================================================================= saque Pix
+//
+// Fase 4 (mínima, 21/10/2026): o cliente cadastra a chave Pix e pede o saque.
+// O pedido vira um título no Contas a Pagar do NZERP; o financeiro paga e o
+// site mostra "pago". Título cancelado devolve o valor à carteira.
+const MOTIVO_SAQUE: Record<string, string> = {
+  'pix-nao-cadastrado': 'Cadastre a chave Pix antes de sacar.',
+  'abaixo-do-minimo': 'O valor está abaixo do mínimo.',
+  'saldo-insuficiente': 'Você não tem esse valor disponível.',
+  'valor-invalido': 'Informe o valor do saque.',
+  'aguardando-aprovacao': 'Seu cadastro ainda está em análise.',
+};
+
+function BlocoSaque({ dados, onMudou }: { dados: MinhaCarteira; onMudou: () => Promise<void> }) {
+  const { regras, saldo, pix, saques } = dados;
+  const [tipo, setTipo] = useState<PixTipo>(pix?.tipo ?? 'cpf_cnpj');
+  const [chave, setChave] = useState(pix?.chave ?? '');
+  const [editandoPix, setEditandoPix] = useState(!pix);
+  const [valor, setValor] = useState('');
+  const [ocupado, setOcupado] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [erro, setErro] = useState('');
+  const podeSacar = Boolean(pix) && saldo.disponivel >= regras.saqueMinimo;
+
+  const salvarChave = async (e: { preventDefault(): void }) => {
+    e.preventDefault();
+    setOcupado(true);
+    setErro('');
+    setMsg('');
+    try {
+      const r = await salvarPix(tipo, chave);
+      if (!r.ok) setErro(r.motivo ?? 'Chave inválida.');
+      else {
+        setMsg('Chave Pix salva.');
+        setEditandoPix(false);
+        await onMudou();
+      }
+    } catch (err) {
+      setErro(err instanceof IncentivoError ? err.message : err instanceof Error ? err.message : String(err));
+    } finally {
+      setOcupado(false);
+    }
+  };
+
+  const pedir = async (e: { preventDefault(): void }) => {
+    e.preventDefault();
+    const v = Number(valor.replace(/\./g, '').replace(',', '.'));
+    if (!Number.isFinite(v) || v <= 0) {
+      setErro('Informe o valor do saque.');
+      return;
+    }
+    if (!window.confirm(`Pedir saque de ${BRL.format(v)} para a chave Pix ${pix?.chave}?`)) return;
+    setOcupado(true);
+    setErro('');
+    setMsg('');
+    try {
+      const r = await solicitarSaque(v);
+      if (!r.ok) setErro(MOTIVO_SAQUE[r.motivo ?? ''] ?? 'Não deu para pedir o saque agora.');
+      else {
+        setMsg(`Saque pedido. Pagamento por Pix previsto até ${dia(r.saque?.vencimento ?? null)}.`);
+        setValor('');
+        await onMudou();
+      }
+    } catch (err) {
+      // A API responde 4xx com `motivo`; o cliente guarda isso em `codigo`.
+      const motivo = err instanceof IncentivoError ? err.codigo : '';
+      setErro(MOTIVO_SAQUE[motivo] ?? (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setOcupado(false);
+    }
+  };
+
+  return (
+    <section className={styles.bloco}>
+      <h2 className={styles.subtitulo}>Sacar por Pix</h2>
+      <p className={styles.mudo}>
+        Mínimo {BRL.format(regras.saqueMinimo)}. Pedido até {regras.saqueHoraCorte} conta como do dia; pagamos em até {regras.saqueDiasVencimento} dia(s) útil(eis). Pedindo agora, o Pix sai até{' '}
+        {dia(regras.vencimentoSeSacarAgora)}.
+      </p>
+
+      {editandoPix || !pix ? (
+        <form className={styles.form} onSubmit={salvarChave}>
+          <label className={styles.campo}>
+            <span>Tipo da chave Pix</span>
+            <select value={tipo} onChange={(e) => setTipo(e.target.value as PixTipo)} disabled={ocupado}>
+              {PIX_TIPOS_LISTA.map((t) => (
+                <option key={t} value={t}>
+                  {PIX_TIPO_LABEL[t]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={styles.campo}>
+            <span>Chave Pix (a conta precisa ser sua)</span>
+            <input value={chave} onChange={(e) => setChave(e.target.value)} placeholder={tipo === 'cpf_cnpj' ? 'só números' : tipo === 'email' ? 'voce@exemplo.com' : tipo === 'telefone' ? '(11) 99999-9999' : 'chave aleatória'} disabled={ocupado} />
+          </label>
+          <div className={styles.acoesBloco}>
+            <button type="submit" className={styles.salvar} disabled={ocupado || !chave.trim()}>
+              Salvar chave
+            </button>
+            {pix && (
+              <button type="button" className={styles.botaoSecundario} onClick={() => setEditandoPix(false)} disabled={ocupado}>
+                Cancelar
+              </button>
+            )}
+          </div>
+        </form>
+      ) : (
+        <p className={styles.ok}>
+          Chave Pix: {PIX_TIPO_LABEL[pix.tipo]} · {pix.chave}{' '}
+          <button type="button" className={styles.botaoSecundario} onClick={() => setEditandoPix(true)} disabled={ocupado}>
+            Trocar
+          </button>
+        </p>
+      )}
+
+      <form className={styles.form} onSubmit={pedir}>
+        <label className={styles.campo}>
+          <span>Valor do saque (disponível {BRL.format(saldo.disponivel)})</span>
+          <input inputMode="decimal" value={valor} onChange={(e) => setValor(e.target.value)} placeholder={`mínimo ${BRL.format(regras.saqueMinimo)}`} disabled={!podeSacar || ocupado} />
+        </label>
+        <div className={styles.acoesBloco}>
+          <button type="submit" className={styles.botaoPrincipal} disabled={!podeSacar || ocupado || !valor.trim()}>
+            {ocupado ? 'Enviando…' : 'Pedir saque'}
+          </button>
+        </div>
+        {!pix && <p className={styles.mudo}>Cadastre a chave Pix para sacar.</p>}
+        {pix && saldo.disponivel < regras.saqueMinimo && <p className={styles.mudo}>Você ainda não tem o mínimo disponível para sacar.</p>}
+      </form>
+      {erro && <p className={styles.erro}>{erro}</p>}
+      {msg && <p className={styles.ok}>{msg}</p>}
+
+      {saques.length > 0 && (
+        <ul className={styles.cartoes}>
+          {saques.map((s) => (
+            <li key={s.id} className={styles.linhaExtrato}>
+              <span className={styles.extratoQuando}>{dia(s.criado_em)}</span>
+              <span className={styles.extratoQue}>
+                Saque · {STATUS_SAQUE[s.status]}
+                {(s.status === 'enviado' || s.status === 'solicitado') && s.vencimento ? ` · previsto até ${dia(s.vencimento)}` : ''}
+                {s.status === 'pago' && s.pago_em ? ` · em ${dia(s.pago_em)}` : ''}
+                {s.status === 'cancelado' ? ' · valor devolvido à carteira' : ''}
+              </span>
+              <span className={styles.extratoPontos}>{BRL.format(Number(s.valor))}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

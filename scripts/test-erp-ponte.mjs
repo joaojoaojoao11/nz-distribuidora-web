@@ -96,7 +96,11 @@ console.log('\n=== O ERP É SOMENTE LEITURA ===');
 // consultor ver no CRM a faixa que o site deu ao cliente. Prevista no plano
 // (NZERP, docs/PLANO_INDICACAO_CASHBACK_AFILIADOS.md, Fase 1) e aprovada pelo
 // João. Qualquer outra RPC nova continua reprovando aqui.
-const ESCRITAS_PERMITIDAS = new Set(['site_criar_pedido', 'site_confirmar_pagamento', 'site_cancelar_pedido', 'site_faixa_cliente']);
+// `site_solicitar_saque` (21/10/2026, Fase 4 mínima): o saque de cashback do
+// cliente vira um TÍTULO EM ABERTO no Contas a Pagar (accounts_payable,
+// origem SITE_SAQUE), idempotente por numero_documento. O financeiro paga e
+// baixa no ERP; o site só lê a situação (view saques_site). Regra do João.
+const ESCRITAS_PERMITIDAS = new Set(['site_criar_pedido', 'site_confirmar_pagamento', 'site_cancelar_pedido', 'site_faixa_cliente', 'site_solicitar_saque']);
 const arquivosApi = spawnSync(process.execPath, ['-e', `
   const { readdirSync, statSync } = require('node:fs');
   const { join } = require('node:path');

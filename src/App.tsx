@@ -107,6 +107,7 @@ const AdminCupons = lazy(() => import('./pages/Admin/AdminCupons'));
 const AdminCupomEditor = lazy(() => import('./pages/Admin/AdminCupomEditor'));
 const AdminSuperCupons = lazy(() => import('./pages/Admin/AdminSuperCupons'));
 const AdminSuperCuponsRegras = lazy(() => import('./pages/Admin/AdminSuperCuponsRegras'));
+const AdminSaques = lazy(() => import('./pages/Admin/AdminSaques'));
 const AdminAvaliacoes = lazy(() => import('./pages/Admin/AdminAvaliacoes'));
 const AdminBlog = lazy(() => import('./pages/Admin/AdminBlog'));
 const AdminAIBlog = lazy(() => import('./pages/Admin/AdminAIBlog'));
@@ -180,6 +181,7 @@ function App() {
           <Route path="cupons/:codigo" element={<Suspense fallback={<RouteLoading />}><AdminCupomEditor /></Suspense>} />
           <Route path="super-cupons" element={<Suspense fallback={<RouteLoading />}><AdminSuperCupons /></Suspense>} />
           <Route path="super-cupons/regras" element={<Suspense fallback={<RouteLoading />}><AdminSuperCuponsRegras /></Suspense>} />
+          <Route path="saques" element={<Suspense fallback={<RouteLoading />}><AdminSaques /></Suspense>} />
           <Route path="avaliacoes" element={<Suspense fallback={<RouteLoading />}><AdminAvaliacoes /></Suspense>} />
           <Route path="blog" element={<Suspense fallback={<RouteLoading />}><AdminBlog /></Suspense>} />
           <Route path="blog-ia" element={<Suspense fallback={<RouteLoading />}><AdminAIBlog /></Suspense>} />

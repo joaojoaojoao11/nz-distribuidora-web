@@ -52,6 +52,7 @@ import { carregarConfigIncentivos } from '../incentivos/config.js';
 import { estornarPedido, processarPedidoFaturado } from '../incentivos/motor.js';
 import { manutencaoCarteira } from '../incentivos/carteira.js';
 import { devolverSaldoDoPedido } from '../incentivos/saldoCheckout.js';
+import { sincronizarSaques } from '../incentivos/saque.js';
 import { registrarUsoCupom } from '../incentivos/cupomUsos.js';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -206,6 +207,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Carteira (Fase 2): libera o que venceu a carência/período e expira o
     // saldo antigo (D11). Uma vez por dia basta.
     const carteira = !dry && gatilho !== 'webhook' ? await manutencaoCarteira(site, (await carregarConfigIncentivos(site)).mesesValidade).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // Saques (Fase 4): remanda ao NZERP o que ficou pendente e espelha os
+    // títulos pagos/cancelados (cancelado devolve o saldo à carteira).
+    const saques = !dry && gatilho !== 'webhook' ? await sincronizarSaques(site, erp).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
 
     if (logId) {
       await site
@@ -224,7 +228,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Sync inteiro passou: se havia uma queixa de sync caído, ela morre aqui.
     if (!dry) await resolverPorChave(site, 'sync-erro', `sync ${gatilho} concluído`);
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos, limpeza, carteira });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos, limpeza, carteira, saques });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);

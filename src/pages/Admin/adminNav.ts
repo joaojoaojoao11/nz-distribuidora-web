@@ -36,6 +36,8 @@ export const GRUPOS: Grupo[] = [
       { para: '/admin/afiliados', icone: '🤝', rotulo: 'Afiliados', titulo: 'Afiliados' },
       { para: '/admin/cupons', icone: '🎫', rotulo: 'Cupons', titulo: 'Cupons' },
       { para: '/admin/super-cupons', icone: '⭐', rotulo: 'Super cupons', titulo: 'Super cupons' },
+      // Fase 4 (21/10/2026): saques da carteira — só leitura, o pagamento é no NZERP.
+      { para: '/admin/saques', icone: '💸', rotulo: 'Saques', titulo: 'Saques de cashback' },
       { para: '/admin/avaliacoes', icone: '★', rotulo: 'Avaliações', titulo: 'Avaliações & Cashback' },
     ],
   },

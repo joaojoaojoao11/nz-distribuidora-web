@@ -28,6 +28,7 @@ const build = spawnSync(
     'api/_lib/incentivos/periodos.ts',
     'api/_lib/incentivos/superCupom.ts',
     'api/_lib/incentivos/config.ts',
+    'api/_lib/incentivos/saqueRegras.ts',
     'api/_lib/incentivos/carteira.ts',
     'api/_lib/incentivos/cupomUsos.ts',
     'api/_lib/pedido/precificar.ts',
@@ -341,6 +342,30 @@ console.log('\n=== RÉGUA DO CUPOM (nominal, super, afiliado) ===');
   ok('resolverCupom: afiliado dá o desconto DO afiliado (2% = 4) e atribui o afiliado', ra.desconto === 4 && ra.afiliadoUserId === 'afi' && ra.tipo === 'afiliado');
   const rn = await resolverCupom(db, 'SOMARIA', 200, 'outro');
   ok('resolverCupom: nominal de outra pessoa é inválido com motivo', rn.invalido && rn.motivo === 'nominal');
+}
+
+// ================================================ FASE 4: SAQUE (regras puras)
+console.log('\n=== SAQUE: chave Pix e vencimento ===');
+{
+  const { validarChavePix, calcularVencimentoSaque } = await import(pathToFileURL(join(outDir, 'incentivos/saqueRegras.js')).href);
+  ok('CPF com pontuação vira só dígitos', JSON.stringify(validarChavePix('cpf_cnpj', '529.982.247-25')) === JSON.stringify({ ok: true, tipo: 'cpf_cnpj', chave: '52998224725' }));
+  ok('CNPJ com 14 dígitos passa; 12 dígitos não', validarChavePix('cpf_cnpj', '37.816.257/0001-26').ok && !validarChavePix('cpf_cnpj', '123456789012').ok);
+  ok('documento com dígitos repetidos não passa', !validarChavePix('cpf_cnpj', '11111111111').ok);
+  ok('e-mail vira minúsculo; sem @ não passa', validarChavePix('email', 'Joao@Exemplo.com').chave === 'joao@exemplo.com' && !validarChavePix('email', 'joao').ok);
+  ok('telefone com DDD ganha +55', validarChavePix('telefone', '(11) 99999-0000').chave === '+5511999990000' && !validarChavePix('telefone', '9999').ok);
+  ok('chave aleatória com ou sem hífens', validarChavePix('aleatoria', '123E4567-E89B-12D3-A456-426614174000').ok && validarChavePix('aleatoria', '123e4567e89b12d3a456426614174000').ok && !validarChavePix('aleatoria', 'abc').ok);
+  ok('tipo desconhecido não passa', !validarChavePix('cartao', 'x').ok);
+
+  // Vencimento: quarta 21/10/2026 em Brasília (UTC−3).
+  const quartaManha = new Date('2026-10-21T13:59:00-03:00');
+  const quartaTarde = new Date('2026-10-21T14:01:00-03:00');
+  const sextaTarde = new Date('2026-10-23T15:00:00-03:00');
+  ok('antes da hora de corte: +2 dias úteis = sexta 23/10', calcularVencimentoSaque(quartaManha, 2, '14:00') === '2026-10-23');
+  ok('depois da hora de corte: conta como quinta → +2 úteis = segunda 26/10', calcularVencimentoSaque(quartaTarde, 2, '14:00') === '2026-10-26');
+  ok('sexta à tarde, 1 dia útil: pula o fim de semana → terça 27/10', calcularVencimentoSaque(sextaTarde, 1, '14:00') === '2026-10-27');
+  ok('zero dias úteis antes do corte: o próprio dia', calcularVencimentoSaque(quartaManha, 0, '14:00') === '2026-10-21');
+  ok('sábado com zero dias: cai na segunda', calcularVencimentoSaque(new Date('2026-10-24T10:00:00-03:00'), 0, '14:00') === '2026-10-26');
+  ok('hora de corte inválida cai em 14:00', calcularVencimentoSaque(quartaTarde, 1, 'xx') === '2026-10-23');
 }
 
 rmSync(outDir, { recursive: true, force: true });

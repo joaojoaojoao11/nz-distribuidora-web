@@ -81,6 +81,9 @@ export default function AdminAfiliadosRegras() {
         estornarConquistaCancelamento: c.estornarConquistaCancelamento ? '1' : '',
         saldoNoCheckout: c.saldoNoCheckout ? '1' : '',
         cobrancaMinima: pctTexto(c.cobrancaMinima),
+        saqueMinimo: pctTexto(c.saqueMinimo),
+        saqueHoraCorte: c.saqueHoraCorte,
+        saqueDiasVencimento: String(c.saqueDiasVencimento),
       });
       setNiveis(((n.data ?? []) as Record<string, unknown>[]).map((x) => ({ id: Number(x.id), publico: x.publico as Nivel['publico'], ordem: Number(x.ordem), nome: String(x.nome), icone: String(x.icone ?? ''), criterio_tipo: x.criterio_tipo as Nivel['criterio_tipo'], criterio_valor: pctTexto(Number(x.criterio_valor)), multiplicador: pctTexto(Number(x.multiplicador)), ativo: x.ativo !== false })));
       setConquistas(((q.data ?? []) as Record<string, unknown>[]).map((x) => ({ codigo: String(x.codigo), nome: String(x.nome), descricao: String(x.descricao ?? ''), icone: String(x.icone ?? ''), publico: x.publico as Conquista['publico'], bonus_valor: pctTexto(Number(x.bonus_valor)), ativa: x.ativa !== false, ordem: Number(x.ordem ?? 0) })));
@@ -109,6 +112,9 @@ export default function AdminAfiliadosRegras() {
       estornarConquistaCancelamento: form.estornarConquistaCancelamento === '1',
       saldoNoCheckout: form.saldoNoCheckout === '1',
       cobrancaMinima: num(form.cobrancaMinima) ?? 5,
+      saqueMinimo: num(form.saqueMinimo) ?? 50,
+      saqueHoraCorte: /^\d{2}:\d{2}$/.test(form.saqueHoraCorte ?? '') ? form.saqueHoraCorte : '14:00',
+      saqueDiasVencimento: num(form.saqueDiasVencimento) ?? 2,
     };
     if (Object.values(patch).some((v) => typeof v === 'number' && (!Number.isFinite(v) || v < 0))) {
       setErro('Percentuais, dias e valores precisam ser números maiores ou iguais a zero.');
@@ -325,6 +331,15 @@ export default function AdminAfiliadosRegras() {
           </Campo>
           <Campo label="Cobrança mínima no Asaas (R$)" dica="o que sobra após o saldo nunca fica abaixo disso">
             <input style={campoEstilo} inputMode="decimal" value={form.cobrancaMinima ?? ''} onChange={(e) => setForm((f) => ({ ...f, cobrancaMinima: e.target.value }))} />
+          </Campo>
+          <Campo label="Saque mínimo (R$)" dica="abaixo disso o cliente não pede saque">
+            <input style={campoEstilo} inputMode="decimal" value={form.saqueMinimo ?? ''} onChange={(e) => setForm((f) => ({ ...f, saqueMinimo: e.target.value }))} />
+          </Campo>
+          <Campo label="Hora de corte do saque" dica="pedido depois disso conta como do dia seguinte">
+            <input style={campoEstilo} placeholder="14:00" value={form.saqueHoraCorte ?? ''} onChange={(e) => setForm((f) => ({ ...f, saqueHoraCorte: e.target.value }))} />
+          </Campo>
+          <Campo label="Dias úteis para pagar o saque" dica="vencimento do título no NZERP">
+            <input style={campoEstilo} inputMode="numeric" value={form.saqueDiasVencimento ?? ''} onChange={(e) => setForm((f) => ({ ...f, saqueDiasVencimento: e.target.value }))} />
           </Campo>
         </Grade>
       </Secao>

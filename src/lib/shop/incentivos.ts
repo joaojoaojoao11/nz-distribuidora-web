@@ -82,7 +82,10 @@ export interface MinhaCarteira {
   superCupom: { codigo: string; descontoPct: number; cashbackPct: number; usos: number; ativo: boolean } | null;
   afiliado: { codigo: string; status: 'pendente' | 'aprovado' | 'suspenso'; ativo: boolean; pctAtivacao: number; pctRecorrencia: number; descontoCupomPct: number; periodicidade: 'mensal' | 'quinzenal'; desde: string } | null;
   contagens: { cadastrados: number; aprovados: number; compraram: number; usaramSuperCupom: number };
-  regras: { diasLiberacao: number; mesesValidade: number; saqueMinimo: number };
+  regras: { diasLiberacao: number; mesesValidade: number; saqueMinimo: number; saqueHoraCorte: string; saqueDiasVencimento: number; vencimentoSeSacarAgora: string };
+  /** Fase 4: chave Pix da conta (nula = ainda não cadastrou) e os últimos saques. */
+  pix: { tipo: PixTipo; chave: string } | null;
+  saques: Saque[];
   gamificacao: {
     nivel: { publico: 'indicador' | 'afiliado'; atual: NivelInfo | null; proximo: NivelInfo | null; metrica: number; progressoPct: number; faltam: number; multiplicador: number };
     conquistas: ConquistaInfo[];
@@ -91,7 +94,33 @@ export interface MinhaCarteira {
   };
 }
 
+export type PixTipo = 'cpf_cnpj' | 'email' | 'telefone' | 'aleatoria';
+export const PIX_TIPO_LABEL: Record<PixTipo, string> = { cpf_cnpj: 'CPF/CNPJ', email: 'E-mail', telefone: 'Telefone', aleatoria: 'Chave aleatória' };
+export const PIX_TIPOS_LISTA: PixTipo[] = ['cpf_cnpj', 'email', 'telefone', 'aleatoria'];
+
+export interface Saque {
+  id: string;
+  user_id?: string;
+  valor: number;
+  pix_tipo: PixTipo;
+  pix_chave: string;
+  status: 'solicitado' | 'enviado' | 'pago' | 'cancelado';
+  erp_ap_id: string | null;
+  erp_erro: string | null;
+  erp_enviado_em: string | null;
+  vencimento: string | null;
+  pago_em: string | null;
+  cancelado_em: string | null;
+  cancelado_motivo: string | null;
+  criado_em: string;
+  cliente?: { id: string; full_name: string | null; company_name: string | null; email: string | null; cpf_cnpj: string | null } | null;
+}
+export const STATUS_SAQUE: Record<Saque['status'], string> = { solicitado: 'Solicitado', enviado: 'Em pagamento', pago: 'Pago', cancelado: 'Cancelado' };
+
 export const minhaCarteira = () => chamarIncentivos<MinhaCarteira>({ op: 'minha-carteira' });
+export const salvarPix = (tipo: PixTipo, chave: string) => chamarIncentivos<{ ok: boolean; motivo?: string; pix?: { tipo: PixTipo; chave: string } }>({ op: 'pix-salvar', tipo, chave });
+export const solicitarSaque = (valor: number) => chamarIncentivos<{ ok: boolean; motivo?: string; minimo?: number; saque?: Saque; erpPendente?: boolean; saldo?: Saldo }>({ op: 'saque-solicitar', valor });
+export const listarSaques = (status?: string) => chamarIncentivos<{ saques: Saque[]; config: { saqueMinimo: number; saqueHoraCorte: string; saqueDiasVencimento: number } }>({ op: 'saques-listar', status: status ?? '' });
 export const trocarSuperCupom = (codigo: string) => chamarIncentivos<{ ok: boolean; motivo?: string; cupom?: { codigo: string } }>({ op: 'trocar-super-cupom', codigo });
 export const quererSerAfiliado = (aceite: boolean) => chamarIncentivos<{ ok: boolean; codigo: string; status: string }>({ op: 'quero-ser-afiliado', aceite });
 export const mudarMinhaPeriodicidade = (periodicidade: 'mensal' | 'quinzenal') => chamarIncentivos<{ ok: boolean }>({ op: 'minha-periodicidade', periodicidade });
@@ -100,6 +129,9 @@ export const resgatarPontosNaCarteira = (campanhaId: string) => chamarIncentivos
 
 export const MOMENTO_TEXTO: Record<string, (p: Record<string, unknown>) => string> = {
   indicado_cadastrou: () => 'Alguém se cadastrou com a sua indicação',
+  saque_solicitado: (p) => `Saque de ${BRL(Number(p.valor ?? 0))} pedido${p.vencimento ? ` · pagamento previsto até ${String(p.vencimento).split('-').reverse().join('/')}` : ''}`,
+  saque_pago: (p) => `Saque de ${BRL(Number(p.valor ?? 0))} pago por Pix`,
+  saque_cancelado: (p) => `Saque de ${BRL(Number(p.valor ?? 0))} cancelado: o valor voltou para a sua carteira`,
   conquista_devolvida: (p) => `Conquista "${String(p.nome ?? p.codigo ?? '')}" devolvida: o pedido que a gerou foi cancelado`,
   indicado_aprovado: () => 'Um indicado seu foi aprovado',
   indicado_comprou: (p) => `Um indicado comprou: ${BRL(Number(p.valor ?? 0))} a caminho da sua carteira`,
@@ -144,6 +176,7 @@ export interface ConfigIncentivos {
   estornarConquistaCancelamento: boolean;
   saldoNoCheckout: boolean;
   cobrancaMinima: number;
+  saqueDiasVencimento: number;
 }
 
 export interface AfiliadoLista {

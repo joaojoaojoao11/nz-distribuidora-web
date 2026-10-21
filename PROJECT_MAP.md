@@ -206,6 +206,12 @@ usar (`calcularUsoDeSaldo`, o restante nunca fica abaixo da cobrança mínima),
 reserva pela RPC `carteira_reservar_uso`, devolução quando a cobrança morre ou o
 pedido é cancelado, e o pedido coberto pelo saldo nasce pago (forma `SALDO`,
 sem Asaas). O ERP recebe `cashback_usado`; o contábil disso é a Fase 6.
+**Saque por Pix** (Fase 4 mínima): `api/_lib/incentivos/saque.ts` + `saqueRegras.ts`
+(chave Pix e vencimento, puros). O cliente cadastra a chave e pede o saque em
+"Indique e ganhe"; a RPC `carteira_solicitar_saque` debita a carteira e o site
+manda ao NZERP como título em aberto (`site_solicitar_saque`, Contas a Pagar).
+O sync remanda pendentes e espelha pago/cancelado pela view `saques_site`
+(cancelado devolve o saldo). Admin: `/admin/saques`, só leitura.
 
 **Visibilidade por tipo** (`acesso_config`, mesma tela, aba Visibilidade):
 linhas comerciais ocultas, rolo fechado, metro fracionado, estoque detalhado,

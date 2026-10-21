@@ -27,7 +27,8 @@ import { r2 } from '../pedido/dinheiro.js';
 import { COLUNAS_CONFIG, carregarConfigIncentivos, montarConfig } from '../incentivos/config.js';
 import { COLUNAS_MOVIMENTO, ROTULO_TIPO, creditar, debitar, extratoDe, saldoDe, type Movimento } from '../incentivos/carteira.js';
 import { garantirSuperCupom, superCupomDe, trocarCodigo } from '../incentivos/superCupom.js';
-import { avaliarConquistas, marcarVistos, resumoGamificacao } from '../incentivos/gamificacao.js';
+import { avaliarConquistas, marcarVistos, registrarEvento, resumoGamificacao } from '../incentivos/gamificacao.js';
+import { COLUNAS_SAQUE, calcularVencimentoSaque, enviarSaqueAoErp, validarChavePix, type SaqueRow } from '../incentivos/saque.js';
 import { rotuloPeriodo } from '../incentivos/periodos.js';
 import { campanhasAtivas, saldoDePontos } from '../loja/avaliacoes.js';
 
@@ -54,6 +55,11 @@ function gerarCodigo(): string {
  * Extrato para o PRÓPRIO usuário: sem origem_user_id. O indicado vira "indicado
  * nº N" pela ordem em que apareceu na carteira dessa pessoa.
  */
+/** O saque como o dono vê: sem `user_id` (a rota já é dele). */
+function semDono(s: SaqueRow): Omit<SaqueRow, 'user_id'> {
+  return Object.fromEntries(Object.entries(s).filter(([k]) => k !== 'user_id')) as Omit<SaqueRow, 'user_id'>;
+}
+
 function extratoAnonimo(movs: Movimento[]) {
   const numeroDe = new Map<string, number>();
   for (const m of [...movs].sort((a, b) => a.criado_em.localeCompare(b.criado_em))) {
@@ -112,8 +118,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     // ================================================================ cliente
     if (op === 'minha-carteira') {
-      const { data: pf } = await site.from('user_profiles').select('full_name, indicado_por, filiado_em').eq('id', userId).maybeSingle();
-      const perfil = pf as { full_name: string | null; indicado_por: string | null; filiado_em: string | null } | null;
+      const { data: pf } = await site.from('user_profiles').select('full_name, indicado_por, filiado_em, pix_tipo, pix_chave').eq('id', userId).maybeSingle();
+      const perfil = pf as { full_name: string | null; indicado_por: string | null; filiado_em: string | null; pix_tipo: string | null; pix_chave: string | null } | null;
+      const { data: saquesData } = await site.from('saques').select(COLUNAS_SAQUE).eq('user_id', userId).order('criado_em', { ascending: false }).limit(20);
       const { data: afData } = await site.from('afiliados').select('codigo, status, ativo, pct_ativacao, pct_recorrencia, desconto_cupom_pct, periodicidade, criado_em').eq('user_id', userId).maybeSingle();
       const af = afData as { codigo: string; status: string; ativo: boolean; pct_ativacao: number | null; pct_recorrencia: number | null; desconto_cupom_pct: number | null; periodicidade: string; criado_em: string } | null;
       const ehAfiliado = Boolean(af && af.status === 'aprovado' && af.ativo);
@@ -130,9 +137,77 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           ? { codigo: af.codigo, status: af.status, ativo: af.ativo, pctAtivacao: af.pct_ativacao ?? cfg.pctAtivacaoAfiliado, pctRecorrencia: af.pct_recorrencia ?? cfg.pctRecorrenciaAfiliado, descontoCupomPct: af.desconto_cupom_pct ?? cfg.descontoCupomAfiliadoPct, periodicidade: af.periodicidade, desde: af.criado_em }
           : null,
         contagens,
-        regras: { diasLiberacao: cfg.diasLiberacao, mesesValidade: cfg.mesesValidade, saqueMinimo: cfg.saqueMinimo },
+        regras: {
+          diasLiberacao: cfg.diasLiberacao,
+          mesesValidade: cfg.mesesValidade,
+          saqueMinimo: cfg.saqueMinimo,
+          saqueHoraCorte: cfg.saqueHoraCorte,
+          saqueDiasVencimento: cfg.saqueDiasVencimento,
+          vencimentoSeSacarAgora: calcularVencimentoSaque(new Date(), cfg.saqueDiasVencimento, cfg.saqueHoraCorte),
+        },
+        // Fase 4: chave Pix da conta e os últimos saques (sem nada de terceiros).
+        pix: perfil?.pix_chave ? { tipo: perfil.pix_tipo, chave: perfil.pix_chave } : null,
+        saques: ((saquesData ?? []) as SaqueRow[]).map(semDono),
         gamificacao,
       });
+      return;
+    }
+
+    // ---------------------------------------------------------- Fase 4: Pix e saque
+    if (op === 'pix-salvar') {
+      const v = validarChavePix(texto(body.tipo, 20), texto(body.chave, 120));
+      if (!v.ok) {
+        res.status(400).json({ ok: false, motivo: v.motivo });
+        return;
+      }
+      const { error } = await site.from('user_profiles').update({ pix_tipo: v.tipo, pix_chave: v.chave }).eq('id', userId);
+      if (error) {
+        res.status(500).json({ ok: false, motivo: error.message });
+        return;
+      }
+      await registrarLog(site, 'pix-salvo', null, { tipo: v.tipo }, userId);
+      res.status(200).json({ ok: true, pix: { tipo: v.tipo, chave: v.chave } });
+      return;
+    }
+
+    if (op === 'saque-solicitar') {
+      if (!aprovado) {
+        res.status(403).json({ error: 'aguardando-aprovacao' });
+        return;
+      }
+      const valor = r2(Number(String(body.valor ?? '').replace(',', '.')));
+      if (!Number.isFinite(valor) || valor <= 0) {
+        res.status(400).json({ ok: false, motivo: 'valor-invalido' });
+        return;
+      }
+      const { data: pfx } = await site.from('user_profiles').select('pix_tipo, pix_chave').eq('id', userId).maybeSingle();
+      const pix = pfx as { pix_tipo: string | null; pix_chave: string | null } | null;
+      if (!pix?.pix_chave || !pix.pix_tipo) {
+        res.status(409).json({ ok: false, motivo: 'pix-nao-cadastrado' });
+        return;
+      }
+      if (valor < cfg.saqueMinimo) {
+        res.status(409).json({ ok: false, motivo: 'abaixo-do-minimo', minimo: cfg.saqueMinimo });
+        return;
+      }
+      // Atômico: trava por pessoa, confere o disponível, debita e cria a solicitação.
+      const { data: sid, error: eRpc } = await site.rpc('carteira_solicitar_saque', { p_user_id: userId, p_valor: valor, p_minimo: cfg.saqueMinimo, p_pix_tipo: pix.pix_tipo, p_pix_chave: pix.pix_chave });
+      if (eRpc || !sid) {
+        const m = eRpc?.message ?? '';
+        if (/saldo-insuficiente/.test(m)) res.status(409).json({ ok: false, motivo: 'saldo-insuficiente' });
+        else if (/abaixo-do-minimo/.test(m)) res.status(409).json({ ok: false, motivo: 'abaixo-do-minimo', minimo: cfg.saqueMinimo });
+        else res.status(500).json({ ok: false, motivo: 'erro', message: m });
+        return;
+      }
+      const saqueId = String(sid);
+      const vencimento = calcularVencimentoSaque(new Date(), cfg.saqueDiasVencimento, cfg.saqueHoraCorte);
+      await site.from('saques').update({ vencimento }).eq('id', saqueId);
+      // Vai ao NZERP agora; se o ERP estiver fora, o cron remanda (fica `solicitado`).
+      const envio = await enviarSaqueAoErp(site, saqueId).catch((e) => ({ ok: false, erro: e instanceof Error ? e.message : String(e) }));
+      await registrarEvento(site, userId, 'saque_solicitado', { valor, vencimento, saqueId });
+      await registrarLog(site, 'saque-solicitado', null, { saqueId, valor, erp: envio }, userId);
+      const { data: s } = await site.from('saques').select(COLUNAS_SAQUE).eq('id', saqueId).maybeSingle();
+      res.status(200).json({ ok: true, saque: s ? semDono(s as SaqueRow) : null, erpPendente: !envio.ok, saldo: await saldoDe(site, userId) });
       return;
     }
 
@@ -242,6 +317,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
 
+    if (op === 'saques-listar') {
+      // Fase 4: a lista dos saques para a NZ (só leitura; o pagamento é no NZERP).
+      const status = texto(body.status, 20);
+      let q = site.from('saques').select(COLUNAS_SAQUE).order('criado_em', { ascending: false }).limit(500);
+      if (['solicitado', 'enviado', 'pago', 'cancelado'].includes(status)) q = q.eq('status', status);
+      const { data: lista, error } = await q;
+      if (error) {
+        res.status(500).json({ error: error.message });
+        return;
+      }
+      const saques = (lista ?? []) as SaqueRow[];
+      const ids = [...new Set(saques.map((s) => s.user_id))];
+      const { data: perfis } = ids.length ? await site.from('user_profiles').select('id, full_name, company_name, email, cpf_cnpj').in('id', ids) : { data: [] };
+      const porId = new Map(((perfis ?? []) as { id: string; full_name: string | null; company_name: string | null; email: string | null; cpf_cnpj: string | null }[]).map((p) => [p.id, p]));
+      res.status(200).json({ saques: saques.map((s) => ({ ...s, cliente: porId.get(s.user_id) ?? null })), config: { saqueMinimo: cfg.saqueMinimo, saqueHoraCorte: cfg.saqueHoraCorte, saqueDiasVencimento: cfg.saqueDiasVencimento } });
+      return;
+    }
+
     if (op === 'config-salvar') {
       const c = (body.config && typeof body.config === 'object' ? body.config : {}) as Record<string, unknown>;
       const patch: Record<string, unknown> = { atualizado_em: new Date().toISOString() };
@@ -259,6 +352,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         tetoMensalPremios: 'teto_mensal_premios',
         diasAtribuicao: 'dias_atribuicao',
         cobrancaMinima: 'cobranca_minima',
+        saqueDiasVencimento: 'saque_dias_vencimento',
       };
       for (const [k, col] of Object.entries(mapa)) {
         if (!(k in c)) continue;

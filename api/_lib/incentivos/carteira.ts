@@ -151,7 +151,8 @@ export async function reservarSaldo(site: Db, userId: string, valor: number, ped
 export async function devolverDebito(site: Db, movimentoId: number, motivo: string): Promise<boolean> {
   const { data } = await site.from('carteira_movimentos').select(COLUNAS_MOVIMENTO).eq('id', movimentoId).maybeSingle();
   const m = data as Movimento | null;
-  if (!m || m.tipo !== 'uso_compra' || Number(m.valor) >= 0) return false;
+  // Débitos que podem voltar: uso em compra (pedido morto) e saque (título cancelado).
+  if (!m || (m.tipo !== 'uso_compra' && m.tipo !== 'saque') || Number(m.valor) >= 0) return false;
   const { data: ja } = await site.from('carteira_movimentos').select('id').eq('referencia_id', m.id).eq('tipo', 'estorno').limit(1);
   if ((ja ?? []).length) return false;
   const { error } = await site
