@@ -15,10 +15,10 @@
 //     lojista/aplicador, revendedor), e a NZ libera em Admin → Clientes. A tela
 //     promete "até 1 dia útil" e o painel mostra "Cadastro em análise".
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { refVigente } from '../../lib/afiliado';
+import { capturarRef, refVigente } from '../../lib/afiliado';
 import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
 import { chamarConta, formatarTelefone, telefoneOk, textoDoErroAuth } from '../../lib/shop/conta';
 import { ehEmpresa, TIPO_DESCRICAO, TIPO_LABEL, TIPOS_CLIENTE } from '../../lib/shop/papeis';
@@ -33,6 +33,13 @@ export default function Register() {
   const location = useLocation();
   const next = new URLSearchParams(location.search).get('next');
   const destino = next && next.startsWith('/') && !next.startsWith('//') ? next : null;
+
+  // Link de indicação direto para o cadastro (/cadastro?ref=NZ-XXXXX): as rotas
+  // de auth ficam fora do layout público, onde o AnalyticsTracker captura o
+  // ?ref= — sem isto a indicação se perdia quando o link apontava para cá (B2).
+  useEffect(() => {
+    capturarRef(location.search);
+  }, [location.search]);
 
   // ?email= vem do certificado de garantia recém-emitido ("Criar conta").
   const [form, setForm] = useState(() => ({
