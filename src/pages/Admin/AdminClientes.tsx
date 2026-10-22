@@ -453,7 +453,15 @@ export default function AdminClientes() {
                       )}
                     </td>
                     <td className={cl.colContato}>
-                      {c.email || '—'}
+                      {/* E-mail longo quebra antes do @ (e não no meio de uma palavra). */}
+                      {c.email ? (
+                        <>
+                          {c.email.split('@')[0]}
+                          <wbr />@{c.email.split('@').slice(1).join('@')}
+                        </>
+                      ) : (
+                        '—'
+                      )}
                       <div style={{ fontSize: '0.72rem', color: '#777' }}>{c.phone || '—'}</div>
                     </td>
                     <td className={cl.colDoc}>{c.cpf_cnpj ? formatarCpfCnpj(c.cpf_cnpj) : '—'}</td>
