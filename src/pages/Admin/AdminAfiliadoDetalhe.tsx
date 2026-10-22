@@ -208,6 +208,7 @@ export default function AdminAfiliadoDetalhe() {
   return (
     <PaginaAdmin
       titulo={perfil?.full_name || perfil?.email || af.codigo}
+      tutorial="admin.afiliado-detalhe"
       voltar={{ para: '/admin/afiliados', rotulo: 'Afiliados' }}
       descricao={
         <>

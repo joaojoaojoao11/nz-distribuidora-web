@@ -75,6 +75,7 @@ export default function AdminSuperCuponsRegras() {
   return (
     <PaginaAdmin
       titulo="Regras do super cupom"
+      tutorial="admin.super-cupons-regras"
       voltar={{ para: '/admin/super-cupons', rotulo: 'Super cupons' }}
       descricao="Todo cliente aprovado tem um super cupom. Quem compra com ele ganha o desconto; quem indicou ganha cashback na carteira. Vale uma compra por indicado, só para conta nova. Valores iniciais são fictícios: ajuste depois de fazer as contas."
       acoes={

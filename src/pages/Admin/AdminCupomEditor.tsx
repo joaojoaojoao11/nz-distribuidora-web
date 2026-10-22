@@ -185,6 +185,7 @@ export default function AdminCupomEditor() {
   return (
     <PaginaAdmin
       titulo={editando ? `Cupom ${form.codigo}` : 'Novo cupom'}
+      tutorial="admin.cupom-editor"
       voltar={{ para: '/admin/cupons', rotulo: 'Cupons' }}
       descricao={
         editando && cupom

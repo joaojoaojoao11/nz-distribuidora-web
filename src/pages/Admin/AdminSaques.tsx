@@ -59,6 +59,7 @@ export default function AdminSaques() {
   return (
     <PaginaAdmin
       titulo="Saques"
+      tutorial="admin.saques"
       descricao={
         <>
           O cliente cadastra a chave Pix em "Indique e ganhe" e pede o saque do saldo da carteira. Cada pedido vira um <strong>título em aberto no Contas a Pagar do NZERP</strong> (fornecedor

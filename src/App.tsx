@@ -53,6 +53,8 @@ const Oracal651 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ de
 const Oracal670 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.Oracal670 })));
 const Oracal670ColorPage = lazy(() => import('./pages/Wrap/Oracal670Colors'));
 const Oracal651Colors = lazy(() => import('./pages/Wrap/Oracal651Colors'));
+/** Vitrine dos tutoriais "Como funciona": só no `npm run dev` (fora do build de produção). */
+const VitrineTutoriais = import.meta.env.DEV ? lazy(() => import('./components/Tutorial/Vitrine')) : null;
 /** Metamark 7 Series tambem foi para o NZSIGN (03/10/2026); preserva o ?cor= das paginas de cor. */
 function RedirecionaM7() {
   const { search } = useLocation();
@@ -205,6 +207,17 @@ function App() {
         {/* Hidden Linktree-style pages (no Navbar/Footer/Whatsapp) */}
         <Route path="/ppf-promo" element={<Suspense fallback={<RouteLoading />}><PpfPromo /></Suspense>} />
         <Route path="/nzgroup-promo" element={<Suspense fallback={<RouteLoading />}><NzGroupPromo /></Suspense>} />
+
+        {VitrineTutoriais && (
+          <Route
+            path="/dev/tutoriais"
+            element={
+              <Suspense fallback={<RouteLoading />}>
+                <VitrineTutoriais />
+              </Suspense>
+            }
+          />
+        )}
 
         {/* Public pages */}
         <Route path="*" element={

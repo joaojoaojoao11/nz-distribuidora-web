@@ -97,6 +97,7 @@ export default function AdminCupons() {
   return (
     <PaginaAdmin
       titulo="Cupons"
+      tutorial="admin.cupons"
       descricao={
         <>
           Cupom de <strong>campanha</strong> (qualquer cliente usa, com validade e limite) e cupom <strong>nominal</strong> (criado para um cliente da base: só ele usa). O cupom de cada{' '}

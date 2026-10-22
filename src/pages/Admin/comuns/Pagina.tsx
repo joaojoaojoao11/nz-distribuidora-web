@@ -15,11 +15,13 @@
 
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import BotaoTutorial from '../../../components/Tutorial/BotaoTutorial';
 import styles from '../Admin.module.css';
 import ped from '../AdminPedidos.module.css';
 import cs from './Comuns.module.css';
 
-export function PaginaAdmin(p: { titulo: string; descricao?: ReactNode; voltar?: { para: string; rotulo: string }; acoes?: ReactNode; children: ReactNode }) {
+/** `tutorial` = id de src/lib/tutoriais: põe o botão "Como funciona" ao lado do título. */
+export function PaginaAdmin(p: { titulo: string; descricao?: ReactNode; voltar?: { para: string; rotulo: string }; acoes?: ReactNode; tutorial?: string; children: ReactNode }) {
   return (
     <div>
       <header className={ped.topo}>
@@ -29,7 +31,14 @@ export function PaginaAdmin(p: { titulo: string; descricao?: ReactNode; voltar?:
               ← {p.voltar.rotulo}
             </Link>
           )}
-          <h2 className={ped.titulo}>{p.titulo}</h2>
+          {p.tutorial ? (
+            <div className={cs.tituloLinha}>
+              <h2 className={ped.titulo}>{p.titulo}</h2>
+              <BotaoTutorial id={p.tutorial} />
+            </div>
+          ) : (
+            <h2 className={ped.titulo}>{p.titulo}</h2>
+          )}
           {p.descricao && <p className={ped.mudo}>{p.descricao}</p>}
         </div>
         {p.acoes && <div className={ped.topoDireita}>{p.acoes}</div>}

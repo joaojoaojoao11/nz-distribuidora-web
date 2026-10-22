@@ -64,6 +64,7 @@ export default function AdminSuperCupons() {
   return (
     <PaginaAdmin
       titulo="Super cupons"
+      tutorial="admin.super-cupons"
       descricao={
         <>
           Todo cliente aprovado tem o seu super cupom, criado na hora em "Indique e ganhe". Quem compra com ele ganha o <strong>desconto</strong>; quem indicou ganha <strong>cashback</strong> na carteira,

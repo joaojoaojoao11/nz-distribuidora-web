@@ -87,6 +87,7 @@ export default function AdminAfiliados() {
   return (
     <PaginaAdmin
       titulo="Afiliados"
+      tutorial="admin.afiliados"
       descricao={
         <>
           O afiliado tem um cupom permanente: quem se cadastra ou compra com ele fica <strong>filiado</strong> a ele para sempre. Ele ganha a comissão de <strong>ativação</strong> na primeira compra

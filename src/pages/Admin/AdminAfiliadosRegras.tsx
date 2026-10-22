@@ -270,6 +270,7 @@ export default function AdminAfiliadosRegras() {
   return (
     <PaginaAdmin
       titulo="Regras gerais dos afiliados"
+      tutorial="admin.afiliados-regras"
       voltar={{ para: '/admin/afiliados', rotulo: 'Afiliados' }}
       descricao="Valem para quem não tem valor próprio na tela do afiliado. Valores iniciais são fictícios: ajuste depois de fazer as contas. Cada bloco tem o seu botão de salvar."
     >
