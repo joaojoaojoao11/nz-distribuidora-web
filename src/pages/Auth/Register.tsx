@@ -23,6 +23,7 @@ import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '
 import { chamarConta, formatarTelefone, telefoneOk, textoDoErroAuth } from '../../lib/shop/conta';
 import { ehEmpresa, TIPO_DESCRICAO, TIPO_LABEL, TIPOS_CLIENTE } from '../../lib/shop/papeis';
 import { supabase } from '../../lib/supabase';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 import styles from './Auth.module.css';
 
 const GOOGLE_ATIVO = import.meta.env.VITE_GOOGLE_LOGIN === '1';
@@ -182,7 +183,9 @@ export default function Register() {
   return (
     <div className={styles.authPage}>
       <div className={styles.authCard}>
-        <h1 className={styles.authTitle}>Criar Conta</h1>
+        <TituloComTutorial tutorial="loja.cadastro">
+          <h1 className={styles.authTitle}>Criar Conta</h1>
+        </TituloComTutorial>
         <p className={styles.authSub}>Crie sua conta. A NZ confere o cadastro e libera os preços em até 1 dia útil.</p>
 
         {GOOGLE_ATIVO && (

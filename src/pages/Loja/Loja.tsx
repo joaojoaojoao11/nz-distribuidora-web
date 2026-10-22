@@ -43,6 +43,7 @@ import ShopFilters from './ShopFilters';
 import { useLimiteNome } from './useLimiteNome';
 import { useShopFilters, type FilterGroup } from './useShopFilters';
 import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+import BotaoTutorial from '../../components/Tutorial/BotaoTutorial';
 import styles from './Loja.module.css';
 
 // A Lente (busca por imagem) só carrega quando alguém a abre: canvas, k-means
@@ -490,6 +491,9 @@ export default function Loja() {
           <p className={styles.heroSubtitle}>
             Todo o portfólio num só lugar — cores, padrões e linhas técnicas. Valores sob consulta.
           </p>
+          <div style={{ marginBottom: '1.1rem' }}>
+            <BotaoTutorial id="loja.vitrine" rotulo="Como achar o produto" />
+          </div>
           <div className={styles.heroCounter}>
             <span className={styles.counterNumber}>{SHOP_ITEMS.length}</span>
             <span className={styles.counterLabel}>PRODUTOS</span>

@@ -48,6 +48,24 @@
   box-shadow: 0 0 0 2px #0a0a0c;
 }
 
+@media (max-width: 600px) {
+  .botaoCompacto {
+    padding: 0.3rem;
+  }
+  .botaoCompacto .botaoTexto {
+    display: none;
+  }
+}
+
+/* Título de página com o botão ao lado (TituloComTutorial). */
+.tituloLinha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.85rem;
+  row-gap: 0.25rem;
+}
+
 /* ------------------------------------------------------------- janela */
 .fundo {
   position: fixed;

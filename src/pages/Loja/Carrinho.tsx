@@ -24,6 +24,7 @@ import { alterarQuantidade, limparCarrinho, removerDoCarrinho, useCarrinho } fro
 import { BRL, usePreco, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
 import type { ItemCarrinho } from '../../lib/shop/carrinho';
 import { MINIMO, PASSO, precoUnitario, sufixoPreco } from '../../lib/shop/unidade';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 import styles from './Carrinho.module.css';
 
 interface Endereco {
@@ -161,7 +162,9 @@ export default function Carrinho() {
   return (
     <div className={`container ${styles.pagina}`}>
       {itens.length > 0 && <PassosCompra passos={checkoutAtivo ? PASSOS_PAGAMENTO : PASSOS_ORCAMENTO} atual={0} />}
-      <h1 className={styles.titulo}>Carrinho</h1>
+      <TituloComTutorial tutorial="loja.carrinho">
+        <h1 className={styles.titulo}>Carrinho</h1>
+      </TituloComTutorial>
 
       {itens.length === 0 ? (
         <div className={styles.vazio}>

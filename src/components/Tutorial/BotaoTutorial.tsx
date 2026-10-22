@@ -1,15 +1,18 @@
 // Botão "Como funciona" (pedido do João, 22/10/2026): explica em poucos passos,
 // com uma animação curta em cada um, como funciona a tela ou a função onde ele
-// está. O conteúdo vem de src/lib/tutoriais/ pelo `id`; um id sem tutorial não
-// desenha nada. Abre só no clique. A bolinha vermelha some depois da primeira
-// vez que a pessoa abre (lembrado neste navegador).
+// está. O conteúdo vem de src/lib/tutoriais/ pelo `id` (carregado à parte, por
+// área); um id sem tutorial não desenha nada. Abre só no clique. A bolinha
+// vermelha some depois da primeira vez que a pessoa abre (lembrado neste
+// navegador).
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Play, RotateCcw, X } from 'lucide-react';
-import { tutorialPorId, ROTULO_PUBLICO } from '../../lib/tutoriais';
+import { carregarTutorial, ROTULO_PUBLICO } from '../../lib/tutoriais';
 import Cena from './Cenas';
+import { comNegrito } from './negrito';
+import type { Tutorial } from './tipos';
 import s from './Tutorial.module.css';
 
 const CHAVE_VISTO = (id: string) => `nz:tutorial-visto:${id}`;
@@ -30,15 +33,24 @@ function marcarVisto(id: string) {
   }
 }
 
-/** `**trecho**` vira negrito; o resto é texto puro. */
-function comNegrito(texto: string): ReactNode[] {
-  return texto.split(/(\*\*[^*]+\*\*)/g).map((parte, i) =>
-    parte.startsWith('**') && parte.endsWith('**') ? <strong key={i}>{parte.slice(2, -2)}</strong> : parte
-  );
+/** O texto da área chega à parte (ver lib/tutoriais/index.ts); até lá o botão não aparece. */
+function useTutorial(id: string): Tutorial | undefined {
+  const [carregado, setCarregado] = useState<{ id: string; tutorial: Tutorial | undefined } | null>(null);
+  useEffect(() => {
+    let vivo = true;
+    void carregarTutorial(id).then((tutorial) => {
+      if (vivo) setCarregado({ id, tutorial });
+    });
+    return () => {
+      vivo = false;
+    };
+  }, [id]);
+  return carregado?.id === id ? carregado.tutorial : undefined;
 }
 
-export default function BotaoTutorial({ id, rotulo = 'Como funciona' }: { id: string; rotulo?: string }) {
-  const tutorial = tutorialPorId(id);
+/** `compacto`: no celular mostra só o ícone (para cabeçalho apertado, como o do admin). */
+export default function BotaoTutorial({ id, rotulo = 'Como funciona', compacto = false }: { id: string; rotulo?: string; compacto?: boolean }) {
+  const tutorial = useTutorial(id);
   const [aberto, setAberto] = useState(false);
   const [passo, setPasso] = useState(0);
   const [direcao, setDirecao] = useState(1);
@@ -111,16 +123,25 @@ export default function BotaoTutorial({ id, rotulo = 'Como funciona' }: { id: st
 
   if (!tutorial) return null;
   const atual = tutorial.passos[passo];
+  const nomeDoBotao = rotulo === tutorial.titulo ? rotulo : `${rotulo}: ${tutorial.titulo}`;
   const ultimo = passo === total - 1;
 
   return (
     <>
-      <button ref={botaoRef} type="button" className={s.botao} onClick={abrir} aria-haspopup="dialog" title={`${rotulo}: ${tutorial.titulo}`}>
+      <button
+        ref={botaoRef}
+        type="button"
+        className={compacto ? `${s.botao} ${s.botaoCompacto}` : s.botao}
+        onClick={abrir}
+        aria-haspopup="dialog"
+        aria-label={nomeDoBotao}
+        title={nomeDoBotao}
+      >
         <span className={s.botaoIcone} aria-hidden="true">
           <Play size={10} strokeWidth={2.6} fill="currentColor" style={{ marginLeft: 1 }} />
         </span>
-        {rotulo}
-        {!visto && <span className={s.novo} aria-label="novo" />}
+        <span className={s.botaoTexto}>{rotulo}</span>
+        {!visto && <span className={s.novo} aria-hidden="true" />}
       </button>
 
       {createPortal(

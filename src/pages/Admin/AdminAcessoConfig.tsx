@@ -32,6 +32,7 @@ import { esquecerAcessoConfig } from '../../lib/shop/acesso';
 import { TIPO_DESCRICAO, TIPO_LABEL } from '../../lib/shop/papeis';
 import styles from './Admin.module.css';
 import ped from './AdminPedidos.module.css';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 
 type PapelPreco = 'reseller' | 'lojista' | 'client';
 type Base = 'atacado' | 'varejo';
@@ -567,7 +568,9 @@ export default function AdminAcessoConfig() {
           <Link to="/admin/precos" className={ped.voltar}>
             ← Tipos de acesso
           </Link>
-          <h2 className={ped.titulo}>{nomeDoAlvo}</h2>
+          <TituloComTutorial tutorial="admin.precos-tipo">
+            <h2 className={ped.titulo}>{nomeDoAlvo}</h2>
+          </TituloComTutorial>
           <p className={ped.mudo}>
             {faixaAtual
               ? `${faixaAtual.descricao || 'Faixa dentro do tipo.'} · ${contasPorFaixa[String(faixaAtual.id)] ?? 0} conta${(contasPorFaixa[String(faixaAtual.id)] ?? 0) === 1 ? '' : 's'} nesta faixa`

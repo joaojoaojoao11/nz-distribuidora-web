@@ -23,6 +23,7 @@ import { situacaoDoPedido, type PedidoSituacao } from '../../lib/shop/situacaoPe
 import { STATUS_LABEL } from '../Painel/pedidoRotulos';
 import styles from './Admin.module.css';
 import ped from './AdminPedidos.module.css';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 
 interface Perfil {
   full_name: string | null;
@@ -250,7 +251,9 @@ export default function AdminPedidoDetalhe() {
           <Link to="/admin/pedidos" className={ped.voltar}>
             ← Pedidos
           </Link>
-          <h2 className={ped.titulo}>Pedido #{pedido.numero}</h2>
+          <TituloComTutorial tutorial="admin.pedido-detalhe">
+            <h2 className={ped.titulo}>Pedido #{pedido.numero}</h2>
+          </TituloComTutorial>
           <span className={`${ped.chip} ${ped[situacao.tom]}`}>{situacao.rotulo}</span>
           {situacao.detalhe && <span className={ped.detalhe}>{situacao.detalhe}</span>}
           <p className={ped.mudo} style={{ marginTop: '0.5rem' }}>

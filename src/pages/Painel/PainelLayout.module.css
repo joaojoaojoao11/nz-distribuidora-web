@@ -180,6 +180,20 @@
   color: var(--text-primary);
 }
 
+/* Título da tela com o botão "Como funciona" ao lado (quebra para baixo no celular). */
+.tituloLinha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.75rem;
+  row-gap: 0.4rem;
+  margin: 0 0 1.1rem;
+}
+
+.tituloLinha > .tituloTela {
+  margin: 0;
+}
+
 /* ---------------------------------------------------------------- celular */
 
 @media (max-width: 900px) {

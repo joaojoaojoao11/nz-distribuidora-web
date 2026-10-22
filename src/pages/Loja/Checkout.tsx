@@ -37,6 +37,7 @@ import {
 } from '../../lib/shop/checkout';
 import FormaPagamento, { type EscolhaPagamento } from './FormaPagamento';
 import { ehEmpresa } from '../../lib/shop/papeis';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 import styles from './Checkout.module.css';
 
 interface Endereco {
@@ -307,7 +308,9 @@ export default function Checkout() {
 
   return (
     <div className={`container ${styles.pagina}`}>
-      <h1 className={styles.titulo}>Checkout</h1>
+      <TituloComTutorial tutorial="loja.checkout">
+        <h1 className={styles.titulo}>Checkout</h1>
+      </TituloComTutorial>
 
       <div className={styles.layout}>
         <div className={styles.passos}>

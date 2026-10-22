@@ -31,7 +31,20 @@ export type Icone =
   | 'presente'
   | 'percentual'
   | 'calendario'
-  | 'dinheiro';
+  | 'dinheiro'
+  | 'download'
+  | 'whatsapp'
+  | 'busca'
+  | 'caminhao'
+  | 'cartao'
+  | 'estrela'
+  | 'olho'
+  | 'coracao'
+  | 'cadeado'
+  | 'email'
+  | 'mapa'
+  | 'camera'
+  | 'caixa';
 
 export type Cena =
   /** Caminho em etapas: um ponto de luz percorre as setas, uma etapa por vez. */

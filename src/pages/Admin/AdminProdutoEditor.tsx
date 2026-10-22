@@ -16,6 +16,7 @@ import { LINHA_LABEL } from '../../lib/shop/erp/mapa';
 import { recarregarCatalogo } from '../../lib/shop/store';
 import GaleriaEditor from '../../components/Admin/GaleriaEditor';
 import { avaliarConjunto, type Midia } from '../../lib/admin/midia';
+import BotaoTutorial from '../../components/Tutorial/BotaoTutorial';
 import styles from './AdminProdutoEditor.module.css';
 import admin from './Admin.module.css';
 
@@ -501,6 +502,7 @@ export default function AdminProdutoEditor() {
           ← Produtos
         </button>
         <span className={styles.migalha}>{criando ? 'Novo produto' : `/loja/${p.slug}`}</span>
+        <BotaoTutorial id="admin.produto-editor" compacto />
         {!criando && (
           <>
             <span className={`${styles.chipEstado} ${visivel ? styles.chipVisivel : styles.chipFora}`}>

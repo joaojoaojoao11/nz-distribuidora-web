@@ -55,6 +55,7 @@ import {
   type TipoServico,
 } from '../../lib/garantia';
 import { ehEmpresa } from '../../lib/shop/papeis';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 import styles from './registro/Registro.module.css';
 
 const ETAPAS: { passo: Passo; rotulo: string }[] = [
@@ -311,7 +312,9 @@ export default function WarrantyRegistration() {
       {!recebido && (
         <header className={passo === 'produto' ? styles.topo : `${styles.topo} ${styles.topoCompacto}`}>
           <p className={styles.eyebrow}>Garantia NZ</p>
-          <h1 className={styles.titulo}>Registrar garantia</h1>
+          <TituloComTutorial tutorial={profile && ehEmpresa(profile.role) ? 'garantia.registro-aplicador' : 'garantia.registro'}>
+            <h1 className={styles.titulo}>Registrar garantia</h1>
+          </TituloComTutorial>
           {passo === 'produto' && (
             <p className={styles.lede}>Leva dois minutos. A NZ confere o registro com o aplicador e envia o certificado por e-mail.</p>
           )}

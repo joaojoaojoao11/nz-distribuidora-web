@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Copy, Printer, Search, ShieldAlert, ShieldCheck } from 'lucide-react';
 import SEO from '../../components/SEO/SEO';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 import { supabase } from '../../lib/supabase';
 import { copiar } from '../../lib/shop/checkout';
 import { VENDAS, linkWhatsApp } from '../../lib/contatos';
@@ -129,7 +130,9 @@ export default function WarrantyValidator() {
 
       <header className={styles.topo}>
         <p className={styles.eyebrow}>Garantia NZ</p>
-        <h1 className={styles.titulo}>Conferir certificado</h1>
+        <TituloComTutorial tutorial="garantia.validar">
+          <h1 className={styles.titulo}>Conferir certificado</h1>
+        </TituloComTutorial>
         {estado.tipo === 'vazio' && <p className={styles.lede}>Digite o código que está no certificado — ou aponte a câmera do celular para o QR dele.</p>}
       </header>
 

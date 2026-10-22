@@ -18,7 +18,8 @@ import { supabase } from '../../lib/supabase';
 import { PROMO_PAGES } from '../../lib/promoPages';
 import { pedeAtencao, type PedidoSituacao } from '../../lib/shop/situacaoPedido';
 import BuscaGlobal from './BuscaGlobal';
-import { GRUPOS, tituloDaRota, type ItemNav } from './adminNav';
+import { GRUPOS, tituloDaRota, tutorialDaRota, type ItemNav } from './adminNav';
+import BotaoTutorial from '../../components/Tutorial/BotaoTutorial';
 import styles from './Admin.module.css';
 
 const CHAVE_GRUPOS = 'nz:admin:grupos-fechados';
@@ -95,6 +96,7 @@ export default function AdminLayout() {
   };
 
   const titulo = useMemo(() => tituloDaRota(location.pathname), [location.pathname]);
+  const tutorialTela = tutorialDaRota(location.pathname);
   const sair = async () => {
     await signOut();
     navigate('/');
@@ -157,6 +159,7 @@ export default function AdminLayout() {
               ☰
             </button>
             <h1 className={styles.headerTitle}>{titulo}</h1>
+            {tutorialTela && <BotaoTutorial id={tutorialTela} compacto />}
           </div>
           <div className={styles.headerDireita}>
             <button type="button" className={styles.buscaBtn} onClick={() => setBusca(true)}>

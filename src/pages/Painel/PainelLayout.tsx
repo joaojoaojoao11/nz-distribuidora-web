@@ -19,7 +19,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { useFavoritos } from '../../lib/shop/listasPessoais';
-import { gruposVisiveis, tituloDaRota, type Contador } from './painelNav';
+import { gruposVisiveis, tituloDaRota, tutorialDaRota, type Contador } from './painelNav';
+import BotaoTutorial from '../../components/Tutorial/BotaoTutorial';
 import { rotuloTipo } from '../../lib/shop/papeis';
 import styles from './PainelLayout.module.css';
 
@@ -31,6 +32,8 @@ export default function PainelLayout() {
   const carrinho = useCarrinho();
   const favoritos = useFavoritos();
   const [contagens, setContagens] = useState<Contagens>({});
+  // Tem linha em `afiliados` (aprovado ou não): troca o tutorial do "Indique e ganhe" pela versão de afiliado.
+  const [ehAfiliado, setEhAfiliado] = useState(false);
 
   const carregarContagens = useCallback(async () => {
     if (!user) return;
@@ -55,6 +58,7 @@ export default function PainelLayout() {
       cupons: cupom ? 1 : 0,
       selecoes: selecoes ?? 0,
     });
+    setEhAfiliado(!!cupom);
   }, [user, isAdmin]);
 
   useEffect(() => {
@@ -92,6 +96,7 @@ export default function PainelLayout() {
 
   const naInicial = location.pathname === '/painel' || location.pathname === '/painel/';
   const papel = isAdmin ? 'Conta da equipe NZ' : `Conta de ${rotuloTipo(profile?.role).toLowerCase()}`;
+  const tutorialTela = naInicial ? undefined : tutorialDaRota(location.pathname, { role: profile?.role, isAdmin, afiliado: ehAfiliado });
 
   const numero = (c?: Contador): number | undefined => {
     if (!c) return undefined;
@@ -156,7 +161,15 @@ export default function PainelLayout() {
         </nav>
 
         <div className={styles.conteudo}>
-          {!naInicial && <h2 className={styles.tituloTela}>{tituloDaRota(location.pathname)}</h2>}
+          {!naInicial &&
+            (tutorialTela ? (
+              <div className={styles.tituloLinha}>
+                <h2 className={styles.tituloTela}>{tituloDaRota(location.pathname)}</h2>
+                <BotaoTutorial id={tutorialTela} />
+              </div>
+            ) : (
+              <h2 className={styles.tituloTela}>{tituloDaRota(location.pathname)}</h2>
+            ))}
           <Outlet />
         </div>
       </div>

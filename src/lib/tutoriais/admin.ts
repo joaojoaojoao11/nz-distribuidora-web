@@ -450,6 +450,493 @@ export const TUTORIAIS_ADMIN: Tutorial[] = [
   },
 
   {
+    id: 'admin.clientes',
+    publico: 'admin',
+    titulo: 'Clientes & Revendedores',
+    resumo: 'Liberar as contas do site, escolher tipo e faixa de preço e ligar a conta ao cliente do NZERP.',
+    passos: [
+      {
+        titulo: 'Ninguém nasce aprovado',
+        texto:
+          'Toda conta criada no site chega aqui como **Pendente** (filtro **Aguardando aprovação**). Até ser aprovada, a pessoa vê o catálogo **sem preço** e não compra. A NZ recebe um e-mail quando a pessoa confirma o e-mail e entra pela primeira vez.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'usuario', rotulo: 'Cria a conta' },
+            { icone: 'email', rotulo: 'Confirma o e-mail' },
+            { icone: 'relogio', rotulo: 'Aguardando aprovação', tom: 'atencao' },
+            { icone: 'check', rotulo: 'Você aprova', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Aprovar com tipo e faixa',
+        texto:
+          'Escolha o **tipo** (Cliente final, Lojista/aplicador ou Revendedor) e a **faixa** (Padrão, Gold, Platinum ou uma criada) e clique **Aprovar**. O cliente recebe o e-mail de acesso liberado com o tipo e a faixa, e a faixa vai também para o cadastro dele no NZERP. Se o e-mail falhar, a tela avisa: mande pelo WhatsApp.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Conta pendente',
+          campos: [{ rotulo: 'Aprovar como', valor: 'Lojista / aplicador' }, { rotulo: 'Faixa', valor: 'Gold' }],
+        },
+      },
+      {
+        titulo: 'Indicação e pré-análise',
+        texto:
+          'A etiqueta **indicação de NZ-XXXXX** mostra quem chegou por um afiliado. Clique na linha para a **Pré-análise do consultor**: volume, perfil, linhas de interesse, preço do concorrente e **faixa sugerida**. Para quem está pendente, a faixa sugerida já vem escolhida na hora de aprovar.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Pré-análise do consultor',
+          campos: [{ rotulo: 'Volume estimado (R$/mês)' }, { rotulo: 'Linhas de interesse' }, { rotulo: 'Preço do concorrente' }, { rotulo: 'Faixa sugerida', valor: 'Platinum' }],
+        },
+      },
+      {
+        titulo: 'Depois de aprovado',
+        texto:
+          'Trocar o **tipo** vale na hora e volta a faixa para **Padrão** (a faixa é de cada tipo). Trocar a **faixa** também vale na hora. **Revogar** tira o preço e a compra; o cliente não recebe e-mail disso. Tudo fica no registro da equipe.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Pendente', tom: 'atencao', sub: 'sem preço, sem compra' },
+            { texto: 'Aprovado', tom: 'ok', sub: 'preço do tipo e da faixa' },
+            { texto: 'Revogado', tom: 'erro', sub: 'volta a ficar sem preço' },
+          ],
+        },
+      },
+      {
+        titulo: 'Ligação com o NZERP',
+        texto:
+          '**Procurar no ERP** busca o cliente pelo documento e pelo e-mail; **Confirmar vínculo** liga a conta. Atenção: lojista ou revendedor pendente com o mesmo e-mail de um cliente ativo do NZERP é **aprovado nessa hora**, na faixa Padrão e sem e-mail. Embaixo, **Títulos do NZERP sem dono**: atribua para a parcela aparecer em Pagamentos do cliente.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'usuario', rotulo: 'Conta do site' },
+            { icone: 'busca', rotulo: 'Procura por documento e e-mail' },
+            { icone: 'banco', rotulo: 'Cliente do NZERP', tom: 'info' },
+            { icone: 'link', rotulo: 'Vinculado', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.precos',
+    publico: 'admin',
+    titulo: 'Tipos de acesso',
+    resumo: 'Quanto cada tipo de conta paga e o que cada um vê na loja.',
+    passos: [
+      {
+        titulo: 'Um preço por tipo de conta',
+        texto:
+          'Cada conta aprovada tem um tipo: **Cliente final**, **Lojista/aplicador** ou **Revendedor** (o **Administrador** vê tudo e compra pela base de atacado). Cada cartão resume o preço, o que o tipo vê e as faixas; **Configurar** abre o tipo.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Cliente final', icone: 'usuario', tom: 'info', itens: ['Base varejo por padrão', 'Preço do tipo'] },
+            { titulo: 'Lojista / aplicador', icone: 'loja', tom: 'marca', itens: ['Base atacado por padrão', 'Faixas Gold e Platinum'] },
+            { titulo: 'Revendedor', icone: 'caixa', tom: 'ok', itens: ['Base atacado por padrão', 'Faixas Gold e Platinum'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Como o preço é calculado',
+        texto:
+          '**Preço = base do NZERP × (1 + %)**. A base é o **atacado** (mínimo) ou o **varejo** (publicado), escolhida por tipo. O percentual pode ser geral, por linha comercial ou por produto, e vale o **mais específico**: produto, depois linha, depois geral.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'banco', rotulo: 'Base do NZERP' },
+            { icone: 'percentual', rotulo: '+ % do tipo (produto > linha > geral)' },
+            { icone: 'usuario', rotulo: 'Preço que a conta vê e paga', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Faixas dentro do tipo',
+        texto:
+          '**Gold**, **Platinum** ou uma faixa criada para um cliente só têm percentuais próprios sobre a **mesma base** do tipo. A faixa de cada pessoa é escolhida na aprovação, em **Clientes**, e pode ser trocada depois.',
+        cena: {
+          tipo: 'niveis',
+          niveis: [{ nome: 'Padrão' }, { nome: 'Gold' }, { nome: 'Platinum' }],
+        },
+      },
+      {
+        titulo: 'O que cada tipo vê',
+        texto:
+          'Na aba **Visibilidade** de cada tipo: linhas comerciais visíveis, rolo fechado, metro fracionado, estoque detalhado, Promoção Moto e pagamento online. Quem desobedece a regra não é a tela: o **servidor** tira o preço e recusa o item no pedido. Conta sem aprovação nunca vê preço.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Visibilidade',
+          campos: [{ rotulo: 'Rolo fechado', valor: 'Sim' }, { rotulo: 'Metro fracionado', valor: 'Sim' }, { rotulo: 'Estoque detalhado', valor: 'Não' }, { rotulo: 'Pagamento online', valor: 'Sim' }],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.precos-tipo',
+    publico: 'admin',
+    titulo: 'Configurar um tipo de acesso',
+    resumo: 'Base, percentuais por linha e produto, faixas, visibilidade e simulador de um tipo.',
+    passos: [
+      {
+        titulo: 'Regra geral e por linha',
+        texto:
+          'Em **Preço**: a **base** (atacado ou varejo) e o **percentual geral**. Na tabela de linhas comerciais, o percentual da linha; vazio herda o geral. Clique no nome da linha para dar percentual **por produto**. Marque várias e use **Aplicar às selecionadas** para fazer em lote.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Preço',
+          campos: [{ rotulo: 'Base (tabela do ERP)', valor: 'atacado (mínimo)' }, { rotulo: 'Percentual geral (%)' }, { rotulo: 'Linha comercial (%)', valor: 'vazio = geral' }, { rotulo: 'Produto (%)', valor: 'vazio = linha' }],
+        },
+      },
+      {
+        titulo: 'Faixas',
+        texto:
+          'Os botões no topo trocam entre **Padrão** e as faixas; **+ nova faixa** cria uma. Com uma faixa aberta, os percentuais valem só para ela, e a base é sempre a do tipo. Atenção: se a faixa tiver **percentual geral**, ele vale para todas as linhas dela. Percentual nunca é negativo. Faixa com contas não se exclui.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Padrão', icone: 'usuarios', tom: 'info', itens: ['Regra do tipo', 'Geral, linha e produto'] },
+            { titulo: 'Faixa (ex.: Gold)', icone: 'trofeu', tom: 'marca', itens: ['Percentuais próprios', 'Mesma base do tipo', 'O que ficar vazio segue o tipo'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Visibilidade',
+        texto:
+          'A aba **Visibilidade** é do tipo (some quando uma faixa está aberta): rolo fechado, metro fracionado (não dá para desligar os dois), estoque detalhado, Promoção Moto, pagamento online e as **linhas comerciais visíveis**. Linha oculta fica sem preço e não entra em pedido.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Visibilidade',
+          campos: [{ rotulo: 'Rolo fechado', valor: 'Sim' }, { rotulo: 'Metro fracionado', valor: 'Sim' }, { rotulo: 'Promoção Moto', valor: 'Sim' }, { rotulo: 'Linhas visíveis', valor: '12 de 14' }],
+        },
+      },
+      {
+        titulo: 'Simular e salvar',
+        texto:
+          'O **simulador** mostra o atacado, o varejo e o preço deste tipo para um produto, com as regras **já salvas**. **Salvar N alterações** pede confirmação e guarda o histórico; o preço novo vale no próximo preço pedido. Quem está com a loja aberta pode precisar recarregar para ver uma mudança de visibilidade.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'percentual', rotulo: 'Ajusta os percentuais' },
+            { icone: 'check', rotulo: 'Salvar N alterações' },
+            { icone: 'olho', rotulo: 'Simulador confere', tom: 'info' },
+            { icone: 'usuarios', rotulo: 'Vale para o próximo preço', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.pedidos',
+    publico: 'admin',
+    titulo: 'Pedidos da loja',
+    resumo: 'Os pedidos do site organizados em filas, do que precisa de ação ao que já foi entregue.',
+    passos: [
+      {
+        titulo: 'As filas',
+        texto:
+          '**Precisa de ação**, **Pagos · a separar**, **Aguardando cliente** (Pix ou boleto em aberto, cartão em análise), **Em andamento** (faturado até enviado), **Concluídos** e **Não concluídos**. A tela abre na primeira fila que tiver pedido, e o número do menu soma as duas primeiras.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Precisa de ação', tom: 'erro', sub: 'resolva primeiro' },
+            { texto: 'Pagos · a separar', tom: 'atencao', sub: 'pago e no NZERP' },
+            { texto: 'Em andamento', tom: 'info', sub: 'faturado até enviado' },
+            { texto: 'Concluídos', tom: 'ok', sub: 'entregues' },
+          ],
+        },
+      },
+      {
+        titulo: 'Dois caminhos de pedido',
+        texto:
+          '**Pago online**: quando o Asaas confirma, o pedido vai sozinho ao NZERP. **Orçamento**: o cliente enviou sem pagar; fica **aguardando vendedor** em Precisa de ação até alguém montar e clicar **Enviar ao NZERP**.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Pago online', icone: 'cartao', tom: 'ok', itens: ['Pix, boleto ou cartão', 'Confirmou: vai sozinho ao NZERP'] },
+            { titulo: 'Orçamento', icone: 'nota', tom: 'atencao', itens: ['Cliente enviou sem pagar', 'Vendedor monta', 'Enviar ao NZERP à mão'] },
+          ],
+        },
+      },
+      {
+        titulo: 'O que pede ação',
+        texto:
+          'Pedido **pago que não chegou ao NZERP** (ou que o NZERP não soube do pagamento), orçamento **aguardando vendedor**, **dados incompletos** do cliente e pedido **não entregue**. O botão da linha resolve o caso mais comum; os outros se resolvem no detalhe.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'olho', rotulo: 'Precisa de ação' },
+            { icone: 'nota', rotulo: 'Abre o pedido' },
+            { icone: 'banco', rotulo: 'Enviar ao NZERP', tom: 'info' },
+            { icone: 'check', rotulo: 'Sai da fila', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Carrinhos parados e cartões recusados',
+        texto:
+          '**Carrinhos parados**: carrinhos de clientes logados sem mexer há mais de algumas horas (você escolhe; começa em 24), bons para um contato. **Cartões recusados**: as recusas dos últimos 7 dias. O pedido com cartão recusado na primeira tentativa não fica na lista: sobra só este registro.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Carrinhos parados', icone: 'carrinho', tom: 'atencao', itens: ['Cliente logado', 'Parado há mais de X horas', 'Oportunidade de contato'] },
+            { titulo: 'Cartões recusados', icone: 'cartao', tom: 'erro', itens: ['Últimos 7 dias', 'Pedido não ficou criado'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Abrir um pedido',
+        texto:
+          'Clique na linha para o detalhe: itens com foto, cliente, cobranças do Asaas e linha do tempo. **Abrir já confere** o Asaas e manda ao NZERP o que tinha ficado para trás. A lista mostra os 300 pedidos mais recentes; use a busca para os antigos.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'busca', rotulo: 'Busca ou fila' },
+            { icone: 'nota', rotulo: 'Abre o detalhe' },
+            { icone: 'cartao', rotulo: 'Confere o Asaas', tom: 'info' },
+            { icone: 'banco', rotulo: 'Atualiza o NZERP', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.pedido-detalhe',
+    publico: 'admin',
+    titulo: 'Detalhe do pedido',
+    resumo: 'Tudo de um pedido e as ações: enviar ao NZERP, estornar e cancelar.',
+    passos: [
+      {
+        titulo: 'O que tem aqui',
+        texto:
+          'Cartões de **Cliente**, **Entrega**, **Pagamento** e **NZERP**; os itens; as **cobranças no Asaas**; a **linha do tempo**; e os eventos do webhook deste pedido. Abrir esta tela já confere o Asaas e reenvia ao NZERP o que estava pendente; **Atualizar** faz de novo.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Quem e onde', icone: 'usuario', tom: 'info', itens: ['Cliente', 'Entrega e frete'] },
+            { titulo: 'Dinheiro', icone: 'cartao', tom: 'ok', itens: ['Pagamento', 'Cobranças no Asaas'] },
+            { titulo: 'NZERP', icone: 'banco', tom: 'marca', itens: ['Orçamento', 'Linha do tempo'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Enviar ao NZERP',
+        texto:
+          '**Enviar ao NZERP** cria o orçamento lá: é o caminho do pedido que o cliente mandou como orçamento. Pago online vai sozinho; se o NZERP não soube do pagamento, aparece **Avisar o NZERP do pagamento**. Cuidado: enviar um pedido com Pix ou boleto em aberto manda um pedido ainda não pago.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'nota', rotulo: 'Pedido do site' },
+            { icone: 'banco', rotulo: 'Enviar ao NZERP' },
+            { icone: 'check', rotulo: 'Orçamento criado no NZERP', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Estornar',
+        texto:
+          'Só para cobrança **paga por Pix ou cartão** (boleto se estorna no próprio Asaas). Pode ser total ou parcial e **não dá para desfazer**. O estorno total devolve o saldo da carteira que o cliente usou. O estorno não cancela o orçamento no NZERP: cancele lá também.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Pago', tom: 'ok', sub: 'Pix ou cartão' },
+            { texto: 'Estornado', tom: 'neutro', sub: 'total ou parcial' },
+          ],
+        },
+      },
+      {
+        titulo: 'Cancelar pedido',
+        texto:
+          'Só para pedido **não pago**: remove as cobranças em aberto no Asaas, cancela no NZERP e devolve o saldo da carteira. Se o vendedor já avançou o pedido no NZERP, o cancelamento é recusado (e as cobranças já terão sido removidas).',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'cartao', rotulo: 'Remove cobranças em aberto' },
+            { icone: 'banco', rotulo: 'Cancela no NZERP' },
+            { icone: 'carteira', rotulo: 'Saldo volta ao cliente', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.pagamentos',
+    publico: 'admin',
+    titulo: 'Pagamento online (Asaas)',
+    resumo: 'Ligar o checkout, ajustar Pix, boleto e cartão e acompanhar a integração com o Asaas.',
+    passos: [
+      {
+        titulo: 'Ligar e desligar',
+        texto:
+          '**Pagamento online** abre ou fecha o checkout para todo mundo. Além dessa chave geral, cada tipo de acesso tem a sua em **Tipos de acesso → Visibilidade**. Desligado, o cliente ainda pode mandar o pedido como **orçamento**.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Aberto ao público', tom: 'ok', sub: 'Pix, boleto e cartão' },
+            { texto: 'Desligado', tom: 'neutro', sub: 'só orçamento' },
+          ],
+        },
+      },
+      {
+        titulo: 'Pix, boleto e cartão',
+        texto:
+          'Validade do Pix, vencimento do boleto (dias úteis), multa e juros, boleto a partir de um valor, número máximo de parcelas e parcela mínima. Vale para o **próximo** pedido. Não há liga/desliga por forma: para tirar o boleto dos pedidos pequenos, suba o **boleto a partir de**.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Pix, boleto e cartão',
+          campos: [{ rotulo: 'Pix expira em (min)' }, { rotulo: 'Boleto vence em (dias úteis)' }, { rotulo: 'Boleto a partir de (R$)' }, { rotulo: 'Parcelas no cartão (máx.)' }],
+        },
+      },
+      {
+        titulo: 'Saúde da integração',
+        texto:
+          'A chave do Asaas, o **webhook** (se aparecer **fila pausada**, religue no painel do Asaas), o último evento e os erros. **Rodar manutenção agora** reprocessa eventos com erro, expira Pix vencido, reconsulta cobranças e reenvia ao NZERP os pedidos pagos. Ela também roda sozinha todo dia.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'cartao', rotulo: 'Asaas avisa (webhook)' },
+            { icone: 'nota', rotulo: 'Site confere a cobrança' },
+            { icone: 'check', rotulo: 'Pedido pago', tom: 'ok' },
+            { icone: 'banco', rotulo: 'Vai ao NZERP', tom: 'info' },
+          ],
+        },
+      },
+      {
+        titulo: 'Eventos e cobrança órfã',
+        texto:
+          'A conta do Asaas é a mesma do NZERP: por padrão a lista mostra os eventos da loja e os que deram erro; **resolvido** tira um erro já tratado. **Remover cobrança órfã** apaga no Asaas uma cobrança `pay_…` que sobrou, só se ela não estiver paga.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Processado', tom: 'ok', sub: 'evento aplicado' },
+            { texto: 'Com erro', tom: 'erro', sub: 'manutenção tenta de novo' },
+            { texto: 'Resolvido', tom: 'neutro', sub: 'tratado à mão' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.logistica',
+    publico: 'admin',
+    titulo: 'Logística & Transportadoras',
+    resumo: 'Embalagens, transportadoras, retirada e frete grátis: a base da cotação de frete do checkout.',
+    passos: [
+      {
+        titulo: 'Entrega da loja',
+        texto:
+          '**Retirada em São Paulo** (liga, desliga e o endereço mostrado ao cliente; custa R$ 0) e **frete grátis acima de** um valor (vazio = nunca). O frete grátis olha os produtos já com o cupom e zera **todas** as opções de transportadora.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Entrega da loja',
+          campos: [{ rotulo: 'Retirada', valor: 'Oferecida' }, { rotulo: 'Endereço mostrado ao cliente' }, { rotulo: 'Frete grátis acima de (R$)', valor: 'vazio = nunca' }],
+        },
+      },
+      {
+        titulo: 'Perfis de embalagem',
+        texto:
+          'Cada linha comercial precisa de um **perfil**: formato (rolo, caixa, tubo), peso, medidas, valor declarado e dias de produção. A cotação usa o perfil do produto, senão o **padrão da linha** (★, duplo clique), senão qualquer um da linha. Linha sem perfil: o carrinho só oferece retirada.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'caixa', rotulo: 'Produto no carrinho' },
+            { icone: 'nota', rotulo: 'Perfil do produto ou da linha' },
+            { icone: 'caminhao', rotulo: 'Volumes cotados', tom: 'info' },
+            { icone: 'check', rotulo: 'Opções no checkout', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Transportadoras',
+        texto:
+          'Só as **ativas** entram na cotação. CEP de origem, dias de manuseio e serviços são salvos ao sair do campo; as credenciais ficam no servidor. Uma opção só aparece se atende todos os volumes do carrinho. No modo simulado, os valores não são reais.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Ativa', tom: 'ok', sub: 'entra na cotação' },
+            { texto: 'Desativada', tom: 'neutro', sub: 'fica de fora' },
+          ],
+        },
+      },
+      {
+        titulo: 'Teste de cotação',
+        texto:
+          'Escolha o perfil, o CEP de destino e a quantidade e clique **Consultar** para ver o que o cliente veria. Mudou embalagem ou transportadora? Use **Limpar cache de cotações**: as respostas ficam guardadas por alguns dias.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Teste de cotação',
+          campos: [{ rotulo: 'Perfil', valor: 'Rolo 1,52 m' }, { rotulo: 'CEP de destino', valor: '00000-000' }, { rotulo: 'Quantidade', valor: '2' }],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.garantias',
+    publico: 'admin',
+    titulo: 'Garantias oficiais',
+    resumo: 'A fila de aprovação dos registros de garantia e o envio do certificado oficial.',
+    passos: [
+      {
+        titulo: 'Todo registro chega aqui',
+        texto:
+          'Cada registro feito em **/registro-garantia** entra como protocolo em **Para aprovar**, e a NZ recebe um e-mail de aviso. As abas separam **Para aprovar**, **Aprovadas**, **Recusadas** e **Todas**; a busca acha por protocolo, placa, nome, CPF, e-mail, aplicador ou selo.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Para aprovar', tom: 'atencao', sub: 'protocolo novo' },
+            { texto: 'Aprovada', tom: 'ok', sub: 'certificado emitido' },
+            { texto: 'Recusada', tom: 'erro', sub: 'com motivo' },
+          ],
+        },
+      },
+      {
+        titulo: 'Aprovar e enviar o certificado',
+        texto:
+          'Em **Aprovar**, deixe marcado **enviar o certificado por e-mail agora** (dá para corrigir o e-mail; o novo passa a valer na garantia). O sistema gera o **PDF oficial**, baixa uma cópia para você e manda anexo ao cliente. Aprove pelo site no ar: o QR do PDF usa o endereço de onde você está.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'check', rotulo: 'Aprovar', tom: 'ok' },
+            { icone: 'nota', rotulo: 'PDF oficial gerado' },
+            { icone: 'download', rotulo: 'Cópia baixada para você', tom: 'info' },
+            { icone: 'selo', rotulo: 'Certificado no e-mail do cliente', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Recusar',
+        texto:
+          '**Recusar** pede um motivo (de 3 a 500 letras), que fica na garantia. O cliente **não recebe e-mail** da recusa: avise pelo WhatsApp. Se havia selo ligado, ele volta a aparecer como original sem garantia. **Aprovar mesmo assim** reverte uma recusa.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Recusada', tom: 'erro', sub: 'motivo obrigatório' },
+            { texto: 'Selo livre de novo', tom: 'info', sub: 'pode ir para outro registro' },
+          ],
+        },
+      },
+      {
+        titulo: 'Depois de aprovada',
+        texto:
+          '**Reenviar certificado**, **Ver certificado**, **Copiar link**, **WhatsApp** (mensagem já com o link) e **Baixar certificado**. Pediu **via impressa**? O botão **Etiqueta** gera o endereço para os Correios; o envio é feito à mão. **Excluir** é definitivo e solta o selo.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Para o cliente', icone: 'usuario', tom: 'ok', itens: ['Reenviar por e-mail', 'Copiar link', 'WhatsApp com o link'] },
+            { titulo: 'Para a equipe', icone: 'nota', tom: 'info', itens: ['Baixar o PDF', 'Etiqueta da via impressa', 'Excluir (definitivo)'] },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
     id: 'admin.saques',
     publico: 'admin',
     titulo: 'Saques',
@@ -507,6 +994,579 @@ export const TUTORIAIS_ADMIN: Tutorial[] = [
             { icone: 'banco', rotulo: 'Baixa ou cancela no NZERP' },
             { icone: 'relogio', rotulo: 'Conferência diária', tom: 'atencao' },
             { icone: 'check', rotulo: 'Atualiza aqui e no painel', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+  {
+    id: 'admin.home',
+    publico: 'admin',
+    titulo: 'Dashboard',
+    resumo: 'Tráfego do site, leads e cadastros do período escolhido.',
+    passos: [
+      {
+        titulo: 'Escolha o período',
+        texto:
+          'Hoje, 7 dias, Mês (o padrão), Trimestre, Semestre ou Ano. **Visitantes únicos** contam sessões; **rejeição** é a sessão que viu uma página só (acima de 70% o número fica em alerta); **conversão** é leads ÷ visitantes.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Tráfego', icone: 'olho', tom: 'info', itens: ['Visitantes únicos', 'Page views e tempo médio', 'Rejeição'] },
+            { titulo: 'Captação', icone: 'email', tom: 'ok', itens: ['Leads captados', 'Atendidos e pendentes', 'Conversão'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Gráficos e mapa de cliques',
+        texto:
+          'Visitantes por dia, leads por origem, as 10 páginas mais vistas, a localização dos acessos e o **mapa térmico** de cliques por página. O mapa é uma aproximação: serve para ver tendência, não o botão exato.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'calendario', rotulo: 'Visitantes por dia' },
+            { icone: 'nota', rotulo: 'Top 10 páginas' },
+            { icone: 'mapa', rotulo: 'Localização e cliques', tom: 'info' },
+          ],
+        },
+      },
+      {
+        titulo: 'Cadastros: aprove em Clientes',
+        texto:
+          'Os cartões mostram novos cadastros e os que aguardam aprovação. Para aprovar, use **Clientes & Revendedores**: lá você escolhe o tipo e a faixa, e o cliente recebe o e-mail de acesso liberado. A faixa no topo avisa quando há ocorrências abertas na **Central**.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'usuario', rotulo: 'Cadastro pendente' },
+            { icone: 'usuarios', rotulo: 'Clientes & Revendedores' },
+            { icone: 'check', rotulo: 'Aprovar com tipo e faixa', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.central',
+    publico: 'admin',
+    titulo: 'Central de erros e mudanças',
+    resumo: 'A caixa de entrada do que o site precisa contar à equipe.',
+    passos: [
+      {
+        titulo: 'Três tipos de aviso',
+        texto:
+          '**Erros**: atacado zerado (produto sem preço de atacado no NZERP) e sync que falhou. **Mudanças**: SKU novo, SKU removido e preço que mudou muito. **Problemas informados**: o que clientes mandaram pelo botão da página do produto. Só o sistema cria avisos; nada é apagado.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Erros', icone: 'relogio', tom: 'erro', itens: ['Atacado zerado', 'Sync falhou'] },
+            { titulo: 'Mudanças', icone: 'nota', tom: 'atencao', itens: ['SKU novo ou removido', 'Preço mudou'] },
+            { titulo: 'Problemas', icone: 'usuario', tom: 'info', itens: ['Informado pelo cliente', 'Com foto e contato'] },
+          ],
+        },
+      },
+      {
+        titulo: '“Resolver” não conserta',
+        texto:
+          '**Resolver** só registra que alguém tratou. Atacado zerado se corrige no **NZERP**: no próximo sync (até 5 minutos) o aviso fecha sozinho; se continuar zerado, ele volta. Sync que falhou fecha sozinho no próximo sync que passar.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'banco', rotulo: 'Corrige no NZERP' },
+            { icone: 'relogio', rotulo: 'Próximo sync (até 5 min)' },
+            { icone: 'check', rotulo: 'Aviso fecha sozinho', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Mudanças do catálogo',
+        texto:
+          'Aparecem no sync diário ou quando você clica **Rodar sync agora**. Preço que mudou acima do limite configurado gera um aviso por SKU. Conferiu? **Marcar como visto**, ou **Marcar as N como vistas** de uma vez.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Nova', tom: 'atencao', sub: 'no sync diário' },
+            { texto: 'Vista', tom: 'ok', sub: 'conferida' },
+          ],
+        },
+      },
+      {
+        titulo: 'Problemas informados',
+        texto:
+          'O cliente (sem precisar de conta) escolhe o motivo, escreve, pode anexar foto e deixar contato; a equipe também recebe por e-mail. Responda pelo contato, deixe uma **nota** e **Resolver**. As resolvidas ficam 30 dias na aba e podem ser **reabertas**.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'usuario', rotulo: 'Cliente informa' },
+            { icone: 'email', rotulo: 'Equipe recebe' },
+            { icone: 'whatsapp', rotulo: 'Responde o contato' },
+            { icone: 'check', rotulo: 'Resolver com nota', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.produtos',
+    publico: 'admin',
+    titulo: 'Produtos da loja',
+    resumo: 'O lado editorial dos produtos: fotos, textos, ficha, SEO e publicação.',
+    passos: [
+      {
+        titulo: 'O que vem de onde',
+        texto:
+          '**SKU, nome oficial, preço e estoque vêm do NZERP.** Aqui fica o editorial: fotos e vídeo, descrição, ficha técnica, SEO e a publicação na loja.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Vem do NZERP', icone: 'banco', tom: 'info', itens: ['SKU e nome oficial', 'Preço', 'Estoque'] },
+            { titulo: 'Feito aqui', icone: 'camera', tom: 'marca', itens: ['Fotos e vídeo', 'Descrição e ficha', 'SEO e publicação'] },
+          ],
+        },
+      },
+      {
+        titulo: 'O cadastro em 5 pontos',
+        texto:
+          'A barrinha de cadastro soma 5 pontos: **capa**, **2 fotos ou mais**, **descrição**, **ficha** com 3 linhas ou mais e **título SEO**. Com menos de 3, o produto entra em **Cadastro incompleto**. Os cartões do topo filtram: sem foto, incompleto, sem conexão, inativo no ERP.',
+        cena: {
+          tipo: 'niveis',
+          niveis: [{ nome: 'Capa' }, { nome: '2 fotos' }, { nome: 'Descrição' }, { nome: 'Ficha' }, { nome: 'SEO' }],
+        },
+      },
+      {
+        titulo: 'Quando aparece na loja',
+        texto:
+          'O produto está **visível** quando está **publicado**, **não oculto à mão**, com o **SKU ativo no NZERP** e, se tiver data de lançamento, depois dela. Sem SKU, não dá para publicar.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'check', rotulo: 'Publicado' },
+            { icone: 'olho', rotulo: 'Não oculto' },
+            { icone: 'banco', rotulo: 'SKU ativo no NZERP' },
+            { icone: 'loja', rotulo: 'Visível na loja', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Em lote',
+        texto:
+          'Marque vários e use **Publicar**, **Ocultar** ou **Mostrar**. Se algum marcado não tiver SKU, o Publicar em lote falha inteiro. **↓ CSV** exporta a página que está na tela. **+ Novo produto** abre o editor vazio.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Publicar', tom: 'ok', sub: 'todos com SKU' },
+            { texto: 'Ocultar', tom: 'neutro', sub: 'some da loja' },
+            { texto: 'Mostrar', tom: 'info', sub: 'volta a aparecer' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.produto-editor',
+    publico: 'admin',
+    titulo: 'Editor de produto',
+    resumo: 'Dados, mídia, ficha, vínculo com o ERP e SEO de um produto.',
+    passos: [
+      {
+        titulo: 'As abas',
+        texto:
+          '**Dados**, **Mídia**, **Ficha**, **ERP** e **SEO**; um ponto na aba avisa que falta algo. A lateral mostra como o produto aparece na loja e no Google. **Salvar** (ou Ctrl+S) e **Salvar e próximo** gravam.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Abas do editor',
+          campos: [{ rotulo: 'Dados', valor: 'nome, descrição, publicação' }, { rotulo: 'Mídia', valor: 'grava na hora' }, { rotulo: 'Ficha' }, { rotulo: 'ERP' }, { rotulo: 'SEO' }],
+        },
+      },
+      {
+        titulo: 'Mídia grava na hora',
+        texto:
+          'Arraste as fotos: elas viram WebP (até 1.600 px; mínimo de 600 px no lado menor). A primeira foto de um produto sem capa vira a **capa**; **☆ capa** troca, **← →** ordena, e o texto alternativo ajuda o Google. Vídeo: MP4/WebM de até 20 s, ou link. A Mídia grava sozinha; o resto só com **Salvar**.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'camera', rotulo: 'Arrasta a foto' },
+            { icone: 'download', rotulo: 'Vira WebP' },
+            { icone: 'selo', rotulo: '1ª foto vira capa', tom: 'info' },
+            { icone: 'check', rotulo: 'Já está na loja', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Ficha e SEO',
+        texto:
+          'Na **Ficha**, **+ Linha** ou **Puxar do ERP**. No **SEO**, título (até 70 caracteres) e descrição (até 180); **Sugerir a partir dos dados** dá um ponto de partida. Lembre de **Salvar**: a ficha e o SEO não gravam sozinhos.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'SEO',
+          campos: [{ rotulo: 'Título SEO', valor: 'até 70' }, { rotulo: 'Descrição', valor: 'até 180' }],
+        },
+      },
+      {
+        titulo: 'ERP e publicação',
+        texto:
+          'Na aba **ERP**, o vínculo (próprio, alias ou pendente) e **Procurar SKU**. Em Dados, **Publicado** e **Oculto à mão**. O endereço (slug) não muda depois de criado. **Duplicar** cria uma cópia pendente sem fotos nem SKU.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Pendente', tom: 'atencao', sub: 'sem SKU' },
+            { texto: 'Vinculado', tom: 'info', sub: 'SKU do NZERP' },
+            { texto: 'Visível na loja', tom: 'ok', sub: 'publicado' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.avaliacoes',
+    publico: 'admin',
+    titulo: 'Avaliações & Cashback',
+    resumo: 'Moderar as avaliações dos clientes, responder e definir a troca de pontos por crédito.',
+    passos: [
+      {
+        titulo: 'Quem pode avaliar',
+        texto:
+          'Só quem **comprou** o produto (pedido do site pago ou pedido do NZERP aprovado em diante), **uma vez por produto**, com nota de 1 a 5 e texto de pelo menos 20 caracteres. Toda avaliação chega em **Esperando moderação**.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'carrinho', rotulo: 'Cliente comprou' },
+            { icone: 'estrela', rotulo: 'Avaliou' },
+            { icone: 'relogio', rotulo: 'Esperando moderação', tom: 'atencao' },
+          ],
+        },
+      },
+      {
+        titulo: 'Publicar ou recusar',
+        texto:
+          '**Publicar** põe a avaliação na página do produto e dá os pontos ao cliente (40, mais 30 com foto e mais 20 com texto longo), uma vez só, qualquer que seja a nota. **Recusar** pede um motivo, que o cliente vê na conta (sem e-mail). Recusar uma já publicada não tira os pontos.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Esperando', tom: 'atencao', sub: 'moderar' },
+            { texto: 'Publicada', tom: 'ok', sub: 'pontos ao cliente' },
+            { texto: 'Recusada', tom: 'neutro', sub: 'com motivo' },
+          ],
+        },
+      },
+      {
+        titulo: 'Responder',
+        texto:
+          'Nas publicadas, escreva a resposta e **Salvar resposta**: ela aparece embaixo da avaliação, na loja e na conta do cliente. Resposta vazia apaga.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'estrela', rotulo: 'Avaliação publicada' },
+            { icone: 'nota', rotulo: 'Resposta da NZ' },
+            { icone: 'loja', rotulo: 'Aparece na loja', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Pontos viram crédito',
+        texto:
+          'As **campanhas** dizem quantos pontos valem quanto em R$. O cliente resgata em **Pontos e cashback** e o valor entra na **carteira** dele na hora (usa no checkout ou saca por Pix). Campanha não se edita: crie outra e desligue a antiga.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'trofeu', rotulo: 'Pontos do cliente' },
+            { icone: 'presente', rotulo: 'Campanha de troca' },
+            { icone: 'carteira', rotulo: 'R$ na carteira', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.erp',
+    publico: 'admin',
+    titulo: 'Integração NZERP',
+    resumo: 'O espelho do NZERP no site e o mapa de SKU dos produtos.',
+    passos: [
+      {
+        titulo: 'O espelho do NZERP',
+        texto:
+          'SKUs, preço de venda (atacado e varejo) e estoque vêm do NZERP; custo e margem não. O sync roda quando o NZERP avisa (a cada 5 minutos) e uma vez por dia; **Sincronizar agora** roda na hora. A tabela mostra os últimos syncs.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'banco', rotulo: 'NZERP' },
+            { icone: 'relogio', rotulo: 'Sync (5 min e diário)' },
+            { icone: 'loja', rotulo: 'Preço e estoque no site', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Mapa de SKU',
+        texto:
+          'Liga cada produto do site a um SKU do NZERP. Nos **pendentes**, confira e **Confirmar**: o SKU vai para o produto e ele é **publicado** (menos alias). Editar o SKU e sair do campo faz o mesmo. **Remover** apaga o vínculo e tira o produto da loja.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Pendente', tom: 'atencao', sub: 'conferir' },
+            { texto: 'Conferido', tom: 'ok', sub: 'publicado' },
+            { texto: 'Removido', tom: 'neutro', sub: 'fora da loja' },
+          ],
+        },
+      },
+      {
+        titulo: 'Configuração',
+        texto:
+          '**Últimas unidades (m)**: abaixo desse saldo o produto mostra "Últimas unidades", quando o SKU não tem estoque mínimo no NZERP. **Ativa — desativar** desliga **todo** o sync, inclusive os botões manuais: use só em emergência.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Configuração',
+          campos: [{ rotulo: 'Limite de “últimas unidades” (m)' }, { rotulo: 'Sincronização', valor: 'Ativa' }],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.leads',
+    publico: 'admin',
+    titulo: 'Leads & Contatos',
+    resumo: 'Os contatos que chegam pelos formulários do site.',
+    passos: [
+      {
+        titulo: 'Uma lista só',
+        texto:
+          'Junta os leads de **cupom** das páginas NZPPF e os pedidos do **Encontre um aplicador**, os 200 mais recentes de cada. O WhatsApp é clicável para responder na hora; a origem e o detalhe dizem de onde veio.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Cupom NZPPF', icone: 'cupom', tom: 'marca', itens: ['Páginas da linha', 'Nome e WhatsApp'] },
+            { titulo: 'Encontre um aplicador', icone: 'mapa', tom: 'info', itens: ['Cidade e serviço', 'Pedido de contato'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Pendente e atendido',
+        texto: 'Clique no status para alternar entre **Pendente** e **Atendido**. Ele muda na hora, sem pedir confirmação.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Pendente', tom: 'atencao', sub: 'responder' },
+            { texto: 'Atendido', tom: 'ok', sub: 'contato feito' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.promo',
+    publico: 'admin',
+    titulo: 'Páginas promocionais',
+    resumo: 'As landing pages de campanha e os cadastros de cada uma.',
+    passos: [
+      {
+        titulo: 'As campanhas',
+        texto:
+          'Cada cartão é uma campanha (hoje, Festival Interlagos e Coleção NZPPF 2026): **Abrir página**, **Copiar link**, **Link do QR** (com UTM, para impresso) e **Ver cadastros**. Campanha nova precisa ser criada no código.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'link', rotulo: 'Link ou QR da campanha' },
+            { icone: 'usuario', rotulo: 'Pessoa se cadastra' },
+            { icone: 'nota', rotulo: 'Aparece aqui', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Cadastros e brinde',
+        texto:
+          'Filtre pelos chips de status e **Exportar CSV** leva o que está filtrado. No Interlagos, o brinde anda por **pendente → validado → enviado** (ou recusado), e **Copiar** monta a etiqueta.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Pendente', tom: 'atencao' },
+            { texto: 'Validado', tom: 'info' },
+            { texto: 'Enviado', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.equipe',
+    publico: 'admin',
+    titulo: 'Usuários do sistema',
+    resumo: 'Quem da equipe tem acesso de administrador ao site.',
+    passos: [
+      {
+        titulo: 'Só o convite dá acesso',
+        texto:
+          'A lista vem da equipe do NZERP, mas estar no NZERP **não basta**: só **Convidar** transforma a pessoa em administrador do site (e a conta precisa ter o e-mail confirmado). **Sincronizar com o ERP** atualiza quem já tem acesso e bloqueia quem saiu do NZERP; não dá acesso a ninguém.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'banco', rotulo: 'Pessoa no NZERP' },
+            { icone: 'email', rotulo: 'Convidar' },
+            { icone: 'cadeado', rotulo: 'Aceita e cria a senha' },
+            { icone: 'check', rotulo: 'Com acesso', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Convite e acesso',
+        texto:
+          '**Enviar convite por e-mail** ou **Copiar link** para mandar por outro canal; link vencido, **Novo link**. **Remover acesso** bloqueia a conta e tira o administrador; ninguém remove a si mesmo.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Sem acesso', tom: 'neutro' },
+            { texto: 'Convidado', tom: 'atencao' },
+            { texto: 'Com acesso', tom: 'ok' },
+            { texto: 'Bloqueado', tom: 'erro' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.blog',
+    publico: 'admin',
+    titulo: 'Blog & Conteúdos',
+    resumo: 'Escrever, publicar e editar os posts do blog.',
+    passos: [
+      {
+        titulo: 'Escrever um post',
+        texto:
+          '**+ Nova Postagem**: título, meta description, palavra-chave foco, imagem (UPLOAD DA MÁQUINA) e o corpo em Markdown. Em post longo, copie o texto antes de salvar: se der erro, o editor fecha.',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Nova postagem',
+          campos: [{ rotulo: 'Título' }, { rotulo: 'Meta Description' }, { rotulo: 'Palavra-chave foco' }, { rotulo: 'Status', valor: 'Rascunho' }],
+        },
+      },
+      {
+        titulo: 'O status manda',
+        texto:
+          'O site só mostra posts **Publicados**. O seletor de status começa em **Rascunho**: troque para Publicado antes de salvar para o post ir ao ar. **Excluir** apaga de vez.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Rascunho', tom: 'atencao', sub: 'só aqui' },
+            { texto: 'Publicado', tom: 'ok', sub: 'no blog' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.blog-ia',
+    publico: 'admin',
+    titulo: 'Motor IA (SEO autônomo)',
+    resumo: 'Campanhas de temas que geram posts para o blog sozinhas.',
+    passos: [
+      {
+        titulo: 'Campanhas de temas',
+        texto:
+          'Cada campanha tem os temas, a **frequência** (12, 24, 48 ou 168 horas), o modo de publicação (**rascunho para revisão** ou **publicar automaticamente**) e o status **ALIVE** ou **PAUSED** (clique para trocar).',
+        cena: {
+          tipo: 'formulario',
+          titulo: 'Ajustar motor',
+          campos: [{ rotulo: 'Frequência', valor: '24 h' }, { rotulo: 'Publicação', valor: 'Rascunho para revisão' }, { rotulo: 'Status', valor: 'ALIVE' }],
+        },
+      },
+      {
+        titulo: 'Quando roda',
+        texto:
+          'O motor roda **uma vez por dia** e gera **no máximo um post por dia**, da campanha mais atrasada: frequência de 12 horas não vira dois posts no dia. **Disparar Agora** gera na hora, só em campanha ativa.',
+        cena: {
+          tipo: 'linhaTempo',
+          marcos: [
+            { rotulo: 'Rodada diária', sub: '1 vez por dia' },
+            { rotulo: 'Campanha mais atrasada', tom: 'atencao' },
+            { rotulo: '1 post gerado', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Revisar antes de publicar',
+        texto:
+          'Em **rascunho para revisão**, o post espera em **Blog & Conteúdos** até alguém revisar e publicar. Em **publicar automaticamente**, ele vai direto ao ar: confira os posts com frequência.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Rascunho para revisão', icone: 'olho', tom: 'ok', itens: ['Espera no Blog', 'Você publica'] },
+            { titulo: 'Automático', icone: 'relogio', tom: 'atencao', itens: ['Vai direto ao ar', 'Revise depois'] },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.agencia',
+    publico: 'admin',
+    titulo: 'Agência NZ',
+    resumo: 'Geradores de material de marketing feitos no próprio navegador.',
+    passos: [
+      {
+        titulo: 'Os geradores',
+        texto:
+          'O **Catálogo Físico NZPPF** gera um PDF A5 de 20 páginas, em 300 DPI e com sangria de 3 mm, pronto para gráfica (leva de 25 a 45 segundos). Os outros motores fazem imagens e carrosséis por família. A **Oficina NZ** cria geradores novos.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'nota', rotulo: 'Escolhe o gerador' },
+            { icone: 'camera', rotulo: 'Ajusta o conteúdo' },
+            { icone: 'download', rotulo: 'PDF ou imagem', tom: 'ok' },
+          ],
+        },
+      },
+      {
+        titulo: 'Fica neste navegador',
+        texto:
+          'As edições do catálogo e os motores criados na Oficina ficam **só neste navegador**: outro computador não vê, e limpar os dados do navegador apaga. Baixe o arquivo pronto ao terminar.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Neste navegador', tom: 'atencao', sub: 'não sincroniza' },
+            { texto: 'Arquivo baixado', tom: 'ok', sub: 'guardado de vez' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
+    id: 'admin.agenda-social',
+    publico: 'admin',
+    titulo: 'Agenda Social Media',
+    resumo: 'O planejamento dos posts das três contas.',
+    passos: [
+      {
+        titulo: 'Planejar',
+        texto:
+          'Veja os posts em **Kanban**, **Calendário** ou **Plano**, das três contas. **+ Novo post** cria um; **Gerar ideias** sugere posts a partir de modelos prontos; **Importar / Comandar** e **Exportar** levam e trazem a agenda.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Kanban', icone: 'nota', tom: 'info', itens: ['Por status'] },
+            { titulo: 'Calendário', icone: 'calendario', tom: 'marca', itens: ['Por data'] },
+            { titulo: 'Plano', icone: 'olho', tom: 'ok', itens: ['Visão do mês'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Ela não publica',
+        texto: 'A agenda organiza; a publicação nas redes é feita fora dela. Mude o status do post conforme ele anda até ser publicado.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'presente', rotulo: 'Ideia' },
+            { icone: 'camera', rotulo: 'Produção' },
+            { icone: 'check', rotulo: 'Publicado fora', tom: 'ok' },
           ],
         },
       },

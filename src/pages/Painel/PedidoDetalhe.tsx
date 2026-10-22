@@ -29,6 +29,7 @@ import {
 } from '../../lib/shop/checkout';
 import FormaPagamento, { type EscolhaPagamento } from '../Loja/FormaPagamento';
 import styles from './PedidoDetalhe.module.css';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 
 const STATUS_PEDIDO: Record<string, string> = {
   RASCUNHO: 'Registrado',
@@ -124,7 +125,9 @@ export default function PedidoDetalhe() {
           <Link to="/painel" className={styles.voltar}>
             ← Minha conta
           </Link>
-          <h1 className={styles.titulo}>Pedido #{pedido.numero}</h1>
+          <TituloComTutorial tutorial="conta.pedido">
+            <h1 className={styles.titulo}>Pedido #{pedido.numero}</h1>
+          </TituloComTutorial>
           <p className={styles.mudo}>
             {new Date(pedido.criadoEm).toLocaleString('pt-BR')}
             {pedido.erpQuoteNumber ? ` · nº ${pedido.erpQuoteNumber} no NZERP` : ''}

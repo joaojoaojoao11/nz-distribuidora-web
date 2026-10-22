@@ -23,6 +23,17 @@ export interface ItemPainel {
    * não é o mesmo que proteger a tela.
    */
   soAdmin?: boolean;
+  /** Botão "Como funciona" ao lado do título (ids de src/lib/tutoriais/conta.ts), com variante por tipo de acesso. */
+  tutorial?: TutorialDaTela;
+}
+
+/** `padrao` vale para todos; as outras chaves trocam o tutorial para quem é daquele tipo (afiliado vem primeiro). */
+export interface TutorialDaTela {
+  padrao: string;
+  afiliado?: string;
+  lojista?: string;
+  revendedor?: string;
+  admin?: string;
 }
 
 export interface GrupoPainel {
@@ -42,6 +53,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Pedidos',
         titulo: 'Meus pedidos',
         dica: 'Status, itens e comprar de novo',
+        tutorial: { padrao: 'conta.pedidos' },
         contador: 'pedidos',
       },
       {
@@ -50,6 +62,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Pagamentos',
         titulo: 'Pagamentos',
         dica: '2ª via de boleto, Pix e recibo',
+        tutorial: { padrao: 'conta.pagamentos' },
       },
       {
         para: '/painel/carrinho',
@@ -57,6 +70,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Carrinho guardado',
         titulo: 'Carrinho guardado',
         dica: 'O que você deixou para depois',
+        tutorial: { padrao: 'conta.carrinho' },
         contador: 'carrinho',
       },
     ],
@@ -71,6 +85,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Favoritos',
         titulo: 'Favoritos',
         dica: 'As cores que você separou',
+        tutorial: { padrao: 'conta.listas' },
         contador: 'favoritos',
       },
       {
@@ -79,6 +94,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Vistos recentemente',
         titulo: 'Vistos recentemente',
         dica: 'Os últimos produtos que você abriu',
+        tutorial: { padrao: 'conta.listas' },
       },
       {
         para: '/painel/selecoes',
@@ -86,6 +102,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Minhas seleções',
         titulo: 'Minhas seleções',
         dica: 'Links que você montou para clientes',
+        tutorial: { padrao: 'conta.selecoes' },
         contador: 'selecoes',
         soAdmin: true,
       },
@@ -101,6 +118,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Meus dados',
         titulo: 'Meus dados',
         dica: 'Nome, CPF/CNPJ, telefone e endereço',
+        tutorial: { padrao: 'conta.dados' },
       },
       {
         para: '/painel/seguranca',
@@ -108,6 +126,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Senha e segurança',
         titulo: 'Senha e segurança',
         dica: 'E-mail de acesso, senha e último acesso',
+        tutorial: { padrao: 'conta.seguranca' },
       },
       {
         para: '/painel/garantias',
@@ -115,6 +134,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Minhas garantias',
         titulo: 'Minhas garantias',
         dica: 'Certificados emitidos no seu nome',
+        tutorial: { padrao: 'conta.garantias' },
         contador: 'garantias',
       },
     ],
@@ -129,6 +149,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Pontos e cashback',
         titulo: 'Pontos e cashback',
         dica: 'Seu saldo e as trocas por crédito',
+        tutorial: { padrao: 'conta.pontos' },
       },
       {
         para: '/painel/avaliacoes',
@@ -136,6 +157,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Minhas avaliações',
         titulo: 'Minhas avaliações',
         dica: 'Avalie o que comprou e ganhe pontos',
+        tutorial: { padrao: 'conta.avaliacoes' },
       },
       {
         para: '/painel/indique',
@@ -143,6 +165,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Indique e ganhe',
         titulo: 'Indique e ganhe',
         dica: 'Seu link, seu cupom e suas comissões',
+        tutorial: { padrao: 'conta.indique', afiliado: 'conta.indique-afiliado' },
       },
       {
         para: '/painel/cupons',
@@ -150,6 +173,7 @@ export const GRUPOS: GrupoPainel[] = [
         rotulo: 'Meus cupons',
         titulo: 'Meus cupons',
         dica: 'Códigos disponíveis para usar',
+        tutorial: { padrao: 'conta.cupons' },
         contador: 'cupons',
       },
     ],
@@ -165,6 +189,18 @@ export function gruposVisiveis(isAdmin: boolean): GrupoPainel[] {
 }
 
 /** Título do cabeçalho a partir da rota. */
+/** O tutorial da tela aberta, escolhido pelo tipo de acesso de quem está vendo. */
+export function tutorialDaRota(pathname: string, quem: { role?: string | null; isAdmin: boolean; afiliado: boolean }): string | undefined {
+  const item = TODOS_ITENS.find((i) => pathname === i.para || pathname.startsWith(i.para + '/'));
+  const t = item?.tutorial;
+  if (!t) return undefined;
+  if (quem.afiliado && t.afiliado) return t.afiliado;
+  if (quem.isAdmin && t.admin) return t.admin;
+  if (quem.role === 'lojista' && t.lojista) return t.lojista;
+  if (quem.role === 'reseller' && t.revendedor) return t.revendedor;
+  return t.padrao;
+}
+
 export function tituloDaRota(pathname: string): string {
   if (pathname === '/painel' || pathname === '/painel/') return 'Minha conta';
   if (pathname.startsWith('/painel/pedido/')) return 'Pedido';

@@ -33,6 +33,7 @@ import { useLimiteNome } from './useLimiteNome';
 import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 import BotaoMostruario from './mostruario/BotaoMostruario';
 import { DECOR, linkWhatsApp } from '../../lib/contatos';
+import BotaoTutorial from '../../components/Tutorial/BotaoTutorial';
 import styles from './LojaProduct.module.css';
 
 const VERTICAL_PATH: Record<string, string> = {
@@ -452,6 +453,11 @@ function ProductView({
             <SeletorTamanho variantes={variantes} escolhido={escolhida?.slug ?? null} onEscolher={escolherTamanho} />
           )}
 
+          {item.kind !== 'linha' && (
+            <div style={{ margin: '0.2rem 0 0.8rem' }}>
+              <BotaoTutorial id="loja.produto" rotulo="Como comprar" />
+            </div>
+          )}
           {item.kind !== 'linha' && (
             <Preco
               slug={ativo.slug}

@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { Clock3, ShieldAlert, ShieldCheck, ShieldX } from 'lucide-react';
 import SEO from '../../components/SEO/SEO';
+import TituloComTutorial from '../../components/Tutorial/TituloComTutorial';
 import { supabase } from '../../lib/supabase';
 import { VENDAS, linkWhatsApp } from '../../lib/contatos';
 import { formatarSelo, limparSelo } from '../../lib/garantia';
@@ -85,7 +86,9 @@ export default function SeloGarantia() {
 
       <header className={base.topo}>
         <p className={base.eyebrow}>Selo de garantia NZPPF</p>
-        <h1 className={base.titulo}>Conferência do selo</h1>
+        <TituloComTutorial tutorial="garantia.selo">
+          <h1 className={base.titulo}>Conferência do selo</h1>
+        </TituloComTutorial>
       </header>
 
       {tela.tipo === 'buscando' && (
