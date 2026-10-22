@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { textoDoErroAuth } from '../../lib/shop/conta';
+import { digitarIdentificador, ERRO_CONTA, textoDoErroAuth } from '../../lib/shop/conta';
 import { supabase } from '../../lib/supabase';
 import styles from './Auth.module.css';
 
@@ -16,7 +16,10 @@ export default function Login() {
   const destinoSeguro = next && next.startsWith('/') && !next.startsWith('//') ? next : null;
   // ?confirmado=1 — a pessoa acabou de clicar no e-mail de confirmação.
   const confirmado = new URLSearchParams(location.search).get('confirmado') === '1';
-  const [email, setEmail] = useState('');
+  // Um campo só: e-mail, CPF ou CNPJ (plano de login por documento, D1).
+  const [identificador, setIdentificador] = useState('');
+  // O e-mail da conta, quando a entrada foi pelo documento — para reenviar a confirmação.
+  const [emailResolvido, setEmailResolvido] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [verSenha, setVerSenha] = useState(false);
   const [error, setError] = useState('');
@@ -49,9 +52,12 @@ export default function Login() {
     setError('');
     setLoading(true);
 
-    const { error: err } = await signIn(email, password);
-    if (err) {
-      setError(textoDoErroAuth(err));
+    const r = await signIn(identificador, password);
+    setEmailResolvido(r.email);
+    if (r.error) {
+      const err = r.error;
+      const senhaErrada = err.toLowerCase().includes('invalid login credentials');
+      setError(ERRO_CONTA[err] ?? (r.porDocumento && senhaErrada ? ERRO_CONTA.credenciais : textoDoErroAuth(err)));
       setNaoConfirmado(err.toLowerCase().includes('email not confirmed'));
       setLoading(false);
       return;
@@ -76,7 +82,7 @@ export default function Login() {
   const reenviarConfirmacao = async () => {
     setReenvioMsg('');
     const emailRedirectTo = `${window.location.origin}/login?confirmado=1${destinoSeguro ? `&next=${encodeURIComponent(destinoSeguro)}` : ''}`;
-    const { error: err } = await supabase.auth.resend({ type: 'signup', email: email.trim().toLowerCase(), options: { emailRedirectTo } });
+    const { error: err } = await supabase.auth.resend({ type: 'signup', email: (emailResolvido ?? identificador).trim().toLowerCase(), options: { emailRedirectTo } });
     setReenvioMsg(err ? textoDoErroAuth(err.message) : 'Enviamos de novo. Confira a caixa de entrada e o spam.');
   };
 
@@ -84,7 +90,7 @@ export default function Login() {
     <div className={styles.authPage}>
       <div className={styles.authCard}>
         <h1 className={styles.authTitle}>Entrar</h1>
-        <p className={styles.authSub}>Acesse sua conta NZ Distribuidora</p>
+        <p className={styles.authSub}>Acesse sua conta NZ com e-mail, CPF ou CNPJ</p>
 
         {GOOGLE_ATIVO && (
           <>
@@ -111,15 +117,24 @@ export default function Login() {
           )}
 
           <div className={styles.inputGroup}>
-            <label className={styles.label}>E-mail</label>
+            <label className={styles.label} htmlFor="login-identificador">
+              E-mail, CPF ou CNPJ
+            </label>
             <input
-              type="email"
+              id="login-identificador"
+              type="text"
               className={styles.input}
-              placeholder="seu@email.com"
+              placeholder="seu@email.com ou CPF/CNPJ"
               required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="username"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              value={identificador}
+              onChange={(e) => {
+                const novo = e.target.value;
+                setIdentificador((anterior) => digitarIdentificador(anterior, novo));
+              }}
             />
           </div>
 
@@ -142,7 +157,7 @@ export default function Login() {
           </div>
 
           <Link to="/recuperar-senha" className={styles.esqueci}>
-            Esqueci minha senha
+            Esqueci minha senha / primeiro acesso
           </Link>
 
           <button type="submit" className={styles.submitBtn} disabled={loading}>

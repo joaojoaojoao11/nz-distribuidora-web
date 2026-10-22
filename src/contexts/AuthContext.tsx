@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
-import { chamarConta } from '../lib/shop/conta';
+import { chamarConta, ContaError, tipoIdentificador } from '../lib/shop/conta';
+import { somenteDigitos } from '../lib/documento';
 import { definirModoAdmin } from '../lib/shop/store';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -31,7 +32,7 @@ interface AuthContextType {
   isApproved: boolean;
   /** Cadastro com tudo que o pedido precisa (trigger nz_marcar_cadastro_completo). */
   cadastroCompleto: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (identificador: string, password: string) => Promise<{ error: string | null; email: string | null; porDocumento: boolean }>;
   /** `semSessao`: a conta foi criada mas precisa confirmar o e-mail antes de entrar. */
   signUp: (email: string, password: string, meta: SignUpMeta, next?: string | null) => Promise<{ error: string | null; semSessao?: boolean }>;
   signOut: () => Promise<void>;
@@ -124,10 +125,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, [fetchProfile]);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
-    if (error) return { error: error.message };
-    return { error: null };
+  /**
+   * Entra com e-mail, CPF ou CNPJ + senha. Pelo documento, o servidor confere a
+   * senha e só então devolve o e-mail da conta; o login em si é sempre este
+   * aqui, do navegador (o limite do Supabase é por IP de quem chama). O e-mail
+   * volta para a tela poder reenviar a confirmação. `error` é um código do
+   * servidor (credenciais, muitas-tentativas…) ou a mensagem do Supabase.
+   */
+  const signIn = async (identificador: string, password: string) => {
+    const tipo = tipoIdentificador(identificador);
+    if (tipo === 'invalido') return { error: 'identificador-invalido', email: null, porDocumento: false };
+    let email = identificador.trim().toLowerCase();
+    const porDocumento = tipo === 'documento';
+    if (porDocumento) {
+      try {
+        const r = await chamarConta<{ email: string }>({ op: 'entrar-documento', documento: somenteDigitos(identificador), senha: password });
+        email = r.email;
+      } catch (e) {
+        return { error: e instanceof ContaError ? e.codigo : 'indisponivel', email: null, porDocumento };
+      }
+    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: error.message, email, porDocumento };
+    return { error: null, email, porDocumento };
   };
 
   /**

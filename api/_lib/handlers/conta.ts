@@ -24,6 +24,8 @@
 //   trocar-documento    admin   — troca o CPF/CNPJ de uma conta (travado para o
 //                                 cliente depois de aprovada/ligada ao ERP)
 //   recuperar-senha     público — envia o e-mail de redefinição
+//   entrar-documento    público — CPF/CNPJ + senha: confere no banco e devolve
+//                                 o e-mail da conta só com a senha certa
 //
 // Por que `recuperar-senha` passa pelo servidor em vez de o front chamar o
 // Supabase direto: assim a resposta é sempre 200 (não dá para descobrir quais
@@ -43,6 +45,7 @@ import { avisarCadastroNovo, avisarClienteAcessoLiberado } from '../avisos.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 import { criarContasDoErp } from '../conta/contasDoErp.js';
 import { pagarTitulo } from '../conta/pagarTitulo.js';
+import { chaveDoc, conferirSenhaDocumento, passouDoLimite, registrarTentativaLogin } from '../conta/loginDocumento.js';
 
 const TIPOS_ACESSO = ['client', 'lojista', 'reseller'];
 
@@ -147,6 +150,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       () => undefined
     );
     res.status(200).json(generico);
+    return;
+  }
+
+  // Login com CPF/CNPJ (Fase 1). O servidor NÃO faz o login: confere a senha no
+  // banco (login_conferir_documento) e, só com a senha certa, devolve o e-mail
+  // da própria conta — o navegador entra com ele, pelo IP do cliente (o limite
+  // do Supabase é por IP de origem e ignora X-Forwarded-For). Documento sem
+  // conta, senha errada, admin (D2) e conta sem senha própria respondem igual
+  // (D3). Limites: 5 senhas erradas por documento em 15 min, 20 tentativas por
+  // IP por hora (D5).
+  if (op === 'entrar-documento') {
+    const doc = somenteDigitos(body.documento);
+    const senha = typeof body.senha === 'string' ? body.senha : '';
+    if (!validarCpfCnpj(doc)) {
+      await registrarTentativaLogin(site, null, ip || null, 'invalido');
+      res.status(400).json({ error: 'documento-invalido' });
+      return;
+    }
+    const chave = chaveDoc(doc);
+    if (await passouDoLimite(site, chave, ip || null)) {
+      await registrarTentativaLogin(site, chave, ip || null, 'limite');
+      res.status(429).json({ error: 'muitas-tentativas' });
+      return;
+    }
+    if (!senha) {
+      res.status(401).json({ error: 'credenciais' });
+      return;
+    }
+    let r: Awaited<ReturnType<typeof conferirSenhaDocumento>>;
+    try {
+      r = await conferirSenhaDocumento(site, doc, senha);
+    } catch {
+      res.status(503).json({ error: 'indisponivel' });
+      return;
+    }
+    await registrarTentativaLogin(site, chave, ip || null, r.resultado);
+    if (r.resultado !== 'ok' || !r.email) {
+      res.status(401).json({ error: 'credenciais' });
+      return;
+    }
+    res.status(200).json({ ok: true, email: r.email });
     return;
   }
 

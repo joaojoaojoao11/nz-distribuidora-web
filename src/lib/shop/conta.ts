@@ -2,6 +2,7 @@
 // mais as máscaras que o cadastro, o painel e o checkout compartilham.
 
 import { supabase } from '../supabase';
+export { digitarIdentificador, mascaraDocumentoParcial, tipoIdentificador, type TipoIdentificador } from '../identificador';
 
 export class ContaError extends Error {
   codigo: string;
@@ -76,6 +77,10 @@ export const ERRO_CONTA: Record<string, string> = {
   'muitas-consultas': 'Muitas consultas seguidas. Espere um minuto.',
   'perfil-nao-encontrado': 'Não encontrei seu cadastro.',
   'apenas-admin': 'Só administradores podem fazer isso.',
+  credenciais: 'CPF/CNPJ ou senha incorretos.',
+  'muitas-tentativas': 'Muitas tentativas seguidas. Espere 15 minutos ou crie uma nova senha em "Esqueci minha senha".',
+  indisponivel: 'Não deu para entrar agora. Tente de novo em instantes.',
+  'identificador-invalido': 'Digite seu e-mail, CPF ou CNPJ.',
   'usuario-erp-nao-encontrado': 'Este usuário não existe mais no NZERP.',
   'sem-usuario-no-erp': 'Esta pessoa não tem usuário ativo no NZERP.',
   'nao-pode-se-desativar': 'Você não pode remover o seu próprio acesso.',
