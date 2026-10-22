@@ -33,7 +33,7 @@
 }
 
 .colNome {
-  min-width: 170px;
+  min-width: 150px;
 }
 
 .colDoc {
@@ -42,7 +42,7 @@
 
 /* E-mail inteiro quando cabe; quebra no meio só se a tela for estreita. */
 .colContato {
-  min-width: 150px;
+  min-width: 250px;
   overflow-wrap: anywhere;
 }
 
