@@ -22,11 +22,11 @@ import { createHash } from 'node:crypto';
 import QRCode from 'qrcode';
 import { resolverPapelDetalhado, type Db } from '../papel.js';
 import { EMAIL_VALIDO, emailConfigurado, enviarEmail, remetente, type ResultadoEmail } from '../email.js';
-import { SELO_VALIDO, gerarCodigo, normalizarSelo, validarRegistro, type Garantia } from '../garantias/dados.js';
+import { gerarCodigo, validarRegistro, type Garantia } from '../garantias/dados.js';
 import { SITE, emailAvisoNz, emailCertificado, emailProtocolo } from '../garantias/emails.js';
 
 const COLUNAS =
-  'id, protocolo, status, cliente_cpf, cliente_nome_completo, cliente_email, cliente_telefone, cliente_cep, cliente_endereco, cliente_numero, cliente_complemento, cliente_bairro, cliente_cidade, cliente_estado, veiculo_placa_chassi, veiculo_modelo, aplicador_nome, data_aplicacao, produto_nome, linha_escolhida, tipo_servico, areas_protegidas, codigo_autenticacao, garantia_anos, durabilidade_anos, created_at, aprovada_em, motivo_recusa, certificado_enviado_em, certificado_enviado_para, envios_certificado, selo_codigo';
+  'id, protocolo, status, cliente_cpf, cliente_nome_completo, cliente_email, cliente_telefone, cliente_cep, cliente_endereco, cliente_numero, cliente_complemento, cliente_bairro, cliente_cidade, cliente_estado, veiculo_placa_chassi, veiculo_modelo, aplicador_nome, data_aplicacao, produto_nome, linha_escolhida, tipo_servico, areas_protegidas, codigo_autenticacao, garantia_anos, durabilidade_anos, created_at, aprovada_em, motivo_recusa, certificado_enviado_em, certificado_enviado_para, envios_certificado';
 
 /** Freio de spam por IP. Um aplicador registrando a semana de serviço cabe folgado. */
 const MAX_POR_HORA = 12;
@@ -115,26 +115,6 @@ async function registrar(site: Db, req: VercelRequest, res: VercelResponse, body
     return;
   }
 
-  // Selo do batente (opcional). Confere antes de gravar para o erro voltar na
-  // hora; o freio por IP acima também segura quem tentasse adivinhar códigos.
-  const selo = normalizarSelo(dados.selo_codigo);
-  if (selo) {
-    if (!SELO_VALIDO.test(selo)) {
-      res.status(400).json({ error: 'selo-invalido' });
-      return;
-    }
-    const { data: disp, error: erroSelo } = await site.rpc('selo_disponivel', { p_codigo: selo });
-    if (erroSelo) {
-      console.error('[garantia] selo_disponivel falhou:', erroSelo.code, erroSelo.message);
-      res.status(500).json({ error: 'nao-consegui-registrar' });
-      return;
-    }
-    if (disp !== 'ok') {
-      res.status(400).json({ error: `selo-${String(disp)}` });
-      return;
-    }
-  }
-
   // O código é único no banco; sorteio repetido (improvável) tenta de novo.
   let g: Garantia | null = null;
   for (let tentativa = 0; tentativa < 3 && !g; tentativa++) {
@@ -154,14 +134,6 @@ async function registrar(site: Db, req: VercelRequest, res: VercelResponse, body
   if (!g) {
     res.status(500).json({ error: 'nao-consegui-registrar' });
     return;
-  }
-
-  // Liga o selo à garantia. Se outro registro levou o mesmo selo no meio do
-  // caminho (corrida rara), a garantia fica sem selo e segue para análise.
-  if (selo) {
-    const { data: ligou, error: erroVinculo } = await site.rpc('vincular_selo', { p_codigo: selo, p_garantia: g.id });
-    if (erroVinculo || ligou !== true) console.error('[garantia] selo não ligado:', selo, g.protocolo, erroVinculo?.message ?? 'ocupado');
-    else g = { ...g, selo_codigo: selo };
   }
 
   // Avisos em paralelo; nenhum deles pode desfazer o registro.

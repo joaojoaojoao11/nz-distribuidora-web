@@ -4,7 +4,7 @@
 //   admin.*     → admin.ts     (painel administrativo)
 //   conta.*     → conta.ts     (área do cliente: /painel)
 //   loja.*      → loja.ts      (vitrine, produto, carrinho, checkout, cadastro)
-//   garantia.*  → garantia.ts  (registro, selo e certificado)
+//   garantia.*  → garantia.ts  (registro e certificado)
 // Cada área é carregada só quando a primeira tela dela pede um tutorial: o texto
 // do admin não entra no pacote da loja, e vice-versa.
 //

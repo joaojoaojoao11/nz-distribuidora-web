@@ -276,10 +276,20 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
     if (base) return { ...base, status: 200, canonicalPath: `/${segments[0]}`, type: 'website', schema: [] };
   }
 
-  // /s/:codigo — QR do selo de garantia do batente. O QR imprime /S/ em
-  // caixa-alta; quem decide se o selo existe é a tela (RPC conferir_selo).
-  if (segments[0]?.toLowerCase() === 's' && segments.length === 2) {
-    return { title: 'Selo de garantia NZPPF', description: 'Conferência do selo de garantia NZPPF colado no veículo.', noindex: true, status: 200, canonicalPath: path, type: 'website', schema: [] };
+  // /s — QR do selo de garantia do batente (o mesmo em todos os selos desde
+  // 22/10/2026; imprime /S em caixa-alta). /s/<código> é o QR antigo, de selo
+  // único: a tela leva para /s.
+  if (segments[0]?.toLowerCase() === 's' && segments.length <= 2) {
+    return {
+      title: 'Veículo protegido com NZPPF',
+      description: 'Este veículo tem NZPPF, a melhor solução de PPF do Brasil. Conheça as linhas e os cuidados com o seu PPF.',
+      image: `${SITE_URL}/assets/images/protegido/og-protegido.jpg`,
+      noindex: true,
+      status: 200,
+      canonicalPath: '/s',
+      type: 'website',
+      schema: [],
+    };
   }
 
   // /blog/:slug — valida no Supabase; post inexistente = 404 real

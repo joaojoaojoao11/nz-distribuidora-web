@@ -1,7 +1,7 @@
-// Tutoriais da garantia: registro (versão do dono e do aplicador), selo do
-// batente e conferência do certificado. Escritos a partir do código em
-// 22/10/2026 (WarrantyRegistration + registro/*, handler garantia, RPCs
-// conferir_selo e validar_garantia). Cada frase descreve o que o sistema faz
+// Tutoriais da garantia: registro (versão do dono e do aplicador) e
+// conferência do certificado. Escritos a partir do código em 22/10/2026
+// (WarrantyRegistration + registro/*, handler garantia, RPC validar_garantia).
+// O selo do batente não entra mais no registro desde 22/10 (QR único, página /s). Cada frase descreve o que o sistema faz
 // hoje; mudou a regra, mude aqui. Ver index.ts.
 
 import type { Tutorial } from '../../components/Tutorial/tipos';
@@ -57,13 +57,12 @@ export const TUTORIAIS_GARANTIA: Tutorial[] = [
         cena: ONDE,
       },
       {
-        titulo: 'Veículo, data e selo',
-        texto:
-          'Placa (Mercosul ou antiga) ou chassi, modelo, **data da aplicação** e quem aplicou. Se o carro tem o **selo NZPPF** no batente da porta, digite o código que fica embaixo do QR: ele liga o selo a esta garantia.',
+        titulo: 'Veículo e data',
+        texto: 'Placa (Mercosul ou antiga) ou chassi, modelo, **data da aplicação** e quem aplicou.',
         cena: {
           tipo: 'formulario',
           titulo: 'Veículo e aplicação',
-          campos: [{ rotulo: 'Placa ou chassi', valor: 'ABC1D23' }, { rotulo: 'Modelo do veículo' }, { rotulo: 'Data da aplicação', valor: 'Hoje' }, { rotulo: 'Código do selo (opcional)', valor: 'XXXX-XXXX' }],
+          campos: [{ rotulo: 'Placa ou chassi', valor: 'ABC1D23' }, { rotulo: 'Modelo do veículo' }, { rotulo: 'Data da aplicação', valor: 'Hoje' }, { rotulo: 'Aplicado por' }],
         },
       },
       {
@@ -79,7 +78,7 @@ export const TUTORIAIS_GARANTIA: Tutorial[] = [
       {
         titulo: 'Depois de enviar',
         texto:
-          'Você recebe um **protocolo** e o registro fica **em análise**. A NZ confere e, aprovado, o **certificado em PDF** chega no e-mail do dono. O QR do selo passa a abrir o certificado. Quem tem conta com o mesmo CPF ou e-mail acompanha em **Minhas garantias**.',
+          'Você recebe um **protocolo** e o registro fica **em análise**. A NZ confere e, aprovado, o **certificado em PDF** chega no e-mail do dono. Quem tem conta com o mesmo CPF ou e-mail acompanha em **Minhas garantias**.',
         cena: DEPOIS,
       },
     ],
@@ -100,11 +99,11 @@ export const TUTORIAIS_GARANTIA: Tutorial[] = [
       {
         titulo: '“Fui eu” e o selo',
         texto:
-          'No campo **Aplicado por**, o botão **Fui eu** preenche o nome da sua empresa. Cole o **selo NZPPF** no batente da porta e digite o código dele: o selo fica ligado a esta garantia e o QR passa a mostrar o andamento.',
+          'No campo **Aplicado por**, o botão **Fui eu** preenche o nome da sua empresa. Cole o **selo NZPPF** no batente da porta: o QR dele mostra ao dono que o carro está protegido e apresenta as linhas NZPPF. O selo não tem código para digitar.',
         cena: {
           tipo: 'formulario',
           titulo: 'Veículo e aplicação',
-          campos: [{ rotulo: 'Placa ou chassi', valor: 'ABC1D23' }, { rotulo: 'Aplicado por', valor: 'Fui eu: sua empresa' }, { rotulo: 'Data da aplicação', valor: 'Hoje' }, { rotulo: 'Código do selo', valor: 'XXXX-XXXX' }],
+          campos: [{ rotulo: 'Placa ou chassi', valor: 'ABC1D23' }, { rotulo: 'Aplicado por', valor: 'Fui eu: sua empresa' }, { rotulo: 'Data da aplicação', valor: 'Hoje' }],
         },
       },
       {
@@ -124,53 +123,6 @@ export const TUTORIAIS_GARANTIA: Tutorial[] = [
         texto:
           'Sai um **protocolo** e o registro fica em análise; aprovado, o dono recebe o certificado por e-mail. O registro **não fica na sua conta**: use **Salvar comprovante** ou copie o protocolo. Muitos registros seguidos da mesma internet podem ser barrados por uma hora.',
         cena: DEPOIS,
-      },
-    ],
-  },
-
-  {
-    id: 'garantia.selo',
-    publico: 'cliente',
-    titulo: 'Selo de garantia NZPPF',
-    resumo: 'O QR do selo colado no batente da porta mostra se o selo é original e o andamento da garantia.',
-    passos: [
-      {
-        titulo: 'O que é o selo',
-        texto:
-          'É uma etiqueta NZPPF com **QR** e **código** que o aplicador cola no batente da porta. No registro da garantia, o código do selo liga o selo àquela aplicação.',
-        cena: {
-          tipo: 'fluxo',
-          etapas: [
-            { icone: 'selo', rotulo: 'Selo colado no batente' },
-            { icone: 'nota', rotulo: 'Código digitado no registro' },
-            { icone: 'link', rotulo: 'Selo ligado à garantia', tom: 'ok' },
-          ],
-        },
-      },
-      {
-        titulo: 'O que o QR mostra',
-        texto:
-          '**Sem garantia vinculada**: o selo é original, mas ainda não tem garantia aprovada ligada a ele. **Em análise**: a garantia foi registrada e a NZ está conferindo. **Aprovada**: o QR abre direto o certificado.',
-        cena: {
-          tipo: 'status',
-          estados: [
-            { texto: 'Original', tom: 'info', sub: 'sem garantia vinculada' },
-            { texto: 'Em análise', tom: 'atencao', sub: 'NZ conferindo' },
-            { texto: 'Aprovada', tom: 'ok', sub: 'abre o certificado' },
-          ],
-        },
-      },
-      {
-        titulo: 'Se aparecer outro aviso',
-        texto:
-          '**Selo cancelado** ou **não reconhecido** quer dizer que o selo não vale como garantia ou pode não ser original: fale com a NZ pelo WhatsApp pelo botão da página.',
-        cena: {
-          tipo: 'status',
-          estados: [
-            { texto: 'Cancelado', tom: 'erro', sub: 'não vale como garantia' },
-            { texto: 'Não reconhecido', tom: 'erro', sub: 'pode não ser original' },
-          ],
-        },
       },
     ],
   },

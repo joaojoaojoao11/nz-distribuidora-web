@@ -123,7 +123,7 @@ const AdminSettings = lazy(() => import('./pages/Admin/AdminSettings'));
 const AdminCentral = lazy(() => import('./pages/Admin/AdminCentral'));
 const WarrantyRegistration = lazy(() => import('./pages/Warranty/WarrantyRegistration'));
 const WarrantyValidator = lazy(() => import('./pages/Warranty/WarrantyValidator'));
-const SeloGarantia = lazy(() => import('./pages/Warranty/SeloGarantia'));
+const Protegido = lazy(() => import('./pages/Protegido/Protegido'));
 const Interlagos = lazy(() => import('./pages/Interlagos/Interlagos'));
 const Colecao = lazy(() => import('./pages/Colecao/Colecao'));
 const PpfPromo = lazy(() => import('./pages/Links/PpfPromo'));
@@ -207,6 +207,11 @@ function App() {
         {/* Hidden Linktree-style pages (no Navbar/Footer/Whatsapp) */}
         <Route path="/ppf-promo" element={<Suspense fallback={<RouteLoading />}><PpfPromo /></Suspense>} />
         <Route path="/nzgroup-promo" element={<Suspense fallback={<RouteLoading />}><NzGroupPromo /></Suspense>} />
+
+        {/* QR do selo de garantia NZPPF (o mesmo em todos os selos; imprime /S em caixa-alta e a rota não diferencia).
+            /s/<código> era o QR do selo único (até 22/10/2026): leva para a mesma página. */}
+        <Route path="/s" element={<Suspense fallback={<RouteLoading />}><Protegido /></Suspense>} />
+        <Route path="/s/*" element={<Navigate to="/s" replace />} />
 
         {VitrineTutoriais && (
           <Route
@@ -297,8 +302,6 @@ function App() {
                   <Route path="/clas" element={<RedirecionaClas />} />
                   <Route path="/registro-garantia" element={<WarrantyRegistration />} />
                   <Route path="/validar-garantia" element={<WarrantyValidator />} />
-                  {/* QR do selo de garantia do batente (o QR imprime /S/ em caixa-alta; a rota não diferencia). */}
-                  <Route path="/s/:codigo" element={<SeloGarantia />} />
                   <Route path="/contato" element={<Contact />} />
                   <Route path="/privacidade" element={<Privacy />} />
                   <Route path="/termos" element={<Terms />} />

@@ -926,12 +926,12 @@ export const TUTORIAIS_ADMIN: Tutorial[] = [
       {
         titulo: 'Recusar',
         texto:
-          '**Recusar** pede um motivo (de 3 a 500 letras), que fica na garantia. O cliente **não recebe e-mail** da recusa: avise pelo WhatsApp. Se havia selo ligado, ele volta a aparecer como original sem garantia. **Aprovar mesmo assim** reverte uma recusa.',
+          '**Recusar** pede um motivo (de 3 a 500 letras), que fica na garantia. O cliente **não recebe e-mail** da recusa: avise pelo WhatsApp. **Aprovar mesmo assim** reverte uma recusa.',
         cena: {
           tipo: 'status',
           estados: [
             { texto: 'Recusada', tom: 'erro', sub: 'motivo obrigatório' },
-            { texto: 'Selo livre de novo', tom: 'info', sub: 'pode ir para outro registro' },
+            { texto: 'Aprovar mesmo assim', tom: 'info', sub: 'reverte a recusa' },
           ],
         },
       },

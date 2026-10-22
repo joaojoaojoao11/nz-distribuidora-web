@@ -66,8 +66,6 @@ interface Warranty {
   certificado_enviado_em: string | null;
   certificado_enviado_para: string | null;
   envios_certificado: number | null;
-  /** Selo NZPPF do batente que veio no registro (8 caracteres, sem hífen). */
-  selo_codigo: string | null;
 }
 
 interface Config {
@@ -117,6 +115,7 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
   const [motivo, setMotivo] = useState('');
   const [ocupado, setOcupado] = useState<string | null>(null);
   const [retorno, setRetorno] = useState<{ id: string; ok: boolean; texto: string } | null>(null);
+  const [escaneios, setEscaneios] = useState<{ hoje: number; semana: number; total: number } | null>(null);
 
   const carregar = useCallback(async () => {
     const { data } = await supabase.from('garantias_nz').select('*').order('created_at', { ascending: false });
@@ -129,6 +128,18 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
     void chamarGarantiaAdmin<Config>({ op: 'config' })
       .then(setConfig)
       .catch(() => setConfig(null));
+    // QR do selo (o mesmo em todos os selos): quantas vezes a página /s abriu.
+    void supabase
+      .from('selo_escaneios')
+      .select('dia, total')
+      .then(({ data }) => {
+        if (!data) return;
+        const hoje = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+        const desde = new Date(Date.parse(`${hoje}T12:00:00Z`) - 6 * 86400000).toISOString().slice(0, 10);
+        const linhas = data as { dia: string; total: number }[];
+        const soma = (f: (d: string) => boolean) => linhas.filter((l) => f(l.dia)).reduce((t, l) => t + l.total, 0);
+        setEscaneios({ hoje: soma((d) => d === hoje), semana: soma((d) => d >= desde), total: soma(() => true) });
+      });
   }, [carregar]);
 
   const contagem = useMemo(
@@ -149,7 +160,7 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
       if (abaAtual !== 'todas' && w.status !== abaAtual) return false;
       if (!termos.length) return true;
       const alvo = normalizar(
-        [w.protocolo, w.veiculo_placa_chassi, w.veiculo_modelo, w.cliente_nome_completo, w.cliente_cpf, w.cliente_email, w.aplicador_nome, w.produto_nome, w.selo_codigo ?? ''].join(' ')
+        [w.protocolo, w.veiculo_placa_chassi, w.veiculo_modelo, w.cliente_nome_completo, w.cliente_cpf, w.cliente_email, w.aplicador_nome, w.produto_nome].join(' ')
       );
       return termos.every((t) => alvo.includes(t));
     });
@@ -256,6 +267,13 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
         </p>
       )}
 
+      {escaneios && (
+        <p className={styles.faixaInfo}>
+          QR do selo de garantia (página /s): <strong>{escaneios.hoje}</strong> escaneios hoje · <strong>{escaneios.semana}</strong> nos últimos 7 dias ·{' '}
+          <strong>{escaneios.total}</strong> no total.
+        </p>
+      )}
+
       <div className={styles.resumo}>
         {(['pendente', 'aprovada', 'recusada', 'todas'] as Aba[]).map((a) => (
           <button key={a} type="button" className={abaAtual === a ? `${styles.cartao} ${styles.cartaoAtivo}` : styles.cartao} onClick={() => setAba(a)}>
@@ -325,16 +343,6 @@ export default function AdminWarranties({ onUpdate }: { onUpdate?: () => void })
                       {w.aplicador_nome} em {formatarDataISO(w.data_aplicacao)}
                     </dd>
                   </div>
-                  {w.selo_codigo && (
-                    <div>
-                      <dt>Selo do batente</dt>
-                      <dd>
-                        <a href={`/s/${w.selo_codigo}`} target="_blank" rel="noopener noreferrer">
-                          {w.selo_codigo.slice(0, 4)}-{w.selo_codigo.slice(4)}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
                   <div>
                     <dt>Garantia</dt>
                     <dd>

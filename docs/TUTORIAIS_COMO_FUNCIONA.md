@@ -46,7 +46,7 @@ Pedido do João (22/10/2026): "um botão de tutorial, de como funciona aquela pa
 4. **Cada passo** tem título, um parágrafo de até ~60 palavras e uma cena. São de 2 a 6 passos por tutorial.
 5. **Nunca prometer o que a tela promete e o código não faz.** Veja a lista no fim deste arquivo.
 
-## Inventário (54 tutoriais)
+## Inventário (53 tutoriais)
 
 ### Admin (29)
 
@@ -114,12 +114,12 @@ Pedido do João (22/10/2026): "um botão de tutorial, de como funciona aquela pa
 | loja.selecao | `/loja/s/:token` ("Como funciona esta seleção") | cliente |
 | garantia.registro | `/registro-garantia` | dono do carro |
 | garantia.registro-aplicador | `/registro-garantia`, logado como lojista ou revendedor | aplicador |
-| garantia.selo | `/s/:codigo` | quem escaneia o selo |
 | garantia.validar | `/validar-garantia` | qualquer pessoa |
 
 ### Telas que ficaram sem tutorial, de propósito
 
 - **Login, recuperar senha e nova senha:** a tela já se explica.
+- **`/s` (página do QR do selo, 22/10/2026):** é uma página de apresentação para o dono do carro, sem função para ensinar. O tutorial antigo `garantia.selo` (conferência do selo único) saiu junto com o vínculo.
 - **Configurações globais (`/admin/configuracoes`):** grava em `configuracoes_nz`, que nenhum código lê. Não há o
   que ensinar até isso ser ligado.
 - **Páginas institucionais, linhas (PPF/Wrap/Sign/Decor) e blog público:** são conteúdo, não função.
