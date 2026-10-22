@@ -7,6 +7,54 @@ import type { Tutorial } from '../../components/Tutorial/tipos';
 
 export const TUTORIAIS_CONTA: Tutorial[] = [
   {
+    id: 'conta.inicio',
+    publico: 'cliente',
+    titulo: 'Sua conta na NZ',
+    resumo: 'O que tem em cada parte da sua conta e como saber se ela está pronta para comprar.',
+    passos: [
+      {
+        titulo: 'Quatro partes',
+        texto:
+          '**Compras**: pedidos, pagamentos e carrinho guardado. **Catálogo**: favoritos e vistos. **Conta**: seus dados, senha e garantias. **Vantagens**: pontos, avaliações, Indique e ganhe e cupons. No celular, esta página é o próprio menu.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Compras', icone: 'carrinho', tom: 'marca', itens: ['Pedidos', 'Pagamentos', 'Carrinho guardado'] },
+            { titulo: 'Conta', icone: 'usuario', tom: 'info', itens: ['Meus dados', 'Senha', 'Garantias'] },
+            { titulo: 'Vantagens', icone: 'presente', tom: 'ok', itens: ['Indique e ganhe', 'Pontos e cupons'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Sua conta está pronta?',
+        texto:
+          'A faixa do topo diz se o cadastro está **aprovado** (preços liberados) ou **em análise**, e se falta algum dado para fechar pedido pelo site. Faltou? **Completar agora** leva direto aos campos.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Em análise', tom: 'atencao', sub: 'NZ conferindo' },
+            { texto: 'Aprovado', tom: 'ok', sub: 'preços liberados' },
+            { texto: 'Cadastro completo', tom: 'ok', sub: 'pronto para pedir' },
+          ],
+        },
+      },
+      {
+        titulo: 'Cada tela explica a sua parte',
+        texto:
+          'Os cartões levam aos pedidos, ao carrinho guardado e aos favoritos, e embaixo ficam os últimos pedidos. Em cada tela da conta, o botão **Como funciona** ao lado do título explica aquela parte.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'usuario', rotulo: 'Minha conta' },
+            { icone: 'nota', rotulo: 'Abre uma seção' },
+            { icone: 'olho', rotulo: 'Como funciona', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
+
+  {
     id: 'conta.pedidos',
     publico: 'cliente',
     titulo: 'Meus pedidos',
@@ -629,7 +677,7 @@ export const TUTORIAIS_CONTA: Tutorial[] = [
       {
         titulo: 'O cliente pede pelo WhatsApp',
         texto:
-          'A seleção não vira pedido no site: na página aberta pelo link, o botão é **PEDIR PELO WHATSAPP**, e o frete é combinado à parte. O link vale por um tempo limitado (o prazo aparece na seleção).',
+          'A seleção não vira pedido no site: o cliente chama a equipe pelo WhatsApp (com preço, o botão do produto é **PEDIR PELO WHATSAPP**), e o frete é combinado à parte. O link vale por um tempo limitado (o prazo aparece na seleção).',
         cena: {
           tipo: 'fluxo',
           etapas: [

@@ -550,6 +550,9 @@ export default function Loja() {
         <div className={`container ${styles.selecaoBanner}`}>
           <div>
             <span className={styles.selecaoTitulo}>{tituloSel || 'Seleção da NZ para você'}</span>
+            <div style={{ margin: '0.4rem 0' }}>
+              <BotaoTutorial id="loja.selecao" rotulo="Como funciona esta seleção" />
+            </div>
             <p className={styles.selecaoTexto}>
               {results.length} {results.length === 1 ? 'produto escolhido' : 'produtos escolhidos'} pela
               nossa equipe.{' '}

@@ -236,19 +236,21 @@ acesso; o cliente recebe e-mail. Aprovar/revogar/mudar tipo passam por
 
 ### Botão "Como funciona" (tutoriais por tela, desde 22/10/2026)
 
-Cada tela pode ter um botão "Como funciona" que abre uma janela curta, em passos,
-com uma animação em cada um (`src/components/Tutorial/`: `BotaoTutorial.tsx`, as
-cenas reaproveitáveis em `Cenas.tsx` — fluxo, linha do tempo, carteira, cupom,
-status, níveis, formulário, comparação — e os tipos em `tipos.ts`). O CONTEÚDO
-fica em `src/lib/tutoriais/` (um arquivo por público: `admin.ts` hoje; cliente,
-lojista, revendedor e afiliado entram do mesmo jeito) e se liga pelo `id`. No
-admin, basta `tutorial="admin.xxx"` no `<PaginaAdmin>`. Primeiro lote: as 8 telas
-de incentivos (afiliados, regras, tela do afiliado, super cupons e regras, cupons,
-editor de cupom, saques). **Mudou uma regra dessas telas? Atualize o texto do
-tutorial junto**: ele descreve o que o código faz. Sem percentual real nem código
-de cupom real (repositório público). Com "reduzir movimento" ligado no aparelho as
-cenas abrem paradas e a janela oferece "ver animação". Vitrine só no localhost:
-**`/dev/tutoriais`** (fora do build de produção).
+54 telas têm um botão "Como funciona" que abre uma janela curta, em passos, com
+uma animação em cada um. Mapa completo, regras do conteúdo e a lista de textos de
+tela que contradizem o código: **`docs/TUTORIAIS_COMO_FUNCIONA.md`**.
+
+- Componente em `src/components/Tutorial/` (botão, 8 cenas reaproveitáveis,
+  `TituloComTutorial`); conteúdo em `src/lib/tutoriais/` por área (`admin`,
+  `conta`, `loja`, `garantia`, carregada à parte quando uma tela pede).
+- Liga-se pelo id: `<PaginaAdmin tutorial>`, campo `tutorial` em `adminNav.ts`
+  (rota exata, no cabeçalho da casca) e em `painelNav.ts` (com variante por tipo
+  de acesso), ou `<TituloComTutorial>` / `<BotaoTutorial>` direto.
+- **Mudou uma regra de tela? Atualize o texto do tutorial junto**: ele descreve o
+  que o código faz. Sem número que vem do banco, sem percentual real nem código de
+  cupom real (repositório público).
+- Vitrine só no localhost: **`/dev/tutoriais`** (e `?passos=1` mostra todos os
+  passos de uma vez); fora do build de produção.
 
 ### E-mails do Supabase Auth saem pelo Resend (Send Email Hook)
 

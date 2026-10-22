@@ -503,9 +503,23 @@ export const TUTORIAIS_ADMIN: Tutorial[] = [
         },
       },
       {
+        titulo: 'Clientes que já compram com a NZ',
+        texto:
+          'Cliente qualificado no CRM ou com pedido entregue no NZERP ganha uma **conta pronta** no site: lojista, ainda não aprovada e já ligada ao NZERP. Isso roda uma vez por dia ou em **Criar contas do ERP agora**. A pessoa só entra depois do **Convidar** (link para criar a senha, por e-mail ou WhatsApp) e só vê preço depois que você aprovar. Filtros: **Vindos do ERP** e **ERP sem convite**.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'banco', rotulo: 'Cliente no NZERP' },
+            { icone: 'cadeado', rotulo: 'Conta criada, bloqueada' },
+            { icone: 'email', rotulo: 'Convidar: link da senha', tom: 'info' },
+            { icone: 'check', rotulo: 'Você aprova', tom: 'ok' },
+          ],
+        },
+      },
+      {
         titulo: 'Ligação com o NZERP',
         texto:
-          '**Procurar no ERP** busca o cliente pelo documento e pelo e-mail; **Confirmar vínculo** liga a conta. Atenção: lojista ou revendedor pendente com o mesmo e-mail de um cliente ativo do NZERP é **aprovado nessa hora**, na faixa Padrão e sem e-mail. Embaixo, **Títulos do NZERP sem dono**: atribua para a parcela aparecer em Pagamentos do cliente.',
+          'Quem não virou conta fica em **ERP sem conta**, com o motivo. **Procurar no ERP** e **Confirmar vínculo** ligam uma conta à mão; atenção: lojista ou revendedor pendente com o mesmo e-mail de um cliente ativo é **aprovado na hora**, na faixa Padrão. Em **Títulos do NZERP sem dono**, atribua a parcela para ela aparecer em Pagamentos do cliente.',
         cena: {
           tipo: 'fluxo',
           etapas: [

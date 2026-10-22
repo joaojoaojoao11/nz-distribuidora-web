@@ -15,6 +15,7 @@ import { BRL, usePrecosLote, usePrecosMapa } from '../../lib/shop/precos';
 import { precoUnitario } from '../../lib/shop/unidade';
 import { gruposVisiveis } from './painelNav';
 import { PAGAMENTO_LABEL, STATUS_LABEL, type PedidoResumo } from './pedidoRotulos';
+import BotaoTutorial from '../../components/Tutorial/BotaoTutorial';
 import styles from './PainelInicio.module.css';
 import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
 
@@ -79,6 +80,9 @@ export default function PainelInicio() {
 
   return (
     <>
+      <div style={{ marginBottom: '0.9rem' }}>
+        <BotaoTutorial id="conta.inicio" rotulo="Como funciona a sua conta" />
+      </div>
       {/* ------------------------------------------------------------ status */}
       <section className={isApproved || isAdmin ? `${styles.status} ${styles.statusOk}` : `${styles.status} ${styles.statusPendente}`}>
         {isApproved || isAdmin ? (

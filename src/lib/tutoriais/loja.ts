@@ -304,4 +304,50 @@ export const TUTORIAIS_LOJA: Tutorial[] = [
       },
     ],
   },
+  {
+    id: 'loja.selecao',
+    publico: 'cliente',
+    titulo: 'Seleção da NZ para você',
+    resumo: 'Uma lista de produtos que a equipe NZ montou para você, com validade.',
+    passos: [
+      {
+        titulo: 'Escolhida pela equipe NZ',
+        texto:
+          'Um vendedor da NZ separou estes produtos para você. A lista vale até a data e a hora mostradas no topo; depois disso, o link deixa de abrir e é só pedir outro.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'usuarios', rotulo: 'Vendedor monta a lista' },
+            { icone: 'link', rotulo: 'Você recebe o link' },
+            { icone: 'relogio', rotulo: 'Vale até a data do topo', tom: 'atencao' },
+          ],
+        },
+      },
+      {
+        titulo: 'Preço desta seleção',
+        texto:
+          'Quando a seleção mostra preço, ele vale **só para os itens desta lista** e só por este link, mesmo sem cadastro. Quando não mostra, os valores são combinados com a equipe.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Com preço', icone: 'percentual', tom: 'ok', itens: ['Valor exclusivo da seleção', 'Só nestes itens'] },
+            { titulo: 'Sem preço', icone: 'whatsapp', tom: 'info', itens: ['Valor sob consulta', 'Fale com a equipe'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Como pedir',
+        texto:
+          'Abra o produto e chame a equipe pelo **botão de WhatsApp** da página: o pedido é fechado com a NZ, com o frete à parte. Quer ver o resto da loja? **Ver o catálogo completo**.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'olho', rotulo: 'Abre o produto' },
+            { icone: 'whatsapp', rotulo: 'Chama no WhatsApp' },
+            { icone: 'check', rotulo: 'Equipe NZ fecha com você', tom: 'ok' },
+          ],
+        },
+      },
+    ],
+  },
 ];
