@@ -26,6 +26,9 @@ import { TIPO_LABEL, TIPOS_CLIENTE, type TipoAcesso } from '../../lib/shop/papei
 import AdminTitulosErp from './AdminTitulosErp';
 import styles from './Admin.module.css';
 import cl from './AdminClientes.module.css';
+import type { PedidoErp } from '../../lib/shop/historicoErp';
+import { STATUS_LABEL } from '../Painel/pedidoRotulos';
+import { BRL } from './comuns/formato';
 
 interface Cliente {
   id: string;
@@ -165,6 +168,17 @@ export default function AdminClientes() {
   const [salvandoPre, setSalvandoPre] = useState('');
   // Central do cliente (Fase A): fila do ERP e o link do último convite gerado.
   const [pendentesErp, setPendentesErp] = useState<PendenteErp[]>([]);
+  // Central do cliente (D12): pedidos do ERP do cliente aberto, carregados ao expandir.
+  const [historicoAdmin, setHistoricoAdmin] = useState<Record<string, PedidoErp[]>>({});
+  const abrirHistorico = useCallback(async (c: Cliente) => {
+    if (!c.erp_client_id || historicoAdmin[c.id] !== undefined) return;
+    try {
+      const r = await chamarConta<{ pedidos: PedidoErp[] }>({ op: 'historico-erp', userId: c.id });
+      setHistoricoAdmin((m) => ({ ...m, [c.id]: r.pedidos ?? [] }));
+    } catch {
+      setHistoricoAdmin((m) => ({ ...m, [c.id]: [] }));
+    }
+  }, [historicoAdmin]);
   const [criandoContas, setCriandoContas] = useState(false);
   const [linkConvite, setLinkConvite] = useState<{ email: string; link: string } | null>(null);
 
@@ -506,7 +520,15 @@ export default function AdminClientes() {
               {lista.map((c) => {
                 const faltas = faltasDoCadastro(c);
                 return (
-                  <tr key={c.id} onClick={() => setAberto(aberto === c.id ? null : c.id)} style={{ cursor: 'pointer' }}>
+                  <tr
+                    key={c.id}
+                    onClick={() => {
+                      const vaiAbrir = aberto !== c.id;
+                      setAberto(vaiAbrir ? c.id : null);
+                      if (vaiAbrir) void abrirHistorico(c);
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <td className={cl.colNome}>
                       {c.full_name || '—'}
                       {c.company_name && <div style={{ fontSize: '0.72rem', color: '#777' }}>{c.company_name}</div>}
@@ -526,6 +548,27 @@ export default function AdminClientes() {
                           {c.address_zip ? ` · CEP ${c.address_zip}` : ''}
                           <br />
                           Origem: {c.origem} · criado em {data(c.created_at)} · último acesso {data(c.ultimo_acesso_em)}
+                          {/* Central do cliente (D12): o consultor vê os pedidos que o cliente vê. */}
+                          {c.erp_client_id && (
+                            <div style={{ marginTop: '0.5rem', color: '#bbb' }}>
+                              <strong style={{ color: '#fff' }}>Pedidos com a NZ</strong>
+                              {historicoAdmin[c.id] === undefined ? (
+                                <span> · carregando…</span>
+                              ) : historicoAdmin[c.id].length === 0 ? (
+                                <span> · nenhum pedido visível para o cliente</span>
+                              ) : (
+                                <ul style={{ margin: '0.25rem 0 0', paddingLeft: '1rem' }}>
+                                  {historicoAdmin[c.id].slice(0, 8).map((p) => (
+                                    <li key={p.quoteId}>
+                                      #{p.numero ?? '—'} · {data(p.criadoEm)} · {STATUS_LABEL[p.status] ?? p.status} · {p.total != null ? BRL.format(Number(p.total)) : '—'}
+                                      {p.notas.length ? ` · NF ${p.notas.map((n) => n.numero).filter(Boolean).join(', ')}` : ''}
+                                    </li>
+                                  ))}
+                                  {historicoAdmin[c.id].length > 8 && <li>e mais {historicoAdmin[c.id].length - 8}</li>}
+                                </ul>
+                              )}
+                            </div>
+                          )}
                           {c.aprovado_motivo && (
                             <>
                               <br />

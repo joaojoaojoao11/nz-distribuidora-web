@@ -24,8 +24,15 @@ import { clienteErp } from '../pedido/despachoErp.js';
 // Mexer aqui é decisão de segurança, não de layout. Cada coluna abaixo foi
 // olhada uma a uma contra o schema do ERP.
 
-/** Orçamento: o que o cliente pediu e em que pé está. Sem vendedor, sem notas internas. */
-export const COLUNAS_QUOTE = 'id, quote_number, status, subtotal, total, shipping_type, shipping_cost, items, created_at, updated_at, tiny_order_number, origem, site_pedido_id';
+/** Orçamento: o que o cliente pediu e em que pé está. Sem vendedor, sem notas internas. `opportunity_id` só para achar os pedidos do cliente; `shipping_carrier_name` é a transportadora que ele mesmo escolheu. */
+export const COLUNAS_QUOTE = 'id, quote_number, status, subtotal, total, shipping_type, shipping_cost, shipping_carrier_name, items, created_at, updated_at, tiny_order_number, origem, site_pedido_id, opportunity_id';
+
+/**
+ * O que o cliente VÊ (Central do cliente, D5): o que passou de aprovado, mais
+ * cancelados recentes. Orçamento em aberto é negociação do vendedor e não entra.
+ */
+export const STATUS_VISIVEIS = ['APROVADO', 'FATURADO', 'FATURADO_PARCIAL', 'PREPARANDO_ENVIO', 'PRONTO_ENVIO', 'ENVIADO', 'ENTREGUE', 'NAO_ENTREGUE'];
+export const DIAS_CANCELADO_VISIVEL = 90;
 
 /** Nota fiscal: número, chave e data. Sem percentual, sem vendedor, sem observações. */
 export const COLUNAS_FATURAMENTO = 'id, quote_id, nf_numero, nf_chave, valor_nf, data_faturamento, status, tiny_order_number';
@@ -56,6 +63,12 @@ export interface ItemHistorico {
   unidade: string | null;
   valorUnitario: number | null;
   total: number | null;
+  /** O produto na loja (pelo SKU do ERP), para "comprar de novo". Nulo = não está no catálogo. */
+  slug: string | null;
+  disponivel: boolean;
+  imagem: string | null;
+  hex: string | null;
+  codigo: string | null;
 }
 
 export interface PedidoErpPublico {
@@ -65,6 +78,7 @@ export interface PedidoErpPublico {
   status: string;
   total: number | null;
   frete: number | null;
+  transportadora: string | null;
   criadoEm: string | null;
   atualizadoEm: string | null;
   pedidoTiny: string | null;
@@ -102,11 +116,39 @@ export interface ClienteErpPublico {
   clienteDesde: string | null;
 }
 
+/** Produto da loja por SKU do ERP (para "comprar de novo"). */
+interface ProdutoLoja {
+  slug: string;
+  nome: string | null;
+  codigo: string | null;
+  imagem: string | null;
+  hex: string | null;
+  disponivel: boolean;
+}
+
+async function produtosPorSku(site: Db, skus: string[]): Promise<Map<string, ProdutoLoja>> {
+  const lista = [...new Set(skus.filter(Boolean))];
+  if (!lista.length) return new Map();
+  const { data } = await site.from('produtos').select('erp_sku, slug, nome, codigo, imagem, hex, publicado, oculto_manual').in('erp_sku', lista);
+  const m = new Map<string, ProdutoLoja>();
+  for (const p of (data ?? []) as { erp_sku: string; slug: string; nome: string | null; codigo: string | null; imagem: string | null; hex: string | null; publicado: boolean; oculto_manual: boolean | null }[]) {
+    if (!m.has(p.erp_sku)) m.set(p.erp_sku, { slug: p.slug, nome: p.nome, codigo: p.codigo, imagem: p.imagem, hex: p.hex, disponivel: Boolean(p.publicado) && !p.oculto_manual });
+  }
+  return m;
+}
+
 /** Um item do orçamento, campo a campo — `items` é jsonb livre, não dá para confiar no formato. */
-function itemPublico(bruto: unknown): ItemHistorico {
+function itemPublico(bruto: unknown, produtos: Map<string, ProdutoLoja>): ItemHistorico {
   const i = (bruto ?? {}) as Record<string, unknown>;
   const num = (v: unknown) => (v == null || v === '' || Number.isNaN(Number(v)) ? null : Number(v));
+  const sku = typeof i.sku === 'string' ? i.sku : null;
+  const prod = sku ? produtos.get(sku) ?? null : null;
   return {
+    slug: prod?.slug ?? null,
+    disponivel: Boolean(prod?.disponivel),
+    imagem: prod?.imagem ?? null,
+    hex: prod?.hex ?? null,
+    codigo: prod?.codigo ?? null,
     sku: typeof i.sku === 'string' ? i.sku : null,
     nome: typeof i.name === 'string' ? i.name : typeof i.nome === 'string' ? i.nome : null,
     qtd: num(i.qty ?? i.quantidade),
@@ -141,29 +183,46 @@ export async function clienteDoUsuario(site: Db, userId: string): Promise<Client
  * Os pedidos que o cliente tem no NZERP — os de balcão, de telefone, de
  * vendedor, e também os que nasceram no site (esses vêm marcados).
  *
- * A chave é o documento. `quotes.cpf_cnpj` e `clients.cpf_cnpj` vêm os dois do
- * Tiny e estão formatados igual, mas a busca inclui a versão só-dígitos porque
- * um cadastro feito à mão pode ter fugido do padrão.
+ * Duas chaves (Central do cliente, Fase B): a OPORTUNIDADE do CRM ligada ao
+ * cliente (é como o ERP amarra o orçamento ao cadastro) e o documento, para
+ * orçamento antigo sem oportunidade. `quotes.cpf_cnpj` e `clients.cpf_cnpj`
+ * vêm os dois do Tiny e estão formatados igual, mas a busca inclui a versão
+ * só-dígitos porque um cadastro feito à mão pode ter fugido do padrão.
+ *
+ * O que sai (D5): o que passou de aprovado, mais cancelados dos últimos 90
+ * dias. Orçamento em aberto não — ainda é negociação do vendedor.
  */
 export async function pedidosDoCliente(site: Db, userId: string, limite = 50): Promise<PedidoErpPublico[]> {
   const cliente = await clienteDoUsuario(site, userId);
-  if (!cliente?.documento) return [];
+  if (!cliente) return [];
   const erp = await clienteErp();
   if (!erp) return [];
 
-  const chaves = [...new Set([cliente.documento, somenteDigitos(cliente.documento)].filter(Boolean))] as string[];
+  const { data: opps } = await erp.from('crm_opportunities').select('id').eq('client_id', cliente.id).limit(200);
+  const oppIds = ((opps ?? []) as { id: string }[]).map((o) => o.id);
+  const chaves = cliente.documento ? ([...new Set([cliente.documento, somenteDigitos(cliente.documento)].filter(Boolean))] as string[]) : [];
+  if (!oppIds.length && !chaves.length) return [];
+  const partes: string[] = [];
+  if (oppIds.length) partes.push(`opportunity_id.in.(${oppIds.join(',')})`);
+  if (chaves.length) partes.push(`cpf_cnpj.in.(${chaves.map((c) => `"${c.replace(/"/g, '')}"`).join(',')})`);
+
+  const corte = new Date(Date.now() - DIAS_CANCELADO_VISIVEL * 86_400_000).toISOString();
   const { data } = await erp
     .from('quotes')
     .select(COLUNAS_QUOTE)
-    .in('cpf_cnpj', chaves)
+    .or(partes.join(','))
     // Orçamento que NASCEU no site já está na lista do site, com status
     // espelhado e com os botões (comprar de novo, cancelar). Trazer de novo
     // daqui seria o mesmo pedido duas vezes na tela do cliente.
     .is('site_pedido_id', null)
+    .or(`status.in.(${STATUS_VISIVEIS.join(',')}),and(status.eq.CANCELADO,updated_at.gte.${corte})`)
     .order('created_at', { ascending: false })
     .limit(limite);
   const quotes = (data ?? []) as Record<string, unknown>[];
   if (!quotes.length) return [];
+
+  const skus = quotes.flatMap((q) => (Array.isArray(q.items) ? (q.items as Record<string, unknown>[]).map((i) => (typeof i?.sku === 'string' ? i.sku : '')) : []));
+  const produtos = await produtosPorSku(site, skus);
 
   const ids = quotes.map((q) => String(q.id));
   const { data: notasData } = await erp.from('faturamento').select(COLUNAS_FATURAMENTO).in('quote_id', ids);
@@ -187,11 +246,12 @@ export async function pedidosDoCliente(site: Db, userId: string, limite = 50): P
     status: String(q.status ?? ''),
     total: q.total == null ? null : Number(q.total),
     frete: q.shipping_cost == null ? null : Number(q.shipping_cost),
+    transportadora: (q.shipping_carrier_name as string) ?? null,
     criadoEm: (q.created_at as string) ?? null,
     atualizadoEm: (q.updated_at as string) ?? null,
     pedidoTiny: (q.tiny_order_number as string) ?? null,
     doSite: q.origem === 'SITE' || Boolean(q.site_pedido_id),
-    itens: Array.isArray(q.items) ? (q.items as unknown[]).map(itemPublico) : [],
+    itens: Array.isArray(q.items) ? (q.items as unknown[]).map((i) => itemPublico(i, produtos)) : [],
     notas: notasPorQuote.get(String(q.id)) ?? [],
   }));
 }

@@ -199,12 +199,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // balcão, notas fiscais e parcelas. Tudo lido pelo módulo com lista branca —
   // preço de custo, margem, limite de crédito e vendedor nunca saem do ERP.
   if (op === 'historico-erp') {
-    const cliente = await clienteDoUsuario(site, userId);
+    // O admin pode ver o histórico de um cliente (D12: o consultor vê o que o
+    // cliente vê). Qualquer outro só vê o próprio.
+    const alvo = papel === 'admin' && typeof body.userId === 'string' && body.userId ? body.userId : userId;
+    const cliente = await clienteDoUsuario(site, alvo);
     if (!cliente) {
       res.status(200).json({ vinculado: false, cliente: null, pedidos: [], titulos: [] });
       return;
     }
-    const [pedidos, titulos] = await Promise.all([pedidosDoCliente(site, userId), titulosDoCliente(site, userId)]);
+    const [pedidos, titulos] = await Promise.all([pedidosDoCliente(site, alvo), titulosDoCliente(site, alvo)]);
     res.status(200).json({ vinculado: true, cliente, pedidos, titulos });
     return;
   }

@@ -18,6 +18,12 @@ export interface ItemErp {
   unidade: string | null;
   valorUnitario: number | null;
   total: number | null;
+  /** O produto na loja (pelo SKU do ERP), para "comprar de novo". Nulo = fora do catálogo. */
+  slug: string | null;
+  disponivel: boolean;
+  imagem: string | null;
+  hex: string | null;
+  codigo: string | null;
 }
 
 export interface PedidoErp {
@@ -27,6 +33,7 @@ export interface PedidoErp {
   status: string;
   total: number | null;
   frete: number | null;
+  transportadora: string | null;
   criadoEm: string | null;
   atualizadoEm: string | null;
   pedidoTiny: string | null;

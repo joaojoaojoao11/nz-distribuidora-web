@@ -132,6 +132,31 @@ export default function PainelPedidos() {
     abrirPainelCarrinho();
   };
 
+  // Pedido feito com a NZ (ERP): os itens voltam ao carrinho pelo SKU que o
+  // servidor já casou com o catálogo. O que saiu de linha fica de fora, com aviso.
+  const comprarDeNovoErp = (p: PedidoErp) => {
+    setAviso(null);
+    const bons = p.itens.filter((i) => i.slug && i.disponivel);
+    if (bons.length === 0) {
+      setAviso('Nenhum item deste pedido está disponível na loja hoje.');
+      return;
+    }
+    for (const i of bons) {
+      adicionarAoCarrinho({
+        slug: i.slug!,
+        nome: i.nome ?? i.sku ?? '',
+        codigo: i.codigo,
+        imagem: i.imagem,
+        hex: i.hex,
+        unidade: (i.unidade === 'UN' ? 'un' : 'metro') as UnidadeCarrinho,
+        qtd: Math.max(1, Number(i.qtd ?? 1)),
+      });
+    }
+    const fora = p.itens.length - bons.length;
+    if (fora > 0) setAviso(`${fora} ${fora > 1 ? 'itens' : 'item'} deste pedido ${fora > 1 ? 'não estão' : 'não está'} na loja hoje e ${fora > 1 ? 'ficaram' : 'ficou'} de fora.`);
+    abrirPainelCarrinho();
+  };
+
   const cancelar = async (numero: number) => {
     if (!window.confirm(`Cancelar o pedido #${numero}? Se houver cobrança em aberto, ela também é cancelada.`)) return;
     setAviso(null);
@@ -261,8 +286,8 @@ export default function PainelPedidos() {
       {naErp.length > 0 && (
         <>
           <h3 className={styles.secaoTitulo}>
-            Compras anteriores na NZ
-            <small>Balcão, telefone ou vendedor — trazidas do sistema da NZ</small>
+            Pedidos com a NZ
+            <small>Balcão, WhatsApp ou vendedor — direto do sistema da NZ</small>
           </h3>
           <ul className={styles.cartoes}>
             {naErp.map((p) => (
@@ -276,7 +301,10 @@ export default function PainelPedidos() {
                 </div>
 
                 <div className={styles.cartaoStatus}>
-                  <span>{STATUS_LABEL[p.status] ?? p.status}</span>
+                  <span>
+                    {STATUS_LABEL[p.status] ?? p.status}
+                    {p.transportadora && ['ENVIADO', 'PRONTO_ENVIO', 'PREPARANDO_ENVIO'].includes(p.status) ? ` · ${p.transportadora}` : ''}
+                  </span>
                   {p.notas.length > 0 && <span className={styles.mudo}>NF {p.notas.map((n) => n.numero).filter(Boolean).join(', ')}</span>}
                 </div>
 
@@ -292,6 +320,13 @@ export default function PainelPedidos() {
 
                 <div className={styles.cartaoRodape}>
                   <span className={styles.cartaoTotal}>{p.total != null ? BRL.format(Number(p.total)) : '—'}</span>
+                  {p.itens.some((i) => i.slug && i.disponivel) && (
+                    <div className={styles.cartaoAcoes}>
+                      <button type="button" className={styles.botaoSecundario} onClick={() => comprarDeNovoErp(p)}>
+                        Comprar de novo
+                      </button>
+                    </div>
+                  )}
                 </div>
               </li>
             ))}
