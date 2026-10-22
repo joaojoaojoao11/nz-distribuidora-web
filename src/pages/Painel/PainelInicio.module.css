@@ -1,4 +1,5 @@
-/* Início da conta: status, cartões, últimos pedidos e — só no celular — o menu. */
+/* Início da conta (a central do cliente): status, aviso de vencidos, cartões com ação,
+   atalhos, últimos pedidos e — só no celular — o menu. */
 
 .status {
   padding: 1rem 1.1rem;
@@ -73,7 +74,7 @@
 }
 
 @media (hover: hover) {
-  .cartao:hover {
+  .atalho:hover {
     border-color: var(--border-strong);
   }
 }
@@ -241,5 +242,150 @@
 @media (max-width: 560px) {
   .cartoes {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ------------------------------------------------- central do cliente (Fase D) */
+
+/* Parcela vencida com a NZ: informativo (D9) — âmbar como "em análise", nunca vermelho. */
+.aviso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  margin-top: 0.8rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.aviso p {
+  flex: 1 1 18rem;
+  margin: 0;
+}
+
+.aviso strong {
+  color: var(--text-primary);
+}
+
+/* A ação do cartão fica sempre na base: os três cartões alinham na mesma linha. */
+.cartaoAcao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.7rem;
+}
+
+.acao,
+.acaoPrincipal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 0.9rem;
+  border-radius: 8px;
+  font-family: var(--font-tech);
+  font-size: 0.64rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.acao {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.acaoPrincipal {
+  border: 1px solid var(--accent-red);
+  background: var(--accent-red);
+  color: #fff;
+  font-weight: 600;
+}
+
+.acaoPrincipal:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .acao:hover {
+    border-color: var(--accent-red);
+  }
+  .acaoPrincipal:hover {
+    filter: brightness(1.12);
+  }
+}
+
+.cartaoAviso {
+  margin: 0.45rem 0 0;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: #fbbf24;
+}
+
+/* Selo de origem (pedido do sistema da NZ), igual ao da aba Pedidos. */
+.selo {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  font-family: var(--font-tech);
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  vertical-align: middle;
+  color: var(--text-muted);
+}
+
+/* Atalhos: quatro, em quatro colunas iguais. No celular o menu faz esse papel. */
+.atalhos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.atalho {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-height: 64px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border-light);
+  border-radius: 11px;
+  background: var(--bg-secondary);
+  text-decoration: none;
+  transition: border-color var(--transition-snappy);
+}
+
+.atalho b {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.atalho small {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.atalhoDestaque {
+  border-color: rgba(209, 30, 30, 0.45);
+  background: rgba(209, 30, 30, 0.07);
+}
+
+@media (max-width: 900px) {
+  .soComputador {
+    display: none;
   }
 }

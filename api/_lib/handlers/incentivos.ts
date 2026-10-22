@@ -6,6 +6,7 @@
 // e ajustes com rastro em equipe_log.
 //
 // Ops do cliente (logado):
+//   meu-saldo             só o saldo (disponível / a liberar), sem efeito colateral — o Início do painel
 //   minha-carteira        saldo, extrato anônimo, super cupom, contagens de indicados, gamificação
 //   trocar-super-cupom    { codigo }
 //   quero-ser-afiliado    cria o pedido de adesão (status pendente; D6)
@@ -117,6 +118,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // ================================================================ cliente
+    // Central do cliente (Fase D): o cartão de saldo do Início. Só leitura — a
+    // minha-carteira gera super cupom e avalia conquistas, e isso não pode
+    // acontecer a cada visita ao Início.
+    if (op === 'meu-saldo') {
+      res.status(200).json({ saldo: await saldoDe(site, userId) });
+      return;
+    }
+
     if (op === 'minha-carteira') {
       const { data: pf } = await site.from('user_profiles').select('full_name, indicado_por, filiado_em, pix_tipo, pix_chave').eq('id', userId).maybeSingle();
       const perfil = pf as { full_name: string | null; indicado_por: string | null; filiado_em: string | null; pix_tipo: string | null; pix_chave: string | null } | null;

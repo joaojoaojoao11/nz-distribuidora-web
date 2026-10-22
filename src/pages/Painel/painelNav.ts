@@ -61,7 +61,7 @@ export const GRUPOS: GrupoPainel[] = [
         icone: '◎',
         rotulo: 'Pagamentos',
         titulo: 'Pagamentos',
-        dica: '2ª via de boleto, Pix e recibo',
+        dica: 'Parcelas com a NZ, pagar pelo site e 2ª via',
         tutorial: { padrao: 'conta.pagamentos' },
       },
       {

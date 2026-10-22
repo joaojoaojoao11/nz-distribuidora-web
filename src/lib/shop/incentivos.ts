@@ -118,6 +118,8 @@ export interface Saque {
 export const STATUS_SAQUE: Record<Saque['status'], string> = { solicitado: 'Solicitado', enviado: 'Em pagamento', pago: 'Pago', cancelado: 'Cancelado' };
 
 export const minhaCarteira = () => chamarIncentivos<MinhaCarteira>({ op: 'minha-carteira' });
+/** Só o saldo, sem efeito colateral (o Início do painel). */
+export const meuSaldo = () => chamarIncentivos<{ saldo: Saldo }>({ op: 'meu-saldo' });
 export const salvarPix = (tipo: PixTipo, chave: string) => chamarIncentivos<{ ok: boolean; motivo?: string; pix?: { tipo: PixTipo; chave: string } }>({ op: 'pix-salvar', tipo, chave });
 export const solicitarSaque = (valor: number) => chamarIncentivos<{ ok: boolean; motivo?: string; minimo?: number; saque?: Saque; erpPendente?: boolean; saldo?: Saldo }>({ op: 'saque-solicitar', valor });
 export const listarSaques = (status?: string) => chamarIncentivos<{ saques: Saque[]; config: { saqueMinimo: number; saqueHoraCorte: string; saqueDiasVencimento: number } }>({ op: 'saques-listar', status: status ?? '' });

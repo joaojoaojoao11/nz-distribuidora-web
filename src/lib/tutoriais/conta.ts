@@ -39,9 +39,21 @@ export const TUTORIAIS_CONTA: Tutorial[] = [
         },
       },
       {
-        titulo: 'Cada tela explica a sua parte',
+        titulo: 'A central da sua conta',
         texto:
-          'Os cartões levam aos pedidos, ao carrinho guardado e aos favoritos, e embaixo ficam os últimos pedidos. Em cada tela da conta, o botão **Como funciona** ao lado do título explica aquela parte.',
+          'Três cartões juntam o que importa: o **último pedido** e a situação dele, o **próximo vencimento** com a NZ (com **Pagar** ou **Gerar Pix/boleto**) e o **saldo da carteira**. Se houver parcela vencida, um aviso aparece logo abaixo da faixa do topo. Embaixo ficam os atalhos e os últimos pedidos, do site e da NZ juntos.',
+        cena: {
+          tipo: 'comparacao',
+          colunas: [
+            { titulo: 'Último pedido', icone: 'caminhao', tom: 'marca', itens: ['Situação', 'Transportadora'] },
+            { titulo: 'Próximo vencimento', icone: 'calendario', tom: 'info', itens: ['Data e valor', 'Pagar pelo site'] },
+            { titulo: 'Carteira', icone: 'carteira', tom: 'ok', itens: ['Disponível', 'A liberar'] },
+          ],
+        },
+      },
+      {
+        titulo: 'Cada tela explica a sua parte',
+        texto: 'Em cada tela da conta, o botão **Como funciona** ao lado do título explica aquela parte.',
         cena: {
           tipo: 'fluxo',
           etapas: [
@@ -58,17 +70,17 @@ export const TUTORIAIS_CONTA: Tutorial[] = [
     id: 'conta.pedidos',
     publico: 'cliente',
     titulo: 'Meus pedidos',
-    resumo: 'Os pedidos feitos no site, as compras anteriores com a NZ, comprar de novo e cancelar.',
+    resumo: 'Os pedidos feitos no site, os pedidos com a NZ, comprar de novo e cancelar.',
     passos: [
       {
-        titulo: 'Site e compras anteriores',
+        titulo: 'Site e NZ',
         texto:
-          'Em cima, os **pedidos feitos no site**: número, data, pagamento, situação, itens e total; **Ver pedido** abre o detalhe. Embaixo, as **compras anteriores na NZ** (balcão, telefone ou vendedor), com a nota fiscal, quando sua conta está ligada ao cadastro da NZ.',
+          'Em cima, os **pedidos feitos no site**: número, data, pagamento, situação, itens e total; **Ver pedido** abre o detalhe. Embaixo, os **pedidos com a NZ** (balcão, WhatsApp ou vendedor), com a nota fiscal, a transportadora quando sai para entrega e **Comprar de novo**. Eles aparecem quando sua conta está ligada ao cadastro da NZ; orçamento ainda em negociação não entra.',
         cena: {
           tipo: 'comparacao',
           colunas: [
             { titulo: 'Pedidos do site', icone: 'carrinho', tom: 'marca', itens: ['Pagamento e situação', 'Ver pedido', 'Comprar de novo'] },
-            { titulo: 'Compras anteriores', icone: 'nota', tom: 'info', itens: ['Balcão, telefone, vendedor', 'Com nota fiscal'] },
+            { titulo: 'Pedidos com a NZ', icone: 'nota', tom: 'info', itens: ['Balcão, WhatsApp, vendedor', 'Nota fiscal e transportadora', 'Comprar de novo'] },
           ],
         },
       },
@@ -182,31 +194,44 @@ export const TUTORIAIS_CONTA: Tutorial[] = [
     id: 'conta.pagamentos',
     publico: 'cliente',
     titulo: 'Pagamentos',
-    resumo: 'As cobranças dos pedidos do site e as parcelas das suas compras com a NZ.',
+    resumo: 'As parcelas com a NZ (vencidas, a vencer e pagas), como pagar pelo site e as cobranças dos pedidos do site.',
     passos: [
+      {
+        titulo: 'Com a NZ',
+        texto:
+          'Em cima, as parcelas das suas compras com a NZ em três blocos: **vencidos**, **a vencer** e **pagos** nos últimos 12 meses, cada uma com vencimento, valor, pedido e nota fiscal. Sentiu falta de alguma? Fale com a NZ.',
+        cena: {
+          tipo: 'status',
+          estados: [
+            { texto: 'Vencido', tom: 'atencao', sub: 'pagar ou combinar' },
+            { texto: 'A vencer', tom: 'info', sub: 'pagar pelo site' },
+            { texto: 'Pago', tom: 'ok', sub: 'ver cobrança' },
+          ],
+        },
+      },
+      {
+        titulo: 'Pagar pelo site',
+        texto:
+          'Com a cobrança já emitida, **Pagar** abre a página segura do Asaas com Pix e boleto; dá também para **Copiar Pix** e baixar a **2ª via**. Sem cobrança e dentro do prazo, **Gerar Pix/boleto** cria a cobrança na hora. Vencida sem cobrança ou combinada com a NZ: **Fale com a NZ**. Depois de pago, a parcela passa para **Pagos** sozinha.',
+        cena: {
+          tipo: 'fluxo',
+          etapas: [
+            { icone: 'nota', rotulo: 'Parcela em aberto' },
+            { icone: 'pix', rotulo: 'Pagar ou gerar Pix/boleto' },
+            { icone: 'check', rotulo: 'Vai para Pagos', tom: 'ok' },
+          ],
+        },
+      },
       {
         titulo: 'Cobranças do site',
         texto:
-          'Cada Pix, boleto e cartão dos seus pedidos do site: **Copiar Pix** (enquanto vale), **Copiar linha digitável**, **2ª via do boleto** e **Recibo** do que já foi pago.',
+          'Embaixo, cada Pix, boleto e cartão dos seus pedidos do site: **Copiar Pix** (enquanto vale), **Copiar linha digitável**, **2ª via do boleto** e **Recibo** do que já foi pago.',
         cena: {
           tipo: 'status',
           estados: [
             { texto: 'Aguardando', tom: 'atencao', sub: 'copiar Pix ou boleto' },
             { texto: 'Pago', tom: 'ok', sub: 'recibo' },
             { texto: 'Vencido', tom: 'neutro', sub: 'pague de novo no pedido' },
-          ],
-        },
-      },
-      {
-        titulo: 'Suas parcelas na NZ',
-        texto:
-          'As parcelas de compras feitas com a NZ fora do site (boletos emitidos pela NZ) que estão ligadas à sua conta, com número da nota, **2ª via do boleto** ou a cobrança. Sentiu falta de alguma? Fale com a NZ.',
-        cena: {
-          tipo: 'fluxo',
-          etapas: [
-            { icone: 'loja', rotulo: 'Compra com a NZ' },
-            { icone: 'nota', rotulo: 'Parcela no seu nome' },
-            { icone: 'download', rotulo: '2ª via aqui', tom: 'ok' },
           ],
         },
       },
