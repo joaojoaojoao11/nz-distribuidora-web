@@ -156,7 +156,7 @@ export default function Login() {
             </div>
           </div>
 
-          <Link to="/recuperar-senha" className={styles.esqueci}>
+          <Link to="/recuperar-senha" state={{ identificador }} className={styles.esqueci}>
             Esqueci minha senha / primeiro acesso
           </Link>
 

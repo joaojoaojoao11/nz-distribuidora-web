@@ -311,3 +311,27 @@
     padding: 1.5rem 1.25rem;
   }
 }
+
+/* Segundo botão, de contorno (ex.: "Falar com a NZ" depois de pedir o link da senha). */
+.submitBtnSecundario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 0.75rem;
+  border: 1px solid var(--border-strong, #333);
+  background: transparent;
+  color: var(--text-primary, #fff);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.submitBtnSecundario:hover {
+  border-color: var(--accent-red);
+}

@@ -484,6 +484,18 @@ export default function AdminClientes() {
               <button type="button" className={styles.actionBtn} onClick={() => void navigator.clipboard?.writeText(linkConvite.link)}>
                 Copiar
               </button>
+              {/* Login por CPF/CNPJ (Fase 2): mensagem pronta para o WhatsApp. */}
+              <button
+                type="button"
+                className={styles.actionBtn}
+                onClick={() =>
+                  void navigator.clipboard?.writeText(
+                    `Olá! Aqui é da NZ. Sua conta no site da NZ está pronta. Crie sua senha por este link (vale uma vez): ${linkConvite.link}\n\nDepois é só entrar em nzgroup.com.br/login com o seu CNPJ (ou CPF) e a senha. Se o link expirar, use "Esqueci minha senha / primeiro acesso" com o seu CNPJ.`
+                  )
+                }
+              >
+                Copiar mensagem do WhatsApp
+              </button>
               <button type="button" className={styles.actionBtn} onClick={() => setLinkConvite(null)}>
                 Fechar
               </button>

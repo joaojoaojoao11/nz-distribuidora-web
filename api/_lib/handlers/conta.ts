@@ -23,7 +23,9 @@
 //                                 Platinum ou uma faixa individual) — Fase 1
 //   trocar-documento    admin   — troca o CPF/CNPJ de uma conta (travado para o
 //                                 cliente depois de aprovada/ligada ao ERP)
-//   recuperar-senha     público — envia o e-mail de redefinição
+//   recuperar-senha     público — envia o e-mail de redefinição; com CPF/CNPJ é
+//                                 também o PRIMEIRO ACESSO das contas do ERP
+//                                 (conta/primeiroAcesso.ts)
 //   entrar-documento    público — CPF/CNPJ + senha: confere no banco e devolve
 //                                 o e-mail da conta só com a senha certa
 //
@@ -46,6 +48,7 @@ import { clienteErp } from '../pedido/despachoErp.js';
 import { criarContasDoErp } from '../conta/contasDoErp.js';
 import { pagarTitulo } from '../conta/pagarTitulo.js';
 import { chaveDoc, conferirSenhaDocumento, passouDoLimite, registrarTentativaLogin } from '../conta/loginDocumento.js';
+import { recuperarPorDocumento } from '../conta/primeiroAcesso.js';
 
 const TIPOS_ACESSO = ['client', 'lojista', 'reseller'];
 
@@ -133,9 +136,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // ------------------------------------------------------------- público
   if (op === 'recuperar-senha') {
-    const email = normalizarEmail(body.email);
-    // Resposta sempre igual: nunca revela se o e-mail existe.
+    // Aceita e-mail OU CPF/CNPJ (login por documento, Fase 2). `email` continua
+    // valendo para quem ainda manda o campo antigo.
+    const bruto = typeof body.identificador === 'string' ? body.identificador : typeof body.email === 'string' ? body.email : '';
+    // Resposta sempre igual: nunca revela se o e-mail ou o documento têm conta.
     const generico = { ok: true as const };
+    if (!bruto.includes('@')) {
+      const doc = somenteDigitos(bruto);
+      if (!validarCpfCnpj(doc)) {
+        res.status(400).json({ error: 'documento-invalido' });
+        return;
+      }
+      // 5 pedidos por IP por hora (como no e-mail) e 3 por documento por hora —
+      // o e-mail do cliente não vira alvo de enxurrada de links.
+      const porDoc = `doc:${chaveDoc(doc)}`;
+      if ((await excedeu(site, 'RECUPERAR_SENHA', { ip }, 5, 60)) || (await excedeu(site, 'RECUPERAR_DOC', { ip: porDoc }, 3, 60))) {
+        res.status(200).json(generico);
+        return;
+      }
+      await registrarTentativa(site, 'RECUPERAR_SENHA', null, ip);
+      await registrarTentativa(site, 'RECUPERAR_DOC', null, porDoc);
+      const desfecho = await recuperarPorDocumento(site, doc, `${SITE_URL}/nova-senha`).catch(() => 'erro');
+      // Rastro sem o número: o começo do HMAC basta para o admin ver repetição.
+      await registrarLog(site, 'recuperar-por-documento', null, { doc: chaveDoc(doc).slice(0, 12), desfecho }, null);
+      res.status(200).json(generico);
+      return;
+    }
+    const email = normalizarEmail(bruto);
     if (!email.includes('@') || email.length > 200) {
       res.status(200).json(generico);
       return;

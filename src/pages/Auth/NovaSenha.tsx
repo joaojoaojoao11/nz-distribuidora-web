@@ -93,7 +93,7 @@ export default function NovaSenha() {
           </>
         )}
 
-        {estado === 'salvo' && <div className={styles.okMsg}>Senha definida. Entrando…</div>}
+        {estado === 'salvo' && <div className={styles.okMsg}>Senha definida. Da próxima vez, entre com seu e-mail, CPF ou CNPJ e esta senha. Entrando…</div>}
 
         {estado === 'pronto' && (
           <>

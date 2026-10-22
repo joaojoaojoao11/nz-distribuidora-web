@@ -57,6 +57,8 @@ export default function Register() {
   }));
   const [verSenha, setVerSenha] = useState(false);
   const [error, setError] = useState('');
+  // D8 (login por documento): o CPF/CNPJ digitado já tem conta — mostra os dois caminhos.
+  const [docJaTemConta, setDocJaTemConta] = useState(false);
   const [loading, setLoading] = useState(false);
   // Conta criada, e-mail ainda não confirmado: a tela vira "confira sua caixa".
   const [confirmar, setConfirmar] = useState<string | null>(null);
@@ -99,7 +101,11 @@ export default function Register() {
     }, destino);
 
     if (err) {
-      setError(textoDoErroAuth(err));
+      // O gatilho que cria o perfil bate no índice único do CPF/CNPJ e o Supabase
+      // devolve só "Database error saving new user". Com documento preenchido, é ele.
+      const docRepetido = Boolean(form.documento) && /database error saving new user/i.test(err);
+      setDocJaTemConta(docRepetido);
+      setError(docRepetido ? 'Este CPF/CNPJ já tem conta no site.' : textoDoErroAuth(err));
       setLoading(false);
       return;
     }
@@ -202,6 +208,15 @@ export default function Register() {
 
         <form className={styles.form} onSubmit={handleSubmit}>
           {error && <div className={styles.errorMsg}>{error}</div>}
+          {docJaTemConta && (
+            <p className={styles.hint}>
+              Entre com ele e a sua senha em <Link to="/login">Entrar</Link>, ou crie uma senha nova em{' '}
+              <Link to="/recuperar-senha" state={{ identificador: formatarCpfCnpj(form.documento) }}>
+                Esqueci minha senha / primeiro acesso
+              </Link>
+              .
+            </p>
+          )}
 
           <div className={styles.inputGroup}>
             <label className={styles.label}>Tipo de conta</label>
