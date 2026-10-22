@@ -103,7 +103,11 @@ console.log('\n=== O ERP É SOMENTE LEITURA ===');
 // `site_marcar_vinculo` (21/10/2026, Central do cliente, Fase A): grava SÓ
 // `clients.site_user_id`, e só se estiver vazio — o vínculo da conta que o
 // site criou a partir da base do ERP. Regra do João (docs/PLANO_CENTRAL_DO_CLIENTE.md).
-const ESCRITAS_PERMITIDAS = new Set(['site_criar_pedido', 'site_confirmar_pagamento', 'site_cancelar_pedido', 'site_faixa_cliente', 'site_solicitar_saque', 'site_marcar_vinculo']);
+// `site_marcar_acesso` (22/10/2026, login por CPF/CNPJ, Fase 3): grava SÓ
+// clients.site_acesso / site_ultimo_acesso / site_acesso_em, e só no cliente
+// cujo site_user_id é o mesmo usuário — para a ficha do NZERP mostrar o acesso
+// ao site. Regra do João (docs/PLANO_LOGIN_CPF_CNPJ.md).
+const ESCRITAS_PERMITIDAS = new Set(['site_criar_pedido', 'site_confirmar_pagamento', 'site_cancelar_pedido', 'site_faixa_cliente', 'site_solicitar_saque', 'site_marcar_vinculo', 'site_marcar_acesso']);
 const arquivosApi = spawnSync(process.execPath, ['-e', `
   const { readdirSync, statSync } = require('node:fs');
   const { join } = require('node:path');

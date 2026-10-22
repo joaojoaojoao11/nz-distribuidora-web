@@ -49,6 +49,7 @@ import { criarContasDoErp } from '../conta/contasDoErp.js';
 import { pagarTitulo } from '../conta/pagarTitulo.js';
 import { chaveDoc, conferirSenhaDocumento, passouDoLimite, registrarTentativaLogin } from '../conta/loginDocumento.js';
 import { recuperarPorDocumento } from '../conta/primeiroAcesso.js';
+import { espelharAcessoNoErp } from '../conta/acessoNoErp.js';
 
 const TIPOS_ACESSO = ['client', 'lojista', 'reseller'];
 
@@ -267,6 +268,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         aprovado: Boolean(perfil.is_approved) || r.aprovouAgora,
         jaCliente: r.jaCliente,
       });
+      // Login por CPF/CNPJ, Fase 3: roda uma vez por sessão, logo depois do
+      // login — o NZERP fica sabendo do último acesso e se a conta está liberada.
+      await espelharAcessoNoErp(site, [userId]).catch(() => null);
     }
     res.status(200).json(r);
     return;
@@ -521,6 +525,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Espelho no ERP (só o nome da faixa, para o CRM). Nunca segura a resposta.
     let faixaNoErp = false;
     if ('faixa_id' in patch) faixaNoErp = await espelharFaixaNoErp(alvo, faixaNome);
+    // Login por CPF/CNPJ, Fase 3: a ficha do cliente no NZERP mostra "liberada"/"bloqueada" na hora.
+    if (op === 'aprovar' || op === 'revogar') await espelharAcessoNoErp(site, [alvoId]).catch(() => null);
     res.status(200).json({
       ok: true,
       emailEnviado,
