@@ -289,6 +289,14 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     saldoUsar = calcularUsoDeSaldo(total, s.disponivel, cfg.cobranca_minima).usar;
   }
   const cobrar = r2(total - saldoUsar);
+  // O valor que a tela mostrou (varredura 22/10): se o saldo (ou o frete) mudou
+  // entre o resumo e o clique, o cartão seria cobrado num valor que a pessoa
+  // não viu. Aí não cobra nada e devolve o valor novo para ela confirmar.
+  const esperado = Number(body.cobrarEsperado);
+  if (body.cobrarEsperado != null && Number.isFinite(esperado) && Math.abs(esperado - cobrar) > 0.01) {
+    res.status(409).json({ error: 'valor-mudou', cobrar, saldoUsado: saldoUsar, total });
+    return;
+  }
   let escolha: Escolha | null = null;
   if (cobrar > 0) {
     if ('erro' in escolhaBruta) {
@@ -615,10 +623,38 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
     res.status(409).json({ error: 'pedido-nao-aceita-novo-pagamento', pagamentoStatus: pedido.pagamento_status });
     return;
   }
+  // Pedido cancelado (pelo cliente, pela equipe ou no ERP) não ganha cobrança nova (varredura 22/10).
+  if (String(pedido.status ?? '').toUpperCase() === 'CANCELADO') {
+    res.status(409).json({ error: 'pedido-cancelado' });
+    return;
+  }
   const escolha = lerEscolha(body);
   if ('erro' in escolha) {
     res.status(400).json({ error: escolha.erro });
     return;
+  }
+  // A cobrança anterior sai do Asaas ANTES de nascer a nova: boleto vencido
+  // ainda se paga (multa e juros) e Pix vencido pode não ter sido removido —
+  // com as duas vivas o cliente pagaria duas vezes. Se a anterior foi paga no
+  // meio do caminho, vale ela. A linha fica "cancelado" sem mexer no pedido
+  // nem no saldo: a reserva da carteira passa para a cobrança nova.
+  const { data: anterioresData } = await site.from('pagamentos').select('*').eq('pedido_id', pedido.id).in('status', ['aguardando', 'vencido', 'expirado']);
+  for (const ant of (anterioresData ?? []) as PagamentoRow[]) {
+    if (ant.asaas_payment_id) {
+      try {
+        const atual = await consultarCobranca(ant.asaas_payment_id);
+        if (['CONFIRMED', 'RECEIVED', 'RECEIVED_IN_CASH'].includes(atual.status)) {
+          await aplicarStatus(site, ant, 'pago', 'novo-pagamento-mas-pago', atual);
+          res.status(409).json({ error: 'ja-pago' });
+          return;
+        }
+        if (!atual.deleted) await removerCobranca(ant.asaas_payment_id);
+      } catch (err) {
+        res.status(502).json({ error: 'asaas-falhou', message: err instanceof Error ? err.message : String(err) });
+        return;
+      }
+    }
+    await site.from('pagamentos').update({ status: 'cancelado', ultimo_evento: 'substituida-por-nova', atualizado_em: new Date().toISOString() }).eq('id', ant.id);
   }
   // Fase 3: o saldo reservado voltou à carteira quando a cobrança morreu;
   // reserva de novo o mesmo valor (se ainda houver) e cobra só o restante.
@@ -703,11 +739,13 @@ async function opCancelar(site: Db, userId: string, admin: boolean, body: Record
   }
 
   // ------------------------------------------------- 1. cobranças em aberto
+  // Vencido/expirado também (varredura 22/10): boleto vencido continua pagável
+  // no Asaas, e o pedido cancelado não pode receber pagamento depois.
   const { data } = await site
     .from('pagamentos')
     .select('*')
     .eq('pedido_id', pedido.id)
-    .in('status', ['aguardando'])
+    .in('status', ['aguardando', 'vencido', 'expirado'])
     .order('criado_em', { ascending: false });
   const abertos = (data ?? []) as PagamentoRow[];
   for (const p of abertos) {

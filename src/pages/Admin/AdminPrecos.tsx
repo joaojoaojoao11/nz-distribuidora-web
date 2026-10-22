@@ -59,8 +59,20 @@ export default function AdminPrecos() {
   const [carregando, setCarregando] = useState(true);
 
   const carregar = useCallback(async () => {
+    // Regras em páginas de 1000 (varredura 22/10): o PostgREST corta em 1000 sem
+    // avisar, e a regra que ficasse de fora sumia da tela de quem a edita.
+    const todasAsRegras = async () => {
+      const linhas: RegraRow[] = [];
+      for (let de = 0; de < 50_000; de += 1000) {
+        const { data, error } = await supabase.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual, faixa_id').order('id').range(de, de + 999);
+        if (error) return { data: null, error };
+        linhas.push(...((data ?? []) as RegraRow[]));
+        if ((data ?? []).length < 1000) break;
+      }
+      return { data: linhas, error: null };
+    };
     const [r, v, u, f] = await Promise.all([
-      supabase.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual, faixa_id'),
+      todasAsRegras(),
       supabase.from('acesso_config').select('papel, linhas_ocultas, ve_rolo, ve_metro, ve_estoque, ve_promocao, pagamento_online, atualizado_em'),
       supabase.from('user_profiles').select('role, faixa_id').limit(1000),
       supabase.from('faixas_preco').select('id, papel, nome, ordem, ativa').order('ordem').order('nome'),

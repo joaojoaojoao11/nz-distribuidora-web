@@ -183,9 +183,18 @@ export function montarRegras(linhas: readonly Partial<RegraAcesso>[], vis?: Reco
 export async function carregarRegras(site: Db): Promise<Regras> {
   const vis = await carregarVisibilidade(site);
   try {
-    const { data, error } = await site.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual, faixa_id');
-    if (error) throw error;
-    return montarRegras((data ?? []) as Partial<RegraAcesso>[], vis);
+    // Em páginas de 1000 (varredura 22/10): o PostgREST corta em 1000 sem avisar,
+    // e regra de produto × tipo × faixa que ficasse de fora caía na regra da
+    // linha ou na geral — às vezes um preço MENOR que o combinado.
+    const linhas: Partial<RegraAcesso>[] = [];
+    for (let de = 0; de < 50_000; de += 1000) {
+      const { data, error } = await site.from('precos_acesso').select('papel, linha_key, produto_slug, base, percentual, faixa_id').order('id').range(de, de + 999);
+      if (error) throw error;
+      const pagina = (data ?? []) as Partial<RegraAcesso>[];
+      linhas.push(...pagina);
+      if (pagina.length < 1000) break;
+    }
+    return montarRegras(linhas, vis);
   } catch (err) {
     console.warn('[precos] regras de acesso não carregaram; usando o padrão:', err instanceof Error ? err.message : err);
     const r = regrasPadrao();

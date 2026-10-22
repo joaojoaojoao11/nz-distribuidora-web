@@ -356,7 +356,8 @@ export async function usosReservados(site: Db, codigo: string): Promise<number> 
     .eq('cupom', codigo)
     .is('cupom_consumido_em', null)
     .neq('status', 'CANCELADO')
-    .or('pagamento_status.is.null,pagamento_status.not.in.(recusado,expirado,vencido,estornado,cancelado)');
+    // Vencido segura o cupom: o boleto ainda se paga (varredura 22/10, igual a reservasDoCliente).
+    .or('pagamento_status.is.null,pagamento_status.not.in.(recusado,expirado,estornado,cancelado)');
   return Number(count ?? 0);
 }
 
@@ -387,11 +388,13 @@ export async function resolverCupom(site: Db, codigoBruto: string, subtotal: num
 
 /** cupom (já tratado) > indicado_por no cadastro > último clique do visitante. */
 export async function resolverAfiliado(site: Db, userId: string, indicadoPor: string | null, visitante: string): Promise<string | null> {
+  // Afiliado APROVADO e ativo (varredura 22/10): pendente ou suspenso não leva
+  // comissão — a mesma régua do cupom (motivoCupomInvalido) e do motor.
   const valido = async (id: string | null): Promise<string | null> => {
     if (!id || id === userId) return null;
-    const { data } = await site.from('afiliados').select('user_id, ativo').eq('user_id', id).maybeSingle();
-    const a = data as { user_id: string; ativo: boolean } | null;
-    return a && a.ativo ? a.user_id : null;
+    const { data } = await site.from('afiliados').select('user_id, ativo, status').eq('user_id', id).maybeSingle();
+    const a = data as { user_id: string; ativo: boolean; status: string } | null;
+    return a && a.ativo && a.status === 'aprovado' ? a.user_id : null;
   };
   const porCadastro = await valido(indicadoPor);
   if (porCadastro) return porCadastro;

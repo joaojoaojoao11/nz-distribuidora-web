@@ -92,9 +92,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(200).json({ ok: false });
       return;
     }
-    const { data: af } = await site.from('afiliados').select('user_id, ativo').eq('codigo', codigo).maybeSingle();
-    const a = af as { user_id: string; ativo: boolean } | null;
-    if (!a || !a.ativo) {
+    const { data: af } = await site.from('afiliados').select('user_id, ativo, status').eq('codigo', codigo).maybeSingle();
+    const a = af as { user_id: string; ativo: boolean; status: string } | null;
+    // Só afiliado APROVADO marca o visitante (varredura 22/10): o link de quem
+    // ainda está em análise ou foi suspenso não prende ninguém.
+    if (!a || !a.ativo || a.status !== 'aprovado') {
       res.status(200).json({ ok: false });
       return;
     }

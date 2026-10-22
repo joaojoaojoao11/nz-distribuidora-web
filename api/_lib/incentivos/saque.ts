@@ -11,6 +11,7 @@ import type { Db } from '../papel.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 import { devolverDebito } from './carteira.js';
 import { registrarEvento } from './gamificacao.js';
+import { abrirOcorrencia } from '../ocorrencias.js';
 import type { PixTipo } from './saqueRegras.js';
 
 export { calcularVencimentoSaque, PIX_TIPOS, validarChavePix, type PixTipo } from './saqueRegras.js';
@@ -44,6 +45,19 @@ export async function enviarSaqueAoErp(site: Db, saqueId: string): Promise<{ ok:
   if (!s) return { ok: false, erro: 'saque-nao-encontrado' };
   if (s.erp_ap_id) return { ok: true, apId: s.erp_ap_id };
   if (s.status !== 'solicitado') return { ok: false, erro: `status ${s.status}` };
+  // A vez de mandar (varredura 22/10): o pedido do cliente manda na hora e o
+  // cron remanda o que ficou `solicitado`. Os dois juntos chegavam ao ERP ao
+  // mesmo tempo. Vez esquecida por função que morreu vale 2 min. O ERP também
+  // trava por saque e tem índice único (20261022d_site_saque_idempotente).
+  const prazoVez = new Date(Date.now() - 2 * 60_000).toISOString();
+  const { data: vez } = await site
+    .from('saques')
+    .update({ erp_enviando_em: new Date().toISOString() })
+    .eq('id', s.id)
+    .eq('status', 'solicitado')
+    .or(`erp_enviando_em.is.null,erp_enviando_em.lt.${prazoVez}`)
+    .select('id');
+  if (!(vez ?? []).length) return { ok: false, erro: 'outro-envio-em-andamento' };
   const { data: pf } = await site.from('user_profiles').select('full_name, company_name, email, cpf_cnpj').eq('id', s.user_id).maybeSingle();
   const p = pf as { full_name: string | null; company_name: string | null; email: string | null; cpf_cnpj: string | null } | null;
   const { data: r, error } = await erp.rpc('site_solicitar_saque', {
@@ -59,12 +73,15 @@ export async function enviarSaqueAoErp(site: Db, saqueId: string): Promise<{ ok:
     },
   });
   if (error) {
-    await site.from('saques').update({ erp_erro: error.message.slice(0, 300), atualizado_em: new Date().toISOString() }).eq('id', s.id);
+    await site.from('saques').update({ erp_erro: error.message.slice(0, 300), erp_enviando_em: null, atualizado_em: new Date().toISOString() }).eq('id', s.id);
     return { ok: false, erro: error.message };
   }
   const apId = String((r as { ap_id?: string } | null)?.ap_id ?? '');
-  if (!apId) return { ok: false, erro: 'erp-sem-id' };
-  await site.from('saques').update({ status: 'enviado', erp_ap_id: apId, erp_enviado_em: new Date().toISOString(), erp_erro: null, atualizado_em: new Date().toISOString() }).eq('id', s.id).eq('status', 'solicitado');
+  if (!apId) {
+    await site.from('saques').update({ erp_enviando_em: null }).eq('id', s.id);
+    return { ok: false, erro: 'erp-sem-id' };
+  }
+  await site.from('saques').update({ status: 'enviado', erp_ap_id: apId, erp_enviado_em: new Date().toISOString(), erp_enviando_em: null, erp_erro: null, atualizado_em: new Date().toISOString() }).eq('id', s.id).eq('status', 'solicitado');
   return { ok: true, apId };
 }
 
@@ -88,27 +105,49 @@ export async function sincronizarSaques(site: Db, erp: Db): Promise<{ reenviados
   const enviados = (env ?? []) as { id: string; user_id: string; valor: number; movimento_id: number | null; erp_ap_id: string | null }[];
   if (!enviados.length) return r;
   const ids = enviados.map((s) => s.erp_ap_id).filter((x): x is string => Boolean(x));
-  const { data: aps, error } = await erp.from('saques_site').select('id, situacao, saldo, valor_pago, data_liquidacao, deleted_at').in('id', ids);
-  if (error) {
-    r.erros.push('saques_site: ' + error.message);
-    return r;
-  }
   type Ap = { id: string; situacao: string | null; saldo: number | null; valor_pago: number | null; data_liquidacao: string | null; deleted_at: string | null };
-  const porId = new Map(((aps ?? []) as Ap[]).map((a) => [a.id, a]));
+  const porId = new Map<string, Ap>();
+  // Em lotes de 100: 500 ids num `in` só estouravam o tamanho da URL (varredura 22/10).
+  for (let i = 0; i < ids.length; i += 100) {
+    const { data: aps, error } = await erp.from('saques_site').select('id, situacao, saldo, valor_pago, data_liquidacao, deleted_at').in('id', ids.slice(i, i + 100));
+    if (error) {
+      r.erros.push('saques_site: ' + error.message);
+      return r;
+    }
+    for (const a of (aps ?? []) as Ap[]) porId.set(a.id, a);
+  }
   for (const s of enviados) {
     const ap = s.erp_ap_id ? porId.get(s.erp_ap_id) : undefined;
-    // Título sumiu de vez (apagado no ERP) = cancelado.
-    const sit = (ap?.situacao ?? '').toLowerCase();
-    const cancelado = !ap || Boolean(ap.deleted_at) || sit === 'cancelado';
-    const pago = Boolean(ap) && !cancelado && (sit === 'pago' || sit === 'paga' || (Number(ap!.saldo ?? 0) <= 0.01 && Number(ap!.valor_pago ?? 0) > 0));
+    // Título que NÃO VEIO na leitura não é prova de nada (view mudou, leitura
+    // parcial, id trocado): devolver o saldo aqui e o financeiro pagar o título
+    // seria o saque duas vezes. Fica para a equipe conferir (varredura 22/10).
+    // Só devolve com o ERP dizendo: apagado (deleted_at) ou cancelado.
+    if (!ap) {
+      await site.from('saques').update({ erp_erro: 'título não encontrado no NZERP — conferir antes de devolver o saldo', atualizado_em: agora }).eq('id', s.id);
+      await abrirOcorrencia(site, {
+        categoria: 'problema',
+        tipo: 'carteira',
+        titulo: `Saque sem título no NZERP (${Number(s.valor).toFixed(2).replace('.', ',')})`,
+        detalhe: { saqueId: s.id, erpApId: s.erp_ap_id, oQueFazer: 'Conferir no Contas a Pagar do NZERP. Se o título não existe mesmo, cancelar o saque pela equipe para devolver o saldo.' },
+        chaveDedupe: `saque-sem-titulo:${s.id}`,
+        userId: s.user_id,
+      });
+      r.erros.push(`saque ${s.id}: título não encontrado no NZERP`);
+      continue;
+    }
+    const sit = (ap.situacao ?? '').toLowerCase();
+    const cancelado = Boolean(ap.deleted_at) || sit === 'cancelado';
+    const pago = !cancelado && (sit === 'pago' || sit === 'paga' || (Number(ap.saldo ?? 0) <= 0.01 && Number(ap.valor_pago ?? 0) > 0));
     try {
       if (cancelado) {
+        // Claim pela troca de status: só quem mudou enviado → cancelado devolve.
+        const { data: virou } = await site.from('saques').update({ status: 'cancelado', cancelado_em: agora, cancelado_motivo: ap.deleted_at ? 'título apagado no NZERP' : 'título cancelado no NZERP', atualizado_em: agora }).eq('id', s.id).eq('status', 'enviado').select('id');
+        if (!(virou ?? []).length) continue;
         if (s.movimento_id != null) await devolverDebito(site, s.movimento_id, 'saque cancelado no NZERP');
-        await site.from('saques').update({ status: 'cancelado', cancelado_em: agora, cancelado_motivo: !ap ? 'título apagado no NZERP' : 'título cancelado no NZERP', atualizado_em: agora }).eq('id', s.id).eq('status', 'enviado');
         await registrarEvento(site, s.user_id, 'saque_cancelado', { valor: Number(s.valor), saqueId: s.id });
         r.cancelados++;
       } else if (pago) {
-        const pagoEm = ap!.data_liquidacao ? `${ap!.data_liquidacao}T12:00:00-03:00` : agora;
+        const pagoEm = ap.data_liquidacao ? `${ap.data_liquidacao}T12:00:00-03:00` : agora;
         await site.from('saques').update({ status: 'pago', pago_em: pagoEm, atualizado_em: agora }).eq('id', s.id).eq('status', 'enviado');
         await registrarEvento(site, s.user_id, 'saque_pago', { valor: Number(s.valor), saqueId: s.id });
         r.pagos++;

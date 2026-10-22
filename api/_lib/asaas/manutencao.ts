@@ -116,6 +116,8 @@ export async function manutencaoCheckout(site: Db): Promise<ResultadoManutencao>
     .select('id')
     .eq('pagamento_status', 'pago')
     .neq('status', 'CANCELADO')
+    // Retido (saldo da carteira que já tinha voltado) espera a equipe, não o cron.
+    .neq('erp_envio', 'retido')
     .or('erp_envio.neq.enviado,erp_pago_em.is.null')
     .limit(100);
   for (const ped of (pendentesErp ?? []) as { id: string }[]) {

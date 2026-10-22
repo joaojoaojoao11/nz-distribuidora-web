@@ -20,6 +20,7 @@ import { carregarConfigIncentivos, type ConfigIncentivos } from './config.js';
 import { avaliarConquistas, devolverConquistasDoPedido, registrarEvento, situacaoNivel } from './gamificacao.js';
 import { chavePeriodo, fimPeriodo } from './periodos.js';
 import { limitarIncentivo } from './trava.js';
+import { somenteDigitos } from '../conta/documento.js';
 
 export interface EntradaMotor {
   pedidoId: string;
@@ -50,6 +51,7 @@ interface PerfilRow {
   faixa_id: number | null;
   indicado_por: string | null;
   filiado_em: string | null;
+  cpf_cnpj?: string | null;
 }
 
 interface CupomRow {
@@ -65,6 +67,7 @@ interface AfiliadoRow {
   status: string;
   ativo: boolean;
   percentual: number | null;
+  documento?: string | null;
   pct_ativacao: number | null;
   pct_recorrencia: number | null;
   periodicidade: 'mensal' | 'quinzenal';
@@ -92,14 +95,28 @@ export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: Co
   if (!pedido || !pedido.user_id) return { ignorado: 'pedido-sem-usuario', creditos: [], cortes: [] };
   if (pedido.incentivos_processados_em) return { ignorado: 'ja-processado', creditos: [], cortes: [] };
 
+  // A vez do pedido (varredura 22/10): o sync roda pelo webhook do ERP a cada
+  // 5 min e pelo cron; dois ao mesmo tempo no mesmo pedido pagavam em dobro o
+  // que o índice único não pega (evento, conquista). Claim condicional; vez
+  // esquecida por uma função que morreu vale 10 min.
+  const prazoVez = new Date(Date.now() - 10 * 60_000).toISOString();
+  const { data: vez } = await site
+    .from('pedidos')
+    .update({ incentivos_processando_em: new Date().toISOString() })
+    .eq('id', pedido.id)
+    .is('incentivos_processados_em', null)
+    .or(`incentivos_processando_em.is.null,incentivos_processando_em.lt.${prazoVez}`)
+    .select('id');
+  if (!(vez ?? []).length) return { ignorado: 'em-andamento', creditos: [], cortes: [] };
+
   const base = r2(Math.max(0, Number(e.totalErp) - Number(e.freteErp || 0)));
-  const marcar = async () => site.from('pedidos').update({ incentivos_processados_em: new Date().toISOString() }).eq('id', pedido.id);
+  const marcar = async () => site.from('pedidos').update({ incentivos_processados_em: new Date().toISOString(), incentivos_processando_em: null }).eq('id', pedido.id);
   if (base <= 0) {
     await marcar();
     return { ignorado: 'base-zero', creditos: [], cortes: [] };
   }
 
-  const { data: pf } = await site.from('user_profiles').select('id, role, faixa_id, indicado_por, filiado_em').eq('id', pedido.user_id).maybeSingle();
+  const { data: pf } = await site.from('user_profiles').select('id, role, faixa_id, indicado_por, filiado_em, cpf_cnpj').eq('id', pedido.user_id).maybeSingle();
   const perfil = (pf as PerfilRow | null) ?? { id: pedido.user_id, role: 'client', faixa_id: null, indicado_por: null, filiado_em: null };
 
   let cupom: CupomRow | null = null;
@@ -117,21 +134,37 @@ export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: Co
   const candidatos: Candidato[] = [];
   const liberaPadrao = somarDias(e.faturadoEm, cfg.diasLiberacao);
 
-  if (cupom?.tipo === 'super' && cupom.dono_user_id && cupom.dono_user_id !== perfil.id && cfg.superCupomAtivo) {
+  // Ninguém ganha comprando de si mesmo (varredura 22/10): conta diferente,
+  // mas o MESMO CPF/CNPJ do indicador/afiliado (o da conta ou o do cadastro de
+  // afiliado) é a mesma pessoa ou empresa.
+  const docComprador = somenteDigitos(perfil.cpf_cnpj);
+  const mesmoDono = async (userId: string, docAfiliado?: string | null): Promise<boolean> => {
+    if (!docComprador) return false;
+    if (somenteDigitos(docAfiliado) === docComprador) return true;
+    const { data } = await site.from('user_profiles').select('cpf_cnpj').eq('id', userId).maybeSingle();
+    return somenteDigitos((data as { cpf_cnpj?: string | null } | null)?.cpf_cnpj) === docComprador;
+  };
+
+  if (cupom?.tipo === 'super' && cupom.dono_user_id && cupom.dono_user_id !== perfil.id && cfg.superCupomAtivo && !(await mesmoDono(cupom.dono_user_id))) {
     const nivel = await situacaoNivel(site, cupom.dono_user_id, 'indicador');
     candidatos.push({ quem: cupom.dono_user_id, tipo: 'cashback_indicacao', pct: cupom.comissao_pct ?? cfg.pctCashbackIndicador, mult: nivel.multiplicador, periodo: null, liberaEm: liberaPadrao, obs: [`super cupom ${cupom.codigo}`] });
   }
 
   if (perfil.indicado_por && perfil.indicado_por !== perfil.id) {
-    const { data: a } = await site.from('afiliados').select('user_id, status, ativo, percentual, pct_ativacao, pct_recorrencia, periodicidade').eq('user_id', perfil.indicado_por).maybeSingle();
+    const { data: a } = await site.from('afiliados').select('user_id, status, ativo, percentual, documento, pct_ativacao, pct_recorrencia, periodicidade').eq('user_id', perfil.indicado_por).maybeSingle();
     const af = a as AfiliadoRow | null;
-    if (af && af.ativo && af.status === 'aprovado') {
+    if (af && af.ativo && af.status === 'aprovado' && !(await mesmoDono(af.user_id, af.documento))) {
+      // Sem contar ESTE pedido: se o motor rodar de novo nele (caiu no meio), a
+      // ativação dele mesmo fazia a compra parecer "a segunda" e pagava
+      // recorrência por cima (varredura 22/10; o índice
+      // carteira_comissao_pedido_unica é a barreira no banco).
       const { count } = await site
         .from('carteira_movimentos')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', af.user_id)
         .eq('origem_user_id', perfil.id)
         .in('tipo', ['comissao_ativacao', 'comissao_recorrencia'])
+        .neq('pedido_id', pedido.id)
         .neq('status', 'estornado');
       const primeira = Number(count ?? 0) === 0;
       const nivel = await situacaoNivel(site, af.user_id, 'afiliado');

@@ -83,11 +83,16 @@ export async function trocarCodigo(site: Db, userId: string, novo: string): Prom
   const atual = await superCupomDe(site, userId);
   if (!atual) return { ok: false, motivo: 'você ainda não tem super cupom' };
   if (atual.codigo === codigo) return { ok: true, cupom: atual };
+  // Uma troca por dia (a 1ª personalização do código automático é livre).
+  const { count: jaTeve } = await site.from('cupons').select('codigo', { count: 'exact', head: true }).eq('tipo', 'super').eq('dono_user_id', userId);
+  if (Number(jaTeve ?? 0) > 1 && Date.now() - Date.parse(atual.criado_em) < 24 * 3_600_000) return { ok: false, motivo: 'dá para trocar o código uma vez por dia' };
   // Trocar o código = um cupom novo (o código é a chave; os usos antigos
-  // ficam no histórico do antigo, que é desativado).
+  // ficam no histórico do antigo, que é desativado). O novo herda o `ativo` do
+  // atual (varredura 22/10): cupom que a NZ desligou não volta ligado só
+  // porque o dono trocou o código.
   const { data, error } = await site
     .from('cupons')
-    .insert({ codigo, tipo: 'super', dono_user_id: userId, ativo: true, so_conta_nova: true, usos_por_cliente: 1, descricao: 'Super cupom pessoal', atualizado_em: new Date().toISOString() })
+    .insert({ codigo, tipo: 'super', dono_user_id: userId, ativo: atual.ativo, so_conta_nova: true, usos_por_cliente: 1, descricao: 'Super cupom pessoal', atualizado_em: new Date().toISOString() })
     .select(COLUNAS)
     .single();
   if (error) return { ok: false, motivo: String(error.code) === '23505' ? 'esse código já é de outra pessoa' : error.message };

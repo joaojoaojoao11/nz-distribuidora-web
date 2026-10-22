@@ -264,7 +264,9 @@ export function avisarPagamentoConfirmado(
     ? `Enviado ao NZERP${p.erp.quoteNumber ? ` (orçamento ${p.erp.quoteNumber})` : ''}`
     : p.erp.estado === 'sem-erp'
       ? 'NZERP não configurado neste ambiente'
-      : 'O NZERP não respondeu agora; o sistema tenta de novo sozinho';
+      : p.erp.estado === 'retido'
+        ? 'RETIDO: o saldo da carteira usado neste pedido já tinha voltado ao cliente. Não foi ao NZERP — ver a Central'
+        : 'O NZERP não respondeu agora; o sistema tenta de novo sozinho';
   return avisarNz(site, {
     tipo: 'pagamento-pago',
     chave: `pagamento-pago:${p.pagamentoId}`,

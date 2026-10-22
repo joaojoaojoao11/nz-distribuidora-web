@@ -106,7 +106,8 @@ export interface Saque {
   pix_chave: string;
   status: 'solicitado' | 'enviado' | 'pago' | 'cancelado';
   erp_ap_id: string | null;
-  erp_erro: string | null;
+  /** Só na lista da equipe (saques-listar); o cliente não recebe. */
+  erp_erro?: string | null;
   erp_enviado_em: string | null;
   vencimento: string | null;
   pago_em: string | null;

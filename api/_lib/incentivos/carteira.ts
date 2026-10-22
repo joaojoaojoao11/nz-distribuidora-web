@@ -225,9 +225,21 @@ async function estornarLista(site: Db, creditos: Movimento[], motivo: string, pe
   return tocados;
 }
 
-/** Cron diário: libera os "a liberar" vencidos e expira os disponíveis antigos (D11). */
-export async function manutencaoCarteira(site: Db, mesesValidade: number): Promise<{ liberados: number; expirados: number }> {
+/** Créditos que perdem a validade (D11). Débitos e estornos nunca. */
+export const TIPOS_QUE_EXPIRAM: TipoMovimento[] = ['cashback_indicacao', 'comissao_ativacao', 'comissao_recorrencia', 'bonus_meta', 'bonus_campanha', 'resgate_pontos', 'ajuste'];
+
+/**
+ * Cron diário: libera os "a liberar" vencidos e expira os disponíveis antigos (D11).
+ *
+ * Expiração em FIFO (varredura 22/10): o que a pessoa gastou saiu dos créditos
+ * MAIS ANTIGOS, então do crédito vencido só expira o que sobrou dele — num
+ * movimento `expiracao` negativo (carteira_expirar_usuario, com a mesma trava
+ * do checkout). Antes o crédito inteiro virava "expirado" mesmo já gasto em
+ * parte, e o saldo ficava negativo.
+ */
+export async function manutencaoCarteira(site: Db, mesesValidade: number): Promise<{ liberados: number; expirados: number; valorExpirado: number; erros: string[] }> {
   const agora = new Date();
+  const erros: string[] = [];
   const { data: lib } = await site
     .from('carteira_movimentos')
     .update({ status: 'disponivel', liberado_em: agora.toISOString() })
@@ -236,16 +248,28 @@ export async function manutencaoCarteira(site: Db, mesesValidade: number): Promi
     .select('id');
   const limite = new Date(agora);
   limite.setMonth(limite.getMonth() - Math.max(1, mesesValidade));
-  // Só CRÉDITOS expiram (valor > 0); débitos nunca.
-  const { data: exp } = await site
+  const { data: candidatos } = await site
     .from('carteira_movimentos')
-    .update({ status: 'expirado', expirado_em: agora.toISOString() })
+    .select('user_id')
     .eq('status', 'disponivel')
     .gt('valor', 0)
-    .in('tipo', ['cashback_indicacao', 'comissao_ativacao', 'comissao_recorrencia', 'bonus_meta', 'bonus_campanha', 'resgate_pontos', 'ajuste'])
+    .is('expirado_em', null)
+    .in('tipo', TIPOS_QUE_EXPIRAM)
     .lte('liberado_em', limite.toISOString())
-    .select('id');
-  return { liberados: (lib ?? []).length, expirados: (exp ?? []).length };
+    .limit(1000);
+  let expirados = 0;
+  let valorExpirado = 0;
+  for (const userId of new Set(((candidatos ?? []) as { user_id: string }[]).map((c) => c.user_id))) {
+    const { data, error } = await site.rpc('carteira_expirar_usuario', { p_user_id: userId, p_limite: limite.toISOString(), p_tipos: TIPOS_QUE_EXPIRAM });
+    if (error) {
+      erros.push(`${userId}: ${error.message}`);
+      continue;
+    }
+    const linha = (Array.isArray(data) ? data[0] : data) as { expirados?: number; valor?: number } | null;
+    expirados += Number(linha?.expirados ?? 0);
+    valorExpirado = r2(valorExpirado + Number(linha?.valor ?? 0));
+  }
+  return { liberados: (lib ?? []).length, expirados, valorExpirado, erros };
 }
 
 /** Rótulo em português de cada tipo (painel e admin). */

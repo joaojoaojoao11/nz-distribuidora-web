@@ -57,6 +57,7 @@ const TIPO: Record<string, { icone: string; rotulo: string }> = {
   'sku-removido': { icone: '🗑️', rotulo: 'SKU removido' },
   'preco-mudou': { icone: '📈', rotulo: 'Preço mudou' },
   'problema-produto': { icone: '🗣️', rotulo: 'Informado por usuário' },
+  carteira: { icone: '👛', rotulo: 'Carteira / saque' },
 };
 
 const MOTIVO: Record<string, string> = {

@@ -257,13 +257,15 @@ export default function Checkout() {
         cartao: pag.forma === 'CREDIT_CARD' ? cartaoParaEnvio(pag.cartao) : undefined,
         aceite: true,
         usarSaldo: usarSaldo && usoSaldo.usar > 0,
+        // O servidor recusa se o valor a cobrar mudou desde este resumo.
+        cobrarEsperado: aPagar,
         observacoes: obs,
         visitante: visitanteId(),
       });
       limparCarrinho();
       navigate(`/painel/pedido/${r.numero}`, { replace: true, state: { recemCriado: true } });
     } catch (e) {
-      if (e instanceof CheckoutError && e.codigo === 'frete-indisponivel') {
+      if (e instanceof CheckoutError && (e.codigo === 'frete-indisponivel' || e.codigo === 'valor-mudou')) {
         void carregarResumo(cupom.trim().toUpperCase());
       }
       if (e instanceof CheckoutError && e.codigo === 'cadastro-incompleto') {

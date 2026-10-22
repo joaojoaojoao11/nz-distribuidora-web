@@ -18,9 +18,9 @@ export interface EntradaTrava {
   acrescimoPct: number;
   /** desconto do cupom (%), ex.: 5 */
   descontoPct: number;
-  /** imposto (%), ex.: 9.5 */
+  /** imposto (%), ex.: 8 (fictício) */
   impostoPct: number;
-  /** comissão embutida (%), ex.: 2 */
+  /** comissão embutida (%), ex.: 3 (fictício) */
   comissaoEmbutidaPct: number;
   /** incentivo pedido (%), ex.: 6 */
   incentivoPct: number;

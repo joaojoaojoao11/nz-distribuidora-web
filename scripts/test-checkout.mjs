@@ -52,6 +52,8 @@ const build = spawnSync(
     // a reserva quando a cobrança morre; a regra de quanto usar é pura.
     'api/_lib/incentivos/saldoCheckout.ts',
     'api/_lib/incentivos/carteira.ts',
+    // `pagamento` abre ocorrência quando o pedido pago fica retido (varredura 22/10).
+    'api/_lib/ocorrencias.ts',
     `--outdir=${outDir}`,
     '--format=esm',
     '--platform=node',
@@ -99,7 +101,7 @@ function fakeDb(dados = {}) {
       update: (p) => { st.op = 'update'; st.payload = p; return b; },
       delete: () => { st.op = 'delete'; return b; },
       eq: (k, v) => { st.filtros.push([k, v]); return b; },
-      neq: () => b, in: () => b, gte: () => b, gt: () => b, lt: () => b, lte: () => b, is: () => b, not: () => b, or: () => b, order: () => b, limit: () => b,
+      neq: () => b, in: () => b, gte: () => b, gt: () => b, lt: () => b, lte: () => b, is: () => b, not: () => b, or: () => b, order: () => b, limit: () => b, range: () => b,
       maybeSingle: () => { st.single = true; return b; },
       single: () => { st.single = true; return b; },
       then: (res, rej) => Promise.resolve(exec()).then(res, rej),
@@ -333,7 +335,7 @@ const PARCELADO = () => ({ pagamentos: [{ id: 'pg-6x', pedido_id: 'ped-10', asaa
     respostas = estorno(n, v);
     await webhook.processar(db, 'PAYMENT_REFUNDED', { id: `pay_p${n}`, installment: 'ins_6x' });
   }
-  ok('estorno das 6 parcelas: vira estornado e o pedido também', db.tabelas.pagamentos[0].status === 'estornado' && db.tabelas.pedidos[0].pagamento_status === 'estornado');
+  ok('estorno das 6 parcelas: vira estornado e o pedido também', db.tabelas.pagamentos[0].status === 'estornado' && db.tabelas.pedidos[0].pagamento_status === 'estornado', JSON.stringify({ pag: db.tabelas.pagamentos.map((x) => x.status), ped: db.tabelas.pedidos.map((x) => x.pagamento_status) }));
 }
 
 // ============================================================ EXPIRAÇÃO
@@ -514,6 +516,47 @@ console.log('\n=== FASE 3: SALDO DA CARTEIRA NO CHECKOUT ===');
   ok('Pix expirado: pedido expirado e saldo devolvido', db2.tabelas.pedidos[0].pagamento_status === 'expirado' && Boolean(db2.tabelas.pedidos[0].saldo_devolvido_em) && db2.tabelas.carteira_movimentos.some((m) => m.tipo === 'estorno' && m.valor === 20));
   await aplicarStatus(db2, { ...db2.tabelas.pagamentos[0], status: 'aguardando' }, 'cancelado', 'teste');
   ok('cancelar depois de expirar não devolve duas vezes', db2.tabelas.carteira_movimentos.filter((m) => m.tipo === 'estorno').length === 1);
+
+  // Varredura 22/10: boleto vencido ainda se paga (multa e juros) — o saldo FICA reservado.
+  const db5 = fakeDb({
+    pedidos: [{ id: 'ped-b', numero: 3, user_id: 'u1', pagamento_status: 'aguardando', saldo_usado: 30, saldo_movimento_id: 11, saldo_devolvido_em: null }],
+    pagamentos: [{ id: 'pg-b', pedido_id: 'ped-b', asaas_payment_id: 'pay_b', forma: 'BOLETO', status: 'aguardando', valor: 70, parcelas: 1 }],
+    carteira_movimentos: [{ id: 11, user_id: 'u1', tipo: 'uso_compra', valor: -30, status: 'disponivel', pedido_id: 'ped-b' }],
+  });
+  await aplicarStatus(db5, { ...db5.tabelas.pagamentos[0] }, 'vencido', 'PAYMENT_OVERDUE');
+  ok('boleto vencido: pedido vencido, mas o saldo continua reservado', db5.tabelas.pedidos[0].pagamento_status === 'vencido' && !db5.tabelas.pedidos[0].saldo_devolvido_em && !db5.tabelas.carteira_movimentos.some((m) => m.tipo === 'estorno'));
+
+  // Evento da cobrança ANTIGA não manda no pedido: a vigente é a mais nova.
+  const db6 = fakeDb({
+    pedidos: [{ id: 'ped-n', numero: 4, user_id: 'u1', pagamento_status: 'aguardando', saldo_usado: 0 }],
+    // O duplo não ordena: a vigente (mais nova) vem primeiro, como faria o order desc.
+    pagamentos: [
+      { id: 'pg-nova', pedido_id: 'ped-n', forma: 'PIX', status: 'aguardando', valor: 50, parcelas: 1, criado_em: '2026-10-22T12:00:00Z' },
+      { id: 'pg-velha', pedido_id: 'ped-n', forma: 'BOLETO', status: 'aguardando', valor: 50, parcelas: 1, criado_em: '2026-10-20T12:00:00Z' },
+    ],
+  });
+  await aplicarStatus(db6, { ...db6.tabelas.pagamentos[1] }, 'vencido', 'PAYMENT_OVERDUE');
+  ok('evento da cobrança antiga: a linha dela muda, o pedido não', db6.tabelas.pagamentos[1].status === 'vencido' && db6.tabelas.pedidos[0].pagamento_status === 'aguardando');
+
+  // Pago depois de o saldo ter voltado, e a pessoa já gastou: pedido RETIDO, nada ao ERP.
+  const db7 = fakeDb({
+    pedidos: [{ id: 'ped-r', numero: 5, user_id: 'u1', cupom: null, pagamento_status: 'cancelado', erp_envio: 'pendente', saldo_usado: 25, saldo_movimento_id: 12, saldo_devolvido_em: '2026-10-21T10:00:00Z' }],
+    pagamentos: [{ id: 'pg-r', pedido_id: 'ped-r', forma: 'PIX', status: 'cancelado', valor: 75, parcelas: 1 }],
+    carteira_movimentos: [],
+  });
+  const rpcOriginal = db7.rpc;
+  db7.rpc = async (nome, args) => (nome === 'carteira_reservar_uso' ? { data: null, error: { message: 'saldo-insuficiente' } } : rpcOriginal(nome, args));
+  await marcarPago(db7, { ...db7.tabelas.pagamentos[0] }, 'PAYMENT_RECEIVED', { status: 'RECEIVED', value: 75 });
+  ok('pago com o saldo já devolvido e gasto: pedido retido e ocorrência aberta', db7.tabelas.pedidos[0].pagamento_status === 'pago' && db7.tabelas.pedidos[0].erp_envio === 'retido' && (db7.tabelas.ocorrencias ?? []).some((o) => o.tipo === 'carteira'), JSON.stringify({ envio: db7.tabelas.pedidos[0].erp_envio, oc: (db7.tabelas.ocorrencias ?? []).length }));
+  // …e quando ainda há saldo, reserva de novo e segue.
+  const db8 = fakeDb({
+    pedidos: [{ id: 'ped-q', numero: 6, user_id: 'u1', cupom: null, pagamento_status: 'cancelado', erp_envio: 'pendente', saldo_usado: 25, saldo_movimento_id: 13, saldo_devolvido_em: '2026-10-21T10:00:00Z' }],
+    pagamentos: [{ id: 'pg-q', pedido_id: 'ped-q', forma: 'PIX', status: 'cancelado', valor: 75, parcelas: 1 }],
+    carteira_movimentos: [],
+  });
+  db8.rpc = async (nome) => (nome === 'carteira_reservar_uso' ? { data: 99, error: null } : { data: true, error: null });
+  await marcarPago(db8, { ...db8.tabelas.pagamentos[0] }, 'PAYMENT_RECEIVED', { status: 'RECEIVED', value: 75 });
+  ok('pago com o saldo já devolvido, ainda disponível: reserva de novo (sem reter)', db8.tabelas.pedidos[0].saldo_movimento_id === 99 && !db8.tabelas.pedidos[0].saldo_devolvido_em && db8.tabelas.pedidos[0].erp_envio !== 'retido', JSON.stringify(db8.tabelas.pedidos[0]));
 
   // Pedido que não nasceu (cobrança falhou): a reserva some sem rastro.
   const db3 = fakeDb({ carteira_movimentos: [{ id: 3, tipo: 'uso_compra', valor: -10 }] });

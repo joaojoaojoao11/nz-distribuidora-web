@@ -143,19 +143,22 @@ console.log('\n=== FAIXAS DENTRO DO TIPO (Fase 1, 21/10/2026) ===');
 
 console.log('\n=== CARREGAR (falha fechada) ===');
 {
-  const dbRuim = { from: () => ({ select: () => ({ then: (res) => res({ data: null, error: { message: 'relation does not exist' } }) }) }) };
+  // A leitura das regras é paginada (varredura 22/10: .order('id').range(...)).
+  const consulta = (resposta) => {
+    const q = { order: () => q, range: () => q, then: (res) => res(resposta) };
+    return q;
+  };
+  const dbRuim = { from: () => ({ select: () => consulta({ data: null, error: { message: 'relation does not exist' } }) }) };
   const r = await carregarRegras(dbRuim);
   ok('tabela ausente → padrão, sem derrubar a vitrine', r.geral.client.base === 'varejo' && r.porLinha.size === 0 && r.vis.client.veRolo === true);
   const dbBom = {
     from: (t) => ({
-      select: () => ({
-        then: (res) =>
-          res(
-            t === 'acesso_config'
-              ? { data: [{ papel: 'client', linhas_ocultas: ['md80'], ve_rolo: true, ve_metro: true, ve_estoque: false, ve_promocao: true, pagamento_online: true }], error: null }
-              : { data: [{ papel: 'client', linha_key: 'ppf', base: 'atacado', percentual: '12.5' }], error: null }
-          ),
-      }),
+      select: () =>
+        consulta(
+          t === 'acesso_config'
+            ? { data: [{ papel: 'client', linhas_ocultas: ['md80'], ve_rolo: true, ve_metro: true, ve_estoque: false, ve_promocao: true, pagamento_online: true }], error: null }
+            : { data: [{ papel: 'client', linha_key: 'ppf', base: 'atacado', percentual: '12.5' }], error: null }
+        ),
     }),
   };
   const r2 = await carregarRegras(dbBom);

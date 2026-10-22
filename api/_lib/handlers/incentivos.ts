@@ -31,7 +31,6 @@ import { garantirSuperCupom, superCupomDe, trocarCodigo } from '../incentivos/su
 import { avaliarConquistas, marcarVistos, registrarEvento, resumoGamificacao } from '../incentivos/gamificacao.js';
 import { COLUNAS_SAQUE, calcularVencimentoSaque, enviarSaqueAoErp, validarChavePix, type SaqueRow } from '../incentivos/saque.js';
 import { rotuloPeriodo } from '../incentivos/periodos.js';
-import { campanhasAtivas, saldoDePontos } from '../loja/avaliacoes.js';
 
 function safeJson(raw: string): Record<string, unknown> {
   try {
@@ -57,8 +56,10 @@ function gerarCodigo(): string {
  * nº N" pela ordem em que apareceu na carteira dessa pessoa.
  */
 /** O saque como o dono vê: sem `user_id` (a rota já é dele). */
-function semDono(s: SaqueRow): Omit<SaqueRow, 'user_id'> {
-  return Object.fromEntries(Object.entries(s).filter(([k]) => k !== 'user_id')) as Omit<SaqueRow, 'user_id'>;
+function semDono(s: SaqueRow): Omit<SaqueRow, 'user_id' | 'erp_erro'> {
+  // Sem `erp_erro` também (varredura 22/10): é a mensagem crua do NZERP, para a
+  // equipe — o cliente vê só o status.
+  return Object.fromEntries(Object.entries(s).filter(([k]) => k !== 'user_id' && k !== 'erp_erro')) as Omit<SaqueRow, 'user_id' | 'erp_erro'>;
 }
 
 function extratoAnonimo(movs: Movimento[]) {
@@ -135,7 +136,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const ehAfiliado = Boolean(af && af.status === 'aprovado' && af.ativo);
       const superCupom = aprovado ? await garantirSuperCupom(site, userId, perfil?.full_name, cfg) : await superCupomDe(site, userId);
       const [saldo, movs, contagens] = await Promise.all([saldoDe(site, userId), extratoDe(site, userId, 200), contagensDe(site, userId)]);
-      await avaliarConquistas(site, userId, cfg, ehAfiliado).catch(() => []);
+      // Conquista (e o bônus em dinheiro dela) só para conta APROVADA (varredura
+      // 22/10): uma conta descartável recém-criada não ganha prêmio antes de a
+      // NZ olhar o cadastro.
+      if (aprovado) await avaliarConquistas(site, userId, cfg, ehAfiliado).catch(() => []);
       const gamificacao = await resumoGamificacao(site, userId, ehAfiliado);
       res.status(200).json({
         aprovado,
@@ -277,41 +281,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (op === 'resgatar-pontos') {
       // Pontos de avaliação viram CRÉDITO na carteira (D14, conserta o B1).
       const campanhaId = texto(body.campanhaId, 60);
-      const campanha = (await campanhasAtivas(site)).find((c) => c.id === campanhaId);
-      if (!campanha) {
+      if (!/^[0-9a-f-]{36}$/i.test(campanhaId)) {
         res.status(409).json({ ok: false, motivo: 'campanha-inativa' });
         return;
       }
-      if (campanha.limite_total != null && campanha.resgatados >= campanha.limite_total) {
-        res.status(409).json({ ok: false, motivo: 'limite-da-campanha' });
+      // Numa transação só (resgatar_pontos, varredura 22/10): trava por pessoa e
+      // pela linha da campanha, confere janela, limites e saldo de pontos, debita
+      // os pontos e credita a carteira. Dois cliques juntos resgatavam duas vezes
+      // com os mesmos pontos, e o limite da campanha estourava.
+      const { data: rr, error: eRes } = await site.rpc('resgatar_pontos', { p_user_id: userId, p_campanha_id: campanhaId });
+      if (eRes) {
+        res.status(500).json({ ok: false, motivo: 'erro', message: eRes.message });
         return;
       }
-      if (campanha.limite_por_usuario != null) {
-        const { count } = await site.from('resgates').select('id', { count: 'exact', head: true }).eq('user_id', userId).eq('campanha_id', campanhaId);
-        if (Number(count ?? 0) >= campanha.limite_por_usuario) {
-          res.status(409).json({ ok: false, motivo: 'limite-do-usuario' });
-          return;
-        }
-      }
-      const saldoPontos = await saldoDePontos(site, userId);
-      if (saldoPontos < campanha.pontos) {
-        res.status(409).json({ ok: false, motivo: 'pontos-insuficientes' });
+      const r = (rr ?? {}) as { ok?: boolean; motivo?: string; valor?: number; pontos?: number; saldoPontos?: number };
+      if (!r.ok) {
+        res.status(409).json({ ok: false, motivo: r.motivo ?? 'erro' });
         return;
       }
-      const { data: debito, error: eDeb } = await site.from('pontos_movimentos').insert({ user_id: userId, pontos: -campanha.pontos, motivo: 'resgate', referencia: campanhaId, descricao: `Resgate: ${campanha.nome}` }).select('id').single();
-      if (eDeb) {
-        res.status(500).json({ ok: false, motivo: 'erro', message: eDeb.message });
-        return;
-      }
-      const cred = await creditar(site, { userId, tipo: 'resgate_pontos', valor: Number(campanha.valor), obs: `${campanha.nome} (${campanha.pontos} pontos)`, criadoPor: 'resgate' });
-      if (!cred.movimento) {
-        await site.from('pontos_movimentos').insert({ user_id: userId, pontos: campanha.pontos, motivo: 'estorno', referencia: String((debito as { id: number }).id), descricao: `Estorno: ${campanha.nome}` });
-        res.status(500).json({ ok: false, motivo: 'erro', message: cred.erro });
-        return;
-      }
-      await site.from('resgates').insert({ user_id: userId, campanha_id: campanhaId, pontos: campanha.pontos, valor: campanha.valor, cupom_codigo: null });
-      await site.from('campanhas_cashback').update({ resgatados: campanha.resgatados + 1 }).eq('id', campanhaId);
-      res.status(200).json({ ok: true, valor: Number(campanha.valor), pontos: campanha.pontos, saldoPontos: saldoPontos - campanha.pontos, saldoCarteira: await saldoDe(site, userId) });
+      res.status(200).json({ ok: true, valor: Number(r.valor), pontos: Number(r.pontos), saldoPontos: Number(r.saldoPontos), saldoCarteira: await saldoDe(site, userId) });
       return;
     }
 
@@ -618,6 +606,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         criado_por: userId,
         atualizado_em: new Date().toISOString(),
       };
+      // O upsert é pelo código: sem esta conferência, salvar um cupom de
+      // campanha com o código do super cupom de um cliente (ou do cupom de um
+      // afiliado) o transformava em campanha e apagava o dono (varredura 22/10).
+      const { data: existente } = await site.from('cupons').select('tipo').eq('codigo', codigo).maybeSingle();
+      const tipoExistente = (existente as { tipo?: string } | null)?.tipo;
+      if (tipoExistente && tipoExistente !== tipo) {
+        res.status(409).json({ error: 'codigo-de-outro-tipo', tipo: tipoExistente, message: `Esse código já é de um cupom do tipo "${tipoExistente}". Escolha outro código.` });
+        return;
+      }
       const { error } = await site.from('cupons').upsert(linha, { onConflict: 'codigo' });
       if (error) {
         res.status(500).json({ error: 'nao-gravou', message: error.message });

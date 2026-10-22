@@ -29,7 +29,9 @@ export type TipoOcorrencia =
   | 'sku-novo'
   | 'sku-removido'
   | 'preco-mudou'
-  | 'problema-produto';
+  | 'problema-produto'
+  /** Dinheiro da carteira que precisa de gente: pedido pago com saldo que já tinha voltado, saque sem título no ERP. */
+  | 'carteira';
 
 export interface NovaOcorrencia {
   categoria: CategoriaOcorrencia;

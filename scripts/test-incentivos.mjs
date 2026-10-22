@@ -31,6 +31,8 @@ const build = spawnSync(
     'api/_lib/incentivos/saqueRegras.ts',
     'api/_lib/incentivos/carteira.ts',
     'api/_lib/incentivos/cupomUsos.ts',
+    // `cupomUsos` confere o documento no "só conta nova" (varredura 22/10).
+    'api/_lib/conta/documento.ts',
     'api/_lib/pedido/precificar.ts',
     'api/_lib/pedido/dinheiro.ts',
     'api/_lib/conta/completude.ts',
@@ -66,21 +68,22 @@ const ok = (nome, cond, extra = '') => {
 
 console.log('\n=== TRAVA DE MARGEM (§5) ===');
 {
-  // Exemplo do plano: lojista +10%, cupom 5%, t 9,5%, k 2% → teto ≈ 5,8%.
-  const teto = tetoIncentivoPct({ acrescimoPct: 10, descontoPct: 5, impostoPct: 9.5, comissaoEmbutidaPct: 2 });
-  ok('lojista +10% com cupom 5%: teto ≈ 5,8%', Math.abs(teto - 5.8) < 0.15, String(teto));
-  const r1 = limitarIncentivo({ acrescimoPct: 10, descontoPct: 5, impostoPct: 9.5, comissaoEmbutidaPct: 2, incentivoPct: 3 });
+  // Números FICTÍCIOS (repo público — os reais ficam no NZERP): lojista +10%,
+  // cupom 5%, t 8%, k 3% → teto ≈ 6,83%.
+  const teto = tetoIncentivoPct({ acrescimoPct: 10, descontoPct: 5, impostoPct: 8, comissaoEmbutidaPct: 3 });
+  ok('lojista +10% com cupom 5%: teto ≈ 6,83%', Math.abs(teto - 6.83) < 0.02, String(teto));
+  const r1 = limitarIncentivo({ acrescimoPct: 10, descontoPct: 5, impostoPct: 8, comissaoEmbutidaPct: 3, incentivoPct: 3 });
   ok('cashback 3% passa sem corte', !r1.cortou && r1.incentivoPct === 3);
-  const r2 = limitarIncentivo({ acrescimoPct: 10, descontoPct: 5, impostoPct: 9.5, comissaoEmbutidaPct: 2, incentivoPct: 6 });
-  ok('campanha 2x (6%) é cortada para o teto', r2.cortou && r2.incentivoPct === r2.tetoPct && r2.incentivoPct < 6);
-  // Revendedor +0%, sem cupom: afiliado limitado a ~2% (os 2% de comissão embutida).
-  const teto0 = tetoIncentivoPct({ acrescimoPct: 0, descontoPct: 0, impostoPct: 9.5, comissaoEmbutidaPct: 2 });
-  ok('revendedor +0% sem cupom: teto = 2% (a comissão embutida)', Math.abs(teto0 - 2) < 0.01, String(teto0));
-  const r3 = limitarIncentivo({ acrescimoPct: 0, descontoPct: 0, impostoPct: 9.5, comissaoEmbutidaPct: 2, incentivoPct: 3 });
-  ok('afiliado 3% no revendedor vira 2%', r3.cortou && r3.incentivoPct === 2);
-  const r4 = limitarIncentivo({ acrescimoPct: 0, descontoPct: 10, impostoPct: 9.5, comissaoEmbutidaPct: 2, incentivoPct: 3 });
+  const r2 = limitarIncentivo({ acrescimoPct: 10, descontoPct: 5, impostoPct: 8, comissaoEmbutidaPct: 3, incentivoPct: 8 });
+  ok('campanha (8%) é cortada para o teto', r2.cortou && r2.incentivoPct === r2.tetoPct && r2.incentivoPct < 8);
+  // Revendedor +0%, sem cupom: afiliado limitado à comissão embutida (k).
+  const teto0 = tetoIncentivoPct({ acrescimoPct: 0, descontoPct: 0, impostoPct: 8, comissaoEmbutidaPct: 3 });
+  ok('revendedor +0% sem cupom: teto = k (a comissão embutida)', Math.abs(teto0 - 3) < 0.01, String(teto0));
+  const r3 = limitarIncentivo({ acrescimoPct: 0, descontoPct: 0, impostoPct: 8, comissaoEmbutidaPct: 3, incentivoPct: 4 });
+  ok('afiliado 4% no revendedor vira 3% (k)', r3.cortou && r3.incentivoPct === 3);
+  const r4 = limitarIncentivo({ acrescimoPct: 0, descontoPct: 10, impostoPct: 8, comissaoEmbutidaPct: 3, incentivoPct: 3 });
   ok('desconto que já come a margem: incentivo vira 0, nunca negativo', r4.cortou && r4.incentivoPct === 0 && r4.tetoPct < 0);
-  const r5 = limitarIncentivo({ acrescimoPct: 20, descontoPct: 5, impostoPct: 9.5, comissaoEmbutidaPct: 2, incentivoPct: 3 });
+  const r5 = limitarIncentivo({ acrescimoPct: 20, descontoPct: 5, impostoPct: 8, comissaoEmbutidaPct: 3, incentivoPct: 3 });
   ok('cliente final +20% com cupom 5% e 3%: passa', !r5.cortou);
 }
 
@@ -116,8 +119,8 @@ console.log('\n=== CONFIG (padrões fictícios) ===');
   const c = montarConfig(null);
   ok('sem linha: padrão fictício (5/3/10/3, carência 7, validade 12)', c.pctDescontoIndicado === 5 && c.pctCashbackIndicador === 3 && c.pctAtivacaoAfiliado === 10 && c.pctRecorrenciaAfiliado === 3 && c.diasLiberacao === 7 && c.mesesValidade === 12);
   ok('trava desligada sem imposto/comissão', c.travaAtiva === false && c.impostoPct === null);
-  const d = montarConfig({ pct_ativacao_afiliado: '12.5', trava_margem_ativa: true, imposto_pct: '9.5', comissao_embutida_pct: 2, periodicidade_padrao: 'quinzenal', linhas_excluidas: ['ppf'] });
-  ok('linha vinda como texto vira número; trava ligada com t e k', d.pctAtivacaoAfiliado === 12.5 && d.travaAtiva && d.impostoPct === 9.5 && d.comissaoEmbutidaPct === 2 && d.periodicidadePadrao === 'quinzenal' && d.linhasExcluidas[0] === 'ppf');
+  const d = montarConfig({ pct_ativacao_afiliado: '12.5', trava_margem_ativa: true, imposto_pct: '8', comissao_embutida_pct: 3, periodicidade_padrao: 'quinzenal', linhas_excluidas: ['ppf'] });
+  ok('linha vinda como texto vira número; trava ligada com t e k', d.pctAtivacaoAfiliado === 12.5 && d.travaAtiva && d.impostoPct === 8 && d.comissaoEmbutidaPct === 3 && d.periodicidadePadrao === 'quinzenal' && d.linhasExcluidas[0] === 'ppf');
   ok('CONFIG_PADRAO exportado', CONFIG_PADRAO.saqueMinimo === 50);
 }
 
@@ -303,8 +306,19 @@ console.log('\n=== CARTEIRA (razão em memória) ===');
   pend.movimento.libera_em = new Date(Date.now() - 1000).toISOString();
   const velho = await creditar(db2, { userId: 'ana', tipo: 'cashback_indicacao', valor: 5, pedidoId: 'p4' });
   velho.movimento.liberado_em = new Date(Date.now() - 400 * 86400000).toISOString();
+  // A expiração em si é FIFO no banco (carteira_expirar_usuario, varredura
+  // 22/10 — o teste de verdade dela roda contra o Postgres). Aqui: o cron acha
+  // quem tem crédito vencido e chama a função com a régua certa.
+  const chamadas = [];
+  db2.rpc = async (nome, args) => {
+    chamadas.push({ nome, args });
+    return { data: [{ expirados: 1, valor: 5 }], error: null };
+  };
   const m = await manutencaoCarteira(db2, 12);
-  ok('cron: libera o vencido e expira o de mais de 12 meses', m.liberados === 1 && m.expirados === 1, JSON.stringify(m));
+  const ch = chamadas[0];
+  const meses = ch ? (Date.now() - Date.parse(ch.args.p_limite)) / (30.44 * 86400000) : 0;
+  ok('cron: libera o vencido e expira o de mais de 12 meses', m.liberados === 1 && m.expirados === 1 && m.valorExpirado === 5, JSON.stringify(m));
+  ok('cron: expiração pela função FIFO, uma chamada por pessoa, régua de 12 meses', chamadas.length === 1 && ch.nome === 'carteira_expirar_usuario' && ch.args.p_user_id === 'ana' && ch.args.p_tipos.includes('cashback_indicacao') && !ch.args.p_tipos.includes('estorno') && meses > 11.5 && meses < 12.5, JSON.stringify(ch?.args));
   ok('crédito com libera_em no passado nasce já disponível', (await creditar(db2, { userId: 'ana', tipo: 'ajuste', valor: 1, liberaEm: new Date(Date.now() - 1000) })).movimento?.status === 'disponivel');
 }
 

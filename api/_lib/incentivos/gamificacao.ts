@@ -38,6 +38,26 @@ export interface SituacaoNivel {
 
 const CREDITOS = ['cashback_indicacao', 'comissao_ativacao', 'comissao_recorrencia'];
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * Lê TODAS as linhas, em páginas de 1000 (varredura 22/10): o PostgREST corta
+ * em 1000 sem avisar, e o afiliado grande ficava com nível/multiplicador abaixo
+ * do certo — e o teto mensal de prêmios, contado por baixo, deixava pagar além.
+ * `monta` recebe o intervalo e devolve a consulta já com a ordem fixa (`id`).
+ */
+async function todas<T>(monta: (de: number, ate: number) => any): Promise<T[]> {
+  const out: T[] = [];
+  for (let de = 0; de < 100_000; de += 1000) {
+    const { data, error } = await monta(de, de + 999);
+    if (error) throw new Error(error.message);
+    const pagina = (data ?? []) as T[];
+    out.push(...pagina);
+    if (pagina.length < 1000) break;
+  }
+  return out;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 export async function niveis(site: Db, publico: Publico): Promise<Nivel[]> {
   const { data } = await site.from('niveis_programa').select('*').eq('publico', publico).eq('ativo', true).order('ordem');
   return ((data ?? []) as Nivel[]).map((n) => ({ ...n, criterio_valor: Number(n.criterio_valor), multiplicador: Number(n.multiplicador) || 1 }));
@@ -47,14 +67,17 @@ export async function niveis(site: Db, publico: Publico): Promise<Nivel[]> {
 export async function metricaDe(site: Db, userId: string, publico: Publico): Promise<number> {
   const desde = new Date();
   desde.setMonth(desde.getMonth() - 12);
-  const { data } = await site
-    .from('carteira_movimentos')
-    .select('origem_user_id, base_valor, status')
-    .eq('user_id', userId)
-    .in('tipo', CREDITOS)
-    .in('status', ['a_liberar', 'disponivel'])
-    .gte('criado_em', desde.toISOString());
-  const rows = (data ?? []) as { origem_user_id: string | null; base_valor: number | null }[];
+  const rows = await todas<{ origem_user_id: string | null; base_valor: number | null }>((de, ate) =>
+    site
+      .from('carteira_movimentos')
+      .select('origem_user_id, base_valor, status')
+      .eq('user_id', userId)
+      .in('tipo', CREDITOS)
+      .in('status', ['a_liberar', 'disponivel'])
+      .gte('criado_em', desde.toISOString())
+      .order('id')
+      .range(de, ate)
+  );
   if (publico === 'afiliado') return r2(rows.reduce((s, r) => s + Number(r.base_valor ?? 0), 0));
   return new Set(rows.map((r) => r.origem_user_id).filter(Boolean)).size;
 }
@@ -102,8 +125,9 @@ async function bonusDoMes(site: Db): Promise<number> {
   inicio.setHours(0, 0, 0, 0);
   // Bônus do mês menos o que já foi estornado (um bônus "disponível" estornado
   // vira um movimento negativo apontando para ele).
-  const { data } = await site.from('carteira_movimentos').select('id, valor, tipo, referencia_id, status').in('tipo', ['bonus_campanha', 'bonus_meta', 'estorno']).gte('criado_em', inicio.toISOString());
-  const rows = (data ?? []) as { id: number; valor: number; tipo: string; referencia_id: number | null; status: string }[];
+  const rows = await todas<{ id: number; valor: number; tipo: string; referencia_id: number | null; status: string }>((de, ate) =>
+    site.from('carteira_movimentos').select('id, valor, tipo, referencia_id, status').in('tipo', ['bonus_campanha', 'bonus_meta', 'estorno']).gte('criado_em', inicio.toISOString()).order('id').range(de, ate)
+  );
   const bonus = rows.filter((r) => r.tipo !== 'estorno' && r.status !== 'estornado');
   const ids = new Set(bonus.map((r) => r.id));
   const estornos = rows.filter((r) => r.tipo === 'estorno' && r.referencia_id != null && ids.has(r.referencia_id));
@@ -112,12 +136,12 @@ async function bonusDoMes(site: Db): Promise<number> {
 
 /** Os fatos que decidem as conquistas, lidos do banco (carteira + perfis). */
 async function fatosDe(site: Db, userId: string, ehAfiliado: boolean): Promise<Record<string, boolean>> {
-  const [{ data: filiados }, { data: creditos }] = await Promise.all([
-    site.from('user_profiles').select('id, is_approved, faixa_id, created_at').eq('indicado_por', userId),
-    site.from('carteira_movimentos').select('origem_user_id, criado_em, tipo').eq('user_id', userId).in('tipo', CREDITOS).in('status', ['a_liberar', 'disponivel']),
+  const [fil, cred] = await Promise.all([
+    todas<{ id: string; is_approved: boolean; faixa_id: number | null }>((de, ate) => site.from('user_profiles').select('id, is_approved, faixa_id, created_at').eq('indicado_por', userId).order('id').range(de, ate)),
+    todas<{ origem_user_id: string | null; criado_em: string; tipo: string }>((de, ate) =>
+      site.from('carteira_movimentos').select('origem_user_id, criado_em, tipo').eq('user_id', userId).in('tipo', CREDITOS).in('status', ['a_liberar', 'disponivel']).order('id').range(de, ate)
+    ),
   ]);
-  const fil = (filiados ?? []) as { id: string; is_approved: boolean; faixa_id: number | null }[];
-  const cred = (creditos ?? []) as { origem_user_id: string | null; criado_em: string; tipo: string }[];
   const indicados = new Set<string>([...fil.map((f) => f.id), ...cred.map((c) => c.origem_user_id).filter((x): x is string => Boolean(x))]);
   const compradores = new Set(cred.map((c) => c.origem_user_id).filter(Boolean));
 
@@ -181,6 +205,11 @@ export async function avaliarConquistas(site: Db, userId: string, cfg: ConfigInc
   const novas: string[] = [];
   for (const c of conquistas) {
     if (tenho.has(c.codigo) || !fatos[c.codigo]) continue;
+    // A conquista nasce PRIMEIRO (a chave primária é a vez); só quem gravou
+    // paga o bônus. Antes o bônus saía antes do insert, e duas avaliações juntas
+    // pagavam duas vezes — a segunda só perdia o insert (varredura 22/10).
+    const { error } = await site.from('conquistas_usuario').insert({ user_id: userId, codigo: c.codigo, bonus_movimento_id: null, pedido_id: pedidoId });
+    if (error) continue;
     let bonusId: number | null = null;
     let obs: string | null = null;
     const bonus = r2(Number(c.bonus_valor) || 0);
@@ -190,12 +219,11 @@ export async function avaliarConquistas(site: Db, userId: string, cfg: ConfigInc
       if (teto != null && gasto + bonus <= teto) {
         const r = await creditar(site, { userId, tipo: 'bonus_campanha', valor: bonus, obs: `Conquista ${c.nome}`, criadoPor: 'gamificacao' });
         bonusId = r.movimento?.id ?? null;
+        if (bonusId != null) await site.from('conquistas_usuario').update({ bonus_movimento_id: bonusId }).eq('user_id', userId).eq('codigo', c.codigo);
       } else {
         obs = teto == null ? 'sem teto mensal configurado: conquista sem bônus' : 'teto mensal de prêmios atingido: conquista sem bônus';
       }
     }
-    const { error } = await site.from('conquistas_usuario').insert({ user_id: userId, codigo: c.codigo, bonus_movimento_id: bonusId, pedido_id: pedidoId });
-    if (error) continue;
     novas.push(c.codigo);
     await registrarEvento(site, userId, 'conquista', { codigo: c.codigo, nome: c.nome, icone: c.icone, bonus: bonusId ? bonus : 0, obs, pedidoId });
   }

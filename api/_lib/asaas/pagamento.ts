@@ -15,10 +15,11 @@
 // e consome o cupom. Nunca há dado de cartão neste módulo.
 
 import type { Db } from '../papel.js';
-import { despacharAoErp } from '../pedido/despachoErp.js';
+import { despacharAoErp, type ResultadoDespacho } from '../pedido/despachoErp.js';
 import { avisarPagamentoConfirmado, type ClienteAviso } from '../avisos.js';
 import { registrarUsoCupom } from '../incentivos/cupomUsos.js';
-import { devolverSaldoDoPedido } from '../incentivos/saldoCheckout.js';
+import { devolverSaldoDoPedido, reservarSaldoDoPedido } from '../incentivos/saldoCheckout.js';
+import { abrirOcorrencia } from '../ocorrencias.js';
 import {
   asaasEnv,
   AsaasError,
@@ -380,6 +381,10 @@ export function statusDoEvento(evento: string, forma: string): StatusPagamento |
     case 'PAYMENT_DELETED':
     case 'PAYMENT_BANK_SLIP_CANCELLED':
       return 'cancelado';
+    // Cobrança removida que voltou no Asaas (varredura 22/10): volta a valer —
+    // se for paga, marcarPago confere o saldo da carteira que já tinha voltado.
+    case 'PAYMENT_RESTORED':
+      return 'aguardando';
     case 'PAYMENT_REFUNDED':
       return 'estornado';
     default:
@@ -437,11 +442,27 @@ export async function estornoParcial(site: Db, p: PagamentoRow, valorParcela: nu
 
 const FINAIS: StatusPagamento[] = ['pago', 'estornado'];
 
+/** É a cobrança mais recente do pedido? Evento de cobrança antiga não manda no pedido. */
+async function ehCobrancaVigente(site: Db, p: PagamentoRow): Promise<boolean> {
+  const { data } = await site.from('pagamentos').select('id').eq('pedido_id', p.pedido_id).order('criado_em', { ascending: false }).limit(1).maybeSingle();
+  return !data || (data as { id: string }).id === p.id;
+}
+
 /**
  * Aplica um status novo a um pagamento respeitando a ordem: um pagamento pago
  * não volta a "aguardando" por um evento atrasado, e "estornado" é terminal.
+ *
+ * Varredura 22/10:
+ *   · o pedido só segue a cobrança VIGENTE (a mais nova). O boleto antigo que
+ *     vence depois de o cliente gerar um Pix novo não põe o pedido em
+ *     "vencido" nem devolve o saldo que o Pix novo está usando. Pedido pago só
+ *     muda pelo estorno da própria cobrança que pagou;
+ *   · o saldo da carteira volta só com a cobrança MORTA: recusada, cancelada,
+ *     estornada — ou Pix expirado já removido do Asaas. Boleto vencido ainda
+ *     se paga (com multa e juros): o saldo fica reservado, senão o cliente
+ *     pagava o boleto atrasado e ficava com o desconto E com o saldo de volta.
  */
-export async function aplicarStatus(site: Db, p: PagamentoRow, novo: StatusPagamento, evento: string, dados?: AsaasPayment): Promise<PagamentoRow> {
+export async function aplicarStatus(site: Db, p: PagamentoRow, novo: StatusPagamento, evento: string, dados?: AsaasPayment, opcoes: { cobrancaMorta?: boolean } = {}): Promise<PagamentoRow> {
   if (p.status === novo) {
     await site.from('pagamentos').update({ ultimo_evento: evento, status_asaas: dados?.status ?? p.status_asaas, atualizado_em: new Date().toISOString() }).eq('id', p.id);
     return p;
@@ -451,6 +472,22 @@ export async function aplicarStatus(site: Db, p: PagamentoRow, novo: StatusPagam
   if (p.status === 'pago' && novo !== 'estornado') return p;
   if (FINAIS.includes(p.status) && novo === 'aguardando') return p;
 
+  // Pix vencido no Asaas que ainda não tiramos de lá: tira agora (é o que a
+  // expiração nossa faria), e só então ele conta como morto.
+  let morta = opcoes.cobrancaMorta === true;
+  if (novo === 'expirado' && p.forma === 'PIX' && !morta) {
+    if (!p.asaas_payment_id) morta = true;
+    else {
+      try {
+        await removerCobranca(p.asaas_payment_id);
+        morta = true;
+      } catch (err) {
+        console.warn('[pagamento] remover Pix vencido:', err instanceof Error ? err.message : err);
+      }
+    }
+  }
+
+  const eraPago = p.status === 'pago';
   const patch: Record<string, unknown> = {
     status: novo,
     status_asaas: dados?.status ?? p.status_asaas,
@@ -459,13 +496,46 @@ export async function aplicarStatus(site: Db, p: PagamentoRow, novo: StatusPagam
   };
   if (novo === 'estornado') patch.estornado_valor = Number(p.valor);
   await site.from('pagamentos').update(patch).eq('id', p.id);
+
+  const { data: ped } = await site.from('pedidos').select('pagamento_status').eq('id', p.pedido_id).maybeSingle();
+  const pedidoPago = (ped as { pagamento_status?: string } | null)?.pagamento_status === 'pago';
+  const mandaNoPedido = novo === 'estornado' ? eraPago : !pedidoPago && (await ehCobrancaVigente(site, p));
+  if (!mandaNoPedido) return { ...p, ...(patch as Partial<PagamentoRow>) };
+
   await site.from('pedidos').update({ pagamento_status: novo }).eq('id', p.pedido_id);
   // Fase 3: a cobrança morreu (ou foi estornada) → o saldo reservado volta à carteira.
-  if (DEVOLVEM_SALDO.has(novo)) await devolverSaldoDoPedido(site, p.pedido_id, `pagamento ${novo}`).catch(() => false);
+  if (DEVOLVEM_SALDO.has(novo) || (morta && (novo === 'expirado' || novo === 'vencido'))) {
+    await devolverSaldoDoPedido(site, p.pedido_id, `pagamento ${novo}`).catch(() => false);
+  }
   return { ...p, ...(patch as Partial<PagamentoRow>) };
 }
 
-const DEVOLVEM_SALDO = new Set<StatusPagamento>(['expirado', 'recusado', 'vencido', 'cancelado', 'estornado']);
+/** Cobrança que morreu de vez: o saldo reservado volta sem perguntar. */
+const DEVOLVEM_SALDO = new Set<StatusPagamento>(['recusado', 'cancelado', 'estornado']);
+
+/**
+ * Pagou um pedido cujo saldo da carteira já tinha voltado (cobrança dada como
+ * morta que acabou paga). Reserva de novo; se a pessoa já gastou, o pedido
+ * fica RETIDO — não vai ao ERP — e a equipe recebe a ocorrência. Devolve true
+ * se pode seguir.
+ */
+async function conferirSaldoNoPago(site: Db, pedidoId: string): Promise<boolean> {
+  const { data } = await site.from('pedidos').select('id, numero, user_id, saldo_usado, saldo_devolvido_em').eq('id', pedidoId).maybeSingle();
+  const ped = data as { id: string; numero: number; user_id: string | null; saldo_usado: number | null; saldo_devolvido_em: string | null } | null;
+  if (!ped || !ped.saldo_devolvido_em || !ped.user_id || Number(ped.saldo_usado ?? 0) <= 0) return true;
+  const r = await reservarSaldoDoPedido(site, { id: ped.id, numero: ped.numero, userId: ped.user_id }, Number(ped.saldo_usado));
+  if (r.ok) return true;
+  await site.from('pedidos').update({ erp_envio: 'retido', erp_envio_erro: `saldo da carteira já tinha voltado e não deu para reservar de novo (${r.erro})` }).eq('id', ped.id).in('erp_envio', ['pendente', 'enviando']);
+  await abrirOcorrencia(site, {
+    categoria: 'problema',
+    tipo: 'carteira',
+    titulo: `Pedido #${ped.numero} pago, mas o saldo da carteira usado nele já tinha voltado ao cliente`,
+    detalhe: { pedidoId: ped.id, saldoUsado: Number(ped.saldo_usado), erro: r.erro ?? null, oQueFazer: 'Conferir com o cliente: cobrar a diferença ou estornar. O pedido não foi ao NZERP (erp_envio = retido).' },
+    chaveDedupe: `pedido-retido:${ped.id}`,
+    userId: ped.user_id,
+  });
+  return false;
+}
 
 /** Pago: idempotente. Grava, avisa o ERP, consome o cupom. */
 export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dados?: AsaasPayment): Promise<PagamentoRow | null> {
@@ -508,8 +578,10 @@ export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dado
     }
   }
   // Só AGORA o ERP fica sabendo: o pagamento foi aprovado. Se falhar, o cron
-  // tenta de novo — o pedido não pode quebrar por causa disso.
-  const d = await despacharAoErp(site, p.pedido_id, 'pago');
+  // tenta de novo — o pedido não pode quebrar por causa disso. Antes, o saldo
+  // da carteira: se ele já tinha voltado, reserva de novo ou segura o pedido.
+  const seguir = await conferirSaldoNoPago(site, p.pedido_id).catch(() => true);
+  const d: ResultadoDespacho = seguir ? await despacharAoErp(site, p.pedido_id, 'pago') : { ok: false, estado: 'retido', message: 'saldo da carteira já tinha voltado' };
   if (!d.ok && d.estado === 'erro') console.warn('[pagamento] ERP não avisado (cron tenta de novo):', d.message);
 
   // E-mail para a NZ, uma vez por cobrança (a chave segura webhook + cron).
@@ -537,18 +609,21 @@ export async function marcarPago(site: Db, p: PagamentoRow, evento: string, dado
 export async function expirarSeVencido(site: Db, p: PagamentoRow): Promise<PagamentoRow> {
   if (p.status !== 'aguardando' || p.forma !== 'PIX' || !p.expira_em) return p;
   if (new Date(p.expira_em).getTime() > Date.now()) return p;
+  let removida = !p.asaas_payment_id;
   if (p.asaas_payment_id) {
     try {
       // Se pagou no último segundo, o Asaas diz e a gente respeita.
       const atual = await consultarCobranca(p.asaas_payment_id);
       const s = statusDoAsaas(atual.status, p.forma);
       if (s === 'pago') return (await marcarPago(site, p, 'consulta-expiracao', atual)) ?? p;
-      await removerCobranca(p.asaas_payment_id);
+      if (!atual.deleted) await removerCobranca(p.asaas_payment_id);
+      removida = true;
     } catch (err) {
       console.warn('[pagamento] remover Pix expirado:', err instanceof Error ? err.message : err);
     }
   }
-  return aplicarStatus(site, p, 'expirado', 'expiracao');
+  // Só com a cobrança fora do Asaas o saldo da carteira volta (aplicarStatus).
+  return aplicarStatus(site, p, 'expirado', 'expiracao', undefined, { cobrancaMorta: removida });
 }
 
 /**

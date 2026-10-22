@@ -31,6 +31,7 @@ export type EstadoDespacho =
   | 'outro-processo' // a trava está com outro; ele termina
   | 'cancelado'
   | 'sem-erp' // ENV do ERP ausente (ambiente de teste)
+  | 'retido' // pago, mas o saldo da carteira já tinha voltado: a equipe decide (varredura 22/10)
   | 'erro';
 
 export interface ResultadoDespacho {
