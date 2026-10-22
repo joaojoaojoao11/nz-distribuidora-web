@@ -270,6 +270,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
       // Login por CPF/CNPJ, Fase 3: roda uma vez por sessão, logo depois do
       // login — o NZERP fica sabendo do último acesso e se a conta está liberada.
+      // O navegador dispara tocar_acesso e este pós-cadastro AO MESMO TEMPO (visto
+      // em produção, 22/10): sem gravar o acesso aqui, o espelho saía antes e o
+      // ERP ficava com o acesso anterior. Isto É um acesso — grava e espelha.
+      await site.from('user_profiles').update({ ultimo_acesso_em: new Date().toISOString() }).eq('id', userId);
       await espelharAcessoNoErp(site, [userId]).catch(() => null);
     }
     res.status(200).json(r);
