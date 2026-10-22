@@ -490,3 +490,17 @@
   color: var(--text-primary);
   font-size: 16px;
 }
+
+/* Fase 3: "Usar meu saldo" é opcional e fica no resumo, ao lado do total. */
+.saldoOpcao label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.saldoOpcao input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-red);
+}

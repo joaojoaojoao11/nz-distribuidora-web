@@ -85,8 +85,9 @@ export default function Checkout() {
   const [freteId, setFreteId] = useState('');
   const [pag, setPag] = useState<EscolhaPagamento>({ forma: 'PIX', parcelas: 1, cartao: CARTAO_VAZIO });
   const [aceite, setAceite] = useState(false);
-  // Fase 3: "Usar meu saldo" vem marcado; quem não quiser desmarca.
-  const [usarSaldo, setUsarSaldo] = useState(true);
+  // Fase 3: usar o saldo é OPCIONAL e se marca no resumo do pedido, ao lado
+  // do total (João, 21/10/2026). Começa desmarcado.
+  const [usarSaldo, setUsarSaldo] = useState(false);
   const [obs, setObs] = useState('');
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
@@ -446,15 +447,6 @@ export default function Checkout() {
             <h2 className={styles.subtitulo}>
               <span className={styles.num}>2</span> Pagamento
             </h2>
-            {saldoDisponivel > 0 && (
-              <label className={styles.aceite}>
-                <input type="checkbox" checked={usarSaldo} onChange={(e) => setUsarSaldo(e.target.checked)} disabled={enviando} />
-                <span>
-                  Usar meu saldo da carteira ({BRL.format(saldoDisponivel)} disponível)
-                  {usoSaldo.usar > 0 && usoSaldo.usar < saldoDisponivel && aPagar > 0 ? ` — entram ${BRL.format(usoSaldo.usar)}` : ''}
-                </span>
-              </label>
-            )}
             {soSaldo ? (
               <p className={styles.ok}>Seu saldo cobre o pedido inteiro ({BRL.format(usoSaldo.usar)}). Nada a pagar agora: o pedido já nasce pago.</p>
             ) : (
@@ -537,6 +529,15 @@ export default function Checkout() {
               <span>Total</span>
               <strong>{resumo ? BRL.format(total) : '…'}</strong>
             </div>
+            {saldoDisponivel > 0 && (
+              <div className={styles.saldoOpcao}>
+                <label>
+                  <input type="checkbox" checked={usarSaldo} onChange={(e) => setUsarSaldo(e.target.checked)} disabled={enviando} />
+                  <span>Usar meu saldo</span>
+                </label>
+                <strong>{BRL.format(saldoDisponivel)} disponível</strong>
+              </div>
+            )}
             {usoSaldo.usar > 0 && (
               <>
                 <div>
