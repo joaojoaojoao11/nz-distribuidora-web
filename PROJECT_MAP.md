@@ -213,6 +213,14 @@ manda ao NZERP como título em aberto (`site_solicitar_saque`, Contas a Pagar).
 O sync remanda pendentes e espelha pago/cancelado pela view `saques_site`
 (cancelado devolve o saldo). Admin: `/admin/saques`, só leitura.
 
+**Contas da base do ERP** (Central do cliente, Fase A, 21/10/2026):
+`api/_lib/conta/contasDoErp.ts` lê a view `clientes_site` do NZERP e cria uma
+conta BLOQUEADA (sem senha, lojista, origem `erp`) para cada cliente qualificado
+ou com pedido entregue, já vinculada (`erp_client_id` ↔ `clients.site_user_id`
+pela RPC `site_marcar_vinculo`). Conta existente só é vinculada; o que não dá
+vai para `erp_clientes_pendentes`. Roda no sync diário e no botão de
+Admin → Clientes, que também convida (op `convidar-cliente`: link de senha).
+
 **Visibilidade por tipo** (`acesso_config`, mesma tela, aba Visibilidade):
 linhas comerciais ocultas, rolo fechado, metro fracionado, estoque detalhado,
 Promoção Moto e pagamento online. O servidor aplica tudo (preço nulo e item

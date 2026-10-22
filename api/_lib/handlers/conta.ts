@@ -36,6 +36,7 @@ import { clienteDoUsuario, pedidosDoCliente, titulosDoCliente } from '../conta/e
 import { atribuirTitulos, titulosSemDono } from '../conta/atribuirTitulos.js';
 import { avisarCadastroNovo, avisarClienteAcessoLiberado } from '../avisos.js';
 import { clienteErp } from '../pedido/despachoErp.js';
+import { criarContasDoErp } from '../conta/contasDoErp.js';
 
 const TIPOS_ACESSO = ['client', 'lojista', 'reseller'];
 
@@ -241,6 +242,62 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // grava o motivo, deixa rastro em equipe_log e avisa o cliente por e-mail
   // quando libera. Até 20/10/2026 o painel escrevia direto na tabela, sem
   // e-mail e sem log — e o cliente final nem passava por aqui (nascia aprovado).
+  // ------------------------------------------- Central do cliente, Fase A
+  // Contas criadas a partir da base do NZERP (bloqueadas) e o convite para a
+  // pessoa definir a senha. Só admin.
+  if (op === 'erp-criar-contas' || op === 'erp-pendentes' || op === 'convidar-cliente') {
+    if (papel !== 'admin') {
+      res.status(403).json({ error: 'apenas-admin' });
+      return;
+    }
+    if (op === 'erp-criar-contas') {
+      const r = await criarContasDoErp(site, 300);
+      await registrarLog(site, 'erp-criar-contas', null, { ...r, erros: r.erros.slice(0, 20) }, userId);
+      res.status(200).json({ ok: true, ...r });
+      return;
+    }
+    if (op === 'erp-pendentes') {
+      const { data } = await site.from('erp_clientes_pendentes').select('*').order('atualizado_em', { ascending: false }).limit(500);
+      res.status(200).json({ pendentes: data ?? [] });
+      return;
+    }
+    // convidar-cliente: link (padrão, para o consultor mandar no WhatsApp) ou
+    // e-mail. A conta já existe sem senha: o link é o de redefinir a senha.
+    const alvoId = typeof body.userId === 'string' ? body.userId : '';
+    const { data: alvoData } = await site.from('user_profiles').select('id, email, role, full_name, origem').eq('id', alvoId).maybeSingle();
+    const alvo = alvoData as { id: string; email: string | null; role: string; full_name: string | null; origem: string } | null;
+    if (!alvo || !alvo.email) {
+      res.status(404).json({ error: 'perfil-nao-encontrado' });
+      return;
+    }
+    if (alvo.role === 'admin') {
+      res.status(409).json({ error: 'admin-nao-por-aqui' });
+      return;
+    }
+    const agora = new Date().toISOString();
+    if (body.enviarEmail === true) {
+      const { error } = await site.auth.resetPasswordForEmail(alvo.email, { redirectTo: `${SITE_URL}/nova-senha` });
+      if (error) {
+        res.status(502).json({ error: 'convite-nao-enviado', detalhe: error.message });
+        return;
+      }
+      await site.from('user_profiles').update({ convite_enviado_em: agora, convite_enviado_por: userId }).eq('id', alvo.id);
+      await registrarLog(site, 'convidar-cliente-email', alvo.email, { origem: alvo.origem }, userId);
+      res.status(200).json({ status: 'convidado', email: alvo.email, porEmail: true });
+      return;
+    }
+    const { data: link, error: eLink } = await site.auth.admin.generateLink({ type: 'recovery', email: alvo.email, options: { redirectTo: `${SITE_URL}/nova-senha` } });
+    if (eLink || !link?.properties?.action_link) {
+      res.status(502).json({ error: 'link-nao-gerado', detalhe: eLink?.message ?? 'sem link na resposta' });
+      return;
+    }
+    await site.from('user_profiles').update({ convite_enviado_em: agora, convite_enviado_por: userId }).eq('id', alvo.id);
+    await registrarLog(site, 'convidar-cliente-link', alvo.email, { origem: alvo.origem }, userId);
+    // O link é segredo de uso único: vai para a tela do admin e some. Nunca logar.
+    res.status(200).json({ status: 'convidado', email: alvo.email, link: link.properties.action_link });
+    return;
+  }
+
   if (op === 'aprovar' || op === 'revogar' || op === 'mudar-tipo' || op === 'mudar-faixa') {
     if (papel !== 'admin') {
       res.status(403).json({ error: 'apenas-admin' });

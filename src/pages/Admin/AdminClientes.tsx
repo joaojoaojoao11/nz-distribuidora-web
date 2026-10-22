@@ -43,6 +43,8 @@ interface Cliente {
   erp_client_id: string | null;
   erp_candidato_id: string | null;
   erp_candidato_motivo: string | null;
+  /** Central do cliente (Fase A): último convite para definir a senha (contas vindas do ERP). */
+  convite_enviado_em: string | null;
   cadastro_completo_em: string | null;
   ultimo_acesso_em: string | null;
   created_at: string;
@@ -103,20 +105,32 @@ interface ContextoAdmin {
 }
 
 const CAMPOS =
-  'id, email, full_name, company_name, phone, cpf_cnpj, ie, role, is_approved, aprovado_em, aprovado_motivo, origem, erp_client_id, erp_candidato_id, erp_candidato_motivo, cadastro_completo_em, ultimo_acesso_em, created_at, address_street, address_number, address_city, address_state, address_zip, faixa_id, indicado_por';
+  'id, email, full_name, company_name, phone, cpf_cnpj, ie, role, is_approved, aprovado_em, aprovado_motivo, origem, erp_client_id, erp_candidato_id, erp_candidato_motivo, cadastro_completo_em, ultimo_acesso_em, created_at, address_street, address_number, address_city, address_state, address_zip, faixa_id, indicado_por, convite_enviado_em';
 
-type Filtro = 'todos' | 'pendentes' | 'indicados' | 'client' | 'lojista' | 'reseller' | 'sem-erp' | 'incompletos';
+type Filtro = 'todos' | 'pendentes' | 'indicados' | 'erp' | 'sem-convite' | 'client' | 'lojista' | 'reseller' | 'sem-erp' | 'incompletos';
 
 const FILTROS: { id: Filtro; label: string }[] = [
   { id: 'todos', label: 'Todos' },
   { id: 'pendentes', label: 'Aguardando aprovação' },
   { id: 'indicados', label: 'Indicados' },
+  { id: 'erp', label: 'Vindos do ERP' },
+  { id: 'sem-convite', label: 'ERP sem convite' },
   { id: 'client', label: 'Clientes finais' },
   { id: 'lojista', label: 'Lojistas' },
   { id: 'reseller', label: 'Revendedores' },
   { id: 'sem-erp', label: 'Sem cliente no ERP' },
   { id: 'incompletos', label: 'Cadastro incompleto' },
 ];
+
+/** Cliente do NZERP que o job não conseguiu transformar em conta (fila do admin). */
+interface PendenteErp {
+  erp_client_id: string;
+  nome: string | null;
+  email: string | null;
+  cpf_cnpj: string | null;
+  motivo: string;
+  atualizado_em: string;
+}
 
 const selectEstilo: React.CSSProperties = { background: 'rgba(15,15,18,0.8)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', padding: '0.3rem 0.4rem', fontSize: '0.78rem' };
 
@@ -149,18 +163,24 @@ export default function AdminClientes() {
   const [preAnalises, setPreAnalises] = useState<Record<string, PreAnalise[]>>({});
   const [formPre, setFormPre] = useState<Record<string, FormPre>>({});
   const [salvandoPre, setSalvandoPre] = useState('');
+  // Central do cliente (Fase A): fila do ERP e o link do último convite gerado.
+  const [pendentesErp, setPendentesErp] = useState<PendenteErp[]>([]);
+  const [criandoContas, setCriandoContas] = useState(false);
+  const [linkConvite, setLinkConvite] = useState<{ email: string; link: string } | null>(null);
 
   const carregar = useCallback(async () => {
     setCarregando(true);
-    const [{ data: linhas, error }, fx, pre] = await Promise.all([
+    const [{ data: linhas, error }, fx, pre, pend] = await Promise.all([
       supabase.from('user_profiles').select(CAMPOS).neq('role', 'admin').order('created_at', { ascending: false }).limit(1000),
       supabase.from('faixas_preco').select('id, papel, nome, ordem, ativa').order('ordem').order('nome'),
       supabase.from('pre_analises').select('*').order('criado_em', { ascending: false }).limit(500),
+      supabase.from('erp_clientes_pendentes').select('*').order('atualizado_em', { ascending: false }).limit(500),
     ]);
     if (error) setErro(error.message);
     const lista = (linhas ?? []) as Cliente[];
     setClientes(lista);
     setFaixas((fx.data ?? []) as FaixaRow[]);
+    setPendentesErp((pend.data ?? []) as PendenteErp[]);
     const porUser: Record<string, PreAnalise[]> = {};
     for (const p of (pre.data ?? []) as PreAnalise[]) (porUser[p.user_id] ??= []).push(p);
     setPreAnalises(porUser);
@@ -188,6 +208,8 @@ export default function AdminClientes() {
     return clientes.filter((c) => {
       if (filtro === 'pendentes' && c.is_approved) return false;
       if (filtro === 'indicados' && !c.indicado_por) return false;
+      if (filtro === 'erp' && c.origem !== 'erp') return false;
+      if (filtro === 'sem-convite' && (c.origem !== 'erp' || c.convite_enviado_em || c.ultimo_acesso_em)) return false;
       if ((filtro === 'client' || filtro === 'lojista' || filtro === 'reseller') && c.role !== filtro) return false;
       if (filtro === 'sem-erp' && c.erp_client_id) return false;
       if (filtro === 'incompletos' && c.cadastro_completo_em) return false;
@@ -211,6 +233,45 @@ export default function AdminClientes() {
       setMsg(okMsg(r));
       await carregar();
       await contexto?.recarregarBadges();
+    } catch (e) {
+      setErro(textoDoErroConta(e));
+    } finally {
+      setOcupado('');
+    }
+  };
+
+  // Central do cliente (Fase A): cria as contas da base do ERP agora (o sync
+  // diário faz o mesmo) e convida quem veio do ERP a definir a senha.
+  const criarContasErp = async () => {
+    setCriandoContas(true);
+    setErro('');
+    setMsg('');
+    try {
+      const r = await chamarConta<{ lidos: number; criadas: number; vinculadas: number; pendentes: number; erros: string[] }>({ op: 'erp-criar-contas' });
+      setMsg(`ERP: ${r.lidos} cliente(s) lido(s) · ${r.criadas} conta(s) criada(s) · ${r.vinculadas} vinculada(s) a contas que já existiam · ${r.pendentes} na fila${r.erros.length ? ` · ${r.erros.length} erro(s)` : ''}.`);
+      await carregar();
+      await contexto?.recarregarBadges();
+    } catch (e) {
+      setErro(textoDoErroConta(e));
+    } finally {
+      setCriandoContas(false);
+    }
+  };
+
+  const convidar = async (c: Cliente) => {
+    const porEmail = window.confirm(`Convidar ${c.full_name || c.email} a definir a senha.\n\nOK = enviar por e-mail.\nCancelar = gerar o link para você mandar no WhatsApp.`);
+    setOcupado(c.id);
+    setErro('');
+    setMsg('');
+    setLinkConvite(null);
+    try {
+      const r = await chamarConta<{ status: string; email: string; link?: string | null; porEmail?: boolean }>({ op: 'convidar-cliente', userId: c.id, enviarEmail: porEmail });
+      if (r.link) {
+        await navigator.clipboard?.writeText(r.link).catch(() => undefined);
+        setLinkConvite({ email: r.email, link: r.link });
+        setMsg(`Link de convite gerado para ${r.email} (copiado). Vale uma vez.`);
+      } else setMsg(`Convite enviado por e-mail para ${r.email}.`);
+      await carregar();
     } catch (e) {
       setErro(textoDoErroConta(e));
     } finally {
@@ -367,6 +428,63 @@ export default function AdminClientes() {
           ))}
         </div>
 
+        {/* Central do cliente (Fase A): contas vindas da base do NZERP. */}
+        <div className={cl.filtros} style={{ alignItems: 'center' }}>
+          <button type="button" className={styles.actionBtn} disabled={criandoContas} onClick={() => void criarContasErp()}>
+            {criandoContas ? 'Criando…' : '⟳ Criar contas do ERP agora'}
+          </button>
+          <span style={{ color: '#888', fontSize: '0.78rem' }}>
+            Cliente qualificado no CRM ou com pedido entregue ganha conta bloqueada (lojista), já vinculada. Roda sozinho uma vez por dia; "Convidar" manda o link da senha.
+          </span>
+        </div>
+        {linkConvite && (
+          <div style={{ marginBottom: '1rem', padding: '0.6rem 0.75rem', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 6, fontSize: '0.8rem', color: '#ccc', wordBreak: 'break-all' }}>
+            Link de convite para <strong>{linkConvite.email}</strong> (uso único):
+            <div style={{ marginTop: '0.3rem' }}>
+              <code style={{ fontSize: '0.75rem' }}>{linkConvite.link}</code>
+            </div>
+            <div style={{ marginTop: '0.4rem', display: 'flex', gap: '0.4rem' }}>
+              <button type="button" className={styles.actionBtn} onClick={() => void navigator.clipboard?.writeText(linkConvite.link)}>
+                Copiar
+              </button>
+              <button type="button" className={styles.actionBtn} onClick={() => setLinkConvite(null)}>
+                Fechar
+              </button>
+            </div>
+          </div>
+        )}
+        {pendentesErp.length > 0 && (
+          <details style={{ marginBottom: '1rem', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '0.5rem 0.75rem' }}>
+            <summary style={{ cursor: 'pointer', color: '#f5a623', fontSize: '0.85rem' }}>
+              ERP sem conta: {pendentesErp.length} cliente(s) — o que falta arrumar no NZERP
+            </summary>
+            <div className={styles.tableScroll} style={{ marginTop: '0.5rem' }}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Cliente no ERP</th>
+                    <th>Documento</th>
+                    <th>E-mail</th>
+                    <th>Motivo</th>
+                    <th>Visto em</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendentesErp.map((p) => (
+                    <tr key={p.erp_client_id}>
+                      <td>{p.nome || '—'}</td>
+                      <td className={cl.colDoc}>{p.cpf_cnpj ? formatarCpfCnpj(p.cpf_cnpj) : '—'}</td>
+                      <td>{p.email || '—'}</td>
+                      <td>{p.motivo}</td>
+                      <td>{data(p.atualizado_em)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        )}
+
         {erro && <div className={styles.createError}>{erro}</div>}
         {msg && <p style={{ color: '#a1a1a6', fontSize: '0.85rem' }}>{msg}</p>}
 
@@ -392,6 +510,11 @@ export default function AdminClientes() {
                     <td className={cl.colNome}>
                       {c.full_name || '—'}
                       {c.company_name && <div style={{ fontSize: '0.72rem', color: '#777' }}>{c.company_name}</div>}
+                      {c.origem === 'erp' && (
+                        <span className={styles.badge} style={{ marginTop: '0.25rem', display: 'inline-block' }} title="Conta criada a partir da base do NZERP; entra só com o link do convite ou 'esqueci minha senha'">
+                          do ERP{c.ultimo_acesso_em ? ' · já entrou' : c.convite_enviado_em ? ` · convite ${data(c.convite_enviado_em)}` : ' · sem convite'}
+                        </span>
+                      )}
                       {c.indicado_por && (
                         <span className={`${styles.badge} ${styles.badgePending}`} style={{ marginTop: '0.25rem', display: 'inline-block' }} title="Chegou pelo link ou cupom de um afiliado">
                           indicação de {codigoIndicador[c.indicado_por] ?? 'afiliado'}
@@ -557,6 +680,11 @@ export default function AdminClientes() {
                         ) : (
                           <button className={`${styles.actionBtn} ${styles.actionBtnDeny}`} onClick={() => revogar(c)} disabled={ocupado === c.id}>
                             🔒 Revogar
+                          </button>
+                        )}
+                        {c.origem === 'erp' && !c.ultimo_acesso_em && (
+                          <button className={styles.actionBtn} onClick={() => void convidar(c)} disabled={ocupado === c.id} title="Link ou e-mail para a pessoa definir a senha">
+                            {c.convite_enviado_em ? '🔗 Reenviar convite' : '🔗 Convidar'}
                           </button>
                         )}
                         {!c.erp_client_id && (

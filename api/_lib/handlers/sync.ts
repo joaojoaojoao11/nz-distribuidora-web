@@ -45,6 +45,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { produtoAutoDeSku } from '../../../src/lib/shop/erp/mapa.js';
 import { manutencaoCheckout } from '../asaas/manutencao.js';
 import { sincronizarEquipe } from './equipe.js';
+import { criarContasDoErp } from '../conta/contasDoErp.js';
 import { atribuirTitulos } from '../conta/atribuirTitulos.js';
 import { limparNaoConfirmados } from '../conta/limparNaoConfirmados.js';
 import { abrirOcorrencia, chavesAbertas, resolverPorChave, resolverVariasChaves } from '../ocorrencias.js';
@@ -199,6 +200,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const checkout = !dry && gatilho !== 'webhook' ? await manutencaoCheckout(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // Quem entrou/saiu do NZERP ganha/perde acesso administrativo ao site.
     const equipe = !dry && gatilho !== 'webhook' ? await sincronizarEquipe(site, null).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // Central do cliente (Fase A): cliente da base do ERP ganha conta bloqueada
+    // no site, já vinculada. Uma vez por dia basta.
+    const contasErp = !dry && gatilho !== 'webhook' ? await criarContasDoErp(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // De quem é cada título do contas a receber. Lê o ERP, grava só no site.
     // Uma vez por dia basta: título novo nasce com nota, e nota não é de minuto.
     const titulos = !dry && gatilho !== 'webhook' ? await atribuirTitulos(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
@@ -228,7 +232,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Sync inteiro passou: se havia uma queixa de sync caído, ela morre aqui.
     if (!dry) await resolverPorChave(site, 'sync-erro', `sync ${gatilho} concluído`);
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, titulos, limpeza, carteira, saques });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, contasErp, titulos, limpeza, carteira, saques });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);

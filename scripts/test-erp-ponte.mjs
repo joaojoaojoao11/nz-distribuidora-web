@@ -100,7 +100,10 @@ console.log('\n=== O ERP É SOMENTE LEITURA ===');
 // cliente vira um TÍTULO EM ABERTO no Contas a Pagar (accounts_payable,
 // origem SITE_SAQUE), idempotente por numero_documento. O financeiro paga e
 // baixa no ERP; o site só lê a situação (view saques_site). Regra do João.
-const ESCRITAS_PERMITIDAS = new Set(['site_criar_pedido', 'site_confirmar_pagamento', 'site_cancelar_pedido', 'site_faixa_cliente', 'site_solicitar_saque']);
+// `site_marcar_vinculo` (21/10/2026, Central do cliente, Fase A): grava SÓ
+// `clients.site_user_id`, e só se estiver vazio — o vínculo da conta que o
+// site criou a partir da base do ERP. Regra do João (docs/PLANO_CENTRAL_DO_CLIENTE.md).
+const ESCRITAS_PERMITIDAS = new Set(['site_criar_pedido', 'site_confirmar_pagamento', 'site_cancelar_pedido', 'site_faixa_cliente', 'site_solicitar_saque', 'site_marcar_vinculo']);
 const arquivosApi = spawnSync(process.execPath, ['-e', `
   const { readdirSync, statSync } = require('node:fs');
   const { join } = require('node:path');
