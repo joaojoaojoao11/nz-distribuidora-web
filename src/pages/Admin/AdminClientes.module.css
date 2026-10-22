@@ -1,0 +1,64 @@
+/* /admin/clientes — alinhamento da barra de filtros e da tabela (pedido do
+ * João, 21/10/2026: "elementos alinhados"). As colunas com controles têm
+ * largura fixa, tudo dentro delas ocupa a largura inteira e as células
+ * alinham pelo topo; nome, contato e documento não quebram palavra a palavra. */
+
+.buscaLinha {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.buscaLinha > div {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.tabela td {
+  vertical-align: top;
+}
+
+.colNome {
+  min-width: 220px;
+}
+
+.colContato,
+.colDoc {
+  white-space: nowrap;
+}
+
+.colTipo {
+  width: 190px;
+  min-width: 190px;
+}
+
+.colAcoes {
+  width: 180px;
+  min-width: 180px;
+}
+
+/* Controles empilhados numa coluna: todos com a mesma largura. */
+.pilha {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.pilha select,
+.pilha button {
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.pilha select {
+  text-align: left;
+}

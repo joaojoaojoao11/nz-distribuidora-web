@@ -25,6 +25,7 @@ import { formatarCpfCnpj } from '../../lib/documento';
 import { TIPO_LABEL, TIPOS_CLIENTE, type TipoAcesso } from '../../lib/shop/papeis';
 import AdminTitulosErp from './AdminTitulosErp';
 import styles from './Admin.module.css';
+import cl from './AdminClientes.module.css';
 
 interface Cliente {
   id: string;
@@ -127,8 +128,6 @@ function endereco(c: Cliente): string {
   if (!c.address_street) return '—';
   return `${c.address_street}, ${c.address_number ?? 's/n'} — ${c.address_city ?? ''}/${c.address_state ?? ''}`;
 }
-
-const badgeTipo = (role: TipoAcesso) => (role === 'client' ? styles.badge : `${styles.badge} ${styles.badgeReseller}`);
 
 export default function AdminClientes() {
   const contexto = useOutletContext<ContextoAdmin | undefined>();
@@ -351,35 +350,38 @@ export default function AdminClientes() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', alignItems: 'center', marginBottom: '1rem' }}>
-          <div className={styles.createField} style={{ minWidth: '260px', flex: 1 }}>
+        {/* Busca e CSV numa linha; os filtros numa linha própria, que quebra sem deixar órfão. */}
+        <div className={cl.buscaLinha}>
+          <div className={styles.createField}>
             <input placeholder="Buscar por nome, e-mail, empresa, documento ou telefone" value={busca} onChange={(e) => setBusca(e.target.value)} />
           </div>
-          {FILTROS.map((f) => (
-            <button key={f.id} className={`${styles.actionBtn} ${filtro === f.id ? styles.actionBtnApprove : ''}`} onClick={() => setFiltro(f.id)}>
-              {f.label}
-            </button>
-          ))}
           <button className={styles.createBtn} onClick={exportarCsv}>
             ↓ CSV
           </button>
+        </div>
+        <div className={cl.filtros}>
+          {FILTROS.map((f) => (
+            <button key={f.id} type="button" className={`${styles.periodBtn} ${filtro === f.id ? styles.periodBtnActive : ''}`} onClick={() => setFiltro(f.id)}>
+              {f.label}
+            </button>
+          ))}
         </div>
 
         {erro && <div className={styles.createError}>{erro}</div>}
         {msg && <p style={{ color: '#a1a1a6', fontSize: '0.85rem' }}>{msg}</p>}
 
         <div className={styles.tableScroll}>
-          <table className={styles.table}>
+          <table className={`${styles.table} ${cl.tabela}`}>
             <thead>
               <tr>
-                <th>Nome</th>
-                <th>Contato</th>
-                <th>Documento</th>
-                <th>Tipo de acesso</th>
+                <th className={cl.colNome}>Nome</th>
+                <th className={cl.colContato}>Contato</th>
+                <th className={cl.colDoc}>Documento</th>
+                <th className={cl.colTipo}>Tipo de acesso</th>
                 <th>Cadastro</th>
                 <th>ERP</th>
                 <th>Status</th>
-                <th>Ações</th>
+                <th className={cl.colAcoes}>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -387,7 +389,7 @@ export default function AdminClientes() {
                 const faltas = faltasDoCadastro(c);
                 return (
                   <tr key={c.id} onClick={() => setAberto(aberto === c.id ? null : c.id)} style={{ cursor: 'pointer' }}>
-                    <td>
+                    <td className={cl.colNome}>
                       {c.full_name || '—'}
                       {c.company_name && <div style={{ fontSize: '0.72rem', color: '#777' }}>{c.company_name}</div>}
                       {c.indicado_por && (
@@ -450,15 +452,15 @@ export default function AdminClientes() {
                         </div>
                       )}
                     </td>
-                    <td>
+                    <td className={cl.colContato}>
                       {c.email || '—'}
                       <div style={{ fontSize: '0.72rem', color: '#777' }}>{c.phone || '—'}</div>
                     </td>
-                    <td>{c.cpf_cnpj ? formatarCpfCnpj(c.cpf_cnpj) : '—'}</td>
-                    <td onClick={(e) => e.stopPropagation()}>
+                    <td className={cl.colDoc}>{c.cpf_cnpj ? formatarCpfCnpj(c.cpf_cnpj) : '—'}</td>
+                    <td className={cl.colTipo} onClick={(e) => e.stopPropagation()}>
                       {c.is_approved ? (
                         // Aprovado: trocar o tipo ou a faixa vale na hora (muda o preço que a pessoa vê).
-                        <div style={{ display: 'grid', gap: '0.3rem' }}>
+                        <div className={cl.pilha}>
                           <select value={c.role} disabled={ocupado === c.id} onChange={(e) => mudarTipo(c, e.target.value as TipoAcesso)} style={selectEstilo}>
                             {TIPOS_CLIENTE.map((t) => (
                               <option key={t} value={t}>
@@ -477,7 +479,34 @@ export default function AdminClientes() {
                           </select>
                         </div>
                       ) : (
-                        <span className={badgeTipo(c.role)}>{TIPO_LABEL[c.role] ?? c.role}</span>
+                        // Pendente: o tipo e a faixa com que a pessoa SERÁ aprovada (valem no "Aprovar").
+                        <div className={cl.pilha}>
+                          <select
+                            value={tipoParaAprovar[c.id] ?? c.role}
+                            onChange={(e) => {
+                              const t = e.target.value as TipoAcesso;
+                              setTipoParaAprovar((m) => ({ ...m, [c.id]: t }));
+                              // A faixa é do tipo: trocou o tipo, volta para Padrão.
+                              setFaixaParaAprovar((m) => ({ ...m, [c.id]: '' }));
+                            }}
+                            style={selectEstilo}
+                            title="Aprovar como"
+                          >
+                            {TIPOS_CLIENTE.map((t) => (
+                              <option key={t} value={t}>
+                                {TIPO_LABEL[t]}
+                              </option>
+                            ))}
+                          </select>
+                          <select value={faixaParaAprovar[c.id] ?? ''} onChange={(e) => setFaixaParaAprovar((m) => ({ ...m, [c.id]: e.target.value }))} style={selectEstilo} title="Faixa de preço dentro do tipo (a pré-análise sugere)">
+                            <option value="">faixa: Padrão</option>
+                            {faixasDoTipo(tipoParaAprovar[c.id] ?? c.role).map((f) => (
+                              <option key={f.id} value={String(f.id)}>
+                                faixa: {f.nome}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       )}
                     </td>
                     <td>
@@ -510,48 +539,24 @@ export default function AdminClientes() {
                         <span className={`${styles.badge} ${styles.badgePending}`}>Pendente</span>
                       )}
                     </td>
-                    <td onClick={(e) => e.stopPropagation()}>
-                      {!c.is_approved ? (
-                        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                          <select
-                            value={tipoParaAprovar[c.id] ?? c.role}
-                            onChange={(e) => {
-                              const t = e.target.value as TipoAcesso;
-                              setTipoParaAprovar((m) => ({ ...m, [c.id]: t }));
-                              // A faixa é do tipo: trocou o tipo, volta para Padrão.
-                              setFaixaParaAprovar((m) => ({ ...m, [c.id]: '' }));
-                            }}
-                            style={selectEstilo}
-                            title="Aprovar como"
-                          >
-                            {TIPOS_CLIENTE.map((t) => (
-                              <option key={t} value={t}>
-                                {TIPO_LABEL[t]}
-                              </option>
-                            ))}
-                          </select>
-                          <select value={faixaParaAprovar[c.id] ?? ''} onChange={(e) => setFaixaParaAprovar((m) => ({ ...m, [c.id]: e.target.value }))} style={selectEstilo} title="Faixa de preço dentro do tipo (a pré-análise sugere)">
-                            <option value="">faixa: Padrão</option>
-                            {faixasDoTipo(tipoParaAprovar[c.id] ?? c.role).map((f) => (
-                              <option key={f.id} value={String(f.id)}>
-                                faixa: {f.nome}
-                              </option>
-                            ))}
-                          </select>
+                    <td className={cl.colAcoes} onClick={(e) => e.stopPropagation()}>
+                      {/* Só botões aqui, empilhados na mesma largura; o tipo e a faixa ficam na coluna deles. */}
+                      <div className={cl.pilha}>
+                        {!c.is_approved ? (
                           <button className={`${styles.actionBtn} ${styles.actionBtnApprove}`} onClick={() => aprovar(c)} disabled={ocupado === c.id}>
                             ✅ Aprovar
                           </button>
-                        </div>
-                      ) : (
-                        <button className={`${styles.actionBtn} ${styles.actionBtnDeny}`} onClick={() => revogar(c)} disabled={ocupado === c.id}>
-                          🔒 Revogar
-                        </button>
-                      )}
-                      {!c.erp_client_id && (
-                        <button className={styles.actionBtn} onClick={() => void procurarNoErp(c)} disabled={ocupado === c.id}>
-                          {c.erp_candidato_id ? '✔ Confirmar vínculo' : '🔎 Procurar no ERP'}
-                        </button>
-                      )}
+                        ) : (
+                          <button className={`${styles.actionBtn} ${styles.actionBtnDeny}`} onClick={() => revogar(c)} disabled={ocupado === c.id}>
+                            🔒 Revogar
+                          </button>
+                        )}
+                        {!c.erp_client_id && (
+                          <button className={styles.actionBtn} onClick={() => void procurarNoErp(c)} disabled={ocupado === c.id}>
+                            {c.erp_candidato_id ? '✔ Confirmar vínculo' : '🔎 Procurar no ERP'}
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
