@@ -21,6 +21,8 @@
 //   mudar-tipo          admin   — cliente final ↔ lojista ↔ revendedor
 //   mudar-faixa         admin   — faixa de preço dentro do tipo (Padrão, Gold,
 //                                 Platinum ou uma faixa individual) — Fase 1
+//   trocar-documento    admin   — troca o CPF/CNPJ de uma conta (travado para o
+//                                 cliente depois de aprovada/ligada ao ERP)
 //   recuperar-senha     público — envia o e-mail de redefinição
 //
 // Por que `recuperar-senha` passa pelo servidor em vez de o front chamar o
@@ -32,7 +34,7 @@ import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado, type Db } from '../papel.js';
 import { ipDoCliente } from '../asaas/cliente.js';
 import { completude } from '../conta/completude.js';
-import { normalizarEmail, validarCpfCnpj } from '../conta/documento.js';
+import { normalizarEmail, somenteDigitos, validarCpfCnpj } from '../conta/documento.js';
 import { consultarDocumento, registrarLog, vincularComErp, type PerfilVinculo } from '../conta/vinculo.js';
 import { emailVerificado } from '../conta/emailVerificado.js';
 import { clienteDoUsuario, pedidosDoCliente, titulosDoCliente } from '../conta/erpHistorico.js';
@@ -267,6 +269,52 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // grava o motivo, deixa rastro em equipe_log e avisa o cliente por e-mail
   // quando libera. Até 20/10/2026 o painel escrevia direto na tabela, sem
   // e-mail e sem log — e o cliente final nem passava por aqui (nascia aprovado).
+  // ----------------------------------------- Login com CPF/CNPJ, Fase 0 (D7)
+  // Depois de aprovada ou ligada ao NZERP, a conta tem o CPF/CNPJ travado para
+  // o cliente (gatilho trg_trava_documento): ele é login e chave com o ERP.
+  // Quem troca é a NZ, por aqui, com rastro em equipe_log.
+  if (op === 'trocar-documento') {
+    if (papel !== 'admin') {
+      res.status(403).json({ error: 'apenas-admin' });
+      return;
+    }
+    const alvo = typeof body.userId === 'string' ? body.userId : '';
+    const novo = somenteDigitos(body.documento);
+    if (!alvo || !validarCpfCnpj(novo)) {
+      res.status(400).json({ error: 'documento-invalido' });
+      return;
+    }
+    const { data: atual } = await site.from('user_profiles').select('id, email, cpf_cnpj, role, erp_client_id').eq('id', alvo).maybeSingle();
+    const conta = atual as { id: string; email: string | null; cpf_cnpj: string | null; role: string; erp_client_id: string | null } | null;
+    if (!conta) {
+      res.status(404).json({ error: 'conta-nao-encontrada' });
+      return;
+    }
+    if (conta.cpf_cnpj === novo) {
+      res.status(200).json({ ok: true, igual: true });
+      return;
+    }
+    if (conta.role !== 'client' && conta.role !== 'admin' && novo.length !== 14) {
+      res.status(400).json({ error: 'lojista-precisa-de-cnpj' });
+      return;
+    }
+    const { data: dono } = await site.from('user_profiles').select('id').eq('cpf_cnpj', novo).neq('id', alvo).maybeSingle();
+    if (dono) {
+      res.status(409).json({ error: 'documento-em-uso' });
+      return;
+    }
+    const { error } = await site.from('user_profiles').update({ cpf_cnpj: novo }).eq('id', alvo);
+    if (error) {
+      res.status(500).json({ error: 'nao-gravou', message: error.message });
+      return;
+    }
+    await registrarLog(site, 'trocar-documento', conta.email, { de: conta.cpf_cnpj, para: novo, vinculadoErp: Boolean(conta.erp_client_id) }, userId);
+    // Ligada ao NZERP: o vínculo continua pelo erp_client_id, mas o consultor
+    // precisa conferir se o documento lá bate com o novo.
+    res.status(200).json({ ok: true, conferirErp: Boolean(conta.erp_client_id) });
+    return;
+  }
+
   // ------------------------------------------- Central do cliente, Fase A
   // Contas criadas a partir da base do NZERP (bloqueadas) e o convite para a
   // pessoa definir a senha. Só admin.

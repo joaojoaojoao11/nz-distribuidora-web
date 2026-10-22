@@ -293,6 +293,29 @@ export default function AdminClientes() {
     }
   };
 
+  // Login com CPF/CNPJ (D7): o documento de conta aprovada ou ligada ao ERP é
+  // login e chave com o ERP; o cliente não troca mais sozinho — a NZ troca aqui.
+  const trocarDocumento = async (c: Cliente) => {
+    const novo = window.prompt(`Novo CPF/CNPJ de ${c.full_name || c.email}\n(atual: ${c.cpf_cnpj ?? 'nenhum'})`, c.cpf_cnpj ?? '');
+    if (novo == null || !novo.trim()) return;
+    setOcupado(c.id);
+    setErro('');
+    setMsg('');
+    try {
+      const r = await chamarConta<{ ok: boolean; igual?: boolean; conferirErp?: boolean }>({ op: 'trocar-documento', userId: c.id, documento: novo });
+      setMsg(
+        r.igual
+          ? 'É o mesmo documento; nada mudou.'
+          : `CPF/CNPJ de ${c.full_name || c.email} trocado.${r.conferirErp ? ' A conta é ligada ao NZERP: confira se o documento lá é o mesmo.' : ''}`
+      );
+      await carregar();
+    } catch (e) {
+      setErro(textoDoErroConta(e));
+    } finally {
+      setOcupado('');
+    }
+  };
+
   const aprovar = (c: Cliente) => {
     const tipo = tipoParaAprovar[c.id] ?? c.role;
     const faixaTxt = faixaParaAprovar[c.id] ?? '';
@@ -740,6 +763,11 @@ export default function AdminClientes() {
                         {!c.erp_client_id && (
                           <button className={styles.actionBtn} onClick={() => void procurarNoErp(c)} disabled={ocupado === c.id}>
                             {c.erp_candidato_id ? '✔ Confirmar vínculo' : '🔎 Procurar no ERP'}
+                          </button>
+                        )}
+                        {c.role !== 'admin' && (
+                          <button className={styles.actionBtn} onClick={() => void trocarDocumento(c)} disabled={ocupado === c.id} title="O cliente não troca sozinho depois de aprovado ou ligado ao NZERP">
+                            🪪 Trocar CPF/CNPJ
                           </button>
                         )}
                       </div>

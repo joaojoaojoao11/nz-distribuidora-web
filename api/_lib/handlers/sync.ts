@@ -48,6 +48,7 @@ import { sincronizarEquipe } from './equipe.js';
 import { criarContasDoErp } from '../conta/contasDoErp.js';
 import { atribuirTitulos } from '../conta/atribuirTitulos.js';
 import { limparNaoConfirmados } from '../conta/limparNaoConfirmados.js';
+import { limparTentativasLogin } from '../conta/loginDocumento.js';
 import { abrirOcorrencia, chavesAbertas, resolverPorChave, resolverVariasChaves } from '../ocorrencias.js';
 import { carregarConfigIncentivos } from '../incentivos/config.js';
 import { estornarPedido, processarPedidoFaturado } from '../incentivos/motor.js';
@@ -214,6 +215,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Saques (Fase 4): remanda ao NZERP o que ficou pendente e espelha os
     // títulos pagos/cancelados (cancelado devolve o saldo à carteira).
     const saques = !dry && gatilho !== 'webhook' ? await sincronizarSaques(site, erp).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // Login com CPF/CNPJ: tentativas com mais de 30 dias saem (o rastro só serve aos limites).
+    const tentativasLogin = !dry && gatilho !== 'webhook' ? await limparTentativasLogin(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
 
     if (logId) {
       await site
@@ -232,7 +235,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Sync inteiro passou: se havia uma queixa de sync caído, ela morre aqui.
     if (!dry) await resolverPorChave(site, 'sync-erro', `sync ${gatilho} concluído`);
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, contasErp, titulos, limpeza, carteira, saques });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, contasErp, titulos, limpeza, carteira, saques, tentativasLogin });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);

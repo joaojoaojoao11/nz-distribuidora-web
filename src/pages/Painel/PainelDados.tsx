@@ -59,13 +59,17 @@ export default function PainelDados() {
   const [salvando, setSalvando] = useState(false);
   const [msg, setMsg] = useState<{ tipo: 'ok' | 'erro'; texto: string } | null>(null);
   const [cobrancaPropria, setCobrancaPropria] = useState(false);
+  const [docTravado, setDocTravado] = useState(false);
   const cepBusca = useRef<AbortController | null>(null);
 
   const carregar = useCallback(async () => {
     if (!user) return;
-    const { data } = await supabase.from('user_profiles').select(CAMPOS).eq('id', user.id).maybeSingle();
+    const { data } = await supabase.from('user_profiles').select(`${CAMPOS}, is_approved, erp_client_id`).eq('id', user.id).maybeSingle();
     if (data) {
-      const bruto = data as Perfil;
+      const bruto = data as Perfil & { is_approved?: boolean | null; erp_client_id?: string | null };
+      // Login com CPF/CNPJ (D7): aprovada ou ligada ao NZERP, o documento vira
+      // identidade e só a NZ troca (o banco também barra: trg_trava_documento).
+      setDocTravado(Boolean(bruto.cpf_cnpj) && (Boolean(bruto.is_approved) || Boolean(bruto.erp_client_id)));
       const limpo = { ...VAZIO };
       for (const k of Object.keys(VAZIO) as (keyof Perfil)[]) {
         const v = bruto[k];
@@ -134,17 +138,22 @@ export default function PainelDados() {
     const patch: Record<string, unknown> = {
       ...perfil,
       cpf_cnpj: doc ? somenteDigitos(doc) : null,
+    };
+    // Documento travado não vai no update: nem por engano o cliente esbarra na trava.
+    if (docTravado) delete patch.cpf_cnpj;
+    Object.assign(patch, {
       address_zip: somenteDigitos(perfil.address_zip ?? '') || null,
       address_state: (perfil.address_state ?? '').toUpperCase() || null,
       cobranca_igual_entrega: !cobrancaPropria,
       cobranca_cep: cobrancaPropria ? somenteDigitos(perfil.cobranca_cep ?? '') || null : null,
       cobranca_numero: cobrancaPropria ? perfil.cobranca_numero || null : null,
-    };
+    });
     for (const k of Object.keys(patch)) if (patch[k] === '') patch[k] = null;
     const { error } = await supabase.from('user_profiles').update(patch).eq('id', user.id);
     setSalvando(false);
     if (!error) await recarregarPerfil();
-    setMsg(error ? { tipo: 'erro', texto: error.message } : { tipo: 'ok', texto: 'Dados salvos.' });
+    const texto = error?.message.includes('documento-travado') ? 'O CPF/CNPJ desta conta só pode ser trocado pela NZ.' : error?.message;
+    setMsg(error ? { tipo: 'erro', texto: texto ?? 'Não foi possível salvar.' } : { tipo: 'ok', texto: 'Dados salvos.' });
   };
 
   if (carregando) return <p className={styles.mudo}>Carregando…</p>;
@@ -185,8 +194,15 @@ export default function PainelDados() {
             onChange={set('cpf_cnpj')}
             inputMode="numeric"
             required={lojista}
+            readOnly={docTravado}
+            aria-describedby={docTravado ? 'doc-travado' : undefined}
             placeholder={lojista ? '00.000.000/0000-00' : '000.000.000-00'}
           />
+          {docTravado && (
+            <small id="doc-travado" className={styles.campoNota}>
+              Para trocar, fale com a NZ. Ele também serve para entrar na conta.
+            </small>
+          )}
         </label>
         {(lojista || tipoDocumento(doc) === 'cnpj') && (
           <>

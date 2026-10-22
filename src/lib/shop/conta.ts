@@ -69,6 +69,10 @@ export const UFS = [
 export const ERRO_CONTA: Record<string, string> = {
   'login-necessario': 'Entre na sua conta para continuar.',
   'documento-invalido': 'CPF/CNPJ inválido — confira os dígitos.',
+  'documento-em-uso': 'Este CPF/CNPJ já é de outra conta do site.',
+  'documento-travado': 'O CPF/CNPJ desta conta só pode ser trocado pela NZ.',
+  'lojista-precisa-de-cnpj': 'Lojista e revendedor precisam de CNPJ.',
+  'conta-nao-encontrada': 'Esta conta não existe mais.',
   'muitas-consultas': 'Muitas consultas seguidas. Espere um minuto.',
   'perfil-nao-encontrado': 'Não encontrei seu cadastro.',
   'apenas-admin': 'Só administradores podem fazer isso.',
