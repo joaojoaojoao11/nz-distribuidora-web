@@ -26,23 +26,34 @@
   vertical-align: top;
 }
 
-.colNome {
-  min-width: 220px;
+/* Oito colunas com controles: células um pouco mais justas para caber em 1366–1600px sem rolar. */
+.tabela td,
+.tabela th {
+  padding: 0.6rem 0.65rem;
 }
 
-.colContato,
+.colNome {
+  min-width: 170px;
+}
+
 .colDoc {
   white-space: nowrap;
 }
 
+/* E-mail inteiro quando cabe; quebra no meio só se a tela for estreita. */
+.colContato {
+  min-width: 150px;
+  overflow-wrap: anywhere;
+}
+
 .colTipo {
-  width: 190px;
-  min-width: 190px;
+  width: 170px;
+  min-width: 170px;
 }
 
 .colAcoes {
-  width: 180px;
-  min-width: 180px;
+  width: 160px;
+  min-width: 160px;
 }
 
 /* Controles empilhados numa coluna: todos com a mesma largura. */
