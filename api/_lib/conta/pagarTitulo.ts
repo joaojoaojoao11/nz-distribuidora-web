@@ -12,7 +12,7 @@
 //
 // O site não escreve no ERP: a emissão é o fluxo do próprio ERP, com o mesmo
 // carimbo e o mesmo webhook de baixa de sempre. Toda tentativa fica em
-// site_admin_log, com o motivo cru do ERP para o admin — o cliente recebe só
+// equipe_log (acao pagar-titulo), com o motivo cru do ERP para o admin — o cliente recebe só
 // a frase curta.
 
 import { createHmac } from 'node:crypto';
