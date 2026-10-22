@@ -805,6 +805,11 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: filter 0.2s;
+  /* Também vira <a> ("Pagar" na aba Pagamentos): mesma altura e texto centrado do botão. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .botaoPrincipal:hover { filter: brightness(1.12); }
@@ -1174,4 +1179,56 @@
   .confete {
     display: none;
   }
+}
+
+/* ----------------------------------------------- pagamentos: blocos da NZ */
+/* Vencidos, a vencer e pagos, cada um com a contagem e a soma no título. */
+
+.blocoTitulos {
+  margin: 0 0 1.25rem;
+}
+
+.blocoTitulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.9rem 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.blocoTitulo span {
+  font-family: var(--font-tech);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+
+.blocoTitulo small {
+  flex-basis: 100%;
+  font-size: 0.74rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* Título em acordo/cedido: no lugar do botão, na mesma linha e altura dos botões. */
+.combinado {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-tech);
+  font-size: 0.66rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* O motivo de o "Gerar Pix/boleto" não ter dado certo, embaixo do cartão. */
+.avisoTitulo {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #fbbf24;
 }

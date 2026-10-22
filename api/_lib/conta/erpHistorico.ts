@@ -38,15 +38,24 @@ export const DIAS_CANCELADO_VISIVEL = 90;
 export const COLUNAS_FATURAMENTO = 'id, quote_id, nf_numero, nf_chave, valor_nf, data_faturamento, status, tiny_order_number';
 
 /**
- * Título: o que vence, quando e se foi pago — e os links de boleto que o
- * próprio cliente já recebeu por e-mail. Fora: status_cobranca, cartório,
- * cessão, remessa, encargo de recompra, histórico e observações.
+ * Título, lido da view `titulos_cliente_site` do ERP (Central do cliente,
+ * Fase C): o que vence, quando, se foi pago, e os links/Pix da cobrança no
+ * Asaas. `client_id` e `cliente_documento` servem só para achar o dono e NUNCA
+ * saem daqui (ver tituloPublico). Fora: status_cobranca, cartório, cessão,
+ * remessa, encargo de recompra, histórico e observações — a view resume o que
+ * a regra precisa deles em dois booleanos, `combinado` e `pagavel`.
  */
 export const COLUNAS_TITULO =
-  'id, numero_documento, valor, valor_pago, vencimento, data_emissao, data_pagamento, status, parcela_numero, parcela_total, nf_numero, quote_number, asaas_invoice_url, asaas_bank_slip_url, forma_pagamento';
+  'id, client_id, cliente_documento, numero_documento, parcela_numero, parcela_total, vencimento, data_emissao, data_pagamento, valor, valor_pago, valor_liquidado, saldo, status, forma_pagamento, quote_number, nf_numero, cobranca_viva, asaas_invoice_url, asaas_bank_slip_url, asaas_pix_payload, asaas_pix_expiracao, asaas_linha_digitavel, combinado, pagavel';
+
+/** Pago aparece por 12 meses (D6); mais velho que isso é histórico do ERP, não da tela. */
+export const DIAS_PAGO_VISIVEL = 365;
 
 /** Cliente: só o que serve para o cabeçalho "sua conta na NZ". Nunca `limite_de_credito`. */
 export const COLUNAS_CLIENTE = 'id, nome, name, fantasia, cpf_cnpj, cidade, estado, created_at';
+
+/** Oportunidade do CRM: só o id, para achar os orçamentos do cliente. Nada do funil, do vendedor ou das notas. */
+export const COLUNAS_OPORTUNIDADE = 'id';
 
 const STATUS_TITULO: Record<string, string> = {
   pago: 'Pago',
@@ -87,23 +96,39 @@ export interface PedidoErpPublico {
   notas: { numero: string | null; chave: string | null; valor: number | null; em: string | null }[];
 }
 
+export type BlocoTitulo = 'vencido' | 'a_vencer' | 'pago';
+
 export interface TituloPublico {
   id: string;
   documento: string | null;
   valor: number | null;
   valorPago: number | null;
+  /** O que falta pagar (valor − liquidado). Em título pago em parte é o que a cobrança pede. */
+  saldo: number | null;
   vencimento: string | null;
   emissao: string | null;
   pagoEm: string | null;
   status: string;
   statusRotulo: string;
   vencido: boolean;
+  /** Em qual dos três blocos da aba Pagamentos ele entra (D6). */
+  bloco: BlocoTitulo;
   parcela: string | null;
   notaFiscal: string | null;
   orcamento: string | null;
   boletoUrl: string | null;
   faturaUrl: string | null;
+  /** Pix copia-e-cola da cobrança viva, só enquanto não expirou. */
+  pixPayload: string | null;
+  pixExpira: string | null;
+  linhaDigitavel: string | null;
   forma: string | null;
+  /** Tem cobrança viva no Asaas: "Pagar" abre `faturaUrl`. */
+  cobrancaViva: boolean;
+  /** Em acordo, cedido ou em antecipação: "combinado com a NZ", sem botão (D7). */
+  combinado: boolean;
+  /** O site pode pedir ao ERP a emissão da cobrança (em aberto, sem acordo, pedido não cancelado). */
+  pagavel: boolean;
 }
 
 export interface ClienteErpPublico {
@@ -198,7 +223,7 @@ export async function pedidosDoCliente(site: Db, userId: string, limite = 50): P
   const erp = await clienteErp();
   if (!erp) return [];
 
-  const { data: opps } = await erp.from('crm_opportunities').select('id').eq('client_id', cliente.id).limit(200);
+  const { data: opps } = await erp.from('crm_opportunities').select(COLUNAS_OPORTUNIDADE).eq('client_id', cliente.id).limit(200);
   const oppIds = ((opps ?? []) as { id: string }[]).map((o) => o.id);
   const chaves = cliente.documento ? ([...new Set([cliente.documento, somenteDigitos(cliente.documento)].filter(Boolean))] as string[]) : [];
   if (!oppIds.length && !chaves.length) return [];
@@ -217,7 +242,7 @@ export async function pedidosDoCliente(site: Db, userId: string, limite = 50): P
     .is('site_pedido_id', null)
     .or(`status.in.(${STATUS_VISIVEIS.join(',')}),and(status.eq.CANCELADO,updated_at.gte.${corte})`)
     .order('created_at', { ascending: false })
-    .limit(limite);
+    .range(0, limite - 1);
   const quotes = (data ?? []) as Record<string, unknown>[];
   if (!quotes.length) return [];
 
@@ -256,47 +281,113 @@ export async function pedidosDoCliente(site: Db, userId: string, limite = 50): P
   }));
 }
 
+/** Hoje em Brasília (AAAA-MM-DD): vencimento é data local, não UTC — às 22h de BRT ainda não venceu. */
+const hojeBR = (agora: Date) => agora.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+
 /**
- * As parcelas do cliente. Só os títulos que a atribuição deu a ELE — título
- * sem dono não aparece para ninguém (`erp_titulo_dono`, fase 4).
- *
- * Vencido aparece, com data e valor, e ponto: nenhuma palavra de cobrança sai
- * daqui. Quem cobra é a NZ, pelo canal dela.
+ * A linha da view vira o que o cliente vê. Pura, para o autoteste: nada de
+ * `client_id`/`cliente_documento` na saída, Pix só enquanto vale, bloco pelo
+ * status e pelo vencimento (D6).
  */
-export async function titulosDoCliente(site: Db, userId: string, limite = 100): Promise<TituloPublico[]> {
+export function tituloPublico(t: Record<string, unknown>, agora: Date): TituloPublico {
+  const hoje = hojeBR(agora);
+  const status = String(t.status ?? '');
+  const vencimento = (t.vencimento as string) ?? null;
+  const pago = status === 'pago';
+  const vencido = !pago && Boolean(vencimento) && vencimento! < hoje;
+  const cobrancaViva = Boolean(t.cobranca_viva);
+  const pixExpira = (t.asaas_pix_expiracao as string) ?? null;
+  const pixVivo = cobrancaViva && Boolean(t.asaas_pix_payload) && (!pixExpira || new Date(pixExpira).getTime() > agora.getTime());
+  const num = (v: unknown) => (v == null ? null : Number(v));
+  return {
+    id: String(t.id),
+    documento: (t.numero_documento as string) ?? null,
+    valor: num(t.valor),
+    valorPago: num(t.valor_pago),
+    saldo: num(t.saldo),
+    vencimento,
+    emissao: (t.data_emissao as string) ?? null,
+    pagoEm: (t.data_pagamento as string) ?? null,
+    status,
+    statusRotulo: STATUS_TITULO[status] ?? status,
+    vencido,
+    bloco: pago ? 'pago' : vencido ? 'vencido' : 'a_vencer',
+    parcela: t.parcela_total && Number(t.parcela_total) > 1 ? `${t.parcela_numero ?? 1}/${t.parcela_total}` : null,
+    notaFiscal: (t.nf_numero as string) ?? null,
+    orcamento: (t.quote_number as string) ?? null,
+    boletoUrl: cobrancaViva || pago ? ((t.asaas_bank_slip_url as string) ?? null) : null,
+    faturaUrl: cobrancaViva || pago ? ((t.asaas_invoice_url as string) ?? null) : null,
+    pixPayload: pixVivo ? String(t.asaas_pix_payload) : null,
+    pixExpira: pixVivo ? pixExpira : null,
+    linhaDigitavel: cobrancaViva ? ((t.asaas_linha_digitavel as string) ?? null) : null,
+    forma: (t.forma_pagamento as string) ?? null,
+    cobrancaViva,
+    combinado: Boolean(t.combinado),
+    pagavel: Boolean(t.pagavel),
+  };
+}
+
+interface ChavesDoCliente {
+  erp: NonNullable<Awaited<ReturnType<typeof clienteErp>>>;
+  clientId: string;
+  /** Dígitos do CPF/CNPJ do cliente no ERP — a segunda chave do dono do título. */
+  doc: string | null;
+  /** Títulos que o admin atribuiu à mão (`erp_titulo_dono.chave = 'manual'`): valem sempre. */
+  manuais: string[];
+}
+
+/**
+ * De quem é o título (D8): pelo vínculo `clients.site_user_id` ↔
+ * `user_profiles.erp_client_id`, casando o título pelo orçamento (view:
+ * `client_id`) ou pelo documento. A atribuição por NOME (`erp_titulo_dono`)
+ * deixa de valer para quem está vinculado; só a manual do admin continua.
+ */
+async function chavesDoCliente(site: Db, userId: string): Promise<ChavesDoCliente | null> {
   const { data: perfil } = await site.from('user_profiles').select('erp_client_id').eq('id', userId).maybeSingle();
   const clientId = (perfil as { erp_client_id?: string | null } | null)?.erp_client_id;
-  if (!clientId) return [];
-
-  const { data: donos } = await site.from('erp_titulo_dono').select('titulo_id').eq('erp_client_id', clientId).limit(limite * 3);
-  const ids = ((donos ?? []) as { titulo_id: string }[]).map((d) => d.titulo_id);
-  if (!ids.length) return [];
-
+  if (!clientId) return null;
   const erp = await clienteErp();
-  if (!erp) return [];
-  const { data } = await erp.from('contas_receber').select(COLUNAS_TITULO).in('id', ids).is('deleted_at', null).order('vencimento', { ascending: false }).limit(limite);
+  if (!erp) return null;
+  const { data: cli } = await erp.from('clients').select(COLUNAS_CLIENTE).eq('id', clientId).maybeSingle();
+  const doc = somenteDigitos((cli as { cpf_cnpj?: string | null } | null)?.cpf_cnpj) || null;
+  const { data: donos } = await site.from('erp_titulo_dono').select('titulo_id').eq('erp_client_id', clientId).eq('chave', 'manual').limit(200);
+  const manuais = ((donos ?? []) as { titulo_id: string }[]).map((d) => d.titulo_id).filter((id) => /^[0-9a-f-]{36}$/i.test(id));
+  return { erp, clientId, doc: doc && doc.length >= 11 ? doc : null, manuais };
+}
 
-  const hoje = new Date().toISOString().slice(0, 10);
-  return ((data ?? []) as Record<string, unknown>[]).map((t) => {
-    const status = String(t.status ?? '');
-    const vencimento = (t.vencimento as string) ?? null;
-    return {
-      id: String(t.id),
-      documento: (t.numero_documento as string) ?? null,
-      valor: t.valor == null ? null : Number(t.valor),
-      valorPago: t.valor_pago == null ? null : Number(t.valor_pago),
-      vencimento,
-      emissao: (t.data_emissao as string) ?? null,
-      pagoEm: (t.data_pagamento as string) ?? null,
-      status,
-      statusRotulo: STATUS_TITULO[status] ?? status,
-      vencido: status !== 'pago' && status !== 'cancelado' && Boolean(vencimento) && vencimento! < hoje,
-      parcela: t.parcela_total && Number(t.parcela_total) > 1 ? `${t.parcela_numero ?? 1}/${t.parcela_total}` : null,
-      notaFiscal: (t.nf_numero as string) ?? null,
-      orcamento: (t.quote_number as string) ?? null,
-      boletoUrl: (t.asaas_bank_slip_url as string) ?? null,
-      faturaUrl: (t.asaas_invoice_url as string) ?? null,
-      forma: (t.forma_pagamento as string) ?? null,
-    };
-  });
+/** O filtro PostgREST "é deste cliente": orçamento OU documento OU atribuição manual. */
+function filtroDono(ch: ChavesDoCliente): string {
+  const partes = [`client_id.eq.${ch.clientId}`];
+  if (ch.doc) partes.push(`cliente_documento.eq.${ch.doc}`);
+  if (ch.manuais.length) partes.push(`id.in.(${ch.manuais.join(',')})`);
+  return partes.join(',');
+}
+
+/**
+ * As parcelas do cliente na NZ: em aberto (a vencer e vencidas) e as pagas
+ * nos últimos 12 meses. Vencido aparece, com data e valor, e ponto: nenhuma
+ * palavra de cobrança sai daqui. Quem cobra é a NZ, pelo canal dela (D9).
+ */
+export async function titulosDoCliente(site: Db, userId: string, limite = 200): Promise<TituloPublico[]> {
+  const ch = await chavesDoCliente(site, userId);
+  if (!ch) return [];
+  const agora = new Date();
+  const corte = new Date(agora.getTime() - DIAS_PAGO_VISIVEL * 86_400_000).toISOString().slice(0, 10);
+  const { data } = await ch.erp
+    .from('titulos_cliente_site')
+    .select(COLUNAS_TITULO)
+    .or(filtroDono(ch))
+    .or(`status.neq.pago,data_pagamento.gte.${corte}`)
+    .order('vencimento', { ascending: false })
+    .limit(limite);
+  return ((data ?? []) as Record<string, unknown>[]).map((t) => tituloPublico(t, agora));
+}
+
+/** Um título só, e só se for deste cliente — é o que "Pagar" confere antes de falar com o ERP. */
+export async function tituloDoCliente(site: Db, userId: string, tituloId: string): Promise<TituloPublico | null> {
+  if (!/^[0-9a-f-]{36}$/i.test(tituloId)) return null;
+  const ch = await chavesDoCliente(site, userId);
+  if (!ch) return null;
+  const { data } = await ch.erp.from('titulos_cliente_site').select(COLUNAS_TITULO).eq('id', tituloId).or(filtroDono(ch)).limit(1).maybeSingle();
+  return data ? tituloPublico(data as Record<string, unknown>, new Date()) : null;
 }

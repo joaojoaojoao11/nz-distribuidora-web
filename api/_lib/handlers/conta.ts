@@ -9,6 +9,9 @@
 //                                 aprovação automática do lojista
 //   historico-erp       logado  — pedidos, notas e parcelas que o cliente já
 //                                 tinha no NZERP (lista branca de colunas)
+//   pagar-titulo        logado  — "Pagar" / "Gerar Pix/boleto" num título do
+//                                 cliente na NZ (Central do cliente, Fase C);
+//                                 quem emite é o ERP (api/asaas/emit, origem site)
 //   atribuir-titulos    admin   — roda o job que decide de quem é cada título
 //   titulos-sem-dono    admin   — o que sobrou, para atribuir à mão
 //   atribuir-titulo     admin   — atribui um título a um cliente
@@ -37,6 +40,7 @@ import { atribuirTitulos, titulosSemDono } from '../conta/atribuirTitulos.js';
 import { avisarCadastroNovo, avisarClienteAcessoLiberado } from '../avisos.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 import { criarContasDoErp } from '../conta/contasDoErp.js';
+import { pagarTitulo } from '../conta/pagarTitulo.js';
 
 const TIPOS_ACESSO = ['client', 'lojista', 'reseller'];
 
@@ -209,6 +213,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
     const [pedidos, titulos] = await Promise.all([pedidosDoCliente(site, alvo), titulosDoCliente(site, alvo)]);
     res.status(200).json({ vinculado: true, cliente, pedidos, titulos });
+    return;
+  }
+
+  // Central do cliente (Fase C, D7): "Pagar" / "Gerar Pix/boleto" num título
+  // do PRÓPRIO cliente. O site confere o dono e as regras; quem emite é o ERP.
+  // Não exige aprovação do cadastro: a dívida é dele, bloqueado ou não.
+  if (op === 'pagar-titulo') {
+    const tituloId = typeof body.tituloId === 'string' ? body.tituloId : '';
+    if (!/^[0-9a-f-]{36}$/i.test(tituloId)) {
+      res.status(400).json({ error: 'titulo-invalido' });
+      return;
+    }
+    const r = await pagarTitulo(site, userId, tituloId);
+    if (!r.ok) {
+      res.status(r.status).json({ error: r.erro, mensagem: r.mensagem });
+      return;
+    }
+    res.status(200).json({ ok: true, titulo: r.titulo, emitiu: r.emitiu });
     return;
   }
 

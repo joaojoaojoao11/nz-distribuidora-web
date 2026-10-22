@@ -78,7 +78,7 @@ const PROIBIDAS = [
   'password',
 ];
 const constantes = [...fonteBruta.matchAll(/export const (COLUNAS_[A-Z_]+) = *\n? *'([^']+)'/g)];
-ok('as quatro listas brancas existem', constantes.length === 4, `${constantes.length}`);
+ok('as cinco listas brancas existem (quote, faturamento, título, cliente, oportunidade)', constantes.length === 5, `${constantes.length}`);
 for (const [, nome, valor] of constantes) {
   const colunas = valor.split(',').map((c) => c.trim());
   const ruins = colunas.filter((c) => PROIBIDAS.includes(c));

@@ -26,7 +26,7 @@ import { TIPO_LABEL, TIPOS_CLIENTE, type TipoAcesso } from '../../lib/shop/papei
 import AdminTitulosErp from './AdminTitulosErp';
 import styles from './Admin.module.css';
 import cl from './AdminClientes.module.css';
-import type { PedidoErp } from '../../lib/shop/historicoErp';
+import type { PedidoErp, TituloErp } from '../../lib/shop/historicoErp';
 import { STATUS_LABEL } from '../Painel/pedidoRotulos';
 import { BRL } from './comuns/formato';
 
@@ -168,15 +168,15 @@ export default function AdminClientes() {
   const [salvandoPre, setSalvandoPre] = useState('');
   // Central do cliente (Fase A): fila do ERP e o link do último convite gerado.
   const [pendentesErp, setPendentesErp] = useState<PendenteErp[]>([]);
-  // Central do cliente (D12): pedidos do ERP do cliente aberto, carregados ao expandir.
-  const [historicoAdmin, setHistoricoAdmin] = useState<Record<string, PedidoErp[]>>({});
+  // Central do cliente (D12): pedidos e parcelas do ERP do cliente aberto, carregados ao expandir.
+  const [historicoAdmin, setHistoricoAdmin] = useState<Record<string, { pedidos: PedidoErp[]; titulos: TituloErp[] }>>({});
   const abrirHistorico = useCallback(async (c: Cliente) => {
     if (!c.erp_client_id || historicoAdmin[c.id] !== undefined) return;
     try {
-      const r = await chamarConta<{ pedidos: PedidoErp[] }>({ op: 'historico-erp', userId: c.id });
-      setHistoricoAdmin((m) => ({ ...m, [c.id]: r.pedidos ?? [] }));
+      const r = await chamarConta<{ pedidos: PedidoErp[]; titulos: TituloErp[] }>({ op: 'historico-erp', userId: c.id });
+      setHistoricoAdmin((m) => ({ ...m, [c.id]: { pedidos: r.pedidos ?? [], titulos: r.titulos ?? [] } }));
     } catch {
-      setHistoricoAdmin((m) => ({ ...m, [c.id]: [] }));
+      setHistoricoAdmin((m) => ({ ...m, [c.id]: { pedidos: [], titulos: [] } }));
     }
   }, [historicoAdmin]);
   const [criandoContas, setCriandoContas] = useState(false);
@@ -554,19 +554,26 @@ export default function AdminClientes() {
                               <strong style={{ color: '#fff' }}>Pedidos com a NZ</strong>
                               {historicoAdmin[c.id] === undefined ? (
                                 <span> · carregando…</span>
-                              ) : historicoAdmin[c.id].length === 0 ? (
+                              ) : historicoAdmin[c.id].pedidos.length === 0 ? (
                                 <span> · nenhum pedido visível para o cliente</span>
                               ) : (
                                 <ul style={{ margin: '0.25rem 0 0', paddingLeft: '1rem' }}>
-                                  {historicoAdmin[c.id].slice(0, 8).map((p) => (
+                                  {historicoAdmin[c.id].pedidos.slice(0, 8).map((p) => (
                                     <li key={p.quoteId}>
                                       #{p.numero ?? '—'} · {data(p.criadoEm)} · {STATUS_LABEL[p.status] ?? p.status} · {p.total != null ? BRL.format(Number(p.total)) : '—'}
                                       {p.notas.length ? ` · NF ${p.notas.map((n) => n.numero).filter(Boolean).join(', ')}` : ''}
                                     </li>
                                   ))}
-                                  {historicoAdmin[c.id].length > 8 && <li>e mais {historicoAdmin[c.id].length - 8}</li>}
+                                  {historicoAdmin[c.id].pedidos.length > 8 && <li>e mais {historicoAdmin[c.id].pedidos.length - 8}</li>}
                                 </ul>
                               )}
+                            </div>
+                          )}
+                          {/* Central do cliente (Fase C): o que o cliente vê na aba Pagamentos. */}
+                          {c.erp_client_id && (
+                            <div style={{ marginTop: '0.5rem', color: '#bbb' }}>
+                              <strong style={{ color: '#fff' }}>Pagamentos com a NZ</strong>
+                              {historicoAdmin[c.id] === undefined ? <span> · carregando…</span> : <ResumoTitulos titulos={historicoAdmin[c.id].titulos} />}
                             </div>
                           )}
                           {c.aprovado_motivo && (
@@ -760,6 +767,37 @@ export default function AdminClientes() {
       </div>
 
       <AdminTitulosErp contas={clientes} />
+    </>
+  );
+}
+
+/** Central do cliente (D12): o que o cliente vê na aba Pagamentos, resumido para o consultor. */
+function ResumoTitulos({ titulos }: { titulos: TituloErp[] }) {
+  const fmt = (v: string | null) => (v ? new Date(v.length === 10 ? `${v}T12:00:00` : v).toLocaleDateString('pt-BR') : '—');
+  const soma = (l: TituloErp[]) => BRL.format(l.reduce((s, t) => s + (t.saldo ?? t.valor ?? 0), 0));
+  const vencidos = titulos.filter((t) => t.bloco === 'vencido');
+  const aVencer = titulos.filter((t) => t.bloco === 'a_vencer');
+  const pagos = titulos.filter((t) => t.bloco === 'pago');
+  if (!titulos.length) return <span> · nenhuma parcela visível para o cliente</span>;
+  const abertos = [...vencidos, ...aVencer];
+  return (
+    <>
+      <span>
+        {' '}
+        · {vencidos.length} vencido(s) ({soma(vencidos)}) · {aVencer.length} a vencer ({soma(aVencer)}) · {pagos.length} pago(s) em 12 meses
+      </span>
+      {abertos.length > 0 && (
+        <ul style={{ margin: '0.25rem 0 0', paddingLeft: '1rem' }}>
+          {abertos.slice(0, 6).map((t) => (
+            <li key={t.id}>
+              {fmt(t.vencimento)} · {t.documento ?? 'parcela'}
+              {t.parcela ? ` ${t.parcela}` : ''} · {BRL.format(t.saldo ?? t.valor ?? 0)} ·{' '}
+              {t.combinado ? 'combinado com a NZ' : t.cobrancaViva ? 'cobrança no Asaas' : t.bloco === 'vencido' ? 'vencido sem cobrança' : 'sem cobrança (o cliente pode gerar)'}
+            </li>
+          ))}
+          {abertos.length > 6 && <li>e mais {abertos.length - 6}</li>}
+        </ul>
+      )}
     </>
   );
 }

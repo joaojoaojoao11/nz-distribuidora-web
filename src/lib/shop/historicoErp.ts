@@ -42,23 +42,37 @@ export interface PedidoErp {
   notas: { numero: string | null; chave: string | null; valor: number | null; em: string | null }[];
 }
 
+export type BlocoTitulo = 'vencido' | 'a_vencer' | 'pago';
+
 export interface TituloErp {
   id: string;
   documento: string | null;
   valor: number | null;
   valorPago: number | null;
+  /** O que falta pagar (valor − liquidado). */
+  saldo: number | null;
   vencimento: string | null;
   emissao: string | null;
   pagoEm: string | null;
   status: string;
   statusRotulo: string;
   vencido: boolean;
+  bloco: BlocoTitulo;
   parcela: string | null;
   notaFiscal: string | null;
   orcamento: string | null;
   boletoUrl: string | null;
   faturaUrl: string | null;
+  pixPayload: string | null;
+  pixExpira: string | null;
+  linhaDigitavel: string | null;
   forma: string | null;
+  /** Tem cobrança viva no Asaas: "Pagar" abre `faturaUrl`. */
+  cobrancaViva: boolean;
+  /** Em acordo/cedido: "combinado com a NZ", sem botão. */
+  combinado: boolean;
+  /** O site pode pedir a emissão da cobrança ("Gerar Pix/boleto"). */
+  pagavel: boolean;
 }
 
 export interface HistoricoErp {
@@ -72,9 +86,11 @@ const VAZIO: HistoricoErp = { vinculado: false, cliente: null, pedidos: [], titu
 
 let emCache: { userId: string; dados: Promise<HistoricoErp> } | null = null;
 
-export async function carregarHistoricoErp(userId: string | null | undefined): Promise<HistoricoErp> {
+export async function carregarHistoricoErp(userId: string | null | undefined, opcoes?: { fresco?: boolean }): Promise<HistoricoErp> {
   if (!userId) return VAZIO;
-  if (emCache?.userId === userId) return emCache.dados;
+  // `fresco`: a aba Pagamentos consulta de novo ao voltar o foco — o cliente
+  // pode ter acabado de pagar no Asaas em outra aba.
+  if (!opcoes?.fresco && emCache?.userId === userId) return emCache.dados;
 
   const dados = (async () => {
     const { data: sessao } = await supabase.auth.getSession();
@@ -96,4 +112,32 @@ export async function carregarHistoricoErp(userId: string | null | undefined): P
 /** Depois de um pedido novo ou de um cancelamento, o cache mente. */
 export function esquecerHistoricoErp(): void {
   emCache = null;
+}
+
+export type ResultadoPagar = { ok: true; titulo: TituloErp; emitiu: boolean } | { ok: false; erro: string; mensagem: string };
+
+/**
+ * "Pagar" / "Gerar Pix/boleto" num título da NZ. O servidor confere que o
+ * título é do cliente; se já tem cobrança viva devolve os links, senão pede ao
+ * ERP a emissão. A mensagem de erro já vem pronta para a tela.
+ */
+export async function pagarTitulo(tituloId: string): Promise<ResultadoPagar> {
+  const { data: sessao } = await supabase.auth.getSession();
+  const token = sessao.session?.access_token;
+  if (!token) return { ok: false, erro: 'sem-sessao', mensagem: 'Entre de novo para continuar.' };
+  try {
+    const r = await fetch('/api/nz/conta', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ op: 'pagar-titulo', tituloId }),
+    });
+    const j = (await r.json().catch(() => null)) as { ok?: boolean; titulo?: TituloErp; emitiu?: boolean; error?: string; mensagem?: string } | null;
+    if (!r.ok || !j?.ok || !j.titulo) {
+      return { ok: false, erro: j?.error ?? 'falha', mensagem: j?.mensagem ?? 'Não foi possível gerar a cobrança agora. Tente de novo em instantes.' };
+    }
+    esquecerHistoricoErp();
+    return { ok: true, titulo: j.titulo, emitiu: Boolean(j.emitiu) };
+  } catch {
+    return { ok: false, erro: 'rede', mensagem: 'Sem conexão. Tente de novo.' };
+  }
 }
