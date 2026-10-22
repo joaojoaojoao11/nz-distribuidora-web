@@ -26,7 +26,7 @@ const LOTE = 300;
 export async function espelharAcessoNoErp(site: Db, userIds?: string[]): Promise<{ lidos: number; atualizados: number; erro?: string }> {
   const erp = await clienteErp();
   if (!erp) return { lidos: 0, atualizados: 0, erro: 'sem-erp' };
-  let q = site.from('user_profiles').select('id, erp_client_id, is_approved, ultimo_acesso_em, role').not('erp_client_id', 'is', null).neq('role', 'admin');
+  let q = site.from('user_profiles').select('id, erp_client_id, is_approved, ultimo_acesso_em, role').not('erp_client_id', 'is', null).not('role', 'in', '(admin,superadmin)');
   if (userIds?.length) q = q.in('id', userIds);
   const { data, error } = await q.range(0, 4999);
   if (error) return { lidos: 0, atualizados: 0, erro: error.message };

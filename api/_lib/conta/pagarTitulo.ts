@@ -51,7 +51,7 @@ async function urlDoErp(site: Db): Promise<string> {
   return String((data as { nzerp_api_url?: string | null } | null)?.nzerp_api_url ?? '').trim().replace(/\/+$/, '');
 }
 
-export type ErroPagar = 'nao-encontrado' | 'combinado' | 'vencido' | 'nao-pagavel' | 'pedido-cancelado' | 'sem-erp' | 'erp-recusou';
+export type ErroPagar = 'nao-encontrado' | 'combinado' | 'vencido' | 'nao-pagavel' | 'pedido-cancelado' | 'sem-erp' | 'erp-recusou' | 'em-andamento';
 
 export type ResultadoPagar = { ok: true; titulo: TituloPublico; emitiu: boolean } | { ok: false; status: number; erro: ErroPagar; mensagem: string };
 
@@ -63,12 +63,40 @@ const MENSAGENS: Record<ErroPagar, string> = {
   'pedido-cancelado': 'O pedido desse título foi cancelado. Fale com a NZ se tiver dúvida.',
   'sem-erp': 'A geração de cobrança está indisponível agora. Tente de novo em instantes.',
   'erp-recusou': 'Não foi possível gerar a cobrança agora. Tente de novo em instantes ou fale com a NZ.',
+  'em-andamento': 'Já estamos gerando essa cobrança. Aguarde alguns segundos e atualize a página.',
 };
 
 const falha = (status: number, erro: ErroPagar): ResultadoPagar => ({ ok: false, status, erro, mensagem: MENSAGENS[erro] });
 
 /** 25 s: a emissão sincroniza o cliente no Asaas e cria a cobrança; mais que isso é o ERP fora do ar. */
 const PRAZO_ERP_MS = 25_000;
+
+/** Trava com mais que isso é de uma função que morreu no meio (a Vercel corta aos 60 s). */
+const TRAVA_MORTA_MS = 120_000;
+
+/**
+ * Uma emissão por vez por título (varredura 22/10). "Gerar Pix/boleto" existe
+ * no Início e em Pagamentos, e o cliente que acha que travou clica de novo: sem
+ * a trava, dois pedidos chegavam juntos ao ERP antes de qualquer um gravar a
+ * cobrança. A chave primária de titulo_emissao_trava é a fila. Erro que não seja
+ * "já existe" não bloqueia o cliente — o ERP ainda tem a idempotência dele.
+ */
+async function travarEmissao(site: Db, tituloId: string, userId: string): Promise<boolean> {
+  await site.from('titulo_emissao_trava').delete().eq('titulo_id', tituloId).lt('criado_em', new Date(Date.now() - TRAVA_MORTA_MS).toISOString());
+  const { error } = await site.from('titulo_emissao_trava').insert({ titulo_id: tituloId, user_id: userId });
+  return !error || (error as { code?: string }).code !== '23505';
+}
+
+async function soltarEmissao(site: Db, tituloId: string): Promise<void> {
+  await site
+    .from('titulo_emissao_trava')
+    .delete()
+    .eq('titulo_id', tituloId)
+    .then(
+      () => undefined,
+      () => undefined
+    );
+}
 
 export async function pagarTitulo(site: Db, userId: string, tituloId: string): Promise<ResultadoPagar> {
   const atual = await tituloDoCliente(site, userId, tituloId);
@@ -87,9 +115,15 @@ export async function pagarTitulo(site: Db, userId: string, tituloId: string): P
     return falha(503, 'sem-erp');
   }
 
+  if (!(await travarEmissao(site, tituloId, userId))) {
+    await registrarLog(site, 'pagar-titulo', email, { tituloId, resultado: 'em-andamento' }, userId);
+    return falha(409, 'em-andamento');
+  }
+
   const controle = new AbortController();
   const timer = setTimeout(() => controle.abort(), PRAZO_ERP_MS);
-  let resposta: { ok?: boolean; error?: string; vencido?: boolean; pedidoCancelado?: boolean; paymentId?: string; alreadyEmitted?: boolean } | null = null;
+  type RespostaErp = { ok?: boolean; error?: string; vencido?: boolean; pedidoCancelado?: boolean; paymentId?: string; alreadyEmitted?: boolean };
+  let resposta = null as RespostaErp | null;
   let http = 0;
   try {
     const r = await fetch(`${base}/api/asaas/emit`, {
@@ -99,12 +133,15 @@ export async function pagarTitulo(site: Db, userId: string, tituloId: string): P
       signal: controle.signal,
     });
     http = r.status;
-    resposta = (await r.json().catch(() => null)) as typeof resposta;
+    resposta = (await r.json().catch(() => null)) as RespostaErp | null;
   } catch (e) {
     await registrarLog(site, 'pagar-titulo', email, { tituloId, resultado: 'erp-fora', erro: e instanceof Error ? e.message : String(e) }, userId);
     return falha(503, 'erp-recusou');
   } finally {
     clearTimeout(timer);
+    // Pelo tempo esgotado aqui o ERP pode ainda estar emitindo. Soltar já deixaria
+    // o próximo clique pedir outra; a trava fica e morre sozinha em 2 min.
+    if (!controle.signal.aborted) await soltarEmissao(site, tituloId);
   }
 
   if (!resposta?.ok) {

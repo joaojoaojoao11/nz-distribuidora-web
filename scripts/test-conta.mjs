@@ -31,6 +31,13 @@ const build = spawnSync(
     'api/_lib/conta/emailVerificado.ts',
     'api/_lib/conta/erpHistorico.ts',
     'api/_lib/conta/atribuirTitulos.ts',
+    // Central do cliente (contas do ERP, pagar título) e login por CPF/CNPJ:
+    // o build não empacota, então todo módulo que o handler importa entra aqui.
+    'api/_lib/conta/contasDoErp.ts',
+    'api/_lib/conta/pagarTitulo.ts',
+    'api/_lib/conta/loginDocumento.ts',
+    'api/_lib/conta/primeiroAcesso.ts',
+    'api/_lib/conta/acessoNoErp.ts',
     'api/_lib/pedido/despachoErp.ts',
     'api/_lib/papel.ts',
     'api/_lib/avisos.ts',
@@ -236,6 +243,31 @@ console.log('\n=== VÍNCULO COM O ERP ===');
   ok('e-mail diferente NÃO aprova o lojista', r.aprovouAgora === false && patch.is_approved === undefined);
   ok('e-mail diferente não copia endereço de terceiro', patch.address_street === undefined);
   ok('avisa o admin para conferir', String(r.motivo).includes('outro e-mail'));
+  // Varredura 22/10: e-mail verificado de OUTRO endereço não é prova de nada.
+  ok('e-mail diferente (mesmo verificado) NÃO vincula: fica candidato', patch.erp_client_id === undefined && patch.erp_candidato_id === 'cli-1' && r.aguardandoConfirmacao === true);
+}
+{
+  // A equipe confirmou o vínculo na tela de clientes: vale mesmo com e-mail diferente.
+  const db = fakeDb({ user_profiles: [{ id: 'u2b' }] });
+  const r = await vincularBruto(db, {
+    id: 'u2b', role: 'reseller', email: 'outro@gmail.com', cpf_cnpj: '11222333000181',
+    is_approved: false, erp_client_id: null,
+  }, { porAdmin: true });
+  const patch = db.escritas.find((e) => e.tabela === 'user_profiles')?.payload ?? {};
+  ok('admin confirmando vincula com e-mail diferente', patch.erp_client_id === 'cli-1' && r.aguardandoConfirmacao === false);
+  ok('admin confirmando ainda não aprova nem copia endereço (e-mail diferente)', patch.is_approved === undefined && patch.address_street === undefined);
+  ok('avisa o ERP do vínculo (site_marcar_vinculo)', rpcsChamadas.some((c) => c.nome === 'site_marcar_vinculo' && c.args?.p_site_user_id === 'u2b'));
+}
+{
+  // O ERP já aponta o cliente para outra conta do site: não vincula.
+  linhasErp = [{ ...CLIENTE_ERP_BRUTO }];
+  const original = globalThis.__erpFake.rpc;
+  globalThis.__erpFake.rpc = (nome, args) =>
+    original(nome, args).then((r) => (nome === 'site_consultar_cliente' && r.data ? { ...r, data: { ...r.data, site_user_id: 'outra-conta' } } : r));
+  const db = fakeDb({ user_profiles: [{ id: 'u2c' }] });
+  const r = await vincularComErp(db, { id: 'u2c', role: 'reseller', email: 'compras@lojateste.com.br', cpf_cnpj: '11222333000181', is_approved: false, erp_client_id: null });
+  ok('cliente do ERP já ligado a outra conta não vincula', r.motivo === 'cliente-ja-vinculado' && !db.escritas.some((e) => e.payload?.erp_client_id));
+  globalThis.__erpFake.rpc = original;
 }
 {
   const db = fakeDb({ user_profiles: [{ id: 'u3' }] });
@@ -290,8 +322,9 @@ console.log('\n=== VÍNCULO COM O ERP ===');
   ok('consulta com e-mail igual e VERIFICADO devolve dados', r.jaCliente && r.dados?.address_city === 'São Paulo');
   const rNv = await consultarDocumento('11222333000181', 'compras@lojateste.com.br');
   ok('e-mail igual mas NÃO verificado não devolve dados', rNv.jaCliente && rNv.dados === null && Boolean(rNv.aviso));
-  const r2 = await consultarDocumento('11222333000181', 'curioso@gmail.com');
-  ok('consulta com outro e-mail não devolve dados', r2.jaCliente && r2.dados === null && Boolean(r2.aviso));
+  const r2 = await consultarDocumento('11222333000181', 'curioso@gmail.com', true);
+  // Varredura 22/10: nem "já é cliente" — a resposta é a de quem não é cliente.
+  ok('consulta com outro e-mail responde igual a quem não é cliente', r2.jaCliente === false && r2.dados === null && r2.aviso === null);
   const r3 = await consultarDocumento('123', 'x@y.com');
   ok('documento inválido não consulta', r3.jaCliente === false);
 }

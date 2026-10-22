@@ -110,6 +110,23 @@ export async function clienteErpPorEmail(email: unknown): Promise<ClienteErp | n
 // que decide o que o cliente vê é o do site: `user_profiles.erp_client_id`,
 // com índice único desde 2026-09-10. Uma escrita a menos lá dentro, nada
 // perdido aqui. Não reintroduzir sem falar com o João.
+//
+// A exceção combinada é `site_marcar_vinculo` (Central do cliente, Fase A, na
+// lista branca de test-erp-ponte): grava SÓ `clients.site_user_id`, e só se
+// estiver vazio. Sem ela, quem se vincula pelo cadastro continuava "sem conta"
+// para o ERP, e o job de contas tentava de novo todo dia (varredura 22/10).
+
+/** Marca no ERP qual conta do site é deste cliente. Nunca derruba o vínculo do site. */
+export async function marcarVinculoNoErp(erpClientId: string, siteUserId: string): Promise<boolean> {
+  try {
+    const erp = await abrirErp();
+    if (!erp) return false;
+    const { data, error } = await erp.rpc('site_marcar_vinculo', { p_client_id: erpClientId, p_site_user_id: siteUserId });
+    return !error && Boolean((data as { ok?: boolean } | null)?.ok);
+  } catch {
+    return false;
+  }
+}
 
 /** Colaboradores do NZERP (view sem a coluna de senha). */
 export interface UsuarioErp {

@@ -15,7 +15,7 @@ import { supabase } from '../../lib/supabase';
 import { textoDoErroAuth } from '../../lib/shop/conta';
 import styles from './Auth.module.css';
 
-type Estado = 'verificando' | 'pronto' | 'invalido' | 'salvo';
+type Estado = 'verificando' | 'confirmar' | 'pronto' | 'invalido' | 'salvo';
 
 export default function NovaSenha() {
   const navigate = useNavigate();
@@ -33,6 +33,15 @@ export default function NovaSenha() {
     if (descricao) {
       setErroLink(textoDoErroAuth(descricao));
       setEstado('invalido');
+      return;
+    }
+
+    // Convite mandado pelo consultor no WhatsApp (varredura 22/10): o link traz
+    // ?token_hash=…&type=recovery e o código de uso único só é gasto no CLIQUE em
+    // "Continuar". A pré-visualização do WhatsApp abre a página, mas não clica —
+    // com o link direto do Supabase ela consumia o código e o cliente via "expirado".
+    if (url.searchParams.get('token_hash') && url.searchParams.get('type') === 'recovery') {
+      setEstado('confirmar');
       return;
     }
 
@@ -60,6 +69,21 @@ export default function NovaSenha() {
     void preparar();
   }, [preparar]);
 
+  const continuar = async () => {
+    const url = new URL(window.location.href);
+    const tokenHash = url.searchParams.get('token_hash') ?? '';
+    setEstado('verificando');
+    const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
+    // Tira o código da barra de endereço: ele já foi gasto.
+    window.history.replaceState(null, '', url.pathname);
+    if (error) {
+      setErroLink(textoDoErroAuth(error.message));
+      setEstado('invalido');
+      return;
+    }
+    setEstado('pronto');
+  };
+
   const salvar = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro('');
@@ -73,7 +97,8 @@ export default function NovaSenha() {
     const { data } = await supabase.auth.getUser();
     const id = data.user?.id;
     const { data: perfil } = id ? await supabase.from('user_profiles').select('role').eq('id', id).maybeSingle() : { data: null };
-    const admin = (perfil as { role?: string } | null)?.role === 'admin';
+    const papelPerfil = (perfil as { role?: string } | null)?.role;
+    const admin = papelPerfil === 'admin' || papelPerfil === 'superadmin';
     setTimeout(() => navigate(admin ? '/admin' : '/painel', { replace: true }), 1200);
   };
 
@@ -83,6 +108,15 @@ export default function NovaSenha() {
         <h1 className={styles.authTitle}>Definir senha</h1>
 
         {estado === 'verificando' && <p className={styles.authSub}>Conferindo o link…</p>}
+
+        {estado === 'confirmar' && (
+          <>
+            <p className={styles.authSub}>Sua conta na NZ está pronta. Continue para criar a sua senha.</p>
+            <button type="button" className={styles.submitBtn} onClick={() => void continuar()}>
+              CONTINUAR
+            </button>
+          </>
+        )}
 
         {estado === 'invalido' && (
           <>

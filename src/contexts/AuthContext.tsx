@@ -105,7 +105,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // chamar isso na hora — então é aqui, quando a pessoa entra pela
         // primeira vez. O servidor é idempotente (vínculo só se não tem; aviso
         // sai uma vez por usuário); a chave de sessão só poupa chamadas.
-        if (evento === 'SIGNED_IN') {
+        // Quem entra pelo convite ou por "esqueci minha senha" chega com
+        // PASSWORD_RECOVERY, não SIGNED_IN (varredura 22/10): sem isto, o
+        // primeiro acesso do cliente vindo do ERP não chegava ao NZERP.
+        if (evento === 'SIGNED_IN' || evento === 'PASSWORD_RECOVERY') {
           const chave = `nz:pos-cadastro:${s.user.id}`;
           let feito = false;
           try {

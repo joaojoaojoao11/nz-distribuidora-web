@@ -27,15 +27,46 @@ export function mascaraDocumentoParcial(digitos: string): string {
   return juntar([d.slice(0, 2), d.slice(2, 5), d.slice(5, 8), d.slice(8, 12), d.slice(12, 14)], ['.', '.', '/', '-']);
 }
 
+const tirarMascara = (s: string) => s.replace(/[.\-/]/g, '');
+
 /**
  * O campo "E-mail, CPF ou CNPJ" enquanto a pessoa digita: só números ganham a
- * máscara do documento; apareceu letra ou @, é e-mail e a máscara sai do
- * caminho. Apagar um separador apaga o dígito antes dele (senão a máscara
- * devolvia o separador e a tecla parecia não funcionar).
+ * máscara do documento. Digitou qualquer outra coisa — letra, @ ou a própria
+ * pontuação —, o campo fica LIVRE: guarda exatamente o que a pessoa escreveu,
+ * sem os separadores que a máscara tinha posto. Antes, o ponto de
+ * "1234.joao@x.com" sumia (a máscara o tomava por dela) e o e-mail mudava.
+ * Volta para a máscara quando sobra só número. Apagar um separador apaga o
+ * dígito antes dele (senão a máscara devolvia o separador e a tecla parecia
+ * não funcionar).
  */
 export function digitarIdentificador(anterior: string, novo: string): string {
   const soDoc = (s: string) => /^[\d.\-/\s]*$/.test(s);
-  if (!soDoc(novo)) return soDoc(anterior) && /[.\-/]/.test(anterior) ? novo.replace(/[.\-/\s]/g, '') : novo;
+  const mascarado = soDoc(anterior) && anterior === mascaraDocumentoParcial(somenteDigitos(anterior));
+
+  // Já está livre: fica como a pessoa escreveu, até sobrar só número.
+  if (!mascarado) return /^\d+$/.test(novo) ? mascaraDocumentoParcial(novo) : novo;
+
+  // Uma tecla que não é número: sai da máscara, e os separadores que estavam
+  // no campo eram dela — saem também. O caractere digitado fica.
+  // Exceção: quem digita o documento COM a pontuação ("123." → o ponto vem
+  // exatamente onde a máscara poria o próximo) continua no formato do documento.
+  if (novo.length === anterior.length + 1) {
+    let i = 0;
+    while (i < anterior.length && anterior[i] === novo[i]) i++;
+    const c = novo[i];
+    if (novo.slice(i + 1) === anterior.slice(i) && !/\d/.test(c)) {
+      const noLugarDaMascara = i === anterior.length && /[.\-/]/.test(c) && mascaraDocumentoParcial(somenteDigitos(anterior) + '0').startsWith(novo);
+      if (noLugarDaMascara) return novo;
+      return tirarMascara(anterior.slice(0, i)) + c + tirarMascara(anterior.slice(i));
+    }
+  }
+
+  // Colou texto que não é documento.
+  if (!soDoc(novo)) {
+    if (!/[.\-/]/.test(anterior)) return novo;
+    return novo.startsWith(anterior) ? tirarMascara(anterior) + novo.slice(anterior.length) : novo.replace(/[.\-/\s]/g, '');
+  }
+
   let d = somenteDigitos(novo);
   if (novo.length < anterior.length && d === somenteDigitos(anterior)) d = d.slice(0, -1);
   return mascaraDocumentoParcial(d);

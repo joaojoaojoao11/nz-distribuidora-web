@@ -60,3 +60,10 @@ export function validarCpfCnpj(raw: unknown): boolean {
 export function normalizarEmail(raw: unknown): string {
   return typeof raw === 'string' ? raw.trim().toLowerCase() : '';
 }
+
+/** O documento como o NZERP costuma gravar (metade da base tem máscara, metade não). */
+export function documentoComMascara(d: string): string {
+  if (d.length === 11) return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
+  if (d.length === 14) return `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5, 8)}/${d.slice(8, 12)}-${d.slice(12)}`;
+  return d;
+}

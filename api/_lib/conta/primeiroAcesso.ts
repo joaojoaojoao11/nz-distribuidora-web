@@ -17,7 +17,7 @@
 // Avisos à NZ saem no máximo uma vez por cliente por dia.
 
 import type { Db } from '../papel.js';
-import { somenteDigitos } from './documento.js';
+import { documentoComMascara, somenteDigitos } from './documento.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 import { criarContasDoErp } from './contasDoErp.js';
 import { avisarNz, linkWhats } from '../avisos.js';
@@ -34,12 +34,8 @@ export type DesfechoRecuperacao =
 
 const SITE = 'https://www.nzgroup.com.br';
 
-/** O documento como o NZERP costuma gravar (metade da base tem máscara, metade não). */
-export function documentoComMascara(d: string): string {
-  if (d.length === 11) return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
-  if (d.length === 14) return `${d.slice(0, 2)}.${d.slice(2, 5)}.${d.slice(5, 8)}/${d.slice(8, 12)}-${d.slice(12)}`;
-  return d;
-}
+// Mora em documento.ts desde a varredura de 22/10 (o "só conta nova" do cupom também usa).
+export { documentoComMascara } from './documento.js';
 
 interface ClienteSiteErp {
   id: string;
@@ -90,7 +86,7 @@ export async function recuperarPorDocumento(site: Db, docBruto: string, redirect
   const { data: perfil } = await site.from('user_profiles').select('id, email, role').eq('cpf_cnpj', doc).maybeSingle();
   const conta = perfil as { id: string; email: string | null; role: string } | null;
   if (conta) {
-    if (conta.role === 'admin') return 'admin';
+    if (conta.role === 'admin' || conta.role === 'superadmin') return 'admin';
     if (conta.email) await mandarLink(site, conta.email, redirectTo);
     return 'link-enviado';
   }
@@ -115,7 +111,7 @@ export async function recuperarPorDocumento(site: Db, docBruto: string, redirect
     if (cand.site_user_id) {
       const { data: ligado } = await site.from('user_profiles').select('email, role').eq('id', cand.site_user_id).maybeSingle();
       const l = ligado as { email: string | null; role: string } | null;
-      if (l?.email && l.role !== 'admin') {
+      if (l?.email && l.role !== 'admin' && l.role !== 'superadmin') {
         await mandarLink(site, l.email, redirectTo);
         return 'link-enviado';
       }
@@ -124,7 +120,7 @@ export async function recuperarPorDocumento(site: Db, docBruto: string, redirect
     await criarContasDoErp(site, 1, [cand.id]).catch(() => null);
     const { data: nova } = await site.from('user_profiles').select('email, role').or(`cpf_cnpj.eq.${doc},erp_client_id.eq.${cand.id}`).limit(1).maybeSingle();
     const n = nova as { email: string | null; role: string } | null;
-    if (n?.email && n.role !== 'admin') {
+    if (n?.email && n.role !== 'admin' && n.role !== 'superadmin') {
       await mandarLink(site, n.email, redirectTo);
       return 'conta-criada';
     }

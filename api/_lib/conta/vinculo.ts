@@ -11,7 +11,7 @@
 // para aprovação manual com o aviso na lista do admin.
 
 import type { Db } from '../papel.js';
-import { clienteErpPorDocumento, clienteErpPorEmail, type ClienteErp } from './erpClientes.js';
+import { clienteErpPorDocumento, clienteErpPorEmail, marcarVinculoNoErp, type ClienteErp } from './erpClientes.js';
 import { normalizarEmail, somenteDigitos } from './documento.js';
 
 export interface PerfilVinculo {
@@ -65,12 +65,13 @@ export async function vincularComErp(
   site: Db,
   perfil: PerfilVinculo,
   /**
-   * `confirmado` = o e-mail foi provado (ou um admin mandou vincular). Sem isso o
-   * achado vira CANDIDATO: nada de histórico, endereço ou aprovação, porque
-   * quem sabe o e-mail ou o CNPJ de um cliente da NZ poderia se passar por ele.
+   * `confirmado` = o e-mail da conta foi provado. `porAdmin` = a equipe conferiu
+   * o cliente e mandou vincular. Sem nenhum dos dois o achado vira CANDIDATO:
+   * nada de histórico, endereço ou aprovação, porque quem sabe o e-mail ou o
+   * CNPJ de um cliente da NZ poderia se passar por ele.
    * Padrão fechado: quem esquecer de passar o parâmetro não vincula ninguém.
    */
-  opcoes: { confirmado?: boolean } = {}
+  opcoes: { confirmado?: boolean; porAdmin?: boolean } = {}
 ): Promise<ResultadoVinculo> {
   const vazio: ResultadoVinculo = {
     erpClientId: perfil.erp_client_id,
@@ -96,26 +97,34 @@ export async function vincularComErp(
   // `user_profiles.erp_client_id`). Se outra conta já pegou este cliente, o
   // vínculo não acontece — e o caso vira trabalho de admin, não erro de tela.
   const { data: jaDe } = await site.from('user_profiles').select('id').eq('erp_client_id', cliente.id).neq('id', perfil.id).maybeSingle();
-  if (jaDe) {
-    await registrarLog(site, 'vinculo-erp-disputado', emailSite || null, { erp_client_id: cliente.id, ja_de: (jaDe as { id: string }).id }, null);
+  // O ERP já aponta este cliente para OUTRA conta do site: mesma regra.
+  const jaDeNoErp = cliente.siteUserId && cliente.siteUserId !== perfil.id ? cliente.siteUserId : null;
+  if (jaDe || jaDeNoErp) {
+    await registrarLog(site, 'vinculo-erp-disputado', emailSite || null, { erp_client_id: cliente.id, ja_de: (jaDe as { id: string } | null)?.id ?? jaDeNoErp }, null);
     return { ...vazio, motivo: 'cliente-ja-vinculado' };
   }
 
-  if (!opcoes.confirmado) {
+  const mesmoEmail = Boolean(emailSite) && normalizarEmail(cliente.email) === emailSite;
+
+  // Vínculo é a chave do histórico, das parcelas e do Pix do cliente no ERP.
+  // Só com prova (varredura 22/10): e-mail VERIFICADO e IGUAL ao do ERP, ou a
+  // equipe mandando. Antes bastava o e-mail verificado — de qualquer endereço —
+  // com o CNPJ de um cliente da NZ, e a conta via os títulos dele.
+  const comProva = opcoes.porAdmin === true || (opcoes.confirmado === true && mesmoEmail);
+  if (!comProva) {
     await site
       .from('user_profiles')
       .update({ erp_candidato_id: cliente.id, erp_candidato_em: new Date().toISOString(), erp_candidato_motivo: achadoPor })
       .eq('id', perfil.id);
-    await registrarLog(site, 'vinculo-erp-candidato', emailSite || null, { erp_client_id: cliente.id, achado_por: achadoPor });
+    await registrarLog(site, 'vinculo-erp-candidato', emailSite || null, { erp_client_id: cliente.id, achado_por: achadoPor, mesmo_email: mesmoEmail });
     return {
       ...vazio,
       jaCliente: true,
       aguardandoConfirmacao: true,
-      motivo: 'e-mail ainda não verificado — a equipe confirma o vínculo',
+      motivo: opcoes.confirmado && !mesmoEmail ? 'documento já existe no NZERP com outro e-mail — a equipe confirma o vínculo' : 'e-mail ainda não verificado — a equipe confirma o vínculo',
     };
   }
 
-  const mesmoEmail = Boolean(emailSite) && normalizarEmail(cliente.email) === emailSite;
   const patch: Record<string, unknown> = { erp_client_id: cliente.id, erp_candidato_id: null, erp_candidato_em: null, erp_candidato_motivo: null };
 
   // A NZ já tem o endereço deste cliente há anos: aproveita o que está vazio no
@@ -155,10 +164,15 @@ export async function vincularComErp(
   }
 
   await site.from('user_profiles').update(patch).eq('id', perfil.id);
+  // O ERP fica sabendo da conta (ClientsModule mostra "acesso ao site"; o job de
+  // contas para de tentar criar outra). Falha aqui não desfaz o vínculo do site.
+  const marcouNoErp = await marcarVinculoNoErp(cliente.id, perfil.id);
   await registrarLog(site, aprovar ? 'vinculo-erp-aprovou' : 'vinculo-erp', emailSite || null, {
     erp_client_id: cliente.id,
     mesmo_email: mesmoEmail,
+    por_admin: opcoes.porAdmin === true,
     situacao_ativa: cliente.ativo,
+    marcou_no_erp: marcouNoErp,
     preencheu,
   });
 
@@ -189,13 +203,15 @@ export async function consultarDocumento(
   if (!cliente) return { jaCliente: false, dados: null, aviso: null };
 
   const mesmoEmail = normalizarEmail(cliente.email) === normalizarEmail(emailSessao);
-  if (!mesmoEmail || !emailVerificado) {
+  // Documento de cliente com OUTRO e-mail: a resposta é a mesma de quem não é
+  // cliente (varredura 22/10). Antes dizia "já está cadastrado na NZ" — qualquer
+  // conta logada testava CPF/CNPJ e montava a lista de clientes da NZ.
+  if (!mesmoEmail) return { jaCliente: false, dados: null, aviso: null };
+  if (!emailVerificado) {
     return {
       jaCliente: true,
       dados: null,
-      aviso: mesmoEmail
-        ? 'Encontramos seu cadastro na NZ. Assim que confirmarmos seu e-mail, os dados são preenchidos.'
-        : 'Este documento já está cadastrado na NZ com outro e-mail. Seu cadastro segue para conferência da equipe.',
+      aviso: 'Encontramos seu cadastro na NZ. Assim que confirmarmos seu e-mail, os dados são preenchidos.',
     };
   }
   return {

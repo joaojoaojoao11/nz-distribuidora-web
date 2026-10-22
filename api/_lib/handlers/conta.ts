@@ -47,11 +47,18 @@ import { avisarCadastroNovo, avisarClienteAcessoLiberado } from '../avisos.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 import { criarContasDoErp } from '../conta/contasDoErp.js';
 import { pagarTitulo } from '../conta/pagarTitulo.js';
-import { chaveDoc, conferirSenhaDocumento, passouDoLimite, registrarTentativaLogin } from '../conta/loginDocumento.js';
+import { chaveDoc, registrarTentativaLogin, tentarLoginDocumento } from '../conta/loginDocumento.js';
 import { recuperarPorDocumento } from '../conta/primeiroAcesso.js';
 import { espelharAcessoNoErp } from '../conta/acessoNoErp.js';
 
 const TIPOS_ACESSO = ['client', 'lojista', 'reseller'];
+
+/**
+ * "Esqueci a senha / primeiro acesso" pelo documento responde sempre depois
+ * deste piso. O caminho mais lento (conta do ERP criada na hora + link) leva
+ * ~2,5 s; abaixo do piso, o tempo não diz se o CPF/CNPJ é de cliente.
+ */
+const PISO_RECUPERAR_DOC_MS = 3500;
 
 /** Confere que a faixa existe, está ativa e é do tipo. Nulo = Padrão do tipo (sempre vale). */
 async function conferirFaixa(site: Db, faixaId: number | null, papel: string): Promise<{ ok: boolean; nome: string | null; erro?: string }> {
@@ -150,9 +157,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
       // 5 pedidos por IP por hora (como no e-mail) e 3 por documento por hora —
       // o e-mail do cliente não vira alvo de enxurrada de links.
+      // Tempo de resposta igual para todo documento (varredura 22/10): cada caminho
+      // (admin, desconhecido, conta existente, conta do ERP criada na hora) leva um
+      // tempo diferente e o relógio entregava quem é cliente. Responde só depois
+      // de um piso fixo — o que demorar mais que ele é raro.
+      const inicioPedido = Date.now();
+      const responderNoPiso = async () => {
+        const falta = PISO_RECUPERAR_DOC_MS - (Date.now() - inicioPedido);
+        if (falta > 0) await new Promise((r) => setTimeout(r, falta));
+        res.status(200).json(generico);
+      };
       const porDoc = `doc:${chaveDoc(doc)}`;
       if ((await excedeu(site, 'RECUPERAR_SENHA', { ip }, 5, 60)) || (await excedeu(site, 'RECUPERAR_DOC', { ip: porDoc }, 3, 60))) {
-        res.status(200).json(generico);
+        await responderNoPiso();
         return;
       }
       await registrarTentativa(site, 'RECUPERAR_SENHA', null, ip);
@@ -160,7 +177,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const desfecho = await recuperarPorDocumento(site, doc, `${SITE_URL}/nova-senha`).catch(() => 'erro');
       // Rastro sem o número: o começo do HMAC basta para o admin ver repetição.
       await registrarLog(site, 'recuperar-por-documento', null, { doc: chaveDoc(doc).slice(0, 12), desfecho }, null);
-      res.status(200).json(generico);
+      await responderNoPiso();
       return;
     }
     const email = normalizarEmail(bruto);
@@ -192,28 +209,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const doc = somenteDigitos(body.documento);
     const senha = typeof body.senha === 'string' ? body.senha : '';
     if (!validarCpfCnpj(doc)) {
-      await registrarTentativaLogin(site, null, ip || null, 'invalido');
+      await registrarTentativaLogin(site, null, ip || 'sem-ip', 'invalido');
       res.status(400).json({ error: 'documento-invalido' });
-      return;
-    }
-    const chave = chaveDoc(doc);
-    if (await passouDoLimite(site, chave, ip || null)) {
-      await registrarTentativaLogin(site, chave, ip || null, 'limite');
-      res.status(429).json({ error: 'muitas-tentativas' });
       return;
     }
     if (!senha) {
       res.status(401).json({ error: 'credenciais' });
       return;
     }
-    let r: Awaited<ReturnType<typeof conferirSenhaDocumento>>;
+    // Contar, conferir e gravar numa transação só, com trava por documento e por
+    // IP (varredura 22/10): antes uma rajada em paralelo passava pela contagem.
+    let r: Awaited<ReturnType<typeof tentarLoginDocumento>>;
     try {
-      r = await conferirSenhaDocumento(site, doc, senha);
+      r = await tentarLoginDocumento(site, doc, senha, ip || null);
     } catch {
       res.status(503).json({ error: 'indisponivel' });
       return;
     }
-    await registrarTentativaLogin(site, chave, ip || null, r.resultado);
+    if (r.resultado === 'limite') {
+      res.status(429).json({ error: 'muitas-tentativas' });
+      return;
+    }
     if (r.resultado !== 'ok' || !r.email) {
       res.status(401).json({ error: 'credenciais' });
       return;
@@ -247,7 +263,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(400).json({ error: 'documento-invalido' });
       return;
     }
-    if (await excedeu(site, 'CONSULTA_DOC', { userId }, 10, 1)) {
+    // 5 por hora (era 10 por minuto): nenhuma tela usa isto em série.
+    if (await excedeu(site, 'CONSULTA_DOC', { userId }, 5, 60)) {
       res.status(429).json({ error: 'muitas-consultas' });
       return;
     }
@@ -261,7 +278,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const r = await vincularComErp(site, perfil, { confirmado: await emailVerificado(site, userId) });
     // Conta nova no site: e-mail para a NZ uma vez por usuário (o pós-cadastro
     // roda de novo em outros logins; a chave segura). Admin não avisa.
-    if (perfil.role !== 'admin') {
+    if (perfil.role !== 'admin' && perfil.role !== 'superadmin') {
       await avisarCadastroNovo(site, {
         userId,
         perfil,
@@ -403,7 +420,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     if (op === 'erp-criar-contas') {
-      const r = await criarContasDoErp(site, 300);
+      // 45 s de orçamento: a função morre aos 60. O que não couber, o admin clica de novo (ou sai no sync).
+      const r = await criarContasDoErp(site, 300, undefined, 45_000);
       await registrarLog(site, 'erp-criar-contas', null, { ...r, erros: r.erros.slice(0, 20) }, userId);
       res.status(200).json({ ok: true, ...r });
       return;
@@ -416,18 +434,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // convidar-cliente: link (padrão, para o consultor mandar no WhatsApp) ou
     // e-mail. A conta já existe sem senha: o link é o de redefinir a senha.
     const alvoId = typeof body.userId === 'string' ? body.userId : '';
-    const { data: alvoData } = await site.from('user_profiles').select('id, email, role, full_name, origem').eq('id', alvoId).maybeSingle();
-    const alvo = alvoData as { id: string; email: string | null; role: string; full_name: string | null; origem: string } | null;
+    const { data: alvoData } = await site.from('user_profiles').select('id, email, role, full_name, origem, ultimo_acesso_em').eq('id', alvoId).maybeSingle();
+    const alvo = alvoData as { id: string; email: string | null; role: string; full_name: string | null; origem: string; ultimo_acesso_em: string | null } | null;
     if (!alvo || !alvo.email) {
       res.status(404).json({ error: 'perfil-nao-encontrado' });
       return;
     }
-    if (alvo.role === 'admin') {
+    if (alvo.role === 'admin' || alvo.role === 'superadmin') {
       res.status(409).json({ error: 'admin-nao-por-aqui' });
       return;
     }
     const agora = new Date().toISOString();
-    if (body.enviarEmail === true) {
+    // O LINK (que o admin vê e cola no WhatsApp) só para conta que veio do ERP e
+    // nunca entrou (varredura 22/10). Para qualquer outra, só por e-mail: senão
+    // um admin conseguia o link de acesso de uma conta com senha, saldo e Pix.
+    const linkPermitido = alvo.origem === 'erp' && !alvo.ultimo_acesso_em;
+    if (body.enviarEmail === true || !linkPermitido) {
       const { error } = await site.auth.resetPasswordForEmail(alvo.email, { redirectTo: `${SITE_URL}/nova-senha` });
       if (error) {
         res.status(502).json({ error: 'convite-nao-enviado', detalhe: error.message });
@@ -439,14 +461,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     const { data: link, error: eLink } = await site.auth.admin.generateLink({ type: 'recovery', email: alvo.email, options: { redirectTo: `${SITE_URL}/nova-senha` } });
-    if (eLink || !link?.properties?.action_link) {
+    if (eLink || !link?.properties?.hashed_token) {
       res.status(502).json({ error: 'link-nao-gerado', detalhe: eLink?.message ?? 'sem link na resposta' });
       return;
     }
     await site.from('user_profiles').update({ convite_enviado_em: agora, convite_enviado_por: userId }).eq('id', alvo.id);
     await registrarLog(site, 'convidar-cliente-link', alvo.email, { origem: alvo.origem }, userId);
-    // O link é segredo de uso único: vai para a tela do admin e some. Nunca logar.
-    res.status(200).json({ status: 'convidado', email: alvo.email, link: link.properties.action_link });
+    // Link para a NOSSA tela (varredura 22/10): o código só é gasto no clique em
+    // "Continuar" — a pré-visualização do WhatsApp não queima o convite.
+    // É segredo de uso único: vai para a tela do admin e some. Nunca logar.
+    const conviteUrl = `${SITE_URL}/nova-senha?token_hash=${encodeURIComponent(link.properties.hashed_token)}&type=recovery`;
+    res.status(200).json({ status: 'convidado', email: alvo.email, link: conviteUrl });
     return;
   }
 
@@ -554,7 +579,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(404).json({ error: 'perfil-nao-encontrado' });
       return;
     }
-    const r = await vincularComErp(site, data as unknown as PerfilVinculo, { confirmado: true });
+    const r = await vincularComErp(site, data as unknown as PerfilVinculo, { porAdmin: true });
     await registrarLog(site, 'reavaliar', normalizarEmail((data as { email?: string }).email), r, userId);
     res.status(200).json(r);
     return;

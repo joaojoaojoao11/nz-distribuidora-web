@@ -17,7 +17,7 @@
 //   4. limite de crédito NÃO aparece — a coluna nem é lida.
 
 import type { Db } from '../papel.js';
-import { somenteDigitos } from './documento.js';
+import { somenteDigitos, validarCpfCnpj } from './documento.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 
 // ------------------------------------------------------------ listas brancas
@@ -225,7 +225,10 @@ export async function pedidosDoCliente(site: Db, userId: string, limite = 50): P
 
   const { data: opps } = await erp.from('crm_opportunities').select(COLUNAS_OPORTUNIDADE).eq('client_id', cliente.id).limit(200);
   const oppIds = ((opps ?? []) as { id: string }[]).map((o) => o.id);
-  const chaves = cliente.documento ? ([...new Set([cliente.documento, somenteDigitos(cliente.documento)].filter(Boolean))] as string[]) : [];
+  // Documento só vale como chave se for um CPF/CNPJ de verdade (varredura 22/10):
+  // cadastro com "000.000.000-00" ou lixo puxaria os orçamentos de todo mundo
+  // que tem o mesmo lixo no ERP.
+  const chaves = cliente.documento && validarCpfCnpj(cliente.documento) ? ([...new Set([cliente.documento, somenteDigitos(cliente.documento)].filter(Boolean))] as string[]) : [];
   if (!oppIds.length && !chaves.length) return [];
   const partes: string[] = [];
   if (oppIds.length) partes.push(`opportunity_id.in.(${oppIds.join(',')})`);
@@ -352,7 +355,21 @@ async function chavesDoCliente(site: Db, userId: string): Promise<ChavesDoClient
   const doc = somenteDigitos((cli as { cpf_cnpj?: string | null } | null)?.cpf_cnpj) || null;
   const { data: donos } = await site.from('erp_titulo_dono').select('titulo_id').eq('erp_client_id', clientId).eq('chave', 'manual').limit(200);
   const manuais = ((donos ?? []) as { titulo_id: string }[]).map((d) => d.titulo_id).filter((id) => /^[0-9a-f-]{36}$/i.test(id));
-  return { erp, clientId, doc: doc && doc.length >= 11 ? doc : null, manuais };
+  return { erp, clientId, doc: doc && validarCpfCnpj(doc) ? doc : null, manuais };
+}
+
+/**
+ * Título que só é deste cliente pela atribuição manual (não pelo orçamento nem
+ * pelo documento) aparece, mas sem "Gerar Pix/boleto": o ERP confere o dono só
+ * pelas duas chaves fortes e recusaria a emissão com "título de outro cliente".
+ */
+function soPorAtribuicaoManual(t: Record<string, unknown>, ch: ChavesDoCliente): boolean {
+  return t.client_id !== ch.clientId && !(ch.doc && t.cliente_documento === ch.doc);
+}
+
+function tituloDoDono(t: Record<string, unknown>, ch: ChavesDoCliente, agora: Date): TituloPublico {
+  const p = tituloPublico(t, agora);
+  return soPorAtribuicaoManual(t, ch) ? { ...p, pagavel: false } : p;
 }
 
 /** O filtro PostgREST "é deste cliente": orçamento OU documento OU atribuição manual. */
@@ -380,7 +397,7 @@ export async function titulosDoCliente(site: Db, userId: string, limite = 200): 
     .or(`status.neq.pago,data_pagamento.gte.${corte}`)
     .order('vencimento', { ascending: false })
     .limit(limite);
-  return ((data ?? []) as Record<string, unknown>[]).map((t) => tituloPublico(t, agora));
+  return ((data ?? []) as Record<string, unknown>[]).map((t) => tituloDoDono(t, ch, agora));
 }
 
 /** Um título só, e só se for deste cliente — é o que "Pagar" confere antes de falar com o ERP. */
@@ -389,5 +406,5 @@ export async function tituloDoCliente(site: Db, userId: string, tituloId: string
   const ch = await chavesDoCliente(site, userId);
   if (!ch) return null;
   const { data } = await ch.erp.from('titulos_cliente_site').select(COLUNAS_TITULO).eq('id', tituloId).or(filtroDono(ch)).limit(1).maybeSingle();
-  return data ? tituloPublico(data as Record<string, unknown>, new Date()) : null;
+  return data ? tituloDoDono(data as Record<string, unknown>, ch, new Date()) : null;
 }

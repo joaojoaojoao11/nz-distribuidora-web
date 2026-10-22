@@ -114,6 +114,8 @@ const PAGE = 1000;
 const LOTE = 500;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // A função morre aos 60 s (vercel.json). O job de contas do ERP usa só o que sobrar até 45 s.
+  const inicioSync = Date.now();
   const siteUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
   const siteKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const erpUrl = process.env.ERP_SUPABASE_URL;
@@ -202,9 +204,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const checkout = !dry && gatilho !== 'webhook' ? await manutencaoCheckout(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // Quem entrou/saiu do NZERP ganha/perde acesso administrativo ao site.
     const equipe = !dry && gatilho !== 'webhook' ? await sincronizarEquipe(site, null).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
-    // Central do cliente (Fase A): cliente da base do ERP ganha conta bloqueada
-    // no site, já vinculada. Uma vez por dia basta.
-    const contasErp = !dry && gatilho !== 'webhook' ? await criarContasDoErp(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // De quem é cada título do contas a receber. Lê o ERP, grava só no site.
     // Uma vez por dia basta: título novo nasce com nota, e nota não é de minuto.
     const titulos = !dry && gatilho !== 'webhook' ? await atribuirTitulos(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
@@ -218,6 +217,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const saques = !dry && gatilho !== 'webhook' ? await sincronizarSaques(site, erp).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // Login com CPF/CNPJ: tentativas com mais de 30 dias saem (o rastro só serve aos limites).
     const tentativasLogin = !dry && gatilho !== 'webhook' ? await limparTentativasLogin(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // Central do cliente (Fase A): cliente da base do ERP ganha conta bloqueada
+    // no site, já vinculada. Roda DEPOIS dos passos de dinheiro (carteira,
+    // saques, títulos) e com orçamento de tempo: cada conta leva ~1 s, e a 1ª
+    // rodada (~380) estouraria os 60 s da função — o que não couber sai amanhã.
+    const prazoContas = Math.max(0, 45_000 - (Date.now() - inicioSync));
+    const contasErp = !dry && gatilho !== 'webhook' && prazoContas > 3000 ? await criarContasDoErp(site, 300, undefined, prazoContas).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // Login por CPF/CNPJ, Fase 3: a ficha do NZERP com o acesso ao site de todas as contas ligadas
     // (depois do job de contas do ERP, para pegar as que nasceram hoje).
     const acessoNoErp = !dry && gatilho !== 'webhook' ? await espelharAcessoNoErp(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
@@ -669,12 +674,24 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
   if (!lidos.length || dry) return { lidos: lidos.length, atualizados: 0, comissoes: 0 };
 
   const ids = lidos.map((p) => p.site_pedido_id);
-  const { data: locaisData } = await site
-    .from('pedidos')
-    .select('id, user_id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em, incentivos_processados_em, incentivos_estornados_em, saldo_usado, saldo_movimento_id, saldo_devolvido_em')
-    .in('id', ids);
   type Local = { id: string; user_id: string | null; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null; cupom: string | null; cupom_consumido_em: string | null; incentivos_processados_em: string | null; incentivos_estornados_em: string | null; saldo_usado: number | null; saldo_movimento_id: number | null; saldo_devolvido_em: string | null };
-  const locais = new Map(((locaisData ?? []) as Local[]).map((p) => [p.id, p]));
+  const locais = new Map<string, Local>();
+  // Em lotes de 150 (varredura 22/10): todos os ids num `in` só passam do
+  // tamanho de URL que o PostgREST aceita lá pelos 400 pedidos — a leitura
+  // voltava vazia e, sem erro nenhum, cancelamentos e comissões paravam.
+  for (let i = 0; i < ids.length; i += 150) {
+    const { data: locaisData, error: eLocais } = await site
+      .from('pedidos')
+      .select('id, user_id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em, incentivos_processados_em, incentivos_estornados_em, saldo_usado, saldo_movimento_id, saldo_devolvido_em')
+      .in('id', ids.slice(i, i + 150));
+    if (eLocais) {
+      // Leitura parcial não pode decidir estorno nem comissão: para aqui, o
+      // resto do sync segue, e a próxima rodada tenta de novo.
+      console.warn('[erp-sync] pedidos do site não vieram:', eLocais.message);
+      return { lidos: lidos.length, atualizados: 0, comissoes: 0 };
+    }
+    for (const p of (locaisData ?? []) as Local[]) locais.set(p.id, p);
+  }
 
   const cfgIncentivos = await carregarConfigIncentivos(site);
 

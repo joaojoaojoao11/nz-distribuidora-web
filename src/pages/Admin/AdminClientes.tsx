@@ -261,8 +261,11 @@ export default function AdminClientes() {
     setErro('');
     setMsg('');
     try {
-      const r = await chamarConta<{ lidos: number; criadas: number; vinculadas: number; pendentes: number; erros: string[] }>({ op: 'erp-criar-contas' });
-      setMsg(`ERP: ${r.lidos} cliente(s) lido(s) · ${r.criadas} conta(s) criada(s) · ${r.vinculadas} vinculada(s) a contas que já existiam · ${r.pendentes} na fila${r.erros.length ? ` · ${r.erros.length} erro(s)` : ''}.`);
+      const r = await chamarConta<{ lidos: number; criadas: number; vinculadas: number; pendentes: number; erros: string[]; parouPorTempo?: boolean }>({ op: 'erp-criar-contas' });
+      setMsg(
+        `ERP: ${r.lidos} cliente(s) lido(s) · ${r.criadas} conta(s) criada(s) · ${r.vinculadas} vinculada(s) a contas que já existiam · ${r.pendentes} na fila${r.erros.length ? ` · ${r.erros.length} erro(s)` : ''}.` +
+          (r.parouPorTempo ? ' Ainda faltam clientes: clique de novo para continuar (ou o sync da madrugada termina).' : '')
+      );
       await carregar();
       await contexto?.recarregarBadges();
     } catch (e) {

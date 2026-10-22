@@ -36,17 +36,36 @@ export function chaveDoc(doc: string): string {
   return createHmac('sha256', `nz-login-doc-v1:${chave}`).update(somenteDigitos(doc)).digest('hex');
 }
 
-/** Passou do limite? Por documento conta só senha errada; por IP conta tudo. */
+/**
+ * Passou do limite? A mesma régua da função atômica login_tentar_documento
+ * (varredura 22/10): por documento conta TODA falha — contar só "senha errada"
+ * fazia o 429 entregar quem tinha conta; por IP conta só falha (quem acerta
+ * atrás do mesmo CGNAT não paga pelos outros); sem IP vira 'sem-ip'.
+ * O login de verdade usa tentarLoginDocumento; isto fica para leitura e testes.
+ */
 export async function passouDoLimite(site: Db, chave: string, ip: string | null): Promise<boolean> {
   const desdeDoc = new Date(Date.now() - JANELA_DOC_MIN * 60_000).toISOString();
   const desdeIp = new Date(Date.now() - JANELA_IP_MIN * 60_000).toISOString();
   const [{ count: porDoc }, { count: porIp }] = await Promise.all([
-    site.from('login_tentativas').select('id', { count: 'exact', head: true }).eq('chave_doc', chave).eq('resultado', 'senha').gte('criado_em', desdeDoc),
-    ip
-      ? site.from('login_tentativas').select('id', { count: 'exact', head: true }).eq('ip', ip).gte('criado_em', desdeIp)
-      : Promise.resolve({ count: 0 }),
+    site.from('login_tentativas').select('id', { count: 'exact', head: true }).eq('chave_doc', chave).not('resultado', 'in', '(ok,limite)').gte('criado_em', desdeDoc),
+    site.from('login_tentativas').select('id', { count: 'exact', head: true }).eq('ip', ip || 'sem-ip').not('resultado', 'in', '(ok,limite)').gte('criado_em', desdeIp),
   ]);
   return Number(porDoc ?? 0) >= LIMITE_SENHA_POR_DOC || Number(porIp ?? 0) >= LIMITE_POR_IP;
+}
+
+/**
+ * Login por documento numa transação só (login_tentar_documento): trava por
+ * documento e por IP, conta, confere a senha e grava a tentativa. Rajada em
+ * paralelo não passa mais pela contagem com zero. Erro do banco = falha
+ * FECHADA (quem chama responde 503, nunca deixa entrar).
+ */
+export async function tentarLoginDocumento(site: Db, doc: string, senha: string, ip: string | null): Promise<{ resultado: ResultadoTentativa; email: string | null }> {
+  const d = somenteDigitos(doc);
+  const { data, error } = await site.rpc('login_tentar_documento', { p_doc: d, p_senha: senha, p_chave: chaveDoc(d), p_ip: ip ?? '' });
+  if (error) throw new Error(`login_tentar_documento: ${error.message}`);
+  const linha = (Array.isArray(data) ? data[0] : data) as { email: string | null; resultado: ResultadoTentativa } | null;
+  const resultado = linha?.resultado ?? 'sem-conta';
+  return { resultado, email: resultado === 'ok' ? (linha?.email ?? null) : null };
 }
 
 export async function registrarTentativaLogin(site: Db, chave: string | null, ip: string | null, resultado: ResultadoTentativa): Promise<void> {

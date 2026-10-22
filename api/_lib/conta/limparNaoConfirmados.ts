@@ -47,7 +47,18 @@ export async function limparNaoConfirmados(site: Db): Promise<{ apagados: number
     candidatos.push(...paraApagar(lista));
     if (lista.length < 200) break;
   }
+  // Conta já ligada a um cliente do NZERP (a equipe confirmou o vínculo) não
+  // some sozinha (varredura 22/10): o ERP guarda o id dela em
+  // clients.site_user_id, e apagar deixaria o cliente preso a uma conta que não
+  // existe — o job de contas nunca mais criaria outra. Fica para o admin.
+  const ids = candidatos.map((u) => u.id);
+  const ligadas = new Set<string>();
+  for (let i = 0; i < ids.length; i += 200) {
+    const { data } = await site.from('user_profiles').select('id').in('id', ids.slice(i, i + 200)).not('erp_client_id', 'is', null);
+    for (const p of (data ?? []) as { id: string }[]) ligadas.add(p.id);
+  }
   for (const u of candidatos) {
+    if (ligadas.has(u.id)) continue;
     try {
       await site.from('user_profiles').delete().eq('id', u.id);
       const { error } = await site.auth.admin.deleteUser(u.id);
