@@ -102,6 +102,12 @@ const erro = (patch) => {
 };
 ok('CPF inválido barra', erro({ cliente_cpf: '123.456.789-00' }) === 'documento-invalido');
 ok('CNPJ válido passa', erro({ cliente_cpf: '11.222.333/0001-81' }) === 'passou');
+{
+  // CNPJ com letras (Receita, desde jul/2026): passa e é guardado com a pontuação, em maiúsculas.
+  const v = dados.validarRegistro({ ...BASE, cliente_cpf: '12abc34501de35' });
+  ok('CNPJ com letras passa e fica 12.ABC.345/01DE-35', v.ok && v.linha.cliente_cpf === '12.ABC.345/01DE-35');
+  ok('CNPJ com letras e DV errado barra', erro({ cliente_cpf: '12.ABC.345/01DE-36' }) === 'documento-invalido');
+}
 ok('e-mail é obrigatório', erro({ cliente_email: '' }) === 'email-invalido');
 ok('data no futuro barra', erro({ data_aplicacao: '2099-01-01' }) === 'data-invalida');
 ok('placa inválida barra', erro({ veiculo_placa_chassi: 'AB12' }) === 'placa-invalida');

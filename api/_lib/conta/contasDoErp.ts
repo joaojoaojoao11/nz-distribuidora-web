@@ -14,7 +14,7 @@
 
 import type { Db } from '../papel.js';
 import { clienteErp } from '../pedido/despachoErp.js';
-import { normalizarEmail, somenteDigitos, validarCpfCnpj } from './documento.js';
+import { normalizarDocumento, normalizarEmail, somenteDigitos, validarCpfCnpj } from './documento.js';
 import { emailVerificado } from './emailVerificado.js';
 
 export interface ClienteSite {
@@ -147,7 +147,7 @@ export async function criarContasDoErp(site: Db, limite = 300, apenas?: string[]
   const porDoc = new Map<string, Perfil>();
   const porEmail = new Map<string, Perfil>();
   for (const p of perfis) {
-    const d = somenteDigitos(p.cpf_cnpj);
+    const d = normalizarDocumento(p.cpf_cnpj);
     if (d && !porDoc.has(d)) porDoc.set(d, p);
     const e = normalizarEmail(p.email);
     if (e && !porEmail.has(e)) porEmail.set(e, p);
@@ -160,7 +160,7 @@ export async function criarContasDoErp(site: Db, limite = 300, apenas?: string[]
       break;
     }
     try {
-      const doc = somenteDigitos(c.cpf_cnpj);
+      const doc = normalizarDocumento(c.cpf_cnpj);
       const email = normalizarEmail(c.email);
       if (!email) {
         await marcarPendente(site, c, 'sem e-mail no ERP');
@@ -193,7 +193,7 @@ export async function criarContasDoErp(site: Db, limite = 300, apenas?: string[]
           r.pendentes++;
           continue;
         }
-        const docExistente = somenteDigitos(existente.cpf_cnpj);
+        const docExistente = normalizarDocumento(existente.cpf_cnpj);
         if (doc && docExistente && docExistente !== doc) {
           await marcarPendente(site, c, 'o e-mail já é de outra conta do site, com outro documento');
           r.pendentes++;

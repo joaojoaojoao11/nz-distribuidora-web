@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { capturarRef, refVigente } from '../../lib/afiliado';
-import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
+import { formatarCpfCnpj, normalizarDocumento, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
 import { chamarConta, formatarTelefone, telefoneOk, textoDoErroAuth } from '../../lib/shop/conta';
 import { ehEmpresa, TIPO_DESCRICAO, TIPO_LABEL, TIPOS_CLIENTE } from '../../lib/shop/papeis';
 import { supabase } from '../../lib/supabase';
@@ -90,7 +90,7 @@ export default function Register() {
       phone: form.phone,
       role: form.role,
       company_name: form.company || undefined,
-      cpf_cnpj: form.documento ? somenteDigitos(form.documento) : undefined,
+      cpf_cnpj: form.documento ? normalizarDocumento(form.documento) : undefined,
       ie: form.ie || undefined,
       // Quem indicou: o cupom digitado vence o do link ?ref= (que só vale na
       // janela de atribuição). O servidor (handle_new_user) resolve o código
@@ -262,7 +262,7 @@ export default function Register() {
                 <label className={styles.label}>CNPJ</label>
                 <input
                   type="text"
-                  inputMode="numeric"
+                  autoCapitalize="characters"
                   className={styles.input}
                   placeholder="00.000.000/0000-00"
                   required

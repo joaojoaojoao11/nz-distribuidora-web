@@ -12,7 +12,7 @@
 // formulário manda. `tipo_servico` só aceita os três valores do CHECK do banco.
 
 import { supabase } from './supabase';
-import { formatarCpfCnpj, somenteDigitos, validarCpfCnpj } from './documento';
+import { digitandoDocumento as mascaraDocumento, formatarCpfCnpj, somenteDigitos, validarCpfCnpj } from './documento';
 import { formatarTelefone, telefoneOk } from './shop/conta';
 import { formatarCep } from './shop/checkout';
 
@@ -222,22 +222,12 @@ function dataValida(iso: string): boolean {
 }
 
 /**
- * CPF ou CNPJ com a pontuação aparecendo enquanto digita (o teclado numérico
- * do celular não tem ponto nem barra). Até 11 dígitos é CPF; passou, CNPJ.
+ * CPF ou CNPJ com a pontuação aparecendo enquanto digita. Até 11 dígitos é CPF;
+ * passou (ou tem letra — CNPJ novo, desde jul/2026), CNPJ. Mesma regra do
+ * cadastro (src/lib/documento.ts).
  */
 export function digitandoDocumento(v: string): string {
-  const d = v.replace(/\D/g, '').slice(0, 14);
-  if (d.length <= 11) {
-    return d
-      .replace(/^(\d{3})(\d)/, '$1.$2')
-      .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
-      .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
-  }
-  return d
-    .replace(/^(\d{2})(\d)/, '$1.$2')
-    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-    .replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4')
-    .replace(/^(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})(\d)/, '$1.$2.$3/$4-$5');
+  return mascaraDocumento(v);
 }
 
 // ----------------------------------------------------------------- placa

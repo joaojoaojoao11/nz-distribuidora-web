@@ -18,7 +18,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useBarraFixa } from '../../hooks/useBarraFixa';
 import { supabase } from '../../lib/supabase';
 import { visitanteId } from '../../lib/afiliado';
-import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
+import { formatarCpfCnpj, normalizarDocumento, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
 import { formatarTelefone, telefoneOk, UFS } from '../../lib/shop/conta';
 import { limparCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { BRL } from '../../lib/shop/precos';
@@ -226,7 +226,7 @@ export default function Checkout() {
     const patch: Record<string, string | null> = {
       full_name: end.full_name.trim(),
       phone: end.phone.trim(),
-      cpf_cnpj: somenteDigitos(end.cpf_cnpj),
+      cpf_cnpj: normalizarDocumento(end.cpf_cnpj),
       company_name: end.company_name.trim() || null,
       ie: end.ie.trim() || null,
       address_zip: cepDigits,
@@ -357,7 +357,7 @@ export default function Checkout() {
               </label>
               <label className={styles.campo}>
                 <span>{lojista ? 'CNPJ' : 'CPF ou CNPJ'}</span>
-                <input value={formatarCpfCnpj(end.cpf_cnpj)} onChange={set('cpf_cnpj')} inputMode="numeric" />
+                <input value={formatarCpfCnpj(end.cpf_cnpj)} onChange={set('cpf_cnpj')} autoCapitalize="characters" />
               </label>
               {(lojista || tipoDocumento(end.cpf_cnpj) === 'cnpj') && (
                 <>
@@ -463,7 +463,7 @@ export default function Checkout() {
                 pixExpiraMin={resumo?.config.pixExpiraMin ?? 30}
                 boletoVencimentoDias={resumo?.config.boletoVencimentoDias ?? 3}
                 boletoMinimo={resumo?.config.boletoMinimo ?? 0}
-                cpfPadrao={somenteDigitos(end.cpf_cnpj)}
+                cpfPadrao={normalizarDocumento(end.cpf_cnpj)}
                 desabilitado={enviando}
               />
             )}

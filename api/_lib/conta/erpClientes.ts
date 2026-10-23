@@ -7,7 +7,7 @@
 // internas; com a RPC no meio, acrescentar coluna sensível lá não vaza nada
 // aqui — não existe `select` do site para a tabela.
 
-import { normalizarEmail, somenteDigitos } from './documento.js';
+import { normalizarDocumento, normalizarEmail, tipoDocumento } from './documento.js';
 
 export interface ClienteErp {
   id: string;
@@ -94,8 +94,8 @@ async function consultar(doc: string | null, email: string | null): Promise<Clie
 }
 
 export async function clienteErpPorDocumento(doc: unknown): Promise<ClienteErp | null> {
-  const d = somenteDigitos(doc);
-  if (d.length !== 11 && d.length !== 14) return null;
+  const d = normalizarDocumento(doc);
+  if (!tipoDocumento(d)) return null;
   return consultar(d, null);
 }
 

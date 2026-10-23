@@ -4,7 +4,7 @@
 // faturamento do orçamento (sync). Idempotente: (cupom, pedido) é único.
 
 import type { Db } from '../papel.js';
-import { documentoComMascara, somenteDigitos, validarCpfCnpj } from '../conta/documento.js';
+import { documentoComMascara, normalizarDocumento, validarCpfCnpj } from '../conta/documento.js';
 
 export async function registrarUsoCupom(site: Db, codigo: string, userId: string | null, pedidoId: string): Promise<void> {
   if (!codigo || !userId || !pedidoId) return;
@@ -56,7 +56,7 @@ export async function jaComprou(site: Db, userId: string): Promise<boolean> {
 
   const { data: pf } = await site.from('user_profiles').select('erp_client_id, cpf_cnpj').eq('id', userId).maybeSingle();
   const perfil = pf as { erp_client_id: string | null; cpf_cnpj: string | null } | null;
-  const doc = somenteDigitos(perfil?.cpf_cnpj);
+  const doc = normalizarDocumento(perfil?.cpf_cnpj);
   const chaves: string[] = [];
   if (perfil?.erp_client_id && /^[0-9a-f-]{36}$/i.test(perfil.erp_client_id)) chaves.push(`id.eq.${perfil.erp_client_id}`);
   if (validarCpfCnpj(doc)) chaves.push(`cpf_cnpj.eq.${doc}`, `cpf_cnpj.eq.${documentoComMascara(doc)}`);

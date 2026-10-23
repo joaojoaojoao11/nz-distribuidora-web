@@ -38,6 +38,7 @@ import {
   type PagamentoRow,
 } from '../asaas/pagamento.js';
 import { despacharAoErp, dispensarDoErp } from '../pedido/despachoErp.js';
+import { normalizarDocumento, tipoDocumento } from '../conta/documento.js';
 import { carregarVisibilidade, nomeDaFaixa, papelDePreco } from '../precos/regraAcesso.js';
 import { filiarSeFaltar } from '../incentivos/motor.js';
 import { saldoDe } from '../incentivos/carteira.js';
@@ -211,8 +212,8 @@ function lerEscolha(body: Record<string, unknown>): Escolha | { erro: string } {
     let ano = String(c?.ano ?? '').replace(/\D/g, '');
     if (ano.length === 2) ano = `20${ano}`;
     const cvv = String(c?.cvv ?? '').replace(/\D/g, '');
-    const cpf = String(c?.cpf ?? '').replace(/\D/g, '');
-    if (numero.length < 13 || numero.length > 19 || !nome || !/^(0[1-9]|1[0-2])$/.test(mes) || ano.length !== 4 || cvv.length < 3 || cvv.length > 4 || ![11, 14].includes(cpf.length)) {
+    const cpf = normalizarDocumento(String(c?.cpf ?? '')); // CNPJ do titular pode ter letras
+    if (numero.length < 13 || numero.length > 19 || !nome || !/^(0[1-9]|1[0-2])$/.test(mes) || ano.length !== 4 || cvv.length < 3 || cvv.length > 4 || !tipoDocumento(cpf)) {
       return { erro: 'cartao-invalido' };
     }
     cartao = { numero, nome, mes, ano, cvv, cpf };

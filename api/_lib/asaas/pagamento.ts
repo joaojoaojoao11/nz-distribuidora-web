@@ -20,6 +20,7 @@ import { avisarPagamentoConfirmado, type ClienteAviso } from '../avisos.js';
 import { registrarUsoCupom } from '../incentivos/cupomUsos.js';
 import { devolverSaldoDoPedido, reservarSaldoDoPedido } from '../incentivos/saldoCheckout.js';
 import { abrirOcorrencia } from '../ocorrencias.js';
+import { normalizarDocumento } from '../conta/documento.js';
 import {
   asaasEnv,
   AsaasError,
@@ -152,7 +153,7 @@ export async function garantirClienteAsaas(site: Db, userId: string, perfil: Per
   const env = asaasEnv();
   if (perfil.asaas_customer_id && perfil.asaas_customer_env === env) return perfil.asaas_customer_id;
 
-  const doc = (perfil.cpf_cnpj ?? '').replace(/\D/g, '');
+  const doc = normalizarDocumento(perfil.cpf_cnpj ?? ''); // CNPJ pode ter letras (jul/2026)
   let id: string | null = null;
   const existente = await buscarClientePorDocumento(doc);
   if (existente) id = existente.id;

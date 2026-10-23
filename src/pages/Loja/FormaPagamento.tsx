@@ -9,7 +9,7 @@
 import { useId, useState } from 'react';
 import { BRL } from '../../lib/shop/precos';
 import { bandeiraDoNumero, errosDoCartao, formatarNumeroCartao, formatarValidade, type DadosCartaoForm, type Forma } from '../../lib/shop/checkout';
-import { formatarCpfCnpj } from '../../lib/documento';
+import { formatarCpfCnpj, normalizarDocumento } from '../../lib/documento';
 import styles from './FormaPagamento.module.css';
 
 export interface EscolhaPagamento {
@@ -148,9 +148,9 @@ export default function FormaPagamento({ valor, onChange, parcelas, total, pixEx
               id={`${id}-cpf`}
               className={tocado.cpf && erros.cpf ? styles.inputErro : ''}
               value={formatarCpfCnpj(valor.cartao.cpf)}
-              onChange={(e) => setCartao('cpf', e.target.value.replace(/\D/g, '').slice(0, 14))}
+              onChange={(e) => setCartao('cpf', normalizarDocumento(e.target.value).slice(0, 14))}
               onBlur={() => setTocado((t) => ({ ...t, cpf: true }))}
-              inputMode="numeric"
+              autoCapitalize="characters"
               disabled={desabilitado}
             />
             {tocado.cpf && erros.cpf && <small>{erros.cpf}</small>}

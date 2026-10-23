@@ -17,7 +17,7 @@
 // Avisos à NZ saem no máximo uma vez por cliente por dia.
 
 import type { Db } from '../papel.js';
-import { documentoComMascara, somenteDigitos } from './documento.js';
+import { documentoComMascara, normalizarDocumento } from './documento.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 import { criarContasDoErp } from './contasDoErp.js';
 import { avisarNz, linkWhats } from '../avisos.js';
@@ -80,7 +80,7 @@ function avisarPrimeiroAcesso(site: Db, p: { erpId: string; nome: string; doc: s
 }
 
 export async function recuperarPorDocumento(site: Db, docBruto: string, redirectTo: string): Promise<DesfechoRecuperacao> {
-  const doc = somenteDigitos(docBruto);
+  const doc = normalizarDocumento(docBruto);
 
   // 1) Já tem conta no site.
   const { data: perfil } = await site.from('user_profiles').select('id, email, role').eq('cpf_cnpj', doc).maybeSingle();

@@ -38,7 +38,7 @@ import { createClient } from '@supabase/supabase-js';
 import { resolverPapelDetalhado, type Db } from '../papel.js';
 import { ipDoCliente } from '../asaas/cliente.js';
 import { completude } from '../conta/completude.js';
-import { normalizarEmail, somenteDigitos, validarCpfCnpj } from '../conta/documento.js';
+import { normalizarDocumento, normalizarEmail, tipoDocumento, validarCpfCnpj } from '../conta/documento.js';
 import { consultarDocumento, registrarLog, vincularComErp, type PerfilVinculo } from '../conta/vinculo.js';
 import { emailVerificado } from '../conta/emailVerificado.js';
 import { clienteDoUsuario, pedidosDoCliente, titulosDoCliente } from '../conta/erpHistorico.js';
@@ -150,7 +150,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Resposta sempre igual: nunca revela se o e-mail ou o documento têm conta.
     const generico = { ok: true as const };
     if (!bruto.includes('@')) {
-      const doc = somenteDigitos(bruto);
+      const doc = normalizarDocumento(bruto);
       if (!validarCpfCnpj(doc)) {
         res.status(400).json({ error: 'documento-invalido' });
         return;
@@ -206,7 +206,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // (D3). Limites: 5 senhas erradas por documento em 15 min, 20 tentativas por
   // IP por hora (D5).
   if (op === 'entrar-documento') {
-    const doc = somenteDigitos(body.documento);
+    const doc = normalizarDocumento(body.documento);
     const senha = typeof body.senha === 'string' ? body.senha : '';
     if (!validarCpfCnpj(doc)) {
       await registrarTentativaLogin(site, null, ip || 'sem-ip', 'invalido');
@@ -375,7 +375,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return;
     }
     const alvo = typeof body.userId === 'string' ? body.userId : '';
-    const novo = somenteDigitos(body.documento);
+    const novo = normalizarDocumento(body.documento);
     if (!alvo || !validarCpfCnpj(novo)) {
       res.status(400).json({ error: 'documento-invalido' });
       return;
@@ -390,7 +390,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       res.status(200).json({ ok: true, igual: true });
       return;
     }
-    if (conta.role !== 'client' && conta.role !== 'admin' && novo.length !== 14) {
+    if (conta.role !== 'client' && conta.role !== 'admin' && tipoDocumento(novo) !== 'cnpj') {
       res.status(400).json({ error: 'lojista-precisa-de-cnpj' });
       return;
     }

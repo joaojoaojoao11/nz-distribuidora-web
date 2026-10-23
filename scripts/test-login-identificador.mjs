@@ -64,6 +64,8 @@ ok('tipo: CPF com e sem máscara', tipoIdentificador('123.456.789-09') === 'docu
 ok('tipo: CNPJ com máscara', tipoIdentificador('11.222.333/0001-81') === 'documento');
 ok('tipo: 10 ou 12 dígitos não é documento', tipoIdentificador('1234567890') === 'invalido' && tipoIdentificador('123456789012') === 'invalido');
 ok('tipo: texto sem @ não é e-mail', tipoIdentificador('joao') === 'invalido');
+ok('tipo: CNPJ com letras (máscara, sem máscara, minúsculas) é documento', tipoIdentificador('12.ABC.345/01DE-35') === 'documento' && tipoIdentificador('12ABC34501DE35') === 'documento' && tipoIdentificador('12abc34501de35') === 'documento');
+ok('tipo: 14 letras/números que não fecham o DV não viram documento', tipoIdentificador('ABCDEFGHIJKL12') === 'invalido' && tipoIdentificador('12ABC34501DE36') === 'invalido');
 ok('tipo: vazio é inválido', tipoIdentificador('   ') === 'invalido');
 
 rmSync(outDir, { recursive: true, force: true });

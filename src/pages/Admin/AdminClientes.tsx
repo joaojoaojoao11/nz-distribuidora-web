@@ -21,7 +21,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { chamarConta, faltasDoCadastro, textoDoErroConta } from '../../lib/shop/conta';
-import { formatarCpfCnpj } from '../../lib/documento';
+import { formatarCpfCnpj, normalizarDocumento } from '../../lib/documento';
 import { TIPO_LABEL, TIPOS_CLIENTE, type TipoAcesso } from '../../lib/shop/papeis';
 import AdminTitulosErp from './AdminTitulosErp';
 import styles from './Admin.module.css';
@@ -219,6 +219,7 @@ export default function AdminClientes() {
   const lista = useMemo(() => {
     const termo = busca.trim().toLowerCase();
     const digitos = termo.replace(/\D/g, '');
+    const docBusca = normalizarDocumento(busca); // CNPJ pode ter letras (jul/2026)
     return clientes.filter((c) => {
       if (filtro === 'pendentes' && c.is_approved) return false;
       if (filtro === 'indicados' && !c.indicado_por) return false;
@@ -232,7 +233,7 @@ export default function AdminClientes() {
         (c.full_name ?? '').toLowerCase().includes(termo) ||
         (c.email ?? '').toLowerCase().includes(termo) ||
         (c.company_name ?? '').toLowerCase().includes(termo) ||
-        (digitos.length >= 3 && (c.cpf_cnpj ?? '').includes(digitos)) ||
+        (digitos.length >= 3 && ((c.cpf_cnpj ?? '').includes(digitos) || (c.cpf_cnpj ?? '').includes(docBusca))) ||
         (digitos.length >= 3 && (c.phone ?? '').replace(/\D/g, '').includes(digitos))
       );
     });

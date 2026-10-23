@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 import { chamarConta, ContaError, tipoIdentificador } from '../lib/shop/conta';
-import { somenteDigitos } from '../lib/documento';
+import { normalizarDocumento } from '../lib/documento';
 import { definirModoAdmin } from '../lib/shop/store';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -142,7 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const porDocumento = tipo === 'documento';
     if (porDocumento) {
       try {
-        const r = await chamarConta<{ email: string }>({ op: 'entrar-documento', documento: somenteDigitos(identificador), senha: password });
+        const r = await chamarConta<{ email: string }>({ op: 'entrar-documento', documento: normalizarDocumento(identificador), senha: password });
         email = r.email;
       } catch (e) {
         return { error: e instanceof ContaError ? e.codigo : 'indisponivel', email: null, porDocumento };

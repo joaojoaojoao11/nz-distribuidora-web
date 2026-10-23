@@ -1,13 +1,17 @@
 // O campo "E-mail, CPF ou CNPJ" da tela Entrar (plano de login por documento, Fase 1).
 // Puro e sem Supabase, para o autoteste (scripts/test-login-identificador.mjs).
 
-import { somenteDigitos } from './documento';
+import { somenteDigitos, validarCnpj } from './documento';
 
 // ------------------------------------------- entrar com e-mail, CPF ou CNPJ
 
 export type TipoIdentificador = 'email' | 'documento' | 'invalido';
 
-/** O que a pessoa digitou no campo "E-mail, CPF ou CNPJ": tem @ é e-mail; 11 ou 14 dígitos é documento. */
+/**
+ * O que a pessoa digitou no campo "E-mail, CPF ou CNPJ": tem @ é e-mail; 11 ou 14 dígitos é documento.
+ * CNPJ com letras (desde jul/2026, ex. 12.ABC.345/01DE-35, maiúsculas ou não) também é documento — mas
+ * só se o verificador fechar, para uma palavra qualquer de 14 letras não virar "documento".
+ */
 export function tipoIdentificador(valor: string): TipoIdentificador {
   const v = valor.trim();
   if (v.includes('@')) return 'email';
@@ -15,6 +19,7 @@ export function tipoIdentificador(valor: string): TipoIdentificador {
     const d = somenteDigitos(v);
     if (d.length === 11 || d.length === 14) return 'documento';
   }
+  if (/^[\dA-Za-z.\-/\s]+$/.test(v) && /[A-Za-z]/.test(v) && validarCnpj(v)) return 'documento';
   return 'invalido';
 }
 

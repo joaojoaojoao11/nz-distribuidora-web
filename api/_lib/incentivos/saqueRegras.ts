@@ -1,6 +1,8 @@
 // Regras puras do saque (Fase 4): chave Pix e vencimento do título. Sem rede,
 // sem banco — testadas em scripts/test-incentivos.mjs.
 
+import { normalizarDocumento, tipoDocumento } from '../conta/documento.js';
+
 export type PixTipo = 'cpf_cnpj' | 'email' | 'telefone' | 'aleatoria';
 export const PIX_TIPOS: PixTipo[] = ['cpf_cnpj', 'email', 'telefone', 'aleatoria'];
 
@@ -10,9 +12,10 @@ export function validarChavePix(tipo: string, chaveBruta: string): { ok: true; t
   if (!PIX_TIPOS.includes(tipo as PixTipo)) return { ok: false, motivo: 'tipo de chave inválido' };
   if (!chave) return { ok: false, motivo: 'informe a chave' };
   if (tipo === 'cpf_cnpj') {
-    const d = chave.replace(/\D/g, '');
-    if (d.length !== 11 && d.length !== 14) return { ok: false, motivo: 'CPF tem 11 dígitos; CNPJ, 14' };
-    if (/^(\d)\1+$/.test(d)) return { ok: false, motivo: 'documento inválido' };
+    // CNPJ pode ter letras desde jul/2026 (12.ABC.345/01DE-35): a chave guarda as letras.
+    const d = normalizarDocumento(chave);
+    if (!tipoDocumento(d)) return { ok: false, motivo: 'CPF tem 11 dígitos; CNPJ, 14' };
+    if (/^(.)\1+$/.test(d)) return { ok: false, motivo: 'documento inválido' };
     return { ok: true, tipo: 'cpf_cnpj', chave: d };
   }
   if (tipo === 'email') {

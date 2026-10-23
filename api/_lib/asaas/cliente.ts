@@ -11,6 +11,8 @@
 // Nada aqui grava ou loga dado de cartão. O corpo de uma cobrança com cartão
 // passa por esta função e vai embora; quem chama não guarda o objeto.
 
+import { normalizarDocumento } from '../conta/documento.js';
+
 export type AsaasEnv = 'production' | 'sandbox';
 
 const BASES: Record<AsaasEnv, string> = {
@@ -164,9 +166,9 @@ export interface AsaasLinhaDigitavel {
 // ------------------------------------------------------------- clientes
 
 export async function buscarClientePorDocumento(cpfCnpj: string): Promise<AsaasCustomer | null> {
-  const digitos = cpfCnpj.replace(/\D/g, '');
-  if (!digitos) return null;
-  const r = await asaasFetch<{ data?: AsaasCustomer[] }>(`/customers?cpfCnpj=${digitos}&limit=1`);
+  const doc = normalizarDocumento(cpfCnpj); // CNPJ pode ter letras (jul/2026)
+  if (!doc) return null;
+  const r = await asaasFetch<{ data?: AsaasCustomer[] }>(`/customers?cpfCnpj=${doc}&limit=1`);
   const c = r.data?.find((x) => !x.deleted) ?? null;
   return c;
 }

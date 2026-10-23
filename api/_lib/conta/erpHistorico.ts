@@ -17,7 +17,7 @@
 //   4. limite de crédito NÃO aparece — a coluna nem é lida.
 
 import type { Db } from '../papel.js';
-import { somenteDigitos, validarCpfCnpj } from './documento.js';
+import { normalizarDocumento, validarCpfCnpj } from './documento.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 
 // ------------------------------------------------------------ listas brancas
@@ -228,7 +228,7 @@ export async function pedidosDoCliente(site: Db, userId: string, limite = 50): P
   // Documento só vale como chave se for um CPF/CNPJ de verdade (varredura 22/10):
   // cadastro com "000.000.000-00" ou lixo puxaria os orçamentos de todo mundo
   // que tem o mesmo lixo no ERP.
-  const chaves = cliente.documento && validarCpfCnpj(cliente.documento) ? ([...new Set([cliente.documento, somenteDigitos(cliente.documento)].filter(Boolean))] as string[]) : [];
+  const chaves = cliente.documento && validarCpfCnpj(cliente.documento) ? ([...new Set([cliente.documento, normalizarDocumento(cliente.documento)].filter(Boolean))] as string[]) : [];
   if (!oppIds.length && !chaves.length) return [];
   const partes: string[] = [];
   if (oppIds.length) partes.push(`opportunity_id.in.(${oppIds.join(',')})`);
@@ -352,7 +352,7 @@ async function chavesDoCliente(site: Db, userId: string): Promise<ChavesDoClient
   const erp = await clienteErp();
   if (!erp) return null;
   const { data: cli } = await erp.from('clients').select(COLUNAS_CLIENTE).eq('id', clientId).maybeSingle();
-  const doc = somenteDigitos((cli as { cpf_cnpj?: string | null } | null)?.cpf_cnpj) || null;
+  const doc = normalizarDocumento((cli as { cpf_cnpj?: string | null } | null)?.cpf_cnpj) || null;
   const { data: donos } = await site.from('erp_titulo_dono').select('titulo_id').eq('erp_client_id', clientId).eq('chave', 'manual').limit(200);
   const manuais = ((donos ?? []) as { titulo_id: string }[]).map((d) => d.titulo_id).filter((id) => /^[0-9a-f-]{36}$/i.test(id));
   return { erp, clientId, doc: doc && validarCpfCnpj(doc) ? doc : null, manuais };

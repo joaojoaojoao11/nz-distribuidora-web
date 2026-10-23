@@ -541,7 +541,7 @@ function BlocoSaque({ dados, onMudou }: { dados: MinhaCarteira; onMudou: () => P
           </label>
           <label className={styles.campo}>
             <span>Chave Pix (a conta precisa ser sua)</span>
-            <input value={chave} onChange={(e) => setChave(e.target.value)} placeholder={tipo === 'cpf_cnpj' ? 'só números' : tipo === 'email' ? 'voce@exemplo.com' : tipo === 'telefone' ? '(11) 99999-9999' : 'chave aleatória'} disabled={ocupado} />
+            <input value={chave} onChange={(e) => setChave(e.target.value)} placeholder={tipo === 'cpf_cnpj' ? 'CPF ou CNPJ' : tipo === 'email' ? 'voce@exemplo.com' : tipo === 'telefone' ? '(11) 99999-9999' : 'chave aleatória'} disabled={ocupado} />
           </label>
           <div className={styles.acoesBloco}>
             <button type="submit" className={styles.salvar} disabled={ocupado || !chave.trim()}>

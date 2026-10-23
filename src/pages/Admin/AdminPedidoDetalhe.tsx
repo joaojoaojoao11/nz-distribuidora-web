@@ -16,6 +16,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useOutletContext, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import { normalizarDocumento, tipoDocumento } from '../../lib/documento';
 import { chamarCheckout, textoDoErro, FORMA_LABEL, STATUS_PAGAMENTO_LABEL, type Forma, type PedidoStatus, type StatusPagamento } from '../../lib/shop/checkout';
 import { BRL } from '../../lib/shop/precos';
 import { rotuloQtd, type UnidadeVenda } from '../../lib/shop/unidade';
@@ -104,10 +105,11 @@ const dia = (ymd: string | null) => {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : ymd;
 };
 const cpfMascarado = (v: string | null) => {
-  const d = (v ?? '').replace(/\D/g, '');
-  if (d.length === 11) return `${d.slice(0, 3)}.***.***-${d.slice(9)}`;
-  if (d.length === 14) return `${d.slice(0, 2)}.${d.slice(2, 5)}.***/****-${d.slice(12)}`;
-  return v ?? '—';
+  const d = normalizarDocumento(v ?? '');
+  const tipo = tipoDocumento(d);
+  if (tipo === 'cpf') return `${d.slice(0, 3)}.***.***-${d.slice(9)}`;
+  if (tipo === 'cnpj') return `${d.slice(0, 2)}.${d.slice(2, 5)}.***/****-${d.slice(12)}`;
+  return v ? '•••' : '—'; // fora do formato: não mostra o documento inteiro
 };
 const RUINS = new Set<string>(['recusado', 'expirado', 'vencido', 'cancelado', 'estornado']);
 

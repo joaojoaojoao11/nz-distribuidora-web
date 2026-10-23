@@ -101,7 +101,7 @@ export default function PassoProprietario({ r, mudar, erros, mostrar, meusDados 
             name="cpf"
             value={r.cpf}
             onChange={(e) => mudar({ cpf: digitandoDocumento(e.target.value) })}
-            inputMode="numeric"
+            autoCapitalize="characters"
             autoComplete="off"
             placeholder="000.000.000-00"
             maxLength={18}

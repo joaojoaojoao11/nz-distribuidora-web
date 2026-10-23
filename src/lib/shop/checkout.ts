@@ -5,7 +5,7 @@
 // ficam em estado global nem em storage.
 
 import { supabase } from '../supabase';
-import { validarCpfCnpj } from '../documento';
+import { normalizarDocumento, validarCpfCnpj } from '../documento';
 import type { UnidadeVenda } from './unidade';
 
 export type Forma = 'PIX' | 'BOLETO' | 'CREDIT_CARD';
@@ -152,7 +152,7 @@ export async function chamarCheckout<T>(body: Record<string, unknown>): Promise<
 /** Corpo do cartão no formato do servidor. */
 export function cartaoParaEnvio(c: DadosCartaoForm) {
   const [mes = '', ano = ''] = c.validade.split('/');
-  return { numero: c.numero.replace(/\D/g, ''), nome: c.nome.trim(), mes: mes.trim(), ano: ano.trim(), cvv: c.cvv.replace(/\D/g, ''), cpf: c.cpf.replace(/\D/g, '') };
+  return { numero: c.numero.replace(/\D/g, ''), nome: c.nome.trim(), mes: mes.trim(), ano: ano.trim(), cvv: c.cvv.replace(/\D/g, ''), cpf: normalizarDocumento(c.cpf) };
 }
 
 // --------------------------------------------------------------- textos

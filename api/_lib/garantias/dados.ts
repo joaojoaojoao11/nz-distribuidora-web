@@ -6,7 +6,7 @@
 // do corpo da requisição: quem mandasse "garantia_anos: 99" ganharia 99 anos.
 
 import { randomBytes } from 'node:crypto';
-import { somenteDigitos, validarCpf, validarCnpj } from '../conta/documento.js';
+import { documentoComMascara, normalizarDocumento, somenteDigitos, validarCpfCnpj } from '../conta/documento.js';
 import { EMAIL_VALIDO } from '../email.js';
 
 export interface LinhaServidor {
@@ -188,12 +188,10 @@ export function validarRegistro(d: Record<string, unknown>): { ok: true; linha: 
   const aplicador = texto(d.aplicador_nome, 120);
   if (aplicador.length < 2) return { ok: false, erro: 'aplicador-invalido' };
 
-  const doc = somenteDigitos(d.cliente_cpf);
-  if (!(doc.length === 11 ? validarCpf(doc) : doc.length === 14 ? validarCnpj(doc) : false)) return { ok: false, erro: 'documento-invalido' };
-  const cpf =
-    doc.length === 11
-      ? doc.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
-      : doc.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+  // CPF ou CNPJ (este pode ter letras desde jul/2026); guardado com a pontuação, como sempre foi.
+  const doc = normalizarDocumento(d.cliente_cpf);
+  if (!validarCpfCnpj(doc)) return { ok: false, erro: 'documento-invalido' };
+  const cpf = documentoComMascara(doc);
 
   const nome = texto(d.cliente_nome_completo, 120);
   if (nome.length < 3) return { ok: false, erro: 'nome-invalido' };

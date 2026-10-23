@@ -408,6 +408,7 @@ console.log('\n=== SAQUE: chave Pix e vencimento ===');
   ok('CPF com pontuação vira só dígitos', JSON.stringify(validarChavePix('cpf_cnpj', '529.982.247-25')) === JSON.stringify({ ok: true, tipo: 'cpf_cnpj', chave: '52998224725' }));
   ok('CNPJ com 14 dígitos passa; 12 dígitos não', validarChavePix('cpf_cnpj', '37.816.257/0001-26').ok && !validarChavePix('cpf_cnpj', '123456789012').ok);
   ok('documento com dígitos repetidos não passa', !validarChavePix('cpf_cnpj', '11111111111').ok);
+  ok('chave Pix CNPJ com letras guarda as letras', JSON.stringify(validarChavePix('cpf_cnpj', '12.abc.345/01de-35')) === JSON.stringify({ ok: true, tipo: 'cpf_cnpj', chave: '12ABC34501DE35' }));
   ok('e-mail vira minúsculo; sem @ não passa', validarChavePix('email', 'Joao@Exemplo.com').chave === 'joao@exemplo.com' && !validarChavePix('email', 'joao').ok);
   ok('telefone com DDD ganha +55', validarChavePix('telefone', '(11) 99999-0000').chave === '+5511999990000' && !validarChavePix('telefone', '9999').ok);
   ok('chave aleatória com ou sem hífens', validarChavePix('aleatoria', '123E4567-E89B-12D3-A456-426614174000').ok && validarChavePix('aleatoria', '123e4567e89b12d3a456426614174000').ok && !validarChavePix('aleatoria', 'abc').ok);

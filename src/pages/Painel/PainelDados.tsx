@@ -8,7 +8,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
-import { formatarCpfCnpj, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
+import { formatarCpfCnpj, normalizarDocumento, somenteDigitos, tipoDocumento, validarCpfCnpj } from '../../lib/documento';
 import { buscarCep, formatarCep } from '../../lib/shop/checkout';
 import { faltasDoCadastro, formatarTelefone, telefoneOk, UFS } from '../../lib/shop/conta';
 import { ehEmpresa } from '../../lib/shop/papeis';
@@ -137,7 +137,7 @@ export default function PainelDados() {
     setSalvando(true);
     const patch: Record<string, unknown> = {
       ...perfil,
-      cpf_cnpj: doc ? somenteDigitos(doc) : null,
+      cpf_cnpj: doc ? normalizarDocumento(doc) : null,
     };
     // Documento travado não vai no update: nem por engano o cliente esbarra na trava.
     if (docTravado) delete patch.cpf_cnpj;
@@ -192,7 +192,7 @@ export default function PainelDados() {
           <input
             value={formatarCpfCnpj(doc)}
             onChange={set('cpf_cnpj')}
-            inputMode="numeric"
+            autoCapitalize="characters"
             required={lojista}
             readOnly={docTravado}
             aria-describedby={docTravado ? 'doc-travado' : undefined}

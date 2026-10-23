@@ -25,7 +25,7 @@
 // Atribuição manual (`chave = 'manual'`) NUNCA é sobrescrita pelo job.
 
 import type { Db } from '../papel.js';
-import { somenteDigitos } from './documento.js';
+import { normalizarDocumento } from './documento.js';
 import { clienteErp } from '../pedido/despachoErp.js';
 
 /** Nome comparável: sem acento, sem pontuação, espaços colapsados, minúsculo. */
@@ -121,7 +121,7 @@ export async function atribuirTitulos(site: Db): Promise<ResumoAtribuicao> {
   const porNome = new Map<string, string | null>(); // null = nome ambíguo, não usar
   const nomesAmbiguos = new Set<string>();
   for (const c of clientes) {
-    const doc = somenteDigitos(c.cpf_cnpj ?? c.document);
+    const doc = normalizarDocumento(c.cpf_cnpj ?? c.document);
     if (doc.length >= 11 && !porDocumento.has(doc)) porDocumento.set(doc, c.id);
     for (const bruto of [c.nome, c.name]) {
       const n = normalizarNome(bruto);
@@ -146,7 +146,7 @@ export async function atribuirTitulos(site: Db): Promise<ResumoAtribuicao> {
   if (qErr) return { ...vazio, duracaoMs: Date.now() - t0, erro: qErr };
   const quoteDono = new Map<string, string>();
   for (const q of quotes) {
-    const doc = somenteDigitos(q.cpf_cnpj);
+    const doc = normalizarDocumento(q.cpf_cnpj);
     const alvo = (doc.length >= 11 ? porDocumento.get(doc) : undefined) ?? porNome.get(normalizarNome(q.client_name)) ?? undefined;
     if (alvo) quoteDono.set(q.id, alvo);
   }
@@ -177,7 +177,7 @@ export async function atribuirTitulos(site: Db): Promise<ResumoAtribuicao> {
       let dono: string | undefined;
       let chave: 'documento' | 'orcamento' | 'nome' | undefined;
 
-      const doc = somenteDigitos(t.cliente_cpf_cnpj);
+      const doc = normalizarDocumento(t.cliente_cpf_cnpj);
       if (doc.length >= 11) {
         dono = porDocumento.get(doc);
         if (dono) chave = 'documento';
@@ -268,7 +268,7 @@ export async function titulosSemDono(site: Db, limite = 200): Promise<{ id: stri
 
   const fora = titulos
     .filter((t) => !temDono.has(t.id))
-    .map((t) => ({ id: t.id, nome: t.cliente_nome, valor: t.valor, vencimento: t.vencimento, documento: somenteDigitos(t.cliente_cpf_cnpj).length >= 11 }));
+    .map((t) => ({ id: t.id, nome: t.cliente_nome, valor: t.valor, vencimento: t.vencimento, documento: normalizarDocumento(t.cliente_cpf_cnpj).length >= 11 }));
   // Mais recente primeiro: é o que o admin quer resolver antes.
   fora.sort((a, b) => String(b.vencimento ?? '').localeCompare(String(a.vencimento ?? '')));
   return fora.slice(0, limite);

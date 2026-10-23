@@ -12,7 +12,7 @@
 
 import type { Db } from '../papel.js';
 import { clienteErpPorDocumento, clienteErpPorEmail, marcarVinculoNoErp, type ClienteErp } from './erpClientes.js';
-import { normalizarEmail, somenteDigitos } from './documento.js';
+import { normalizarDocumento, normalizarEmail, somenteDigitos, tipoDocumento } from './documento.js';
 
 export interface PerfilVinculo {
   id: string;
@@ -197,8 +197,8 @@ export async function consultarDocumento(
   /** E-mail provado? Sem isso nunca devolve dado do ERP: só "já é cliente". */
   emailVerificado = false
 ): Promise<{ jaCliente: boolean; dados: Record<string, string> | null; aviso: string | null }> {
-  const d = somenteDigitos(doc);
-  if (d.length !== 11 && d.length !== 14) return { jaCliente: false, dados: null, aviso: null };
+  const d = normalizarDocumento(doc);
+  if (!tipoDocumento(d)) return { jaCliente: false, dados: null, aviso: null };
   const cliente = await clienteErpPorDocumento(d);
   if (!cliente) return { jaCliente: false, dados: null, aviso: null };
 

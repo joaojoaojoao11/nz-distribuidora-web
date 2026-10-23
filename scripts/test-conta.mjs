@@ -125,7 +125,7 @@ function fakeDb(dados = {}) {
 }
 
 const { completude, faltandoNoCadastro } = await import(pathToFileURL(join(outDir, 'conta/completude.js')).href);
-const { validarCpfCnpj, tipoDocumento, normalizarEmail, somenteDigitos } = await import(pathToFileURL(join(outDir, 'conta/documento.js')).href);
+const { validarCpfCnpj, tipoDocumento, normalizarEmail, somenteDigitos, normalizarDocumento, documentoComMascara } = await import(pathToFileURL(join(outDir, 'conta/documento.js')).href);
 const { vincularComErp: vincularBruto, consultarDocumento } = await import(pathToFileURL(join(outDir, 'conta/vinculo.js')).href);
 // Os testes de regra abaixo valem para e-mail CONFIRMADO; o caso sem confirmação
 // tem bloco próprio (passa `{}` explícito).
@@ -156,6 +156,18 @@ ok('CNPJ inválido', !validarCpfCnpj('11.222.333/0001-82'));
 ok('tipo do documento', tipoDocumento('52998224725') === 'cpf' && tipoDocumento('11222333000181') === 'cnpj');
 ok('e-mail normaliza caixa e espaço', normalizarEmail('  EVERSON@NZDISTRIBUIDORA.COM.BR ') === 'everson@nzdistribuidora.com.br');
 ok('somenteDigitos', somenteDigitos('(11) 99999-0000') === '11999990000');
+
+// CNPJ com letras (Receita, desde jul/2026). 12.ABC.345/01DE-35 é o exemplo oficial; o DV usa código − 48.
+console.log('\n=== CNPJ COM LETRAS ===');
+ok('CNPJ com letras válido (com e sem máscara)', validarCpfCnpj('12.ABC.345/01DE-35') && validarCpfCnpj('12ABC34501DE35'));
+ok('CNPJ com letras: minúsculas valem', validarCpfCnpj('12abc34501de35'));
+ok('CNPJ com letras e DV errado', !validarCpfCnpj('12ABC34501DE36') && !validarCpfCnpj('12ABC34501DE45'));
+ok('DV com letra não vale', !validarCpfCnpj('12ABC34501DE3A'));
+ok('CPF não aceita letra', !validarCpfCnpj('1114447773A') && tipoDocumento('1114447773A') === null);
+ok('tipo do CNPJ com letras', tipoDocumento('12.abc.345/01de-35') === 'cnpj');
+ok('normaliza: sem pontuação, maiúsculas; o numérico fica igual', normalizarDocumento('12.abc.345/01de-35') === '12ABC34501DE35' && normalizarDocumento('111.444.777-35') === '11144477735');
+ok('máscara do CNPJ com letras', documentoComMascara('12ABC34501DE35') === '12.ABC.345/01DE-35');
+ok('letras repetidas não valem', !validarCpfCnpj('AAAAAAAAAAAAAA'));
 
 // ======================================================= filtro do ERP
 console.log('\n=== O QUE NÃO PODE SAIR DO ERP ===');

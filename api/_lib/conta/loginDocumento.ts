@@ -18,7 +18,7 @@
 
 import { createHmac } from 'node:crypto';
 import type { Db } from '../papel.js';
-import { somenteDigitos, validarCpfCnpj } from './documento.js';
+import { normalizarDocumento, validarCpfCnpj } from './documento.js';
 
 export const LIMITE_SENHA_POR_DOC = 5;
 export const JANELA_DOC_MIN = 15;
@@ -30,10 +30,11 @@ export const DIAS_GUARDAR_TENTATIVAS = 30;
 export type ResultadoConferencia = 'ok' | 'senha' | 'sem-conta' | 'sem-senha' | 'admin' | 'bloqueada' | 'invalido';
 export type ResultadoTentativa = ResultadoConferencia | 'limite';
 
-/** HMAC do documento (só dígitos) — a chave do limite por documento, sem guardar o número. */
+/** HMAC do documento normalizado (só números: igual à de antes; CNPJ com letras: com as letras) — a
+ *  chave do limite por documento, sem guardar o número. */
 export function chaveDoc(doc: string): string {
   const chave = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
-  return createHmac('sha256', `nz-login-doc-v1:${chave}`).update(somenteDigitos(doc)).digest('hex');
+  return createHmac('sha256', `nz-login-doc-v1:${chave}`).update(normalizarDocumento(doc)).digest('hex');
 }
 
 /**
@@ -60,7 +61,7 @@ export async function passouDoLimite(site: Db, chave: string, ip: string | null)
  * FECHADA (quem chama responde 503, nunca deixa entrar).
  */
 export async function tentarLoginDocumento(site: Db, doc: string, senha: string, ip: string | null): Promise<{ resultado: ResultadoTentativa; email: string | null }> {
-  const d = somenteDigitos(doc);
+  const d = normalizarDocumento(doc);
   const { data, error } = await site.rpc('login_tentar_documento', { p_doc: d, p_senha: senha, p_chave: chaveDoc(d), p_ip: ip ?? '' });
   if (error) throw new Error(`login_tentar_documento: ${error.message}`);
   const linha = (Array.isArray(data) ? data[0] : data) as { email: string | null; resultado: ResultadoTentativa } | null;
@@ -81,7 +82,7 @@ export async function registrarTentativaLogin(site: Db, chave: string | null, ip
 /** Confere documento + senha no banco. E-mail só volta com `resultado: 'ok'`. */
 export async function conferirSenhaDocumento(site: Db, doc: string, senha: string): Promise<{ resultado: ResultadoConferencia; email: string | null }> {
   if (!validarCpfCnpj(doc) || !senha) return { resultado: 'invalido', email: null };
-  const { data, error } = await site.rpc('login_conferir_documento', { p_doc: somenteDigitos(doc), p_senha: senha });
+  const { data, error } = await site.rpc('login_conferir_documento', { p_doc: normalizarDocumento(doc), p_senha: senha });
   if (error) throw new Error(`login_conferir_documento: ${error.message}`);
   const linha = (Array.isArray(data) ? data[0] : data) as { email: string | null; resultado: ResultadoConferencia } | null;
   const resultado = linha?.resultado ?? 'sem-conta';

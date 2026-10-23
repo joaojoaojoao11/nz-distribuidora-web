@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
-import { formatarCpfCnpj } from '../../lib/documento';
+import { formatarCpfCnpj, normalizarDocumento } from '../../lib/documento';
 import { ativarCupom, chamarIncentivos, salvarCupom } from '../../lib/shop/incentivos';
 import { Avisos, Botao, Campo, Chip, Grade, PaginaAdmin, Secao } from './comuns/Pagina';
 import { BRL, campoEstilo, dataBR, dataHoraBR } from './comuns/formato';
@@ -115,7 +115,8 @@ export default function AdminCupomEditor() {
       const digitos = termo.replace(/\D/g, '');
       const limpo = termo.replace(/[%_,]/g, '');
       let q = supabase.from('user_profiles').select('id, full_name, company_name, email, cpf_cnpj').neq('role', 'admin').limit(8);
-      q = digitos.length >= 4 ? q.ilike('cpf_cnpj', `%${digitos}%`) : q.or(`full_name.ilike.%${limpo}%,email.ilike.%${limpo}%,company_name.ilike.%${limpo}%`);
+      // Documento: pelos números (como sempre) ou com as letras do CNPJ novo (jul/2026).
+      q = digitos.length >= 4 ? q.or(`cpf_cnpj.ilike.%${digitos}%,cpf_cnpj.ilike.%${normalizarDocumento(termo)}%`) : q.or(`full_name.ilike.%${limpo}%,email.ilike.%${limpo}%,company_name.ilike.%${limpo}%`);
       void q.then(({ data }) => setSugestoes((data ?? []) as ClienteBusca[]));
     }, 300);
     return () => clearTimeout(t);

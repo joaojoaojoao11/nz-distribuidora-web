@@ -20,7 +20,7 @@ import { carregarConfigIncentivos, type ConfigIncentivos } from './config.js';
 import { avaliarConquistas, devolverConquistasDoPedido, registrarEvento, situacaoNivel } from './gamificacao.js';
 import { chavePeriodo, fimPeriodo } from './periodos.js';
 import { limitarIncentivo } from './trava.js';
-import { somenteDigitos } from '../conta/documento.js';
+import { normalizarDocumento } from '../conta/documento.js';
 
 export interface EntradaMotor {
   pedidoId: string;
@@ -142,12 +142,12 @@ export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: Co
   // Ninguém ganha comprando de si mesmo (varredura 22/10): conta diferente,
   // mas o MESMO CPF/CNPJ do indicador/afiliado (o da conta ou o do cadastro de
   // afiliado) é a mesma pessoa ou empresa.
-  const docComprador = somenteDigitos(perfil.cpf_cnpj);
+  const docComprador = normalizarDocumento(perfil.cpf_cnpj);
   const mesmoDono = async (userId: string, docAfiliado?: string | null): Promise<boolean> => {
     if (!docComprador) return false;
-    if (somenteDigitos(docAfiliado) === docComprador) return true;
+    if (normalizarDocumento(docAfiliado) === docComprador) return true;
     const { data } = await site.from('user_profiles').select('cpf_cnpj').eq('id', userId).maybeSingle();
-    return somenteDigitos((data as { cpf_cnpj?: string | null } | null)?.cpf_cnpj) === docComprador;
+    return normalizarDocumento((data as { cpf_cnpj?: string | null } | null)?.cpf_cnpj) === docComprador;
   };
 
   if (cupom?.tipo === 'super' && cupom.dono_user_id && cupom.dono_user_id !== perfil.id && cfg.superCupomAtivo && !(await mesmoDono(cupom.dono_user_id))) {
