@@ -39,6 +39,17 @@ import {
 } from '../asaas/pagamento.js';
 import { despacharAoErp, dispensarDoErp } from '../pedido/despachoErp.js';
 import { normalizarDocumento, tipoDocumento } from '../conta/documento.js';
+
+/**
+ * O Asaas não cadastrou o cliente. Com CNPJ com letras (formato novo da Receita, jul/2026) o motivo
+ * provável é o Asaas ainda não aceitar o formato: recado próprio, que manda o cliente falar com a NZ.
+ */
+function responderErroClienteAsaas(res: VercelResponse, cpfCnpj: string | null | undefined, err: unknown): void {
+  const message = err instanceof Error ? err.message : 'Asaas indisponível';
+  console.error('[checkout] cliente Asaas:', message);
+  const comLetras = tipoDocumento(normalizarDocumento(cpfCnpj ?? '')) === 'cnpj' && /[A-Z]/.test(normalizarDocumento(cpfCnpj ?? ''));
+  res.status(502).json({ error: comLetras ? 'cnpj-letras-pagamento' : 'pagamento-indisponivel', message });
+}
 import { carregarVisibilidade, nomeDaFaixa, papelDePreco } from '../precos/regraAcesso.js';
 import { filiarSeFaltar } from '../incentivos/motor.js';
 import { saldoDe } from '../incentivos/carteira.js';
@@ -345,8 +356,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     try {
       asaasCustomerId = await garantirClienteAsaas(site, userId, perfil);
     } catch (err) {
-      console.error('[checkout] cliente Asaas:', err instanceof Error ? err.message : err);
-      res.status(502).json({ error: 'pagamento-indisponivel', message: err instanceof Error ? err.message : 'Asaas indisponível' });
+      responderErroClienteAsaas(res, perfil.cpf_cnpj, err);
       return;
     }
   }
@@ -688,7 +698,13 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
     res.status(400).json({ error: 'cadastro-incompleto', faltando });
     return;
   }
-  const asaasCustomerId = await garantirClienteAsaas(site, userId, perfil);
+  let asaasCustomerId: string;
+  try {
+    asaasCustomerId = await garantirClienteAsaas(site, userId, perfil);
+  } catch (err) {
+    responderErroClienteAsaas(res, perfil.cpf_cnpj, err);
+    return;
+  }
 
   if (escolha.forma === 'CREDIT_CARD') await site.from('checkout_tentativas').insert({ user_id: userId, ip, forma: 'CREDIT_CARD', resultado: 'tentativa' });
   const cobranca = await criarPagamento(site, { pedido: { id: pedido.id, numero: pedido.numero }, perfil, asaasCustomerId, forma: escolha.forma, total, parcelas: escolha.parcelas, cartao: escolha.cartao, ip, cfg });

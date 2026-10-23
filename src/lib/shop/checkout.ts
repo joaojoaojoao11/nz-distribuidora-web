@@ -184,6 +184,7 @@ export const ERRO_TEXTO: Record<string, string> = {
   'saldo-insuficiente': 'Seu saldo mudou e não cobre mais o valor marcado. Revise o pedido.',
   'nao-reservou-saldo': 'Não consegui reservar o seu saldo agora. Tente de novo.',
   'erro-interno': 'Algo deu errado do nosso lado. Tente de novo.',
+  'cnpj-letras-pagamento': 'Ainda não conseguimos gerar o pagamento online para CNPJ com letras (o formato novo da Receita). Chame a gente no WhatsApp que finalizamos o seu pedido.',
 };
 
 export function textoDoErro(e: unknown): string {
