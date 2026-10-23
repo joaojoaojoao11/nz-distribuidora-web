@@ -53,7 +53,7 @@ import { espelharAcessoNoErp } from '../conta/acessoNoErp.js';
 import { abrirOcorrencia, chavesAbertas, resolverPorChave, resolverVariasChaves } from '../ocorrencias.js';
 import { carregarConfigIncentivos } from '../incentivos/config.js';
 import { estornarPedido, processarPedidoFaturado } from '../incentivos/motor.js';
-import { manutencaoCarteira } from '../incentivos/carteira.js';
+import { aplicarDevolucaoParcial, liberarAposEntrega, manutencaoCarteira } from '../incentivos/carteira.js';
 import { devolverSaldoDoPedido } from '../incentivos/saldoCheckout.js';
 import { sincronizarSaques } from '../incentivos/saque.js';
 import { registrarUsoCupom } from '../incentivos/cupomUsos.js';
@@ -209,6 +209,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const titulos = !dry && gatilho !== 'webhook' ? await atribuirTitulos(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // Conta criada há mais de 48 h que nunca confirmou o e-mail: some (20/10/2026).
     const limpeza = !dry && gatilho !== 'webhook' ? await limparNaoConfirmados(site).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
+    // Devoluções parciais do NZERP descontam a comissão ANTES da liberação do
+    // dia (#10, 23/10/2026): crédito a liberar perde o valor devolvido.
+    const devolucoes = !dry && gatilho !== 'webhook' ? await aplicarDevolucoes(site, erp).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
     // Carteira (Fase 2): libera o que venceu a carência/período e expira o
     // saldo antigo (D11). Uma vez por dia basta.
     const carteira = !dry && gatilho !== 'webhook' ? await manutencaoCarteira(site, (await carregarConfigIncentivos(site)).mesesValidade).catch((e) => ({ erro: e instanceof Error ? e.message : String(e) })) : null;
@@ -244,7 +247,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Sync inteiro passou: se havia uma queixa de sync caído, ela morre aqui.
     if (!dry) await resolverPorChave(site, 'sync-erro', `sync ${gatilho} concluído`);
 
-    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, contasErp, titulos, limpeza, carteira, saques, tentativasLogin, acessoNoErp });
+    res.status(200).json({ ok: true, dry, gatilho, lidos: catalogo.length, precos: precos.length, comEstoque: estoque.length, ...resultado, pedidos, checkout, equipe, contasErp, titulos, limpeza, devolucoes, carteira, saques, tentativasLogin, acessoNoErp });
   } catch (err) {
     const mensagem = err instanceof Error ? err.message : String(err);
     console.error('[erp-sync] falhou:', mensagem);
@@ -674,7 +677,7 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
   if (!lidos.length || dry) return { lidos: lidos.length, atualizados: 0, comissoes: 0 };
 
   const ids = lidos.map((p) => p.site_pedido_id);
-  type Local = { id: string; user_id: string | null; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null; cupom: string | null; cupom_consumido_em: string | null; incentivos_processados_em: string | null; incentivos_estornados_em: string | null; saldo_usado: number | null; saldo_movimento_id: number | null; saldo_devolvido_em: string | null };
+  type Local = { id: string; user_id: string | null; status: string; total_erp: number | null; afiliado_user_id: string | null; erp_quote_id: string | null; cupom: string | null; cupom_consumido_em: string | null; incentivos_processados_em: string | null; incentivos_estornados_em: string | null; saldo_usado: number | null; saldo_movimento_id: number | null; saldo_devolvido_em: string | null; entregue_em: string | null };
   const locais = new Map<string, Local>();
   // Em lotes de 150 (varredura 22/10): todos os ids num `in` só passam do
   // tamanho de URL que o PostgREST aceita lá pelos 400 pedidos — a leitura
@@ -682,7 +685,7 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
   for (let i = 0; i < ids.length; i += 150) {
     const { data: locaisData, error: eLocais } = await site
       .from('pedidos')
-      .select('id, user_id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em, incentivos_processados_em, incentivos_estornados_em, saldo_usado, saldo_movimento_id, saldo_devolvido_em')
+      .select('id, user_id, status, total_erp, afiliado_user_id, erp_quote_id, cupom, cupom_consumido_em, incentivos_processados_em, incentivos_estornados_em, saldo_usado, saldo_movimento_id, saldo_devolvido_em, entregue_em')
       .in('id', ids.slice(i, i + 150));
     if (eLocais) {
       // Leitura parcial não pode decidir estorno nem comissão: para aqui, o
@@ -759,7 +762,60 @@ async function espelharPedidos(site: Db, erp: Db, dry: boolean): Promise<{ lidos
         .eq('pedido_id', p.site_pedido_id)
         .in('status', ['pendente', 'apurada']);
     }
+
+    // Entregue (#10, 23/10/2026): a carência do crédito de indicação conta da
+    // ENTREGA — antes contava do faturamento, e o indicador recebia antes do
+    // prazo de devolução acabar. Uma vez por pedido (entregue_em). Roda depois
+    // do motor: crédito que nasceu agora mesmo já sai com a data certa.
+    if (p.status === 'ENTREGUE' && !local.entregue_em) {
+      const entregueEm = p.updated_at ? new Date(p.updated_at) : new Date();
+      const { data: marcou } = await site.from('pedidos').update({ entregue_em: entregueEm.toISOString() }).eq('id', p.site_pedido_id).is('entregue_em', null).select('id');
+      if ((marcou ?? []).length) {
+        await liberarAposEntrega(site, p.site_pedido_id, entregueEm, cfgIncentivos.diasLiberacao).catch((e) => {
+          console.warn('[erp-sync] liberação após a entrega falhou no pedido', p.site_pedido_id, e instanceof Error ? e.message : e);
+          return 0;
+        });
+      }
+    }
   }
 
   return { lidos: lidos.length, atualizados, comissoes };
+}
+
+/**
+ * Devoluções PARCIAIS concluídas no NZERP (#10, 23/10/2026; view
+ * `devolucoes_site`): a comissão sobre o valor devolvido sai do crédito do
+ * pedido. Devolução total o espelho de pedidos já trata (o orçamento vira
+ * CANCELADO). O que já estava liberado vira ocorrência para a equipe.
+ */
+async function aplicarDevolucoes(site: Db, erp: Db): Promise<{ aplicadas: number; descontado: number; paraEquipe: number }> {
+  const r = { aplicadas: 0, descontado: 0, paraEquipe: 0 };
+  const { data, error } = await erp.from('devolucoes_site').select('id, site_pedido_id, status, valor_material').eq('status', 'CONCLUIDO').limit(500);
+  if (error) throw new Error('devolucoes_site: ' + error.message);
+  const lista = (data ?? []) as { id: string; site_pedido_id: string; valor_material: number }[];
+  if (!lista.length) return r;
+  const { data: feitas } = await site.from('carteira_devolucoes').select('cancelamento_id').in('cancelamento_id', lista.map((d) => String(d.id)));
+  const jaFeitas = new Set(((feitas ?? []) as { cancelamento_id: string }[]).map((f) => f.cancelamento_id));
+  for (const d of lista) {
+    if (jaFeitas.has(String(d.id))) continue;
+    // Só depois de o motor ter criado os créditos do pedido; antes, espera a próxima rodada.
+    const { data: ped } = await site.from('pedidos').select('numero, incentivos_processados_em').eq('id', d.site_pedido_id).maybeSingle();
+    const pedido = ped as { numero: number | null; incentivos_processados_em: string | null } | null;
+    if (!pedido?.incentivos_processados_em) continue;
+    const feito = await aplicarDevolucaoParcial(site, { id: String(d.id), pedidoId: d.site_pedido_id, valorMaterial: Number(d.valor_material) });
+    if (!feito) continue;
+    r.aplicadas++;
+    r.descontado = Math.round((r.descontado + feito.descontado) * 100) / 100;
+    r.paraEquipe = Math.round((r.paraEquipe + feito.paraEquipe) * 100) / 100;
+    if (feito.paraEquipe > 0) {
+      await abrirOcorrencia(site, {
+        categoria: 'problema',
+        tipo: 'carteira',
+        titulo: `Devolução parcial no pedido #${pedido.numero ?? '?'}: comissão já liberada (${feito.paraEquipe.toFixed(2).replace('.', ',')})`,
+        detalhe: { pedidoId: d.site_pedido_id, devolucaoErp: String(d.id), valorMaterial: Number(d.valor_material), creditos: feito.creditos, oQueFazer: 'O crédito já estava disponível (pode ter sido usado ou sacado). Se for o caso, lançar um ajuste negativo na carteira do afiliado/indicador.' },
+        chaveDedupe: `devolucao-parcial:${d.id}`,
+      });
+    }
+  }
+  return r;
 }

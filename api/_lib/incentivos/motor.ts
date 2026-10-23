@@ -43,6 +43,7 @@ interface PedidoRow {
   cupom: string | null;
   desconto: number | null;
   incentivos_processados_em: string | null;
+  entregue_em: string | null;
 }
 
 interface PerfilRow {
@@ -90,7 +91,7 @@ export async function filiarSeFaltar(site: Db, userId: string, afiliadoUserId: s
 }
 
 export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: ConfigIncentivos): Promise<SaidaMotor> {
-  const { data: pd } = await site.from('pedidos').select('id, user_id, cupom, desconto, incentivos_processados_em').eq('id', e.pedidoId).maybeSingle();
+  const { data: pd } = await site.from('pedidos').select('id, user_id, cupom, desconto, incentivos_processados_em, entregue_em').eq('id', e.pedidoId).maybeSingle();
   const pedido = pd as PedidoRow | null;
   if (!pedido || !pedido.user_id) return { ignorado: 'pedido-sem-usuario', creditos: [], cortes: [] };
   if (pedido.incentivos_processados_em) return { ignorado: 'ja-processado', creditos: [], cortes: [] };
@@ -132,7 +133,11 @@ export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: Co
   // Candidatos ------------------------------------------------------------
   type Candidato = { quem: string; tipo: 'cashback_indicacao' | 'comissao_ativacao' | 'comissao_recorrencia'; pct: number; mult: number; periodo: string | null; liberaEm: Date; obs: string[] };
   const candidatos: Candidato[] = [];
-  const liberaPadrao = somarDias(e.faturadoEm, cfg.diasLiberacao);
+  // Carência (D3) contada da ENTREGUE, não do faturamento (#10, 23/10/2026):
+  // o crédito nasce esperando a entrega, e `liberaEm` é o "não antes de". Se o
+  // pedido já chegou entregue, a carência conta da entrega desde já.
+  const entregue = pedido.entregue_em ? new Date(pedido.entregue_em) : null;
+  const liberaPadrao = entregue ? somarDias(entregue, cfg.diasLiberacao) : somarDias(e.faturadoEm, cfg.diasLiberacao);
 
   // Ninguém ganha comprando de si mesmo (varredura 22/10): conta diferente,
   // mas o MESMO CPF/CNPJ do indicador/afiliado (o da conta ou o do cadastro de
@@ -234,6 +239,7 @@ export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: Co
       multiplicador: c.mult,
       baseValor: base,
       obs: c.obs.join(' · '),
+      aguardaEntrega: !entregue,
     });
     if (r.movimento) creditos.push(r.movimento);
     if (r.movimento && !r.repetido) {

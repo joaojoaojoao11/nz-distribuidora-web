@@ -309,7 +309,7 @@ export default function AdminAfiliadosRegras() {
           Carteira (vale para afiliados e super cupom)
         </h4>
         <Grade min={180}>
-          <Campo label="Carência (dias)" dica="do faturamento até o saldo ficar disponível">
+          <Campo label="Carência (dias)" dica="da entrega até o saldo ficar disponível">
             <input style={campoEstilo} inputMode="numeric" value={form.diasLiberacao ?? ''} onChange={(e) => setForm((f) => ({ ...f, diasLiberacao: e.target.value }))} />
           </Campo>
           <Campo label="Validade do saldo (meses)" dica="o que vence volta para a NZ">

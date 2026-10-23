@@ -40,6 +40,8 @@ export interface LinhaExtrato {
   valor: number;
   status: 'a_liberar' | 'disponivel' | 'estornado' | 'expirado';
   libera_em: string | null;
+  /** Esperando a entrega do pedido (a data de liberação sai quando ele for entregue). */
+  aguarda_entrega?: boolean;
   criado_em: string;
   periodo: string | null;
   percentual: number | null;

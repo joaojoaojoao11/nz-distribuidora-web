@@ -57,7 +57,7 @@ const { limitarIncentivo, tetoIncentivoPct } = await import(pathToFileURL(join(o
 const { chavePeriodo, fimPeriodo, rotuloPeriodo } = await import(pathToFileURL(join(outDir, 'incentivos/periodos.js')).href);
 const { codigoValido, sugerirCodigo } = await import(pathToFileURL(join(outDir, 'incentivos/superCupom.js')).href);
 const { montarConfig, CONFIG_PADRAO } = await import(pathToFileURL(join(outDir, 'incentivos/config.js')).href);
-const { creditar, debitar, saldoDe, estornarPorPedido, manutencaoCarteira } = await import(pathToFileURL(join(outDir, 'incentivos/carteira.js')).href);
+const { creditar, debitar, saldoDe, estornarPorPedido, manutencaoCarteira, liberarAposEntrega, aplicarDevolucaoParcial, DIAS_SEM_ENTREGA } = await import(pathToFileURL(join(outDir, 'incentivos/carteira.js')).href);
 const { motivoCupomInvalido, resolverCupom } = await import(pathToFileURL(join(outDir, 'pedido/precificar.js')).href);
 
 let falhas = 0;
@@ -225,6 +225,9 @@ function bancoFalso(tabelas) {
               const lista = Array.isArray(payload) ? payload : [payload];
               const inseridos = [];
               for (const obj of lista) {
+                if (nome === 'carteira_devolucoes' && rows().some((l) => l.cancelamento_id === obj.cancelamento_id)) {
+                  return Promise.resolve({ data: null, error: { code: '23505', message: 'duplicate' } }).then(resolve, reject);
+                }
                 if (nome === 'carteira_movimentos' && obj.pedido_id && ['cashback_indicacao', 'comissao_ativacao', 'comissao_recorrencia'].includes(obj.tipo)) {
                   if (rows().some((l) => l.tipo === obj.tipo && l.pedido_id === obj.pedido_id && l.user_id === obj.user_id)) {
                     return Promise.resolve({ data: null, error: { code: '23505', message: 'duplicate' } }).then(resolve, reject);
@@ -320,6 +323,46 @@ console.log('\n=== CARTEIRA (razão em memória) ===');
   ok('cron: libera o vencido e expira o de mais de 12 meses', m.liberados === 1 && m.expirados === 1 && m.valorExpirado === 5, JSON.stringify(m));
   ok('cron: expiração pela função FIFO, uma chamada por pessoa, régua de 12 meses', chamadas.length === 1 && ch.nome === 'carteira_expirar_usuario' && ch.args.p_user_id === 'ana' && ch.args.p_tipos.includes('cashback_indicacao') && !ch.args.p_tipos.includes('estorno') && meses > 11.5 && meses < 12.5, JSON.stringify(ch?.args));
   ok('crédito com libera_em no passado nasce já disponível', (await creditar(db2, { userId: 'ana', tipo: 'ajuste', valor: 1, liberaEm: new Date(Date.now() - 1000) })).movimento?.status === 'disponivel');
+}
+
+console.log('\n=== LIBERA DEPOIS DA ENTREGA E DEVOLUÇÃO PARCIAL (#10, 23/10) ===');
+{
+  const dia = 86400000;
+  const db3 = bancoFalso({ carteira_movimentos: [], carteira_devolucoes: [] });
+  db3.rpc = async () => ({ data: [{ expirados: 0, valor: 0 }], error: null });
+  // Faturado há 10 dias: a carência antiga (7) já passou, mas o pedido não foi entregue.
+  const c1 = await creditar(db3, { userId: 'ana', tipo: 'comissao_ativacao', valor: 40, liberaEm: new Date(Date.now() - 3 * dia), pedidoId: 'pe1', percentualAplicado: 4, baseValor: 1000, aguardaEntrega: true });
+  ok('crédito de pedido nasce a liberar esperando a entrega, mesmo com a carência antiga vencida', c1.movimento?.status === 'a_liberar' && c1.movimento?.libera_apos_entrega === true);
+  let m = await manutencaoCarteira(db3, 12);
+  ok('sem entrega, o cron não libera', m.liberados === 0 && db3.tabelas.carteira_movimentos[0].status === 'a_liberar', JSON.stringify(m));
+  // Entregue há 2 dias, carência 7: libera daqui a 5 dias.
+  const entregue = new Date(Date.now() - 2 * dia);
+  const n = await liberarAposEntrega(db3, 'pe1', entregue, 7);
+  const mov = db3.tabelas.carteira_movimentos[0];
+  ok('entregue: a data vira entrega + carência e o crédito para de esperar', n === 1 && mov.libera_apos_entrega === false && Math.abs(Date.parse(mov.libera_em) - (entregue.getTime() + 7 * dia)) < 1000);
+  m = await manutencaoCarteira(db3, 12);
+  ok('…e o cron ainda não libera antes da data', m.liberados === 0);
+  // Recorrência com fim de período DEPOIS de entrega + carência: vale o fim do período.
+  const fimPeriodo = new Date(Date.now() + 20 * dia);
+  await creditar(db3, { userId: 'bia', tipo: 'comissao_recorrencia', valor: 10, liberaEm: fimPeriodo, pedidoId: 'pe2', percentualAplicado: 2, aguardaEntrega: true });
+  await liberarAposEntrega(db3, 'pe2', new Date(), 7);
+  ok('recorrência: vale o que vier depois (fim do período)', Date.parse(db3.tabelas.carteira_movimentos[1].libera_em) === fimPeriodo.getTime());
+  // Entrega que nunca chega: depois de DIAS_SEM_ENTREGA o crédito deixa de esperar.
+  const velho = await creditar(db3, { userId: 'caio', tipo: 'cashback_indicacao', valor: 5, liberaEm: new Date(Date.now() - 50 * dia), pedidoId: 'pe3', percentualAplicado: 1, aguardaEntrega: true });
+  velho.movimento.criado_em = new Date(Date.now() - (DIAS_SEM_ENTREGA + 1) * dia).toISOString();
+  m = await manutencaoCarteira(db3, 12);
+  ok('pedido que o NZERP nunca marca entregue: libera depois de ' + DIAS_SEM_ENTREGA + ' dias', m.semEntrega === 1 && m.liberados === 1 && velho.movimento.status === 'disponivel', JSON.stringify(m));
+
+  // Devolução parcial de R$ 250 no pedido pe1 (comissão de 4%): o crédito a liberar perde R$ 10.
+  const d1 = await aplicarDevolucaoParcial(db3, { id: 'dev-1', pedidoId: 'pe1', valorMaterial: 250 });
+  ok('devolução parcial: crédito a liberar perde a comissão da parte devolvida (40 → 30)', d1?.descontado === 10 && db3.tabelas.carteira_movimentos[0].valor === 30 && /devolução parcial/.test(db3.tabelas.carteira_movimentos[0].obs ?? ''), JSON.stringify(d1));
+  ok('a mesma devolução não é aplicada duas vezes', (await aplicarDevolucaoParcial(db3, { id: 'dev-1', pedidoId: 'pe1', valorMaterial: 250 })) === null && db3.tabelas.carteira_movimentos[0].valor === 30);
+  // Devolução maior que o que sobrou: o crédito zera e vira estornado.
+  await aplicarDevolucaoParcial(db3, { id: 'dev-2', pedidoId: 'pe1', valorMaterial: 5000 });
+  ok('devolução que leva tudo: crédito estornado, nunca negativo', db3.tabelas.carteira_movimentos[0].status === 'estornado' && db3.tabelas.carteira_movimentos[0].valor === 30);
+  // Crédito já liberado: não mexe; vai para a equipe.
+  const d3 = await aplicarDevolucaoParcial(db3, { id: 'dev-3', pedidoId: 'pe3', valorMaterial: 100 });
+  ok('crédito já liberado não é mexido: vira caso da equipe', d3?.descontado === 0 && d3?.paraEquipe === 1 && velho.movimento.valor === 5, JSON.stringify(d3));
 }
 
 console.log('\n=== RÉGUA DO CUPOM (nominal, super, afiliado) ===');

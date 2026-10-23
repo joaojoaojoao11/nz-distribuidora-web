@@ -555,13 +555,13 @@ export const TUTORIAIS_CONTA: Tutorial[] = [
       {
         titulo: 'Quando você ganha',
         texto:
-          'Quando a NZ **fatura** a compra do amigo, o seu **cashback** entra na carteira como **a liberar**. Depois da carência (o número de dias aparece em Sua carteira), ele fica **disponível**.',
+          'Quando a NZ **fatura** a compra do amigo, o seu **cashback** entra na carteira como **a liberar**. Ele fica **disponível** alguns dias depois que a compra é **entregue** (o número de dias aparece em Sua carteira). Se o amigo devolver parte da compra, o cashback daquela parte sai.',
         cena: {
           tipo: 'linhaTempo',
           marcos: [
             { rotulo: 'Amigo compra', sub: 'com seu código' },
             { rotulo: 'NZ fatura', sub: 'cashback nasce' },
-            { rotulo: 'A liberar', sub: 'carência', tom: 'atencao' },
+            { rotulo: 'A liberar', sub: 'entrega + carência', tom: 'atencao' },
             { rotulo: 'Disponível', tom: 'ok' },
           ],
         },
@@ -627,12 +627,12 @@ export const TUTORIAIS_CONTA: Tutorial[] = [
       {
         titulo: 'Suas comissões',
         texto:
-          'Quando a NZ **fatura** uma compra feita no site por um filiado, nasce a comissão, sobre o valor sem frete: **ativação** na primeira compra de cada filiado e **recorrência** nas seguintes. A recorrência libera no fim do período que você escolhe em **Fechamento da recorrência** (mês ou quinzena).',
+          'Quando a NZ **fatura** uma compra feita no site por um filiado, nasce a comissão, sobre o valor sem frete: **ativação** na primeira compra de cada filiado e **recorrência** nas seguintes. Toda comissão libera alguns dias depois que a compra é **entregue**; a recorrência, também só no fim do período que você escolhe em **Fechamento da recorrência** (mês ou quinzena). Devolução parcial desconta a parte devolvida.',
         cena: {
           tipo: 'linhaTempo',
           marcos: [
             { rotulo: 'Compra faturada', sub: 'do filiado' },
-            { rotulo: 'A liberar', sub: 'carência', tom: 'atencao' },
+            { rotulo: 'A liberar', sub: 'entrega + carência', tom: 'atencao' },
             { rotulo: 'Fim do período', sub: 'só recorrência', tom: 'atencao' },
             { rotulo: 'Disponível', tom: 'ok' },
           ],

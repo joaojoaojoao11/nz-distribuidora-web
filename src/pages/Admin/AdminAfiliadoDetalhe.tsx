@@ -47,6 +47,7 @@ interface Movimento {
   valor: number;
   status: string;
   libera_em: string | null;
+  libera_apos_entrega?: boolean;
   criado_em: string;
   origem_user_id: string | null;
   periodo: string | null;
@@ -321,7 +322,7 @@ export default function AdminAfiliadoDetalhe() {
                   <td>
                     <Chip tom={m.status === 'disponivel' ? 'ok' : m.status === 'a_liberar' ? 'atencao' : 'neutro'}>{m.status.replace('_', ' ')}</Chip>
                   </td>
-                  <td>{m.libera_em ? dataBR(m.libera_em) : '—'}</td>
+                  <td>{m.status === 'a_liberar' && m.libera_apos_entrega ? 'depois da entrega' : m.libera_em ? dataBR(m.libera_em) : '—'}</td>
                   <td className={ped.mudo} style={{ fontSize: '0.72rem', maxWidth: 260 }}>
                     {m.obs ?? ''}
                   </td>

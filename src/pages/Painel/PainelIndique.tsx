@@ -253,7 +253,7 @@ export default function PainelIndique() {
           <div>
             <span className={styles.rotulo}>A liberar</span>
             <strong className={styles.saldoValor}>{BRL.format(saldo.aLiberar)}</strong>
-            <small className={styles.mudo}>libera {regras.diasLiberacao} dias depois do faturamento</small>
+            <small className={styles.mudo}>libera {regras.diasLiberacao} dias depois da entrega</small>
           </div>
         </div>
         <p className={styles.mudo}>
@@ -295,7 +295,7 @@ export default function PainelIndique() {
                 <strong>Quem é novo na NZ</strong> usa o cupom na primeira compra e ganha {superCupom.descontoPct}% de desconto.
               </li>
               <li>
-                <strong>Você ganha</strong> {superCupom.cashbackPct}% dessa compra na sua carteira, liberado {regras.diasLiberacao} dias depois do faturamento. Vale uma compra por pessoa indicada.
+                <strong>Você ganha</strong> {superCupom.cashbackPct}% dessa compra na sua carteira, liberado {regras.diasLiberacao} dias depois que a compra é entregue. Vale uma compra por pessoa indicada.
               </li>
             </ol>
             <div className={styles.form} style={{ marginTop: '0.75rem' }}>
@@ -431,7 +431,7 @@ export default function PainelIndique() {
                   {m.rotulo}
                   {m.indicado ? ` · ${m.indicado}` : ''}
                   {m.periodo ? ` · ${m.periodo}` : ''}
-                  {m.status !== 'disponivel' ? ` · ${STATUS_MOVIMENTO[m.status] ?? m.status}${m.status === 'a_liberar' && m.libera_em ? ` em ${dia(m.libera_em)}` : ''}` : ''}
+                  {m.status !== 'disponivel' ? ` · ${STATUS_MOVIMENTO[m.status] ?? m.status}${m.status === 'a_liberar' ? (m.aguarda_entrega ? ' depois da entrega' : m.libera_em ? ` em ${dia(m.libera_em)}` : '') : ''}` : ''}
                   {m.obs ? ` · ${m.obs}` : ''}
                 </span>
                 <span className={`${styles.extratoPontos} ${m.valor > 0 ? styles.extratoMais : styles.extratoMenos}`}>

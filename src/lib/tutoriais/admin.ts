@@ -58,12 +58,12 @@ export const TUTORIAIS_ADMIN: Tutorial[] = [
       {
         titulo: 'Como ele ganha',
         texto:
-          'A comissão nasce quando o NZERP **fatura** o pedido que o filiado fez no site, sobre o valor sem o frete. Na **primeira** compra faturada de cada filiado entra a comissão de **ativação**; nas seguintes, a de **recorrência**, que só libera no **fim do período** (mês ou quinzena). O nível do afiliado (Largada → Campeão) multiplica a comissão.',
+          'A comissão nasce quando o NZERP **fatura** o pedido que o filiado fez no site, sobre o valor sem o frete. Na **primeira** compra faturada de cada filiado entra a comissão de **ativação**; nas seguintes, a de **recorrência**, que só libera no **fim do período** (mês ou quinzena). Toda comissão espera a **entrega** do pedido mais a carência, e devolução parcial desconta a parte devolvida. O nível do afiliado (Largada → Campeão) multiplica a comissão.',
         cena: {
           tipo: 'linhaTempo',
           marcos: [
             { rotulo: 'Pedido faturado', sub: 'no NZERP' },
-            { rotulo: 'A liberar', sub: 'carência', tom: 'atencao' },
+            { rotulo: 'A liberar', sub: 'entrega + carência', tom: 'atencao' },
             { rotulo: 'Fim do período', sub: 'só na recorrência', tom: 'atencao' },
             { rotulo: 'Disponível', sub: 'usa ou saca', tom: 'ok' },
           ],
@@ -173,7 +173,7 @@ export const TUTORIAIS_ADMIN: Tutorial[] = [
       {
         titulo: 'Carteira',
         texto:
-          '**Carência**: dias entre o faturamento no NZERP e o saldo ficar disponível. **Validade**: depois desse prazo, o saldo não usado volta para a NZ. **Usar o saldo no checkout** deixa o cliente abater o pedido com a carteira, e a **cobrança mínima** garante que o que sobra para o Asaas nunca fica abaixo do valor definido.',
+          '**Carência**: dias entre a **entrega** do pedido (o NZERP marca entregue) e o saldo ficar disponível — o prazo de devolução passa antes de o dinheiro sair. Devolução parcial desconta a parte devolvida. **Validade**: depois desse prazo, o saldo não usado volta para a NZ. **Usar o saldo no checkout** deixa o cliente abater o pedido com a carteira, e a **cobrança mínima** garante que o que sobra para o Asaas nunca fica abaixo do valor definido.',
         cena: {
           tipo: 'linhaTempo',
           marcos: [
@@ -249,13 +249,13 @@ export const TUTORIAIS_ADMIN: Tutorial[] = [
       {
         titulo: 'Como o dono ganha',
         texto:
-          'Quando o NZERP **fatura** a compra do amigo, o dono ganha **cashback** na carteira, sobre o valor sem frete, multiplicado pelo nível dele. O valor fica **a liberar** durante a carência; depois fica disponível para usar no site ou sacar por Pix.',
+          'Quando o NZERP **fatura** a compra do amigo, o dono ganha **cashback** na carteira, sobre o valor sem frete, multiplicado pelo nível dele. O valor fica **a liberar** até a compra ser entregue e passar a carência; depois fica disponível para usar no site ou sacar por Pix.',
         cena: {
           tipo: 'linhaTempo',
           marcos: [
             { rotulo: 'Amigo compra', sub: 'com o cupom' },
             { rotulo: 'NZERP fatura', sub: 'cashback nasce' },
-            { rotulo: 'Carência', sub: 'a liberar', tom: 'atencao' },
+            { rotulo: 'Entrega + carência', sub: 'a liberar', tom: 'atencao' },
             { rotulo: 'Disponível', sub: 'usa ou saca', tom: 'ok' },
           ],
         },

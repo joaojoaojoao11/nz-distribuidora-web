@@ -74,11 +74,13 @@ function extratoAnonimo(movs: Movimento[]) {
     valor: Number(m.valor),
     status: m.status,
     libera_em: m.libera_em,
+    // Esperando a entrega (#10): a data só existe depois que o NZERP marcar entregue.
+    aguarda_entrega: m.status === 'a_liberar' && Boolean(m.libera_apos_entrega),
     criado_em: m.criado_em,
     periodo: m.periodo ? rotuloPeriodo(m.periodo) : null,
     percentual: m.percentual_aplicado,
     indicado: m.origem_user_id ? `indicado nº ${numeroDe.get(m.origem_user_id)}` : null,
-    obs: m.obs && /trava de margem/.test(m.obs) ? 'ajustado pela regra de margem' : null,
+    obs: m.obs && /devolução parcial/.test(m.obs) ? 'descontada a parte devolvida' : m.obs && /trava de margem/.test(m.obs) ? 'ajustado pela regra de margem' : null,
   }));
 }
 

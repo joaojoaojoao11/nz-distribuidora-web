@@ -47,10 +47,12 @@ export interface Movimento {
   liberado_em: string | null;
   estornado_em: string | null;
   expirado_em: string | null;
+  /** Esperando a ENTREGA do pedido no NZERP (23/10/2026): não libera antes dela. */
+  libera_apos_entrega: boolean;
 }
 
 export const COLUNAS_MOVIMENTO =
-  'id, user_id, tipo, valor, status, libera_em, expira_em, pedido_id, origem_user_id, cupom_codigo, periodo, percentual_aplicado, multiplicador, base_valor, referencia_id, obs, criado_por, criado_em, liberado_em, estornado_em, expirado_em';
+  'id, user_id, tipo, valor, status, libera_em, expira_em, pedido_id, origem_user_id, cupom_codigo, periodo, percentual_aplicado, multiplicador, base_valor, referencia_id, obs, criado_por, criado_em, liberado_em, estornado_em, expirado_em, libera_apos_entrega';
 
 export interface Saldo {
   disponivel: number;
@@ -62,8 +64,10 @@ export interface NovoCredito {
   userId: string;
   tipo: TipoMovimento;
   valor: number;
-  /** Nulo = já disponível. */
+  /** Nulo = já disponível. Com `aguardaEntrega`, é o "não antes de". */
   liberaEm?: Date | null;
+  /** Crédito de pedido: só libera depois da ENTREGA + carência (#10, 23/10/2026). */
+  aguardaEntrega?: boolean;
   pedidoId?: string | null;
   origemUserId?: string | null;
   cupomCodigo?: string | null;
@@ -82,7 +86,7 @@ export interface NovoCredito {
 export async function creditar(site: Db, c: NovoCredito): Promise<{ movimento: Movimento | null; repetido: boolean; erro?: string }> {
   const valor = r2(Number(c.valor) || 0);
   if (valor <= 0) return { movimento: null, repetido: false, erro: 'valor-zero' };
-  const aLiberar = Boolean(c.liberaEm && c.liberaEm.getTime() > Date.now());
+  const aLiberar = c.aguardaEntrega === true || Boolean(c.liberaEm && c.liberaEm.getTime() > Date.now());
   const linha = {
     user_id: c.userId,
     tipo: c.tipo,
@@ -99,6 +103,7 @@ export async function creditar(site: Db, c: NovoCredito): Promise<{ movimento: M
     base_valor: c.baseValor != null ? r2(c.baseValor) : null,
     obs: c.obs ?? null,
     criado_por: c.criadoPor ?? 'motor',
+    libera_apos_entrega: c.aguardaEntrega === true,
   };
   const { data, error } = await site.from('carteira_movimentos').insert(linha).select(COLUNAS_MOVIMENTO).single();
   if (error) {
@@ -237,13 +242,24 @@ export const TIPOS_QUE_EXPIRAM: TipoMovimento[] = ['cashback_indicacao', 'comiss
  * do checkout). Antes o crédito inteiro virava "expirado" mesmo já gasto em
  * parte, e o saldo ficava negativo.
  */
-export async function manutencaoCarteira(site: Db, mesesValidade: number): Promise<{ liberados: number; expirados: number; valorExpirado: number; erros: string[] }> {
+export async function manutencaoCarteira(site: Db, mesesValidade: number): Promise<{ liberados: number; semEntrega: number; expirados: number; valorExpirado: number; erros: string[] }> {
   const agora = new Date();
   const erros: string[] = [];
+  // Pedido que o NZERP nunca marca como entregue: depois de DIAS_SEM_ENTREGA o
+  // crédito deixa de esperar a entrega e segue a carência que já tinha.
+  const limiteEntrega = new Date(agora.getTime() - DIAS_SEM_ENTREGA * 86_400_000).toISOString();
+  const { data: semEntrega } = await site
+    .from('carteira_movimentos')
+    .update({ libera_apos_entrega: false })
+    .eq('status', 'a_liberar')
+    .eq('libera_apos_entrega', true)
+    .lte('criado_em', limiteEntrega)
+    .select('id');
   const { data: lib } = await site
     .from('carteira_movimentos')
     .update({ status: 'disponivel', liberado_em: agora.toISOString() })
     .eq('status', 'a_liberar')
+    .eq('libera_apos_entrega', false)
     .lte('libera_em', agora.toISOString())
     .select('id');
   const limite = new Date(agora);
@@ -269,7 +285,81 @@ export async function manutencaoCarteira(site: Db, mesesValidade: number): Promi
     expirados += Number(linha?.expirados ?? 0);
     valorExpirado = r2(valorExpirado + Number(linha?.valor ?? 0));
   }
-  return { liberados: (lib ?? []).length, expirados, valorExpirado, erros };
+  return { liberados: (lib ?? []).length, semEntrega: (semEntrega ?? []).length, expirados, valorExpirado, erros };
+}
+
+/** Crédito esperando uma entrega que o NZERP nunca marca: depois disto, segue a carência que já tinha. */
+export const DIAS_SEM_ENTREGA = 60;
+
+/**
+ * O NZERP marcou o pedido como ENTREGUE (#10, 23/10/2026): os créditos dele
+ * que esperavam a entrega passam a liberar em entrega + carência — ou no
+ * "não antes de" que já tinham (fim do período da recorrência), o que vier
+ * depois. Devolve quantos créditos ganharam data.
+ */
+export async function liberarAposEntrega(site: Db, pedidoId: string, entregueEm: Date, diasCarencia: number): Promise<number> {
+  const { data } = await site.from('carteira_movimentos').select('id, libera_em').eq('pedido_id', pedidoId).eq('status', 'a_liberar').eq('libera_apos_entrega', true);
+  const aposEntrega = new Date(entregueEm.getTime() + Math.max(0, diasCarencia) * 86_400_000);
+  let n = 0;
+  for (const m of (data ?? []) as { id: number; libera_em: string | null }[]) {
+    const antes = m.libera_em ? new Date(m.libera_em) : null;
+    const libera = antes && antes.getTime() > aposEntrega.getTime() ? antes : aposEntrega;
+    const { error } = await site.from('carteira_movimentos').update({ libera_em: libera.toISOString(), libera_apos_entrega: false }).eq('id', m.id).eq('libera_apos_entrega', true);
+    if (!error) n++;
+  }
+  return n;
+}
+
+export interface DevolucaoParcial {
+  /** id da devolução no NZERP (pedido_cancelamentos) */
+  id: string;
+  pedidoId: string;
+  /** valor do material devolvido (sem frete) */
+  valorMaterial: number;
+}
+
+/**
+ * Devolução PARCIAL concluída no NZERP (#10, 23/10/2026): a comissão sobre o
+ * valor devolvido sai do crédito do pedido. Uma vez por devolução — a linha em
+ * `carteira_devolucoes` é a vez. Crédito ainda a liberar perde o valor ali
+ * mesmo (a observação guarda o rastro); crédito já liberado NÃO é mexido: a
+ * pessoa pode ter usado ou sacado, e a equipe decide (ocorrência). Devolve o
+ * que fez, ou null se a devolução já tinha sido aplicada.
+ */
+export async function aplicarDevolucaoParcial(site: Db, d: DevolucaoParcial): Promise<{ descontado: number; paraEquipe: number; creditos: unknown[] } | null> {
+  const valorMaterial = r2(Math.max(0, Number(d.valorMaterial) || 0));
+  const { data: creditosData } = await site
+    .from('carteira_movimentos')
+    .select(COLUNAS_MOVIMENTO)
+    .eq('pedido_id', d.pedidoId)
+    .in('tipo', ['cashback_indicacao', 'comissao_ativacao', 'comissao_recorrencia'])
+    .in('status', ['a_liberar', 'disponivel']);
+  const creditos = (creditosData ?? []) as Movimento[];
+  const plano = creditos
+    .map((m) => ({ m, desconto: r2(Math.min(Number(m.valor), (valorMaterial * Number(m.percentual_aplicado ?? 0)) / 100)) }))
+    .filter((x) => x.desconto > 0);
+  const registro = plano.map((x) => ({ movimentoId: x.m.id, userId: x.m.user_id, status: x.m.status, valor: Number(x.m.valor), desconto: x.desconto }));
+  // A vez: quem grava a devolução aplica; a segunda rodada para aqui.
+  const { error: eVez } = await site.from('carteira_devolucoes').insert({ cancelamento_id: d.id, pedido_id: d.pedidoId, valor_material: valorMaterial, creditos: registro });
+  if (eVez) return null;
+
+  let descontado = 0;
+  let paraEquipe = 0;
+  const agora = new Date().toISOString();
+  for (const { m, desconto } of plano) {
+    if (m.status === 'a_liberar') {
+      const novo = r2(Number(m.valor) - desconto);
+      const obs = [m.obs, `devolução parcial no NZERP: −${desconto.toFixed(2)} (de ${Number(m.valor).toFixed(2)})`].filter(Boolean).join(' · ');
+      const patch = novo > 0 ? { valor: novo, obs } : { status: 'estornado', estornado_em: agora, obs };
+      const { data: mudou } = await site.from('carteira_movimentos').update(patch).eq('id', m.id).eq('status', 'a_liberar').select('id');
+      // Liberou no meio do caminho: vai para a equipe como qualquer crédito liberado.
+      if ((mudou ?? []).length) descontado = r2(descontado + desconto);
+      else paraEquipe = r2(paraEquipe + desconto);
+    } else {
+      paraEquipe = r2(paraEquipe + desconto);
+    }
+  }
+  return { descontado, paraEquipe, creditos: registro };
 }
 
 /** Rótulo em português de cada tipo (painel e admin). */
