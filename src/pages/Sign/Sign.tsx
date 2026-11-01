@@ -7,6 +7,17 @@ import MetamarkBlock from './MetamarkBlock';
 import { metamarkSkus } from './metamarkMd80';
 import styles from './Sign.module.css';
 import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+import { AVERY_NO_SITE } from '../../lib/avery';
+
+// Textos da página com e sem a Avery (src/lib/avery.ts). Sem ela, a NZSIGN
+// fica com Metamark (MD-80 e 7 Series) e ORAFOL (Oracal 651).
+const TITULO = AVERY_NO_SITE ? 'NZSIGN — Metamark MD-80 e Avery Dennison' : 'NZSIGN — Metamark e Oracal 651';
+const DESCRICAO = AVERY_NO_SITE
+  ? 'Distribuição Metamark MD-80 (impressão digital branca brilho e fosco, adesivo cinza blockout) e linha Avery Dennison completa. Vinil de recorte Oracal 651 em 62 cores. Vinis para comunicação visual profissional no Brasil, com garantia de fábrica.'
+  : 'Distribuição Metamark MD-80 (impressão digital branca brilho e fosco, adesivo cinza blockout), vinil de recorte Metamark 7 Series e Oracal 651 em 62 cores. Vinis para comunicação visual profissional no Brasil, com garantia de fábrica.';
+const PALAVRAS = AVERY_NO_SITE
+  ? 'metamark md-80, metamark md-80b, metamark md-81m, metamark brasil, vinil impressão digital, branco brilho impressão, branco fosco impressão, adesivo cinza blockout, avery dennison brasil, mpi 1105, mpi 2105, dol sobrelaminado, etchmark, metamark 7 series, vinil de recorte metamark, oracal 651, vinil de recorte orafol, nzsign'
+  : 'metamark md-80, metamark md-80b, metamark md-81m, metamark brasil, vinil impressão digital, branco brilho impressão, branco fosco impressão, adesivo cinza blockout, metamark 7 series, vinil de recorte metamark, oracal 651, vinil de recorte orafol, nzsign';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -29,9 +40,10 @@ export default function Sign() {
   const schema = JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'NZSIGN — Metamark MD-80 e Avery Dennison',
-    description:
-      'NZSIGN é a divisão de comunicação visual da NZ Group. Distribuímos a linha Metamark MD-80 (lançamento setembro/2026) e a linha Avery Dennison completa.',
+    name: TITULO,
+    description: AVERY_NO_SITE
+      ? 'NZSIGN é a divisão de comunicação visual da NZ Group. Distribuímos a linha Metamark MD-80 (lançamento setembro/2026) e a linha Avery Dennison completa.'
+      : 'NZSIGN é a divisão de comunicação visual da NZ Group. Distribuímos a linha Metamark MD-80 (lançamento setembro/2026), o vinil de recorte Metamark 7 Series e o Oracal 651 da ORAFOL.',
     url: `${SITE_URL}/sign`,
     mainEntity: metamarkSkus.map((sku) => ({
       '@type': 'Product',
@@ -45,9 +57,9 @@ export default function Sign() {
   return (
     <div className={styles.page}>
       <SEO
-        title="NZSIGN — Metamark MD-80 e Avery Dennison"
-        description="Distribuição Metamark MD-80 (impressão digital branca brilho e fosco, adesivo cinza blockout) e linha Avery Dennison completa. Vinil de recorte Oracal 651 em 62 cores. Vinis para comunicação visual profissional no Brasil, com garantia de fábrica."
-        keywords="metamark md-80, metamark md-80b, metamark md-81m, metamark brasil, vinil impressão digital, branco brilho impressão, branco fosco impressão, adesivo cinza blockout, avery dennison brasil, mpi 1105, mpi 2105, dol sobrelaminado, etchmark, metamark 7 series, vinil de recorte metamark, oracal 651, vinil de recorte orafol, nzsign"
+        title={TITULO}
+        description={DESCRICAO}
+        keywords={PALAVRAS}
         canonicalUrl="/sign"
         schema={schema}
       />
@@ -72,7 +84,9 @@ export default function Sign() {
               variants={fadeUpItem}
             />
             <motion.p className={styles.heroSubtitle} variants={fadeUpItem}>
-              A NZSIGN é a divisão da NZ Group dedicada à comunicação visual profissional. Trabalhamos três marcas globais de referência: Metamark (UK) para impressão digital premium, Avery Dennison para vinis calandrados, sobrelaminados, refletivos e filmes especiais, e ORAFOL (Alemanha) com o vinil de recorte Oracal 651.
+              {AVERY_NO_SITE
+                ? 'A NZSIGN é a divisão da NZ Group dedicada à comunicação visual profissional. Trabalhamos três marcas globais de referência: Metamark (UK) para impressão digital premium, Avery Dennison para vinis calandrados, sobrelaminados, refletivos e filmes especiais, e ORAFOL (Alemanha) com o vinil de recorte Oracal 651.'
+                : 'A NZSIGN é a divisão da NZ Group dedicada à comunicação visual profissional. Trabalhamos duas marcas globais de referência: Metamark (UK), para impressão digital premium e vinil de recorte, e ORAFOL (Alemanha), com o vinil de recorte Oracal 651.'}
             </motion.p>
             <motion.p className={styles.heroSubtitleWarning} variants={fadeUpItem}>
               Não vendemos apenas vinil — entregamos durabilidade, acabamento e padrão global.
@@ -102,7 +116,10 @@ export default function Sign() {
             Atendemos gráficas, comunicadores visuais, frotas, oficinas de wrap e produtores de sinalização. Vendemos por bobina, atendemos pedido recortado e damos respaldo técnico em aplicação.
           </motion.p>
           <motion.p className={styles.aboutParagraph} variants={fadeUpItem}>
-            Nosso catálogo combina dois pilares. A Metamark, fundada em 1992 no Reino Unido e subsidiária da UPM Raflatac desde 2025, amplia sua presença na NZSIGN em setembro de 2026 com a linha MD-80 — vinil calandrado para impressão digital, com garantia MetaSure® e selo Ecovadis Platinum de sustentabilidade. A Avery Dennison, americana e referência global há mais de 90 anos, completa a linha com MPI, SLP, DOL, ETCHMARK, MASCARA e refletivos.
+            Nosso catálogo combina dois pilares. A Metamark, fundada em 1992 no Reino Unido e subsidiária da UPM Raflatac desde 2025, amplia sua presença na NZSIGN em setembro de 2026 com a linha MD-80 — vinil calandrado para impressão digital, com garantia MetaSure® e selo Ecovadis Platinum de sustentabilidade.{' '}
+            {AVERY_NO_SITE
+              ? 'A Avery Dennison, americana e referência global há mais de 90 anos, completa a linha com MPI, SLP, DOL, ETCHMARK, MASCARA e refletivos.'
+              : 'A ORAFOL, alemã, completa a linha com o Oracal 651, o vinil de recorte mais usado do mundo, e a Metamark soma ainda a 7 Series para recorte.'}
           </motion.p>
         </motion.div>
       </section>
@@ -133,8 +150,8 @@ export default function Sign() {
         </motion.div>
       </section>
 
-      {/* BLOCO AVERY */}
-      <AveryBlock />
+      {/* BLOCO AVERY — some quando a Avery está fora do site (src/lib/avery.ts) */}
+      {AVERY_NO_SITE && <AveryBlock />}
 
       {/* CTA FINAL */}
       <section className={styles.ctaSection}>

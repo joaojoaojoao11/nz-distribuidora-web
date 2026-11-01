@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { AVERY_NO_SITE } from '../../lib/avery';
 import styles from './Showcase.module.css';
 
 const blurReveal = {
@@ -73,9 +74,11 @@ export default function Showcase() {
             </div>
             <div className={styles.splitContent}>
               <img src="/assets/logos/nzsign/logo-nzsign-transparente.svg" alt="NZSIGN" className={`${styles.splitLogo} ${styles.splitLogoWide}`} loading="lazy" decoding="async" />
-              <span className={styles.splitSub}>COMUNICAÇÃO VISUAL AVERY DENNISON</span>
+              <span className={styles.splitSub}>{AVERY_NO_SITE ? 'COMUNICAÇÃO VISUAL AVERY DENNISON' : 'COMUNICAÇÃO VISUAL METAMARK E ORACAL'}</span>
               <p className={styles.splitDesc}>
-                Filmes para impressão digital, recorte e sinalização com padrão global Avery Dennison. Do MPI ao refletivo, tudo para o profissional de sign.
+                {AVERY_NO_SITE
+                  ? 'Filmes para impressão digital, recorte e sinalização com padrão global Avery Dennison. Do MPI ao refletivo, tudo para o profissional de sign.'
+                  : 'Filmes para impressão digital, recorte e sinalização: Metamark MD-80, Metamark 7 Series e Oracal 651. Tudo para o profissional de sign.'}
               </p>
               <span className={styles.splitCta}>
                 EXPLORAR

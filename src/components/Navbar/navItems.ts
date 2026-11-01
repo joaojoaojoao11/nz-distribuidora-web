@@ -2,12 +2,14 @@
 //
 // Existe separado de propósito. O menu do desktop é uma fileira de logotipos
 // com dropdowns posicionados — cada item tem tratamento visual próprio (alturas
-// diferentes por marca, caixa roxa da Metamark, recorte da NZSIGN). Reaproveitar
+// diferentes por marca, logo branco da Metamark, recorte da NZSIGN). Reaproveitar
 // aquele markup dentro de um overlay foi exatamente o que deixou o menu do
 // celular desconfigurado: logos de 80px empilhados, dropdowns virando duas
 // colunas e a lista estourando a altura da tela.
 //
 // Aqui é o oposto: uma lista de texto, uma coluna, hierarquia por indentação.
+
+import { AVERY_NO_SITE } from '../../lib/avery';
 
 export interface NavItem {
   label: string;
@@ -42,7 +44,7 @@ export function buildNavItems(contagens: { shDecor: number; etherna: number; imp
       label: 'NZSIGN',
       to: '/sign',
       children: [
-        { label: 'Metamark MD-80 · Avery Dennison', to: '/sign' },
+        { label: AVERY_NO_SITE ? 'Metamark MD-80 · Avery Dennison' : 'Metamark MD-80', to: '/sign' },
         { label: 'Metamark 7 Series', to: '/sign/metamark-7-series' },
         { label: 'Oracal 651', to: '/sign/oracal-651' },
       ],

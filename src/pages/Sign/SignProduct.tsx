@@ -1,10 +1,11 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { getFamilyBySlug, averyFamilies } from './averyLines';
 import styles from './SignProduct.module.css';
 import { LinkVendas } from '../../components/ContatoVendas/ContatoVendas';
+import { AVERY_NO_SITE } from '../../lib/avery';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -30,6 +31,9 @@ const cardStagger = {
 export default function SignProduct() {
   const { slug } = useParams<{ slug: string }>();
   const family = getFamilyBySlug(slug);
+
+  // As 6 famílias Avery saem do ar junto com a marca (src/lib/avery.ts).
+  if (!AVERY_NO_SITE) return <Navigate to="/sign" replace />;
 
   if (!family) {
     return (

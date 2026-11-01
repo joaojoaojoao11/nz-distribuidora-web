@@ -7,6 +7,7 @@ import { abrirPainelCarrinho, usePainelCarrinho } from '../../lib/shop/painelCar
 import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
 import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
 import { IMPRIMAX_TOTAL } from '../../pages/Decor/imprimaxTotal';
+import { AVERY_NO_SITE } from '../../lib/avery';
 import styles from './Navbar.module.css';
 
 // O índice da busca carrega ~340 destinos (páginas, linhas e todas as cores e
@@ -165,7 +166,7 @@ export default function Navbar() {
               </Link>
               <Link to="/wrap/metamark-mcx" className={styles.dropdownItem} onClick={closeMenu}>
                 <img
-                  src="/assets/logos/metamark/logo-metamark.svg"
+                  src="/assets/logos/metamark/logo-metamark-branco.svg"
                   alt="MetaCast MCX"
                   className={styles.dropdownLogoMetamark}
                 />
@@ -191,7 +192,7 @@ export default function Navbar() {
             </Link>
             <div className={styles.dropdown}>
               <Link to="/sign" className={styles.dropdownTextItem} onClick={closeMenu}>
-                METAMARK MD-80 · AVERY DENNISON
+                {AVERY_NO_SITE ? 'METAMARK MD-80 · AVERY DENNISON' : 'METAMARK MD-80'}
               </Link>
               <Link to="/sign/metamark-7-series" className={styles.dropdownTextItem} onClick={closeMenu}>
                 METAMARK 7 SERIES

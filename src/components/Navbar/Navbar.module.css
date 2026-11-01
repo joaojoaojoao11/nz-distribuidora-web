@@ -292,10 +292,10 @@
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-/* o logo da Metamark já vem com o retângulo roxo da marca: não precisa de
-   variante branca, só de altura calibrada para o mesmo peso visual dos vizinhos */
+/* variante branca da Metamark (sem o retângulo roxo), no mesmo tom dos
+   vizinhos; o viewBox já é justo ao wordmark, então não precisa de margem negativa */
 .dropdownLogoMetamark {
-  height: 26px;
+  height: 17px;
   width: auto;
   opacity: 0.9;
   transition: opacity 0.2s ease, transform 0.2s ease;

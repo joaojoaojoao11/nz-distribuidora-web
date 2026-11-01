@@ -13,6 +13,7 @@ import {
 } from './adapters/cores';
 import { averyToShopItems, md80ToShopItems, ppfToShopItems } from './adapters/editorial';
 import { dbSnapshotToShopItems } from './adapters/dbSnapshot';
+import { AVERY_NO_SITE } from '../avery';
 import { assertUniqueSlugs, type ShopItem, type SourceKey, type Vertical } from './types';
 
 function build(): ShopItem[] {
@@ -23,7 +24,7 @@ function build(): ShopItem[] {
     ...dbSnapshotToShopItems(),
     ...ethernaToShopItems(),
     ...shDecorToShopItems(),
-    ...averyToShopItems(),
+    ...(AVERY_NO_SITE ? averyToShopItems() : []),
     ...md80ToShopItems(),
     ...ppfToShopItems(),
   ];

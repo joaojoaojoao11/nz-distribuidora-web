@@ -7,7 +7,7 @@ import { colorFamilies, colorTitle, colorDescription, cleanColorName, type Color
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 import { ppfLines } from './_lib/ppfLines.js';
 import { getShopIndexItem, type ShopIndexItem } from './_lib/shopItems.js';
-import { ehLinhaOculta } from './_lib/lojaOcultos.js';
+import { AVERY_NO_SITE, ehLinhaOculta, ehSlugDeLinhaOculta } from './_lib/lojaOcultos.js';
 import { organization, localBusiness, webSite, breadcrumb, product, faqPage, article, collectionPage, graphScript } from './_lib/jsonld.js';
 
 // Shell HTML com meta correta por rota, para TODOS os user-agents.
@@ -300,9 +300,9 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
     return meta || NOT_FOUND_META;
   }
 
-  // /sign/:slug — lista fixa
+  // /sign/:slug — lista fixa (famílias Avery; 404 enquanto a Avery estiver fora do site)
   if (segments[0] === 'sign' && segments.length === 2) {
-    if (!signSlugs.includes(segments[1])) return NOT_FOUND_META;
+    if (!AVERY_NO_SITE || !signSlugs.includes(segments[1])) return NOT_FOUND_META;
     const name = `Avery ${segments[1].toUpperCase().replace(/-/g, ' ')}`;
     const description = 'Linha Avery Dennison para comunicação visual, com distribuição oficial NZSIGN no Brasil.';
     return {
@@ -415,8 +415,11 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
   // páginas indexáveis novas em vez de duplicar as existentes.
   if (segments[0] === 'loja' && segments.length === 2) {
     // O banco é a verdade (foto, nome de exibição e SEO editáveis no admin);
-    // o índice estático fica como fallback se o Supabase não responder.
-    const item = (await fetchLojaItem(segments[1])) ?? getShopIndexItem(segments[1]);
+    // o índice estático fica como fallback se o Supabase não responder — mas
+    // nunca para item de linha oculta, que o banco recusou de propósito.
+    const item =
+      (await fetchLojaItem(segments[1])) ??
+      (ehSlugDeLinhaOculta(segments[1]) ? null : getShopIndexItem(segments[1]));
     if (!item) return NOT_FOUND_META;
 
     const canonicalPath = item.selfCanonical ? path : item.legacyPath ?? path;

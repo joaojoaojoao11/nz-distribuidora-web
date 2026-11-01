@@ -4,6 +4,7 @@ import { ethernaSlugs } from './_lib/ethernaSlugs.js';
 import { imprimaxSlugs } from './_lib/imprimaxSlugs.js';
 import { shopSelfCanonicalSlugs } from './_lib/shopItems.js';
 import { signSlugs } from './_lib/signSlugs.js';
+import { AVERY_NO_SITE } from './_lib/lojaOcultos.js';
 import { colorFamilies } from './_lib/colorCatalog.js';
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 
@@ -91,8 +92,8 @@ export default async function handler(_req: Request) {
     sitemapContent += `  </url>\n`;
   }
 
-  // Add Avery Dennison sign families
-  for (const slug of signSlugs) {
+  // Add Avery Dennison sign families (fora enquanto a Avery estiver fora do site)
+  for (const slug of AVERY_NO_SITE ? signSlugs : []) {
     sitemapContent += `  <url>\n`;
     sitemapContent += `    <loc>${baseUrl}/sign/${slug}</loc>\n`;
     sitemapContent += `    <changefreq>monthly</changefreq>\n`;

@@ -3,6 +3,8 @@
 // é o que crawlers sem JS (WhatsApp, Facebook, LinkedIn, Bing) enxergam.
 // Se mudar um title numa página, atualize aqui também.
 
+import { AVERY_NO_SITE } from './lojaOcultos.js';
+
 export interface RouteMeta {
   title: string;
   description: string;
@@ -14,7 +16,7 @@ export interface RouteMeta {
 export const routeMeta: Record<string, RouteMeta> = {
   '/': {
     title: 'O Melhor Envelopamento PPF e Adesivo Premium do Brasil',
-    description: 'A NZ Distribuidora oferece o portfólio definitivo em envelopamento: PPF, vinil automotivo premium, comunicação visual Avery Dennison e vinil decorativo SH Decor, Etherna Decor e Imprimax DecorMax.',
+    description: `A NZ Distribuidora oferece o portfólio definitivo em envelopamento: PPF, vinil automotivo premium, comunicação visual ${AVERY_NO_SITE ? 'Avery Dennison' : 'Metamark e Oracal'} e vinil decorativo SH Decor, Etherna Decor e Imprimax DecorMax.`,
   },
   '/loja': {
     title: 'Loja — Catálogo Completo NZ',
@@ -85,8 +87,10 @@ export const routeMeta: Record<string, RouteMeta> = {
     description: 'Metamark 7 Series: vinil polimérico calandrado 70μ com adesivo Apex, reação ao fogo Classe B e 92 cores com Pantone® e CMYK publicados. Larguras de 380 a 1.600 mm.',
   },
   '/sign': {
-    title: 'NZSIGN — Comunicação Visual Avery Dennison',
-    description: 'Distribuição Avery Dennison para comunicação visual no Brasil. Vinis calandrados MPI, sobrelaminados DOL, ETCHMARK, refletivos e filmes para vidros.',
+    title: AVERY_NO_SITE ? 'NZSIGN — Comunicação Visual Avery Dennison' : 'NZSIGN — Metamark e Oracal 651',
+    description: AVERY_NO_SITE
+      ? 'Distribuição Avery Dennison para comunicação visual no Brasil. Vinis calandrados MPI, sobrelaminados DOL, ETCHMARK, refletivos e filmes para vidros.'
+      : 'Distribuição Metamark MD-80 (impressão digital branca brilho e fosco, adesivo cinza blockout), vinil de recorte Metamark 7 Series e Oracal 651 em 62 cores. Vinis para comunicação visual profissional no Brasil, com garantia de fábrica.',
   },
   '/decor': {
     title: 'NZDECOR — Envelopamento Decorativo Técnico | NZ Group',

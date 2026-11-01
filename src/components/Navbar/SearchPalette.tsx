@@ -6,6 +6,7 @@ import { SOURCE_LABEL } from '../../lib/shop/catalog';
 import { useShopCatalog } from '../../lib/shop/store';
 import { applyFilters, EMPTY_FILTERS } from '../../lib/shop/search/match';
 import { normalize } from '../../lib/shop/types';
+import { AVERY_NO_SITE } from '../../lib/avery';
 import styles from './SearchPalette.module.css';
 
 type SearchItem = {
@@ -40,7 +41,9 @@ const STATIC_PAGES: SearchItem[] = [
   { label: 'Ação envelopamento de moto', sublabel: 'Cores com condição especial para moto', group: 'NZWRAP', path: '/wrap/motos', keywords: 'moto motocicleta envelopamento tanque carenagem fracionado retalho ponta' },
   { label: 'MetaCast MCX', sublabel: 'Cast premium Metamark · 37 cores', group: 'NZWRAP', path: '/wrap/metamark-mcx', keywords: 'metamark metacast mcx cast envelopamento inspire colours metaglide metasure reino unido' },
   { label: 'Metamark 7 Series', sublabel: 'Vinil de recorte · 92 cores', group: 'NZSIGN', path: '/sign/metamark-7-series', keywords: 'metamark m7 7 series recorte sinalizacao vinil sign pantone plotter' },
-  { label: 'NZSIGN', sublabel: 'Comunicação visual Avery Dennison', group: 'PÁGINA', path: '/sign', keywords: 'sign avery dennison comunicacao visual impressao' },
+  AVERY_NO_SITE
+    ? { label: 'NZSIGN', sublabel: 'Comunicação visual Avery Dennison', group: 'PÁGINA', path: '/sign', keywords: 'sign avery dennison comunicacao visual impressao' }
+    : { label: 'NZSIGN', sublabel: 'Comunicação visual Metamark e Oracal', group: 'PÁGINA', path: '/sign', keywords: 'sign metamark oracal comunicacao visual impressao md-80' },
   { label: 'NZDECOR', sublabel: 'Envelopamento arquitetônico', group: 'PÁGINA', path: '/decor', keywords: 'decor decorativo arquitetonico moveis parede' },
   { label: 'Catálogo SH Decor', sublabel: '55 padrões de vinil decorativo', group: 'NZDECOR', path: '/decor/sh', keywords: 'sh decor catalogo padroes' },
   { label: 'Catálogo Etherna Decor', sublabel: '159 padrões de vinil adesivo', group: 'NZDECOR', path: '/decor/etherna', keywords: 'etherna catalogo padroes' },
