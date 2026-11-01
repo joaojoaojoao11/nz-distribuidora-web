@@ -1,17 +1,16 @@
-import { useEffect, useRef } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { staggerContainer, fadeUpItem } from './variants';
 import {
-  shDecorFamilies,
   shDecorProducts,
   SH_DEFAULT_BADGES,
-  type ShDecorFamilySlug,
 } from './shDecorProducts';
 import styles from './ShDecorCatalog.module.css';
 import { DECOR, linkWhatsApp } from '../../lib/contatos';
+import VitrineDaLinha from '../Wrap/VitrineDaLinha';
+import { useAnunciosDaLinha } from '../Wrap/useAnunciosDaLinha';
 
 const WHATSAPP_URL = linkWhatsApp(DECOR, 'Olá, estou vendo o catálogo SH Decor no site da NZDecor e quero um orçamento.');
 
@@ -34,57 +33,9 @@ const heroMosaicTextures = (() => {
   return picks;
 })();
 
-// busca sem acentos/caixa: "acacia" encontra "Acácia"
-const normalize = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-
 export default function ShDecorCatalog() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchRef = useRef<HTMLInputElement>(null);
-
-  const familiaParam = searchParams.get('familia');
-  const activeFamily = shDecorFamilies.find((f) => f.slug === familiaParam)?.slug ?? null;
-  const query = searchParams.get('q') ?? '';
-  const nq = normalize(query);
-
-  const familyName = (slug: ShDecorFamilySlug) =>
-    shDecorFamilies.find((f) => f.slug === slug)?.name ?? slug;
-
-  const visibleProducts = shDecorProducts.filter((p) => {
-    if (activeFamily && p.family !== activeFamily) return false;
-    if (!nq) return true;
-    return (
-      normalize(p.name).includes(nq) ||
-      normalize(p.code).includes(nq) ||
-      normalize(familyName(p.family)).includes(nq)
-    );
-  });
-
-  const familyCount = (slug: ShDecorFamilySlug) =>
-    shDecorProducts.filter((p) => p.family === slug).length;
-
-  const updateParams = (familia: string | null, q: string) => {
-    const params: Record<string, string> = {};
-    if (familia) params.familia = familia;
-    if (q) params.q = q;
-    setSearchParams(params, { replace: true });
-  };
-
-  const setFamily = (slug: ShDecorFamilySlug | null) => updateParams(slug, query);
-  const setQuery = (q: string) => updateParams(activeFamily, q);
-
-  // atalho "/" foca a busca em qualquer ponto da página
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const target = e.target as HTMLElement;
-      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(target.tagName)) {
-        e.preventDefault();
-        searchRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  // Contador, grade e lista do schema = anúncios da linha na NZSTORE (01/11/2026).
+  const { itens, familias, pronto } = useAnunciosDaLinha('sh-decor', 'SH Decor');
 
   const schema = JSON.stringify({
     '@context': 'https://schema.org',
@@ -95,11 +46,11 @@ export default function ShDecorCatalog() {
     url: `${SITE_URL}/decor/sh`,
     mainEntity: {
       '@type': 'ItemList',
-      numberOfItems: shDecorProducts.length,
-      itemListElement: shDecorProducts.map((p, i) => ({
+      numberOfItems: itens.length,
+      itemListElement: itens.map((p, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        url: `${SITE_URL}/decor/sh/${p.slug}`,
+        url: `${SITE_URL}/loja/${p.slug}`,
         name: p.name,
       })),
     },
@@ -156,11 +107,11 @@ export default function ShDecorCatalog() {
             </motion.div>
 
             <motion.div className={styles.heroCounter} variants={fadeUpItem}>
-              <span className={styles.counterNumber}>{shDecorProducts.length}</span>
+              <span className={styles.counterNumber}>{pronto ? itens.length : '—'}</span>
               <span className={styles.counterLabel}>PADRÕES</span>
               <span className={styles.counterDivider} />
               <span className={styles.counterNumber}>
-                {shDecorFamilies.filter((f) => familyCount(f.slug) > 0).length}
+                {pronto ? familias : '—'}
               </span>
               <span className={styles.counterLabel}>FAMÍLIAS</span>
             </motion.div>
@@ -168,137 +119,14 @@ export default function ShDecorCatalog() {
         </div>
       </header>
 
-      {/* FILTRO + GRID */}
-      <section className={styles.catalogSection}>
-        <div className={`container ${styles.catalogContainer}`}>
-          <div className={styles.filterBar}>
-            <div className={styles.searchWrap}>
-              <svg
-                className={styles.searchIcon}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                <circle cx="11" cy="11" r="7" />
-                <line x1="21" y1="21" x2="16.5" y2="16.5" />
-              </svg>
-              <input
-                ref={searchRef}
-                type="search"
-                className={styles.searchInput}
-                placeholder="Buscar padrão, código ou família…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') {
-                    setQuery('');
-                    e.currentTarget.blur();
-                  }
-                }}
-                aria-label="Buscar padrão"
-              />
-              {query ? (
-                <button
-                  type="button"
-                  className={styles.searchClear}
-                  onClick={() => setQuery('')}
-                  aria-label="Limpar busca"
-                >
-                  ✕
-                </button>
-              ) : (
-                <kbd className={styles.searchKbd}>/</kbd>
-              )}
-            </div>
-
-            <div className={styles.familyFilter}>
-              <button
-                type="button"
-                className={`${styles.familyPill} ${!activeFamily ? styles.familyPillActive : ''}`}
-                onClick={() => setFamily(null)}
-              >
-                TODOS <span className={styles.pillCount}>{shDecorProducts.length}</span>
-              </button>
-              {shDecorFamilies.map(
-                (f) =>
-                  familyCount(f.slug) > 0 && (
-                    <button
-                      key={f.slug}
-                      type="button"
-                      className={`${styles.familyPill} ${activeFamily === f.slug ? styles.familyPillActive : ''}`}
-                      onClick={() => setFamily(f.slug)}
-                    >
-                      {f.name.toUpperCase()} <span className={styles.pillCount}>{familyCount(f.slug)}</span>
-                    </button>
-                  )
-              )}
-            </div>
-          </div>
-
-          {query && (
-            <p className={styles.searchMeta}>
-              {visibleProducts.length}{' '}
-              {visibleProducts.length === 1 ? 'padrão encontrado' : 'padrões encontrados'} para
-              “{query}”
-            </p>
-          )}
-
-          {activeFamily && (
-            <p className={styles.familyDescription}>
-              {shDecorFamilies.find((f) => f.slug === activeFamily)?.description}
-            </p>
-          )}
-
-          <div className={styles.productGrid} key={activeFamily ?? 'todos'}>
-            {visibleProducts.map((p) => (
-              <Link key={p.slug} to={`/decor/sh/${p.slug}`} className={styles.productCard}>
-                <div className={styles.productImageWrap}>
-                  <img
-                    src={p.images.texture}
-                    alt={`Padrão ${p.name} — vinil SH Decor`}
-                    className={styles.productImage}
-                    loading="lazy"
-                  />
-                  <span className={styles.productCodeChip}>{p.code}</span>
-                  <span className={styles.productHoverCta}>VER PADRÃO →</span>
-                </div>
-                <div className={styles.productInfo}>
-                  <span className={styles.productFamily}>
-                    {shDecorFamilies.find((f) => f.slug === p.family)?.name.toUpperCase()}
-                  </span>
-                  <h3 className={styles.productName}>{p.name}</h3>
-                  <span className={styles.productCode}>{p.code}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          {visibleProducts.length === 0 && (
-            <div className={styles.emptyState}>
-              <p className={styles.emptyTitle}>
-                Nenhum padrão encontrado{query ? ` para “${query}”` : ' nesta família'}.
-              </p>
-              <p className={styles.emptyHint}>
-                Tente outro nome ou código — ou fale com a gente: temos acesso ao portfólio
-                completo da SH Decor.
-              </p>
-              <div className={styles.emptyActions}>
-                {query && (
-                  <button type="button" className={styles.emptyClear} onClick={() => setQuery('')}>
-                    LIMPAR BUSCA
-                  </button>
-                )}
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className={styles.emptyWhats}>
-                  FALAR COM A NZDECOR →
-                </a>
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
+      {/* ANÚNCIOS DA LINHA NA NZSTORE (01/11/2026) */}
+      <VitrineDaLinha
+        lineKey="sh-decor"
+        lineLabel="SH Decor"
+        searchPlaceholder="Buscar padrão ou código…"
+        rotulos={{ um: 'padrão encontrado', varios: 'padrões encontrados', todos: 'TODOS' }}
+        classeSecao={styles.catalogSection}
+      />
 
       {/* CTA FINAL */}
       <section className={styles.ctaSection}>

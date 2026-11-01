@@ -10,32 +10,35 @@
 // Link antigo do painel (?cor=<slug>, que o Google e o WhatsApp ainda têm)
 // vai direto para o anúncio.
 
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, type ReactNode } from 'react';
 import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom';
-import { useCatalogoEstado, useShopCatalog } from '../../lib/shop/store';
-import type { LineKey, ShopItem } from '../../lib/shop/types';
+import type { LineKey } from '../../lib/shop/types';
 import { ShopCard } from '../Loja/ShopCard';
 import { useLimiteNome } from '../Loja/useLimiteNome';
 import styles from './MetamarkColorCatalog.module.css';
 import own from './VitrineDaLinha.module.css';
+import { grupoDoAnuncio, normalizar, useAnunciosDaLinha } from './useAnunciosDaLinha';
 
 interface Props {
   lineKey: LineKey;
   /** Nome da linha nos rótulos ("Metamark 7 Series"). */
   lineLabel: string;
-  title: string;
-  subtitle: (total: number) => string;
+  /** Sem título, a vitrine entra direto no filtro (páginas que já têm o título no herói). */
+  title?: string;
+  subtitle?: (total: number) => string;
   searchPlaceholder: string;
-  disclaimer: string;
-  /** Ordem dos grupos do filtro (o que vem depois do " · " no subtítulo do anúncio). */
+  disclaimer?: string;
+  /** Ordem dos grupos do filtro; os que não estão aqui vêm depois, em ordem alfabética. */
   ordemGrupos?: string[];
+  /** Rótulos que mudam com o gênero do item: "cor encontrada" × "padrão encontrado". */
+  rotulos?: { um: string; varios: string; todos: string };
+  /** Abaixo do subtítulo (ex.: botão do datasheet da Oracal 651). */
+  extra?: ReactNode;
+  /** Classe da <section>, para a página manter o próprio fundo. */
+  classeSecao?: string;
 }
 
-const normalize = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-
-/** "Metamark 7 Series · Azuis" → "Azuis". Anúncio sem grupo só aparece em TODAS. */
-const grupoDe = (item: ShopItem) => item.subtitle?.split(' · ')[1]?.trim() || null;
+const ROTULOS_COR = { um: 'cor encontrada', varios: 'cores encontradas', todos: 'TODAS' };
 
 const ESQUELETO = Array.from({ length: 12 }, (_, i) => i);
 
@@ -47,10 +50,11 @@ export default function VitrineDaLinha({
   searchPlaceholder,
   disclaimer,
   ordemGrupos = [],
+  rotulos = ROTULOS_COR,
+  extra,
+  classeSecao,
 }: Props) {
-  const catalogo = useShopCatalog();
-  const estado = useCatalogoEstado();
-  const pronto = estado === 'banco' || estado === 'falhou';
+  const { itens, pronto } = useAnunciosDaLinha(lineKey, lineLabel);
   const [params, setParams] = useSearchParams();
   const location = useLocation();
   const gridRef = useRef<HTMLDivElement>(null);
@@ -60,32 +64,26 @@ export default function VitrineDaLinha({
   const grupoAtivo = params.get('g');
   const corAntiga = params.get('cor');
 
-  const itens = useMemo(
-    () =>
-      catalogo
-        .filter((i) => i.lineKey === lineKey)
-        .sort((a, b) => (a.code ?? a.name).localeCompare(b.code ?? b.name, 'pt-BR', { numeric: true })),
-    [catalogo, lineKey],
-  );
-
   const grupos = useMemo(() => {
     const contagem = new Map<string, number>();
     for (const i of itens) {
-      const g = grupoDe(i);
+      const g = grupoDoAnuncio(i, lineLabel);
       if (g) contagem.set(g, (contagem.get(g) ?? 0) + 1);
     }
     const pos = (g: string) => {
       const n = ordemGrupos.indexOf(g);
       return n === -1 ? ordemGrupos.length : n;
     };
-    return [...contagem].sort((a, b) => pos(a[0]) - pos(b[0]));
-  }, [itens, ordemGrupos]);
+    return [...contagem].sort((a, b) => pos(a[0]) - pos(b[0]) || a[0].localeCompare(b[0], 'pt-BR'));
+  }, [itens, ordemGrupos, lineLabel]);
 
-  const nq = normalize(query);
+  const nq = normalizar(query);
   const visiveis = itens.filter((i) => {
-    if (grupoAtivo && grupoDe(i) !== grupoAtivo) return false;
+    if (grupoAtivo && grupoDoAnuncio(i, lineLabel) !== grupoAtivo) return false;
     if (!nq) return true;
-    return normalize(`${i.code ?? ''} ${i.name} ${i.searchText}`).includes(nq);
+    // A ficha entra na busca: é onde mora o Pantone ("447C") da Metamark 7.
+    const ficha = i.specs.map((s) => s.value).join(' ');
+    return normalizar(`${i.code ?? ''} ${i.name} ${i.subtitle ?? ''} ${i.searchText} ${ficha}`).includes(nq);
   });
 
   const escrever = (next: { q?: string; g?: string | null }) => {
@@ -105,12 +103,15 @@ export default function VitrineDaLinha({
   const origem = `${location.pathname}${location.search}`;
 
   return (
-    <section className={styles.catalog} id="cores">
+    <section className={classeSecao ?? styles.catalog} id="cores">
       <div className={`container ${styles.container}`}>
-        <header className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.subtitle}>{pronto ? subtitle(itens.length) : ' '}</p>
-        </header>
+        {title && (
+          <header className={styles.header}>
+            <h2 className={styles.title}>{title}</h2>
+            {subtitle && <p className={styles.subtitle}>{pronto ? subtitle(itens.length) : ' '}</p>}
+            {extra && <div className={own.extra}>{extra}</div>}
+          </header>
+        )}
 
         <div className={styles.filterBar}>
           <div className={styles.searchWrap}>
@@ -138,7 +139,7 @@ export default function VitrineDaLinha({
                   e.currentTarget.blur();
                 }
               }}
-              aria-label={`Buscar cor ${lineLabel}`}
+              aria-label={`Buscar em ${lineLabel}`}
             />
             {query && (
               <button
@@ -152,14 +153,14 @@ export default function VitrineDaLinha({
             )}
           </div>
 
-          {pronto && grupos.length > 0 && (
-            <div className={styles.groupFilter} role="group" aria-label="Filtrar por família">
+          {pronto && grupos.length > 1 && (
+            <div className={styles.groupFilter} role="group" aria-label="Filtrar por grupo">
               <button
                 type="button"
                 className={`${styles.groupPill} ${!grupoAtivo ? styles.groupPillActive : ''}`}
                 onClick={() => escrever({ g: null })}
               >
-                TODAS <span className={styles.pillCount}>{itens.length}</span>
+                {rotulos.todos} <span className={styles.pillCount}>{itens.length}</span>
               </button>
               {grupos.map(([g, n]) => (
                 <button
@@ -177,7 +178,7 @@ export default function VitrineDaLinha({
 
         {query && pronto && (
           <p className={styles.searchMeta}>
-            {visiveis.length} {visiveis.length === 1 ? 'cor encontrada' : 'cores encontradas'} para “{query}”
+            {visiveis.length} {visiveis.length === 1 ? rotulos.um : rotulos.varios} para “{query}”
           </p>
         )}
 
@@ -188,7 +189,7 @@ export default function VitrineDaLinha({
             ))}
           </div>
         ) : (
-          <div className={own.grid} aria-busy="true" aria-label="Carregando as cores">
+          <div className={own.grid} aria-busy="true" aria-label="Carregando os anúncios">
             {ESQUELETO.map((n) => (
               <div key={n} className={own.esqueleto} />
             ))}
@@ -198,7 +199,7 @@ export default function VitrineDaLinha({
         {pronto && visiveis.length === 0 && (
           <div className={styles.emptyState}>
             <p className={styles.emptyTitle}>
-              Nenhuma cor encontrada{query ? ` para “${query}”` : ' neste filtro'}.
+              Nada encontrado{query ? ` para “${query}”` : ' neste filtro'}.
             </p>
             <button type="button" className={styles.emptyClear} onClick={() => setParams({}, { replace: true })}>
               LIMPAR FILTROS
@@ -214,7 +215,7 @@ export default function VitrineDaLinha({
           </p>
         )}
 
-        <p className={styles.disclaimer}>{disclaimer}</p>
+        {disclaimer && <p className={styles.disclaimer}>{disclaimer}</p>}
       </div>
     </section>
   );

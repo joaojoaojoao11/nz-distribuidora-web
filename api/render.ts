@@ -8,6 +8,7 @@ import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 import { ppfLines } from './_lib/ppfLines.js';
 import { getShopIndexItem, type ShopIndexItem } from './_lib/shopItems.js';
 import { AVERY_NO_SITE, NZWRAP_PREMIUM_NO_SITE, ehLinhaOculta, ehSlugDeLinhaOculta } from './_lib/lojaOcultos.js';
+import { destinoDaVitrine, ehCaminhoAntigoDaVitrine } from './_lib/vitrineLinhas.js';
 import { organization, localBusiness, webSite, breadcrumb, product, faqPage, article, collectionPage, graphScript } from './_lib/jsonld.js';
 
 // Shell HTML com meta correta por rota, para TODOS os user-agents.
@@ -184,9 +185,6 @@ async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
     // Linha retirada da loja: sem meta própria, para não indexar produto que
     // o catálogo não mostra mais.
     if (ehLinhaOculta(r.linha_key)) return null;
-    // Caminho antigo com "?" (o painel ?cor= da M7 e da MCX) não é página de
-    // detalhe: o anúncio é a página canônica dele mesmo.
-    const legado = r.legacy_path?.includes('?') ? null : r.legacy_path;
     const brand = r.marca_exibicao ?? 'NZ';
     const linha = r.linha_label ?? brand;
     const title = r.seo_titulo ?? `${r.nome}${r.codigo ? ` · ${r.codigo}` : ''} — ${linha}`;
@@ -202,8 +200,8 @@ async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
       title,
       description,
       image: r.imagem,
-      selfCanonical: !legado && !r.pai_slug,
-      legacyPath: r.pai_slug ? `/loja/${r.pai_slug}` : legado,
+      selfCanonical: !r.legacy_path && !r.pai_slug,
+      legacyPath: r.pai_slug ? `/loja/${r.pai_slug}` : r.legacy_path,
     };
   } catch {
     return null;
@@ -430,7 +428,10 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
       (ehSlugDeLinhaOculta(segments[1]) ? null : getShopIndexItem(segments[1]));
     if (!item) return NOT_FOUND_META;
 
-    const canonicalPath = item.selfCanonical ? path : item.legacyPath ?? path;
+    // Linha da vitrine (api/_lib/vitrineLinhas.ts): a página antiga virou 308
+    // para cá, então o anúncio é o canônico.
+    const canonicalPath =
+      item.selfCanonical || !item.legacyPath || ehCaminhoAntigoDaVitrine(item.legacyPath) ? path : item.legacyPath;
 
     return {
       status: 200,
@@ -498,6 +499,16 @@ export default async function handler(req: Request) {
   // O rewrite manda o path original em ?path= não — usamos o próprio pathname
   // da request (a Vercel preserva o path original no rewrite).
   const pathname = url.pathname === '/api/render' ? (url.searchParams.get('path') || '/') : url.pathname;
+
+  // Página antiga de item (ou ?cor= do painel) de linha que hoje mostra os
+  // anúncios da loja: redirecionamento permanente para o anúncio.
+  const destino = await destinoDaVitrine(pathname, url.searchParams.get('cor'));
+  if (destino) {
+    return new Response(null, {
+      status: 308,
+      headers: { Location: destino, 'Cache-Control': 'public, s-maxage=86400' },
+    });
+  }
 
   // Busca o shell buildado no próprio deployment (filesystem serve antes do rewrite)
   let shell: string | null = null;

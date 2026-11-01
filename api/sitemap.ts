@@ -1,7 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { shDecorSlugs } from './_lib/shDecorSlugs.js';
-import { ethernaSlugs } from './_lib/ethernaSlugs.js';
-import { imprimaxSlugs } from './_lib/imprimaxSlugs.js';
+import { VITRINES, ehCaminhoAntigoDaVitrine } from './_lib/vitrineLinhas.js';
 import { shopSelfCanonicalSlugs } from './_lib/shopItems.js';
 import { signSlugs } from './_lib/signSlugs.js';
 import { AVERY_NO_SITE, NZWRAP_PREMIUM_NO_SITE } from './_lib/lojaOcultos.js';
@@ -74,7 +72,10 @@ export default async function handler(_req: Request) {
   const colorPaths: string[] = [];
   for (const row of colorRows || []) {
     const prefix = brandToPrefix.get(row.brand);
-    if (prefix && row.slug) colorPaths.push(`${prefix}/${row.slug}`);
+    // Linha da vitrine: a página da cor virou 308 para o anúncio da loja.
+    if (prefix && row.slug && !ehCaminhoAntigoDaVitrine(`${prefix}/${row.slug}`)) {
+      colorPaths.push(`${prefix}/${row.slug}`);
+    }
   }
   for (const sku of NZWRAP_PREMIUM_NO_SITE ? Object.keys(nzwrapColorMeta) : []) {
     colorPaths.push(`/wrap/nzwrap-premium/${sku}`);
@@ -101,32 +102,9 @@ export default async function handler(_req: Request) {
     sitemapContent += `  </url>\n`;
   }
 
-  // Add SH Decor catalog products
-  for (const slug of shDecorSlugs) {
-    sitemapContent += `  <url>\n`;
-    sitemapContent += `    <loc>${baseUrl}/decor/sh/${slug}</loc>\n`;
-    sitemapContent += `    <changefreq>monthly</changefreq>\n`;
-    sitemapContent += `    <priority>0.7</priority>\n`;
-    sitemapContent += `  </url>\n`;
-  }
-
-  // Add Etherna Decor catalog products
-  for (const slug of ethernaSlugs) {
-    sitemapContent += `  <url>\n`;
-    sitemapContent += `    <loc>${baseUrl}/decor/etherna/${slug}</loc>\n`;
-    sitemapContent += `    <changefreq>monthly</changefreq>\n`;
-    sitemapContent += `    <priority>0.7</priority>\n`;
-    sitemapContent += `  </url>\n`;
-  }
-
-  // Add Imprimax DecorMax catalog products
-  for (const slug of imprimaxSlugs) {
-    sitemapContent += `  <url>\n`;
-    sitemapContent += `    <loc>${baseUrl}/decor/imprimax/${slug}</loc>\n`;
-    sitemapContent += `    <changefreq>monthly</changefreq>\n`;
-    sitemapContent += `    <priority>0.7</priority>\n`;
-    sitemapContent += `  </url>\n`;
-  }
+  // As páginas de item da SH Decor, Etherna e Imprimax saíram em 01/11/2026:
+  // viraram 308 para o anúncio da loja (api/_lib/vitrineLinhas.ts), que entra
+  // no sitemap mais abaixo.
 
   // Add wrap color pages
   for (const path of colorPaths) {
@@ -160,18 +138,17 @@ export default async function handler(_req: Request) {
   // da loja apontam o canonical para a página de detalhe que já existe, então
   // ficam fora do sitemap de propósito — não duplicar URL já indexada.
   //
-  // Metamark 7 Series: desde 01/11/2026 a página da linha mostra os anúncios da
-  // loja, então entram os anúncios do banco no lugar da lista estática de cores
-  // (que tem cor fora da loja e não tem as cores novas do ERP).
-  const { data: m7 } = await supabase
+  // Desde 01/11/2026 as linhas da vitrine (api/_lib/vitrineLinhas.ts) mostram
+  // os anúncios da loja na página delas e as páginas de item viraram 308: os
+  // anúncios dessas linhas vêm do banco e são a URL de cada produto. A lista
+  // estática (M7 e MCX) só vale se o banco não responder.
+  const { data: vitrine } = await supabase
     .from('loja_catalogo')
     .select('slug')
-    .eq('linha_key', 'm7')
+    .in('linha_key', VITRINES.map((v) => v.linha))
     .is('pai_slug', null);
-  const m7Slugs = ((m7 ?? []) as { slug: string }[]).map((r) => r.slug);
-  const lojaSlugs = m7Slugs.length
-    ? [...m7Slugs, ...shopSelfCanonicalSlugs.filter((s) => !s.startsWith('m7-'))]
-    : shopSelfCanonicalSlugs;
+  const vitrineSlugs = ((vitrine ?? []) as { slug: string }[]).map((r) => r.slug);
+  const lojaSlugs = vitrineSlugs.length ? vitrineSlugs : shopSelfCanonicalSlugs;
   for (const slug of lojaSlugs) {
     sitemapContent += `  <url>
 `;

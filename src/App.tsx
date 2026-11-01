@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AnalyticsTracker from './components/AnalyticsTracker';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
@@ -52,8 +52,6 @@ const ShColors = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ def
 const Oracal970 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.Oracal970 })));
 const Oracal651 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.Oracal651 })));
 const Oracal670 = lazy(() => import('./pages/Wrap/WrapProducts').then(m => ({ default: m.Oracal670 })));
-const Oracal670ColorPage = lazy(() => import('./pages/Wrap/Oracal670Colors'));
-const Oracal651Colors = lazy(() => import('./pages/Wrap/Oracal651Colors'));
 /** Vitrine dos tutoriais "Como funciona": só no `npm run dev` (fora do build de produção). */
 const VitrineTutoriais = import.meta.env.DEV ? lazy(() => import('./components/Tutorial/Vitrine')) : null;
 /** Metamark 7 Series tambem foi para o NZSIGN (03/10/2026); preserva o ?cor= das paginas de cor. */
@@ -66,11 +64,8 @@ function RedirecionaClas() {
   const { search, hash } = useLocation();
   return <Navigate to={`/colecao${search}${hash}`} replace />;
 }
-function RedirecionaCor651() {
-  const { id } = useParams();
-  return <Navigate to={`/sign/oracal-651/${id ?? ''}`} replace />;
-}
-const ShWrappingColors = lazy(() => import('./pages/Wrap/ShWrappingColors'));
+/** Páginas antigas de item das linhas da vitrine: vão para o anúncio da NZSTORE (01/11/2026). */
+const RedirecionaParaLoja = lazy(() => import('./pages/Loja/RedirecionaParaLoja'));
 const NzwrapColorPage = lazy(() => import('./pages/Wrap/NzwrapColorPage'));
 const MetamarkMcx = lazy(() => import('./pages/Wrap/WrapMetamark').then(m => ({ default: m.MetamarkMcx })));
 const MetamarkM7 = lazy(() => import('./pages/Wrap/WrapMetamark').then(m => ({ default: m.MetamarkM7 })));
@@ -78,11 +73,8 @@ const Sign = lazy(() => import('./pages/Sign/Sign'));
 const SignProduct = lazy(() => import('./pages/Sign/SignProduct'));
 const Decor = lazy(() => import('./pages/Decor/Decor'));
 const ShDecorCatalog = lazy(() => import('./pages/Decor/ShDecorCatalog'));
-const ShDecorProduct = lazy(() => import('./pages/Decor/ShDecorProduct'));
 const EthernaCatalog = lazy(() => import('./pages/Decor/EthernaCatalog'));
-const EthernaProduct = lazy(() => import('./pages/Decor/EthernaProduct'));
 const ImprimaxCatalog = lazy(() => import('./pages/Decor/ImprimaxCatalog'));
-const ImprimaxProduct = lazy(() => import('./pages/Decor/ImprimaxProduct'));
 const FindInstaller = lazy(() => import('./pages/FindInstaller/FindInstaller'));
 const Company = lazy(() => import('./pages/Company/Company'));
 const BlogList = lazy(() => import('./pages/Blog/BlogList'));
@@ -276,28 +268,28 @@ function App() {
                   <Route path="/wrap/nzwrap-premium" element={NZWRAP_PREMIUM_NO_SITE ? <NzwrapPremium /> : <Navigate to="/wrap" replace />} />
                   <Route path="/wrap/nzwrap-premium/:sku" element={NZWRAP_PREMIUM_NO_SITE ? <NzwrapColorPage /> : <Navigate to="/wrap" replace />} />
                   <Route path="/wrap/sh-colors" element={<ShColors />} />
-                  <Route path="/wrap/sh-colors/:colorCode" element={<ShWrappingColors />} />
+                  <Route path="/wrap/sh-colors/:colorCode" element={<RedirecionaParaLoja linha="sh-wrapping" />} />
                   <Route path="/wrap/oracal-970ra" element={<Oracal970 />} />
                   {/* Oracal 651 e comunicacao visual: mudou de NZWRAP para NZSIGN (03/10/2026). O 301 de verdade
                       esta no vercel.json; estes dois cobrem a navegacao interna do SPA. */}
                   <Route path="/wrap/oracal-651" element={<Navigate to="/sign/oracal-651" replace />} />
-                  <Route path="/wrap/oracal-651/:id" element={<RedirecionaCor651 />} />
+                  <Route path="/wrap/oracal-651/:id" element={<RedirecionaParaLoja linha="oracal-651" />} />
                   <Route path="/wrap/oracal-670ra" element={<Oracal670 />} />
-                  <Route path="/wrap/oracal-670ra/:colorCode" element={<Oracal670ColorPage />} />
+                  <Route path="/wrap/oracal-670ra/:colorCode" element={<RedirecionaParaLoja linha="oracal-670" />} />
                   <Route path="/wrap/metamark-mcx" element={<MetamarkMcx />} />
                   <Route path="/wrap/metamark-7-series" element={<RedirecionaM7 />} />
                   <Route path="/sign" element={<Sign />} />
                   <Route path="/sign/metamark-7-series" element={<MetamarkM7 />} />
                   <Route path="/sign/oracal-651" element={<Oracal651 />} />
-                  <Route path="/sign/oracal-651/:id" element={<Oracal651Colors />} />
+                  <Route path="/sign/oracal-651/:id" element={<RedirecionaParaLoja linha="oracal-651" />} />
                   <Route path="/sign/:slug" element={<SignProduct />} />
                   <Route path="/decor" element={<Decor />} />
                   <Route path="/decor/sh" element={<ShDecorCatalog />} />
-                  <Route path="/decor/sh/:slug" element={<ShDecorProduct />} />
+                  <Route path="/decor/sh/:slug" element={<RedirecionaParaLoja linha="sh-decor" />} />
                   <Route path="/decor/etherna" element={<EthernaCatalog />} />
-                  <Route path="/decor/etherna/:slug" element={<EthernaProduct />} />
+                  <Route path="/decor/etherna/:slug" element={<RedirecionaParaLoja linha="etherna" />} />
                   <Route path="/decor/imprimax" element={<ImprimaxCatalog />} />
-                  <Route path="/decor/imprimax/:slug" element={<ImprimaxProduct />} />
+                  <Route path="/decor/imprimax/:slug" element={<RedirecionaParaLoja linha="imprimax" />} />
                   <Route path="/sobre" element={<Company />} />
                   <Route path="/encontre-aplicador" element={<FindInstaller />} />
                   <Route path="/blog" element={<BlogList />} />

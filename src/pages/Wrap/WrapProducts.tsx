@@ -578,95 +578,7 @@ export function NzwrapPremium() {
 }
 
 /* ======================== SH WRAPPING COLORS ======================== */
-import { useState, useEffect } from 'react';
-import { SH_COLORS_ASSETS } from './ShWrappingColors';
-import { supabase } from '../../lib/supabase';
-
-function ShColorsGrid() {
-  const [colors, setColors] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchColors = async () => {
-      const { data } = await supabase
-        .from('web_catalog_products')
-        .select('slug, name, hex_code, finish_type, sku')
-        .eq('brand', 'SH Wrapping')
-        .eq('is_active', true)
-        .order('name');
-      if (data) setColors(data);
-    };
-    fetchColors();
-  }, []);
-
-  return (
-    <section className="container" style={{ padding: '6rem 0' }}>
-      <div style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>Catálogo de Cores</h2>
-        <p style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem' }}>
-          Selecione uma cor para ver aplicações reais em veículos
-        </p>
-      </div>
-
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gap: '1rem',
-        padding: '1rem'
-      }}>
-        {colors.map(color => {
-          const assets = SH_COLORS_ASSETS[color.slug];
-          const imageUrl = assets?.image || '/assets/images/wrap_sh_card.png';
-          return (
-            <Link 
-              key={color.slug}
-              to={`/wrap/sh-colors/${color.slug}`}
-              style={{ textDecoration: 'none' }}
-            >
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: '#111',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                transition: 'transform 0.2s',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-                cursor: 'pointer'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-              onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-              >
-                <div style={{ 
-                  height: '140px', 
-                  borderBottom: '1px solid #222',
-                  overflow: 'hidden'
-                }}>
-                  <img
-                    src={imageUrl}
-                    alt={color.name}
-                    loading="lazy"
-                    decoding="async"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={(e) => { e.currentTarget.src = '/assets/images/wrap_sh_card.png'; }}
-                  />
-                </div>
-                <div style={{ padding: '0.75rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                    <span style={{ color: '#fff', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace', fontSize: '0.85rem' }}>
-                      {color.sku || 'S/N'}
-                    </span>
-                  </div>
-                  <div style={{ color: '#aaa', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {color.name}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
+import VitrineDaLinha from './VitrineDaLinha';
 
 export function ShColors() {
   return <>
@@ -702,7 +614,13 @@ export function ShColors() {
       { metric: 'Custo-Benefício', desc: 'Relação qualidade/preço', nz: [95, 93, 91], mercado: [78, 74, 70] }
     ]
   }}>
-    <ShColorsGrid />
+    <VitrineDaLinha
+      lineKey="sh-wrapping"
+      lineLabel="SH Wrapping Colors"
+      title="Catálogo de cores"
+      subtitle={(n) => `${n} cores à venda na NZSTORE. Toque numa cor para abrir o anúncio da loja.`}
+      searchPlaceholder="Buscar cor ou código…"
+    />
   </WrapProductPage>
   </>;
 }
@@ -745,83 +663,6 @@ export function Oracal970() {
   </>;
 }
 
-// Helper component for the Oracal 651 colors grid
-function Oracal651ColorGrid() {
-  const [colors, setColors] = useState<{slug: string, code: string, hex: string, finish: string, namePT: string}[]>([]);
-
-  useEffect(() => {
-    const fetchColors = async () => {
-      const { data } = await supabase
-        .from('web_catalog_products')
-        .select('*')
-        .eq('brand', 'Oracal 651')
-        .eq('is_active', true)
-        .order('sku');
-      
-      if (data) {
-        setColors(data.map(d => ({
-          slug: d.slug,
-          code: d.sku ? d.sku.toUpperCase() : d.name,
-          hex: d.hex_code,
-          finish: d.finish_type === 'Brilhante' || d.finish_type === 'Gloss' ? 'Gloss' : 'Matte',
-          namePT: d.name
-        })));
-      }
-    };
-    fetchColors();
-  }, []);
-
-  return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-      gap: '1rem',
-      padding: '1rem'
-    }}>
-      {colors.map(color => (
-        <Link 
-          key={color.slug}
-          to={`/sign/oracal-651/${color.slug}`}
-          style={{ textDecoration: 'none' }}
-        >
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            backgroundColor: '#111',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            transition: 'transform 0.2s',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-            cursor: 'pointer'
-          }}
-          onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-          onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            <div style={{ 
-              height: '100px', 
-              backgroundColor: color.hex,
-              borderBottom: '1px solid #222'
-            }}></div>
-            <div style={{ padding: '0.75rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                <span style={{ color: '#fff', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace', fontSize: '0.85rem' }}>
-                  {color.code}
-                </span>
-                <span style={{ color: '#38bdf8', fontSize: '0.7rem', textTransform: 'uppercase' }}>
-                  {color.finish}
-                </span>
-              </div>
-              <div style={{ color: '#aaa', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {color.namePT}
-              </div>
-            </div>
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-}
-
 /* ======================== ORACAL 651 ======================== */
 export function Oracal651() {
   return <>
@@ -858,15 +699,13 @@ export function Oracal651() {
       { metric: 'Versatilidade', desc: 'Amplitude de aplicações', nz: [95, 93, 91], mercado: [82, 78, 74] }
     ]
   }}>
-    <section className="container" style={{ padding: '6rem 0' }}>
-      <div style={{ marginBottom: '3rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'flex-start' }}>
-        <div>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>Catálogo Oficial de Cores 651</h2>
-          <p style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem' }}>
-            Selecione a cor para consultar os parâmetros e ficha técnica ou baixe a certificação original
-          </p>
-        </div>
-        
+    <VitrineDaLinha
+      lineKey="oracal-651"
+      lineLabel="Oracal 651"
+      title="Catálogo oficial de cores 651"
+      subtitle={(n) => `${n} cores à venda na NZSTORE. Toque numa cor para abrir o anúncio, com a ficha técnica, ou baixe a certificação original.`}
+      searchPlaceholder="Buscar cor ou código…"
+      extra={
         <a 
             href="/assets/docs/oracal-651-tds.pdf"
             download="ORACAL-651-Datasheet.pdf"
@@ -896,91 +735,13 @@ export function Oracal651() {
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
             BAIXAR DATASHEET COMPLETO 651
           </a>
-      </div>
-      <Oracal651ColorGrid />
-    </section>
+      }
+    />
   </WrapProductPage>
   </>;
 }
 
 
-
-// Helper component for the colors grid
-function Oracal670ColorGrid() {
-  const [colors, setColors] = useState<{slug: string, code: string, hex: string, finish: string, namePT: string}[]>([]);
-
-  useEffect(() => {
-    const fetchColors = async () => {
-      const { data } = await supabase
-        .from('web_catalog_products')
-        .select('*')
-        .eq('brand', 'Oracal 670')
-        .eq('is_active', true)
-        .order('sku');
-      
-      if (data) {
-        setColors(data.map(d => ({
-          slug: d.slug,
-          code: d.sku ? d.sku.replace('670RA-', '') : d.name,
-          hex: d.hex_code,
-          finish: d.finish_type === 'Brilhante' || d.finish_type === 'Gloss' ? 'Gloss' : 'Matte',
-          namePT: d.name
-        })));
-      }
-    };
-    fetchColors();
-  }, []);
-
-  return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-      gap: '1rem',
-      padding: '1rem'
-    }}>
-      {colors.map(color => (
-        <Link 
-          key={color.slug}
-          to={`/wrap/oracal-670ra/${color.slug}`}
-          style={{ textDecoration: 'none' }}
-        >
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            backgroundColor: '#111',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            transition: 'transform 0.2s',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-            cursor: 'pointer'
-          }}
-          onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-          onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            <div style={{ 
-              height: '100px', 
-              backgroundColor: color.hex,
-              borderBottom: '1px solid #222'
-            }}></div>
-            <div style={{ padding: '0.75rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                <span style={{ color: '#fff', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace', fontSize: '0.85rem' }}>
-                  {color.code}
-                </span>
-                <span style={{ color: '#888', fontSize: '0.7rem', textTransform: 'uppercase' }}>
-                  {color.finish}
-                </span>
-              </div>
-              <div style={{ color: '#aaa', fontSize: '0.8rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {color.namePT}
-              </div>
-            </div>
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-}
 
 export function Oracal670() {
   return <>
@@ -1016,15 +777,14 @@ export function Oracal670() {
       { metric: 'Cobertura por Rolo', desc: 'Área útil vs concorrentes', nz: [95, 95, 95], mercado: [78, 78, 78] }
     ]
   }}>
-    <section className="container" style={{ padding: '6rem 0' }}>
-      <div style={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontSize: '2.5rem', fontWeight: 800, margin: '0 0 1rem 0', letterSpacing: '-0.02em' }}>CATÁLOGO DE CORES</h2>
-        <p style={{ color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem' }}>
-          Selecione uma cor para ver aplicações reais em veículos
-        </p>
-      </div>
-      <Oracal670ColorGrid />
-    </section>
+    <VitrineDaLinha
+      lineKey="oracal-670"
+      lineLabel="Oracal 670RA"
+      title="Catálogo de cores"
+      subtitle={(n) => `${n} cores à venda na NZSTORE. Toque numa cor para abrir o anúncio da loja.`}
+      searchPlaceholder="Buscar cor ou código…"
+      ordemGrupos={['Brilhante', 'Fosco']}
+    />
   </WrapProductPage>
   </>;
 }

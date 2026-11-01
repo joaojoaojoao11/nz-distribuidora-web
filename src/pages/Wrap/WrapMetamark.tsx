@@ -21,60 +21,19 @@ import {
   RepelenciaIcon,
   PresenteIcon,
 } from './WrapProducts';
-import MetamarkColorCatalog, { type CatalogItem } from './MetamarkColorCatalog';
-import { MCX_COLORS, MCX_FINISHES, MCX_BLACK_CODES } from '../../lib/data/metamarkMcxColors';
+import { MCX_COLORS, MCX_FINISHES } from '../../lib/data/metamarkMcxColors';
 import { M7_COLORS, M7_FAMILIES } from '../../lib/data/metamark7Colors';
 import VitrineDaLinha from './VitrineDaLinha';
-
-const normalize = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-
-const quoteMsg = (line: string, code: string, name: string) =>
-  `Olá! Vi a linha ${line} no site da NZ e quero um orçamento da cor ${code} ${name}.`;
 
 const COLOR_DISCLAIMER =
   'Imagens e valores de cor são ilustrativos e representativos: o resultado final varia conforme iluminação, superfície de aplicação e calibragem da sua tela. Solicite uma amostra física antes de fechar o projeto.';
 
 /* ========================= MetaCast® MCX ========================= */
 
-const finishLabel = (id: string) => MCX_FINISHES.find((f) => f.id === id)!;
+// A grade é a vitrine da linha na NZSTORE (01/11/2026). MCX_COLORS segue como
+// fonte dos números do fabricante (37 cores, Inspire Colours™) no texto.
 
-const mcxItems: CatalogItem[] = MCX_COLORS.map((c) => {
-  const finish = finishLabel(c.finish);
-  const chips: string[] = [];
-  if (c.inspire) chips.push('INSPIRE™');
-  if (MCX_BLACK_CODES.includes(c.code)) chips.push('BLACK');
-  return {
-    id: c.slug,
-    code: c.code,
-    name: c.name,
-    groupId: c.finish,
-    swatch: {
-      type: 'image',
-      src: c.chip,
-      alt: `Amostra do filme MetaCast MCX ${c.code} ${c.name}`,
-    },
-    chips,
-    photo: c.photo
-      ? { src: c.photo, alt: `Veículo envelopado em MetaCast MCX ${c.code} ${c.name}` }
-      : undefined,
-    details: [
-      { label: 'Código', value: c.code },
-      { label: 'Acabamento', value: `${finish.label} (${finish.labelPt})` },
-      ...(c.inspire
-        ? [{ label: 'Coleção', value: 'Inspire Colours™ — réplica representativa de tom automotivo' }]
-        : []),
-      { label: 'Face film', value: '100 micras cast premium' },
-      { label: 'Adesivo', value: 'MetaGlide® micro canal, reposicionável' },
-      { label: 'Rolo', value: '1.525 mm × 15 m ou 30 m' },
-      { label: 'Durabilidade', value: '12 anos preto e branco · 10 anos cores · 5 anos metálicos' },
-      { label: 'Garantia', value: 'MetaSure™ — até 12 anos' },
-    ],
-    searchTerms: normalize(
-      `${c.code} ${c.name} ${finish.label} ${finish.labelPt} ${c.inspire ? 'inspire colours oem' : ''}`,
-    ),
-  };
-});
+const MCX_ORDEM_GRUPOS = MCX_FINISHES.map((f) => f.label);
 
 export function MetamarkMcx() {
   const schema = JSON.stringify({
@@ -199,25 +158,16 @@ export function MetamarkMcx() {
           },
         }}
       >
-        <MetamarkColorCatalog
-          lineLabel="MetaCast® MCX"
+        <VitrineDaLinha
+          lineKey="mcx"
+          lineLabel="MetaCast MCX"
           title="Catálogo de cores"
-          subtitle={`${MCX_COLORS.length} cores em cinco acabamentos, com as amostras fotográficas oficiais da Metamark. Toque numa cor para ver a ficha e pedir orçamento.`}
-          items={mcxItems}
-          groups={MCX_FINISHES.map((f) => ({ id: f.id, label: f.label }))}
-          extraFilters={[
-            {
-              id: 'inspire',
-              label: 'Inspire Colours™',
-              test: (i) => !!i.chips?.includes('INSPIRE™'),
-            },
-            { id: 'blacks', label: 'Blacks', test: (i) => !!i.chips?.includes('BLACK') },
-          ]}
-          cardMinPx={150}
+          subtitle={(n) =>
+            `${n} cores à venda na NZSTORE. Toque numa cor para abrir o anúncio da loja.`
+          }
           searchPlaceholder="Buscar cor ou código (ex.: MCX-59, Blue Abyss)…"
-          shopPath={(item) => `/loja/${item.id}`}
           disclaimer={COLOR_DISCLAIMER}
-          mensagemOrcamento={(item) => quoteMsg('MetaCast MCX', item.code, item.name)}
+          ordemGrupos={MCX_ORDEM_GRUPOS}
         />
       </WrapProductPage>
     </>
@@ -361,7 +311,7 @@ export function MetamarkM7() {
           subtitle={(n) =>
             `${n} anúncios à venda na NZSTORE, organizados por família. Toque numa cor para abrir o anúncio da loja.`
           }
-          searchPlaceholder="Buscar cor ou código (ex.: M7-196, Graphite)…"
+          searchPlaceholder="Buscar cor, código ou Pantone (ex.: M7-196, Graphite, 447C)…"
           disclaimer={COLOR_DISCLAIMER}
           ordemGrupos={M7_ORDEM_GRUPOS}
         />
