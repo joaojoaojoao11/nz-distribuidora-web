@@ -93,12 +93,15 @@ export default function MetamarkBlock() {
       <div className={own.sectionGlow}></div>
       <div className={own.headerBackdrop} aria-hidden="true"></div>
 
+      {/* Gatilho pela margem, não por fração: no celular este container passa de
+          7.000 px, e 15% dele (o antigo amount: 0.15) não cabe numa tela de 812 px.
+          O bloco nunca aparecia e a página ficava vazia ao rolar. */}
       <motion.div
         className={`container ${styles.averyContainer}`}
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, amount: 0.15 }}
+        viewport={{ once: true, margin: '0px 0px -15% 0px' }}
       >
         <motion.div className={`${styles.averyHeader} ${own.header}`} variants={fadeUpItem}>
           <span className={own.launchBadge}>LANÇAMENTO · SETEMBRO 2026</span>

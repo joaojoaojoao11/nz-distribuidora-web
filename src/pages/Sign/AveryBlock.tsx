@@ -67,7 +67,8 @@ export default function AveryBlock() {
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, amount: 0.15 }}
+        // margem em vez de fração: container alto demais no celular (ver MetamarkBlock)
+        viewport={{ once: true, margin: '0px 0px -15% 0px' }}
       >
         <motion.div className={styles.averyHeader} variants={fadeUpItem}>
           <img
