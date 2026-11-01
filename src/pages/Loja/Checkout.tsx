@@ -514,6 +514,7 @@ export default function Checkout() {
           </div>
           {resumo?.cupom.invalido && <p className={styles.erro}>Cupom inválido.</p>}
           {resumo?.cupom.codigo && <p className={styles.ok}>Cupom {resumo.cupom.codigo} aplicado.</p>}
+          {resumo?.cupom.parcial && <p className={styles.nota}>Alguns itens do carrinho não recebem desconto de cupom.</p>}
 
           <div className={styles.totais}>
             <div>

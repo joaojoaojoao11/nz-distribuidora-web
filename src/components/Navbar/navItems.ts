@@ -22,7 +22,7 @@ export interface NavItem {
  * `contagens` vem de fora porque os catálogos decor são carregados no Navbar
  * e não vale importá-los aqui só para contar.
  */
-export function buildNavItems(contagens: { shDecor: number; etherna: number }): NavItem[] {
+export function buildNavItems(contagens: { shDecor: number; etherna: number; imprimax: number }): NavItem[] {
   return [
     { label: 'Home', to: '/', exact: true },
     { label: 'NZPPF', to: '/ppf' },
@@ -53,6 +53,7 @@ export function buildNavItems(contagens: { shDecor: number; etherna: number }): 
       children: [
         { label: 'SH Decor', to: '/decor/sh', hint: `${contagens.shDecor} padrões` },
         { label: 'Etherna', to: '/decor/etherna', hint: `${contagens.etherna} padrões` },
+        { label: 'Imprimax DecorMax', to: '/decor/imprimax', hint: `${contagens.imprimax} padrões` },
       ],
     },
     { label: 'Coleção NZPPF 2026', to: '/colecao' },

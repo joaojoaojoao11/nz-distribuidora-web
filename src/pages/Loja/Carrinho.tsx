@@ -247,7 +247,7 @@ export default function Carrinho() {
                     >
                       Ir para entrega e pagamento
                     </Link>
-                    <p className={styles.nota}>Pix, cartão em até 6x ou boleto. O frete é calculado no passo seguinte.</p>
+                    <p className={styles.nota}>Pix, cartão parcelado ou boleto. O frete é calculado no passo seguinte.</p>
                     <p className={styles.alternativa}>
                       Prefere fechar com um vendedor, sem pagar agora?{' '}
                       <button type="button" onClick={enviar} disabled={enviando || !cadastroCompleto}>

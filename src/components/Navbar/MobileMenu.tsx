@@ -28,7 +28,7 @@ interface Props {
   onClose: () => void;
   isAdmin: boolean;
   logado: boolean;
-  contagens: { shDecor: number; etherna: number };
+  contagens: { shDecor: number; etherna: number; imprimax: number };
 }
 
 export default function MobileMenu({ onClose, isAdmin, logado, contagens }: Props) {

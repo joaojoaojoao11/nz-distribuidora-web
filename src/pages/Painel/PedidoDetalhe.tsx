@@ -155,7 +155,7 @@ export default function PedidoDetalhe() {
         </section>
       )}
 
-      {pagamento && REABRIVEIS.has(pagamento.status) && <NovoPagamento numero={pedido.numero} total={pedido.aPagar ?? pedido.total ?? 0} onFeito={carregar} />}
+      {pagamento && REABRIVEIS.has(pagamento.status) && <NovoPagamento numero={pedido.numero} total={pedido.aPagar ?? pedido.total ?? 0} maxParcelas={pedido.cartaoMaxParcelas ?? 6} onFeito={carregar} />}
 
       {!pagamento && pedido.pagamentoStatus === 'nenhum' && (
         <section className={styles.bloco}>
@@ -360,7 +360,7 @@ function BlocoPagamento({ p, agora }: { p: PagamentoPublico; agora: number }) {
 
 // ============================================================ novo pagamento
 
-function NovoPagamento({ numero, total, onFeito }: { numero: number; total: number; onFeito: () => Promise<void> }) {
+function NovoPagamento({ numero, total, maxParcelas, onFeito }: { numero: number; total: number; maxParcelas: number; onFeito: () => Promise<void> }) {
   const [aberto, setAberto] = useState(false);
   const [pag, setPag] = useState<EscolhaPagamento>({ forma: 'PIX', parcelas: 1, cartao: CARTAO_VAZIO });
   const [cfg, setCfg] = useState<Resumo['config'] | null>(null);
@@ -371,8 +371,8 @@ function NovoPagamento({ numero, total, onFeito }: { numero: number; total: numb
     if (!aberto || cfg) return;
     // Config (parcelas, prazos) vem do resumo; sem itens não dá para chamar
     // "resumo", então usa padrões e o servidor valida ao criar.
-    setCfg({ pixExpiraMin: 30, boletoVencimentoDias: 3, boletoMinimo: 0, cartaoMaxParcelas: 6, cartaoParcelaMinima: 100, retiradaEndereco: '', pedidoMinimo: 0, freteGratisAcima: null });
-  }, [aberto, cfg]);
+    setCfg({ pixExpiraMin: 30, boletoVencimentoDias: 3, boletoMinimo: 0, cartaoMaxParcelas: maxParcelas, cartaoParcelaMinima: 100, retiradaEndereco: '', pedidoMinimo: 0, freteGratisAcima: null });
+  }, [aberto, cfg, maxParcelas]);
 
   const parcelas = (() => {
     const lista: { n: number; valor: number }[] = [];

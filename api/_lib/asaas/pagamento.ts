@@ -59,6 +59,10 @@ export interface ConfigCheckout {
   saldo_no_checkout: boolean;
   /** Menor cobrança que o Asaas aceita; o restante após o saldo nunca fica abaixo. */
   cobranca_minima: number;
+  /** Teto de parcelas sem juros por linha (ex.: { imprimax: 3 }): o pedido que tem a linha fica no menor teto. */
+  parcelas_max_por_linha: Record<string, number>;
+  /** Linhas fora de cupom, cashback e comissão (a mesma coluna que o motor de incentivos lê). */
+  linhas_excluidas: string[];
 }
 
 export async function carregarConfig(site: Db): Promise<ConfigCheckout> {
@@ -79,13 +83,35 @@ export async function carregarConfig(site: Db): Promise<ConfigCheckout> {
     frete_gratis_acima: c.frete_gratis_acima == null ? null : Number(c.frete_gratis_acima),
     saldo_no_checkout: c.saldo_no_checkout !== false,
     cobranca_minima: Math.max(0, Number(c.cobranca_minima ?? 5) || 0),
+    parcelas_max_por_linha: tetosPorLinha(c.parcelas_max_por_linha),
+    linhas_excluidas: Array.isArray(c.linhas_excluidas) ? (c.linhas_excluidas as unknown[]).map(String) : [],
   };
 }
 
-/** Parcelas possíveis para um total: 1..max, respeitando a parcela mínima. */
-export function parcelasDisponiveis(total: number, cfg: ConfigCheckout): { n: number; valor: number }[] {
+function tetosPorLinha(bruto: unknown): Record<string, number> {
+  const out: Record<string, number> = {};
+  if (!bruto || typeof bruto !== 'object' || Array.isArray(bruto)) return out;
+  for (const [linha, v] of Object.entries(bruto as Record<string, unknown>)) {
+    const n = Math.floor(Number(v));
+    if (Number.isFinite(n) && n >= 1) out[linha] = n;
+  }
+  return out;
+}
+
+/** Teto de parcelas do pedido: o global, ou o menor teto das linhas que estão nele. */
+export function maxParcelasDasLinhas(cfg: ConfigCheckout, linhas: (string | null | undefined)[]): number {
+  let max = cfg.cartao_max_parcelas;
+  for (const l of linhas) {
+    const teto = l ? cfg.parcelas_max_por_linha[l] : undefined;
+    if (teto) max = Math.min(max, teto);
+  }
+  return max;
+}
+
+/** Parcelas possíveis para um total: 1..max, respeitando a parcela mínima. `max`: o teto do pedido (maxParcelasDasLinhas). */
+export function parcelasDisponiveis(total: number, cfg: ConfigCheckout, max = cfg.cartao_max_parcelas): { n: number; valor: number }[] {
   const lista: { n: number; valor: number }[] = [];
-  for (let n = 1; n <= cfg.cartao_max_parcelas; n++) {
+  for (let n = 1; n <= max; n++) {
     const valor = Math.round((total / n) * 100) / 100;
     if (n > 1 && valor < cfg.cartao_parcela_minima) break;
     lista.push({ n, valor });

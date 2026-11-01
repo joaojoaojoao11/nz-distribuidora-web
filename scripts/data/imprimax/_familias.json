@@ -1,0 +1,255 @@
+{
+  "gold-madeiras": {
+    "titulo": "Gold Madeiras",
+    "fonte": "https://www.imprimax.com.br/gold-madeiras",
+    "ficha": {
+      "frontal_mm": "0,140 / 0,180 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_madeiras_2020_03.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_madeiras_2020_02.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_madeiras_2020_05.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/gold_rustic_2020_03.jpg"
+    ],
+    "skus": 39
+  },
+  "gold-pedras": {
+    "titulo": "Gold Pedras",
+    "fonte": "https://www.imprimax.com.br/gold-pedras",
+    "ficha": {
+      "frontal_mm": "0,140 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/Parede+Banheiro+Cinza_0002-aa3a3e95.png",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_pedras_2020_01.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_pedras_2020_06.jpg"
+    ],
+    "skus": 36
+  },
+  "formica-laca": {
+    "titulo": "Gold Fórmica Laca",
+    "fonte": "https://www.imprimax.com.br/formica-laca",
+    "ficha": {
+      "frontal_mm": "0,160 mm",
+      "liner": "Poli&eacute;ster 120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/gold-formica-laca+%281%29-58ecc90e.jpeg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/gold-formica-laca+%281%29-a48a372f.png",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/gold-formica-laca+%282%29-7699b430.png",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/gold-formica-laca+%283%29-2477dd2c.png"
+    ],
+    "skus": 6
+  },
+  "formica-satin": {
+    "titulo": "Gold Fórmica Satin",
+    "fonte": "https://www.imprimax.com.br/formica-satin",
+    "ficha": {
+      "frontal_mm": "0,160 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/FOrmica_Satin_001.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/FOrmica_Satin_002.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/FOrmica_Satin_004.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/FOrmica_Satin_006-5609a21b.jpg"
+    ],
+    "skus": 21
+  },
+  "gold-formica-ripada": {
+    "titulo": "Gold Fórmica Ripada",
+    "fonte": "https://www.imprimax.com.br/gold-formica-ripada",
+    "ficha": {
+      "frontal_mm": null,
+      "liner": null,
+      "dimensoes": null,
+      "durabilidade_interna": null,
+      "durabilidade_externa": null
+    },
+    "ambiente": [
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/Ripada_004.png"
+    ],
+    "skus": 7
+  },
+  "gold-tecido": {
+    "titulo": "Gold Tecido",
+    "fonte": "https://www.imprimax.com.br/gold-tecido",
+    "ficha": {
+      "frontal_mm": "0,140 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [],
+    "skus": 9
+  },
+  "gold-telado": {
+    "titulo": "Gold Telado",
+    "fonte": "https://www.imprimax.com.br/gold-telado",
+    "ficha": {
+      "frontal_mm": "0,160 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_telado_2020_01.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_telado_2020_02.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_telado_2020_03.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_telado_2020_04.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_telado_2020_05.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_telado_2020_06.jpg"
+    ],
+    "skus": 13
+  },
+  "gold-couros": {
+    "titulo": "Gold Couros",
+    "fonte": "https://www.imprimax.com.br/gold-couros",
+    "ficha": {
+      "frontal_mm": "0,20 / 0,14 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_couros_2020_01.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_couros_2020_04.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_couros_2020_05.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_couros_2020_02.jpg"
+    ],
+    "skus": 1
+  },
+  "gold-savana": {
+    "titulo": "Gold Savana",
+    "fonte": "https://www.imprimax.com.br/gold-savana",
+    "ficha": {
+      "frontal_mm": "0,140 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_savana_2020_01.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_savana_2020_03.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_savana_2020_04.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_savana_2020_06.jpg"
+    ],
+    "skus": 3
+  },
+  "gold-firenze": {
+    "titulo": "Gold Firenze",
+    "fonte": "https://www.imprimax.com.br/gold-firenze",
+    "ficha": {
+      "frontal_mm": "0,200 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_firenze_2020_03.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_firenze_2020_04.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_firenze_2020_02.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_firenze_2020_06.jpg"
+    ],
+    "skus": 2
+  },
+  "gold-bambu": {
+    "titulo": "Gold Bambu",
+    "fonte": "https://www.imprimax.com.br/gold-bambu",
+    "ficha": {
+      "frontal_mm": "0,140 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [],
+    "skus": 2
+  },
+  "gold-palha": {
+    "titulo": "Gold Palha",
+    "fonte": "https://www.imprimax.com.br/gold-palha",
+    "ficha": {
+      "frontal_mm": "0,140 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [],
+    "skus": 1
+  },
+  "gold-canvas": {
+    "titulo": "Gold Canvas",
+    "fonte": "https://www.imprimax.com.br/gold-canvas",
+    "ficha": {
+      "frontal_mm": "0,140 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/carrossel-01.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/carrossel-02.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/carrossel-03.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/carrossel-04.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/carrossel-05.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/carrossel-06.jpg"
+    ],
+    "skus": 1
+  },
+  "gold-metal": {
+    "titulo": "Gold Metal",
+    "fonte": "https://www.imprimax.com.br/gold-metal",
+    "ficha": {
+      "frontal_mm": "0,140 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_metal_2020_02.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_metal_2020_03.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_metal_2020_05.jpg",
+      "https://irp-cdn.multiscreensite.com/193db0b2/dms3rep/multi/gold_metal_2020_06.jpg"
+    ],
+    "skus": 2
+  },
+  "pisomax-decorativo": {
+    "titulo": "PisoMax Decorativo",
+    "fonte": "https://www.imprimax.com.br/pisomax-decorativo",
+    "ficha": {
+      "frontal_mm": "0,250 mm",
+      "liner": "120g/m&sup2;",
+      "dimensoes": "1,22 x 25 m",
+      "durabilidade_interna": "8 anos",
+      "durabilidade_externa": "5 anos"
+    },
+    "ambiente": [
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/Madeira_Aplica_003.jpg",
+      "https://irp.cdn-website.com/193db0b2/dms3rep/multi/Marmore_Aplica_004.jpg"
+    ],
+    "skus": 2
+  }
+}

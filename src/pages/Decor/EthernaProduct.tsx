@@ -75,7 +75,7 @@ export default function EthernaProduct() {
     ...ethernaProducts.filter((p) => p.family !== product.family),
   ].slice(0, 4);
 
-  const whatsappMsg = `Olá Daniela! Tenho interesse no padrão *${product.name}*${product.code ? ` (cód. ${product.code})` : ''} da linha Etherna Decor e gostaria de um orçamento.`;
+  const whatsappMsg = `Olá Daniele! Tenho interesse no padrão *${product.name}*${product.code ? ` (cód. ${product.code})` : ''} da linha Etherna Decor e gostaria de um orçamento.`;
   const whatsappUrl = linkWhatsApp(DECOR, whatsappMsg);
 
   const schema = JSON.stringify({

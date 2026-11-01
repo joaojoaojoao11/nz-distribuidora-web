@@ -24,6 +24,7 @@ import { SH_COLORS_ASSETS } from '../data/shWrappingAssets';
 export const GENERIC_IMAGE_BY_LINE: Record<LinhaErp, string> = {
   etherna: '/assets/images/shop/generic/etherna.webp',
   'sh-decor': '/assets/images/shop/generic/sh-decor.webp',
+  imprimax: '/assets/images/shop/generic/imprimax.webp',
   m7: '/assets/images/shop/generic/m7.webp',
   mcx: '/assets/images/shop/generic/mcx.webp',
   nzwrap: '/assets/images/shop/generic/nzwrap.webp',

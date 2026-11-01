@@ -14,7 +14,7 @@ export interface RouteMeta {
 export const routeMeta: Record<string, RouteMeta> = {
   '/': {
     title: 'O Melhor Envelopamento PPF e Adesivo Premium do Brasil',
-    description: 'A NZ Distribuidora oferece o portfólio definitivo em envelopamento: PPF, vinil automotivo premium, comunicação visual Avery Dennison e vinil decorativo SH Decor e Etherna Decor.',
+    description: 'A NZ Distribuidora oferece o portfólio definitivo em envelopamento: PPF, vinil automotivo premium, comunicação visual Avery Dennison e vinil decorativo SH Decor, Etherna Decor e Imprimax DecorMax.',
   },
   '/loja': {
     title: 'Loja — Catálogo Completo NZ',
@@ -90,7 +90,7 @@ export const routeMeta: Record<string, RouteMeta> = {
   },
   '/decor': {
     title: 'NZDECOR — Envelopamento Decorativo Técnico | NZ Group',
-    description: 'Vinil decorativo profissional: antibacteriano, antifúngico, resistente a chamas. SH Decor + Etherna Decor + consultoria técnica.',
+    description: 'Vinil decorativo profissional: antibacteriano, antifúngico, resistente a chamas. SH Decor + Etherna Decor + Imprimax DecorMax + consultoria técnica.',
   },
   '/decor/sh': {
     title: 'Catálogo SH Decor — Vinil Decorativo | NZDECOR',
@@ -99,6 +99,10 @@ export const routeMeta: Record<string, RouteMeta> = {
   '/decor/etherna': {
     title: 'Catálogo Etherna Decor — Vinil Adesivo Decorativo | NZDECOR',
     description: 'Todos os padrões Etherna Decor: madeiras, marmorizados, fórmicas, pedras, metais, tecidos e geométricos. Indústria nacional, Sistema Shield®, entrega rápida. Orçamento via NZDecor.',
+  },
+  '/decor/imprimax': {
+    title: 'Catálogo Imprimax DecorMax — Vinil Adesivo Decorativo | NZDECOR',
+    description: 'Todos os padrões Imprimax DecorMax: madeiras, mármores, pedras, fórmicas, tecidos, couros e piso vinílico. Indústria nacional, antimofo e antibacteriano, rolo 1,22 × 25 m. Distribuição NZDecor.',
   },
   '/sobre': {
     title: 'Sobre a NZ Group — Distribuidora de PPF e Envelopamento',

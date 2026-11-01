@@ -31,6 +31,8 @@ const build = spawnSync(
     'api/_lib/incentivos/saqueRegras.ts',
     'api/_lib/incentivos/carteira.ts',
     'api/_lib/incentivos/cupomUsos.ts',
+    'api/_lib/incentivos/motor.ts',
+    'api/_lib/incentivos/gamificacao.ts',
     // `cupomUsos` confere o documento no "só conta nova" (varredura 22/10).
     'api/_lib/conta/documento.ts',
     'api/_lib/pedido/precificar.ts',
@@ -58,7 +60,8 @@ const { chavePeriodo, fimPeriodo, rotuloPeriodo } = await import(pathToFileURL(j
 const { codigoValido, sugerirCodigo } = await import(pathToFileURL(join(outDir, 'incentivos/superCupom.js')).href);
 const { montarConfig, CONFIG_PADRAO } = await import(pathToFileURL(join(outDir, 'incentivos/config.js')).href);
 const { creditar, debitar, saldoDe, estornarPorPedido, manutencaoCarteira, liberarAposEntrega, aplicarDevolucaoParcial, DIAS_SEM_ENTREGA } = await import(pathToFileURL(join(outDir, 'incentivos/carteira.js')).href);
-const { motivoCupomInvalido, resolverCupom } = await import(pathToFileURL(join(outDir, 'pedido/precificar.js')).href);
+const { motivoCupomInvalido, resolverCupom, subtotalDoCupom } = await import(pathToFileURL(join(outDir, 'pedido/precificar.js')).href);
+const { baseSemLinhasExcluidas } = await import(pathToFileURL(join(outDir, 'incentivos/motor.js')).href);
 
 let falhas = 0;
 const ok = (nome, cond, extra = '') => {
@@ -424,6 +427,32 @@ console.log('\n=== SAQUE: chave Pix e vencimento ===');
   ok('zero dias úteis antes do corte: o próprio dia', calcularVencimentoSaque(quartaManha, 0, '14:00') === '2026-10-21');
   ok('sábado com zero dias: cai na segunda', calcularVencimentoSaque(new Date('2026-10-24T10:00:00-03:00'), 0, '14:00') === '2026-10-26');
   ok('hora de corte inválida cai em 14:00', calcularVencimentoSaque(quartaTarde, 1, 'xx') === '2026-10-23');
+}
+
+// ============================ LINHAS FORA DOS INCENTIVOS (Imprimax, 31/10/2026)
+console.log('\n=== LINHAS EXCLUÍDAS: cupom e base do incentivo ===');
+{
+  const linhas = [
+    { produto: { linha_key: 'speed-wrapping' }, total: 600 },
+    { produto: { linha_key: 'imprimax' }, total: 400 },
+  ];
+  ok('cupom: subtotal sem a linha excluída', subtotalDoCupom(linhas, ['imprimax']) === 600);
+  ok('cupom: sem exclusão, subtotal inteiro', subtotalDoCupom(linhas, []) === 1000);
+  ok('cupom: carrinho só da linha excluída = zero', subtotalDoCupom([linhas[1]], ['imprimax']) === 0);
+
+  // Pedido de 1.000 em itens (600 Speed + 400 Imprimax), cupom de 10% só nos
+  // 600 → desconto 60, base do ERP 940. A base do incentivo é 600 − 60 = 540.
+  const db = bancoFalso({
+    pedido_itens: [
+      { pedido_id: 'px', qtd: 2, preco_unit_estimado: 300, produtos: { linha_key: 'speed-wrapping' } },
+      { pedido_id: 'px', qtd: 1, preco_unit_estimado: 400, produtos: { linha_key: 'imprimax' } },
+    ],
+  });
+  ok('base: tira a fatia excluída inteira (940 → 540)', (await baseSemLinhasExcluidas(db, 'px', 940, 60, ['imprimax'])) === 540);
+  ok('base: sem linha excluída no pedido, base igual', (await baseSemLinhasExcluidas(db, 'px', 940, 60, ['ppf'])) === 940);
+  ok('base: lista vazia nem consulta os itens', (await baseSemLinhasExcluidas(bancoFalso({}), 'px', 940, 60, [])) === 940);
+  const soImx = bancoFalso({ pedido_itens: [{ pedido_id: 'py', qtd: 1, preco_unit_estimado: 400, produtos: { linha_key: 'imprimax' } }] });
+  ok('base: pedido só da linha excluída = zero (ninguém ganha)', (await baseSemLinhasExcluidas(soImx, 'py', 400, 0, ['imprimax'])) === 0);
 }
 
 rmSync(outDir, { recursive: true, force: true });

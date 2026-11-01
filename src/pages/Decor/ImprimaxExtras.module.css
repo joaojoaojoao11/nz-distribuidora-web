@@ -1,0 +1,62 @@
+/* Só o que a Imprimax tem a mais que o layout Etherna (EthernaCatalog/EthernaProduct.module.css).
+   Seletor com elemento (img., button.) para vencer o CSS da Etherna em qualquer ordem de carga. */
+
+/* Logo horizontal (6,5:1): mais baixo que o da Etherna para não dominar o hero. */
+img.heroLogo {
+  height: 40px;
+}
+
+/* Ambientes da família, sob a descrição do filtro ativo. */
+.familyAmbient {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.8rem;
+}
+.familyAmbient img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+/* A capa tem o selo Imprimax no canto superior esquerdo: o recorte 16:9 e 4:3
+   ancora no topo para o selo não sair do quadro. */
+img.capaTopo {
+  object-position: top;
+}
+
+/* A foto oficial do padrão é quadrada (rolo + nome): 4:3 mostra o rolo
+   inteiro sem cortar demais os ambientes, que são paisagem. */
+button.mainImageWrap {
+  aspect-ratio: 4/3;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+}
+.ctaSecondary {
+  display: inline-block;
+  padding: 1rem 2rem;
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: var(--transition-snappy);
+}
+.ctaSecondary:hover {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
+@media (max-width: 640px) {
+  .familyAmbient { grid-template-columns: repeat(2, 1fr); }
+  .ctaRow > * { width: 100%; text-align: center; }
+}

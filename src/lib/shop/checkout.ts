@@ -29,7 +29,8 @@ export interface Resumo {
   invalidos: string[];
   subtotal: number;
   desconto: number;
-  cupom: { codigo: string | null; invalido: boolean };
+  /** parcial: parte dos itens é de linha fora dos incentivos e não leva o desconto do cupom. */
+  cupom: { codigo: string | null; invalido: boolean; parcial?: boolean };
   fretes: OpcaoFrete[];
   freteSemPerfil: string[];
   parcelas: { n: number; valor: number }[];
@@ -107,6 +108,8 @@ export interface PedidoStatus {
     pagoEm: string | null;
     criadoEm: string;
     itens: { slug: string | null; nome: string; codigo: string | null; imagem: string | null; hex: string | null; qtd: number; unidade: string; unit: number | null }[];
+    /** Teto de parcelas do "pagar de novo" (o global, ou menor pelas linhas do pedido). */
+    cartaoMaxParcelas?: number;
   };
   pagamento: PagamentoPublico | null;
   historico: PagamentoPublico[];

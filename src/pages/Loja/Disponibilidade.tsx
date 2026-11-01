@@ -250,7 +250,7 @@ export default function Disponibilidade({
           )}
           {pedidoTexto && (
             decor ? (
-              // NZDECOR: direto para a Daniela
+              // NZDECOR: direto para a Daniele
               <a className={styles.compraCta} href={linkWhatsApp(DECOR, pedidoTexto)} target="_blank" rel="noopener noreferrer">
                 Enviar pedido interno · WhatsApp
               </a>

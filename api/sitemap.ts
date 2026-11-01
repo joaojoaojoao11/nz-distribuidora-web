@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { shDecorSlugs } from './_lib/shDecorSlugs.js';
 import { ethernaSlugs } from './_lib/ethernaSlugs.js';
+import { imprimaxSlugs } from './_lib/imprimaxSlugs.js';
 import { shopSelfCanonicalSlugs } from './_lib/shopItems.js';
 import { signSlugs } from './_lib/signSlugs.js';
 import { colorFamilies } from './_lib/colorCatalog.js';
@@ -46,6 +47,7 @@ export default async function handler(_req: Request) {
     '/decor',
     '/decor/sh',
     '/decor/etherna',
+    '/decor/imprimax',
     '/sobre',
     '/encontre-aplicador',
     '/registro-garantia',
@@ -111,6 +113,15 @@ export default async function handler(_req: Request) {
   for (const slug of ethernaSlugs) {
     sitemapContent += `  <url>\n`;
     sitemapContent += `    <loc>${baseUrl}/decor/etherna/${slug}</loc>\n`;
+    sitemapContent += `    <changefreq>monthly</changefreq>\n`;
+    sitemapContent += `    <priority>0.7</priority>\n`;
+    sitemapContent += `  </url>\n`;
+  }
+
+  // Add Imprimax DecorMax catalog products
+  for (const slug of imprimaxSlugs) {
+    sitemapContent += `  <url>\n`;
+    sitemapContent += `    <loc>${baseUrl}/decor/imprimax/${slug}</loc>\n`;
     sitemapContent += `    <changefreq>monthly</changefreq>\n`;
     sitemapContent += `    <priority>0.7</priority>\n`;
     sitemapContent += `  </url>\n`;

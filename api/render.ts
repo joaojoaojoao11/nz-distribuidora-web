@@ -2,6 +2,7 @@ import { routeMeta, type RouteMeta } from './_lib/routeMeta.js';
 import { signSlugs } from './_lib/signSlugs.js';
 import { shDecorSlugs } from './_lib/shDecorSlugs.js';
 import { ethernaSlugs } from './_lib/ethernaSlugs.js';
+import { imprimaxSlugs } from './_lib/imprimaxSlugs.js';
 import { colorFamilies, colorTitle, colorDescription, cleanColorName, type ColorRow } from './_lib/colorCatalog.js';
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 import { ppfLines } from './_lib/ppfLines.js';
@@ -43,6 +44,7 @@ const crumbLabels: Record<string, string> = {
   '/blog': 'Blog',
   '/decor/sh': 'SH Decor',
   '/decor/etherna': 'Etherna Decor',
+  '/decor/imprimax': 'Imprimax DecorMax',
   '/wrap/nzwrap-premium': 'NZWRAP Premium',
   '/wrap/sh-colors': 'SH Wrapping',
   '/wrap/oracal-970ra': 'Oracal 970RA',
@@ -63,7 +65,7 @@ const crumbLabels: Record<string, string> = {
 // Páginas de listagem que merecem CollectionPage (institucionais ficam só com breadcrumb)
 const catalogPaths = new Set([
   '/loja',
-  '/ppf', '/wrap', '/sign', '/decor', '/decor/sh', '/decor/etherna', '/blog',
+  '/ppf', '/wrap', '/sign', '/decor', '/decor/sh', '/decor/etherna', '/decor/imprimax', '/blog',
   '/wrap/nzwrap-premium', '/wrap/sh-colors', '/wrap/oracal-970ra', '/sign/oracal-651',
   '/wrap/oracal-670ra', '/wrap/metamark-mcx', '/sign/metamark-7-series',
   '/colecao',
@@ -317,7 +319,7 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
     };
   }
 
-  // /decor/sh/:slug e /decor/etherna/:slug — listas fixas
+  // /decor/sh/:slug, /decor/etherna/:slug e /decor/imprimax/:slug — listas fixas
   if (segments[0] === 'decor' && segments.length === 3) {
     const [, family, slug] = segments;
     if (family === 'sh' && shDecorSlugs.includes(slug)) {
@@ -346,6 +348,21 @@ async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
         schema: [
           organization(),
           product({ name: prettify(slug), path, brand: 'Etherna Decor', description }),
+          breadcrumb(crumbsFor(path, prettify(slug))),
+        ],
+      };
+    }
+    if (family === 'imprimax' && imprimaxSlugs.includes(slug)) {
+      const description = 'Padrão de vinil adesivo decorativo Imprimax DecorMax: indústria nacional, antimofo e antibacteriano, rolo 1,22 × 25 m. Distribuição NZDecor.';
+      return {
+        status: 200,
+        canonicalPath: path,
+        type: 'website',
+        title: `${prettify(slug)} — Imprimax DecorMax | NZDECOR`,
+        description,
+        schema: [
+          organization(),
+          product({ name: prettify(slug), path, brand: 'Imprimax', description }),
           breadcrumb(crumbsFor(path, prettify(slug))),
         ],
       };

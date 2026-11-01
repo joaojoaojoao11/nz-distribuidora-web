@@ -16,6 +16,8 @@ import { finishDescendants, type FinishId } from './finish/tree';
 import {
   LINHA_LABEL,
   linhaDeMarca,
+  nomeExibicaoErp,
+  produtoAutoDeSku,
   slugErp,
   verticalDeCategoria,
   type ErpSkuBasico,
@@ -370,11 +372,22 @@ function checkMapaErp(): Failure[] {
     { row: { sku: 'NZPJ5', nome: 'NZWRAP PELÍCULA DE FAROL', marca: 'NZ', categoria: 'PPF FUME' }, want: 'nz-farol' },
     { row: { sku: '84565478', nome: 'PPF BLACK PIANO', marca: 'NZ', categoria: 'PPF' }, want: 'ppf' },
     { row: { sku: 'FT3919', nome: 'FITA DE CORTE', marca: 'NZ', categoria: 'ferramentas' }, want: 'diversos' },
+    { row: { sku: 'IMX10250005', nome: 'IMPRIMAX DECOR GOLD MADEIRA FREIJO', marca: 'IMPRIMAX DECOR', categoria: 'DECORATIVO' }, want: 'imprimax' },
   ];
   for (const c of linhas) {
     const got = linhaDeMarca(c.row).linha;
     if (got !== c.want) fails.push({ caso: `linha ${c.row.sku}`, esperado: c.want, obtido: got });
   }
+
+  // Imprimax: "Gold" é a família do vinil no fabricante, sai do nome.
+  const nomeImx = nomeExibicaoErp({ sku: 'IMX10250005', nome: 'IMPRIMAX DECOR GOLD MADEIRA FREIJO', marca: 'IMPRIMAX DECOR', categoria: 'DECORATIVO' });
+  if (nomeImx !== 'Madeira Freijo') fails.push({ caso: 'nome Imprimax sem Gold', esperado: 'Madeira Freijo', obtido: nomeImx });
+
+  // SKU Imprimax novo nasce oculto (sem foto do padrão); os demais, visíveis.
+  const autoImx = produtoAutoDeSku({ sku: 'IMX99990001', nome: 'IMPRIMAX DECOR GOLD MADEIRA TESTE', marca: 'IMPRIMAX DECOR', categoria: 'DECORATIVO' });
+  if (autoImx.oculto_manual !== true) fails.push({ caso: 'SKU Imprimax novo oculto', esperado: 'true', obtido: String(autoImx.oculto_manual) });
+  const autoOutro = produtoAutoDeSku({ sku: 'FT3919', nome: 'FITA DE CORTE', marca: 'NZ', categoria: 'ferramentas' });
+  if (autoOutro.oculto_manual !== false) fails.push({ caso: 'SKU comum visível', esperado: 'false', obtido: String(autoOutro.oculto_manual) });
 
   // Toda linha do mapa tem rótulo — é o que a faceta e a logística exibem.
   for (const l of Object.keys(LINHA_LABEL)) {

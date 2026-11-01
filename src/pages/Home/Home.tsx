@@ -49,7 +49,7 @@ export default function Home() {
     <>
       <SEO
         title="O Melhor Envelopamento PPF e Adesivo Premium do Brasil"
-        description="A NZ Distribuidora oferece o portfólio definitivo em envelopamento: PPF, vinil automotivo premium, comunicação visual Avery Dennison e vinil decorativo SH Decor e Etherna Decor."
+        description="A NZ Distribuidora oferece o portfólio definitivo em envelopamento: PPF, vinil automotivo premium, comunicação visual Avery Dennison e vinil decorativo SH Decor, Etherna Decor e Imprimax DecorMax."
         keywords="envelopamento ppf, ppf brilhante, adesivo automotivo premium, oracal 970, nzwrap, avery dennison, vinil decorativo"
         schema={schema}
         canonicalUrl="/"

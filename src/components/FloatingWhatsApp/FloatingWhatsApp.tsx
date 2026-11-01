@@ -8,7 +8,7 @@ import styles from './FloatingWhatsApp.module.css';
 export default function FloatingWhatsApp() {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
-  // Nas páginas NZDECOR o botão vai direto para a Daniela, sem o menu de vendas.
+  // Nas páginas NZDECOR o botão vai direto para a Daniele, sem o menu de vendas.
   const decor = ehRotaDecor(pathname);
 
   const handleWhatsAppClick = (phone: string) => {

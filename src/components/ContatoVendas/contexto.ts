@@ -8,7 +8,7 @@ export const ContatoCtx = createContext<ContatoVendasCtx>({
   abrir: (msg) => window.open(linkWhatsApp(VENDAS[0], msg ?? MENSAGEM_PADRAO), '_blank'),
 });
 
-/** abrir(mensagem): Central de Vendas (Vendas 1, 2 e 3); nas páginas /decor, direto para a Daniela. */
+/** abrir(mensagem): Central de Vendas (Vendas 1, 2 e 3); nas páginas /decor, direto para a Daniele. */
 export function useContatoVendas(): ContatoVendasCtx {
   return useContext(ContatoCtx);
 }

@@ -44,6 +44,7 @@ const STATIC_PAGES: SearchItem[] = [
   { label: 'NZDECOR', sublabel: 'Envelopamento arquitetônico', group: 'PÁGINA', path: '/decor', keywords: 'decor decorativo arquitetonico moveis parede' },
   { label: 'Catálogo SH Decor', sublabel: '55 padrões de vinil decorativo', group: 'NZDECOR', path: '/decor/sh', keywords: 'sh decor catalogo padroes' },
   { label: 'Catálogo Etherna Decor', sublabel: '159 padrões de vinil adesivo', group: 'NZDECOR', path: '/decor/etherna', keywords: 'etherna catalogo padroes' },
+  { label: 'Catálogo Imprimax DecorMax', sublabel: '129 padrões de vinil adesivo', group: 'NZDECOR', path: '/decor/imprimax', keywords: 'imprimax decormax decor max gold catalogo padroes' },
   { label: 'Empresa', sublabel: 'Quem é a NZ Group', group: 'PÁGINA', path: '/sobre', keywords: 'sobre historia nz group' },
   { label: 'Blog', sublabel: 'Conteúdo e novidades', group: 'PÁGINA', path: '/blog', keywords: 'blog artigos noticias' },
   { label: 'Encontre um Aplicador', sublabel: 'Rede credenciada NZ', group: 'PÁGINA', path: '/encontre-aplicador', keywords: 'aplicador instalador credenciado' },

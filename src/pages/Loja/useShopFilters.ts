@@ -59,7 +59,7 @@ const KIND_CHIP: Record<ItemKind, string> = {
 };
 
 const VERTICALS: Vertical[] = ['PPF', 'WRAP', 'SIGN', 'DECOR'];
-const BRAND_KEYS: BrandKey[] = ['nz', 'sh', 'metamark', 'orafol', 'avery', 'etherna', 'speed', 'nar', 'outro'];
+const BRAND_KEYS: BrandKey[] = ['nz', 'sh', 'metamark', 'orafol', 'avery', 'etherna', 'imprimax', 'speed', 'nar', 'outro'];
 const LINE_KEYS = Object.keys(LINHA_LABEL) as LineKey[];
 const KINDS: ItemKind[] = ['cor', 'padrao', 'linha', 'vestuario'];
 const PATIO_KEYS: SinalPatio[] = ['rolo-fechado', 'ponta-aberta', 'parceiro'];

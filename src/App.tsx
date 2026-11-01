@@ -80,6 +80,8 @@ const ShDecorCatalog = lazy(() => import('./pages/Decor/ShDecorCatalog'));
 const ShDecorProduct = lazy(() => import('./pages/Decor/ShDecorProduct'));
 const EthernaCatalog = lazy(() => import('./pages/Decor/EthernaCatalog'));
 const EthernaProduct = lazy(() => import('./pages/Decor/EthernaProduct'));
+const ImprimaxCatalog = lazy(() => import('./pages/Decor/ImprimaxCatalog'));
+const ImprimaxProduct = lazy(() => import('./pages/Decor/ImprimaxProduct'));
 const FindInstaller = lazy(() => import('./pages/FindInstaller/FindInstaller'));
 const Company = lazy(() => import('./pages/Company/Company'));
 const BlogList = lazy(() => import('./pages/Blog/BlogList'));
@@ -292,6 +294,8 @@ function App() {
                   <Route path="/decor/sh/:slug" element={<ShDecorProduct />} />
                   <Route path="/decor/etherna" element={<EthernaCatalog />} />
                   <Route path="/decor/etherna/:slug" element={<EthernaProduct />} />
+                  <Route path="/decor/imprimax" element={<ImprimaxCatalog />} />
+                  <Route path="/decor/imprimax/:slug" element={<ImprimaxProduct />} />
                   <Route path="/sobre" element={<Company />} />
                   <Route path="/encontre-aplicador" element={<FindInstaller />} />
                   <Route path="/blog" element={<BlogList />} />

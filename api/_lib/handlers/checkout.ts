@@ -30,6 +30,7 @@ import {
   criarPagamento,
   expirarSeVencido,
   garantirClienteAsaas,
+  maxParcelasDasLinhas,
   pagamentoPublico,
   parcelasDisponiveis,
   sincronizarComAsaas,
@@ -66,6 +67,7 @@ import {
   resolverAfiliado,
   resolverCupom,
   safeJson,
+  subtotalDoCupom,
   type Linha,
   notaPreVenda,
   type Perfil,
@@ -106,7 +108,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const cfg = await carregarConfig(site);
 
   if (op === 'status') {
-    await opStatus(site, userId, papel === 'admin', body, res);
+    await opStatus(site, userId, papel === 'admin', body, cfg, res);
     return;
   }
   if (op === 'cancelar') {
@@ -166,7 +168,8 @@ async function opResumo(site: Db, userId: string, body: Record<string, unknown>,
   }
   const { perfil, faltando } = await carregarPerfil(site, userId);
   const { linhas, invalidos, subtotal } = await precificar(site, itens, { admin, papel, faixaId });
-  const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotal, userId);
+  const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotalDoCupom(linhas, cfg.linhas_excluidas), userId);
+  const maxParcelas = maxParcelasDasLinhas(cfg, linhas.map((l) => l.produto.linha_key));
   const cepBruto = typeof body.cep === 'string' ? body.cep : perfil?.address_zip ?? '';
   const cep = cepBruto.replace(/\D/g, '');
 
@@ -179,15 +182,16 @@ async function opResumo(site: Db, userId: string, body: Record<string, unknown>,
     invalidos,
     subtotal,
     desconto: cupom.desconto,
-    cupom: { codigo: cupom.codigo, invalido: cupom.invalido },
+    // parcial: há itens de linha fora dos incentivos, que o cupom não desconta.
+    cupom: { codigo: cupom.codigo, invalido: cupom.invalido, parcial: !!cupom.codigo && linhas.some((l) => cfg.linhas_excluidas.includes(l.produto.linha_key ?? '')) },
     fretes: frete.opcoes,
     freteSemPerfil: frete.semPerfil,
-    parcelas: parcelasDisponiveis(totalSemFrete, cfg).map((p) => ({ n: p.n, valor: p.valor })),
+    parcelas: parcelasDisponiveis(totalSemFrete, cfg, maxParcelas).map((p) => ({ n: p.n, valor: p.valor })),
     config: {
       pixExpiraMin: cfg.pix_expira_min,
       boletoVencimentoDias: cfg.boleto_vencimento_dias,
       boletoMinimo: cfg.boleto_minimo,
-      cartaoMaxParcelas: cfg.cartao_max_parcelas,
+      cartaoMaxParcelas: maxParcelas,
       cartaoParcelaMinima: cfg.cartao_parcela_minima,
       retiradaEndereco: cfg.retirada_endereco,
       pedidoMinimo: cfg.pedido_minimo,
@@ -270,7 +274,7 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
     res.status(400).json({ error: 'itens-invalidos', invalidos });
     return;
   }
-  const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotal, userId);
+  const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotalDoCupom(linhas, cfg.linhas_excluidas), userId);
   if (cupom.invalido) {
     res.status(400).json({ error: 'cupom-invalido' });
     return;
@@ -325,7 +329,8 @@ async function opPagar(site: Db, userId: string, body: Record<string, unknown>, 
       return;
     }
     if (escolha.forma === 'CREDIT_CARD') {
-      const ok = parcelasDisponiveis(cobrar, cfg).some((p) => p.n === escolha!.parcelas);
+      const max = maxParcelasDasLinhas(cfg, linhas.map((l) => l.produto.linha_key));
+      const ok = parcelasDisponiveis(cobrar, cfg, max).some((p) => p.n === escolha!.parcelas);
       if (!ok) {
         res.status(400).json({ error: 'parcelas-invalidas' });
         return;
@@ -545,7 +550,7 @@ async function carregarPedidoDoUsuario(site: Db, userId: string, admin: boolean,
   } | null;
 }
 
-async function opStatus(site: Db, userId: string, admin: boolean, body: Record<string, unknown>, res: VercelResponse) {
+async function opStatus(site: Db, userId: string, admin: boolean, body: Record<string, unknown>, cfg: ConfigCheckout, res: VercelResponse) {
   const numero = Math.floor(Number(body.numero));
   if (!Number.isFinite(numero) || numero <= 0) {
     res.status(400).json({ error: 'numero-invalido' });
@@ -581,9 +586,9 @@ async function opStatus(site: Db, userId: string, admin: boolean, body: Record<s
 
   const { data: itensData } = await site
     .from('pedido_itens')
-    .select('qtd, unidade, preco_unit_estimado, erp_sku, produtos(slug, nome, codigo, imagem, hex)')
+    .select('qtd, unidade, preco_unit_estimado, erp_sku, produtos(slug, nome, codigo, imagem, hex, linha_key)')
     .eq('pedido_id', pedido.id);
-  type ItemRow = { qtd: number; unidade: string; preco_unit_estimado: number | null; erp_sku: string; produtos: { slug: string; nome: string; codigo: string | null; imagem: string | null; hex: string | null } | null };
+  type ItemRow = { qtd: number; unidade: string; preco_unit_estimado: number | null; erp_sku: string; produtos: { slug: string; nome: string; codigo: string | null; imagem: string | null; hex: string | null; linha_key: string | null } | null };
   const itens = ((itensData ?? []) as unknown as ItemRow[]).map((i) => ({
     slug: i.produtos?.slug ?? null,
     nome: i.produtos?.nome ?? i.erp_sku,
@@ -614,6 +619,8 @@ async function opStatus(site: Db, userId: string, admin: boolean, body: Record<s
       pagoEm: pedido.pago_em,
       criadoEm: pedido.criado_em,
       itens,
+      // Teto do "pagar de novo": o mesmo do checkout, pelas linhas do pedido.
+      cartaoMaxParcelas: maxParcelasDasLinhas(cfg, ((itensData ?? []) as unknown as ItemRow[]).map((i) => i.produtos?.linha_key)),
     },
     pagamento: pagamentos.length ? pagamentoPublico(pagamentos[0]) : null,
     historico: pagamentos.slice(1).map(pagamentoPublico),
@@ -684,7 +691,9 @@ async function opNovoPagamento(site: Db, userId: string, body: Record<string, un
     return;
   }
   if (escolha.forma === 'CREDIT_CARD') {
-    if (!parcelasDisponiveis(total, cfg).some((p) => p.n === escolha.parcelas)) {
+    const { data: linhasData } = await site.from('pedido_itens').select('produtos(linha_key)').eq('pedido_id', pedido.id);
+    const max = maxParcelasDasLinhas(cfg, ((linhasData ?? []) as unknown as { produtos: { linha_key: string | null } | null }[]).map((i) => i.produtos?.linha_key));
+    if (!parcelasDisponiveis(total, cfg, max).some((p) => p.n === escolha.parcelas)) {
       res.status(400).json({ error: 'parcelas-invalidas' });
       return;
     }

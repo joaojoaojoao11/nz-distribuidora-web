@@ -35,9 +35,11 @@ import {
   resolverAfiliado,
   resolverCupom,
   safeJson,
+  subtotalDoCupom,
 } from '../pedido/precificar.js';
 import { nomeDaFaixa } from '../precos/regraAcesso.js';
 import { filiarSeFaltar } from '../incentivos/motor.js';
+import { carregarConfigIncentivos } from '../incentivos/config.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Cache-Control', 'no-store');
@@ -90,7 +92,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return;
   }
 
-  const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotal, userId);
+  const { linhasExcluidas } = await carregarConfigIncentivos(site);
+  const cupom = await resolverCupom(site, typeof body.cupom === 'string' ? body.cupom : '', subtotalDoCupom(linhas, linhasExcluidas), userId);
   if (cupom.invalido) {
     res.status(400).json({ error: 'cupom-invalido' });
     return;

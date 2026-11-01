@@ -1,11 +1,13 @@
 export type Brand = {
-  slug: 'sh' | 'etherna';
+  slug: 'sh' | 'etherna' | 'imprimax';
   name: string;
   origin: string;
   tagline: string;
   description: string;
   badges: string[];
   logo: string;
+  /** Logo horizontal e comprido: aparece mais baixo para não cobrir a foto. */
+  logoLargo?: boolean;
   image: string;
   officialSite: string;
   catalogPath?: string;
@@ -35,5 +37,18 @@ export const decorBrands: Brand[] = [
     image: '/assets/images/decor/decor_etherna_card.webp',
     officialSite: 'https://ethernaprodutos.com.br',
     catalogPath: '/decor/etherna',
+  },
+  {
+    slug: 'imprimax',
+    name: 'IMPRIMAX DECORMAX',
+    origin: 'Imprimax · Indústria nacional de adesivos',
+    tagline: 'Nacional. Madeiras, mármores e fórmicas com textura realista.',
+    description: 'Linha DecorMax Gold da Imprimax, indústria brasileira de vinil adesivo. Frontal em PVC polimérico calandrado com adesivo acrílico permanente. Antimofo, antibacteriano e não propaga fogo. Durabilidade de 8 anos em interiores. Mais de 120 padrões em madeiras, pedras, fórmicas, tecidos, couros e piso vinílico. Rolo 1,22 m × 25 m.',
+    badges: ['INDÚSTRIA NACIONAL', 'ANTIMOFO · ANTIBACTERIANO', 'NÃO PROPAGA FOGO', '8 ANOS INTERNO'],
+    logo: '/assets/logos/nzdecor/logo-imprimax-branco.webp',
+    logoLargo: true,
+    image: '/assets/images/decor/decor_imprimax_card.webp',
+    officialSite: 'https://www.imprimax.com.br/decormax',
+    catalogPath: '/decor/imprimax',
   },
 ];

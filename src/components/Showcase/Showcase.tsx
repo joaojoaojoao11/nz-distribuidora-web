@@ -93,7 +93,7 @@ export default function Showcase() {
               <img src="/assets/logos/nzdecor/logo-nzdecor-branco.png" alt="NZDECOR" className={`${styles.splitLogo} ${styles.splitLogoWide}`} loading="lazy" decoding="async" />
               <span className={styles.splitSub}>ENVELOPAMENTO ARQUITETÔNICO</span>
               <p className={styles.splitDesc}>
-                Vinil decorativo técnico para móveis, paredes e superfícies. Mais de 210 padrões SH Decor e Etherna Decor em catálogo.
+                Vinil decorativo técnico para móveis, paredes e superfícies. Mais de 340 padrões SH Decor, Etherna Decor e Imprimax DecorMax em catálogo.
               </p>
               <span className={styles.splitCta}>
                 EXPLORAR

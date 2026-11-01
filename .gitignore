@@ -47,3 +47,4 @@ scripts/output/*
 # cache do Python e temporários de gravação (sharp/OneDrive)
 __pycache__/
 *.tmp
+scripts/data/imprimax/_originals/

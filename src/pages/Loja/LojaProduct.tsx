@@ -478,7 +478,7 @@ function ProductView({
 
           <div className={styles.ctaBlock}>
             {item.vertical === 'DECOR' ? (
-              // NZDECOR: direto para a Daniela
+              // NZDECOR: direto para a Daniele
               <a
                 href={linkWhatsApp(DECOR, mensagemOrcamento(item))}
                 target="_blank"

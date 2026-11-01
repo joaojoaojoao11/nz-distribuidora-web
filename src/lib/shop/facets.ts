@@ -100,6 +100,7 @@ const BRAND_TEXT: Record<BrandKey, string> = {
   orafol: 'Orafol / Oracal',
   sh: 'SH',
   etherna: 'Etherna',
+  imprimax: 'Imprimax',
   avery: 'Avery Dennison',
   speed: 'Speed Wrapping',
   nar: 'NAR',

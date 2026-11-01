@@ -12,7 +12,7 @@ export default function BrandCards() {
         variants={staggerContainer} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}
       >
         <motion.div className={styles.brandsHeader} variants={fadeUpItem}>
-          <span className={styles.brandsTag}>DUAS LINHAS · UMA CURADORIA</span>
+          <span className={styles.brandsTag}>TRÊS LINHAS · UMA CURADORIA</span>
           <h2 className={styles.brandsTitle}>Marcas Distribuídas</h2>
         </motion.div>
 
@@ -21,7 +21,7 @@ export default function BrandCards() {
             <motion.article key={b.slug} className={styles.brandCard} variants={scaleReveal}>
               <div className={styles.brandCardImage}>
                 <img src={b.image} alt={b.name} className={styles.brandCardPhoto} loading="lazy" />
-                <img src={b.logo} alt={`Logo ${b.name}`} className={styles.brandCardLogo} />
+                <img src={b.logo} alt={`Logo ${b.name}`} className={`${styles.brandCardLogo} ${b.logoLargo ? styles.brandCardLogoLargo : ''}`} />
               </div>
               <div className={styles.brandCardContent}>
                 <div className={styles.brandOrigin}>{b.origin}</div>

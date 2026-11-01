@@ -76,7 +76,7 @@ export default function ShDecorProduct() {
     ...shDecorProducts.filter((p) => p.family !== product.family),
   ].slice(0, 4);
 
-  const whatsappMsg = `Olá Daniela! Tenho interesse no padrão *${product.name}* (${product.code}) da linha SH Decor e gostaria de um orçamento.`;
+  const whatsappMsg = `Olá Daniele! Tenho interesse no padrão *${product.name}* (${product.code}) da linha SH Decor e gostaria de um orçamento.`;
   const whatsappUrl = linkWhatsApp(DECOR, whatsappMsg);
 
   const schema = JSON.stringify({

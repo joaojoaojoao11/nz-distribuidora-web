@@ -6,6 +6,7 @@ import { totalItensCarrinho, useCarrinho } from '../../lib/shop/carrinho';
 import { abrirPainelCarrinho, usePainelCarrinho } from '../../lib/shop/painelCarrinho';
 import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
 import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
+import { IMPRIMAX_TOTAL } from '../../pages/Decor/imprimaxTotal';
 import styles from './Navbar.module.css';
 
 // O índice da busca carrega ~340 destinos (páginas, linhas e todas as cores e
@@ -222,6 +223,14 @@ export default function Navbar() {
                 />
                 <span className={styles.dropdownLabel}>{ethernaProducts.length} padrões</span>
               </Link>
+              <Link to="/decor/imprimax" className={styles.dropdownItem} onClick={closeMenu}>
+                <img
+                  src="/assets/logos/nzdecor/logo-imprimax-branco.webp"
+                  alt="Catálogo Imprimax DecorMax"
+                  className={styles.dropdownLogoImprimax}
+                />
+                <span className={styles.dropdownLabel}>{IMPRIMAX_TOTAL} padrões</span>
+              </Link>
             </div>
           </div>
           <Link to="/colecao" className={`${styles.navLink} ${location.pathname === '/colecao' ? styles.navLinkActive : ''}`} onClick={closeMenu}>
@@ -314,7 +323,7 @@ export default function Navbar() {
             onClose={closeMenu}
             isAdmin={isAdmin}
             logado={Boolean(user)}
-            contagens={{ shDecor: shDecorProducts.length, etherna: ethernaProducts.length }}
+            contagens={{ shDecor: shDecorProducts.length, etherna: ethernaProducts.length, imprimax: IMPRIMAX_TOTAL }}
           />
         </Suspense>
       )}

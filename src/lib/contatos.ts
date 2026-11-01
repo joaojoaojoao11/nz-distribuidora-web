@@ -1,5 +1,5 @@
 // Fonte única dos contatos de WhatsApp do site (João, 04/10/2026).
-// - NZDECOR (páginas /decor e itens decor da loja) → direto para a Daniela.
+// - NZDECOR (páginas /decor e itens decor da loja) → direto para a Daniele.
 // - Todo o resto → janela "Central de Vendas" com Vendas 1, 2 e 3 (ContatoVendas).
 // Trocou um número? Muda só aqui.
 
@@ -15,7 +15,7 @@ export const VENDAS: Contato[] = [
   { nome: 'Vendas 3', telefone: '5511918907565', exibicao: '(11) 91890-7565' },
 ];
 
-export const DECOR: Contato = { nome: 'Daniela · NZDECOR', telefone: '5511920707565', exibicao: '(11) 92070-7565' };
+export const DECOR: Contato = { nome: 'Daniele · NZDECOR', telefone: '5511920707565', exibicao: '(11) 92070-7565' };
 
 export const MENSAGEM_PADRAO = 'Olá! Vim pelo site da NZ e gostaria de mais informações.';
 
@@ -24,7 +24,7 @@ export function linkWhatsApp(contato: Contato, mensagem?: string): string {
   return `https://wa.me/${contato.telefone}${texto}`;
 }
 
-/** Páginas da NZDECOR: o contato global (botão flutuante, menu, rodapé) vai direto para a Daniela. */
+/** Páginas da NZDECOR: o contato global (botão flutuante, menu, rodapé) vai direto para a Daniele. */
 export function ehRotaDecor(pathname: string): boolean {
   return pathname === '/decor' || pathname.startsWith('/decor/');
 }

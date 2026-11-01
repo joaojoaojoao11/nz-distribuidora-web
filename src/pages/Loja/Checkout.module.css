@@ -352,6 +352,12 @@
   color: #4ade80;
 }
 
+.nota {
+  margin: 0.2rem 0 0;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
 .erro {
   margin: 0.4rem 0 0;
   font-size: 0.8rem;

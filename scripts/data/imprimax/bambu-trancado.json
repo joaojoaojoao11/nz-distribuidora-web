@@ -1,0 +1,15 @@
+{
+  "sku": "IMX16050001",
+  "slugLoja": "imprimax-decor-gold-bambu-trancado-imx16050001",
+  "slug": "bambu-trancado",
+  "nomeErp": "IMPRIMAX DECOR GOLD BAMBU TRANÇADO",
+  "pagina": "gold-bambu",
+  "textura": "https://irp.cdn-website.com/193db0b2/dms3rep/multi/imprimax_gold_bambu_trancado.webp",
+  "ambiente": [
+    "https://irp.cdn-website.com/193db0b2/dms3rep/multi/Tran%C3%A7ado+-+Parede+e+Teto_0007.jpg",
+    "https://irp.cdn-website.com/193db0b2/dms3rep/multi/Tran%C3%A7ado+-+Parede_0005.jpg",
+    "https://irp.cdn-website.com/193db0b2/dms3rep/multi/Tran%C3%A7ado---Parede-e-Teto_0006---Sub-032.jpg"
+  ],
+  "casadoAMao": null,
+  "fonte": "https://www.imprimax.com.br/gold-bambu"
+}

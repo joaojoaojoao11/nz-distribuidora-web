@@ -248,6 +248,19 @@
   transform: scale(1.04);
 }
 
+/* Logo horizontal (6,5:1): mais baixo para ocupar a mesma largura das outras. */
+.dropdownLogoImprimax {
+  height: 18px;
+  width: auto;
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdownItem:hover .dropdownLogoImprimax {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
 .dropdownLabel {
   font-size: 0.58rem;
   font-weight: 600;

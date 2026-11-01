@@ -11,14 +11,14 @@ import styles from './Decor.module.css';
 import { DECOR, linkWhatsApp } from '../../lib/contatos';
 
 const WHATSAPP_URL = linkWhatsApp(DECOR, 'Olá, quero iniciar consultoria decorativa NZDecor. Meu projeto é...');
-const CONTACT_EMAIL = 'daniela@nzdistribuidora.com.br';
+const CONTACT_EMAIL = 'daniele@nzdistribuidora.com.br';
 
 export default function Decor() {
   const schema = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "name": "NZDECOR — Envelopamento Decorativo Técnico",
-    "description": "Envelopamento decorativo com vinil técnico de alta performance. Consultoria técnica, SH Decor e Etherna Decor.",
+    "description": "Envelopamento decorativo com vinil técnico de alta performance. Consultoria técnica, SH Decor, Etherna Decor e Imprimax DecorMax.",
     "url": `${SITE_URL}/decor`
   });
 
@@ -26,8 +26,8 @@ export default function Decor() {
     <div className={styles.page}>
       <SEO
         title="NZDECOR — Envelopamento Decorativo Técnico | NZ Group"
-        description="Vinil decorativo profissional: antibacteriano, antifúngico, resistente a chamas. SH Decor + Etherna Decor + consultoria técnica."
-        keywords="vinil decorativo, envelopamento arquitetônico, sh decor, etherna decor, tecnologia shield, decor tecnico"
+        description="Vinil decorativo profissional: antibacteriano, antifúngico, resistente a chamas. SH Decor + Etherna Decor + Imprimax DecorMax + consultoria técnica."
+        keywords="vinil decorativo, envelopamento arquitetônico, sh decor, etherna decor, imprimax decormax, tecnologia shield, decor tecnico"
         canonicalUrl="/decor"
         schema={schema}
       />
@@ -73,7 +73,7 @@ export default function Decor() {
             Papel de parede protege por 2 anos. Pintura descasca com umidade. Laminado exige marcenaria. Vinil decorativo profissional resolve tudo isso ao mesmo tempo — antibacteriano, antifúngico, resistente a chamas, à prova d'água, aplicado sem obra, removível quando o projeto pedir.
           </motion.p>
           <motion.p className={styles.manifestoParagraph} variants={fadeUpItem}>
-            A NZDecor distribui as duas linhas mais consistentes do mercado brasileiro — <Link to="/decor/sh"><strong>SH Decor</strong></Link> e <Link to="/decor/etherna"><strong>Etherna Decor</strong></Link> — e faz consultoria técnica com arquitetos, designers e integradores. Não vendemos rolo. Especificamos ambiente.
+            A NZDecor distribui três das linhas mais consistentes do mercado brasileiro — <Link to="/decor/sh"><strong>SH Decor</strong></Link>, <Link to="/decor/etherna"><strong>Etherna Decor</strong></Link> e <Link to="/decor/imprimax"><strong>Imprimax DecorMax</strong></Link> — e faz consultoria técnica com arquitetos, designers e integradores. Não vendemos rolo. Especificamos ambiente.
           </motion.p>
         </motion.div>
       </section>

@@ -73,7 +73,7 @@ export function verticalDeCategoria(categoria: string | null | undefined, marca?
   if (c === 'ENVELOPAMENTO') return 'WRAP';
   // DIVERSOS, ferramentas, vazio: cai pela marca.
   const m = (marca ?? '').trim().toUpperCase();
-  if (m === 'ETHERNA' || m === 'SH DECOR') return 'DECOR';
+  if (m === 'ETHERNA' || m === 'SH DECOR' || m.startsWith('IMPRIMAX')) return 'DECOR';
   if (m.startsWith('ORACAL')) return 'SIGN';
   return 'WRAP';
 }
@@ -86,6 +86,7 @@ export function verticalDeCategoria(categoria: string | null | undefined, marca?
 export type LinhaErp =
   | 'etherna'
   | 'sh-decor'
+  | 'imprimax'
   | 'm7'
   | 'mcx'
   | 'nzwrap'
@@ -107,6 +108,7 @@ export type LinhaErp =
 export const LINHA_LABEL: Record<LinhaErp, string> = {
   etherna: 'Etherna Decor',
   'sh-decor': 'SH Decor',
+  imprimax: 'Imprimax DecorMax',
   m7: 'Metamark 7 Series',
   mcx: 'MetaCast MCX',
   nzwrap: 'NZWRAP Premium',
@@ -128,7 +130,7 @@ export const LINHA_LABEL: Record<LinhaErp, string> = {
   diversos: 'Diversos',
 };
 
-export type BrandKeyErp = 'nz' | 'sh' | 'metamark' | 'orafol' | 'avery' | 'etherna' | 'speed' | 'nar' | 'outro';
+export type BrandKeyErp = 'nz' | 'sh' | 'metamark' | 'orafol' | 'avery' | 'etherna' | 'imprimax' | 'speed' | 'nar' | 'outro';
 
 export function linhaDeMarca(row: ErpSkuBasico): { linha: LinhaErp; brandKey: BrandKeyErp; marcaExibicao: string } {
   const m = (row.marca ?? '').trim().toUpperCase();
@@ -145,6 +147,8 @@ export function linhaDeMarca(row: ErpSkuBasico): { linha: LinhaErp; brandKey: Br
   if (m === 'SH WRAPPING') return { linha: 'sh-wrapping', brandKey: 'sh', marcaExibicao: 'SH Wrapping' };
   if (m === 'SH DECOR') return { linha: 'sh-decor', brandKey: 'sh', marcaExibicao: 'SH Decor' };
   if (m === 'ETHERNA') return { linha: 'etherna', brandKey: 'etherna', marcaExibicao: 'Etherna Decor' };
+  // No ERP a marca é "IMPRIMAX DECOR"; no fabricante a linha se chama DecorMax.
+  if (m.startsWith('IMPRIMAX')) return { linha: 'imprimax', brandKey: 'imprimax', marcaExibicao: 'Imprimax DecorMax' };
   if (m === 'NAR') return { linha: 'nar', brandKey: 'nar', marcaExibicao: 'NAR' };
   if (m === 'NEXT') return { linha: 'next', brandKey: 'sh', marcaExibicao: 'SHNext' };
   if (m === 'ORACAL 670') return { linha: 'oracal-670', brandKey: 'orafol', marcaExibicao: 'Orafol' };
@@ -181,6 +185,9 @@ export function nomeExibicaoErp(row: ErpSkuBasico): string {
     // Só quando a marca é palavra inteira: "NZ" não pode comer o "NZ" de "NZPPF".
     nome = nome.slice(marca.length).trim();
   }
+  // "IMPRIMAX DECOR GOLD MADEIRA FREIJO": Gold é a família do vinil no
+  // fabricante, não faz parte do nome do padrão.
+  if (marca.toUpperCase().startsWith('IMPRIMAX')) nome = nome.replace(/^GOLD\s+/i, '');
   if (!nome) nome = row.sku;
   return nome
     .split(/\s+/)
@@ -202,6 +209,11 @@ export function aplicacoesDeVertical(v: VerticalErp): ('automotivo' | 'arquiteto
  * coleção entraram no ERP e o sync as publicou como "WRAP / Diversos", com
  * preço e compra, 12 dias antes do lançamento). Peça de coleção só vai ao ar
  * pelo cadastro manual, com data (`publicar_em`).
+ *
+ * IMPRIMAX nasce OCULTO: padrão decorativo sem a foto do próprio padrão não vai
+ * à loja (decisão de 31/10/2026). Sai do oculto quando a foto é cadastrada.
+ * `oculto_manual` vai nos dois ramos: o insert é em lote e chave ausente numa
+ * linha vira NULL na outra (coluna NOT NULL derruba o lote inteiro).
  */
 export function produtoAutoDeSku(row: ErpSkuBasico) {
   const { linha, brandKey, marcaExibicao } = linhaDeMarca(row);
@@ -221,6 +233,7 @@ export function produtoAutoDeSku(row: ErpSkuBasico) {
       aplicacoes: [] as ('automotivo' | 'arquitetonico' | 'comunicacao-visual')[],
       codigo: row.sku,
       publicado: false,
+      oculto_manual: false,
       origem: 'erp-auto' as const,
       fonte_original: 'erp',
     };
@@ -242,6 +255,7 @@ export function produtoAutoDeSku(row: ErpSkuBasico) {
     aplicacoes: aplicacoesDeVertical(vertical),
     codigo: row.sku,
     publicado: true,
+    oculto_manual: linha === 'imprimax',
     origem: 'erp-auto' as const,
     fonte_original: 'erp',
   };

@@ -5,7 +5,7 @@ import { DECOR, MENSAGEM_PADRAO, ehRotaDecor, linkWhatsApp } from '../../lib/con
 import { ContatoCtx, useContatoVendas } from './contexto';
 
 // Botão de contato do site: abre a "Central de Vendas" (Vendas 1, 2 e 3) com a mensagem já escrita.
-// Nas páginas /decor o contato vai direto para a Daniela (NZDECOR), sem a janela.
+// Nas páginas /decor o contato vai direto para a Daniele (NZDECOR), sem a janela.
 
 export function ContatoVendasProvider({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();

@@ -8,7 +8,8 @@
 //     apurada por período (mensal/quinzenal) e liberada no fim dele.
 //   · (campanhas, metas e multiplicadores extras: Fase 5)
 //
-// Base = itens já com o desconto, SEM frete (D4). Carência: D3. Trava: §5
+// Base = itens já com o desconto, SEM frete (D4) e SEM as linhas fora dos
+// incentivos (loja_config.linhas_excluidas). Carência: D3. Trava: §5
 // (só quando ligada e com imposto/comissão embutida configurados). Idempotente
 // pelo índice único da carteira e por pedidos.incentivos_processados_em.
 
@@ -76,6 +77,25 @@ interface AfiliadoRow {
 
 const somarDias = (d: Date, dias: number) => new Date(d.getTime() + dias * 86400000);
 
+/**
+ * Tira da base a parte das linhas excluídas. Os itens gravados no site dão a
+ * proporção; o valor é o do ERP. O cupom só descontou o resto
+ * (subtotalDoCupom), então a fatia excluída sai inteira, sem desconto.
+ */
+export async function baseSemLinhasExcluidas(site: Db, pedidoId: string, base: number, desconto: number, excluidas: readonly string[]): Promise<number> {
+  if (!excluidas.length) return base;
+  const { data } = await site.from('pedido_itens').select('qtd, preco_unit_estimado, produtos(linha_key)').eq('pedido_id', pedidoId);
+  let total = 0;
+  let fora = 0;
+  for (const i of (data ?? []) as unknown as { qtd: number; preco_unit_estimado: number | null; produtos: { linha_key: string | null } | null }[]) {
+    const v = Number(i.qtd) * Number(i.preco_unit_estimado ?? 0);
+    total += v;
+    if (excluidas.includes(i.produtos?.linha_key ?? '')) fora += v;
+  }
+  if (total <= 0 || fora <= 0) return base;
+  return r2(Math.max(0, base - (base + desconto) * (fora / total)));
+}
+
 /** Filia a conta ao afiliado se ainda não tem ninguém (1 afiliado por cliente, o primeiro). */
 export async function filiarSeFaltar(site: Db, userId: string, afiliadoUserId: string): Promise<boolean> {
   if (!userId || !afiliadoUserId || userId === afiliadoUserId) return false;
@@ -110,7 +130,7 @@ export async function processarPedidoFaturado(site: Db, e: EntradaMotor, cfg: Co
     .select('id');
   if (!(vez ?? []).length) return { ignorado: 'em-andamento', creditos: [], cortes: [] };
 
-  const base = r2(Math.max(0, Number(e.totalErp) - Number(e.freteErp || 0)));
+  const base = await baseSemLinhasExcluidas(site, pedido.id, r2(Math.max(0, Number(e.totalErp) - Number(e.freteErp || 0))), Number(pedido.desconto ?? 0), cfg.linhasExcluidas);
   const marcar = async () => site.from('pedidos').update({ incentivos_processados_em: new Date().toISOString(), incentivos_processando_em: null }).eq('id', pedido.id);
   if (base <= 0) {
     await marcar();

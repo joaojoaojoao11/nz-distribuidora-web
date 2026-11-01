@@ -1,0 +1,340 @@
+{
+  "geradoEm": "2026-10-31T23:00:28.130Z",
+  "casados": 131,
+  "semFoto": [
+    {
+      "sku": "IMX10250015",
+      "nome": "IMPRIMAX DECOR GOLD FORMICA SATIN DOURADO"
+    },
+    {
+      "sku": "IMX14010007",
+      "nome": "IMPRIMAX DECOR GOLD TELADO LINHO BEGE TAUPE"
+    },
+    {
+      "sku": "IMX13940061",
+      "nome": "IMPRIMAX DECOR MADEIRA TX CARVALHO 2601"
+    },
+    {
+      "sku": "IMX13940001",
+      "nome": "IMPRIMAX DECOR MADEIRA TX FREIJO"
+    },
+    {
+      "sku": "IMX13940002",
+      "nome": "IMPRIMAX DECOR MADEIRA TX FREIJÓ ASPEN"
+    },
+    {
+      "sku": "IMX13940011",
+      "nome": "IMPRIMAX DECOR MADEIRA TX JACARANDA PRETO"
+    },
+    {
+      "sku": "IMX13940041",
+      "nome": "IMPRIMAX DECOR MADEIRA TX JATOBA 2601"
+    },
+    {
+      "sku": "IMX13940031",
+      "nome": "IMPRIMAX DECOR MADEIRA TX JEQUITIBA MJ 2301"
+    },
+    {
+      "sku": "IMX13940032",
+      "nome": "IMPRIMAX DECOR MADEIRA TX JEQUITIBA MJ 2302"
+    },
+    {
+      "sku": "IMX13940033",
+      "nome": "IMPRIMAX DECOR MADEIRA TX JEQUITIBA MJ 2303"
+    },
+    {
+      "sku": "IMX13940021",
+      "nome": "IMPRIMAX DECOR MADEIRA TX LINHEIRO ML 2201"
+    },
+    {
+      "sku": "IMX13940051",
+      "nome": "IMPRIMAX DECOR MADEIRA TX NATIVA 2601"
+    },
+    {
+      "sku": "IMX13940501",
+      "nome": "IMPRIMAX DECOR PEDRAS TX CONCRETO 2601"
+    },
+    {
+      "sku": "IMX13940502",
+      "nome": "IMPRIMAX DECOR PEDRAS TX CONCRETO 2602"
+    },
+    {
+      "sku": "IMX17540006",
+      "nome": "IMPRIMAX DECOR REVEST WALL (0,16) TELADO"
+    },
+    {
+      "sku": "IMX17540001",
+      "nome": "IMPRIMAX DECOR REVEST WALL ARTISTICO"
+    },
+    {
+      "sku": "IMX17540003",
+      "nome": "IMPRIMAX DECOR REVEST WALL CANVAS"
+    },
+    {
+      "sku": "IMX17540009",
+      "nome": "IMPRIMAX DECOR REVEST WALL VOLPE"
+    },
+    {
+      "sku": "IMX10670001",
+      "nome": "IMPRIMAX DECOR SENSE TX LINO CINZA"
+    },
+    {
+      "sku": "IMX10670002",
+      "nome": "IMPRIMAX DECOR SENSE TX LINO NUDE"
+    },
+    {
+      "sku": "IMX10670021",
+      "nome": "IMPRIMAX DECOR SENSE TX LISTRAS CINZA"
+    },
+    {
+      "sku": "IMX10670022",
+      "nome": "IMPRIMAX DECOR SENSE TX LISTRAS NUDE"
+    },
+    {
+      "sku": "IMX10670041",
+      "nome": "IMPRIMAX DECOR SENSE TX ORGANICO CINZA"
+    },
+    {
+      "sku": "IMX10670042",
+      "nome": "IMPRIMAX DECOR SENSE TX ORGANICO NUDE"
+    },
+    {
+      "sku": "IMX10670061",
+      "nome": "IMPRIMAX DECOR SENSE TX SQUARE CINZA"
+    },
+    {
+      "sku": "IMX10670062",
+      "nome": "IMPRIMAX DECOR SENSE TX SQUARE NUDE"
+    }
+  ],
+  "arquivosSemCadastro": [
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "Pisomax+MC+1705-fa15c397.png",
+      "palavras": [
+        "mc",
+        "1705"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_cimento_queimado.webp",
+      "palavras": [
+        "cimento",
+        "queimado"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_granilite.webp",
+      "palavras": [
+        "granilite"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_carvalho_mc_1704.webp",
+      "palavras": [
+        "madeira",
+        "carvalho",
+        "mc",
+        "1704"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_carvalho_mc_1705.webp",
+      "palavras": [
+        "madeira",
+        "carvalho",
+        "mc",
+        "1705"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_ciliegio.webp",
+      "palavras": [
+        "madeira",
+        "ciliegio"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_deck_2401.webp",
+      "palavras": [
+        "madeira",
+        "deck",
+        "2401"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_freijo.webp",
+      "palavras": [
+        "madeira",
+        "freijo"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_jequitiba_mj_2301.webp",
+      "palavras": [
+        "madeira",
+        "jequitiba",
+        "mj",
+        "2301"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_jequitiba_mj_2302.webp",
+      "palavras": [
+        "madeira",
+        "jequitiba",
+        "mj",
+        "2302"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_jequitiba_mj_2303.webp",
+      "palavras": [
+        "madeira",
+        "jequitiba",
+        "mj",
+        "2303"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_madeira_marfim.webp",
+      "palavras": [
+        "madeira",
+        "marfim"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_branco_marquina_gloss.webp",
+      "palavras": [
+        "marmore",
+        "branco",
+        "marquina",
+        "gloss"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_branco_marquina_matte.webp",
+      "palavras": [
+        "marmore",
+        "branco",
+        "marquina",
+        "matte"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_calacatta_gloss.jpeg",
+      "palavras": [
+        "marmore",
+        "calacatta",
+        "gloss"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_calacatta_matte.jpeg",
+      "palavras": [
+        "marmore",
+        "calacatta",
+        "matte"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_calacatta_ouro_gloss.webp",
+      "palavras": [
+        "marmore",
+        "calacatta",
+        "ouro",
+        "gloss"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_calacatta_ouro_matte.webp",
+      "palavras": [
+        "marmore",
+        "calacatta",
+        "ouro",
+        "matte"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_carrara.webp",
+      "palavras": [
+        "marmore",
+        "carrara"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_cinza_armani_gloss.webp",
+      "palavras": [
+        "marmore",
+        "cinza",
+        "armani",
+        "gloss"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_cinza_armani_matte.webp",
+      "palavras": [
+        "marmore",
+        "cinza",
+        "armani",
+        "matte"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_crema_armani_gloss.webp",
+      "palavras": [
+        "marmore",
+        "crema",
+        "armani",
+        "gloss"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_marmore_crema_armani_matte.webp",
+      "palavras": [
+        "marmore",
+        "crema",
+        "armani",
+        "matte"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_miracema.webp",
+      "palavras": [
+        "miracema"
+      ]
+    },
+    {
+      "pagina": "pisomax-decorativo",
+      "arquivo": "imprimax_piso_max_decorativo_travertino_cinza_matte.webp",
+      "palavras": [
+        "travertino",
+        "cinza",
+        "matte"
+      ]
+    }
+  ]
+}

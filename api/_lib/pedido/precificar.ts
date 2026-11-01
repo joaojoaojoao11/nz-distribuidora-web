@@ -367,6 +367,15 @@ export async function usosReservados(site: Db, codigo: string): Promise<number> 
  * de usos conta os consumidos (`usos`) mais os reservados por pedidos em
  * aberto (B5).
  */
+/**
+ * Subtotal sobre o qual o cupom dá desconto: os itens sem as linhas que a loja
+ * tirou dos incentivos (`loja_config.linhas_excluidas`: cupom, cashback e
+ * comissão de afiliado). Linha excluída não carrega desconto de cupom.
+ */
+export function subtotalDoCupom(linhas: Pick<Linha, 'produto' | 'total'>[], excluidas: readonly string[]): number {
+  return r2(linhas.filter((l) => !excluidas.includes(l.produto.linha_key ?? '')).reduce((s, l) => s + l.total, 0));
+}
+
 export async function resolverCupom(site: Db, codigoBruto: string, subtotal: number, userId: string): Promise<CupomResolvido> {
   const codigo = codigoBruto.trim().toUpperCase();
   if (!codigo) return { codigo: null, desconto: 0, afiliadoUserId: null, invalido: false };

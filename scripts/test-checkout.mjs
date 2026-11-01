@@ -141,12 +141,12 @@ function fakeDb(dados = {}) {
   };
 }
 
-const { criarPagamento, parcelasDisponiveis, statusDoEvento, statusDoAsaas, expirarSeVencido, marcarPago, valorConfere, aplicarStatus } = await import(pathToFileURL(join(outDir, 'asaas/pagamento.js')).href);
+const { criarPagamento, parcelasDisponiveis, maxParcelasDasLinhas, statusDoEvento, statusDoAsaas, expirarSeVencido, marcarPago, valorConfere, aplicarStatus } = await import(pathToFileURL(join(outDir, 'asaas/pagamento.js')).href);
 const { somarDiasUteis, hojeBr, ipDoCliente, sanitizarPagamento } = await import(pathToFileURL(join(outDir, 'asaas/cliente.js')).href);
 const { normalizarItens, precificar, montarPayloadErp, itensParaGravar, notaPreVenda } = await import(pathToFileURL(join(outDir, 'pedido/precificar.js')).href);
 const webhook = await import(pathToFileURL(join(outDir, 'handlers/asaas.js')).href);
 
-const CFG = { checkout_ativo: true, pix_expira_min: 30, boleto_vencimento_dias: 3, boleto_multa_pct: 2, boleto_juros_mes_pct: 1, boleto_minimo: 0, cartao_max_parcelas: 6, cartao_parcela_minima: 100, retirada_ativa: true, retirada_endereco: '', pedido_minimo: 0, frete_gratis_acima: null };
+const CFG = { checkout_ativo: true, pix_expira_min: 30, boleto_vencimento_dias: 3, boleto_multa_pct: 2, boleto_juros_mes_pct: 1, boleto_minimo: 0, cartao_max_parcelas: 6, cartao_parcela_minima: 100, retirada_ativa: true, retirada_endereco: '', pedido_minimo: 0, frete_gratis_acima: null, parcelas_max_por_linha: { imprimax: 3 }, linhas_excluidas: ['imprimax'] };
 const PERFIL = { full_name: 'Maria Teste', company_name: null, phone: '11999990000', email: 'maria@teste.com', cpf_cnpj: '52998224725', ie: null, indicado_por: null, address_street: 'Rua A', address_number: '10', address_complement: null, address_neighborhood: 'Centro', address_city: 'São Paulo', address_state: 'SP', address_zip: '01310100', asaas_customer_id: 'cus_000005401844', asaas_customer_env: 'production' };
 // Payload de cobrança da doc (Criar nova cobrança → 200).
 const PAGAMENTO_DOC = (extra = {}) => ({ object: 'payment', id: 'pay_080225913252', dateCreated: '2026-09-07', customer: 'cus_000005401844', value: 100, netValue: 94.51, billingType: 'PIX', status: 'PENDING', dueDate: '2026-09-07', invoiceUrl: 'https://www.asaas.com/i/080225913252', bankSlipUrl: null, transactionReceiptUrl: null, nossoNumero: null, ...extra });
@@ -156,6 +156,8 @@ console.log('\n=== REGRAS PURAS ===');
 ok('parcelas: 6x sem juros até a mínima de R$ 100', parcelasDisponiveis(1000, CFG).map((p) => p.n).join(',') === '1,2,3,4,5,6');
 ok('parcelas: R$ 250 → só 1x e 2x (125 ≥ 100; 83 < 100)', parcelasDisponiveis(250, CFG).map((p) => p.n).join(',') === '1,2');
 ok('parcelas: valor da parcela arredondado a 2 casas', parcelasDisponiveis(1000, CFG)[2].valor === 333.33);
+ok('parcelas: pedido com linha de teto 3 (Imprimax) para em 3x', parcelasDisponiveis(1000, CFG, maxParcelasDasLinhas(CFG, ['speed-wrapping', 'imprimax'])).map((p) => p.n).join(',') === '1,2,3');
+ok('parcelas: sem a linha de teto, vale o global (6x)', maxParcelasDasLinhas(CFG, ['speed-wrapping', null]) === 6);
 ok('dias úteis: sexta + 3 = quarta', somarDiasUteis('2026-09-04', 3) === '2026-09-09');
 ok('dias úteis: 0 dias = mesma data', somarDiasUteis('2026-09-07', 0) === '2026-09-07');
 ok('hojeBr tem formato YYYY-MM-DD', /^\d{4}-\d{2}-\d{2}$/.test(hojeBr()));
