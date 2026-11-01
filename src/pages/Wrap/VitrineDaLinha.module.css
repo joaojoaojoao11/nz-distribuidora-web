@@ -1,0 +1,77 @@
+/* Grade da vitrine da linha: as mesmas colunas dos relacionados da loja
+   (LojaProduct.module.css .relatedGrid), para o card ter o tamanho de sempre. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 1.25rem;
+}
+
+/* Esqueleto no formato do card: quadrado da mídia + rodapé de 108px. */
+.esqueleto {
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  background:
+    linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--text-muted) 10%, transparent) 50%, transparent 100%)
+      0 0 / 200% 100%,
+    var(--bg-secondary);
+  aspect-ratio: 1 / 1;
+  padding-bottom: 108px;
+  box-sizing: content-box;
+  animation: brilho 1.4s ease-in-out infinite;
+}
+
+@keyframes brilho {
+  from {
+    background-position: 100% 0, 0 0;
+  }
+  to {
+    background-position: -100% 0, 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto {
+    animation: none;
+  }
+}
+
+.naLoja {
+  margin: 1.75rem 0 0;
+  text-align: center;
+}
+
+.naLojaLink {
+  display: inline-block;
+  padding: 0.85rem 1.4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--text-primary);
+  font-family: var(--font-tech);
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  text-decoration: none;
+  transition: border-color var(--transition-snappy), background var(--transition-snappy);
+}
+
+@media (hover: hover) {
+  .naLojaLink:hover {
+    border-color: var(--accent-red);
+    background: var(--bg-secondary);
+  }
+}
+
+@media (min-width: 421px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+}

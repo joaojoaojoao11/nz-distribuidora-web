@@ -159,7 +159,20 @@ export default async function handler(_req: Request) {
   // do catálogo e não eram indexáveis como entidade própria. Os demais itens
   // da loja apontam o canonical para a página de detalhe que já existe, então
   // ficam fora do sitemap de propósito — não duplicar URL já indexada.
-  for (const slug of shopSelfCanonicalSlugs) {
+  //
+  // Metamark 7 Series: desde 01/11/2026 a página da linha mostra os anúncios da
+  // loja, então entram os anúncios do banco no lugar da lista estática de cores
+  // (que tem cor fora da loja e não tem as cores novas do ERP).
+  const { data: m7 } = await supabase
+    .from('loja_catalogo')
+    .select('slug')
+    .eq('linha_key', 'm7')
+    .is('pai_slug', null);
+  const m7Slugs = ((m7 ?? []) as { slug: string }[]).map((r) => r.slug);
+  const lojaSlugs = m7Slugs.length
+    ? [...m7Slugs, ...shopSelfCanonicalSlugs.filter((s) => !s.startsWith('m7-'))]
+    : shopSelfCanonicalSlugs;
+  for (const slug of lojaSlugs) {
     sitemapContent += `  <url>
 `;
     sitemapContent += `    <loc>${baseUrl}/loja/${slug}</loc>

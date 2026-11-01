@@ -23,7 +23,8 @@ import {
 } from './WrapProducts';
 import MetamarkColorCatalog, { type CatalogItem } from './MetamarkColorCatalog';
 import { MCX_COLORS, MCX_FINISHES, MCX_BLACK_CODES } from '../../lib/data/metamarkMcxColors';
-import { M7_COLORS, M7_FAMILIES, M7_WIDTHS_MM } from '../../lib/data/metamark7Colors';
+import { M7_COLORS, M7_FAMILIES } from '../../lib/data/metamark7Colors';
+import VitrineDaLinha from './VitrineDaLinha';
 
 const normalize = (s: string) =>
   s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
@@ -225,45 +226,10 @@ export function MetamarkMcx() {
 
 /* ======================= Metamark 7 Series ======================= */
 
-const familyLabel = (id: string) => M7_FAMILIES.find((f) => f.id === id)!;
-
-const m7Items: CatalogItem[] = M7_COLORS.map((c) => {
-  const family = familyLabel(c.family);
-  const chips: string[] = [];
-  if (c.matt) chips.push('FOSCO');
-  if (c.wide) chips.push('1600mm');
-  if (c.transparent) chips.push('TRANSP.');
-  return {
-    id: c.slug,
-    code: c.code,
-    name: c.name,
-    groupId: c.family,
-    swatch: { type: 'color', hex: c.hex, transparent: c.transparent },
-    chips,
-    details: [
-      { label: 'Código', value: c.code },
-      { label: 'Família', value: `${family.label} (${family.labelPt.toLowerCase()})` },
-      ...(c.transparent
-        ? [{ label: 'Aparência', value: 'Filme transparente — o valor de cor é apenas referencial' }]
-        : [{ label: 'Cor (RGB)', value: `${c.hex.toUpperCase()} · rgb(${c.rgb.join(', ')})` }]),
-      ...(c.pantone ? [{ label: 'Pantone®', value: c.pantone }] : []),
-      ...(c.cmyk ? [{ label: 'CMYK', value: c.cmyk }] : []),
-      {
-        label: 'Larguras',
-        value: c.wide
-          ? M7_WIDTHS_MM.map((w) => `${w} mm`).join(' · ')
-          : M7_WIDTHS_MM.filter((w) => w !== 1600)
-              .map((w) => `${w} mm`)
-              .join(' · '),
-      },
-      { label: 'Face film', value: '70 micras PVC polimérico calandrado' },
-      { label: 'Durabilidade', value: '8 anos preto e branco · 7 anos cores · 5 anos metálicos' },
-    ],
-    searchTerms: normalize(
-      `${c.code} ${c.name} ${family.label} ${family.labelPt} ${c.pantone ? `pantone ${c.pantone}` : ''} ${c.cmyk ?? ''} ${c.matt ? 'fosco matt' : ''}`,
-    ),
-  };
-});
+// A grade é a vitrine da linha na NZSTORE (01/11/2026): os anúncios da loja,
+// não mais o painel próprio por cor. M7_COLORS segue como fonte dos números
+// do fabricante (92 cores, Pantone) no texto da página.
+const M7_ORDEM_GRUPOS = M7_FAMILIES.map((f) => f.labelPt);
 
 export function MetamarkM7() {
   const schema = JSON.stringify({
@@ -388,18 +354,16 @@ export function MetamarkM7() {
           },
         }}
       >
-        <MetamarkColorCatalog
+        <VitrineDaLinha
+          lineKey="m7"
           lineLabel="Metamark 7 Series"
           title="Catálogo de cores"
-          subtitle={`${M7_COLORS.length} cores organizadas por família, com o valor Pantone® e CMYK oficial de cada uma. Toque numa cor para ver a ficha e pedir orçamento.`}
-          items={m7Items}
-          groups={M7_FAMILIES.map((f) => ({ id: f.id, label: f.labelPt }))}
-          extraFilters={[{ id: 'matt', label: 'Fosco', test: (i) => !!i.chips?.includes('FOSCO') }]}
-          cardMinPx={120}
-          searchPlaceholder="Buscar cor, código ou Pantone (ex.: M7-196, Graphite, 447C)…"
-          shopPath={(item) => `/loja/${item.id}`}
+          subtitle={(n) =>
+            `${n} anúncios à venda na NZSTORE, organizados por família. Toque numa cor para abrir o anúncio da loja.`
+          }
+          searchPlaceholder="Buscar cor ou código (ex.: M7-196, Graphite)…"
           disclaimer={COLOR_DISCLAIMER}
-          mensagemOrcamento={(item) => quoteMsg('Metamark 7 Series', item.code, item.name)}
+          ordemGrupos={M7_ORDEM_GRUPOS}
         />
       </WrapProductPage>
     </>

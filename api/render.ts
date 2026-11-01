@@ -184,6 +184,9 @@ async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
     // Linha retirada da loja: sem meta própria, para não indexar produto que
     // o catálogo não mostra mais.
     if (ehLinhaOculta(r.linha_key)) return null;
+    // Caminho antigo com "?" (o painel ?cor= da M7 e da MCX) não é página de
+    // detalhe: o anúncio é a página canônica dele mesmo.
+    const legado = r.legacy_path?.includes('?') ? null : r.legacy_path;
     const brand = r.marca_exibicao ?? 'NZ';
     const linha = r.linha_label ?? brand;
     const title = r.seo_titulo ?? `${r.nome}${r.codigo ? ` · ${r.codigo}` : ''} — ${linha}`;
@@ -199,8 +202,8 @@ async function fetchLojaItem(slug: string): Promise<ShopIndexItem | null> {
       title,
       description,
       image: r.imagem,
-      selfCanonical: !r.legacy_path && !r.pai_slug,
-      legacyPath: r.pai_slug ? `/loja/${r.pai_slug}` : r.legacy_path,
+      selfCanonical: !legado && !r.pai_slug,
+      legacyPath: r.pai_slug ? `/loja/${r.pai_slug}` : legado,
     };
   } catch {
     return null;
