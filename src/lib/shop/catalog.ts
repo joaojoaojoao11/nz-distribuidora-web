@@ -14,11 +14,12 @@ import {
 import { averyToShopItems, md80ToShopItems, ppfToShopItems } from './adapters/editorial';
 import { dbSnapshotToShopItems } from './adapters/dbSnapshot';
 import { AVERY_NO_SITE } from '../avery';
+import { NZWRAP_PREMIUM_NO_SITE } from '../nzwrapPremium';
 import { assertUniqueSlugs, type ShopItem, type SourceKey, type Vertical } from './types';
 
 function build(): ShopItem[] {
   const items = [
-    ...nzwrapToShopItems(),
+    ...(NZWRAP_PREMIUM_NO_SITE ? nzwrapToShopItems() : []),
     ...metamarkMcxToShopItems(),
     ...metamark7ToShopItems(),
     ...dbSnapshotToShopItems(),

@@ -9,6 +9,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
 import FloatingWhatsApp from './components/FloatingWhatsApp/FloatingWhatsApp';
 import { ContatoVendasProvider } from './components/ContatoVendas/ContatoVendas';
+import { NZWRAP_PREMIUM_NO_SITE } from './lib/nzwrapPremium';
 import './App.css';
 // Efeito colateral: liga a cópia do carrinho no servidor (uma linha por
 // usuário). Sem ela, carrinho abandonado não existe como dado.
@@ -271,8 +272,9 @@ function App() {
                   <Route path="/ppf/windshield" element={<Windshield />} />
                   <Route path="/wrap" element={<Wrap />} />
                   <Route path="/wrap/motos" element={<AcaoMotos />} />
-                  <Route path="/wrap/nzwrap-premium" element={<NzwrapPremium />} />
-                  <Route path="/wrap/nzwrap-premium/:sku" element={<NzwrapColorPage />} />
+                  {/* NZWRAP Premium fora do site por enquanto (01/11/2026): as duas rotas voltam para o /wrap. */}
+                  <Route path="/wrap/nzwrap-premium" element={NZWRAP_PREMIUM_NO_SITE ? <NzwrapPremium /> : <Navigate to="/wrap" replace />} />
+                  <Route path="/wrap/nzwrap-premium/:sku" element={NZWRAP_PREMIUM_NO_SITE ? <NzwrapColorPage /> : <Navigate to="/wrap" replace />} />
                   <Route path="/wrap/sh-colors" element={<ShColors />} />
                   <Route path="/wrap/sh-colors/:colorCode" element={<ShWrappingColors />} />
                   <Route path="/wrap/oracal-970ra" element={<Oracal970 />} />

@@ -4,7 +4,7 @@ import { ethernaSlugs } from './_lib/ethernaSlugs.js';
 import { imprimaxSlugs } from './_lib/imprimaxSlugs.js';
 import { shopSelfCanonicalSlugs } from './_lib/shopItems.js';
 import { signSlugs } from './_lib/signSlugs.js';
-import { AVERY_NO_SITE } from './_lib/lojaOcultos.js';
+import { AVERY_NO_SITE, NZWRAP_PREMIUM_NO_SITE } from './_lib/lojaOcultos.js';
 import { colorFamilies } from './_lib/colorCatalog.js';
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 
@@ -35,7 +35,7 @@ export default async function handler(_req: Request) {
     '/ppf/headlight',
     '/ppf/windshield',
     '/wrap',
-    '/wrap/nzwrap-premium',
+    ...(NZWRAP_PREMIUM_NO_SITE ? ['/wrap/nzwrap-premium'] : []),
     '/wrap/sh-colors',
     '/wrap/oracal-970ra',
     '/sign/oracal-651',
@@ -76,7 +76,7 @@ export default async function handler(_req: Request) {
     const prefix = brandToPrefix.get(row.brand);
     if (prefix && row.slug) colorPaths.push(`${prefix}/${row.slug}`);
   }
-  for (const sku of Object.keys(nzwrapColorMeta)) {
+  for (const sku of NZWRAP_PREMIUM_NO_SITE ? Object.keys(nzwrapColorMeta) : []) {
     colorPaths.push(`/wrap/nzwrap-premium/${sku}`);
   }
 

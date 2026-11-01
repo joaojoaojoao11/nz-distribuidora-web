@@ -10,6 +10,7 @@
 // Aqui é o oposto: uma lista de texto, uma coluna, hierarquia por indentação.
 
 import { AVERY_NO_SITE } from '../../lib/avery';
+import { NZWRAP_PREMIUM_NO_SITE } from '../../lib/nzwrapPremium';
 
 export interface NavItem {
   label: string;
@@ -32,7 +33,7 @@ export function buildNavItems(contagens: { shDecor: number; etherna: number; imp
       label: 'NZWRAP',
       to: '/wrap',
       children: [
-        { label: 'NZWrap Premium', to: '/wrap/nzwrap-premium' },
+        ...(NZWRAP_PREMIUM_NO_SITE ? [{ label: 'NZWrap Premium', to: '/wrap/nzwrap-premium' }] : []),
         { label: 'SH Wrapping', to: '/wrap/sh-colors' },
         { label: 'MetaCast MCX', to: '/wrap/metamark-mcx' },
         { label: 'Oracal 970RA', to: '/wrap/oracal-970ra' },

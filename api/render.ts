@@ -7,7 +7,7 @@ import { colorFamilies, colorTitle, colorDescription, cleanColorName, type Color
 import { nzwrapColorMeta } from './_lib/nzwrapColorMeta.js';
 import { ppfLines } from './_lib/ppfLines.js';
 import { getShopIndexItem, type ShopIndexItem } from './_lib/shopItems.js';
-import { AVERY_NO_SITE, ehLinhaOculta, ehSlugDeLinhaOculta } from './_lib/lojaOcultos.js';
+import { AVERY_NO_SITE, NZWRAP_PREMIUM_NO_SITE, ehLinhaOculta, ehSlugDeLinhaOculta } from './_lib/lojaOcultos.js';
 import { organization, localBusiness, webSite, breadcrumb, product, faqPage, article, collectionPage, graphScript } from './_lib/jsonld.js';
 
 // Shell HTML com meta correta por rota, para TODOS os user-agents.
@@ -245,6 +245,11 @@ async function fetchColorMeta(
 
 async function resolveMeta(pathname: string): Promise<ResolvedMeta> {
   const path = pathname !== '/' ? pathname.replace(/\/+$/, '') : '/';
+
+  // NZWRAP Premium fora do site: a página da linha e as 30 cores viram 404 (o app manda para /wrap)
+  if (!NZWRAP_PREMIUM_NO_SITE && (path === '/wrap/nzwrap-premium' || path.startsWith('/wrap/nzwrap-premium/'))) {
+    return NOT_FOUND_META;
+  }
 
   const staticMeta = routeMeta[path];
   if (staticMeta) {

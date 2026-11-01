@@ -4,6 +4,8 @@
 // É o único arquivo que precisa mudar — a página inteira lê daqui.
 // ─────────────────────────────────────────────────────────────
 
+import { NZWRAP_PREMIUM_NO_SITE } from '../../lib/nzwrapPremium';
+
 export const INTERLAGOS = {
   // ── PENDENTE: dados do brinde ──────────────────────────────
   /** Nome do brinde. Ex.: 'um kit exclusivo NZPPF'. */
@@ -58,10 +60,13 @@ export const LINHAS = [
   {
     nome: 'NZWRAP',
     titulo: 'Envelopamento automotivo',
-    desc: 'Linha proprietária de PVC alto brilho, com curadoria exclusiva de cores e suporte direto.',
+    // NZWRAP Premium fora do site por enquanto (01/11/2026): o card leva ao /wrap.
+    desc: NZWRAP_PREMIUM_NO_SITE
+      ? 'Linha proprietária de PVC alto brilho, com curadoria exclusiva de cores e suporte direto.'
+      : 'SH Colors, MetaCast MCX e Oracal 670RA, com curadoria de cores e suporte direto.',
     resumo: 'Mais de 250 cores a pronta entrega e acesso a qualquer cor do mundo.',
     img: '/assets/images/interlagos/nzwrap.webp',
-    href: '/wrap/nzwrap-premium',
+    href: NZWRAP_PREMIUM_NO_SITE ? '/wrap/nzwrap-premium' : '/wrap',
     externo: false,
     cta: 'Ver a linha',
   },

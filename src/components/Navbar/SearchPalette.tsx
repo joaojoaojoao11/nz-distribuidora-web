@@ -7,6 +7,7 @@ import { useShopCatalog } from '../../lib/shop/store';
 import { applyFilters, EMPTY_FILTERS } from '../../lib/shop/search/match';
 import { normalize } from '../../lib/shop/types';
 import { AVERY_NO_SITE } from '../../lib/avery';
+import { NZWRAP_PREMIUM_NO_SITE } from '../../lib/nzwrapPremium';
 import styles from './SearchPalette.module.css';
 
 type SearchItem = {
@@ -33,7 +34,9 @@ const STATIC_PAGES: SearchItem[] = [
   { label: 'Headlight', sublabel: 'PPF para faróis', group: 'NZPPF', path: '/ppf/headlight', keywords: 'farol pelicula' },
   { label: 'Windshield', sublabel: 'PPF para para-brisa', group: 'NZPPF', path: '/ppf/windshield', keywords: 'parabrisa para-brisa vidro' },
   { label: 'NZWRAP', sublabel: 'Envelopamento automotivo', group: 'PÁGINA', path: '/wrap', keywords: 'wrap envelopamento adesivo automotivo' },
-  { label: 'NZWrap Premium', sublabel: 'Linha premium de cores', group: 'NZWRAP', path: '/wrap/nzwrap-premium', keywords: 'cores premium tpu' },
+  ...(NZWRAP_PREMIUM_NO_SITE
+    ? [{ label: 'NZWrap Premium', sublabel: 'Linha premium de cores', group: 'NZWRAP', path: '/wrap/nzwrap-premium', keywords: 'cores premium tpu' }]
+    : []),
   { label: 'SH Wrapping Colors', sublabel: 'Catálogo de cores SH', group: 'NZWRAP', path: '/wrap/sh-colors', keywords: 'sh colors cores' },
   { label: 'Oracal 970RA', sublabel: 'Wrapping premium Orafol', group: 'NZWRAP', path: '/wrap/oracal-970ra', keywords: 'oracal orafol 970' },
   { label: 'Oracal 670RA', sublabel: 'Wrapping film Orafol', group: 'NZWRAP', path: '/wrap/oracal-670ra', keywords: 'oracal orafol 670' },

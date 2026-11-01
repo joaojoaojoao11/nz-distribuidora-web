@@ -8,6 +8,7 @@ import { shDecorProducts } from '../../pages/Decor/shDecorProducts';
 import { ethernaProducts } from '../../pages/Decor/ethernaProducts';
 import { IMPRIMAX_TOTAL } from '../../pages/Decor/imprimaxTotal';
 import { AVERY_NO_SITE } from '../../lib/avery';
+import { NZWRAP_PREMIUM_NO_SITE } from '../../lib/nzwrapPremium';
 import styles from './Navbar.module.css';
 
 // O índice da busca carrega ~340 destinos (páginas, linhas e todas as cores e
@@ -148,14 +149,16 @@ export default function Navbar() {
               <span className={styles.dropdownCaret} aria-hidden="true">▾</span>
             </Link>
             <div className={styles.dropdown}>
-              <Link to="/wrap/nzwrap-premium" className={styles.dropdownItem} onClick={closeMenu}>
-                <img
-                  src="/assets/logos/logo-nz-wrap.svg"
-                  alt="NZWrap Premium"
-                  className={styles.dropdownLogoNzwrap}
-                />
-                <span className={styles.dropdownLabel}>linha premium</span>
-              </Link>
+              {NZWRAP_PREMIUM_NO_SITE && (
+                <Link to="/wrap/nzwrap-premium" className={styles.dropdownItem} onClick={closeMenu}>
+                  <img
+                    src="/assets/logos/logo-nz-wrap.svg"
+                    alt="NZWrap Premium"
+                    className={styles.dropdownLogoNzwrap}
+                  />
+                  <span className={styles.dropdownLabel}>linha premium</span>
+                </Link>
+              )}
               <Link to="/wrap/sh-colors" className={styles.dropdownItem} onClick={closeMenu}>
                 <img
                   src="/assets/logos/logo-sh-colors.svg"

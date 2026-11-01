@@ -16,10 +16,17 @@ export const LINHAS_OCULTAS: ReadonlySet<string> = new Set([
   // com AVERY_NO_SITE em src/lib/avery.ts (o /sign e o menu leem de lá).
   'avery',
   'avery-adpro',
+  // NZWRAP Premium — fora do site a pedido da NZ em 2026-11-01 ("por enquanto").
+  // Anda junto com NZWRAP_PREMIUM_NO_SITE em src/lib/nzwrapPremium.ts.
+  'nzwrap',
+  'nzwrap-import',
 ]);
 
 /** Avery no site: lido pelo /sign do render, pelo sitemap e pelas metas de rota. */
 export const AVERY_NO_SITE = !LINHAS_OCULTAS.has('avery');
+
+/** NZWRAP Premium no site: lido pelo render (página e cores), sitemap e metas de rota. */
+export const NZWRAP_PREMIUM_NO_SITE = !LINHAS_OCULTAS.has('nzwrap');
 
 export function ehLinhaOculta(linhaKey: string | null | undefined): boolean {
   return LINHAS_OCULTAS.has(String(linhaKey ?? '').toLowerCase());

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import SellerModal from '../../components/SellerModal/SellerModal';
+import { NZWRAP_PREMIUM_NO_SITE } from '../../lib/nzwrapPremium';
 import styles from './NzGroupPromo.module.css';
 
 type Brand = {
@@ -13,7 +14,7 @@ type Brand = {
   external?: boolean;
 };
 
-const brands: Brand[] = [
+const todasAsMarcas: Brand[] = [
   {
     name: 'NZ PPF',
     tag: 'Proteção de pintura · 6 linhas',
@@ -51,6 +52,9 @@ const brands: Brand[] = [
     to: '/wrap/sh-colors',
   },
 ];
+
+// NZWRAP Premium fora do site por enquanto (01/11/2026).
+const brands = todasAsMarcas.filter((b) => NZWRAP_PREMIUM_NO_SITE || b.to !== '/wrap/nzwrap-premium');
 
 const container = {
   hidden: { opacity: 0 },

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
+import { NZWRAP_PREMIUM_NO_SITE } from '../../lib/nzwrapPremium';
 import styles from './Wrap.module.css';
 
 const staggerContainer = {
@@ -74,7 +75,7 @@ const productLines = [
     badge3: '',
     available: true
   }
-];
+].filter((linha) => NZWRAP_PREMIUM_NO_SITE || linha.slug !== 'nzwrap-premium');
 
 const comparisonData = [
   {
@@ -125,17 +126,19 @@ const comparisonData = [
       { label: 'Custo-Benefício', value: 96 }
     ]
   }
-];
+].filter((linha) => NZWRAP_PREMIUM_NO_SITE || linha.id !== 'nzwrap');
 
 export default function Wrap() {
   const navigate = useNavigate();
-  const [activeCompareId, setActiveCompareId] = useState<string>('nzwrap');
+  const [activeCompareId, setActiveCompareId] = useState<string>(comparisonData[0].id);
 
   const schema = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     "name": "Catálogo de Adesivos Automotivos e Vinil Premium - NZ Distribuidora",
-    "description": "Veja nossa linha de Vinil Automotivo: NZWrap Premium, Oracal 670RA e SH Colors. Alta performance para envelopamento.",
+    "description": NZWRAP_PREMIUM_NO_SITE
+      ? "Veja nossa linha de Vinil Automotivo: NZWrap Premium, Oracal 670RA e SH Colors. Alta performance para envelopamento."
+      : "Veja nossa linha de Vinil Automotivo: SH Colors, MetaCast MCX e Oracal 670RA. Alta performance para envelopamento.",
     "url": `${SITE_URL}/wrap`
   });
 
@@ -143,8 +146,12 @@ export default function Wrap() {
     <div className={styles.page}>
       <SEO 
         title="Adesivo Automotivo Premium | Catálogo de Envelopamento"
-        description="Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal e NZWrap com centenas de cores."
-        keywords="adesivo automotivo, vinil automotivo, oracal 670ra, nzwrap, sh colors, envelopamento"
+        description={NZWRAP_PREMIUM_NO_SITE
+          ? "Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal e NZWrap com centenas de cores."
+          : "Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal, SH Colors e Metamark com centenas de cores."}
+        keywords={NZWRAP_PREMIUM_NO_SITE
+          ? "adesivo automotivo, vinil automotivo, oracal 670ra, nzwrap, sh colors, envelopamento"
+          : "adesivo automotivo, vinil automotivo, oracal 670ra, sh colors, metamark mcx, envelopamento"}
         canonicalUrl="/wrap"
         schema={schema}
       />

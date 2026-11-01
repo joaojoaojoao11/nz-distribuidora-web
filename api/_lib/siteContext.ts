@@ -2,6 +2,18 @@
 // Objetivo: a IA não "alucina" produtos e fala só do que a NZ realmente vende.
 // Mantido como texto cru para economizar tokens.
 
+import { NZWRAP_PREMIUM_NO_SITE } from './lojaOcultos.js';
+
+// NZWRAP Premium fora do site (01/11/2026): o robô não cita nem linka a linha.
+const NZWRAP_PREMIUM_LINHA = NZWRAP_PREMIUM_NO_SITE
+  ? `- NZWRAP PREMIUM: linha própria da NZ (SKUs NZW2xx), acabamentos sólido brilhante,
+  metálico brilhante, metálico fosco, camaleão. Exemplos: Ferrari Metallic Red,
+  Stuttgart Sport Grey, Alpine Sport Grey, Luxury British Pink, Mystic Teal.
+`
+  : `- NZWRAP PREMIUM está fora do site por enquanto: NUNCA cite essa linha nem a
+  página /wrap/nzwrap-premium.
+`;
+
 export const NZ_PPF_LINES = `
 LINHAS OFICIAIS NZPPF (PPF = Paint Protection Film):
 - NZPPF LUXURY GLOSS: 190μm (micras) de espessura, garantia de 12 ANOS. Top de linha.
@@ -21,15 +33,12 @@ nem os anos de garantia. Se precisar citar um modelo, use o nome exato acima.
 
 export const NZ_WRAP_LINES = `
 LINHAS OFICIAIS NZWRAP (envelopamento automotivo premium):
-- NZWRAP PREMIUM: linha própria da NZ (SKUs NZW2xx), acabamentos sólido brilhante,
-  metálico brilhante, metálico fosco, camaleão. Exemplos: Ferrari Metallic Red,
-  Stuttgart Sport Grey, Alpine Sport Grey, Luxury British Pink, Mystic Teal.
-- SH WRAPPING COLORS: linha parceira, acabamentos variados.
+${NZWRAP_PREMIUM_LINHA}- SH WRAPPING COLORS: linha parceira, acabamentos variados.
 
 CATÁLOGO ORACAL 651: 62 cores em pronta entrega de vinil adesivo (não é
 envelopamento automotivo), finish Gloss, SKUs numerados (010 White, 020 Golden
 Yellow, 070 Black, etc.). Uso principal: comunicação visual, recorte, fachada,
-frota. Não confundir com PPF nem com NZWRAP Premium.
+frota. Não confundir com PPF nem com envelopamento automotivo.
 
 CATÁLOGO ORACAL 670RA: 24 cores premium com tecnologia RapidAir (aplicação sem
 bolhas), uso em frota e envelopamento comercial.

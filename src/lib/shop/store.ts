@@ -31,13 +31,18 @@ import { lojaRowToShopItem, lojaRowsToShopItems, type LojaCatalogoRow } from './
 import { indexarLinhas, INDICE_VAZIO, type IndiceDeLinhas, type LojaLinhaRow } from './linhas';
 import type { ShopItem } from './types';
 import { AVERY_NO_SITE } from '../avery';
+import { NZWRAP_PREMIUM_NO_SITE } from '../nzwrapPremium';
 
 /**
  * Espelha LINHAS_OCULTAS de api/_lib/lojaOcultos.ts. O catálogo da API já tira
  * essas linhas; a releitura de um item (abaixo) vai direto à view e, sem esta
  * trava, traria de volta por link direto o que a loja escondeu.
  */
-const LINHAS_FORA_DA_LOJA: ReadonlySet<string> = new Set(['nar', ...(AVERY_NO_SITE ? [] : ['avery', 'avery-adpro'])]);
+const LINHAS_FORA_DA_LOJA: ReadonlySet<string> = new Set([
+  'nar',
+  ...(AVERY_NO_SITE ? [] : ['avery', 'avery-adpro']),
+  ...(NZWRAP_PREMIUM_NO_SITE ? [] : ['nzwrap', 'nzwrap-import']),
+]);
 
 type Estado = 'estatico' | 'carregando' | 'banco' | 'falhou';
 

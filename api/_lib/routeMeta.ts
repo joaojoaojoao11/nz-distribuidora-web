@@ -3,7 +3,7 @@
 // é o que crawlers sem JS (WhatsApp, Facebook, LinkedIn, Bing) enxergam.
 // Se mudar um title numa página, atualize aqui também.
 
-import { AVERY_NO_SITE } from './lojaOcultos.js';
+import { AVERY_NO_SITE, NZWRAP_PREMIUM_NO_SITE } from './lojaOcultos.js';
 
 export interface RouteMeta {
   title: string;
@@ -56,7 +56,9 @@ export const routeMeta: Record<string, RouteMeta> = {
   },
   '/wrap': {
     title: 'Adesivo Automotivo Premium | Catálogo de Envelopamento',
-    description: 'Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal e NZWrap com centenas de cores.',
+    description: NZWRAP_PREMIUM_NO_SITE
+      ? 'Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal e NZWrap com centenas de cores.'
+      : 'Encontre o melhor adesivo automotivo e vinil para envelopamento na NZ Distribuidora. Marcas líderes como Oracal, SH Colors e Metamark com centenas de cores.',
   },
   '/wrap/nzwrap-premium': {
     title: 'NZWRAP Premium — Envelopamento PVC Alto Brilho',
