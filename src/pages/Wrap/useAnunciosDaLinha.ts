@@ -23,8 +23,11 @@ export function grupoDoAnuncio(item: ShopItem, lineLabel: string): string | null
   return sub;
 }
 
+/** Como a página agrupa os anúncios; sem ele, o grupo vem do subtítulo (grupoDoAnuncio). */
+export type GrupoDe = (item: ShopItem) => string | null;
+
 /** Os anúncios da linha na ordem do código, quantos grupos eles têm e se o banco já respondeu. */
-export function useAnunciosDaLinha(lineKey: LineKey, lineLabel = '') {
+export function useAnunciosDaLinha(lineKey: LineKey, lineLabel = '', grupoDe?: GrupoDe) {
   const catalogo = useShopCatalog();
   const estado = useCatalogoEstado();
   const itens = useMemo(
@@ -35,8 +38,8 @@ export function useAnunciosDaLinha(lineKey: LineKey, lineLabel = '') {
     [catalogo, lineKey],
   );
   const familias = useMemo(
-    () => new Set(itens.map((i) => grupoDoAnuncio(i, lineLabel)).filter(Boolean)).size,
-    [itens, lineLabel],
+    () => new Set(itens.map((i) => (grupoDe ? grupoDe(i) : grupoDoAnuncio(i, lineLabel))).filter(Boolean)).size,
+    [itens, lineLabel, grupoDe],
   );
   return { itens, familias, pronto: estado === 'banco' || estado === 'falhou' };
 }

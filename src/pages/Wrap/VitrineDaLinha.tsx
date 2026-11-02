@@ -17,7 +17,7 @@ import { ShopCard } from '../Loja/ShopCard';
 import { useLimiteNome } from '../Loja/useLimiteNome';
 import styles from './MetamarkColorCatalog.module.css';
 import own from './VitrineDaLinha.module.css';
-import { grupoDoAnuncio, normalizar, useAnunciosDaLinha } from './useAnunciosDaLinha';
+import { grupoDoAnuncio, normalizar, useAnunciosDaLinha, type GrupoDe } from './useAnunciosDaLinha';
 
 interface Props {
   lineKey: LineKey;
@@ -36,6 +36,13 @@ interface Props {
   extra?: ReactNode;
   /** Classe da <section>, para a página manter o próprio fundo. */
   classeSecao?: string;
+  /**
+   * Grupo de cada anúncio quando a página tem famílias próprias (Decor: a família
+   * do catálogo, não a coleção do subtítulo). Função estável, definida fora do componente.
+   */
+  grupoDe?: GrupoDe;
+  /** Acima da grade com um grupo escolhido: descrição da família, fotos de ambiente. */
+  topoDoGrupo?: (grupo: string) => ReactNode;
 }
 
 const ROTULOS_COR = { um: 'cor encontrada', varios: 'cores encontradas', todos: 'TODAS' };
@@ -53,8 +60,10 @@ export default function VitrineDaLinha({
   rotulos = ROTULOS_COR,
   extra,
   classeSecao,
+  grupoDe,
+  topoDoGrupo,
 }: Props) {
-  const { itens, pronto } = useAnunciosDaLinha(lineKey, lineLabel);
+  const { itens, pronto } = useAnunciosDaLinha(lineKey, lineLabel, grupoDe);
   const [params, setParams] = useSearchParams();
   const location = useLocation();
   const gridRef = useRef<HTMLDivElement>(null);
@@ -64,10 +73,12 @@ export default function VitrineDaLinha({
   const grupoAtivo = params.get('g');
   const corAntiga = params.get('cor');
 
+  const grupoDoItem = useMemo<GrupoDe>(() => grupoDe ?? ((i) => grupoDoAnuncio(i, lineLabel)), [grupoDe, lineLabel]);
+
   const grupos = useMemo(() => {
     const contagem = new Map<string, number>();
     for (const i of itens) {
-      const g = grupoDoAnuncio(i, lineLabel);
+      const g = grupoDoItem(i);
       if (g) contagem.set(g, (contagem.get(g) ?? 0) + 1);
     }
     const pos = (g: string) => {
@@ -75,15 +86,15 @@ export default function VitrineDaLinha({
       return n === -1 ? ordemGrupos.length : n;
     };
     return [...contagem].sort((a, b) => pos(a[0]) - pos(b[0]) || a[0].localeCompare(b[0], 'pt-BR'));
-  }, [itens, ordemGrupos, lineLabel]);
+  }, [itens, ordemGrupos, grupoDoItem]);
 
   const nq = normalizar(query);
   const visiveis = itens.filter((i) => {
-    if (grupoAtivo && grupoDoAnuncio(i, lineLabel) !== grupoAtivo) return false;
+    if (grupoAtivo && grupoDoItem(i) !== grupoAtivo) return false;
     if (!nq) return true;
     // A ficha entra na busca: é onde mora o Pantone ("447C") da Metamark 7.
     const ficha = i.specs.map((s) => s.value).join(' ');
-    return normalizar(`${i.code ?? ''} ${i.name} ${i.subtitle ?? ''} ${i.searchText} ${ficha}`).includes(nq);
+    return normalizar(`${i.code ?? ''} ${i.name} ${i.subtitle ?? ''} ${grupoDoItem(i) ?? ''} ${i.searchText} ${ficha}`).includes(nq);
   });
 
   const escrever = (next: { q?: string; g?: string | null }) => {
@@ -181,6 +192,8 @@ export default function VitrineDaLinha({
             {visiveis.length} {visiveis.length === 1 ? rotulos.um : rotulos.varios} para “{query}”
           </p>
         )}
+
+        {pronto && grupoAtivo && topoDoGrupo?.(grupoAtivo)}
 
         {pronto ? (
           <div className={own.grid} ref={gridRef}>

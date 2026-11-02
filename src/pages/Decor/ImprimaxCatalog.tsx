@@ -4,6 +4,7 @@ import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { staggerContainer, fadeUpItem } from './variants';
 import {
+  imprimaxFamilies,
   imprimaxProducts,
   IMPRIMAX_HERO_BADGES,
 } from './imprimaxProducts';
@@ -13,6 +14,7 @@ import extras from './ImprimaxExtras.module.css';
 import { DECOR, linkWhatsApp } from '../../lib/contatos';
 import VitrineDaLinha from '../Wrap/VitrineDaLinha';
 import { useAnunciosDaLinha } from '../Wrap/useAnunciosDaLinha';
+import { familiaPeloCatalogo } from './familiaDoAnuncio';
 
 const WHATSAPP_URL = linkWhatsApp(DECOR, 'Olá, estou vendo o catálogo Imprimax DecorMax no site da NZDecor e quero um orçamento.');
 
@@ -34,9 +36,31 @@ const heroMosaicTextures = (() => {
   return picks;
 })();
 
+// A vitrine filtra pela família do catálogo; com uma família escolhida, mostra a
+// descrição e as fotos de ambiente dela acima dos anúncios.
+const familiaDoAnuncio = familiaPeloCatalogo(imprimaxFamilies, imprimaxProducts, '/decor/imprimax/', 'imprimax-');
+const ORDEM_FAMILIAS = imprimaxFamilies.map((f) => f.name);
+const topoDaFamilia = (nome: string) => {
+  const f = imprimaxFamilies.find((x) => x.name === nome);
+  if (!f) return null;
+  return (
+    <>
+      <p className={styles.familyDescription}>{f.description}</p>
+      {/* Ambientes da FAMÍLIA: ficam aqui, nunca na galeria de um padrão. */}
+      {f.ambient.length > 0 && (
+        <div className={extras.familyAmbient}>
+          {f.ambient.slice(0, 4).map((src) => (
+            <img key={src} src={src} alt={`Ambiente com vinil Imprimax da família ${f.name}`} loading="lazy" />
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
+
 export default function ImprimaxCatalog() {
   // Contador, grade e lista do schema = anúncios da linha na NZSTORE (01/11/2026).
-  const { itens, familias, pronto } = useAnunciosDaLinha('imprimax', 'Imprimax');
+  const { itens, familias, pronto } = useAnunciosDaLinha('imprimax', 'Imprimax', familiaDoAnuncio);
 
   const schema = JSON.stringify({
     '@context': 'https://schema.org',
@@ -127,6 +151,9 @@ export default function ImprimaxCatalog() {
         searchPlaceholder="Buscar padrão ou código…"
         rotulos={{ um: 'padrão encontrado', varios: 'padrões encontrados', todos: 'TODOS' }}
         classeSecao={styles.catalogSection}
+        grupoDe={familiaDoAnuncio}
+        ordemGrupos={ORDEM_FAMILIAS}
+        topoDoGrupo={topoDaFamilia}
       />
 
       {/* CTA FINAL */}

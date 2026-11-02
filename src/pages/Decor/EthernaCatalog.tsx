@@ -4,6 +4,7 @@ import SEO from '../../components/SEO/SEO';
 import { SITE_URL } from '../../lib/siteConfig';
 import { staggerContainer, fadeUpItem } from './variants';
 import {
+  ethernaFamilies,
   ethernaProducts,
   ETHERNA_HERO_BADGES,
 } from './ethernaProducts';
@@ -11,6 +12,7 @@ import styles from './EthernaCatalog.module.css';
 import { DECOR, linkWhatsApp } from '../../lib/contatos';
 import VitrineDaLinha from '../Wrap/VitrineDaLinha';
 import { useAnunciosDaLinha } from '../Wrap/useAnunciosDaLinha';
+import { familiaPeloCatalogo } from './familiaDoAnuncio';
 
 const WHATSAPP_URL = linkWhatsApp(DECOR, 'Olá, estou vendo o catálogo Etherna Decor no site da NZDecor e quero um orçamento.');
 
@@ -33,9 +35,18 @@ const heroMosaicTextures = (() => {
   return picks;
 })();
 
+// A vitrine filtra pela família do catálogo; com uma família escolhida, mostra a
+// descrição dela acima dos anúncios.
+const familiaDoAnuncio = familiaPeloCatalogo(ethernaFamilies, ethernaProducts, '/decor/etherna/', 'etherna-');
+const ORDEM_FAMILIAS = ethernaFamilies.map((f) => f.name);
+const topoDaFamilia = (nome: string) => {
+  const f = ethernaFamilies.find((x) => x.name === nome);
+  return f ? <p className={styles.familyDescription}>{f.description}</p> : null;
+};
+
 export default function EthernaCatalog() {
   // Contador, grade e lista do schema = anúncios da linha na NZSTORE (01/11/2026).
-  const { itens, familias, pronto } = useAnunciosDaLinha('etherna', 'Etherna Decor');
+  const { itens, familias, pronto } = useAnunciosDaLinha('etherna', 'Etherna Decor', familiaDoAnuncio);
 
   const schema = JSON.stringify({
     '@context': 'https://schema.org',
@@ -126,6 +137,9 @@ export default function EthernaCatalog() {
         searchPlaceholder="Buscar padrão ou código…"
         rotulos={{ um: 'padrão encontrado', varios: 'padrões encontrados', todos: 'TODOS' }}
         classeSecao={styles.catalogSection}
+        grupoDe={familiaDoAnuncio}
+        ordemGrupos={ORDEM_FAMILIAS}
+        topoDoGrupo={topoDaFamilia}
       />
 
       {/* CTA FINAL */}
